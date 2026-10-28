@@ -51,6 +51,7 @@ abstract final class AppIcons {
   static const eye = 'assets/icons/eye.svg';
   static const eyeOff = 'assets/icons/eye-off.svg';
   static const factory = 'assets/icons/factory.svg';
+  static const file = 'assets/icons/file.svg';
   static const fileCheck = 'assets/icons/file-check.svg';
   static const fileSignature = 'assets/icons/file-signature.svg';
   static const fileText = 'assets/icons/file-text.svg';

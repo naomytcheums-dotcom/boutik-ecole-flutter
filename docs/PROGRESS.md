@@ -12,3 +12,5 @@
 
 | F · Communication et notifications | 50–56 (7) | fait |
 
+| G · Espace étudiant et vendeur | 57–69 (12) | fait |
+

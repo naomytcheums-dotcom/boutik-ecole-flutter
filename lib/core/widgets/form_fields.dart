@@ -129,7 +129,7 @@ class SearchField extends StatelessWidget {
               style: AppText.body,
               decoration: InputDecoration(
                 hintText: hint,
-                hintStyle: AppText.body.copyWith(color: AppColors.textSecondary),
+                hintStyle: AppText.secondary,
                 filled: false,
                 border: InputBorder.none,
                 enabledBorder: InputBorder.none,

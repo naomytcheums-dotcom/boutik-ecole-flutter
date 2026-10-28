@@ -15,6 +15,20 @@ abstract final class Photos {
   static const office = 'assets/images/office.jpg';
   static const mapCameroon = 'assets/images/map_cameroon.png';
   static const avatarWoman = 'assets/images/avatar_woman.jpg';
+  static const portraitWoman = 'assets/images/portrait_woman.jpg';
+  static const foodSpread = 'assets/images/food_spread.jpg';
+  static const heroStudent = 'assets/images/hero_student.jpg';
+  static const laptopMeeting = 'assets/images/laptop_meeting.jpg';
+  static const plants = 'assets/images/plants.jpg';
+  static const plantPot = 'assets/images/plant_pot.jpg';
+  static const phoneStand = 'assets/images/phone_stand.jpg';
+  static const enterprise = 'assets/images/enterprise.jpg';
+  static const team = 'assets/images/team.jpg';
+  static const avatarCreator = 'assets/images/avatar_creator.jpg';
+  static const paint = 'assets/images/paint.jpg';
+  static const paintRed = 'assets/images/paint_red.jpg';
+  static const branding = 'assets/images/branding.jpg';
+  static const sketch = 'assets/images/sketch.jpg';
 }
 
 /// Catalogue de démonstration (chiffres fictifs des maquettes).

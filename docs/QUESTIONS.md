@@ -21,3 +21,11 @@ Chaque question indique l'écran concerné, la solution retenue en attendant la 
 9. **272 · Après vérification** : la maquette ne dit pas où mène « Vérifier ». Retenu : tableau de bord de l'administration institutionnelle (117).
 10. **250b · Boutons du haut** (« Publier », « Modifier », « Couverture ») : ils mesurent environ 30 px de haut dans la maquette ; leur zone tactile est portée à 44 px (règle d'accessibilité), sans changer leur apparence.
 11. **288 · Barre latérale sans icônes** : contrairement aux écrans 262 à 269, la maquette 288 n'a pas d'icônes dans la barre latérale ; le composant commun `WebShell` les affiche. → Uniformiser dans un sens ou dans l'autre ?
+
+## Section A
+
+12. **01 et 02 identiques** : les deux maquettes sont identiques au pixel près. Les deux routes affichent le même écran. → 02 devait-il être la 2e page du carrousel (points de pagination) ?
+13. **07 · Frais avec retrait sur campus** : la maquette affiche « Frais de livraison 5 000 FCFA » alors que « Retrait sur campus » est sélectionné, et les totaux de 06 et 08 (330 000 FCFA) incluent ces frais. Reproduit tel quel. → Le retrait sur campus est-il gratuit ?
+14. **03 · Bannière « À la une »** : la maquette pose du texte directement sur la photo, contrairement à la règle « aucun texte dans une carte-photo ». Le design est respecté (fond sombre en dégradé pour garder le contraste 4,5:1). Même cas pour la carte « Vous êtes une entreprise ? » (04) et les pastilles posées sur les photos (01, 04).
+15. **09 · Commande** : seule la première ligne a une vignette dans la maquette ; reproduit tel quel. La date (« 12 avril 2025 ») et le numéro (#BE-2025-0018) diffèrent de ceux des écrans 257–260 (#BE-2026-0142).
+16. **10 · Avatar vide** : le cercle de profil est blanc dans la maquette (photo non fournie). La photo de démonstration de Mariam est affichée. → Fournir la photo ou garder le cercle vide ?

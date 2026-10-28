@@ -42,6 +42,16 @@ const keyTexts = <String, List<String>>{
   '269': ['Innovation Radar', 'Besoins du marché'],
   '288': ['Catalogue du département MMI', 'Lampe de bureau LED'],
   '250b': ['Nouvelle publication', 'Comptes suggérés'],
+  '01': ['Des talents étudiants', 'Commencer'],
+  '02': ['Des talents étudiants', 'Se connecter'],
+  '03': ['Bienvenue', 'Produits en vedette', '25 000 FCFA'],
+  '04': ['Explorer', 'Développement web sur mesure'],
+  '05': ['Lampe en bois recyclé', 'Ajouter au panier'],
+  '06': ['Mon panier', '330 000 FCFA'],
+  '07': ['Livraison', 'Retrait sur campus'],
+  '08': ['Moyen de paiement', 'Payer maintenant'],
+  '09': ['#BE-2025-0018', 'En préparation'],
+  '10': ['Mariam Essono', 'Talent Passport · Confirmé · 3 badges'],
 };
 
 void main() {
@@ -70,3 +80,4 @@ void main() {
     });
   }
 }
+

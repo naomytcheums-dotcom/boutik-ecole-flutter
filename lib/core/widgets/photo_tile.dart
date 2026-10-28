@@ -129,9 +129,9 @@ class ProductCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: AppText.bodyStrong, maxLines: 1, overflow: TextOverflow.ellipsis),
+                  Text(title, style: AppText.label, maxLines: 1, overflow: TextOverflow.ellipsis),
                   const SizedBox(height: 2),
-                  Text(price, style: AppText.body),
+                  Text(price, style: AppText.label.copyWith(fontWeight: FontWeight.w500)),
                   const SizedBox(height: 2),
                   Text(subtitle, style: AppText.small, maxLines: 1, overflow: TextOverflow.ellipsis),
                 ],

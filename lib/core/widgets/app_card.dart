@@ -228,7 +228,7 @@ class SectionHeader extends StatelessWidget {
       padding: padding,
       child: Row(
         children: [
-          Expanded(child: Text(title, style: AppText.h2, semanticsLabel: title)),
+          Expanded(child: Text(title, style: AppText.h3, semanticsLabel: title)),
           if (action != null)
             Semantics(
               button: true,
@@ -242,7 +242,7 @@ class SectionHeader extends StatelessWidget {
                     children: [
                       Text(
                         action!,
-                        style: AppText.body.copyWith(color: AppColors.accent),
+                        style: AppText.small.copyWith(color: AppColors.accent),
                       ),
                       const SizedBox(width: 18),
                       const AppIcon('assets/icons/arrow-right.svg', size: 18),

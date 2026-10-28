@@ -138,6 +138,44 @@ class AppBackgroundGlow extends StatelessWidget {
   }
 }
 
+/// En-tête « flèche + titre gras à gauche » des écrans du parcours d'achat (04, 06–09).
+class TitleHeader extends StatelessWidget {
+  const TitleHeader(this.title, {super.key, this.trailing, this.showBack = true});
+
+  final String title;
+  final Widget? trailing;
+  final bool showBack;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8, 12, 16, 8),
+      child: Row(
+        children: [
+          if (showBack)
+            RoundIconButton(
+              icon: 'assets/icons/arrow-left.svg',
+              label: 'Retour',
+              bordered: false,
+              background: Colors.transparent,
+              onTap: () => ScreenHeader.back(context),
+            )
+          else
+            const SizedBox(width: 12),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Semantics(
+              header: true,
+              child: Text(title, style: AppText.h1.copyWith(fontSize: 24, fontWeight: FontWeight.w700)),
+            ),
+          ),
+          ?trailing,
+        ],
+      ),
+    );
+  }
+}
+
 /// En-tête d'écran secondaire : bouton retour, titre, actions.
 class ScreenHeader extends StatelessWidget {
   const ScreenHeader({
@@ -375,7 +413,7 @@ class IconTile extends StatelessWidget {
               child: AppIcon(icon, size: 22, color: selected ? Colors.white : AppColors.ink),
             ),
             const SizedBox(height: 8),
-            Text(label, style: AppText.secondary.copyWith(color: AppColors.ink)),
+            Text(label, style: AppText.small.copyWith(color: AppColors.ink)),
           ],
         ),
       ),

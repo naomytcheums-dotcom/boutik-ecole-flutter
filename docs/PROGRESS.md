@@ -24,3 +24,4 @@
 | H · Talents et parcours | 70, 72, 73, 75, 76, 77 (6) | fait |
 
 | O · Finance et paiements | 139–144 (6, web) | fait |
+| P · Kiosques, support, exploitation | 145, 146-1, 146-2, 147-1/2/3 (6) | fait |

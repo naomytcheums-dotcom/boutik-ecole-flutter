@@ -14,3 +14,4 @@
 
 | G · Espace étudiant et vendeur | 57–69 (12) | fait |
 
+| C · Découverte et achats | 21–31 (15) | fait |

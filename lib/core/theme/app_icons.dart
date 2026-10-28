@@ -70,6 +70,7 @@ abstract final class AppIcons {
   static const hash = 'assets/icons/hash.svg';
   static const headphones = 'assets/icons/headphones.svg';
   static const heart = 'assets/icons/heart.svg';
+  static const heartFilled = 'assets/icons/heart-filled.svg';
   static const history = 'assets/icons/history.svg';
   static const house = 'assets/icons/house.svg';
   static const image = 'assets/icons/image.svg';

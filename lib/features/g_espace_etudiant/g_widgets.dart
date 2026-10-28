@@ -8,9 +8,17 @@ export '../common/common.dart';
 
 /// Page de la section G sans menu bas : en-tête, contenu défilant, bande blanche d'actions en bas.
 class GPage extends StatelessWidget {
-  const GPage({super.key, required this.title, required this.children, required this.actions, this.showBack = true});
+  const GPage({
+    super.key,
+    required this.title,
+    required this.children,
+    required this.actions,
+    this.showBack = true,
+    this.trailing,
+  });
 
   final String title;
+  final Widget? trailing;
   final List<Widget> children;
   final List<Widget> actions;
   final bool showBack;
@@ -24,7 +32,7 @@ class GPage extends StatelessWidget {
           Expanded(
             child: AppScaffold(
               showNav: false,
-              header: Padding(padding: const EdgeInsets.only(top: 22), child: TitleHeader(title, showBack: showBack)),
+              header: Padding(padding: const EdgeInsets.only(top: 22), child: TitleHeader(title, showBack: showBack, trailing: trailing)),
               padding: const EdgeInsets.symmetric(horizontal: 24),
               children: children,
             ),

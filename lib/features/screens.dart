@@ -1,6 +1,7 @@
 import '../core/router/screen_entry.dart';
 import 'a_demarrage/screens.dart';
 import 'b_auth/screens.dart';
+import 'c_decouverte/screens.dart';
 import 'nouveaux/screens.dart';
 import 'n_admin_globale/screens.dart';
 import 'e_commandes/screens.dart';
@@ -12,6 +13,7 @@ final List<ScreenEntry> allScreens = [
   ...nouveauxScreens,
   ...sectionAScreens,
   ...sectionBScreens,
+  ...sectionCScreens,
   ...sectionNScreens,
   ...sectionEScreens,
   ...sectionFScreens,

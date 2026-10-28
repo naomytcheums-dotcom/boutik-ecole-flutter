@@ -96,6 +96,7 @@ abstract final class AppIcons {
   static const medal = 'assets/icons/medal.svg';
   static const megaphone = 'assets/icons/megaphone.svg';
   static const messageCircle = 'assets/icons/message-circle.svg';
+  static const messageSquare = 'assets/icons/message-square.svg';
   static const messageSquareText = 'assets/icons/message-square-text.svg';
   static const mic = 'assets/icons/mic.svg';
   static const micOff = 'assets/icons/mic-off.svg';

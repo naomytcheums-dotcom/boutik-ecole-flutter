@@ -29,3 +29,4 @@
 | S · Opportunités et alertes IA | 151–159 (9) | fait |
 | T · Hackathons et concours | 160–169 (10 ; 168, 169 web) | fait |
 | J · Entreprises et B2B | 88–91, 93, 93b, 94, 95, 95b, 96–99 (13) | fait |
+| U · Confiance, sécurité, partage | 170–174, 211, 212, 213 (8 ; 213 web) | fait |

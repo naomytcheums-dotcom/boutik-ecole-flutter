@@ -3,6 +3,7 @@ export 'app_icon.dart';
 export 'app_scaffold.dart';
 export 'blocks.dart';
 export 'form_fields.dart';
+export 'form_inputs.dart';
 export 'glass_nav_bar.dart';
 export 'kiosk_scaffold.dart';
 export 'photo_tile.dart';

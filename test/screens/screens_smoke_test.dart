@@ -52,6 +52,18 @@ const keyTexts = <String, List<String>>{
   '08': ['Moyen de paiement', 'Payer maintenant'],
   '09': ['#BE-2025-0018', 'En préparation'],
   '10': ['Mariam Essono', 'Talent Passport · Confirmé · 3 badges'],
+  '11': ['Bon retour !', 'Se connecter'],
+  '12': ['Créer un compte', 'Créer mon compte'],
+  '13': ['Quel est votre profil ?', 'Étudiant vendeur'],
+  '14': ['Vérification du compte', 'Renvoyer dans 00:45'],
+  '15': ['Réinitialiser votre mot de passe', 'Envoyer le code'],
+  '16': ['Créez un nouveau mot de passe', 'Un caractère spécial'],
+  '17': ['Conditions et confidentialité', 'Statistiques anonymes'],
+  '18': ['Demande en cours d’examen', 'Résultats possibles'],
+  '18b': ['Compléter mon profil', 'Établissement'],
+  '18c': ['Vérification étudiant', 'Certificat de scolarité'],
+  '19': ['inspire', 'Recherche avancée'],
+  '20': ['128 résultats', 'Sac à dos design'],
 };
 
 void main() {

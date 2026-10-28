@@ -38,4 +38,23 @@ abstract final class Validators {
     if (!RegExp(r'^6\d{8}$').hasMatch(d)) return 'Numéro invalide : 9 chiffres commençant par 6.';
     return null;
   }
+
+  /// Critères de mot de passe (écran 16) : 8 caractères, une majuscule, un chiffre, un caractère spécial.
+  static ({bool length, bool upper, bool digit, bool special}) passwordCriteria(String v) => (
+    length: v.length >= 8,
+    upper: v.contains(RegExp(r'[A-Z]')),
+    digit: v.contains(RegExp(r'\d')),
+    special: v.contains(RegExp(r'[^A-Za-z0-9]')),
+  );
+
+  /// 0 à 4 critères respectés.
+  static int passwordScore(String v) {
+    final c = passwordCriteria(v);
+    return [c.length, c.upper, c.digit, c.special].where((b) => b).length;
+  }
+
+  static String? password(String? v) =>
+      (v == null || v.length < 8) ? 'Le mot de passe doit contenir au moins 8 caractères.' : null;
+
+  static String? phoneOrEmail(String? v) => (email(v) == null || phoneCm(v) == null) ? null : 'Entrez un numéro ou un e-mail valide.';
 }

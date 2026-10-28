@@ -29,3 +29,9 @@ Chaque question indique l'écran concerné, la solution retenue en attendant la 
 14. **03 · Bannière « À la une »** : la maquette pose du texte directement sur la photo, contrairement à la règle « aucun texte dans une carte-photo ». Le design est respecté (fond sombre en dégradé pour garder le contraste 4,5:1). Même cas pour la carte « Vous êtes une entreprise ? » (04) et les pastilles posées sur les photos (01, 04).
 15. **09 · Commande** : seule la première ligne a une vignette dans la maquette ; reproduit tel quel. La date (« 12 avril 2025 ») et le numéro (#BE-2025-0018) diffèrent de ceux des écrans 257–260 (#BE-2026-0142).
 16. **10 · Avatar vide** : le cercle de profil est blanc dans la maquette (photo non fournie). La photo de démonstration de Mariam est affichée. → Fournir la photo ou garder le cercle vide ?
+
+## Section B
+
+17. **13 · Destination après « Continuer »** : Étudiant vendeur → 18b (compléter le profil) ; Entreprise → 262 (accueil B2B) ; Client et autre rôle → accueil 03. Les interactions de prototype n'étant pas lisibles, c'est une déduction.
+18. **19 · Photo de fond** : la photo (lettres de Scrabble) n'est disponible que via la capture, avec logo et texte incrustés ; seule une bande sans texte a été extraite. → Fournir l'original.
+19. **18c · Bouton violet** : seul bouton principal en dégradé violet (au lieu de noir) de l'application. Reproduit tel quel.

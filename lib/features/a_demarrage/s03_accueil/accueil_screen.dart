@@ -57,7 +57,7 @@ class _AccueilScreenState extends ConsumerState<AccueilScreen> {
           padding: const EdgeInsets.fromLTRB(18, 14, 18, 0),
           child: SearchField(
             hint: 'Rechercher un produit, service, talent…',
-            onTap: () => context.openScreen('22'),
+            onTap: () => context.openScreen('19'),
             onFilter: () => context.openScreen('23'),
           ),
         ),

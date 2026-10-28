@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../demo/catalog_demo.dart';
 import '../demo/nouveaux_demo.dart';
 import '../demo/section_a_demo.dart';
+import '../demo/section_b_demo.dart';
 import '../models/models.dart';
 
 export '../demo/section_a_demo.dart' show CartLine, ExploreItem, SectionAData, Totals;
+export '../demo/section_b_demo.dart' show SearchResult, SectionBData;
 
 /// Dépôt du catalogue. Implémentation de démonstration : données locales fictives.
 /// Pour brancher l'API, fournir une autre implémentation via `overrideWithValue`.
@@ -31,6 +33,19 @@ final nouveauxDataProvider = Provider<NouveauxData>((_) => const NouveauxData())
 
 /// Données de la section A (démarrage et parcours d'achat).
 final sectionADataProvider = Provider<SectionAData>((_) => const SectionAData());
+
+/// Données de la section B (authentification).
+final sectionBDataProvider = Provider<SectionBData>((_) => const SectionBData());
+
+/// Rôle choisi à l'inscription (13).
+class RoleNotifier extends Notifier<int> {
+  @override
+  int build() => 1;
+
+  void set(int v) => state = v;
+}
+
+final roleProvider = NotifierProvider<RoleNotifier, int>(RoleNotifier.new);
 
 /// Panier partagé entre la fiche produit (05), le panier (06) et le paiement (08).
 class CartNotifier extends Notifier<List<CartLine>> {

@@ -29,6 +29,11 @@ abstract final class Photos {
   static const paintRed = 'assets/images/paint_red.jpg';
   static const branding = 'assets/images/branding.jpg';
   static const sketch = 'assets/images/sketch.jpg';
+  static const scrabble = 'assets/images/scrabble.jpg';
+  static const bagDesign = 'assets/images/bag_design.jpg';
+  static const droneLogo = 'assets/images/drone_logo.jpg';
+  static const drone = 'assets/images/drone.jpg';
+  static const backpacks = 'assets/images/backpacks.jpg';
 }
 
 /// Catalogue de démonstration (chiffres fictifs des maquettes).

@@ -7,6 +7,7 @@ import 'n_admin_globale/screens.dart';
 import 'o_finance/screens.dart';
 import 'p_exploitation/screens.dart';
 import 'q_parametres/screens.dart';
+import 's_opportunites/screens.dart';
 import 'e_commandes/screens.dart';
 import 'f_communication/screens.dart';
 import 'g_espace_etudiant/screens.dart';
@@ -27,6 +28,7 @@ final List<ScreenEntry> allScreens = [
   ...sectionOScreens,
   ...sectionPScreens,
   ...sectionQScreens,
+  ...sectionSScreens,
   ...sectionEScreens,
   ...sectionFScreens,
   ...sectionGScreens,

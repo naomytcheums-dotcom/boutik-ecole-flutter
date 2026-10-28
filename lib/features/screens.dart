@@ -4,6 +4,7 @@ import 'b_auth/screens.dart';
 import 'c_decouverte/screens.dart';
 import 'nouveaux/screens.dart';
 import 'n_admin_globale/screens.dart';
+import 'o_finance/screens.dart';
 import 'e_commandes/screens.dart';
 import 'f_communication/screens.dart';
 import 'g_espace_etudiant/screens.dart';
@@ -21,6 +22,7 @@ final List<ScreenEntry> allScreens = [
   ...sectionBScreens,
   ...sectionCScreens,
   ...sectionNScreens,
+  ...sectionOScreens,
   ...sectionEScreens,
   ...sectionFScreens,
   ...sectionGScreens,

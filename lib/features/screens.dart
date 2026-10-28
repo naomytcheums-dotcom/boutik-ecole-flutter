@@ -9,6 +9,7 @@ import 'f_communication/screens.dart';
 import 'g_espace_etudiant/screens.dart';
 import 'i_projets/screens.dart';
 import 'k_evenements/screens.dart';
+import 'l_departement/screens.dart';
 import 'd_fiches/screens.dart';
 
 /// Registre de tous les écrans codés, dans l'ordre du manifeste.
@@ -23,5 +24,6 @@ final List<ScreenEntry> allScreens = [
   ...sectionGScreens,
   ...sectionIScreens,
   ...sectionKScreens,
+  ...sectionLScreens,
   ...sectionDScreens,
 ];

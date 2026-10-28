@@ -16,15 +16,17 @@ import '../helpers/render.dart';
 void main() {
   setUpAll(loadAppFonts);
 
-  final heights = <String, int>{
+  // Taille de la maquette (mesurée sur la capture) : la hauteur est ramenée à la largeur du format.
+  final sizes = <String, (int, int)>{
     for (final e in jsonDecode(File('docs/screens.json').readAsStringSync()) as List)
-      if (e['h'] != null) e['id'] as String: e['h'] as int,
+      if (e['h'] != null) e['id'] as String: (e['w'] as int, e['h'] as int),
   };
 
   for (final s in screensById.values) {
     testWidgets('golden ${s.id} · ${s.title}', (tester) async {
       final base = designSize(s.format);
-      final size = Size(base.width, (heights[s.id] ?? base.height).toDouble());
+      final m = sizes[s.id];
+      final size = m == null ? base : Size(base.width, (m.$2 * base.width / m.$1).roundToDouble());
       await pumpScreen(tester, s.id, size: size);
       await expectLater(find.byType(Overlay).first, matchesGoldenFile('goldens/${s.id}.png'));
     });

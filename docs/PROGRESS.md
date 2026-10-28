@@ -10,3 +10,5 @@
 
 | E · Commandes, livraison, assistance | 41–49 (9) | fait |
 
+| F · Communication et notifications | 50–56 (7) | fait |
+

@@ -137,6 +137,7 @@ abstract final class AppIcons {
   static const squareCheck = 'assets/icons/square-check.svg';
   static const stamp = 'assets/icons/stamp.svg';
   static const star = 'assets/icons/star.svg';
+  static const starFilled = 'assets/icons/star-filled.svg';
   static const store = 'assets/icons/store.svg';
   static const sun = 'assets/icons/sun.svg';
   static const tag = 'assets/icons/tag.svg';

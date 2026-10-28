@@ -17,3 +17,4 @@
 | C · Découverte et achats | 21–31 (15) | fait |
 | D · Fiches produits, services, prestataires | 32–40 (8) | fait |
 
+| I · Projets, innovations, financement | 78–87 (11) | fait |

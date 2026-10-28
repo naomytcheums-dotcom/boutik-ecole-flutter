@@ -98,13 +98,14 @@ class GKpiCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(child: Text(kpi.label, style: AppText.small.copyWith(fontSize: 11.5))),
-                Container(
-                  width: 26,
-                  height: 26,
-                  decoration: BoxDecoration(color: const Color(0xFFF2F0F5), borderRadius: BorderRadius.circular(8)),
-                  alignment: Alignment.center,
-                  child: AppIcon(kpi.icon, size: 15),
-                ),
+                if (kpi.icon.isNotEmpty)
+                  Container(
+                    width: 26,
+                    height: 26,
+                    decoration: BoxDecoration(color: const Color(0xFFF2F0F5), borderRadius: BorderRadius.circular(8)),
+                    alignment: Alignment.center,
+                    child: AppIcon(kpi.icon, size: 15),
+                  ),
               ],
             ),
             Text(

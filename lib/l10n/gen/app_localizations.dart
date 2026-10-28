@@ -217,6 +217,246 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Changez de langue à tout moment dans les paramètres. Des textes courts et clairs, en français comme en anglais.'**
   String get languageHint;
+
+  /// No description provided for @kioskHeroTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les talents de l’IUT de Douala,\nà portée de main'**
+  String get kioskHeroTitle;
+
+  /// No description provided for @kioskHeroSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Achetez, commandez un service ou lancez une mission.'**
+  String get kioskHeroSubtitle;
+
+  /// No description provided for @kioskStart.
+  ///
+  /// In fr, this message translates to:
+  /// **'Touchez pour commencer'**
+  String get kioskStart;
+
+  /// No description provided for @kioskReady.
+  ///
+  /// In fr, this message translates to:
+  /// **'Borne prête · réseau OK'**
+  String get kioskReady;
+
+  /// No description provided for @kioskSearchHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Que cherchez-vous ?'**
+  String get kioskSearchHint;
+
+  /// No description provided for @kioskTabAll.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout'**
+  String get kioskTabAll;
+
+  /// No description provided for @kioskTabProducts.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits'**
+  String get kioskTabProducts;
+
+  /// No description provided for @kioskTabServices.
+  ///
+  /// In fr, this message translates to:
+  /// **'Services'**
+  String get kioskTabServices;
+
+  /// No description provided for @kioskTabMissions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Missions'**
+  String get kioskTabMissions;
+
+  /// No description provided for @kioskEmpty.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun résultat pour le moment.'**
+  String get kioskEmpty;
+
+  /// No description provided for @kioskBoosted.
+  ///
+  /// In fr, this message translates to:
+  /// **'Boosté'**
+  String get kioskBoosted;
+
+  /// No description provided for @kioskNavHome.
+  ///
+  /// In fr, this message translates to:
+  /// **'Accueil'**
+  String get kioskNavHome;
+
+  /// No description provided for @kioskNavExplore.
+  ///
+  /// In fr, this message translates to:
+  /// **'Explorer'**
+  String get kioskNavExplore;
+
+  /// No description provided for @kioskNavMyQr.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mon QR'**
+  String get kioskNavMyQr;
+
+  /// No description provided for @kioskNavHelp.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aide'**
+  String get kioskNavHelp;
+
+  /// No description provided for @kioskHelpMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un membre de l’équipe arrive pour vous aider.'**
+  String get kioskHelpMessage;
+
+  /// No description provided for @kioskReviews.
+  ///
+  /// In fr, this message translates to:
+  /// **'{rating} · {count} avis'**
+  String kioskReviews(String rating, int count);
+
+  /// No description provided for @kioskVerified.
+  ///
+  /// In fr, this message translates to:
+  /// **'{field} · Talent vérifié'**
+  String kioskVerified(String field);
+
+  /// No description provided for @kioskOnPhone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sur mon téléphone'**
+  String get kioskOnPhone;
+
+  /// No description provided for @kioskOrder.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commander'**
+  String get kioskOrder;
+
+  /// No description provided for @kioskQrTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Continuez sur votre téléphone'**
+  String get kioskQrTitle;
+
+  /// No description provided for @kioskQrSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Scannez le code pour retrouver ce produit et commander.'**
+  String get kioskQrSubtitle;
+
+  /// No description provided for @kioskQrValid.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code valable'**
+  String get kioskQrValid;
+
+  /// No description provided for @kioskQrExpired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code expiré'**
+  String get kioskQrExpired;
+
+  /// No description provided for @kioskQrRenew.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau code'**
+  String get kioskQrRenew;
+
+  /// No description provided for @kioskQrSemantics.
+  ///
+  /// In fr, this message translates to:
+  /// **'QR code du produit. Touchez pour simuler le scan.'**
+  String get kioskQrSemantics;
+
+  /// No description provided for @kioskStepScan.
+  ///
+  /// In fr, this message translates to:
+  /// **'Scannez'**
+  String get kioskStepScan;
+
+  /// No description provided for @kioskStepOpen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvrez la fiche'**
+  String get kioskStepOpen;
+
+  /// No description provided for @kioskStepOrder.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commandez'**
+  String get kioskStepOrder;
+
+  /// No description provided for @kioskCancel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler'**
+  String get kioskCancel;
+
+  /// No description provided for @kioskSentTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'C’est envoyé !'**
+  String get kioskSentTitle;
+
+  /// No description provided for @kioskSentSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le lien du produit est sur votre téléphone.'**
+  String get kioskSentSubtitle;
+
+  /// No description provided for @kioskDate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Date'**
+  String get kioskDate;
+
+  /// No description provided for @kioskTime.
+  ///
+  /// In fr, this message translates to:
+  /// **'Heure'**
+  String get kioskTime;
+
+  /// No description provided for @kioskPickup.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retrait'**
+  String get kioskPickup;
+
+  /// No description provided for @kioskTrackingCode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code de suivi'**
+  String get kioskTrackingCode;
+
+  /// No description provided for @kioskPrint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Imprimer'**
+  String get kioskPrint;
+
+  /// No description provided for @kioskPrinting.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impression du ticket…'**
+  String get kioskPrinting;
+
+  /// No description provided for @kioskFinish.
+  ///
+  /// In fr, this message translates to:
+  /// **'Terminer'**
+  String get kioskFinish;
+
+  /// No description provided for @kioskBackHome.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour à l’accueil dans {seconds} s'**
+  String kioskBackHome(int seconds);
 }
 
 class _AppLocalizationsDelegate

@@ -72,4 +72,135 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get languageHint =>
       'Changez de langue à tout moment dans les paramètres. Des textes courts et clairs, en français comme en anglais.';
+
+  @override
+  String get kioskHeroTitle =>
+      'Les talents de l’IUT de Douala,\nà portée de main';
+
+  @override
+  String get kioskHeroSubtitle =>
+      'Achetez, commandez un service ou lancez une mission.';
+
+  @override
+  String get kioskStart => 'Touchez pour commencer';
+
+  @override
+  String get kioskReady => 'Borne prête · réseau OK';
+
+  @override
+  String get kioskSearchHint => 'Que cherchez-vous ?';
+
+  @override
+  String get kioskTabAll => 'Tout';
+
+  @override
+  String get kioskTabProducts => 'Produits';
+
+  @override
+  String get kioskTabServices => 'Services';
+
+  @override
+  String get kioskTabMissions => 'Missions';
+
+  @override
+  String get kioskEmpty => 'Aucun résultat pour le moment.';
+
+  @override
+  String get kioskBoosted => 'Boosté';
+
+  @override
+  String get kioskNavHome => 'Accueil';
+
+  @override
+  String get kioskNavExplore => 'Explorer';
+
+  @override
+  String get kioskNavMyQr => 'Mon QR';
+
+  @override
+  String get kioskNavHelp => 'Aide';
+
+  @override
+  String get kioskHelpMessage =>
+      'Un membre de l’équipe arrive pour vous aider.';
+
+  @override
+  String kioskReviews(String rating, int count) {
+    return '$rating · $count avis';
+  }
+
+  @override
+  String kioskVerified(String field) {
+    return '$field · Talent vérifié';
+  }
+
+  @override
+  String get kioskOnPhone => 'Sur mon téléphone';
+
+  @override
+  String get kioskOrder => 'Commander';
+
+  @override
+  String get kioskQrTitle => 'Continuez sur votre téléphone';
+
+  @override
+  String get kioskQrSubtitle =>
+      'Scannez le code pour retrouver ce produit et commander.';
+
+  @override
+  String get kioskQrValid => 'Code valable';
+
+  @override
+  String get kioskQrExpired => 'Code expiré';
+
+  @override
+  String get kioskQrRenew => 'Nouveau code';
+
+  @override
+  String get kioskQrSemantics =>
+      'QR code du produit. Touchez pour simuler le scan.';
+
+  @override
+  String get kioskStepScan => 'Scannez';
+
+  @override
+  String get kioskStepOpen => 'Ouvrez la fiche';
+
+  @override
+  String get kioskStepOrder => 'Commandez';
+
+  @override
+  String get kioskCancel => 'Annuler';
+
+  @override
+  String get kioskSentTitle => 'C’est envoyé !';
+
+  @override
+  String get kioskSentSubtitle => 'Le lien du produit est sur votre téléphone.';
+
+  @override
+  String get kioskDate => 'Date';
+
+  @override
+  String get kioskTime => 'Heure';
+
+  @override
+  String get kioskPickup => 'Retrait';
+
+  @override
+  String get kioskTrackingCode => 'Code de suivi';
+
+  @override
+  String get kioskPrint => 'Imprimer';
+
+  @override
+  String get kioskPrinting => 'Impression du ticket…';
+
+  @override
+  String get kioskFinish => 'Terminer';
+
+  @override
+  String kioskBackHome(int seconds) {
+    return 'Retour à l’accueil dans $seconds s';
+  }
 }

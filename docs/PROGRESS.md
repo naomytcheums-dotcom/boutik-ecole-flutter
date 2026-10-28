@@ -37,3 +37,4 @@
 | AD · Innovations | 216–229 (14 ; 224, 226, 227 web, captures Figma vides) | fait |
 | AM · Cercle, parrainage, publication | 240–254, 244b, 253b (17 ; 250b dans Nouveaux) | fait |
 | Y · Missions sur mesure | 191–205 (15 ; 198, 199, 200 web) | fait |
+| AA · Borne phygitale | 206–210 (5 ; borne 720×1280, FR/EN) | fait |

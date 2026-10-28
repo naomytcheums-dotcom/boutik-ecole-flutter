@@ -17,12 +17,78 @@
   "previewLampDetail": "{price} · Génie civil",
   "@previewLampDetail": {
     "placeholders": {
-      "price": {"type": "String"}
+      "price": {
+        "type": "String"
+      }
     }
   },
   "previewInStock": "En stock",
   "previewChallengeTitle": "Orange Digital Challenge",
   "previewChallengeDetail": "Inscriptions ouvertes · Douala",
   "previewOpen": "Ouvert",
-  "languageHint": "Changez de langue à tout moment dans les paramètres. Des textes courts et clairs, en français comme en anglais."
+  "languageHint": "Changez de langue à tout moment dans les paramètres. Des textes courts et clairs, en français comme en anglais.",
+  "kioskHeroTitle": "Les talents de l’IUT de Douala,\nà portée de main",
+  "kioskHeroSubtitle": "Achetez, commandez un service ou lancez une mission.",
+  "kioskStart": "Touchez pour commencer",
+  "kioskReady": "Borne prête · réseau OK",
+  "kioskSearchHint": "Que cherchez-vous ?",
+  "kioskTabAll": "Tout",
+  "kioskTabProducts": "Produits",
+  "kioskTabServices": "Services",
+  "kioskTabMissions": "Missions",
+  "kioskEmpty": "Aucun résultat pour le moment.",
+  "kioskBoosted": "Boosté",
+  "kioskNavHome": "Accueil",
+  "kioskNavExplore": "Explorer",
+  "kioskNavMyQr": "Mon QR",
+  "kioskNavHelp": "Aide",
+  "kioskHelpMessage": "Un membre de l’équipe arrive pour vous aider.",
+  "kioskReviews": "{rating} · {count} avis",
+  "@kioskReviews": {
+    "placeholders": {
+      "rating": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "kioskVerified": "{field} · Talent vérifié",
+  "@kioskVerified": {
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "kioskOnPhone": "Sur mon téléphone",
+  "kioskOrder": "Commander",
+  "kioskQrTitle": "Continuez sur votre téléphone",
+  "kioskQrSubtitle": "Scannez le code pour retrouver ce produit et commander.",
+  "kioskQrValid": "Code valable",
+  "kioskQrExpired": "Code expiré",
+  "kioskQrRenew": "Nouveau code",
+  "kioskQrSemantics": "QR code du produit. Touchez pour simuler le scan.",
+  "kioskStepScan": "Scannez",
+  "kioskStepOpen": "Ouvrez la fiche",
+  "kioskStepOrder": "Commandez",
+  "kioskCancel": "Annuler",
+  "kioskSentTitle": "C’est envoyé !",
+  "kioskSentSubtitle": "Le lien du produit est sur votre téléphone.",
+  "kioskDate": "Date",
+  "kioskTime": "Heure",
+  "kioskPickup": "Retrait",
+  "kioskTrackingCode": "Code de suivi",
+  "kioskPrint": "Imprimer",
+  "kioskPrinting": "Impression du ticket…",
+  "kioskFinish": "Terminer",
+  "kioskBackHome": "Retour à l’accueil dans {seconds} s",
+  "@kioskBackHome": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  }
 }

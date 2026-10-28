@@ -25,6 +25,7 @@ import 'j_entreprises/screens.dart';
 import 'am_cercle/screens.dart';
 import 'ad_innovations/screens.dart';
 import 'y_missions/screens.dart';
+import 'aa_borne/screens.dart';
 import 'x_web_entreprise/screens.dart';
 import 'ai_kela/screens.dart';
 
@@ -56,6 +57,7 @@ final List<ScreenEntry> allScreens = [
   ...sectionAMScreens,
   ...sectionADScreens,
   ...sectionYScreens,
+  ...sectionAAScreens,
   ...sectionXScreens,
   ...sectionAIScreens,
 ];

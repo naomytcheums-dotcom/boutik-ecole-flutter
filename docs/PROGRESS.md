@@ -21,3 +21,5 @@
 | K · Événements, communautés, impact | 100–107, 237–239 (11) | fait |
 | L · Département | 108–116 (web), 214–215 (11) | fait |
 | M · Administration institutionnelle | 117–126 (10, web) | fait |
+| H · Talents et parcours | 70, 72, 73, 75, 76, 77 (6) | fait |
+

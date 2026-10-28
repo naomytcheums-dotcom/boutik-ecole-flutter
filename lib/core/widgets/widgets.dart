@@ -9,6 +9,7 @@ export 'kiosk_scaffold.dart';
 export 'ops_console_kit.dart';
 export 'ops_dashboard_kit.dart';
 export 'photo_tile.dart';
+export 'pill_form_fields.dart';
 export 'pill.dart';
 export 'primary_button.dart';
 export 'web_shell.dart';

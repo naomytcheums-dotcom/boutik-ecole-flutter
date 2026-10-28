@@ -1,0 +1,14 @@
+# Questions · Section AM (Cercle, parrainage, publication · 240–254)
+
+1. **Toutes les maquettes · photos absentes de la capture** : sur 242, 243, 244/244b, 245, 246, 247, 248, 249 et 253, les zones photo / avatar sont vides (images non exportées). Choix : remplir avec des photos déjà présentes dans le projet (Photos.*, avatars des autres sections) cohérentes avec le texte (lampe, kit solaire, bissap…). Sur 249, les vignettes vides sont remplacées par des illustrations métalliques `ChromeIcon` (style du design system).
+2. **242, 243, 246, 247, 248, 253 · logo absent** : le logo « BE » n'apparaît pas en haut à gauche de ces captures, alors qu'il est présent sur 240, 241, 250, 252, 253b. Choix : `ScreenHeader` standard (avec logo) partout, pour la cohérence ; 249 (bouton fermer) n'a pas de logo.
+3. **244 · logo de l'en-tête « Cercle »** : espace vide à gauche du titre (logo non exporté) ; le logo est affiché comme sur 251 et 254.
+4. **244b et 253b** : ce sont des états des écrans 244 (publication aimée : cœur rouge, 249) et 253 (récompense récupérée : série de 6 jours). Codés comme le même widget avec un paramètre (`liked`, `claimed`) ; l'action (cœur / « Récupérer ») fait passer de l'un à l'autre.
+5. **253b · défi « Publier 3 posts » à 3 / 3** : la maquette passe ce défi à 3 / 3 après la récupération de la récompense (sans lien logique évident). Reproduit tel quel.
+6. **240 · avion chromé** : extrait de la capture (assets/images/am_avion.png) avec fondu à gauche ; la pointe gauche de l'aile, cachée derrière le texte, est coupée.
+7. **Logos des réseaux** (WhatsApp, Facebook, Instagram, TikTok, YouTube, LinkedIn) : pas d'icône Lucide équivalente ; logos extraits des captures 240 et 250 (assets/images/am_logo_*.jpg, am_net_*.jpg).
+8. **Montants courts « + 500 F », « 750 F »** : affichés via `fcfaF()` (= `fcfa(v, withUnit: false)` + « F ») pour respecter le format de la maquette ; les montants principaux restent en « FCFA ».
+9. **Cibles de navigation déduites** : « Écrire » (247) et « Répondre » (254) → 53 Conversation ; « Panier » (248) → 06 ; « Poster » (242) et « Reprendre » (249) → 250 ; « Propulser » (250) → 253 ; commentaires / « Voir l'article » → 252 ; stories LIVE → 246, autres stories → 245.
+10. **252 · emoji 👏 et 253b « Récupérée ✓ »** : caractères conservés comme dans la maquette ; ils s'affichent en carré dans les rendus de référence (police de test sans emoji), correctement sur appareil.
+11. **Zones tactiles** : les pastilles d'action (≈ 26–30 px de haut dans la maquette) gardent leur taille visuelle mais leur zone tactile est portée à 44 px.
+12. **250 vs 250b** : 250 (nœud 154:16) est l'écran complet de composition (types de contenu, 5 réseaux) ; 250b (état mentions @) reste dans « Nouveaux écrans » et n'a pas été modifié. Classe nommée `NouvellePublicationAmScreen` pour éviter le conflit de nom.

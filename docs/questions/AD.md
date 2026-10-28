@@ -1,0 +1,12 @@
+# Questions — Section AD (Innovations, 216–229)
+
+1. **224, 226, 227 — maquettes web vides.** Les captures Figma des nœuds 87:532, 87:629 et 87:673 (1520×1820) sont entièrement blanches : aucun contenu de référence. Les écrans ont été conçus dans le style des consoles existantes (WebShell + OpsKpiRow/OpsTabs/OpsTable/OpsKvCard) : 224 « Validation des vœux » (responsable de département, menu L « Validations »), 226 « Modération des duels » (administration globale, menu N « Modération »), 227 « Régie des ateliers en direct » (département, menu L « Événements »). Titres, colonnes et indicateurs sont à valider avec la maquette réelle.
+2. **217, 229 — titre de bannière superposé.** Dans la maquette, le titre sur 2 lignes chevauche le sous-titre (« Vœu de Mouanga Yannick… », « 3e année · Licence… »). Le chevauchement n'a pas été reproduit : le sous-titre est placé sous le titre.
+3. **216, 217, 222, 223, 225 — photo « Lampe en bois recyclé ».** La maquette illustre la lampe par la photo de bétonnière (assets/images/builder.jpg), reprise telle quelle. Une vraie photo de lampe serait plus cohérente.
+4. **220 — avatars et prénoms.** Les avatars de la maquette ne correspondent pas aux prénoms (« Aminata » avec un portrait masculin, etc.) ; les portraits existants les plus proches ont été réutilisés.
+5. **221 — gagnante vs avatars.** Même remarque pour le classement du duel (Aminata Bello, Kouassi Tagne, Rose Etoga).
+6. **220 — vote unique.** Un seul vote par duel est permis (les deux boutons sont désactivés après le vote, le libellé devient « Vote enregistré »). À confirmer.
+7. **218 — étape affichée.** La frise montre l'étape « Prix » (2/4) avec les 5 champs visibles ; « Publier » valide tout le formulaire (règles dans lib/core/utils/validators_ad.dart : prix ≥ 1 000 FCFA, seuil ≥ 30, description ≥ 10 caractères). Seuils à confirmer.
+8. **219 — total en séquestre.** Calculé comme prix du gagnant + prime × nombre de participants (60 000 + 5 000 × 3 = 75 000 FCFA, comme la maquette) et recalculé quand on change le nombre d'étudiants ou le prix.
+9. **222, 225, 228 — cibles.** « Commander » ajoute au panier (toast), « Voir chez moi en réalité augmentée » et « Envoyer par WhatsApp » affichent un message (pas d'écran dédié). 229 « Contacter » → 53 (Conversation), « Proposer un stage » → 97 (Recrutement).
+10. **228 — QR code.** Image extraite de la maquette (assets/images/ad_qr_cv.png) ; « Régénérer le lien » change le lien affiché mais pas le dessin du QR (pas de générateur de QR dans les dépendances).

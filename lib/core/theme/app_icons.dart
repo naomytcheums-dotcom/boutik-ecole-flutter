@@ -7,6 +7,7 @@ abstract final class AppIcons {
   static const arrowDown = 'assets/icons/arrow-down.svg';
   static const arrowLeft = 'assets/icons/arrow-left.svg';
   static const arrowRight = 'assets/icons/arrow-right.svg';
+  static const arrowUp = 'assets/icons/arrow-up.svg';
   static const arrowUpRight = 'assets/icons/arrow-up-right.svg';
   static const atSign = 'assets/icons/at-sign.svg';
   static const award = 'assets/icons/award.svg';
@@ -58,6 +59,7 @@ abstract final class AppIcons {
   static const fileText = 'assets/icons/file-text.svg';
   static const fingerprint = 'assets/icons/fingerprint.svg';
   static const flag = 'assets/icons/flag.svg';
+  static const flame = 'assets/icons/flame.svg';
   static const funnel = 'assets/icons/funnel.svg';
   static const gauge = 'assets/icons/gauge.svg';
   static const gift = 'assets/icons/gift.svg';
@@ -103,6 +105,7 @@ abstract final class AppIcons {
   static const minus = 'assets/icons/minus.svg';
   static const monitor = 'assets/icons/monitor.svg';
   static const moon = 'assets/icons/moon.svg';
+  static const music = 'assets/icons/music.svg';
   static const navigation = 'assets/icons/navigation.svg';
   static const package = 'assets/icons/package.svg';
   static const package2 = 'assets/icons/package-2.svg';
@@ -118,9 +121,11 @@ abstract final class AppIcons {
   static const plus = 'assets/icons/plus.svg';
   static const printer = 'assets/icons/printer.svg';
   static const qrCode = 'assets/icons/qr-code.svg';
+  static const radio = 'assets/icons/radio.svg';
   static const receipt = 'assets/icons/receipt.svg';
   static const refreshCw = 'assets/icons/refresh-cw.svg';
   static const rocket = 'assets/icons/rocket.svg';
+  static const rotateCw = 'assets/icons/rotate-cw.svg';
   static const scale = 'assets/icons/scale.svg';
   static const scanLine = 'assets/icons/scan-line.svg';
   static const school = 'assets/icons/school.svg';
@@ -136,6 +141,8 @@ abstract final class AppIcons {
   static const shoppingCart = 'assets/icons/shopping-cart.svg';
   static const slidersHorizontal = 'assets/icons/sliders-horizontal.svg';
   static const smartphone = 'assets/icons/smartphone.svg';
+  static const sparkle = 'assets/icons/sparkle.svg';
+  static const sparkleFilled = 'assets/icons/sparkle-filled.svg';
   static const sparkles = 'assets/icons/sparkles.svg';
   static const sprout = 'assets/icons/sprout.svg';
   static const square = 'assets/icons/square.svg';

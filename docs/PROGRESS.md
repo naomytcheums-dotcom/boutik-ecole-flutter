@@ -31,3 +31,5 @@
 | J · Entreprises et B2B | 88–91, 93, 93b, 94, 95, 95b, 96–99 (13) | fait |
 | U · Confiance, sécurité, partage | 170–174, 211, 212, 213 (8 ; 213 web) | fait |
 | V · Onboarding, guide, rôles | 175–181 (7 ; 180, 181 web) | fait |
+| AD · Innovations | 216–229 (14 ; 224, 226, 227 web, captures Figma vides) | fait |
+| AM · Cercle, parrainage, publication | 240–254, 244b, 253b (17 ; 250b dans Nouveaux) | fait |

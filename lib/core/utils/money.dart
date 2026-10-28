@@ -14,13 +14,15 @@ String fcfa(num amount, {bool withUnit = true}) {
   return withUnit ? '$value${nbsp}FCFA' : value;
 }
 
+/// Montant FCFA selon la langue : français `25 000 FCFA`, anglais `25,000 FCFA` (écran 185).
+String fcfaLocalized(num amount, String languageCode) {
+  if (languageCode != 'en') return fcfa(amount);
+  return '${fcfa(amount, withUnit: false).replaceAll(nbsp, ',')}${nbsp}FCFA';
+}
+
 /// Ventilation d'un paiement : 70 % vendeur, 20 % institution, 10 % plateforme.
 ({int seller, int institution, int platform}) splitPayment(int amount) {
   final seller = (amount * 70) ~/ 100;
   final institution = (amount * 20) ~/ 100;
-  return (
-    seller: seller,
-    institution: institution,
-    platform: amount - seller - institution,
-  );
+  return (seller: seller, institution: institution, platform: amount - seller - institution);
 }

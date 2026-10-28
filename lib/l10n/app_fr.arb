@@ -6,5 +6,23 @@
   "languageTitle": "Langue",
   "languageSubtitle": "Choisissez la langue de l’application",
   "continueLabel": "Continuer",
-  "back": "Retour"
+  "back": "Retour",
+  "languageFrench": "Français",
+  "languageDefault": "Langue par défaut",
+  "languageEnglish": "English",
+  "languageEnglishRegion": "Anglais (Cameroun)",
+  "languageActive": "Active",
+  "languagePreview": "Aperçu",
+  "previewLampTitle": "Lampe en bois recyclé",
+  "previewLampDetail": "{price} · Génie civil",
+  "@previewLampDetail": {
+    "placeholders": {
+      "price": {"type": "String"}
+    }
+  },
+  "previewInStock": "En stock",
+  "previewChallengeTitle": "Orange Digital Challenge",
+  "previewChallengeDetail": "Inscriptions ouvertes · Douala",
+  "previewOpen": "Ouvert",
+  "languageHint": "Changez de langue à tout moment dans les paramètres. Des textes courts et clairs, en français comme en anglais."
 }

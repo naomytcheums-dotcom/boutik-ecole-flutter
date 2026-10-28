@@ -60,14 +60,14 @@ class LangueAffichageScreen extends ConsumerWidget {
             ToggleRow(
               title: 'Réduire les animations',
               subtitle: 'Limiter les mouvements',
-              value: s.lightMode,
-              onChanged: n.setLightMode,
+              value: s.reduceMotion,
+              onChanged: n.setReduceMotion,
             ),
             ToggleRow(
               title: 'Lecture vocale',
               subtitle: 'Compatible lecteur d’écran',
-              value: s.boldText,
-              onChanged: n.setBoldText,
+              value: s.screenReader,
+              onChanged: n.setScreenReader,
             ),
           ],
         ),

@@ -11,6 +11,7 @@ import 's_opportunites/screens.dart';
 import 't_concours/screens.dart';
 import 'u_confiance/screens.dart';
 import 'v_onboarding/screens.dart';
+import 'w_connexion/screens.dart';
 import 'e_commandes/screens.dart';
 import 'f_communication/screens.dart';
 import 'g_espace_etudiant/screens.dart';
@@ -39,6 +40,7 @@ final List<ScreenEntry> allScreens = [
   ...sectionTScreens,
   ...sectionUScreens,
   ...sectionVScreens,
+  ...sectionWScreens,
   ...sectionEScreens,
   ...sectionFScreens,
   ...sectionGScreens,

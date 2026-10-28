@@ -139,6 +139,84 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Retour'**
   String get back;
+
+  /// No description provided for @languageFrench.
+  ///
+  /// In fr, this message translates to:
+  /// **'Français'**
+  String get languageFrench;
+
+  /// No description provided for @languageDefault.
+  ///
+  /// In fr, this message translates to:
+  /// **'Langue par défaut'**
+  String get languageDefault;
+
+  /// No description provided for @languageEnglish.
+  ///
+  /// In fr, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// No description provided for @languageEnglishRegion.
+  ///
+  /// In fr, this message translates to:
+  /// **'Anglais (Cameroun)'**
+  String get languageEnglishRegion;
+
+  /// No description provided for @languageActive.
+  ///
+  /// In fr, this message translates to:
+  /// **'Active'**
+  String get languageActive;
+
+  /// No description provided for @languagePreview.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aperçu'**
+  String get languagePreview;
+
+  /// No description provided for @previewLampTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Lampe en bois recyclé'**
+  String get previewLampTitle;
+
+  /// No description provided for @previewLampDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'{price} · Génie civil'**
+  String previewLampDetail(String price);
+
+  /// No description provided for @previewInStock.
+  ///
+  /// In fr, this message translates to:
+  /// **'En stock'**
+  String get previewInStock;
+
+  /// No description provided for @previewChallengeTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Orange Digital Challenge'**
+  String get previewChallengeTitle;
+
+  /// No description provided for @previewChallengeDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Inscriptions ouvertes · Douala'**
+  String get previewChallengeDetail;
+
+  /// No description provided for @previewOpen.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ouvert'**
+  String get previewOpen;
+
+  /// No description provided for @languageHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changez de langue à tout moment dans les paramètres. Des textes courts et clairs, en français comme en anglais.'**
+  String get languageHint;
 }
 
 class _AppLocalizationsDelegate

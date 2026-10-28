@@ -30,4 +30,46 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get back => 'Retour';
+
+  @override
+  String get languageFrench => 'Français';
+
+  @override
+  String get languageDefault => 'Langue par défaut';
+
+  @override
+  String get languageEnglish => 'English';
+
+  @override
+  String get languageEnglishRegion => 'Anglais (Cameroun)';
+
+  @override
+  String get languageActive => 'Active';
+
+  @override
+  String get languagePreview => 'Aperçu';
+
+  @override
+  String get previewLampTitle => 'Lampe en bois recyclé';
+
+  @override
+  String previewLampDetail(String price) {
+    return '$price · Génie civil';
+  }
+
+  @override
+  String get previewInStock => 'En stock';
+
+  @override
+  String get previewChallengeTitle => 'Orange Digital Challenge';
+
+  @override
+  String get previewChallengeDetail => 'Inscriptions ouvertes · Douala';
+
+  @override
+  String get previewOpen => 'Ouvert';
+
+  @override
+  String get languageHint =>
+      'Changez de langue à tout moment dans les paramètres. Des textes courts et clairs, en français comme en anglais.';
 }

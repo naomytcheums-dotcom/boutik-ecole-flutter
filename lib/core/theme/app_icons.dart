@@ -37,6 +37,7 @@ abstract final class AppIcons {
   static const circlePlus = 'assets/icons/circle-plus.svg';
   static const circleX = 'assets/icons/circle-x.svg';
   static const clock = 'assets/icons/clock.svg';
+  static const cloud = 'assets/icons/cloud.svg';
   static const cloudOff = 'assets/icons/cloud-off.svg';
   static const code = 'assets/icons/code.svg';
   static const coffee = 'assets/icons/coffee.svg';

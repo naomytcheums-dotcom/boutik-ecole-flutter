@@ -6,5 +6,18 @@
   "languageTitle": "Language",
   "languageSubtitle": "Choose the app language",
   "continueLabel": "Continue",
-  "back": "Back"
+  "back": "Back",
+  "languageFrench": "Français",
+  "languageDefault": "Default language",
+  "languageEnglish": "English",
+  "languageEnglishRegion": "English (Cameroon)",
+  "languageActive": "Active",
+  "languagePreview": "Preview",
+  "previewLampTitle": "Recycled wooden lamp",
+  "previewLampDetail": "{price} · Civil Engineering",
+  "previewInStock": "In stock",
+  "previewChallengeTitle": "Orange Digital Challenge",
+  "previewChallengeDetail": "Registration open · Douala",
+  "previewOpen": "Open",
+  "languageHint": "Switch language anytime in Settings. Short, clear texts in both French and English."
 }

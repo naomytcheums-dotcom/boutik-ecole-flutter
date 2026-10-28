@@ -48,6 +48,8 @@ class _BoutikEcoleAppState extends ConsumerState<BoutikEcoleApp> {
           data: mq.copyWith(
             textScaler: TextScaler.linear(mq.textScaler.scale(1) * settings.textScale),
             boldText: mq.boldText || settings.boldText,
+            highContrast: mq.highContrast || settings.highContrast,
+            disableAnimations: mq.disableAnimations || settings.reduceMotion,
           ),
           child: child!,
         );

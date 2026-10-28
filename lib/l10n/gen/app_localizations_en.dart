@@ -30,4 +30,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get back => 'Back';
+
+  @override
+  String get languageFrench => 'Français';
+
+  @override
+  String get languageDefault => 'Default language';
+
+  @override
+  String get languageEnglish => 'English';
+
+  @override
+  String get languageEnglishRegion => 'English (Cameroon)';
+
+  @override
+  String get languageActive => 'Active';
+
+  @override
+  String get languagePreview => 'Preview';
+
+  @override
+  String get previewLampTitle => 'Recycled wooden lamp';
+
+  @override
+  String previewLampDetail(String price) {
+    return '$price · Civil Engineering';
+  }
+
+  @override
+  String get previewInStock => 'In stock';
+
+  @override
+  String get previewChallengeTitle => 'Orange Digital Challenge';
+
+  @override
+  String get previewChallengeDetail => 'Registration open · Douala';
+
+  @override
+  String get previewOpen => 'Open';
+
+  @override
+  String get languageHint =>
+      'Switch language anytime in Settings. Short, clear texts in both French and English.';
 }

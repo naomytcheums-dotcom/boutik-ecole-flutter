@@ -18,3 +18,4 @@
 | D · Fiches produits, services, prestataires | 32–40 (8) | fait |
 
 | I · Projets, innovations, financement | 78–87 (11) | fait |
+| K · Événements, communautés, impact | 100–107, 237–239 (11) | fait |

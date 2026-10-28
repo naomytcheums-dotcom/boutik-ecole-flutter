@@ -6,6 +6,8 @@ export 'form_fields.dart';
 export 'form_inputs.dart';
 export 'glass_nav_bar.dart';
 export 'kiosk_scaffold.dart';
+export 'ops_console_kit.dart';
+export 'ops_dashboard_kit.dart';
 export 'photo_tile.dart';
 export 'pill.dart';
 export 'primary_button.dart';

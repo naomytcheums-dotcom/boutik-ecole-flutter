@@ -72,6 +72,7 @@ abstract final class AppIcons {
   static const history = 'assets/icons/history.svg';
   static const house = 'assets/icons/house.svg';
   static const image = 'assets/icons/image.svg';
+  static const inbox = 'assets/icons/inbox.svg';
   static const info = 'assets/icons/info.svg';
   static const keyRound = 'assets/icons/key-round.svg';
   static const keyboard = 'assets/icons/keyboard.svg';
@@ -104,6 +105,7 @@ abstract final class AppIcons {
   static const paperclip = 'assets/icons/paperclip.svg';
   static const pause = 'assets/icons/pause.svg';
   static const pencil = 'assets/icons/pencil.svg';
+  static const percent = 'assets/icons/percent.svg';
   static const phone = 'assets/icons/phone.svg';
   static const piggyBank = 'assets/icons/piggy-bank.svg';
   static const pin = 'assets/icons/pin.svg';

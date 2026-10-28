@@ -28,3 +28,4 @@
 | Q · Paramètres et états système | 148-1/2, 149, 150-1/2/3/4 (7) | fait |
 | S · Opportunités et alertes IA | 151–159 (9) | fait |
 | T · Hackathons et concours | 160–169 (10 ; 168, 169 web) | fait |
+| J · Entreprises et B2B | 88–91, 93, 93b, 94, 95, 95b, 96–99 (13) | fait |

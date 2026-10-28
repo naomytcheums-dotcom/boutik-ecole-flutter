@@ -18,6 +18,7 @@ import 'k_evenements/screens.dart';
 import 'l_departement/screens.dart';
 import 'm_admin_institution/screens.dart';
 import 'd_fiches/screens.dart';
+import 'j_entreprises/screens.dart';
 
 /// Registre de tous les écrans codés, dans l'ordre du manifeste.
 final List<ScreenEntry> allScreens = [
@@ -40,4 +41,5 @@ final List<ScreenEntry> allScreens = [
   ...sectionLScreens,
   ...sectionMScreens,
   ...sectionDScreens,
+  ...sectionJScreens,
 ];

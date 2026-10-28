@@ -1,0 +1,10 @@
+{
+  "@@locale": "en",
+  "appTitle": "Boutik-École",
+  "demoData": "Demo data",
+  "demoDataHint": "Figures shown are fictitious and for demonstration only.",
+  "languageTitle": "Language",
+  "languageSubtitle": "Choose the app language",
+  "continueLabel": "Continue",
+  "back": "Back"
+}

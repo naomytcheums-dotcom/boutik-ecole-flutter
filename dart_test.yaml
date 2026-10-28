@@ -1,0 +1,3 @@
+tags:
+  golden:
+    description: Rendus de référence comparés pixel à pixel (régénérer avec --update-goldens).

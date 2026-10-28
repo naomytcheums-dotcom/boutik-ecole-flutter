@@ -1,0 +1,10 @@
+{
+  "@@locale": "fr",
+  "appTitle": "Boutik-École",
+  "demoData": "Données de démonstration",
+  "demoDataHint": "Les chiffres affichés sont fictifs et servent à la démonstration.",
+  "languageTitle": "Langue",
+  "languageSubtitle": "Choisissez la langue de l’application",
+  "continueLabel": "Continuer",
+  "back": "Retour"
+}

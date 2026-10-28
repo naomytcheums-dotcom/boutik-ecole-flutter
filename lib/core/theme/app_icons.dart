@@ -126,6 +126,7 @@ abstract final class AppIcons {
   static const send = 'assets/icons/send.svg';
   static const server = 'assets/icons/server.svg';
   static const settings = 'assets/icons/settings.svg';
+  static const share = 'assets/icons/share.svg';
   static const share2 = 'assets/icons/share-2.svg';
   static const shieldCheck = 'assets/icons/shield-check.svg';
   static const shirt = 'assets/icons/shirt.svg';

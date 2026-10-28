@@ -1,0 +1,7 @@
+# Questions · Section D (Fiches produits, services, prestataires)
+
+1. **Écran 33** — La capture montre un bandeau gris dégradé sans photo et un grand espace vide (≈ 100 px) au-dessus de « Mouanga Yannick », visiblement des images non exportées. Choix : bandeau reproduit tel quel (dégradé gris), avatar du créateur (84 px, `Photos.avatarCreator`) placé dans l’espace vide. À confirmer : photo prévue pour le bandeau ?
+2. **Écrans 34 et 36** — Les photos de la carte vidéo (34) et du bandeau service (36) portent le texte de la maquette incrusté. Choix : images extraites des captures, zone du texte effacée par filtrage (`d_galerie_video.jpg`, `d_service_remise.jpg`), texte redessiné en Flutter. Fournir les photos originales si disponibles.
+3. **Écran 39** — La question pré-remplie est en gris (aspect d’indication) et le téléphone « +237 6 XX XX XX XX » en noir. Choix : la question est un vrai texte modifiable pré-rempli selon le sujet choisi (gris comme la maquette) ; le téléphone est une indication affichée en noir comme la maquette, validée seulement si renseignée. Le 4ᵉ sujet coupé à droite a été nommé « Livraison » (hypothèse).
+4. **Écran 32** — Les icônes Partager et Favori sont espacées de 38 px sur la maquette ; elles sont rendues à 44 px de cible tactile (Partager décalé de 6 px vers la gauche).
+5. **Écrans 32 / 38** — Nom du créateur inversé selon l’écran (« Mouanga Yannick » en 32/33, « Yannick Mouanga » en 38) : reproduit tel quel.

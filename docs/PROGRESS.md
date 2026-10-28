@@ -15,3 +15,5 @@
 | G · Espace étudiant et vendeur | 57–69 (12) | fait |
 
 | C · Découverte et achats | 21–31 (15) | fait |
+| D · Fiches produits, services, prestataires | 32–40 (8) | fait |
+

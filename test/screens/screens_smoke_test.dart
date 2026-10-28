@@ -4,7 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../helpers/render.dart';
 
-/// Textes clés attendus par écran (titre de la maquette + un contenu caractéristique).
+/// Textes clés des sections Nouveaux, A et B. Les autres sections déclarent les leurs
+/// dans test/screens/<section>_test.dart (via expectScreenTexts).
 const keyTexts = <String, List<String>>{
   '255': ['Suivi de publication', 'Contrôles réglementaires'],
   '256': ['Contrôles automatiques', '12 / 12 réussis'],
@@ -68,11 +69,6 @@ const keyTexts = <String, List<String>>{
 
 void main() {
   setUpAll(loadAppFonts);
-
-  test('chaque écran enregistré a ses textes clés déclarés', () {
-    final missing = screensById.keys.where((id) => !keyTexts.containsKey(id)).toList();
-    expect(missing, isEmpty, reason: 'Ajouter les textes clés de : $missing');
-  });
 
   for (final s in screensById.values) {
     testWidgets('${s.id} · ${s.title} s’affiche sans erreur', (tester) async {

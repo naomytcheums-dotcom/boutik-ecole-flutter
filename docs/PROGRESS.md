@@ -8,3 +8,5 @@
 | B · Authentification | 11–20 (12) | fait |
 | N · Administration globale | 127–138 (12, web) | fait |
 
+| E · Commandes, livraison, assistance | 41–49 (9) | fait |
+

@@ -101,6 +101,7 @@ abstract final class AppIcons {
   static const moon = 'assets/icons/moon.svg';
   static const navigation = 'assets/icons/navigation.svg';
   static const package = 'assets/icons/package.svg';
+  static const package2 = 'assets/icons/package-2.svg';
   static const palette = 'assets/icons/palette.svg';
   static const paperclip = 'assets/icons/paperclip.svg';
   static const pause = 'assets/icons/pause.svg';

@@ -50,6 +50,7 @@ abstract final class AppIcons {
   static const download = 'assets/icons/download.svg';
   static const ellipsis = 'assets/icons/ellipsis.svg';
   static const ellipsisVertical = 'assets/icons/ellipsis-vertical.svg';
+  static const equal = 'assets/icons/equal.svg';
   static const externalLink = 'assets/icons/external-link.svg';
   static const eye = 'assets/icons/eye.svg';
   static const eyeOff = 'assets/icons/eye-off.svg';

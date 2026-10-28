@@ -33,6 +33,7 @@
 | V · Onboarding, guide, rôles | 175–181 (7 ; 180, 181 web) | fait |
 | W · Faible connexion, langues, accessibilité | 182–186 (5 ; 185 en anglais via arb) | fait |
 | X · Web entreprise | 187–190 (4 web) | fait |
+| AI · Kéla et WhatsApp | 230–236 (7) | fait |
 | AD · Innovations | 216–229 (14 ; 224, 226, 227 web, captures Figma vides) | fait |
 | AM · Cercle, parrainage, publication | 240–254, 244b, 253b (17 ; 250b dans Nouveaux) | fait |
 | Y · Missions sur mesure | 191–205 (15 ; 198, 199, 200 web) | fait |

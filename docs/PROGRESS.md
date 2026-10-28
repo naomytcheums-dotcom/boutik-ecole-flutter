@@ -27,3 +27,4 @@
 | P · Kiosques, support, exploitation | 145, 146-1, 146-2, 147-1/2/3 (6) | fait |
 | Q · Paramètres et états système | 148-1/2, 149, 150-1/2/3/4 (7) | fait |
 | S · Opportunités et alertes IA | 151–159 (9) | fait |
+| T · Hackathons et concours | 160–169 (10 ; 168, 169 web) | fait |

@@ -42,8 +42,16 @@ class CHeader extends StatelessWidget {
 
 /// Page mobile de la section C avec menu bas.
 class CPage extends StatelessWidget {
-  const CPage({super.key, required this.title, required this.children, this.trailing, this.tab = NavTab.search});
+  const CPage({
+    super.key,
+    required this.title,
+    required this.children,
+    this.trailing,
+    this.tab = NavTab.search,
+    this.showNav = true,
+  });
 
+  final bool showNav;
   final String title;
   final List<Widget> children;
   final Widget? trailing;
@@ -52,6 +60,7 @@ class CPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => AppScaffold(
     tab: tab,
+    showNav: showNav,
     padding: const EdgeInsets.symmetric(horizontal: 24),
     header: CHeader(title, trailing: trailing),
     children: children,

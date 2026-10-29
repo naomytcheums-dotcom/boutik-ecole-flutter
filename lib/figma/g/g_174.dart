@@ -1,0 +1,80 @@
+// GÉNÉRÉ par tool/figma_export/convert.py — écran 174 (nœud Figma 61:221). Ne pas éditer à la main.
+// ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
+import 'package:flutter/material.dart';
+import '../gen.dart';
+import '../nav.dart';
+
+class G_174 extends StatelessWidget {
+  const G_174({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
+      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
+      gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
+      gP(286, 24, 9, 14, gImg('assets/figma/v/c57de3594f8754.svg')),
+      gP(291, 21, 9, 17, gImg('assets/figma/v/a1b9d0cbd609c8.svg')),
+      gP(296, 18, 9, 20, gImg('assets/figma/v/5b8887c3459f31.svg')),
+      gP(307, 19.941, 20, 12.259, gImg('assets/figma/v/560b90a7edf47b.svg')),
+      gP(312.4, 27.8, 9.2, 9.2, gImg('assets/figma/v/415c542d2adf04.svg')),
+      gP(331.5, 19.5, 28, 17, gImg('assets/figma/v/6a818f3296df50.svg')),
+      gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
+      gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
+      gP(31, 71, 22, 22, const SizedBox.expand(), tap: () => gBack(context)),
+      gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
+      gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
+      gP(76, 70, 208, 26, gText('Centre de confiance', 21, Color(0xFF111015), weight: 700)),
+      gP(24, 120, 342, 168, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xFF0F2E4E), Color(0xFF1E4A80)], stops: [0, 1]), radii: [24, 24, 24, 24])),
+      gP(42, 138, 32, 32, gBox(color: Color(0xFF111015), oval: true)),
+      gP(48.625, 143.5, 18.75, 18.375, gImg('assets/figma/v/d177b28382093d.svg')),
+      gP(58, 153.25, 10.5, 10.5, gImg('assets/figma/v/6fd6a3c35cbbc1.svg')),
+      gP(84, 137, 269, 18, gText('Achetez en confiance', 14, Color(0xFFFFFFFF), weight: 700, wrap: true)),
+      gP(84, 160, 269, 32, gText('Conseils pour éviter les arnaques et protéger votre compte.', 11.5, Color(0xFFE9E4F5), lh: 16, wrap: true)),
+      gP(46.667, 205.75, 14.667, 11.958, gImg('assets/figma/v/ac006383c9ee5c.svg')),
+      gP(70, 204, 283, 15, gText('Payez uniquement dans l’application', 12, Color(0xFFFFFFFF), weight: 500, wrap: true)),
+      gP(46.667, 229.75, 14.667, 11.958, gImg('assets/figma/v/ac006383c9ee5c.svg')),
+      gP(70, 228, 283, 15, gText('Vérifiez le badge du vendeur', 12, Color(0xFFFFFFFF), weight: 500, wrap: true)),
+      gP(46.667, 253.75, 14.667, 11.958, gImg('assets/figma/v/ac006383c9ee5c.svg')),
+      gP(70, 252, 283, 15, gText('Signalez toute demande suspecte', 12, Color(0xFFFFFFFF), weight: 500, wrap: true)),
+      gP(24, 302, 52, 19, gText('Guides', 15, Color(0xFF111015), weight: 700)),
+      gP(24, 340, 342, 208, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
+      gP(36, 346, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
+      gP(45.5, 355.5, 21.833, 16.833, gImg('assets/figma/v/92f350858b638e.svg')),
+      gP(45.5, 357.167, 21, 19.333, gImg('assets/figma/v/f6a87a84fa91d7.svg')),
+      gP(88, 357, 229, 17, gText('Payer en sécurité par Mobile Money', 13.5, Color(0xFF111015), weight: 600)),
+      gP(336.75, 358.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
+      gP(88, 392, 266, 1, gBox(color: Color(0xFFF2EFF6))),
+      gP(36, 398, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
+      gP(46.333, 406.666, 19.333, 22.669, gImg('assets/figma/v/863e78037260f9.svg')),
+      gP(50.5, 413.333, 11, 9.333, gImg('assets/figma/v/5fb65d78d14660.svg')),
+      gP(88, 409, 228, 17, gText('Reconnaître une annonce suspecte', 13.5, Color(0xFF111015), weight: 600)),
+      gP(336.75, 410.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
+      gP(88, 444, 266, 1, gBox(color: Color(0xFFF2EFF6))),
+      gP(36, 450, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
+      gP(45.5, 466.167, 21, 15.167, gImg('assets/figma/v/41aebd6adfdd32.svg')),
+      gP(48.833, 458.667, 14.333, 13.5, gImg('assets/figma/v/b1facbf26d69c1.svg')),
+      gP(88, 461, 144, 17, gText('Protéger mon compte', 13.5, Color(0xFF111015), weight: 600)),
+      gP(336.75, 462.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
+      gP(88, 496, 266, 1, gBox(color: Color(0xFFF2EFF6))),
+      gP(36, 502, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
+      gP(46.333, 510.667, 19.333, 17.667, gImg('assets/figma/v/4fff6fcca17a93.svg')),
+      gP(46.333, 521.5, 6, 11.833, gImg('assets/figma/v/649a66ab9172b3.svg')),
+      gP(88, 513, 138, 17, gText('Signaler un problème', 13.5, Color(0xFF111015), weight: 600)),
+      gP(336.75, 514.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
+      gP(125, 832, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
+      gP(47.125, 777.125, 20, 20, gImg('assets/figma/v/96285515fb0e14.svg')),
+      gP(59.113, 789.113, 9.762, 9.762, gImg('assets/figma/v/524f40fa464a05.svg')),
+      gP(112.25, 777.118, 22.632, 22.632, gImg('assets/figma/v/5610544a74c77c.svg')),
+      gP(260.375, 776.25, 11.25, 16.5, gImg('assets/figma/v/3adad339ddf7e4.svg')),
+      gP(256.875, 783.25, 18.25, 13, gImg('assets/figma/v/9c6e9349b8c3b4.svg')),
+      gP(263, 790.25, 6, 9.5, gImg('assets/figma/v/c403dd00a5d407.svg')),
+      gP(324.625, 777.125, 14.75, 14.75, gImg('assets/figma/v/c6a28fb600186c.svg')),
+      gP(322, 785.875, 20, 13, gImg('assets/figma/v/de7faa24b27dad.svg')),
+      gP(169, 762, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true)),
+      gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
+    ]);
+  }
+}

@@ -32,6 +32,11 @@ flutter:
   assets:
     - assets/icons/
     - assets/images/
+    - assets/figma/common/
+    - assets/figma/img/
+    - assets/figma/v/
+    - assets/figma/r/
+    - assets/figma/s257/
   fonts:
     - family: PlusJakartaSans
       fonts:

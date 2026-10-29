@@ -1,4 +1,5 @@
 import '../core/router/screen_entry.dart';
+import '../figma/registry.dart';
 import 'a_demarrage/screens.dart';
 import 'b_auth/screens.dart';
 import 'c_decouverte/screens.dart';
@@ -31,7 +32,7 @@ import 'ai_kela/screens.dart';
 import 'ref_echantillons/screens.dart';
 
 /// Registre de tous les écrans codés, dans l'ordre du manifeste.
-final List<ScreenEntry> allScreens = [
+final List<ScreenEntry> _baseScreens = [
   ...nouveauxScreens,
   ...sectionAScreens,
   ...sectionBScreens,
@@ -63,3 +64,18 @@ final List<ScreenEntry> allScreens = [
   ...sectionAIScreens,
   ...sectionREFScreens,
 ];
+
+/// Les écrans générés fidèlement depuis Figma (lib/figma/g) remplacent la version écrite à la main.
+final List<ScreenEntry> allScreens = [
+  for (final e in _baseScreens)
+    gBuilders.containsKey(e.id)
+        ? ScreenEntry(e.id, e.title, gBuilders[e.id]!, section: e.section, node: e.node, format: _formatOf(gWidths[e.id], e.format))
+        : e,
+];
+
+ScreenFormat _formatOf(double? w, ScreenFormat fallback) {
+  if (w == null) return fallback;
+  if (w == 720) return ScreenFormat.kiosk;
+  if (w == 768) return ScreenFormat.tablet;
+  return w >= 1000 ? ScreenFormat.web : ScreenFormat.mobile;
+}

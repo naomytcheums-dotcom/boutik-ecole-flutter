@@ -1,0 +1,55 @@
+// GÉNÉRÉ par tool/figma_export/convert.py — écran 159 (nœud Figma 60:707). Ne pas éditer à la main.
+// ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
+import 'package:flutter/material.dart';
+import '../gen.dart';
+import '../nav.dart';
+
+class G_159 extends StatelessWidget {
+  const G_159({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF5F0E8), Color(0xFFEFE9F4), Color(0xFFF7E9DB)], stops: [0, 0.55, 1]), children: [
+      gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
+      gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
+      gP(286, 24, 9, 14, gImg('assets/figma/v/c57de3594f8754.svg')),
+      gP(291, 21, 9, 17, gImg('assets/figma/v/a1b9d0cbd609c8.svg')),
+      gP(296, 18, 9, 20, gImg('assets/figma/v/5b8887c3459f31.svg')),
+      gP(307, 19.941, 20, 12.259, gImg('assets/figma/v/560b90a7edf47b.svg')),
+      gP(312.4, 27.8, 9.2, 9.2, gImg('assets/figma/v/415c542d2adf04.svg')),
+      gP(331.5, 19.5, 28, 17, gImg('assets/figma/v/6a818f3296df50.svg')),
+      gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
+      gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
+      gP(24, 70, 220, 26, gText('Candidature envoyée', 21, Color(0xFF111015), weight: 700)),
+      gP(22.5, 270, 345, 24, gText('Merci pour votre candidature !', 19, Color(0xFF111015), weight: 800, align: TextAlign.center, wrap: true)),
+      gP(42.5, 302, 305, 38, gText('Camlight a bien reçu votre dossier. Vous serez notifié à chaque étape.', 13, Color(0xFF66636E), lh: 19, align: TextAlign.center, wrap: true)),
+      gP(24, 374, 342, 188, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
+      gP(40, 388, 88, 18, gText('Récapitulatif', 14, Color(0xFF111015), weight: 700)),
+      gP(40, 422, 33, 16, gText('Offre', 12.5, Color(0xFF66636E))),
+      gP(205, 422, 145, 16, gText('Technicien électronique', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
+      gP(40, 447, 310, 1, gBox(color: Color(0xFFF2EFF6))),
+      gP(40, 456, 62, 16, gText('Entreprise', 12.5, Color(0xFF66636E))),
+      gP(244, 456, 106, 16, gText('Camlight · Douala', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
+      gP(40, 481, 310, 1, gBox(color: Color(0xFFF2EFF6))),
+      gP(40, 490, 64, 16, gText('Envoyée le', 12.5, Color(0xFF66636E))),
+      gP(274, 490, 76, 16, gText('22 oct. 2026', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
+      gP(40, 515, 310, 1, gBox(color: Color(0xFFF2EFF6))),
+      gP(40, 524, 82, 16, gText('Compatibilité', 12.5, Color(0xFF66636E))),
+      gP(318, 524, 32, 16, gText('88 %', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),
+      gP(24, 576, 342, 96, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xFF0F2E4E), Color(0xFF1E4A80)], stops: [0, 1]), radii: [24, 24, 24, 24])),
+      gP(42, 594, 32, 32, gBox(color: Color(0xFF111015), oval: true)),
+      gP(48.625, 599.5, 18.75, 18.375, gImg('assets/figma/v/d177b28382093d.svg')),
+      gP(58, 609.25, 10.5, 10.5, gImg('assets/figma/v/6fd6a3c35cbbc1.svg')),
+      gP(84, 593, 269, 18, gText('Conseil de l’IA', 14, Color(0xFFFFFFFF), weight: 700, wrap: true)),
+      gP(84, 616, 269, 32, gText('Complétez votre certificat de scolarité pour renforcer votre dossier.', 11.5, Color(0xFFE9E4F5), lh: 16, wrap: true)),
+      gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
+      gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27])),
+      gP(43, 778, 125, 18, gText('Mes candidatures', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
+      gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27])),
+      gP(239, 778, 91, 18, gText('Autres offres', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
+      gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      gP(159.433, 154.433, 84.333, 84.333, gImg('assets/figma/r/173_23.png')),
+      gP(181.733, 183.058, 39.733, 31.3, gImg('assets/figma/v/b4c3db822589b8.svg')),
+    ]);
+  }
+}

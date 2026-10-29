@@ -1,0 +1,82 @@
+// GÉNÉRÉ par tool/figma_export/convert.py — écran 220 (nœud Figma 87:299). Ne pas éditer à la main.
+// ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
+import 'package:flutter/material.dart';
+import '../gen.dart';
+import '../nav.dart';
+
+class G_220 extends StatelessWidget {
+  const G_220({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
+      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(30, 14, 28, 18, gText('9:41', 14, Color(0xFF111015), weight: 600)),
+      gP(140, 10, 110, 30, gBox(color: Color(0xFF000000), radii: [15, 15, 15, 15])),
+      gP(30, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
+      gP(42.65, 82.65, 18.7, 18.7, const SizedBox.expand(), tap: () => gBack(context)),
+      gP(43.546, 83.546, 11.454, 16.908, gImg('assets/figma/v/eadfa38ab5fb32.svg')),
+      gP(43.546, 89, 16.908, 6, gImg('assets/figma/v/876f9e4ca5bd5d.svg')),
+      gP(134.5, 82, 121, 21, gText('Duel de talents', 17, Color(0xFF111015), weight: 500)),
+      gP(316, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
+      gP(129, 130, 132, 28, gBox(color: Color(0xFF111015), radii: [100, 100, 100, 100])),
+      gP(141.167, 135.167, 17.667, 17.667, gImg('assets/figma/v/c9b3be772989ea.svg')),
+      gP(147, 137.5, 8.333, 10.667, gImg('assets/figma/v/909cb140c6f329.svg')),
+      gP(163, 137, 84, 14, gText('Reste 02:14:09', 11.5, Color(0xFFFFFFFF), weight: 600)),
+      gP(24, 178, 166, 250, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x33403366), offset: Offset(0, 14), blurRadius: 26, spreadRadius: 0)], radii: [38, 38, 38, 38]), rot: 0.035),
+      gP(200, 184, 166, 250, gBox(image: 'assets/figma/img/4ca68f79023605aecb4f83724629d508e921e885.png', fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x33403366), offset: Offset(0, 14), blurRadius: 26, spreadRadius: 0)], radii: [38, 38, 38, 38]), rot: -0.035),
+      gP(171, 294, 48, 48, gBox(color: Color(0xFF111015), border: Color(0xFFFFFFFF), bw: 3, oval: true)),
+      gP(185.5, 310, 19, 18, gText('VS', 14, Color(0xFFFFFFFF), weight: 700)),
+      gP(24, 444, 166, 86, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 16, spreadRadius: 0)], radii: [28, 28, 28, 28])),
+      gP(36, 456, 32, 32, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [16, 16, 16, 16])),
+      gP(76, 456, 89, 14, gText('Lampe recyclée', 11.5, Color(0xFF111015), weight: 600)),
+      gP(76, 474, 99, 12, gText('Yannick M. · Génie civil', 9.5, Color(0xFF66636E))),
+      gP(38, 498, 50, 25, gText('58 %', 20, Color(0xFF5A3FE0), weight: 700)),
+      gP(122, 506, 54, 13, gText('1 240 votes', 10, Color(0xFF66636E), weight: 500)),
+      gP(200, 444, 166, 86, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 16, spreadRadius: 0)], radii: [28, 28, 28, 28])),
+      gP(212, 456, 32, 32, gBox(image: 'assets/figma/img/ebf23a969ca7b1083d1dcab994c4899c0b4db38b.png', fit: BoxFit.cover, radii: [16, 16, 16, 16])),
+      gP(252, 456, 73, 14, gText('Jus de bissap', 11.5, Color(0xFF111015), weight: 600)),
+      gP(252, 474, 79, 12, gText('Équipe BTA · Agro', 9.5, Color(0xFF66636E))),
+      gP(214, 498, 50, 25, gText('42 %', 20, Color(0xFFE5732A), weight: 700)),
+      gP(303, 506, 49, 13, gText('904 votes', 10, Color(0xFF66636E), weight: 500)),
+      gP(24, 546, 342, 16, gBox(color: Color(0xFFECE8F6), radii: [8, 8, 8, 8])),
+      gP(24, 546, 198.36, 16, gBox(color: Color(0xFF111015), radii: [8, 8, 8, 8])),
+      gP(225.36, 546, 140.64, 16, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xFFFFB36B), Color(0xFFFF7A1A)], stops: [0, 1]), radii: [8, 8, 8, 8])),
+      gP(24, 580, 166, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26])),
+      gP(51, 596, 112, 15, gText('Voter pour la lampe', 12, Color(0xFFFFFFFF), weight: 600)),
+      gP(200, 580, 166, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFFFFFFF), bw: 1, shadows: [BoxShadow(color: Color(0x14403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [26, 26, 26, 26])),
+      gP(237, 596, 92, 15, gText('Voter pour le jus', 12, Color(0xFF111015), weight: 600)),
+      gP(24, 652, 175, 18, gText('Classement de la semaine', 14, Color(0xFF111015), weight: 600)),
+      gP(24, 678, 110, 68, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [24, 24, 24, 24])),
+      gP(34, 690, 30, 30, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [15, 15, 15, 15])),
+      gP(110, 688, 6, 16, gText('1', 13, Color(0xFF5A3FE0), weight: 700)),
+      gP(34, 722, 40, 13, gText('Yannick', 10.5, Color(0xFF111015), weight: 600)),
+      gP(34, 734, 41, 12, gText('1 240 pts', 9.5, Color(0xFF66636E))),
+      gP(140, 678, 110, 68, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [24, 24, 24, 24])),
+      gP(150, 690, 30, 30, gBox(image: 'assets/figma/img/c15478a4e0a5cc1be462d8179ed1a24390853242.png', fit: BoxFit.cover, radii: [15, 15, 15, 15])),
+      gP(224, 688, 8, 16, gText('2', 13, Color(0xFF5A3FE0), weight: 700)),
+      gP(150, 722, 42, 13, gText('Aminata', 10.5, Color(0xFF111015), weight: 600)),
+      gP(150, 734, 38, 12, gText('1 105 pts', 9.5, Color(0xFF66636E))),
+      gP(256, 678, 110, 68, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [24, 24, 24, 24])),
+      gP(266, 690, 30, 30, gBox(image: 'assets/figma/img/ebf23a969ca7b1083d1dcab994c4899c0b4db38b.png', fit: BoxFit.cover, radii: [15, 15, 15, 15])),
+      gP(340, 688, 8, 16, gText('3', 13, Color(0xFF5A3FE0), weight: 700)),
+      gP(266, 722, 27, 13, gText('Brice', 10.5, Color(0xFF111015), weight: 600)),
+      gP(266, 734, 35, 12, gText('980 pts', 9.5, Color(0xFF66636E))),
+      gP(22, 770, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
+      gP(47.125, 791.125, 20, 20, gImg('assets/figma/v/96285515fb0e14.svg')),
+      gP(59.113, 803.113, 9.762, 9.762, gImg('assets/figma/v/524f40fa464a05.svg')),
+      gP(112.25, 791.118, 22.632, 22.632, gImg('assets/figma/v/5610544a74c77c.svg')),
+      gP(260.375, 790.25, 11.25, 16.5, gImg('assets/figma/v/3adad339ddf7e4.svg')),
+      gP(256.875, 797.25, 18.25, 13, gImg('assets/figma/v/9c6e9349b8c3b4.svg')),
+      gP(263, 804.25, 6, 9.5, gImg('assets/figma/v/c403dd00a5d407.svg')),
+      gP(324.625, 791.125, 14.75, 14.75, gImg('assets/figma/v/c6a28fb600186c.svg')),
+      gP(322, 799.875, 20, 13, gImg('assets/figma/v/de7faa24b27dad.svg')),
+      gP(169, 776, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true)),
+      gP(183.75, 789.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
+      gP(328.333, 89, 19.333, 14.333, gImg('assets/figma/v/9c92298f9fd6b2.svg')),
+      gP(331.667, 80.667, 12.667, 9.333, gImg('assets/figma/v/bb8ad3c4792df6.svg')),
+      gP(335, 80.667, 6, 16.833, gImg('assets/figma/v/5bb53be308dfb1.svg')),
+    ]);
+  }
+}

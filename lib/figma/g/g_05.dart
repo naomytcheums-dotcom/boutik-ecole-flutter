@@ -1,0 +1,82 @@
+// GÉNÉRÉ par tool/figma_export/convert.py — écran 05 (nœud Figma 18:266). Ne pas éditer à la main.
+// ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
+import 'package:flutter/material.dart';
+import '../gen.dart';
+import '../nav.dart';
+
+class G_05 extends StatelessWidget {
+  const G_05({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GScreen(w: 390, h: 1002, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
+      gP(200, 180.66, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
+      gP(-110, 711.72, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(0, 0, 391.434, 342.684, gBox(image: 'assets/figma/img/fbb2092962d6dc7886c56df2e6f5a1cfb07c25bb.png', fit: BoxFit.cover)),
+      gP(42.298, 20.827, 33, 20, gText('9:41', 15.772, Color(0xFFFFFFFF), weight: 700)),
+      gP(298.096, 29.827, 9, 11, gImg('assets/figma/v/5bc0bea2e7c30c.svg')),
+      gP(303.096, 26.827, 9, 14, gImg('assets/figma/v/e67087fc64b6f1.svg')),
+      gP(308.096, 23.827, 9, 17, gImg('assets/figma/v/fb4f69fd85c479.svg')),
+      gP(313.096, 20.827, 9, 20, gImg('assets/figma/v/bc01d8c03d85a3.svg')),
+      gP(324.096, 22.769, 20, 12.259, gImg('assets/figma/v/31720a2012fcda.svg')),
+      gP(329.496, 30.627, 9.2, 9.2, gImg('assets/figma/v/59c083d0e217a4.svg')),
+      gP(348.596, 22.327, 28, 17, gImg('assets/figma/v/59809e380aafb6.svg')),
+      gP(350.596, 24.327, 22, 13, gImg('assets/figma/v/ee52ace3f9b23e.svg')),
+      gP(372.096, 25.827, 8, 10, gImg('assets/figma/v/1252012b5155ae.svg')),
+      gP(22.224, 72.408, 32.978, 32.978, gBox(color: Color(0x73111015), oval: true)),
+      gP(28.676, 78.86, 20.074, 20.074, const SizedBox.expand(), tap: () => gOpen(context, '04')),
+      gP(29.858, 80.042, 11.855, 17.71, gImg('assets/figma/v/43fc8e5ac4256d.svg')),
+      gP(29.858, 85.897, 17.71, 6, gImg('assets/figma/v/9d3dbce6f297e2.svg')),
+      gP(286.048, 71.691, 40.147, 40.147, gBox(color: Color(0x8C111015), oval: true)),
+      gP(294.757, 81.237, 22.728, 21.055, gImg('assets/figma/v/4bd8d8bdb588c8.svg')),
+      gP(339.099, 75.993, 32.978, 32.978, gBox(color: Color(0x8C111015), oval: true)),
+      gP(345.922, 89.482, 19.333, 14.333, gImg('assets/figma/v/9c92298f9fd6b2.svg')),
+      gP(349.255, 81.148, 12.667, 9.333, gImg('assets/figma/v/bb8ad3c4792df6.svg')),
+      gP(352.588, 81.148, 6, 16.833, gImg('assets/figma/v/5bb53be308dfb1.svg')),
+      gP(0, 337.665, 391.434, 664.577, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), shadows: [BoxShadow(color: Color(0x14122640), offset: Offset(0, -4), blurRadius: 14, spreadRadius: 0)], radii: [24.375, 24.375, 24.375, 24.375])),
+      gP(23.658, 357.022, 84.596, 25.809, gBox(color: Color(0xFFEEF1F6), radii: [12.904, 12.904, 12.904, 12.904])),
+      gP(31.89, 362.386, 15.081, 15.081, gImg('assets/figma/v/11598d9e192c7a.svg')),
+      gP(35.182, 365.678, 8.497, 8.497, gImg('assets/figma/v/51abe2cfdb0d9e.svg')),
+      gP(53.051, 362.426, 44, 15, gText('Produit', 12.188, Color(0xFF111015), weight: 500)),
+      gP(23.658, 393.423, 248, 29, gText('Lampe en bois recyclé', 22.941, Color(0xFF111015), weight: 700)),
+      gP(23.658, 434.419, 118, 23, gText('25 000 FCFA', 18.64, Color(0xFF111015), weight: 700)),
+      gP(22.689, 467.892, 19.143, 18.499, gImg('assets/figma/v/89c75ee41a3d6e.svg')),
+      gP(47.316, 468.963, 23, 17, gText('4.8', 13.621, Color(0xFF111015), weight: 700)),
+      gP(70.974, 469.463, 49, 16, gText('(24 avis)', 12.904, Color(0xFF66636E))),
+      gP(23.658, 501.346, 355, 44, gText('Lampe décorative fabriquée à partir de bois recyclé.\nÉcologique, design et idéale pour un intérieur moderne.', 13.621, Color(0xFF4A4854), lh: 21.507)),
+      gP(23.658, 561.342, 119.724, 66.673, gBox(color: Color(0xFFF1F4F8), radii: [17.206, 17.206, 17.206, 17.206])),
+      gP(72.853, 573.875, 22.27, 23.206, gImg('assets/figma/v/b2a76abe64993b.svg')),
+      gP(70.961, 583.434, 16.515, 14.603, gImg('assets/figma/v/f6dd061407a6b3.svg')),
+      gP(33.52, 605.96, 100, 14, gText('Matériaux recyclés', 11.112, Color(0xFF111015), weight: 500, align: TextAlign.center)),
+      gP(159.154, 561.342, 98.217, 66.673, gBox(color: Color(0xFFF1F4F8), radii: [17.206, 17.206, 17.206, 17.206])),
+      gP(207.175, 575.787, 9.824, 12.691, gImg('assets/figma/v/179ccdbaefdd4d.svg')),
+      gP(203.351, 573.875, 9.824, 13.647, gImg('assets/figma/v/7e4436d9b38a41.svg')),
+      gP(199.528, 575.787, 9.824, 15.559, gImg('assets/figma/v/154c389824610e.svg')),
+      gP(195.603, 577.699, 25.219, 21.294, gImg('assets/figma/v/d4eb51bafa2a3b.svg')),
+      gP(184.263, 605.96, 48, 14, gText('Fait main', 11.112, Color(0xFF111015), weight: 500, align: TextAlign.center)),
+      gP(272.426, 561.342, 97.5, 66.673, gBox(color: Color(0xFFF1F4F8), radii: [17.206, 17.206, 17.206, 17.206])),
+      gP(312.441, 573.875, 17.471, 17.471, gImg('assets/figma/v/affb8e711df1a9.svg')),
+      gP(315.309, 589.169, 11.735, 6, gImg('assets/figma/v/297fc146fcaba1.svg')),
+      gP(316.265, 592.993, 9.824, 6, gImg('assets/figma/v/1fc57f65c4229b.svg')),
+      gP(284.676, 605.96, 73, 14, gText('Éclairage LED', 11.112, Color(0xFF111015), weight: 500, align: TextAlign.center)),
+      gP(23.658, 647.371, 346.268, 0.717, gBox(color: Color(0xFFECE8F2))),
+      gP(23.658, 663.86, 67.39, 67.39, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, radii: [33.695, 33.695, 33.695, 33.695])),
+      gP(106.82, 668.331, 55, 14, gText('Créée par', 11.471, Color(0xFF5A3FE0))),
+      gP(106.82, 684.971, 123, 18, gText('Mouanga Yannick', 14.338, Color(0xFF111015), weight: 700)),
+      gP(106.82, 709.195, 136, 14, gText('Département : Génie civil', 11.471, Color(0xFF66636E))),
+      gP(23.658, 759.926, 344.835, 45.882, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [22.941, 22.941, 22.941, 22.941]), tap: () => gOpen(context, '06')),
+      gP(134.934, 774.085, 123, 19, gText('Ajouter au panier', 15.055, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
+      gP(23.658, 828.033, 346.268, 0.717, gBox(color: Color(0xFFF2EFF6))),
+      gP(25.809, 841.974, 116, 18, gText('Caractéristiques', 14.338, Color(0xFF111015), weight: 600)),
+      gP(343.448, 844.031, 9.943, 13.886, gImg('assets/figma/v/f302394cd6b33f.svg')),
+      gP(23.658, 875.349, 346.268, 0.717, gBox(color: Color(0xFFF2EFF6))),
+      gP(25.809, 889.29, 124, 18, gText('Livraison et retrait', 14.338, Color(0xFF111015), weight: 600)),
+      gP(343.448, 891.347, 9.943, 13.886, gImg('assets/figma/v/f302394cd6b33f.svg')),
+      gP(23.658, 921.949, 346.268, 0.717, gBox(color: Color(0xFFF2EFF6))),
+      gP(25.809, 935.89, 106, 18, gText('Avis des clients', 14.338, Color(0xFF111015), weight: 600)),
+      gP(343.448, 937.947, 9.943, 13.886, gImg('assets/figma/v/f302394cd6b33f.svg')),
+      gP(23.658, 967.831, 346.268, 0.717, gBox(color: Color(0xFFF2EFF6))),
+      gP(131.195, 988.621, 129.044, 3.585, gBox(color: Color(0xFF111015), radii: [2.151, 2.151, 2.151, 2.151])),
+    ]);
+  }
+}

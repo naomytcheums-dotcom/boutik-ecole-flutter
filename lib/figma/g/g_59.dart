@@ -1,0 +1,81 @@
+// GÉNÉRÉ par tool/figma_export/convert.py — écran 59 (nœud Figma 37:300). Ne pas éditer à la main.
+// ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
+import 'package:flutter/material.dart';
+import '../gen.dart';
+import '../nav.dart';
+
+class G_59 extends StatelessWidget {
+  const G_59({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
+      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
+      gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
+      gP(286, 24, 9, 14, gImg('assets/figma/v/c57de3594f8754.svg')),
+      gP(291, 21, 9, 17, gImg('assets/figma/v/a1b9d0cbd609c8.svg')),
+      gP(296, 18, 9, 20, gImg('assets/figma/v/5b8887c3459f31.svg')),
+      gP(307, 19.941, 20, 12.259, gImg('assets/figma/v/560b90a7edf47b.svg')),
+      gP(312.4, 27.8, 9.2, 9.2, gImg('assets/figma/v/415c542d2adf04.svg')),
+      gP(331.5, 19.5, 28, 17, gImg('assets/figma/v/6a818f3296df50.svg')),
+      gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
+      gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
+      gP(31, 71, 22, 22, const SizedBox.expand(), tap: () => gBack(context)),
+      gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
+      gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
+      gP(76, 70, 169, 26, gText('Nouveau service', 21, Color(0xFF111015), weight: 700)),
+      gP(60, 134, 68.667, 2, gBox(color: Color(0xFFE6E1EE), radii: [1, 1, 1, 1])),
+      gP(27, 118, 34, 34, gBox(color: Color(0xFF111015), oval: true)),
+      gP(30.5, 158, 27, 14, gText('Infos', 11, Color(0xFF111015), weight: 700, align: TextAlign.center)),
+      gP(160.667, 134, 68.667, 2, gBox(color: Color(0xFFE6E1EE), radii: [1, 1, 1, 1])),
+      gP(129.667, 120, 30, 30, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true)),
+      gP(120.167, 158, 49, 14, gText('Formules', 11, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
+      gP(261.333, 134, 68.667, 2, gBox(color: Color(0xFFE6E1EE), radii: [1, 1, 1, 1])),
+      gP(230.333, 120, 30, 30, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true)),
+      gP(218.833, 158, 53, 14, gText('Modalités', 11, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
+      gP(331, 120, 30, 30, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true)),
+      gP(316, 158, 60, 14, gText('Publication', 11, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
+      gP(24, 188, 91, 16, gText('Titre du service', 12.5, Color(0xFF111015), weight: 600)),
+      gP(24, 208, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
+      gP(38.25, 221.5, 19.5, 21, gImg('assets/figma/v/ba57bd3bc45172.svg')),
+      gP(72, 223, 231, 17, gText('Ex. Développement web sur mesure', 13.5, Color(0xFF66636E), weight: 500)),
+      gP(24, 270, 61, 16, gText('Catégorie', 12.5, Color(0xFF111015), weight: 600)),
+      gP(24, 290, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
+      gP(38.25, 304.25, 11.25, 11.25, gImg('assets/figma/v/4aa41d01b63de8.svg')),
+      gP(46.5, 304.25, 11.25, 11.25, gImg('assets/figma/v/4aa41d01b63de8.svg')),
+      gP(46.5, 312.5, 11.25, 11.25, gImg('assets/figma/v/4aa41d01b63de8.svg')),
+      gP(38.25, 312.5, 11.25, 11.25, gImg('assets/figma/v/4aa41d01b63de8.svg')),
+      gP(72, 305, 106, 17, gText('Développement', 13.5, Color(0xFF111015), weight: 500)),
+      gP(334.5, 308.75, 15, 10.5, gImg('assets/figma/v/7abbf201b36418.svg')),
+      gP(24, 352, 132, 16, gText('Tarif à partir de (FCFA)', 12.5, Color(0xFF111015), weight: 600)),
+      gP(24, 372, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
+      gP(72, 387, 50, 17, gText('30 000', 13.5, Color(0xFF111015), weight: 500)),
+      gP(24, 434, 74, 16, gText('Délai moyen', 12.5, Color(0xFF111015), weight: 600)),
+      gP(24, 454, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
+      gP(37.5, 467.5, 21, 21, gImg('assets/figma/v/8283e962773df2.svg')),
+      gP(45, 470.5, 9, 12, gImg('assets/figma/v/ed425c4c4b79bb.svg')),
+      gP(72, 469, 62, 17, gText('3 à 7 jours', 13.5, Color(0xFF111015), weight: 500)),
+      gP(334.5, 472.75, 15, 10.5, gImg('assets/figma/v/7abbf201b36418.svg')),
+      gP(24, 516, 119, 16, gText('Mode de prestation', 12.5, Color(0xFF111015), weight: 600)),
+      gP(24, 536, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
+      gP(39, 549.5, 18, 21, gImg('assets/figma/v/32cd8858f7ce88.svg')),
+      gP(42.75, 553.25, 10.5, 10.5, gImg('assets/figma/v/f34fbbf4909aff.svg')),
+      gP(72, 551, 163, 17, gText('À distance ou sur campus', 13.5, Color(0xFF111015), weight: 500)),
+      gP(334.5, 554.75, 15, 10.5, gImg('assets/figma/v/7abbf201b36418.svg')),
+      gP(24, 598, 135, 16, gText('Description du service', 12.5, Color(0xFF111015), weight: 600)),
+      gP(24, 618, 342, 96, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
+      gP(40, 632, 313, 20, gText('Ce que vous proposez, livrables, méthode…', 13.5, Color(0xFF66636E), weight: 500, lh: 20, wrap: true)),
+      gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
+      gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27])),
+      gP(74.5, 778, 62, 18, gText('Brouillon', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
+      gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27])),
+      gP(260, 778, 49, 18, gText('Publier', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
+      gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      gP(37.5, 388.5, 21, 15, gImg('assets/figma/v/24162e31d4b858.svg')),
+      gP(43.125, 391.125, 9.75, 9.75, gImg('assets/figma/v/b916ebbd5954b5.svg')),
+      gP(40.5, 393, 15.007, 6, gImg('assets/figma/v/bc5c9bd2e55ecc.svg')),
+    ]);
+  }
+}

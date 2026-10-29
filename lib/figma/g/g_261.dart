@@ -1,0 +1,75 @@
+// GÉNÉRÉ par tool/figma_export/convert.py — écran 261 (nœud Figma 184:342). Ne pas éditer à la main.
+// ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
+import 'package:flutter/material.dart';
+import '../gen.dart';
+import '../nav.dart';
+
+class G_261 extends StatelessWidget {
+  const G_261({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GScreen(w: 390, h: 900, radius: 46, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFFFF3C9), Color(0xFFFFF8EA), Color(0xFFFFE9B0)], stops: [0, 0.5, 1]), children: [
+      gP(24, 70, 92, 16, gText('Bonjour Mariam', 12.5, Color(0xFF66636E))),
+      gP(24, 90, 193, 28, gText('Mon espace client', 22, Color(0xFF111015), weight: 600)),
+      gP(326, 64, 44, 44, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
+      gP(24, 130, 342, 150, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFF1B1630), Color(0xFF4A38B8)], stops: [0, 1]), shadows: [BoxShadow(color: Color(0x40403366), offset: Offset(0, 12), blurRadius: 26, spreadRadius: 0)], radii: [32, 32, 32, 32])),
+      gP(44, 150, 246, 28, gText('2 commandes en cours', 22, Color(0xFFFFFFFF), weight: 700)),
+      gP(44, 182, 243, 32, gText('1 devis en attente de réponse · 1 mission à valider', 11.5, Color(0xD9FFFFFF), lh: 16, wrap: true)),
+      gP(44, 226, 139, 26, gBox(color: Color(0x33FFFFFF), radii: [100, 100, 100, 100])),
+      gP(56, 232, 115, 14, gText('Suivre ma commande', 11, Color(0xFFFFFFFF), weight: 600)),
+      gP(24, 300, 110, 86, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [24, 24, 24, 24])),
+      gP(40.333, 326.333, 7.333, 7.333, gImg('assets/figma/v/2e1654e048bb4e.svg')),
+      gP(47.667, 326.333, 7.333, 7.333, gImg('assets/figma/v/2e1654e048bb4e.svg')),
+      gP(35.667, 313.667, 20.667, 16, gImg('assets/figma/v/4e442248cc10b3.svg')),
+      gP(38, 340, 20, 25, gText('12', 20, Color(0xFF111015), weight: 700)),
+      gP(38, 366, 65, 13, gText('Commandes', 10.5, Color(0xFF66636E))),
+      gP(140, 300, 110, 86, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [24, 24, 24, 24])),
+      gP(153.667, 314.333, 16.667, 19.333, gImg('assets/figma/v/a409449823bd96.svg')),
+      gP(157, 314.333, 13.333, 16, gImg('assets/figma/v/311f1201027aa2.svg')),
+      gP(154, 340, 13, 25, gText('3', 20, Color(0xFF111015), weight: 700)),
+      gP(154, 366, 28, 13, gText('Devis', 10.5, Color(0xFF66636E))),
+      gP(256, 300, 110, 86, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [24, 24, 24, 24])),
+      gP(268.333, 315, 19.333, 18, gImg('assets/figma/v/f9499677feb01f.svg')),
+      gP(270, 340, 13, 25, gText('8', 20, Color(0xFF111015), weight: 700)),
+      gP(270, 366, 36, 13, gText('Favoris', 10.5, Color(0xFF66636E))),
+      gP(24, 408, 161, 19, gText('Commandes récentes', 15, Color(0xFF111015), weight: 600)),
+      gP(319, 410, 47, 14, gText('Tout voir', 11.5, Color(0xFF5A3FE0), weight: 500)),
+      gP(24, 438, 342, 72, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [26, 26, 26, 26])),
+      gP(36, 448, 52, 52, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [16, 16, 16, 16])),
+      gP(100, 452, 140, 16, gText('Lampe en bois recyclé', 13, Color(0xFF111015), weight: 600)),
+      gP(100, 474, 85, 13, gText('#BE-2026-0142', 10.5, Color(0xFF66636E))),
+      gP(290, 458, 64, 25, gBox(color: Color(0xFFEEE9FF), radii: [100, 100, 100, 100])),
+      gP(302, 464, 40, 13, gText('En route', 10, Color(0xFF5A3FE0), weight: 600)),
+      gP(24, 518, 342, 72, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [26, 26, 26, 26])),
+      gP(36, 528, 52, 52, gBox(image: 'assets/figma/img/4ca68f79023605aecb4f83724629d508e921e885.png', fit: BoxFit.cover, radii: [16, 16, 16, 16])),
+      gP(100, 532, 82, 16, gText('Jus de bissap', 13, Color(0xFF111015), weight: 600)),
+      gP(100, 554, 85, 13, gText('#BE-2026-0139', 10.5, Color(0xFF66636E))),
+      gP(300, 538, 54, 25, gBox(color: Color(0xFFE8F7EE), radii: [100, 100, 100, 100])),
+      gP(312, 544, 30, 13, gText('Livrée', 10, Color(0xFF126B49), weight: 600)),
+      gP(24, 608, 197, 19, gText('Mes devis et collaborations', 15, Color(0xFF111015), weight: 600)),
+      gP(24, 638, 342, 72, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [26, 26, 26, 26])),
+      gP(36, 648, 52, 52, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [26, 26, 26, 26])),
+      gP(100, 652, 150, 16, gText('Identité visuelle · Mbella', 13, Color(0xFF111015), weight: 600)),
+      gP(100, 674, 158, 13, gText('Étape 3 sur 5 · livraison le 28 nov.', 10.5, Color(0xFF66636E))),
+      gP(288, 660, 66, 25, gBox(color: Color(0xFFFFF1D6), radii: [100, 100, 100, 100])),
+      gP(300, 666, 42, 13, gText('À valider', 10, Color(0xFFB26A00), weight: 600)),
+      gP(24, 724, 342, 64, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [26, 26, 26, 26])),
+      gP(37.5, 745.5, 21, 20.25, gImg('assets/figma/v/cf3f2cd732e21d.svg')),
+      gP(72, 748, 203, 32, gText('Donner un avis sur votre dernière commande', 12, Color(0xFF111015), weight: 500, lh: 16, wrap: true)),
+      gP(301, 744, 53, 25, gBox(color: Color(0xFF111015), radii: [100, 100, 100, 100])),
+      gP(313, 750, 29, 13, gText('Noter', 10.5, Color(0xFFFFFFFF), weight: 600)),
+      gP(22, 812, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
+      gP(47.125, 833.125, 20, 20, gImg('assets/figma/v/e5210bb60df49f.svg')),
+      gP(59.113, 845.113, 9.762, 9.762, gImg('assets/figma/v/83a6239e1dfd4c.svg')),
+      gP(112.25, 833.118, 22.632, 22.632, gImg('assets/figma/v/3ab5d8934a12b4.svg')),
+      gP(260.375, 832.25, 11.25, 16.5, gImg('assets/figma/v/9bd69de833ad92.svg')),
+      gP(256.875, 839.25, 18.25, 13, gImg('assets/figma/v/ced0119d5c616c.svg')),
+      gP(263, 846.25, 6, 9.5, gImg('assets/figma/v/41c4de9afecb0e.svg')),
+      gP(324.625, 833.125, 14.75, 14.75, gImg('assets/figma/v/2e9ae9c74a1517.svg')),
+      gP(322, 841.875, 20, 13, gImg('assets/figma/v/12e378ac34408f.svg')),
+      gP(169, 818, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, oval: true)),
+      gP(183.75, 831.852, 22.5, 23.398, gImg('assets/figma/v/f18e2be5aba56b.svg')),
+    ]);
+  }
+}

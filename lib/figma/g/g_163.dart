@@ -1,0 +1,83 @@
+// GÉNÉRÉ par tool/figma_export/convert.py — écran 163 (nœud Figma 60:983). Ne pas éditer à la main.
+// ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
+import 'package:flutter/material.dart';
+import '../gen.dart';
+import '../nav.dart';
+
+class G_163 extends StatelessWidget {
+  const G_163({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
+      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
+      gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
+      gP(286, 24, 9, 14, gImg('assets/figma/v/c57de3594f8754.svg')),
+      gP(291, 21, 9, 17, gImg('assets/figma/v/a1b9d0cbd609c8.svg')),
+      gP(296, 18, 9, 20, gImg('assets/figma/v/5b8887c3459f31.svg')),
+      gP(307, 19.941, 20, 12.259, gImg('assets/figma/v/560b90a7edf47b.svg')),
+      gP(312.4, 27.8, 9.2, 9.2, gImg('assets/figma/v/415c542d2adf04.svg')),
+      gP(331.5, 19.5, 28, 17, gImg('assets/figma/v/6a818f3296df50.svg')),
+      gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
+      gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
+      gP(31, 71, 22, 22, const SizedBox.expand(), tap: () => gBack(context)),
+      gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
+      gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
+      gP(76, 70, 244, 26, gText('Trouver des coéquipiers', 21, Color(0xFF111015), weight: 700)),
+      gP(24, 120, 342, 48, gBox(color: Color(0xFFF2EFF6), radii: [24, 24, 24, 24])),
+      gP(39.875, 133.875, 18.667, 18.667, gImg('assets/figma/v/50f467eb8a9b46.svg')),
+      gP(50.721, 144.721, 9.404, 9.404, gImg('assets/figma/v/18d279137d73d9.svg')),
+      gP(70, 135, 172, 17, gText('Compétence, filière, nom…', 13.5, Color(0xFF66636E))),
+      gP(338.583, 134.667, 11.542, 6, gImg('assets/figma/v/e35f2f0eee5049.svg')),
+      gP(329.875, 134.667, 11.542, 6, gImg('assets/figma/v/e35f2f0eee5049.svg')),
+      gP(337, 141, 13.125, 6, gImg('assets/figma/v/3fa48fd4ed8834.svg')),
+      gP(329.875, 141, 9.958, 6, gImg('assets/figma/v/22731c39f43211.svg')),
+      gP(340.167, 147.333, 9.958, 6, gImg('assets/figma/v/22731c39f43211.svg')),
+      gP(329.875, 147.333, 13.125, 6, gImg('assets/figma/v/3fa48fd4ed8834.svg')),
+      gP(338.583, 133.083, 6, 9.167, gImg('assets/figma/v/3221f2f163c9f7.svg')),
+      gP(333.833, 139.417, 6, 9.167, gImg('assets/figma/v/3221f2f163c9f7.svg')),
+      gP(340.167, 145.75, 6, 9.167, gImg('assets/figma/v/3221f2f163c9f7.svg')),
+      gP(24, 182, 114.8, 34, gBox(color: Color(0xFF111015), radii: [17, 17, 17, 17])),
+      gP(38.4, 191, 86, 16, gText('Développeurs', 12.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
+      gP(146.8, 182, 92.6, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
+      gP(162.6, 191, 61, 16, gText('Designers', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
+      gP(247.4, 182, 85.2, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
+      gP(263.5, 191, 53, 16, gText('Business', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
+      gP(340.6, 182, 100, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
+      gP(362.1, 191, 57, 16, gText('IA et data', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
+      gP(24, 230, 156, 19, gText('12 talents disponibles', 15, Color(0xFF111015), weight: 700)),
+      gP(24, 268, 342, 264, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
+      gP(36, 276, 50, 50, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
+      gP(98, 280, 93, 17, gText('Kouassi Tagne', 13.5, Color(0xFF111015), weight: 600)),
+      gP(98, 302, 155, 14, gText('Audiovisuel · Montage, vidéo', 11.5, Color(0xFF66636E))),
+      gP(287.2, 290, 64.8, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
+      gP(302.6, 294, 34, 14, gText('Inviter', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)),
+      gP(98, 334, 256, 1, gBox(color: Color(0xFFF2EFF6))),
+      gP(36, 342, 50, 50, gBox(image: 'assets/figma/img/ebf23a969ca7b1083d1dcab994c4899c0b4db38b.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
+      gP(98, 346, 96, 17, gText('Carine Mbarga', 13.5, Color(0xFF111015), weight: 600)),
+      gP(98, 368, 132, 14, gText('Informatique · Python, IA', 11.5, Color(0xFF66636E))),
+      gP(287.2, 356, 64.8, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
+      gP(302.6, 360, 34, 14, gText('Inviter', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)),
+      gP(98, 400, 256, 1, gBox(color: Color(0xFFF2EFF6))),
+      gP(36, 408, 50, 50, gBox(image: 'assets/figma/img/c15478a4e0a5cc1be462d8179ed1a24390853242.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
+      gP(98, 412, 107, 17, gText('Landry Essomba', 13.5, Color(0xFF111015), weight: 600)),
+      gP(98, 434, 125, 14, gText('Gestion · Business plan', 11.5, Color(0xFF66636E))),
+      gP(293.6, 422, 58.4, 22, gBox(color: Color(0xFFF2EFF6), radii: [11, 11, 11, 11])),
+      gP(307.8, 426, 30, 14, gText('Invité', 11, Color(0xFF66636E), weight: 600, align: TextAlign.center)),
+      gP(98, 466, 256, 1, gBox(color: Color(0xFFF2EFF6))),
+      gP(36, 474, 50, 50, gBox(image: 'assets/figma/img/8d2db59994dcfe0c5b9851845e0b9f6aec49d36d.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
+      gP(98, 478, 114, 17, gText('Yannick Mouanga', 13.5, Color(0xFF111015), weight: 600)),
+      gP(98, 500, 133, 14, gText('Génie civil · Prototypage', 11.5, Color(0xFF66636E))),
+      gP(287.2, 488, 64.8, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
+      gP(302.6, 492, 34, 14, gText('Inviter', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)),
+      gP(24, 546, 342, 79, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
+      gP(36, 569.5, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
+      gP(42.625, 575.417, 18.75, 16.625, gImg('assets/figma/v/b2ae09d0fd46bb.svg')),
+      gP(47.796, 588.875, 8.408, 6.712, gImg('assets/figma/v/f59da0513c0b4c.svg')),
+      gP(76, 560, 277, 51, gText('Les invitations sont envoyées par notification, SMS ou WhatsApp selon les préférences du talent.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
+      gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+    ]);
+  }
+}

@@ -1,0 +1,80 @@
+// GÉNÉRÉ par tool/figma_export/convert.py — écran 77 (nœud Figma 54:284). Ne pas éditer à la main.
+// ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
+import 'package:flutter/material.dart';
+import '../gen.dart';
+import '../nav.dart';
+
+class G_77 extends StatelessWidget {
+  const G_77({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
+      gP(200, 140, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
+      gP(-110, 580, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(18, 92, 114, 244, gBox(image: 'assets/figma/img/768cf16e6d8103ad4296d6cc0fdf1af309f03817.png', fit: BoxFit.cover, radii: [26, 26, 26, 26])),
+      gP(140, 92, 124, 244, gBox(image: 'assets/figma/img/4b7b6cea2f4622846841cd8342842e81fa1ed891.png', fit: BoxFit.cover, radii: [26, 26, 26, 26])),
+      gP(272, 92, 114, 244, gBox(image: 'assets/figma/img/d5a96228e65dc2920e40cfac9b1205c2faee3caf.png', fit: BoxFit.cover, radii: [26, 26, 26, 26])),
+      gP(0, 92, 390, 250, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00F2EBF0), Color(0x00F2EBF0), Color(0xD9F2EBF0)], stops: [0, 0.78, 1]))),
+      gP(30, 14, 28, 18, gText('9:41', 14, Color(0xFF111015), weight: 600)),
+      gP(140, 10, 110, 30, gBox(color: Color(0xFF000000), radii: [15, 15, 15, 15])),
+      gP(22, 38, 34, 32, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
+      gP(30, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
+      gP(42.5, 82.5, 19, 19, const SizedBox.expand(), tap: () => gBack(context)),
+      gP(43.458, 83.458, 11.542, 17.083, gImg('assets/figma/v/cbab01bfe4421a.svg')),
+      gP(43.458, 89, 17.083, 6, gImg('assets/figma/v/47e4d365400cc9.svg')),
+      gP(316, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
+      gP(334.05, 82.508, 7.9, 7.9, gImg('assets/figma/v/cb3b5db29da178.svg')),
+      gP(334.05, 88.05, 7.9, 7.9, gImg('assets/figma/v/fd509ee195da6b.svg')),
+      gP(334.05, 93.592, 7.9, 7.9, gImg('assets/figma/v/c2a19bebfb5925.svg')),
+      gP(137.5, 82, 115, 19, gText('Profil de mentor', 15, Color(0xFF111015), weight: 600)),
+      gP(138, 273, 114, 114, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFFF4B6E), Color(0xFFFF8A3D), Color(0xFF9B7BFF)], stops: [0, 0.5, 1]), oval: true)),
+      gP(143, 278, 104, 104, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x1A403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], oval: true)),
+      gP(149, 284, 92, 92, gBox(image: 'assets/figma/img/2bbb6fbaae9e6d864765beabd4e677ca34d5a95e.png', fit: BoxFit.cover, radii: [46, 46, 46, 46])),
+      gP(138, 392, 114, 29, gText('Dr Mbarga', 23, Color(0xFF111015), weight: 500)),
+      gP(258, 396, 16, 16, gBox(color: Color(0xFF2F7DF6), oval: true)),
+      gP(259.667, 398.5, 12.667, 10.583, gImg('assets/figma/v/ca53f14df8dcc8.svg')),
+      gP(103, 426, 184, 14, gText('Responsable · Génie informatique', 11.5, Color(0xFF66636E))),
+      gP(112, 446, 166, 15, gText('#Mentorat   #IA   #Recherche', 12, Color(0xFF66636E))),
+      gP(28.5, 470, 333, 34, gText('J’accompagne les étudiants dans leurs projets, de l’idée au prototype.', 11.5, Color(0xFF6F6D77), lh: 17, align: TextAlign.center, wrap: true)),
+      gP(34, 512, 104, 30, gBox(color: Color(0xFFF4F3F6), radii: [15, 15, 15, 15])),
+      gP(55.5, 519, 61, 14, gText('32 Équipes', 11.5, Color(0xFF111015), weight: 500)),
+      gP(143, 512, 104, 30, gBox(color: Color(0xFFF4F3F6), radii: [15, 15, 15, 15])),
+      gP(171.5, 519, 47, 14, gText('4,9 Note', 11.5, Color(0xFF111015), weight: 500)),
+      gP(252, 512, 104, 30, gBox(color: Color(0xFFF4F3F6), radii: [15, 15, 15, 15])),
+      gP(276.5, 519, 55, 14, gText('12 Années', 11.5, Color(0xFF111015), weight: 500)),
+      gP(24, 562, 29, 14, gText('Liens', 11.5, Color(0xFF66636E), weight: 500)),
+      gP(89, 553, 32, 32, gImg('assets/figma/v/cdc43165645969.svg')),
+      gP(94.417, 563.292, 9.033, 15.75, gImg('assets/figma/v/ae94c8691f4b0c.svg')),
+      gP(94.146, 558.146, 9.575, 9.575, gImg('assets/figma/v/a7dfb3074b8bb1.svg')),
+      gP(99.617, 563.075, 15.425, 15.967, gImg('assets/figma/v/69716965815a8f.svg')),
+      gP(157, 553, 32, 32, gImg('assets/figma/v/5e663d48467337.svg')),
+      gP(165.883, 558.525, 14.45, 22.683, gImg('assets/figma/v/6b7c4fa6e99807.svg')),
+      gP(24, 596, 110, 92, gBox(image: 'assets/figma/img/768cf16e6d8103ad4296d6cc0fdf1af309f03817.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
+      gP(140, 596, 110, 92, gBox(image: 'assets/figma/img/4b7b6cea2f4622846841cd8342842e81fa1ed891.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
+      gP(256, 596, 110, 92, gBox(image: 'assets/figma/img/d5a96228e65dc2920e40cfac9b1205c2faee3caf.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
+      gP(24, 700, 200, 44, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x33403366), offset: Offset(0, 10), blurRadius: 20, spreadRadius: 0)], radii: [22, 22, 22, 22])),
+      gP(26.5, 713, 195, 16, gText('Demander un accompagnement', 12.5, Color(0xFFFFFFFF), weight: 600)),
+      gP(232, 700, 134, 44, gBox(color: Color(0xB2FFFFFF), border: Color(0xFFFFFFFF), bw: 1, radii: [22, 22, 22, 22])),
+      gP(281.5, 713, 35, 16, gText('Écrire', 12.5, Color(0xFF111015), weight: 500)),
+      gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
+      gP(47.125, 777.125, 20, 20, gImg('assets/figma/v/96285515fb0e14.svg')),
+      gP(59.113, 789.113, 9.762, 9.762, gImg('assets/figma/v/524f40fa464a05.svg')),
+      gP(112.25, 777.118, 22.632, 22.632, gImg('assets/figma/v/5610544a74c77c.svg')),
+      gP(260.375, 776.25, 11.25, 16.5, gImg('assets/figma/v/3adad339ddf7e4.svg')),
+      gP(256.875, 783.25, 18.25, 13, gImg('assets/figma/v/9c6e9349b8c3b4.svg')),
+      gP(263, 790.25, 6, 9.5, gImg('assets/figma/v/c403dd00a5d407.svg')),
+      gP(324.625, 777.125, 14.75, 14.75, gImg('assets/figma/v/c6a28fb600186c.svg')),
+      gP(322, 785.875, 20, 13, gImg('assets/figma/v/de7faa24b27dad.svg')),
+      gP(169, 762, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true)),
+      gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/ec9f8d654b9909.svg')),
+      gP(123, 553, 32, 32, gImg('assets/figma/v/2d3ef0cebe3113.svg')),
+      gP(128.958, 559.631, 20.04, 18.694, gImg('assets/figma/v/31ca13725eac3f.svg')),
+      gP(194, 556, 26, 26, gBox(color: Color(0xFF24292E), radii: [8, 8, 8, 8])),
+      gP(198.659, 559.333, 16.682, 19.333, gImg('assets/figma/v/9420af15075547.svg')),
+      gP(197.333, 568.667, 10.667, 7.707, gImg('assets/figma/v/4b0531a4484979.svg')),
+      gP(232, 556, 82, 26, gBox(color: Color(0xCCFFFFFF), border: Color(0xFFFFFFFF), bw: 1, radii: [100, 100, 100, 100])),
+      gP(245, 562, 56, 14, gText('Portfolio ↗', 11, Color(0xFF120F14), weight: 600)),
+    ]);
+  }
+}

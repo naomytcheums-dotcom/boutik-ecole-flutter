@@ -158,6 +158,14 @@ class G_111 extends ConsumerWidget {
       gTap(268, 326, 980, 42, () { final l = ref.read(projectQueueProvider); if (l.length > 1) { projectReviewDialog(context, ref, l[1]); } }),
       gTap(268, 370, 980, 42, () { final l = ref.read(projectQueueProvider); if (l.length > 2) { projectReviewDialog(context, ref, l[2]); } }),
       gTap(268, 414, 980, 42, () { final l = ref.read(projectQueueProvider); if (l.length > 3) { projectReviewDialog(context, ref, l[3]); } }),
+      gTap(12, 96, 216, 36, () => gOpen(context, '108')),
+      gTap(12, 136, 216, 36, () => gOpen(context, '109')),
+      gTap(12, 176, 216, 36, () => gOpen(context, '110')),
+      gTap(12, 288, 216, 36, () => gOpen(context, '112')),
+      gTap(12, 328, 216, 36, () => gOpen(context, '113')),
+      gTap(12, 368, 216, 36, () => gOpen(context, '114')),
+      gTap(12, 408, 216, 36, () => gOpen(context, '115')),
+      gTap(12, 448, 216, 36, () => gOpen(context, '116')),
     ]);
   }
 }

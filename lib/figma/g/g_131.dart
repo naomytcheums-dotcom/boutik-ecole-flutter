@@ -166,6 +166,17 @@ class G_131 extends ConsumerWidget {
       gTap(268, 326, 980, 40, () { final l = ref.read(allReportsProvider); if (l.length > 1) { reportDialog(context, ref, l[1]); } }),
       gTap(268, 370, 980, 40, () { final l = ref.read(allReportsProvider); if (l.length > 2) { reportDialog(context, ref, l[2]); } }),
       gTap(268, 414, 980, 40, () { final l = ref.read(allReportsProvider); if (l.length > 3) { reportDialog(context, ref, l[3]); } }),
+      gTap(12, 96, 216, 36, () => gOpen(context, '127')),
+      gTap(12, 136, 216, 36, () => gOpen(context, '128')),
+      gTap(12, 176, 216, 36, () => gOpen(context, '129')),
+      gTap(12, 216, 216, 36, () => gOpen(context, '130')),
+      gTap(12, 328, 216, 36, () => gOpen(context, '132')),
+      gTap(12, 368, 216, 36, () => gOpen(context, '133')),
+      gTap(12, 408, 216, 36, () => gOpen(context, '134')),
+      gTap(12, 448, 216, 36, () => gOpen(context, '135')),
+      gTap(12, 488, 216, 36, () => gOpen(context, '136')),
+      gTap(12, 528, 216, 36, () => gOpen(context, '137')),
+      gTap(12, 568, 216, 36, () => gOpen(context, '138')),
     ]);
   }
 }

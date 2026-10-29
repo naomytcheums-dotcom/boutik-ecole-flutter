@@ -322,6 +322,15 @@ gP(-13, 165.451, 296, 34.583, gImg('assets/figma/v/5ffec176ca9577.svg'))
       gP(894, 620, 336, 34, GField(hint: 'Quels enseignements cherches-tu ?', size: 11, hintColor: Color(0xFF66636E), weight: 400, padL: 16, inter: true)),
       gP(894, 664, 336, 76, gBox(color: Color(0xFFFFFFFF), radii: [16, 16, 16, 16])),
       gP(908, 672, 313, 30, gText('L’activité de l’établissement progresse de 11 %. TCO est en retrait ce mois-ci : veux-tu relancer le département ?', 10.5, Color(0xFF4A4944), inter: true, lh: 15, wrap: true)),
+      gTap(12, 136, 216, 36, () => gOpen(context, '118')),
+      gTap(12, 176, 216, 36, () => gOpen(context, '119')),
+      gTap(12, 248, 216, 36, () => gOpen(context, '120')),
+      gTap(12, 288, 216, 36, () => gOpen(context, '121')),
+      gTap(12, 328, 216, 36, () => gOpen(context, '122')),
+      gTap(12, 402, 216, 36, () => gOpen(context, '123')),
+      gTap(12, 442, 216, 36, () => gOpen(context, '124')),
+      gTap(12, 516, 216, 36, () => gOpen(context, '125')),
+      gTap(12, 556, 216, 36, () => gOpen(context, '126')),
     ]);
   }
 }

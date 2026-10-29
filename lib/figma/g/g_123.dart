@@ -151,6 +151,15 @@ class G_123 extends ConsumerWidget {
       gP(1095.833, 90.917, 8.167, 8.167, gImg('assets/figma/v/aa6a66611de441.svg')),
       gP(1100.167, 94.167, 8.167, 8.167, gImg('assets/figma/v/aa6a66611de441.svg')),
       gP(1118, 87, 111, 14, gText('Personnaliser la vue', 11.5, Color(0xFF111015), weight: 500, inter: true)),
+      gTap(12, 96, 216, 36, () => gOpen(context, '117')),
+      gTap(12, 136, 216, 36, () => gOpen(context, '118')),
+      gTap(12, 176, 216, 36, () => gOpen(context, '119')),
+      gTap(12, 216, 216, 36, () => gOpen(context, '120')),
+      gTap(12, 288, 216, 36, () => gOpen(context, '121')),
+      gTap(12, 328, 216, 36, () => gOpen(context, '122')),
+      gTap(12, 408, 216, 36, () => gOpen(context, '124')),
+      gTap(12, 448, 216, 36, () => gOpen(context, '125')),
+      gTap(12, 488, 216, 36, () => gOpen(context, '126')),
     ]);
   }
 }

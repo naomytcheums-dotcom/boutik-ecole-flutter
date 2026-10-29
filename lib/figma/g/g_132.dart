@@ -169,6 +169,17 @@ class G_132 extends ConsumerWidget {
       gTap(268, 326, 980, 40, () { final l = ref.read(orderRowsProvider); if (l.length > 1) { final r = l[1]; if (r.real) { ref.read(ordersProvider.notifier).advance(r.id); ref.read(auditProvider.notifier).log('Super admin', 'Commande avancée', r.id, 'Finances'); gToast(context, 'Commande ${r.id} : étape suivante'); } else { gToast(context, 'Commande ${r.id} : ${r.status}'); } } }),
       gTap(268, 370, 980, 40, () { final l = ref.read(orderRowsProvider); if (l.length > 2) { final r = l[2]; if (r.real) { ref.read(ordersProvider.notifier).advance(r.id); ref.read(auditProvider.notifier).log('Super admin', 'Commande avancée', r.id, 'Finances'); gToast(context, 'Commande ${r.id} : étape suivante'); } else { gToast(context, 'Commande ${r.id} : ${r.status}'); } } }),
       gTap(268, 414, 980, 40, () { final l = ref.read(orderRowsProvider); if (l.length > 3) { final r = l[3]; if (r.real) { ref.read(ordersProvider.notifier).advance(r.id); ref.read(auditProvider.notifier).log('Super admin', 'Commande avancée', r.id, 'Finances'); gToast(context, 'Commande ${r.id} : étape suivante'); } else { gToast(context, 'Commande ${r.id} : ${r.status}'); } } }),
+      gTap(12, 96, 216, 36, () => gOpen(context, '127')),
+      gTap(12, 136, 216, 36, () => gOpen(context, '128')),
+      gTap(12, 176, 216, 36, () => gOpen(context, '129')),
+      gTap(12, 216, 216, 36, () => gOpen(context, '130')),
+      gTap(12, 288, 216, 36, () => gOpen(context, '131')),
+      gTap(12, 368, 216, 36, () => gOpen(context, '133')),
+      gTap(12, 408, 216, 36, () => gOpen(context, '134')),
+      gTap(12, 448, 216, 36, () => gOpen(context, '135')),
+      gTap(12, 488, 216, 36, () => gOpen(context, '136')),
+      gTap(12, 528, 216, 36, () => gOpen(context, '137')),
+      gTap(12, 568, 216, 36, () => gOpen(context, '138')),
     ]);
   }
 }

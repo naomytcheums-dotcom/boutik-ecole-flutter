@@ -160,6 +160,17 @@ class G_128 extends ConsumerWidget {
       gTap(268, 264, 647, 44, () { final l = ref.read(adminUsersProvider); if (l.length > 2) { userDialog(context, ref, l[2]); } }),
       gTap(268, 308, 647, 44, () { final l = ref.read(adminUsersProvider); if (l.length > 3) { userDialog(context, ref, l[3]); } }),
       gTap(268, 352, 647, 44, () { final l = ref.read(adminUsersProvider); if (l.length > 4) { userDialog(context, ref, l[4]); } }),
+      gTap(12, 96, 216, 36, () => gOpen(context, '127')),
+      gTap(12, 176, 216, 36, () => gOpen(context, '129')),
+      gTap(12, 216, 216, 36, () => gOpen(context, '130')),
+      gTap(12, 288, 216, 36, () => gOpen(context, '131')),
+      gTap(12, 328, 216, 36, () => gOpen(context, '132')),
+      gTap(12, 368, 216, 36, () => gOpen(context, '133')),
+      gTap(12, 408, 216, 36, () => gOpen(context, '134')),
+      gTap(12, 448, 216, 36, () => gOpen(context, '135')),
+      gTap(12, 488, 216, 36, () => gOpen(context, '136')),
+      gTap(12, 528, 216, 36, () => gOpen(context, '137')),
+      gTap(12, 568, 216, 36, () => gOpen(context, '138')),
     ]);
   }
 }

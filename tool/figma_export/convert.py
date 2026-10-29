@@ -32,6 +32,8 @@ NODE2ID = {v: k for k, v in REG.items()}
 SIZES = {}
 LINKS = {}
 CUR = {'root': '', 'sid': ''}
+# Menus latéraux des consoles web : l'ordre des entrées suit l'ordre des écrans de la section.
+SIDEBAR = [(108, 116), (117, 126), (127, 138), (139, 144), (187, 190)]
 BINDINGS = {}
 _bf = os.path.join(HERE, 'bindings.json')
 if os.path.exists(_bf):
@@ -717,6 +719,30 @@ def convert(sid):
         if box not in used:
             bx = [float(v) for v in box.split(',')]
             out.append("gTap(%s, %s, %s, %s, () { %s })" % (num(bx[0]), num(bx[1]), num(bx[2]), num(bx[3]), stmt))
+    # menu latéral : une zone cliquable par entrée, vers l'écran correspondant de la même section
+    m_ = re.match(r'^(\d+)$', sid)
+    if m_ and w > 1000:
+        n_ = int(m_.group(1))
+        for lo, hi in SIDEBAR:
+            if lo <= n_ <= hi:
+                items = []
+                def walk_(nd, M=(0, 0)):
+                    x_ = M[0] + nd['relativeTransform'][0][2]
+                    y_ = M[1] + nd['relativeTransform'][1][2]
+                    if nd['type'] == 'TEXT' and 45 <= x_ <= 60 and 95 <= y_ <= 700 and nd.get('visible', True):
+                        items.append(y_)
+                    for k_ in nd.get('children', []):
+                        walk_(k_, (x_, y_))
+                for k_ in doc.get('children', []):
+                    walk_(k_)
+                items.sort()
+                if len(items) == hi - lo + 1:
+                    for i_, y_ in enumerate(items):
+                        dest_ = str(lo + i_)
+                        if dest_ != sid and dest_ in REG:
+                            out.append("gTap(12, %s, 216, 36, () => gOpen(context, %s))" % (num(y_ - 11), dq(dest_)))
+                else:
+                    print('menu latéral ignoré', sid, len(items), '!=', hi - lo + 1)
     root_args = ['w: %s' % num(w), 'h: %s' % num(h)]
     rr = doc.get('cornerRadius', 0)
     if rr:

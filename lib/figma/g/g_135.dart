@@ -146,6 +146,17 @@ class G_135 extends ConsumerWidget {
       gP(1118, 87, 111, 14, gText('Personnaliser la vue', 11.5, Color(0xFF111015), weight: 500, inter: true)),
       gTap(1150, 148, 100, 36, () { commissionDialog(context, ref); }),
       gTap(1180, 150, 70, 34, () { commissionDialog(context, ref); }),
+      gTap(12, 96, 216, 36, () => gOpen(context, '127')),
+      gTap(12, 136, 216, 36, () => gOpen(context, '128')),
+      gTap(12, 176, 216, 36, () => gOpen(context, '129')),
+      gTap(12, 216, 216, 36, () => gOpen(context, '130')),
+      gTap(12, 288, 216, 36, () => gOpen(context, '131')),
+      gTap(12, 328, 216, 36, () => gOpen(context, '132')),
+      gTap(12, 368, 216, 36, () => gOpen(context, '133')),
+      gTap(12, 408, 216, 36, () => gOpen(context, '134')),
+      gTap(12, 488, 216, 36, () => gOpen(context, '136')),
+      gTap(12, 528, 216, 36, () => gOpen(context, '137')),
+      gTap(12, 568, 216, 36, () => gOpen(context, '138')),
     ]);
   }
 }

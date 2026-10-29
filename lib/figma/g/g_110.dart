@@ -172,6 +172,14 @@ class G_110 extends ConsumerWidget {
       gTap(329, 122, 130, 34, () { ref.read(reviewTabProvider.notifier).set(0); }),
       gTap(591, 122, 130, 34, () { ref.read(reviewTabProvider.notifier).set(1); }),
       gTap(834, 122, 130, 34, () { ref.read(reviewTabProvider.notifier).set(2); }),
+      gTap(12, 96, 216, 36, () => gOpen(context, '108')),
+      gTap(12, 136, 216, 36, () => gOpen(context, '109')),
+      gTap(12, 216, 216, 36, () => gOpen(context, '111')),
+      gTap(12, 288, 216, 36, () => gOpen(context, '112')),
+      gTap(12, 328, 216, 36, () => gOpen(context, '113')),
+      gTap(12, 368, 216, 36, () => gOpen(context, '114')),
+      gTap(12, 408, 216, 36, () => gOpen(context, '115')),
+      gTap(12, 448, 216, 36, () => gOpen(context, '116')),
     ]);
   }
 }

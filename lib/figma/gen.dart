@@ -293,6 +293,10 @@ class _GFieldState extends State<GField> {
             decoration: InputDecoration(
               isCollapsed: true,
               border: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              disabledBorder: InputBorder.none,
+              filled: false,
               hintText: widget.hint,
               hintStyle: st.copyWith(color: widget.hintColor),
               contentPadding: EdgeInsets.zero,

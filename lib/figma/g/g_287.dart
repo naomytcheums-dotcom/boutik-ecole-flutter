@@ -14,7 +14,7 @@ class G_287 extends StatelessWidget {
       gP(40, 92, 327, 18, gText('18 fiches · 12 publiées · 4 en validation · 2 brouillons', 14, Color(0xFF66636E))),
       gP(40, 132, 688, 48, gBox(color: Color(0xFFFFFFFF), radii: [24, 24, 24, 24])),
       gP(64, 147, 149, 18, gText('Rechercher une fiche…', 14, Color(0xFF66636E))),
-      gP(560, 138, 160, 36, gBox(color: Color(0xFF111015), radii: [18, 18, 18, 18])),
+      gP(560, 138, 160, 36, gBox(color: Color(0xFF111015), radii: [18, 18, 18, 18]), tap: () => gToast(context, 'Démonstration : + Nouvelle fiche')),
       gP(582, 147, 100, 16, gText('+ Nouvelle fiche', 13, Color(0xFFFFFFFF), weight: 600)),
       gP(40, 198, 72, 34, gBox(color: Color(0xFF111015), radii: [17, 17, 17, 17])),
       gP(55, 206, 42, 16, gText('Toutes', 13, Color(0xFFFFFFFF), weight: 600)),

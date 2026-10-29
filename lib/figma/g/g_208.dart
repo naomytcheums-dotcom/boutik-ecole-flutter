@@ -10,7 +10,7 @@ class G_208 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 720, h: 1280, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(-120, 80, 440, 440, gBox(color: Color(0x73FFC38A), layerBlur: 120, oval: true)),
+      gP(-120, 80, 440, 440, gBox(color: Color(0x73FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(48, 44, 64, 58, gBox(color: Color(0xFFFFFFFF), radii: [20, 20, 20, 20])),
       gP(55, 49, 50, 48, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(128, 56, 181, 35, gText('Boutik-École', 28, Color(0xFF111015), weight: 600)),

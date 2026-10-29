@@ -10,8 +10,8 @@ class G_274 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 844, radius: 46, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 140, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 580, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 140, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 580, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 28, 18, gText('9:41', 14, Color(0xFF111015), weight: 600)),
       gP(140, 10, 110, 30, gBox(color: Color(0xFF000000), radii: [15, 15, 15, 15])),
       gP(22, 38, 34, 32, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
@@ -34,7 +34,7 @@ class G_274 extends StatelessWidget {
       gP(56, 582, 162, 16, gText('J’ai lu et j’accepte les CGU', 13, Color(0xFF111015), weight: 500)),
       gP(24, 614, 22, 22, gBox(color: Color(0xFF111015), radii: [7, 7, 7, 7])),
       gP(56, 616, 162, 16, gText('J’ai lu et j’accepte les CGV', 13, Color(0xFF111015), weight: 500)),
-      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26])),
+      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => gToast(context, 'Démonstration : Accepter et continuer')),
       gP(115.5, 788, 159, 19, gText('Accepter et continuer', 15, Color(0xFFFFFFFF), weight: 600)),
       gP(30, 581.5, 13, 19, gText('✓', 15, Color(0xFFFFFFFF), weight: 700)),
       gP(30, 615.5, 13, 19, gText('✓', 15, Color(0xFFFFFFFF), weight: 700)),

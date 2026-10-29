@@ -11,8 +11,8 @@ class G_245 extends StatelessWidget {
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 844, radius: 46, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(0, 0, 390, 844, gBox(image: 'assets/figma/img/d5a96228e65dc2920e40cfac9b1205c2faee3caf.png', fit: BoxFit.cover)),
-      gP(-110, 580, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
-      gP(200, 140, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
+      gP(-110, 580, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(200, 140, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(0, 0, 390, 844, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x40000000), Color(0x00000000), Color(0x99000000)], stops: [0, 0.45, 1]))),
       gP(30, 14, 28, 18, gText('9:41', 14, Color(0xFFFFFFFF), weight: 600)),
       gP(140, 10, 110, 30, gBox(color: Color(0xFF000000), radii: [15, 15, 15, 15])),
@@ -24,6 +24,7 @@ class G_245 extends StatelessWidget {
       gP(187.5, 387.25, 21.167, 25.5, gImg('assets/figma/v/441522099dce07.svg')),
       gP(324, 308, 44, 44, gBox(color: Color(0x38FFFFFF), oval: true)),
       gP(334.667, 319.5, 22.667, 21, gImg('assets/figma/v/f81603d78186bb.svg')),
+      gP(328, 312, 36, 36, GHeart()),
       gP(335, 356, 22, 12, gText('2,6 k', 9.5, Color(0xFFFFFFFF), weight: 500)),
       gP(324, 370, 44, 44, gBox(color: Color(0x38FFFFFF), oval: true)),
       gP(335.5, 383.358, 21, 19.142, gImg('assets/figma/v/3fc89363db42fe.svg')),

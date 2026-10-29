@@ -10,8 +10,8 @@ class G_63 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
       gP(286, 24, 9, 14, gImg('assets/figma/v/c57de3594f8754.svg')),
@@ -23,14 +23,7 @@ class G_63 extends StatelessWidget {
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
       gP(24, 70, 205, 26, gText('Commandes reçues', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 129.6, 34, gBox(color: Color(0xFF111015), radii: [17, 17, 17, 17])),
-      gP(47.3, 129, 83, 16, gText('À préparer (4)', 12.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
-      gP(161.6, 120, 85.2, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(178.7, 129, 51, 16, gText('En cours', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(254.8, 120, 70.4, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(270.5, 129, 39, 16, gText('Prêtes', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(333.2, 120, 77.8, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(350.6, 129, 43, 16, gText('Livrées', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 129.6, 34, 'À préparer (4)', 12.5, 600), GChip(161.6, 120, 85.2, 34, 'En cours', 12.5, 500), GChip(254.8, 120, 70.4, 34, 'Prêtes', 12.5, 500), GChip(333.2, 120, 77.8, 34, 'Livrées', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
       gP(24, 168, 342, 264, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 176, 50, 50, gBox(image: 'assets/figma/img/752f5c71aed593a51d18b9662015d455f75b411b.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
       gP(98, 180, 112, 17, gText('#BE-2026-0142', 13.5, Color(0xFF111015), weight: 600)),

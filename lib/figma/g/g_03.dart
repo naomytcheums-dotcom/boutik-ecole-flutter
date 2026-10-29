@@ -10,8 +10,8 @@ class G_03 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 939, radius: 43.333, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 139.08, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 666.36, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 139.08, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 666.36, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(37.014, 20.792, 29, 18, gText('9:41', 14.444, Color(0xFF1B2430), weight: 600)),
       gP(285.722, 28.792, 9, 11, gImg('assets/figma/v/fea2de318bc933.svg')),
       gP(290.722, 25.792, 9, 14, gImg('assets/figma/v/78097c7c9d5492.svg')),
@@ -90,12 +90,14 @@ class G_03 extends StatelessWidget {
       gP(14.444, 558.819, 177.847, 163, gBox(image: 'assets/figma/img/9803b1792923bb371cffd2d64272ebebf74ea2d4.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
       gP(161.597, 567.847, 21.667, 21.667, gBox(color: Color(0xFFFFFFFF), radii: [10.833, 10.833, 10.833, 10.833])),
       gP(164.541, 571.28, 15.78, 14.802, gImg('assets/figma/v/d9c8f50f0367c0.svg')),
+      gP(158.562, 564.812, 27.736, 27.736, GHeart()),
       gP(21.667, 731.278, 122, 14, gText('Lampe en bois recyclé', 11.285, Color(0xFF111015), weight: 700)),
       gP(21.667, 749.833, 66, 13, gText('25 000 FCFA', 10.382, Color(0xFF111015), weight: 600)),
       gP(21.667, 768.389, 98, 12, gText('Ngoné M. – Génie civil', 9.479, Color(0xFF6B7A8C))),
       gP(204.931, 558.819, 177.847, 163, gBox(image: 'assets/figma/img/84a49a20614dc5f12ab62f18400caa2290c40ec0.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
       gP(352.083, 567.847, 21.667, 21.667, gBox(color: Color(0xFFFFFFFF), radii: [10.833, 10.833, 10.833, 10.833])),
       gP(355.027, 571.28, 15.78, 14.802, gImg('assets/figma/v/d9c8f50f0367c0.svg')),
+      gP(349.049, 564.812, 27.736, 27.736, GHeart()),
       gP(212.153, 731.278, 83, 14, gText('Drone éducatif', 11.285, Color(0xFF111015), weight: 700)),
       gP(212.153, 749.833, 71, 13, gText('150 000 FCFA', 10.382, Color(0xFF111015), weight: 600)),
       gP(212.153, 768.389, 136, 12, gText('Team Innov’ – Génie électrique', 9.479, Color(0xFF6B7A8C))),

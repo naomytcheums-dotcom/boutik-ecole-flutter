@@ -10,8 +10,8 @@ class G_223 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
       gP(286, 24, 9, 14, gImg('assets/figma/v/c57de3594f8754.svg')),
@@ -28,12 +28,7 @@ class G_223 extends StatelessWidget {
       gP(24, 120, 342, 170, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x000B2340), Color(0xE00B2340)], stops: [0, 1]), radii: [26, 26, 26, 26])),
       gP(42, 228, 309, 23, gText('En direct maintenant · Atelier bois', 18, Color(0xFFFFFFFF), weight: 800, wrap: true)),
       gP(42, 258, 309, 15, gText('Génie civil · 124 spectateurs', 12, Color(0xD9FFFFFF), weight: 500, wrap: true)),
-      gP(24, 304, 107.4, 34, gBox(color: Color(0xFF111015), radii: [17, 17, 17, 17])),
-      gP(42.7, 313, 70, 16, gText('Aujourd’hui', 12.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
-      gP(139.4, 304, 122.2, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(156.5, 313, 88, 16, gText('Cette semaine', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(269.6, 304, 107.4, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(286.8, 313, 73, 16, gText('Mes rappels', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 304, 107.4, 34, 'Aujourd’hui', 12.5, 600), GChip(139.4, 304, 122.2, 34, 'Cette semaine', 12.5, 500), GChip(269.6, 304, 107.4, 34, 'Mes rappels', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
       gP(24, 352, 50, 19, gText('À venir', 15, Color(0xFF111015), weight: 700)),
       gP(24, 390, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 398, 50, 50, gBox(image: 'assets/figma/img/4ca68f79023605aecb4f83724629d508e921e885.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),

@@ -10,8 +10,8 @@ class G_160 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 858, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 133.14, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 587.88, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 133.14, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 587.88, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
       gP(286, 24, 9, 14, gImg('assets/figma/v/c57de3594f8754.svg')),
@@ -29,16 +29,7 @@ class G_160 extends StatelessWidget {
       gP(341, 71, 22, 22, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(340.75, 70.75, 20.667, 20.667, gImg('assets/figma/v/eeff0eb6fd6e24.svg')),
       gP(353.308, 83.308, 9.942, 9.942, gImg('assets/figma/v/34172806399cca.svg')),
-      gP(24, 120, 55.6, 34, gBox(color: Color(0xFF111015), radii: [17, 17, 17, 17])),
-      gP(37.8, 129, 28, 16, gText('Tous', 12.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
-      gP(87.6, 120, 85.2, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(106.7, 129, 47, 16, gText('En ligne', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(180.8, 120, 70.4, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(194.5, 129, 43, 16, gText('Douala', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(259.2, 120, 77.8, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(271.6, 129, 53, 16, gText('Yaoundé', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(345, 120, 85.2, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(363.1, 129, 49, 16, gText('Gratuits', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 55.6, 34, 'Tous', 12.5, 600), GChip(87.6, 120, 85.2, 34, 'En ligne', 12.5, 500), GChip(180.8, 120, 70.4, 34, 'Douala', 12.5, 500), GChip(259.2, 120, 77.8, 34, 'Yaoundé', 12.5, 500), GChip(345, 120, 85.2, 34, 'Gratuits', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
       gP(24, 168, 342, 170, gBox(image: 'assets/figma/img/a30d4e56acc9216d03ba2d7972f7dfac533b78bf.png', fit: BoxFit.cover, radii: [24, 24, 24, 24])),
       gP(24, 168, 342, 170, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [24, 24, 24, 24])),
       gP(42, 276, 309, 23, gText('Hackathon Orange Digital Center', 18, Color(0xFFFFFFFF), weight: 700, wrap: true)),

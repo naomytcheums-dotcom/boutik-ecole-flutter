@@ -10,8 +10,8 @@ class G_19 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(0, 0, 390, 520, gBox(image: 'assets/figma/img/11d6f0ec937d2eb34a8412cfbbfaeb4d99772a54.png', fit: BoxFit.cover)),
       gP(0, 0, 390, 520, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x590D0A14), Color(0xBF0D0A14)], stops: [0, 1]))),
       gP(30, 19, 30, 18, gText('9:41', 14.5, Color(0xFFFFFFFF), weight: 700)),
@@ -39,6 +39,7 @@ class G_19 extends StatelessWidget {
       gP(52.885, 505.314, 9.275, 9.275, gImg('assets/figma/v/789bfa36ccd2e1.svg')),
       gP(75.156, 496.233, 253, 17, gText('Rechercher un produit, service, talent...', 13.711, Color(0xFF66636E))),
       gP(30.977, 542.231, 328.555, 49.402, gBox(color: Color(0xFFF2EFF6), radii: [20.312, 20.312, 20.312, 20.312])),
+      gP(30.977, 542.231, 328.555, 49.402, GField(hint: '', initial: 'Recherche avancée', size: 14.219, hintColor: Color(0xFF111015), weight: 600, padL: 44.18)),
       gP(51.336, 558.136, 11.332, 6, gImg('assets/figma/v/729a3d6803c2bf.svg')),
       gP(42.957, 558.136, 11.332, 6, gImg('assets/figma/v/729a3d6803c2bf.svg')),
       gP(49.812, 564.23, 12.855, 6, gImg('assets/figma/v/269ba55906b757.svg')),
@@ -48,7 +49,6 @@ class G_19 extends StatelessWidget {
       gP(51.336, 556.613, 6, 9.047, gImg('assets/figma/v/1c79eab5eac900.svg')),
       gP(46.766, 562.706, 6, 9.047, gImg('assets/figma/v/1c79eab5eac900.svg')),
       gP(52.859, 568.8, 6, 9.047, gImg('assets/figma/v/1c79eab5eac900.svg')),
-      gP(75.156, 558.23, 135, 18, gText('Recherche avancée', 14.219, Color(0xFF111015), weight: 600)),
       gP(338.25, 560.167, 10.062, 14.125, gImg('assets/figma/v/207e3f61a8f1f1.svg')),
       gP(25.391, 631.628, 49.766, 49.766, gBox(color: Color(0xFFFBE9C6), oval: true)),
       gP(66.016, 634.417, 6.094, 6.094, gBox(color: Color(0xFFFBC02D), oval: true)),

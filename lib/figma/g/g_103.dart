@@ -10,8 +10,8 @@ class G_103 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
       gP(286, 24, 9, 14, gImg('assets/figma/v/c57de3594f8754.svg')),
@@ -29,12 +29,7 @@ class G_103 extends StatelessWidget {
       gP(341, 71, 22, 22, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(340.75, 70.75, 20.667, 20.667, gImg('assets/figma/v/eeff0eb6fd6e24.svg')),
       gP(353.308, 83.308, 9.942, 9.942, gImg('assets/figma/v/34172806399cca.svg')),
-      gP(24, 120, 77.8, 34, gBox(color: Color(0xFF111015), radii: [17, 17, 17, 17])),
-      gP(38.4, 129, 49, 16, gText('Anciens', 12.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
-      gP(109.8, 120, 77.8, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(123.7, 129, 50, 16, gText('Mentors', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(195.6, 120, 77.8, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(208, 129, 53, 16, gText('Groupes', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 77.8, 34, 'Anciens', 12.5, 600), GChip(109.8, 120, 77.8, 34, 'Mentors', 12.5, 500), GChip(195.6, 120, 77.8, 34, 'Groupes', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
       gP(24, 168, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 176, 50, 50, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
       gP(98, 180, 100, 17, gText('Rodrigue Fotso', 13.5, Color(0xFF111015), weight: 600)),

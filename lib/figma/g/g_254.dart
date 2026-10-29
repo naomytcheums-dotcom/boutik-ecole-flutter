@@ -10,8 +10,8 @@ class G_254 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 844, radius: 46, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(-110, 580, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
-      gP(200, 140, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
+      gP(-110, 580, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(200, 140, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 28, 18, gText('9:41', 14, Color(0xFF111015), weight: 600)),
       gP(140, 10, 110, 30, gBox(color: Color(0xFF000000), radii: [15, 15, 15, 15])),
       gP(22, 38, 34, 32, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
@@ -19,14 +19,7 @@ class G_254 extends StatelessWidget {
       gP(330, 36, 40, 40, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
       gP(340.625, 45.917, 18.75, 16.625, gImg('assets/figma/v/b2ae09d0fd46bb.svg')),
       gP(345.796, 59.375, 8.408, 6.712, gImg('assets/figma/v/f59da0513c0b4c.svg')),
-      gP(24, 106, 60, 32, gBox(color: Color(0xFF111015), radii: [16, 16, 16, 16])),
-      gP(42, 113, 24, 14, gText('Tout', 11.5, Color(0xFFFFFFFF), weight: 500)),
-      gP(92, 106, 84, 32, gBox(color: Color(0xFFFFFFFF), radii: [16, 16, 16, 16])),
-      gP(109.5, 113, 49, 14, gText('Abonnés', 11.5, Color(0xFF111015))),
-      gP(184, 106, 100, 32, gBox(color: Color(0xFFFFFFFF), radii: [16, 16, 16, 16])),
-      gP(198, 113, 72, 14, gText('Commandes', 11.5, Color(0xFF111015))),
-      gP(292, 106, 68, 32, gBox(color: Color(0xFFFFFFFF), radii: [16, 16, 16, 16])),
-      gP(312, 113, 28, 14, gText('Lives', 11.5, Color(0xFF111015))),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 106, 60, 32, 'Tout', 11.5, 500), GChip(92, 106, 84, 32, 'Abonnés', 11.5, 400), GChip(184, 106, 100, 32, 'Commandes', 11.5, 400), GChip(292, 106, 68, 32, 'Lives', 11.5, 400)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFFFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 16)),
       gP(24, 152, 342, 84, gBox(gradient: LinearGradient(begin: Alignment(-1.24, -0.68), end: Alignment(0.36, 0.52), colors: [Color(0xFFE3EEFC), Color(0xFFEDE6FB)], stops: [0, 1]), border: Color(0xFFDCE6F5), bw: 1, radii: [28, 28, 28, 28])),
       gP(38, 166, 40, 40, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, radii: [20, 20, 20, 20])),
       gP(90, 168, 137, 16, gText('Kéla · rappel intelligent', 12.5, Color(0xFF111015), weight: 600)),

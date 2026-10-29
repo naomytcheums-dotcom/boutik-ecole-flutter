@@ -10,8 +10,8 @@ class G_94 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
       gP(286, 24, 9, 14, gImg('assets/figma/v/c57de3594f8754.svg')),
@@ -26,14 +26,7 @@ class G_94 extends StatelessWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 271, 26, gText('Comparer les propositions', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 55.6, 34, gBox(color: Color(0xFF111015), radii: [17, 17, 17, 17])),
-      gP(40.3, 129, 23, 16, gText('Prix', 12.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
-      gP(87.6, 120, 63, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(103.6, 129, 31, 16, gText('Délai', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(158.6, 120, 55.6, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(171.4, 129, 30, 16, gText('Note', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(222.2, 120, 92.6, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(242, 129, 53, 16, gText('Portfolio', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 55.6, 34, 'Prix', 12.5, 600), GChip(87.6, 120, 63, 34, 'Délai', 12.5, 500), GChip(158.6, 120, 55.6, 34, 'Note', 12.5, 500), GChip(222.2, 120, 92.6, 34, 'Portfolio', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
       gP(24, 168, 342, 260, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(25, 169, 340, 39, gBox(color: Color(0xFFF4F1F8), radii: [15, 15, 15, 15])),
       gP(40, 181, 38, 14, gText('Critère', 11, Color(0xFF66636E), weight: 600)),
@@ -71,7 +64,7 @@ class G_94 extends StatelessWidget {
       gP(49, 467.167, 6.007, 6, gImg('assets/figma/v/c499ab72bb5251.svg')),
       gP(76, 456, 277, 34, gText('Comparez les critères puis acceptez la proposition qui répond le mieux à votre besoin.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
       gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
-      gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27])),
+      gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Choisir une proposition')),
       gP(114, 778, 162, 18, gText('Choisir une proposition', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
     ]);

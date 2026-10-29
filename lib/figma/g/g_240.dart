@@ -10,8 +10,8 @@ class G_240 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 844, radius: 46, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 28, 18, gText('9:41', 14, Color(0xFF111015), weight: 600)),
       gP(140, 10, 110, 30, gBox(color: Color(0xFF000000), radii: [15, 15, 15, 15])),
       gP(22, 38, 34, 32, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
@@ -31,7 +31,7 @@ class G_240 extends StatelessWidget {
       gP(24, 328, 342, 96, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 8), blurRadius: 22, spreadRadius: 0)], radii: [30, 30, 30, 30])),
       gP(44, 344, 109, 15, gText('Ton lien d’invitation', 12, Color(0xFF66636E), weight: 500)),
       gP(44, 366, 222, 40, gBox(color: Color(0xFFF4F1F8), radii: [20, 20, 20, 20])),
-      gP(58, 377, 171, 15, gText('boutik-ecole.cm/r/mariam24', 12, Color(0xFF111015), weight: 500)),
+      gP(44, 366, 222, 40, GField(hint: '', initial: 'boutik-ecole.cm/r/mariam24', size: 12, hintColor: Color(0xFF111015), weight: 500, padL: 14)),
       gP(274, 366, 74, 40, gBox(color: Color(0xFF111015), radii: [20, 20, 20, 20])),
       gP(287.375, 381.375, 13.042, 13.042, gImg('assets/figma/v/a5ad75fcb14e8a.svg')),
       gP(283.583, 377.583, 13.042, 13.042, gImg('assets/figma/v/872da465016e01.svg')),

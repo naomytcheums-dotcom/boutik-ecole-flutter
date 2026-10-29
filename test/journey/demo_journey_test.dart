@@ -1,4 +1,5 @@
 import 'package:boutik_ecole/app.dart';
+import 'package:boutik_ecole/figma/gsound.dart';
 import 'package:boutik_ecole/figma/registry.dart' show gWidths;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,6 +14,7 @@ const path = [
 ];
 
 void main() {
+  GAnim.enabled = false;
   testWidgets('Parcours de démonstration de bout en bout (liens Figma)', (tester) async {
     Size sizeOf(String id) {
       final w = gWidths[id] ?? 390;

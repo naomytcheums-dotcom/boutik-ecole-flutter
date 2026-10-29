@@ -10,8 +10,8 @@ class G_243 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 844, radius: 46, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 28, 18, gText('9:41', 14, Color(0xFF111015), weight: 600)),
       gP(140, 10, 110, 30, gBox(color: Color(0xFF000000), radii: [15, 15, 15, 15])),
       gP(22, 38, 34, 32, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
@@ -36,7 +36,7 @@ class G_243 extends StatelessWidget {
       gP(100, 232, 8, 30, gBox(color: Color(0xFFD9D2F2), radii: [4, 4, 4, 4])),
       gP(114, 218, 8, 44, gBox(color: Color(0xFFD9D2F2), radii: [4, 4, 4, 4])),
       gP(128, 210, 8, 52, gBox(color: Color(0xFF6A4DFF), radii: [4, 4, 4, 4])),
-      gP(186, 222, 160, 46, gBox(color: Color(0xFF111015), radii: [23, 23, 23, 23])),
+      gP(186, 222, 160, 46, gBox(color: Color(0xFF111015), radii: [23, 23, 23, 23]), tap: () => gToast(context, 'Démonstration : Retirer vers Orange Money')),
       gP(199, 238, 134, 13, gText('Retirer vers Orange Money', 10.5, Color(0xFFFFFFFF), weight: 600)),
       gP(24, 308, 110, 70, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 16, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(40, 320, 13, 28, gText('7', 22, Color(0xFF111015), weight: 700)),

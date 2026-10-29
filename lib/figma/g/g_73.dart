@@ -10,8 +10,8 @@ class G_73 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
       gP(286, 24, 9, 14, gImg('assets/figma/v/c57de3594f8754.svg')),
@@ -28,16 +28,7 @@ class G_73 extends StatelessWidget {
       gP(76, 70, 164, 26, gText('Mes documents', 21, Color(0xFF111015), weight: 700)),
       gP(342.583, 79, 18.833, 6, gImg('assets/figma/v/6fe571ab77e960.svg')),
       gP(349, 72.583, 6, 18.833, gImg('assets/figma/v/87cbf4a9a18b64.svg')),
-      gP(24, 120, 55.6, 34, gBox(color: Color(0xFF111015), radii: [17, 17, 17, 17])),
-      gP(37.8, 129, 28, 16, gText('Tous', 12.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
-      gP(87.6, 120, 54, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(105.1, 129, 19, 16, gText('CV', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(149.6, 120, 85.2, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(163.2, 129, 58, 16, gText('Diplômes', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(242.8, 120, 114.8, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(263.2, 129, 74, 16, gText('Attestations', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(365.6, 120, 129.6, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(389.4, 129, 82, 16, gText('Certifications', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 55.6, 34, 'Tous', 12.5, 600), GChip(87.6, 120, 54, 34, 'CV', 12.5, 500), GChip(149.6, 120, 85.2, 34, 'Diplômes', 12.5, 500), GChip(242.8, 120, 114.8, 34, 'Attestations', 12.5, 500), GChip(365.6, 120, 129.6, 34, 'Certifications', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
       gP(24, 168, 342, 264, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 181, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(46.333, 189.667, 19.333, 22.667, gImg('assets/figma/v/8a418070bfb100.svg')),

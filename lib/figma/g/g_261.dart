@@ -31,6 +31,7 @@ class G_261 extends StatelessWidget {
       gP(154, 366, 28, 13, gText('Devis', 10.5, Color(0xFF66636E))),
       gP(256, 300, 110, 86, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(268.333, 315, 19.333, 18, gImg('assets/figma/v/f9499677feb01f.svg')),
+      gP(262, 308, 32, 32, GHeart()),
       gP(270, 340, 13, 25, gText('8', 20, Color(0xFF111015), weight: 700)),
       gP(270, 366, 36, 13, gText('Favoris', 10.5, Color(0xFF66636E))),
       gP(24, 408, 161, 19, gText('Commandes récentes', 15, Color(0xFF111015), weight: 600)),

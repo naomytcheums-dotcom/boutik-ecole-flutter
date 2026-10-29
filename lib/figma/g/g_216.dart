@@ -10,8 +10,8 @@ class G_216 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
       gP(286, 24, 9, 14, gImg('assets/figma/v/c57de3594f8754.svg')),
@@ -29,14 +29,7 @@ class G_216 extends StatelessWidget {
       gP(36, 143.5, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(42.979, 149.417, 18.042, 17.688, gImg('assets/figma/v/e9085cf2b599c2.svg')),
       gP(76, 134, 277, 51, gText('Voici les produits que les étudiants veulent fabriquer. Précommandez : la production démarre quand le seuil est atteint.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
-      gP(24, 213, 55.6, 34, gBox(color: Color(0xFF111015), radii: [17, 17, 17, 17])),
-      gP(37.8, 222, 28, 16, gText('Tous', 12.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
-      gP(87.6, 213, 144.4, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(110.8, 222, 98, 16, gText('Presque atteints', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(240, 213, 85.2, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(252.6, 222, 60, 16, gText('Nouveaux', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(333.2, 213, 144.4, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(343.9, 222, 123, 16, gText('Mes précommandes', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 213, 55.6, 34, 'Tous', 12.5, 600), GChip(87.6, 213, 144.4, 34, 'Presque atteints', 12.5, 500), GChip(240, 213, 85.2, 34, 'Nouveaux', 12.5, 500), GChip(333.2, 213, 144.4, 34, 'Mes précommandes', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
       gP(24, 261, 342, 140, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(34, 271, 112, 120, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [20, 20, 20, 20])),
       gP(158, 275, 199, 18, gText('Lampe en bois recyclé', 14, Color(0xFF111015), weight: 800, wrap: true)),

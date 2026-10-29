@@ -10,12 +10,7 @@ class G_142 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 1280, h: 890, radius: 16, color: Color(0xFFF7F6F4), children: [
-      gP(268, 134, 55.6, 34, gBox(color: Color(0xFF111015), radii: [17, 17, 17, 17])),
-      gP(280.3, 143, 30, 15, gText('Mois', 12.5, Color(0xFFFFFFFF), weight: 600, inter: true, align: TextAlign.center)),
-      gP(331.6, 134, 92.6, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(349.9, 143, 57, 15, gText('Trimestre', 12.5, Color(0xFF66636E), weight: 500, inter: true, align: TextAlign.center)),
-      gP(432.2, 134, 63, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(444.2, 143, 39, 15, gText('Année', 12.5, Color(0xFF66636E), weight: 500, inter: true, align: TextAlign.center)),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(268, 134, 55.6, 34, 'Mois', 12.5, 600), GChip(331.6, 134, 92.6, 34, 'Trimestre', 12.5, 500), GChip(432.2, 134, 63, 34, 'Année', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17, inter: true)),
       gP(268, 182, 485, 210, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
       gP(284, 196, 290, 17, gText('Encaissements par département (M FCFA)', 14, Color(0xFF111015), weight: 700, inter: true)),
       gP(708, 198, 29, 14, gText('FCFA', 11.5, Color(0xFF66636E), weight: 500, inter: true, align: TextAlign.right)),
@@ -61,10 +56,10 @@ class G_142 extends StatelessWidget {
       gP(20, 10, 36, 34, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(62, 17, 107, 21, gText('Boutik-École', 17, Color(0xFF18181B), weight: 700, inter: true)),
       gP(240, 12, 330, 34, gBox(color: Color(0xFFF4F3F1), border: Color(0xFFE6E3DE), bw: 1, radii: [17, 17, 17, 17])),
+      gP(240, 12, 330, 34, GField(hint: 'Rechercher données, rapports, produits…', size: 11.5, hintColor: Color(0xFF66636E), weight: 400, padL: 36, inter: true)),
       gP(252.5, 21.5, 15, 15, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(251.375, 20.375, 16, 16, gImg('assets/figma/v/3a82c8c513bd84.svg')),
       gP(259.938, 28.938, 8.687, 8.687, gImg('assets/figma/v/ee5ed5a7003f46.svg')),
-      gP(276, 21, 226, 14, gText('Rechercher données, rapports, produits…', 11.5, Color(0xFF66636E), inter: true)),
       gP(940, 15, 28, 28, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, border: Color(0xFFFFFFFF), bw: 2, oval: true)),
       gP(960, 15, 28, 28, gBox(image: 'assets/figma/img/ebf23a969ca7b1083d1dcab994c4899c0b4db38b.png', fit: BoxFit.cover, border: Color(0xFFFFFFFF), bw: 2, oval: true)),
       gP(980, 15, 28, 28, gBox(image: 'assets/figma/img/c15478a4e0a5cc1be462d8179ed1a24390853242.png', fit: BoxFit.cover, border: Color(0xFFFFFFFF), bw: 2, oval: true)),

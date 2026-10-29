@@ -64,7 +64,7 @@ class G_P1 extends StatelessWidget {
       gP(184, 783, 22, 22, const SizedBox.expand(), tap: () => gOpen(context, '03')),
       gP(183.75, 781.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       gP(165, 371, 60, 20, gBox(color: Color(0xFFFF2D55), border: Color(0xFFFFFFFF), bw: 2, radii: [10, 10, 10, 10])),
-      gP(173, 375.5, 44, 11, gText('EN DIRECT', 8.5, Color(0xFFFFFFFF), weight: 700)),
+      gP(173, 375.5, 44, 11, gText('EN DIRECT', 8.5, Color(0xFFFFFFFF), weight: 700), fx: 'pulse'),
       gP(232, 538, 138, 34, gBox(color: Color(0xFFF4F3F6), radii: [17, 17, 17, 17])),
       gP(241.083, 546.583, 16.833, 16.292, gImg('assets/figma/v/e1794306169e1f.svg')),
       gP(268, 547, 73, 13, gText('Avis & réseaux', 10.5, Color(0xFF111015), weight: 600)),

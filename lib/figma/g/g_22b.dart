@@ -10,8 +10,8 @@ class G_22b extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
       gP(286, 24, 9, 14, gImg('assets/figma/v/c57de3594f8754.svg')),
@@ -29,16 +29,7 @@ class G_22b extends StatelessWidget {
       gP(341, 71, 22, 22, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(340.75, 70.75, 20.667, 20.667, gImg('assets/figma/v/eeff0eb6fd6e24.svg')),
       gP(353.308, 83.308, 9.942, 9.942, gImg('assets/figma/v/34172806399cca.svg')),
-      gP(24, 120, 55.6, 34, gBox(color: Color(0xFF111015), radii: [17, 17, 17, 17])),
-      gP(37.8, 129, 28, 16, gText('Tous', 12.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
-      gP(87.6, 120, 70.4, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(101.8, 129, 42, 16, gText('Design', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(166, 120, 122.2, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(178.1, 129, 98, 16, gText('Développement', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(296.2, 120, 77.8, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(313.6, 129, 43, 16, gText('Tutorat', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(382, 120, 107.4, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(401.2, 129, 69, 16, gText('Audiovisuel', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 55.6, 34, 'Tous', 12.5, 600), GChip(87.6, 120, 70.4, 34, 'Design', 12.5, 500), GChip(166, 120, 122.2, 34, 'Développement', 12.5, 500), GChip(296.2, 120, 77.8, 34, 'Tutorat', 12.5, 500), GChip(382, 120, 107.4, 34, 'Audiovisuel', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
       gP(24, 168, 83, 19, gText('46 services', 15, Color(0xFF111015), weight: 700)),
       gP(325, 170, 25, 15, gText('Trier', 12, Color(0xFF5A3FE0), weight: 500, align: TextAlign.right)),
       gP(352.5, 175, 13, 6, gImg('assets/figma/v/4159f10924eea0.svg')),

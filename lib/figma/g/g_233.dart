@@ -10,8 +10,8 @@ class G_233 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(0, 0, 390, 110, gBox(color: Color(0xFF111015))),
       gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFFFFFFFF), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/5bc0bea2e7c30c.svg')),
@@ -45,12 +45,12 @@ class G_233 extends StatelessWidget {
       gP(16, 529, 300, 49, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x1A122640), offset: Offset(0, 1), blurRadius: 2, spreadRadius: 0)], radii: [14, 14, 14, 14])),
       gP(28, 539, 279, 19, gText('Que souhaitez-vous faire ?', 13, Color(0xFF111111), lh: 19, wrap: true)),
       gP(282, 560, 24, 13, gText('10:13', 10, Color(0xFF66636E), align: TextAlign.right)),
-      gP(16, 586, 300, 40, gBox(color: Color(0xFFFFFFFF), radii: [20, 20, 20, 20])),
+      gP(16, 586, 300, 40, gBox(color: Color(0xFFFFFFFF), radii: [20, 20, 20, 20]), tap: () => gToast(context, 'Démonstration : Voir les propositions')),
       gP(101.5, 597, 129, 16, gText('Voir les propositions', 13, Color(0xFF128C7E), weight: 700, align: TextAlign.center)),
-      gP(16, 632, 300, 40, gBox(color: Color(0xFFFFFFFF), radii: [20, 20, 20, 20])),
+      gP(16, 632, 300, 40, gBox(color: Color(0xFFFFFFFF), radii: [20, 20, 20, 20]), tap: () => gToast(context, 'Démonstration : Écrire à l’équipe')),
       gP(115, 643, 102, 16, gText('Écrire à l’équipe', 13, Color(0xFF128C7E), weight: 700, align: TextAlign.center)),
       gP(10, 780, 300, 46, gBox(color: Color(0xFFFFFFFF), radii: [23, 23, 23, 23])),
-      gP(34, 794, 61, 18, gText('Message', 14, Color(0xFF66636E))),
+      gP(10, 780, 300, 46, GField(hint: 'Message', size: 14, hintColor: Color(0xFF66636E), weight: 400, padL: 24)),
       gP(320, 780, 46, 46, gBox(color: Color(0xFF128C7E), oval: true)),
       gP(331.667, 791.667, 22.667, 22.667, gImg('assets/figma/v/37684f95055729.svg')),
       gP(339.167, 791.667, 15.167, 15.167, gImg('assets/figma/v/850ac0825ae325.svg')),

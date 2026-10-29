@@ -1,3 +1,4 @@
+import 'package:boutik_ecole/figma/gsound.dart';
 import 'dart:io';
 
 import 'package:boutik_ecole/app.dart';
@@ -33,6 +34,7 @@ Size designSize(ScreenFormat f) => switch (f) {
 
 /// Monte l'application directement sur l'écran `id`.
 Future<void> pumpScreen(WidgetTester tester, String id, {Size size = const Size(390, 900)}) async {
+  GAnim.enabled = false;
   tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);

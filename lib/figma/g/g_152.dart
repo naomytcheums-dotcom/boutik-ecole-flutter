@@ -10,8 +10,8 @@ class G_152 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
       gP(286, 24, 9, 14, gImg('assets/figma/v/c57de3594f8754.svg')),
@@ -37,14 +37,7 @@ class G_152 extends StatelessWidget {
       gP(352.667, 84.5, 6, 9.667, gImg('assets/figma/v/c267f7a32a398f.svg')),
       gP(24, 120, 342, 92, gBox(gradient: LinearGradient(begin: Alignment(-1.24, -0.68), end: Alignment(0.36, 0.52), colors: [Color(0xFFE3EEFC), Color(0xFFEDE6FB)], stops: [0, 1]), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x14403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(102, 160, 249, 51, gText('Kéla a choisi ces offres selon vos compétences, votre filière et votre activité. Vous gardez la main.', 11, Color(0xFF4A4854), lh: 17, wrap: true)),
-      gP(24, 226, 55.6, 34, gBox(color: Color(0xFF111015), radii: [17, 17, 17, 17])),
-      gP(38.3, 235, 27, 16, gText('Tout', 12.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
-      gP(87.6, 226, 70.4, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(101.3, 235, 43, 16, gText('Stages', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(166, 226, 77.8, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(183.4, 235, 43, 16, gText('Projets', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(251.8, 226, 63, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(267.8, 235, 31, 16, gText('Défis', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 226, 55.6, 34, 'Tout', 12.5, 600), GChip(87.6, 226, 70.4, 34, 'Stages', 12.5, 500), GChip(166, 226, 77.8, 34, 'Projets', 12.5, 500), GChip(251.8, 226, 63, 34, 'Défis', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
       gP(24, 274, 342, 330, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 287, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(44.667, 299.833, 22.667, 17.667, gImg('assets/figma/v/0b1915710c6b88.svg')),

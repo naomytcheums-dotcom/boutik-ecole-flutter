@@ -10,8 +10,8 @@ class G_74 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 844, radius: 46, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 140, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 580, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 140, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 580, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 28, 18, gText('9:41', 14, Color(0xFF111015), weight: 600)),
       gP(140, 10, 110, 30, gBox(color: Color(0xFF000000), radii: [15, 15, 15, 15])),
       gP(22, 38, 34, 32, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
@@ -55,7 +55,7 @@ class G_74 extends StatelessWidget {
       gP(44, 562, 237, 15, gText('BE-C-0412 · Lampe en bois recyclé · Émis', 12, Color(0xFF111015), weight: 500)),
       gP(44, 584, 238, 15, gText('BE-C-0377 · Application de stock · Vérifié', 12, Color(0xFF111015), weight: 500)),
       gP(44, 606, 306, 15, gText('2 recommandations d’entreprises · Orange Cameroun', 12, Color(0xFF66636E))),
-      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26])),
+      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => gToast(context, 'Démonstration : Partager mon passport (QR / PDF)')),
       gP(73, 788, 244, 19, gText('Partager mon passport (QR / PDF)', 15, Color(0xFFFFFFFF), weight: 600)),
       gTap(30, 70, 44, 44, () => gOpen(context, '10')),
     ]);

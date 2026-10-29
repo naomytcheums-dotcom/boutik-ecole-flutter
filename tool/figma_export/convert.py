@@ -197,6 +197,148 @@ def save_svg(svg):
         open(p, 'w', encoding='utf-8').write(svg)
     return 'assets/figma/v/' + name
 
+# ---------- couche dynamique : détection des composants interactifs ----------
+ROLE = {}
+SKIP = set()
+
+def lum(c):
+    return 0.2126 * c['r'] + 0.7152 * c['g'] + 0.0722 * c['b']
+
+def solid_fill(n):
+    fl = vis(n.get('fills'))
+    return fl[-1] if fl and fl[-1]['type'] == 'SOLID' else None
+
+def rad(n):
+    return n.get('cornerRadius', 0) or max(n.get('rectangleCornerRadii', [0]))
+
+def flat(n, PM, out, root=False):
+    if not n.get('visible', True) or n.get('isMask'):
+        return
+    rel = n.get('relativeTransform') or [[1, 0, 0], [0, 1, 0]]
+    M = PM if root else mat_mul(PM, rel)
+    if not root:
+        out.append(dict(n=n, x=M[0][2], y=M[1][2], w=n['size']['x'], h=n['size']['y'], rot=abs(M[1][0]) > 1e-4))
+    for c in n.get('children', []):
+        flat(c, M, out)
+
+def analyze(doc, nid):
+    ROLE.clear()
+    SKIP.clear()
+    items = []
+    flat(doc, [[1, 0, 0], [0, 1, 0]], items, True)
+    texts = [i for i in items if i['n']['type'] == 'TEXT']
+    rects = [i for i in items if i['n']['type'] == 'RECTANGLE' and not i['rot']]
+    ells = [i for i in items if i['n']['type'] == 'ELLIPSE']
+    links = [[float(v) for v in box.split(',')] for box, dest in LINKS.get(nid, [])]
+
+    def inside(a, b, m=1):
+        return a['x'] >= b['x'] - m and a['y'] >= b['y'] - m and a['x'] + a['w'] <= b['x'] + b['w'] + m and a['y'] + a['h'] <= b['y'] + b['h'] + m
+
+    def linked(r):
+        cx, cy = r['x'] + r['w'] / 2, r['y'] + r['h'] / 2
+        return any(l[0] <= cx <= l[0] + l[2] and l[1] <= cy <= l[1] + l[3] for l in links) or bool(r['n'].get('interactions'))
+
+    # interrupteurs
+    for r in rects:
+        n = r['n']
+        if not (18 <= r['h'] <= 40 and 1.4 <= r['w'] / max(r['h'], 1) <= 2.6 and rad(n) >= r['h'] / 2 - 1):
+            continue
+        sf = solid_fill(n)
+        if not sf:
+            continue
+        for e in ells:
+            if inside(e, r) and abs(e['w'] - e['h']) < 1 and r['h'] - 14 <= e['w'] <= r['h'] - 1:
+                on = e['x'] + e['w'] / 2 > r['x'] + r['w'] / 2
+                ROLE[n['id']] = ('toggle', dict(on=on, color=sf['color'], knob=e['w']))
+                SKIP.add(e['n']['id'])
+                break
+    # champs de saisie
+    for r in rects:
+        n = r['n']
+        if n['id'] in ROLE or linked(r) or not (34 <= r['h'] <= 72 and r['w'] >= 110):
+            continue
+        named = re.search('champ|recherche|search|input|saisie', n['name'], re.I)
+        if rad(n) < 10 and not named:
+            continue
+        sf = solid_fill(n)
+        if not sf or lum(sf['color']) < 0.5:
+            continue
+        ts = [t for t in texts if inside(t, r, 2) and t['n']['id'] not in SKIP]
+        if len(ts) != 1:
+            continue
+        t = ts[0]
+        tn = t['n']
+        if '\n' in tn['characters'] or len(tn['characters']) > 60:
+            continue
+        left = t['x'] - r['x']
+        if not (8 <= left <= 48):
+            continue
+        if t['h'] > 1.7 * tn['style'].get('fontSize', 12):
+            continue
+        col = solid_fill(tn)
+        grey = col and abs(col['color']['r'] - col['color']['g']) < 0.08 and 0.3 < lum(col['color']) < 0.8
+        if not (grey or named):
+            continue
+        if tn['style'].get('textAlignHorizontal') == 'CENTER' and abs((t['x'] + t['w'] / 2) - (r['x'] + r['w'] / 2)) < 6:
+            continue
+        ROLE[n['id']] = ('input', dict(t=tn, left=left, multi=False))
+        SKIP.add(tn['id'])
+    # groupes de pastilles / onglets à choix unique
+    cands = []
+    for r in rects:
+        n = r['n']
+        if n['id'] in ROLE or n['id'] in SKIP or linked(r):
+            continue
+        if not (22 <= r['h'] <= 52 and r['w'] <= 220 and rad(n) >= r['h'] / 2 - 3):
+            continue
+        sf = solid_fill(n)
+        if not sf:
+            continue
+        ts = [t for t in texts if inside(t, r, 2) and t['n']['id'] not in SKIP]
+        if len(ts) != 1:
+            continue
+        cands.append((r, ts[0], sf))
+    cands.sort(key=lambda c: (round(c[0]['y'] / 3), c[0]['x']))
+    rows = []
+    for c in cands:
+        if rows and abs(rows[-1][-1][0]['y'] - c[0]['y']) <= 2 and c[0]['x'] - (rows[-1][-1][0]['x'] + rows[-1][-1][0]['w']) <= 24:
+            rows[-1].append(c)
+        else:
+            rows.append([c])
+    for row in rows:
+        if len(row) < 2:
+            continue
+        key = lambda c: (round(c[2]['color']['r'], 2), round(c[2]['color']['g'], 2), round(c[2]['color']['b'], 2), round(c[2].get('opacity', 1), 2))
+        counts = {}
+        for c in row:
+            counts[key(c)] = counts.get(key(c), 0) + 1
+        if len(counts) != 2 or min(counts.values()) == max(counts.values()):
+            continue
+        minority = [c for c in row if counts[key(c)] == min(counts.values())]
+        if len(minority) != 1:
+            continue
+        sel = row.index(minority[0])
+        unsel = [c for c in row if c is not minority[0]][0]
+        ROLE[row[0][0]['n']['id']] = ('choice', dict(row=row, sel=sel, unsel=unsel, selc=minority[0]))
+        for c in row:
+            SKIP.add(c[1]['n']['id'])
+            if c[0]['n']['id'] != row[0][0]['n']['id']:
+                SKIP.add(c[0]['n']['id'])
+    # boutons : rectangle arrondi + libellé centré, sans lien
+    for r in rects:
+        n = r['n']
+        if n['id'] in ROLE or n['id'] in SKIP or linked(r):
+            continue
+        if not (36 <= r['h'] <= 66 and r['w'] >= 100 and rad(n) >= min(12, r['h'] / 2 - 4)):
+            continue
+        ts = [t for t in texts if inside(t, r, 2)]
+        if len(ts) != 1:
+            continue
+        t = ts[0]
+        if abs((t['x'] + t['w'] / 2) - (r['x'] + r['w'] / 2)) > 8:
+            continue
+        ROLE[n['id']] = ('button', t['n']['characters'])
+
 # ---------- émission ----------
 def tap_expr(n):
     for it in n.get('interactions', []) or []:
@@ -220,7 +362,7 @@ def pos(M, w, h, ox, oy):
     return M[0][2] - ox, M[1][2] - oy, rot
 
 def emit_node(ctx, n, PM, ox, oy, out, root=False):
-    if not n.get('visible', True) or n.get('isMask'):
+    if not n.get('visible', True) or n.get('isMask') or n['id'] in SKIP:
         return
     t = n['type']
     rel = n.get('relativeTransform') or [[1, 0, 0], [0, 1, 0]]
@@ -235,6 +377,40 @@ def emit_node(ctx, n, PM, ox, oy, out, root=False):
     if op < 1 and t != 'TEXT':
         extra += ', op: ' + num(op)
     geo = '%s, %s, %s, %s' % (num(x), num(y), num(w), num(h))
+    nm = n['name'].lower()
+    if t == 'ELLIPSE' and n['name'] == 'Halo':
+        extra += ", fx: 'halo'"
+    elif t == 'RECTANGLE' and nm.startswith('onde'):
+        extra += ", fx: 'wave'"
+    elif t == 'TEXT' and n.get('characters', '').strip().upper() in ('EN DIRECT', 'LIVE'):
+        extra += ", fx: 'pulse'"
+    role = ROLE.get(n['id'])
+    if role and role[0] == 'toggle':
+        d = role[1]
+        on_c = color(d['color']) if d['on'] else 'Color(0xFF111015)'
+        off_c = 'Color(0xFFDAD8DF)' if d['on'] else color(d['color'])
+        out.append("gP(%s, GToggle(on: %s, onColor: %s, offColor: %s, knob: %s)%s)" % (geo, 'true' if d['on'] else 'false', on_c, off_c, num(d['knob']), extra))
+        return
+    if role and role[0] == 'choice':
+        d = role[1]
+        chips = []
+        for (r_, t_, sf_) in d['row']:
+            tn = t_['n']
+            chips.append("GChip(%s, %s, %s, %s, %s, %s, %d)" % (num(r_['x'] - ox), num(r_['y'] - oy), num(r_['w']), num(r_['h']), dq(tn['characters']), num(tn['style'].get('fontSize', 12)), int(tn['style'].get('fontWeight', 400))))
+
+        def tcol(c_):
+            f_ = solid_fill(c_[1]['n'])
+            return color(f_['color'], f_.get('opacity', 1)) if f_ else 'Color(0xFF111015)'
+        selc, unsel = d['selc'], d['unsel']
+        bd = ''
+        ust = stroke_args(unsel[0]['n'])
+        if ust:
+            bd = ', border: ' + ust[0][8:]
+        inter = 'inter' in d['row'][0][1]['n']['style'].get('fontFamily', '').lower()
+        out.append("Positioned.fill(child: GChoiceGroup(chips: [%s], selected: %d, selFill: %s, unselFill: %s, selText: %s, unselText: %s, radius: %s%s%s))" % (
+            ', '.join(chips), d['sel'], color(selc[2]['color'], selc[2].get('opacity', 1)), color(unsel[2]['color'], unsel[2].get('opacity', 1)),
+            tcol(selc), tcol(unsel), num(rad(d['row'][0][0]['n'])), bd, ', inter: true' if inter else ''))
+        return
 
     # --- rastérisation : icônes à texture (chrome) et formes complexes
     def raster():
@@ -279,14 +455,32 @@ def emit_node(ctx, n, PM, ox, oy, out, root=False):
     if root:
         return
     if shape and drawn:
+        if role and role[0] == 'button' and not tap:
+            tap = "() => gToast(context, %s)" % dq('Démonstration : ' + role[1].strip())
         tp = (', tap: ' + tap) if (tap and t in ('RECTANGLE', 'ELLIPSE') ) else ''
         out.append("gP(%s, gBox(%s)%s%s)" % (geo, ', '.join(args), extra, tp))
+        if role and role[0] == 'input':
+            tn = role[1]['t']
+            st_ = tn['style']
+            f_ = solid_fill(tn)
+            hc = color(f_['color'], f_.get('opacity', 1)) if f_ else 'Color(0xFF8C8A93)'
+            obs = ', obscure: true' if re.search('mot de passe|password', tn['characters'], re.I) else ''
+            dark = bool(f_) and lum(f_['color']) < 0.35
+            txt = ("hint: '', initial: %s" % dq(tn['characters'])) if dark else ("hint: %s" % dq(tn['characters']))
+            out.append("gP(%s, GField(%s, size: %s, hintColor: %s, weight: %d, padL: %s%s%s))" % (
+                geo, txt, num(st_.get('fontSize', 14)), hc, int(st_.get('fontWeight', 400)), num(role[1]['left']),
+                ', inter: true' if 'inter' in st_.get('fontFamily', '').lower() else '', obs))
     elif tap and t in ('RECTANGLE', 'ELLIPSE', 'FRAME', 'GROUP', 'INSTANCE', 'COMPONENT'):
         out.append("gP(%s, const SizedBox.expand()%s, tap: %s)" % (geo, extra, tap))
     if t in ('FRAME', 'GROUP', 'INSTANCE', 'COMPONENT', 'SECTION'):
         if tap and drawn and t in ('FRAME', 'GROUP', 'INSTANCE', 'COMPONENT'):
             out.append("gP(%s, const SizedBox.expand(), tap: %s)" % (geo, tap))
         kids = [c for c in n.get('children', []) if c.get('visible', True)]
+        if t == 'FRAME' and nm.startswith('icon/heart'):
+            for c in kids:
+                emit_node(ctx, c, M, ox, oy, out)
+            out.append("gP(%s, GHeart())" % ', '.join([num(x - 8), num(y - 8), num(w + 16), num(h + 16)]))
+            return
         clip = n.get('clipsContent') and any(
             (c['absoluteBoundingBox']['x'] < n['absoluteBoundingBox']['x'] - 1 or c['absoluteBoundingBox']['y'] < n['absoluteBoundingBox']['y'] - 1 or
              c['absoluteBoundingBox']['x'] + c['absoluteBoundingBox']['width'] > n['absoluteBoundingBox']['x'] + n['absoluteBoundingBox']['width'] + 1 or
@@ -383,6 +577,7 @@ def convert(sid):
     CUR['root'] = nid
     w, h = doc['size']['x'], doc['size']['y']
     SIZES[sid] = (w, h)
+    analyze(doc, nid)
     out = []
     ident = [[1, 0, 0], [0, 1, 0]]
     for c in doc.get('children', []):

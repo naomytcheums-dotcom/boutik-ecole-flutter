@@ -10,8 +10,8 @@ class G_100 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
       gP(286, 24, 9, 14, gImg('assets/figma/v/c57de3594f8754.svg')),
@@ -50,14 +50,7 @@ class G_100 extends StatelessWidget {
       gP(319.143, 120, 44.857, 58, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1, radii: [16, 16, 16, 16])),
       gP(337.071, 129, 9, 14, gText('D', 11, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
       gP(331.571, 147, 20, 20, gText('26', 16, Color(0xFF111015), weight: 700, align: TextAlign.center)),
-      gP(24, 192, 55.6, 34, gBox(color: Color(0xFF111015), radii: [17, 17, 17, 17])),
-      gP(37.8, 201, 28, 16, gText('Tous', 12.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
-      gP(87.6, 192, 107.4, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(106.3, 201, 70, 16, gText('Expositions', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(203, 192, 85.2, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(223.1, 201, 45, 16, gText('Ateliers', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(296.2, 192, 107.4, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(310.4, 201, 79, 16, gText('Conférences', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 192, 55.6, 34, 'Tous', 12.5, 600), GChip(87.6, 192, 107.4, 34, 'Expositions', 12.5, 500), GChip(203, 192, 85.2, 34, 'Ateliers', 12.5, 500), GChip(296.2, 192, 107.4, 34, 'Conférences', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
       gP(24, 240, 107, 19, gText('Cette semaine', 15, Color(0xFF111015), weight: 700)),
       gP(24, 278, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 291, 40, 40, gBox(color: Color(0xFFFDEFC8), radii: [13, 13, 13, 13])),

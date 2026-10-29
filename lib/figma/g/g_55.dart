@@ -10,8 +10,8 @@ class G_55 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
       gP(286, 24, 9, 14, gImg('assets/figma/v/c57de3594f8754.svg')),
@@ -38,10 +38,10 @@ class G_55 extends StatelessWidget {
       gP(24, 200, 246.24, 76, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(38, 211, 221.24, 54, gText('Bonjour Mariam, votre proposition nous intéresse. Pouvez-vous présenter votre portfolio ?', 12.5, Color(0xFF111015), lh: 18, wrap: true)),
       gP(30, 280, 30, 13, gText('09:30', 10, Color(0xFF8793A5))),
-      gP(119.76, 302, 246.24, 58, gBox(color: Color(0xFF111015), radii: [18, 18, 18, 18])),
+      gP(119.76, 302, 246.24, 58, gBox(color: Color(0xFF111015), radii: [18, 18, 18, 18]), tap: () => gToast(context, 'Démonstration : Bonjour, voici mon portfolio et deux références.')),
       gP(133.76, 313, 221.24, 36, gText('Bonjour, voici mon portfolio et deux références.', 12.5, Color(0xFFFFFFFF), lh: 18, wrap: true)),
       gP(331, 364, 29, 13, gText('09:42', 10, Color(0xFF8793A5), align: TextAlign.right)),
-      gP(24, 386, 246.24, 58, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
+      gP(24, 386, 246.24, 58, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28]), tap: () => gToast(context, 'Démonstration : Parfait, nous planifions un entretien jeudi.')),
       gP(38, 397, 221.24, 36, gText('Parfait, nous planifions un entretien jeudi.', 12.5, Color(0xFF111015), lh: 18, wrap: true)),
       gP(30, 448, 28, 13, gText('10:05', 10, Color(0xFF8793A5))),
       gP(24, 568, 0, 16, gText('', 12.5, Color(0xFF111015), weight: 600)),

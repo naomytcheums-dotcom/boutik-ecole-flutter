@@ -10,8 +10,8 @@ class G_148_2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 900, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 147, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 624, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 147, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 624, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 19, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
       gP(286, 24, 9, 14, gImg('assets/figma/v/c57de3594f8754.svg')),
@@ -50,8 +50,7 @@ class G_148_2 extends StatelessWidget {
       gP(52.75, 353.5, 10.5, 9, gImg('assets/figma/v/437c9ab58b0839.svg')),
       gP(90, 341.5, 154, 17, gText('Double authentification', 13.5, Color(0xFF111015), weight: 600)),
       gP(90, 361, 169, 14, gText('Code SMS à chaque connexion', 11.5, Color(0xFF66636E))),
-      gP(308, 346, 38, 24, gBox(color: Color(0xFF111015), radii: [12, 12, 12, 12])),
-      gP(325, 349, 18, 18, gBox(color: Color(0xFFFFFFFF), oval: true)),
+      gP(308, 346, 38, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
       gP(90, 384, 256, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 392, 36, 36, gBox(color: Color(0xFFF1EEFB), radii: [12, 12, 12, 12])),
       gP(49.75, 399.5, 16.5, 21, gImg('assets/figma/v/f88bf1acb4da04.svg')),
@@ -76,7 +75,7 @@ class G_148_2 extends StatelessWidget {
       gP(90, 574.5, 127, 17, gText('Chrome • Windows', 13.5, Color(0xFF111015), weight: 600)),
       gP(90, 595, 181, 14, gText('Yaoundé, Cameroun • Il y a 2 jours', 11.5, Color(0xFF66636E))),
       gP(276, 585, 74, 14, gText('Déconnecter', 11.5, Color(0xFFE5484D), weight: 600, align: TextAlign.right)),
-      gP(24, 644, 342, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE5484D), bw: 1.5, radii: [27, 27, 27, 27])),
+      gP(24, 644, 342, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE5484D), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Se déconnecter de tous les appareils')),
       gP(62, 661.5, 266, 19, gText('Se déconnecter de tous les appareils', 15, Color(0xFFE5484D), weight: 600, align: TextAlign.center)),
       gP(125, 889, 140, 4, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(22, 812, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),

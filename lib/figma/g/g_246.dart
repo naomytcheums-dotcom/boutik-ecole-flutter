@@ -10,8 +10,8 @@ class G_246 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 844, radius: 46, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(-110, 580, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
-      gP(200, 140, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
+      gP(-110, 580, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(200, 140, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 28, 18, gText('9:41', 14, Color(0xFF111015), weight: 600)),
       gP(140, 10, 110, 30, gBox(color: Color(0xFF000000), radii: [15, 15, 15, 15])),
       gP(22, 38, 34, 32, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
@@ -28,7 +28,7 @@ class G_246 extends StatelessWidget {
       gP(24, 158, 342, 200, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 12), blurRadius: 24, spreadRadius: 0)], radii: [36, 36, 36, 36])),
       gP(40, 172, 90, 25, gBox(color: Color(0xFFFF2D55), radii: [100, 100, 100, 100])),
       gP(52, 181, 7, 7, gBox(color: Color(0xFFFFFFFF), oval: true)),
-      gP(64, 178, 54, 13, gText('EN DIRECT', 10.5, Color(0xFF111015), weight: 600)),
+      gP(64, 178, 54, 13, gText('EN DIRECT', 10.5, Color(0xFF111015), weight: 600), fx: 'pulse'),
       gP(304, 172, 46, 25, gBox(color: Color(0xB2111015), radii: [100, 100, 100, 100])),
       gP(316, 178, 22, 13, gText('1,2 k', 10.5, Color(0xFFFFFFFF), weight: 600)),
       gP(171, 234, 48, 48, gBox(color: Color(0x4DFFFFFF), oval: true)),

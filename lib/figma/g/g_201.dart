@@ -10,8 +10,8 @@ class G_201 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
       gP(286, 24, 9, 14, gImg('assets/figma/v/c57de3594f8754.svg')),
@@ -31,12 +31,7 @@ class G_201 extends StatelessWidget {
       gP(292, 134, 34, 25, gText('4,9', 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
       gP(295, 164, 28, 14, gText('Note', 11.5, Color(0xFF66636E), align: TextAlign.center)),
       gP(252, 134, 1, 48, gBox(color: Color(0xFFF2EFF6))),
-      gP(24, 210, 85.2, 34, gBox(color: Color(0xFF111015), radii: [17, 17, 17, 17])),
-      gP(40.6, 219, 52, 16, gText('En cours', 12.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
-      gP(117.2, 210, 92.6, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(138, 219, 51, 16, gText('À valider', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(217.8, 210, 92.6, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(233.1, 219, 62, 16, gText('Terminées', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 210, 85.2, 34, 'En cours', 12.5, 600), GChip(117.2, 210, 92.6, 34, 'À valider', 12.5, 500), GChip(217.8, 210, 92.6, 34, 'Terminées', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
       gP(24, 258, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 266, 50, 50, gBox(image: 'assets/figma/img/4b7b6cea2f4622846841cd8342842e81fa1ed891.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
       gP(98, 270, 149, 17, gText('Identité visuelle Mbella', 13.5, Color(0xFF111015), weight: 600)),

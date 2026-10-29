@@ -10,8 +10,8 @@ class G_50 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
       gP(286, 24, 9, 14, gImg('assets/figma/v/c57de3594f8754.svg')),
@@ -28,14 +28,7 @@ class G_50 extends StatelessWidget {
       gP(76, 70, 132, 26, gText('Notifications', 21, Color(0xFF111015), weight: 700)),
       gP(346.25, 76.25, 11.5, 11.5, gImg('assets/figma/v/dd7f4ecaa9b199.svg')),
       gP(339.833, 69.833, 24.333, 24.333, gImg('assets/figma/v/e60784a24bd7e3.svg')),
-      gP(24, 120, 70.4, 34, gBox(color: Color(0xFF111015), radii: [17, 17, 17, 17])),
-      gP(38.7, 129, 41, 16, gText('Toutes', 12.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
-      gP(102.4, 120, 92.6, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(109.7, 129, 78, 16, gText('Commandes', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(203, 120, 85.2, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(215.1, 129, 61, 16, gText('Messages', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(296.2, 120, 100, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(311.2, 129, 70, 16, gText('Promotions', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 70.4, 34, 'Toutes', 12.5, 600), GChip(102.4, 120, 92.6, 34, 'Commandes', 12.5, 500), GChip(203, 120, 85.2, 34, 'Messages', 12.5, 500), GChip(296.2, 120, 100, 34, 'Promotions', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
       gP(24, 168, 85, 19, gText('Aujourd’hui', 15, Color(0xFF111015), weight: 700)),
       gP(305, 170, 45, 15, gText('Tout lire', 12, Color(0xFF5A3FE0), weight: 500, align: TextAlign.right)),
       gP(352.5, 175, 13, 6, gImg('assets/figma/v/4159f10924eea0.svg')),

@@ -19,10 +19,22 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/catalogue', builder: (_, _) => const ScreenCatalogue()),
     GoRoute(
       path: '/s/:id',
-      builder: (context, state) {
+      pageBuilder: (context, state) {
         final entry = screensById[state.pathParameters['id']];
-        if (entry == null) return MissingScreen(id: state.pathParameters['id'] ?? '?');
-        return entry.builder(context);
+        final child = entry == null ? MissingScreen(id: state.pathParameters['id'] ?? '?') : entry.builder(context);
+        return CustomTransitionPage<void>(
+          key: state.pageKey,
+          child: child,
+          transitionDuration: const Duration(milliseconds: 320),
+          reverseTransitionDuration: const Duration(milliseconds: 240),
+          transitionsBuilder: (context, animation, secondary, child) {
+            final a = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
+            return FadeTransition(
+              opacity: a,
+              child: SlideTransition(position: Tween<Offset>(begin: const Offset(0.06, 0), end: Offset.zero).animate(a), child: child),
+            );
+          },
+        );
       },
     ),
   ],

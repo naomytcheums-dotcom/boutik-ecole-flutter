@@ -10,8 +10,8 @@ class G_150_1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
       gP(286, 24, 9, 14, gImg('assets/figma/v/c57de3594f8754.svg')),
@@ -126,6 +126,7 @@ class G_150_1 extends StatelessWidget {
       gP(88, 413, 266, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(36, 426, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(44.667, 435.5, 22.667, 21, gImg('assets/figma/v/7565149e296580.svg')),
+      gP(38, 428, 36, 36, GHeart()),
       gP(88, 425, 47, 17, gText('Favoris', 13.5, Color(0xFF111015), weight: 600)),
       gP(88, 447, 68, 14, gText('Synchronisé', 11.5, Color(0xFF66636E))),
       gP(319.2, 435, 32.8, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
@@ -141,8 +142,7 @@ class G_150_1 extends StatelessWidget {
       gP(24, 559, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 571, 186, 17, gText('Mode économie de données', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 593, 133, 14, gText('Charger moins d’images', 11.5, Color(0xFF66636E))),
-      gP(308, 580, 42, 24, gBox(color: Color(0xFF111015), radii: [12, 12, 12, 12])),
-      gP(329, 583, 18, 18, gBox(color: Color(0xFFFFFFFF), oval: true)),
+      gP(308, 580, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
       gP(24, 639, 342, 84, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 651, 147, 16, gText('Dernière synchronisation', 12.5, Color(0xFF66636E))),
       gP(245, 651, 105, 16, gText('Aujourd’hui 10:24', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),

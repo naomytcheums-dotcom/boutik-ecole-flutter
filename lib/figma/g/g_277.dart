@@ -10,8 +10,8 @@ class G_277 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 844, radius: 46, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 140, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 580, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 140, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 580, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 28, 18, gText('9:41', 14, Color(0xFF111015), weight: 600)),
       gP(140, 10, 110, 30, gBox(color: Color(0xFF000000), radii: [15, 15, 15, 15])),
       gP(22, 38, 34, 32, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
@@ -46,7 +46,7 @@ class G_277 extends StatelessWidget {
       gP(289, 524, 61, 15, gText('Mise à jour', 12, Color(0xFFB54708), weight: 700)),
       gP(62, 548, 146, 15, gText('Version 1.8.2 → 1.8.3 (72 %)', 12, Color(0xFF6B6877))),
       gP(62, 570, 217, 14, gText('Redémarrer  ·  Journal  ·  Activer le secours', 11, Color(0xFF5A3FE0), weight: 600)),
-      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26])),
+      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => gToast(context, 'Démonstration : Voir les journaux d’incidents')),
       gP(94.5, 788, 201, 19, gText('Voir les journaux d’incidents', 15, Color(0xFFFFFFFF), weight: 600)),
     ]);
   }

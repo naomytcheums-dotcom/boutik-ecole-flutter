@@ -10,8 +10,8 @@ class G_11 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 900, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 147, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 624, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 147, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 624, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 19, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
       gP(286, 24, 9, 14, gImg('assets/figma/v/c57de3594f8754.svg')),
@@ -26,7 +26,7 @@ class G_11 extends StatelessWidget {
       gP(117, 183, 156, 34, gText('Bon retour !', 27, Color(0xFF111015), weight: 800, align: TextAlign.center)),
       gP(43, 223, 304, 18, gText('Connectez-vous pour accéder à votre espace', 14, Color(0xFF66636E), align: TextAlign.center)),
       gP(24, 262, 342, 50, gBox(color: Color(0xFFEFF1F4), radii: [25, 25, 25, 25])),
-      gP(28, 266, 168, 42, gBox(color: Color(0xFF111015), radii: [21, 21, 21, 21])),
+      gP(28, 266, 168, 42, gBox(color: Color(0xFF111015), radii: [21, 21, 21, 21]), tap: () => gToast(context, 'Démonstration : Téléphone')),
       gP(75, 278, 74, 18, gText('Téléphone', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(258.5, 278, 45, 18, gText('E-mail', 14.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
       gP(24, 338, 137, 16, gText('Numéro de téléphone', 13, Color(0xFF111015), weight: 600)),
@@ -51,7 +51,7 @@ class G_11 extends StatelessWidget {
       gP(24, 650, 142, 1, gBox(color: Color(0xFFECE8F2))),
       gP(186.5, 642, 17, 16, gText('ou', 13, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
       gP(224, 650, 142, 1, gBox(color: Color(0xFFECE8F2))),
-      gP(24, 678, 342, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27])),
+      gP(24, 678, 342, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Créer un compte')),
       gP(134, 695.5, 122, 19, gText('Créer un compte', 15, Color(0xFF111015), weight: 600, align: TextAlign.center)),
       gP(40.5, 773, 309, 34, gText('En continuant, vous acceptez nos Conditions d’utilisation\net notre Politique de confidentialité.', 11.5, Color(0xFF66636E), lh: 17, align: TextAlign.center)),
       gP(125, 884, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),

@@ -10,8 +10,8 @@ class G_228 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
       gP(286, 24, 9, 14, gImg('assets/figma/v/c57de3594f8754.svg')),
@@ -316,7 +316,7 @@ class G_228 extends StatelessWidget {
       gP(40, 698, 91, 17, gText('Coordonnées', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 720, 108, 14, gText('Téléphone et e-mail', 11.5, Color(0xFF66636E))),
       gP(323, 710, 27, 17, gText('Non', 13.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),
-      gP(24, 770, 342, 54, gBox(color: Color(0xFF111015), radii: [27, 27, 27, 27])),
+      gP(24, 770, 342, 54, gBox(color: Color(0xFF111015), radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Régénérer le lien')),
       gP(137, 788, 116, 18, gText('Régénérer le lien', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 826, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(46.333, 495, 19.333, 14.333, gImg('assets/figma/v/9c92298f9fd6b2.svg')),

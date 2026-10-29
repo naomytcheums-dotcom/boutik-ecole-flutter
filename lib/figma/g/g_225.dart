@@ -19,7 +19,7 @@ class G_225 extends StatelessWidget {
       gP(151, 82, 88, 21, gText('Jumeau 3D', 17, Color(0xFF111015), weight: 500)),
       gP(316, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
       gP(24, 128, 342, 372, gBox(color: Color(0x99FFFFFF), border: Color(0xFFFFFFFF), bw: 1, shadows: [BoxShadow(color: Color(0x14403366), offset: Offset(0, 10), blurRadius: 26, spreadRadius: 0)], radii: [44, 44, 44, 44])),
-      gP(85, 190, 220, 220, gBox(color: Color(0x8CCDB2F2), layerBlur: 60, oval: true)),
+      gP(85, 190, 220, 220, gBox(color: Color(0x8CCDB2F2), layerBlur: 60, oval: true), fx: 'halo'),
       gP(42, 403, 306, 98, gImg('assets/figma/v/7e3a50b24384df.svg')),
       gP(42, 403, 306, 98, gImg('assets/figma/v/8a0a52a519aa8c.svg')),
       gP(109, 440, 172, 26, gBox(color: Color(0xFF111015), layerBlur: 8, oval: true)),

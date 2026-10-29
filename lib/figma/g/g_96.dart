@@ -10,8 +10,8 @@ class G_96 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
       gP(286, 24, 9, 14, gImg('assets/figma/v/c57de3594f8754.svg')),
@@ -33,12 +33,7 @@ class G_96 extends StatelessWidget {
       gP(24, 120, 342, 170, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [24, 24, 24, 24])),
       gP(42, 228, 309, 46, gText('Défi Orange : paiement mobile inclusif', 18, Color(0xFFFFFFFF), weight: 700, wrap: true)),
       gP(42, 256, 309, 15, gText('Prix de 500 000 FCFA · Clôture le 30 nov.', 12, Color(0xFFE3ECF7), wrap: true)),
-      gP(24, 304, 77.8, 34, gBox(color: Color(0xFF111015), radii: [17, 17, 17, 17])),
-      gP(38.4, 313, 49, 16, gText('Ouverts', 12.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
-      gP(109.8, 304, 85.2, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(126.9, 313, 51, 16, gText('En cours', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(203, 304, 85.2, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(218.6, 313, 54, 16, gText('Terminés', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 304, 77.8, 34, 'Ouverts', 12.5, 600), GChip(109.8, 304, 85.2, 34, 'En cours', 12.5, 500), GChip(203, 304, 85.2, 34, 'Terminés', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
       gP(24, 352, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 365, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(48, 373.667, 16, 16, gImg('assets/figma/v/f44e883cdba29a.svg')),

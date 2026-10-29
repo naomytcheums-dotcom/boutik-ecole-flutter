@@ -59,6 +59,7 @@ class G_P2 extends StatelessWidget {
       gP(218, 677, 36, 16, gText('Écrire', 13, Color(0xFF111015), weight: 500, align: TextAlign.center)),
       gP(286, 664, 70, 46, gBox(color: Color(0xFFF4F3F6), radii: [23, 23, 23, 23])),
       gP(310.5, 677.25, 21, 19.5, gImg('assets/figma/v/21cc0c020d9e0a.svg')),
+      gP(304, 670, 34, 34, GHeart()),
       gP(40, 736, 36, 36, gImg('assets/figma/v/9bf666bb945341.svg')),
       gP(50.25, 742.375, 15.75, 25.25, gImg('assets/figma/v/b2bf564bd14a46.svg')),
       gP(89, 739, 30, 30, gImg('assets/figma/r/165_20.png')),
@@ -95,7 +96,7 @@ class G_P2 extends StatelessWidget {
       gP(184, 791, 22, 22, const SizedBox.expand(), tap: () => gOpen(context, '03')),
       gP(183.75, 789.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       gP(165, 478, 60, 18, gBox(color: Color(0xFFFF2D55), border: Color(0xFFFFFFFF), bw: 2, radii: [9, 9, 9, 9])),
-      gP(173, 481.5, 44, 11, gText('EN DIRECT', 8.5, Color(0xFFFFFFFF), weight: 700)),
+      gP(173, 481.5, 44, 11, gText('EN DIRECT', 8.5, Color(0xFFFFFFFF), weight: 700), fx: 'pulse'),
       gP(22, 38, 34, 32, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gTap(306, 716, 44, 13, () => gOpen(context, 'P3')),
     ]);

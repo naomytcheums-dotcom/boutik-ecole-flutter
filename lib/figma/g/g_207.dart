@@ -10,7 +10,7 @@ class G_207 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 720, h: 1280, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(380, 60, 480, 480, gBox(color: Color(0x80CDB2F2), layerBlur: 120, oval: true)),
+      gP(380, 60, 480, 480, gBox(color: Color(0x80CDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(48, 44, 64, 58, gBox(color: Color(0xFFFFFFFF), radii: [20, 20, 20, 20])),
       gP(55, 49, 50, 48, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(128, 56, 181, 35, gText('Boutik-École', 28, Color(0xFF111015), weight: 600)),
@@ -24,13 +24,13 @@ class G_207 extends StatelessWidget {
       gP(103.267, 185.267, 11.733, 11.733, gImg('assets/figma/v/e1a28e5ccaba89.svg')),
       gP(136, 164, 261, 33, gText('Que cherchez-vous ?', 26, Color(0xFF66636E))),
       gP(598, 152, 60, 60, gBox(color: Color(0xFF111015), oval: true)),
-      gP(48, 248, 116, 64, gBox(color: Color(0xFF111015), radii: [32, 32, 32, 32])),
+      gP(48, 248, 116, 64, gBox(color: Color(0xFF111015), radii: [32, 32, 32, 32]), tap: () => gToast(context, 'Démonstration : Tout')),
       gP(82.5, 264, 47, 28, gText('Tout', 22, Color(0xFFFFFFFF), weight: 600)),
-      gP(178, 248, 176, 64, gBox(color: Color(0xFFFFFFFF), radii: [32, 32, 32, 32])),
+      gP(178, 248, 176, 64, gBox(color: Color(0xFFFFFFFF), radii: [32, 32, 32, 32]), tap: () => gToast(context, 'Démonstration : Produits')),
       gP(221.5, 264, 89, 28, gText('Produits', 22, Color(0xFF111015), weight: 500)),
-      gP(368, 248, 176, 64, gBox(color: Color(0xFFFFFFFF), radii: [32, 32, 32, 32])),
+      gP(368, 248, 176, 64, gBox(color: Color(0xFFFFFFFF), radii: [32, 32, 32, 32]), tap: () => gToast(context, 'Démonstration : Services')),
       gP(410.5, 264, 91, 28, gText('Services', 22, Color(0xFF111015), weight: 500)),
-      gP(558, 248, 176, 64, gBox(color: Color(0xFFFFFFFF), radii: [32, 32, 32, 32])),
+      gP(558, 248, 176, 64, gBox(color: Color(0xFFFFFFFF), radii: [32, 32, 32, 32]), tap: () => gToast(context, 'Démonstration : Missions')),
       gP(600.5, 264, 91, 28, gText('Missions', 22, Color(0xFF111015), weight: 500)),
       gP(48, 340, 304, 230, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 10), blurRadius: 22, spreadRadius: 0)], radii: [40, 40, 40, 40])),
       gP(62, 354, 104, 40, gBox(color: Color(0xFFFFFFFF), radii: [20, 20, 20, 20])),

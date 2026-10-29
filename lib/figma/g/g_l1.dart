@@ -25,7 +25,7 @@ class G_L1 extends StatelessWidget {
       gP(24, 128, 342, 330, gBox(image: 'assets/figma/img/4b7b6cea2f4622846841cd8342842e81fa1ed891.png', fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x33403366), offset: Offset(0, 14), blurRadius: 28, spreadRadius: 0)], radii: [40, 40, 40, 40])),
       gP(40, 144, 94, 26, gBox(color: Color(0xFFFF2D55), radii: [100, 100, 100, 100])),
       gP(52, 153.5, 7, 7, gBox(color: Color(0xFFFFFFFF), oval: true)),
-      gP(65, 150, 57, 14, gText('EN DIRECT', 11, Color(0xFF111015), weight: 600)),
+      gP(65, 150, 57, 14, gText('EN DIRECT', 11, Color(0xFF111015), weight: 600), fx: 'pulse'),
       gP(268, 144, 82, 26, gBox(color: Color(0xB2111015), radii: [100, 100, 100, 100])),
       gP(278.083, 150.208, 16.833, 13.583, gImg('assets/figma/v/1c64daa304e6b4.svg')),
       gP(281.875, 152.375, 9.25, 9.25, gImg('assets/figma/v/e735fd67e86253.svg')),
@@ -37,7 +37,7 @@ class G_L1 extends StatelessWidget {
       gP(186.458, 415.417, 17.083, 12.333, gImg('assets/figma/v/590a1cb98d88e9.svg')),
       gP(192, 421.75, 6, 9.167, gImg('assets/figma/v/6c8704a6160690.svg')),
       gP(246.271, 409.083, 19.458, 19.062, gImg('assets/figma/v/0397ee56e7c9a4.svg')),
-      gP(24, 470, 342, 50, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [24, 24, 24, 24])),
+      gP(24, 470, 342, 50, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [24, 24, 24, 24]), tap: () => gToast(context, 'Démonstration : Atelier : fabrication de la lampe en bois recyclé')),
       gP(40, 486, 315, 16, gText('Atelier : fabrication de la lampe en bois recyclé', 12.5, Color(0xFF111015), weight: 500, wrap: true)),
       gP(24, 532, 342, 138, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 8), blurRadius: 22, spreadRadius: 0)], radii: [30, 30, 30, 30])),
       gP(44, 548, 146, 18, gText('Tu peux lancer ce live', 14.5, Color(0xFF111015), weight: 600)),
@@ -71,7 +71,7 @@ class G_L1 extends StatelessWidget {
       gP(248, 746, 54, 12, gText('Non éligible', 9.5, Color(0xFFB26A00))),
       gP(332.875, 742.542, 14.25, 11.042, gImg('assets/figma/v/2af36c9e23ec90.svg')),
       gP(334.708, 738.417, 10.583, 10.125, gImg('assets/figma/v/ba7c6cc74be2bd.svg')),
-      gP(24, 792, 342, 44, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x40403366), offset: Offset(0, 8), blurRadius: 18, spreadRadius: 0)], radii: [22, 22, 22, 22])),
+      gP(24, 792, 342, 44, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x40403366), offset: Offset(0, 8), blurRadius: 18, spreadRadius: 0)], radii: [22, 22, 22, 22]), tap: () => gToast(context, 'Démonstration : Lancer le live')),
       gP(153.5, 804, 83, 17, gText('Lancer le live', 13.5, Color(0xFFFFFFFF), weight: 600)),
     ]);
   }

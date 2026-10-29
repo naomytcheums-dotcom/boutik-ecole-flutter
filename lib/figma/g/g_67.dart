@@ -10,8 +10,8 @@ class G_67 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
       gP(286, 24, 9, 14, gImg('assets/figma/v/c57de3594f8754.svg')),
@@ -23,12 +23,7 @@ class G_67 extends StatelessWidget {
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
       gP(24, 70, 124, 26, gText('Statistiques', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 77.8, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(43.4, 129, 39, 16, gText('7 jours', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(109.8, 120, 85.2, 34, gBox(color: Color(0xFF111015), radii: [17, 17, 17, 17])),
-      gP(127.9, 129, 49, 16, gText('30 jours', 12.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
-      gP(203, 120, 77.8, 34, gBox(color: Color(0xFFF2EFF6), radii: [17, 17, 17, 17])),
-      gP(219.9, 129, 44, 16, gText('12 mois', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 77.8, 34, '7 jours', 12.5, 500), GChip(109.8, 120, 85.2, 34, '30 jours', 12.5, 600), GChip(203, 120, 77.8, 34, '12 mois', 12.5, 500)], selected: 1, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
       gP(24, 168, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(38, 180, 106, 14, gText('Vues des annonces', 11.5, Color(0xFF66636E), weight: 500)),
       gP(38, 200, 56, 25, gText('4 280', 20, Color(0xFF111015), weight: 800)),

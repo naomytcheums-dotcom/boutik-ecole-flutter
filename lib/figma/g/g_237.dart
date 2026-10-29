@@ -10,7 +10,7 @@ class G_237 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 1280, h: 820, radius: 20, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFFFF3D6), Color(0xFFF6EEF6), Color(0xFFEADFF6)], stops: [0, 0.5, 1]), children: [
-      gP(900, -80, 400, 400, gBox(color: Color(0x80FFD27A), layerBlur: 100, oval: true)),
+      gP(900, -80, 400, 400, gBox(color: Color(0x80FFD27A), layerBlur: 100, oval: true), fx: 'halo'),
       gP(24, 24, 1232, 772, gBox(color: Color(0x99FFFFFF), border: Color(0xFFFFFFFF), bw: 1, backBlur: 24, radii: [36, 36, 36, 36])),
       gP(40, 40, 220, 740, gBox(color: Color(0x99FFFFFF), border: Color(0xFFFFFFFF), bw: 1, backBlur: 24, radii: [28, 28, 28, 28])),
       gP(56, 54, 44, 40, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
@@ -20,7 +20,7 @@ class G_237 extends StatelessWidget {
       gP(72.417, 140.417, 10.958, 10.958, gImg('assets/figma/v/d7d4b08b8877d1.svg')),
       gP(64.625, 140.417, 10.958, 10.958, gImg('assets/figma/v/d7d4b08b8877d1.svg')),
       gP(98, 133, 100, 16, gText('Tableau de bord', 13, Color(0xFF111015))),
-      gP(52, 170, 196, 40, gBox(color: Color(0xFFFFFFFF), radii: [14, 14, 14, 14])),
+      gP(52, 170, 196, 40, gBox(color: Color(0xFFFFFFFF), radii: [14, 14, 14, 14]), tap: () => gToast(context, 'Démonstration : Impact territorial')),
       gP(65.333, 179.917, 17.333, 20.167, gImg('assets/figma/v/86e85c94581eff.svg')),
       gP(68.875, 183.458, 10.25, 10.25, gImg('assets/figma/v/7a056701264e03.svg')),
       gP(98, 181, 106, 16, gText('Impact territorial', 13, Color(0xFF111015), weight: 600)),
@@ -45,12 +45,7 @@ class G_237 extends StatelessWidget {
       gP(98, 421, 71, 16, gText('Paramètres', 13, Color(0xFF111015))),
       gP(290, 52, 232, 30, gText('Impact par territoire', 24, Color(0xFF111015), weight: 600)),
       gP(290, 86, 344, 16, gText('Où les talents de l’IUT créent de la valeur, région par région.', 12.5, Color(0xFF66636E))),
-      gP(290, 120, 148.4, 34, gBox(color: Color(0xFF111015), radii: [17, 17, 17, 17])),
-      gP(319.2, 128, 90, 15, gText('Missions livrées', 12, Color(0xFFFFFFFF), weight: 600)),
-      gP(446.4, 120, 148.4, 34, gBox(color: Color(0xFFFFFFFF), radii: [17, 17, 17, 17])),
-      gP(476.1, 128, 89, 15, gText('Étudiants actifs', 12, Color(0xFF111015))),
-      gP(602.8, 120, 133.6, 34, gBox(color: Color(0xFFFFFFFF), radii: [17, 17, 17, 17])),
-      gP(625.6, 128, 88, 15, gText('Revenus versés', 12, Color(0xFF111015))),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(290, 120, 148.4, 34, 'Missions livrées', 12, 600), GChip(446.4, 120, 148.4, 34, 'Étudiants actifs', 12, 400), GChip(602.8, 120, 133.6, 34, 'Revenus versés', 12, 400)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFFFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 17)),
       gP(1096, 120, 140, 34, gBox(color: Color(0xFFFFFFFF), radii: [17, 17, 17, 17])),
       gP(1124.5, 128, 83, 15, gText('Octobre 2026', 12, Color(0xFF111015), weight: 500)),
       gP(290, 172, 560, 606, gBox(color: Color(0x99FFFFFF), border: Color(0xFFFFFFFF), bw: 1, backBlur: 24, radii: [32, 32, 32, 32])),

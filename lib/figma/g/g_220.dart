@@ -10,8 +10,8 @@ class G_220 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 28, 18, gText('9:41', 14, Color(0xFF111015), weight: 600)),
       gP(140, 10, 110, 30, gBox(color: Color(0xFF000000), radii: [15, 15, 15, 15])),
       gP(30, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
@@ -43,9 +43,9 @@ class G_220 extends StatelessWidget {
       gP(24, 546, 342, 16, gBox(color: Color(0xFFECE8F6), radii: [8, 8, 8, 8])),
       gP(24, 546, 198.36, 16, gBox(color: Color(0xFF111015), radii: [8, 8, 8, 8])),
       gP(225.36, 546, 140.64, 16, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xFFFFB36B), Color(0xFFFF7A1A)], stops: [0, 1]), radii: [8, 8, 8, 8])),
-      gP(24, 580, 166, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26])),
+      gP(24, 580, 166, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => gToast(context, 'Démonstration : Voter pour la lampe')),
       gP(51, 596, 112, 15, gText('Voter pour la lampe', 12, Color(0xFFFFFFFF), weight: 600)),
-      gP(200, 580, 166, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFFFFFFF), bw: 1, shadows: [BoxShadow(color: Color(0x14403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [26, 26, 26, 26])),
+      gP(200, 580, 166, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFFFFFFF), bw: 1, shadows: [BoxShadow(color: Color(0x14403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [26, 26, 26, 26]), tap: () => gToast(context, 'Démonstration : Voter pour le jus')),
       gP(237, 596, 92, 15, gText('Voter pour le jus', 12, Color(0xFF111015), weight: 600)),
       gP(24, 652, 175, 18, gText('Classement de la semaine', 14, Color(0xFF111015), weight: 600)),
       gP(24, 678, 110, 68, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [24, 24, 24, 24])),

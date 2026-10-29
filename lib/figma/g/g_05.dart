@@ -10,8 +10,8 @@ class G_05 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GScreen(w: 390, h: 1002, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 180.66, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true)),
-      gP(-110, 711.72, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true)),
+      gP(200, 180.66, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 711.72, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(0, 0, 391.434, 342.684, gBox(image: 'assets/figma/img/fbb2092962d6dc7886c56df2e6f5a1cfb07c25bb.png', fit: BoxFit.cover)),
       gP(42.298, 20.827, 33, 20, gText('9:41', 15.772, Color(0xFFFFFFFF), weight: 700)),
       gP(298.096, 29.827, 9, 11, gImg('assets/figma/v/5bc0bea2e7c30c.svg')),
@@ -29,6 +29,7 @@ class G_05 extends StatelessWidget {
       gP(29.858, 85.897, 17.71, 6, gImg('assets/figma/v/9d3dbce6f297e2.svg')),
       gP(286.048, 71.691, 40.147, 40.147, gBox(color: Color(0x8C111015), oval: true)),
       gP(294.757, 81.237, 22.728, 21.055, gImg('assets/figma/v/4bd8d8bdb588c8.svg')),
+      gP(288.085, 73.728, 36.074, 36.074, GHeart()),
       gP(339.099, 75.993, 32.978, 32.978, gBox(color: Color(0x8C111015), oval: true)),
       gP(345.922, 89.482, 19.333, 14.333, gImg('assets/figma/v/9c92298f9fd6b2.svg')),
       gP(349.255, 81.148, 12.667, 9.333, gImg('assets/figma/v/bb8ad3c4792df6.svg')),

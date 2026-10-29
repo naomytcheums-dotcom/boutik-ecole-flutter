@@ -3,6 +3,9 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'gsound.dart';
+
+export 'gsound.dart';
 
 /// Primitives utilisées par le code généré depuis Figma (tool/figma_export/convert.py).
 /// Ne pas éditer à la main les fichiers lib/figma/g/*.dart : ils sont régénérés.
@@ -45,16 +48,20 @@ class GScreen extends StatelessWidget {
   }
 }
 
-/// Positionne un élément (avec rotation et opacité éventuelles) et le rend cliquable.
-Widget gP(double x, double y, double w, double h, Widget child, {double rot = 0, double op = 1, VoidCallback? tap}) {
+/// Positionne un élément (avec rotation, opacité, animation d'entrée, effet ambiant et retour tactile).
+Widget gP(double x, double y, double w, double h, Widget child,
+    {double rot = 0, double op = 1, VoidCallback? tap, String? fx, String sound = 'click'}) {
   Widget c = SizedBox(width: w, height: h, child: child);
+  if (fx != null && GAnim.enabled) c = GFx(kind: fx, seed: x * 7 + y, child: c);
   if (rot != 0) c = Transform.rotate(angle: rot, alignment: Alignment.topLeft, child: c);
   if (op < 1) c = Opacity(opacity: op, child: c);
-  if (tap != null) c = GestureDetector(behavior: HitTestBehavior.opaque, onTap: tap, child: c);
+  if (tap != null) c = GPress(onTap: tap, sound: sound, child: c);
+  if (GAnim.enabled && w * h < 140000) c = GEnter(delay: Duration(milliseconds: (y * 0.5).clamp(0, 520).round()), child: c);
   return Positioned(left: x, top: y, child: c);
 }
 
-Widget gTap(double x, double y, double w, double h, VoidCallback tap) => gP(x, y, w, h, const SizedBox.expand(), tap: tap);
+Widget gTap(double x, double y, double w, double h, VoidCallback tap) =>
+    Positioned(left: x, top: y, child: GPress(onTap: tap, sound: 'whoosh', flash: true, child: SizedBox(width: w, height: h)));
 
 BorderRadius _br(List<double>? r) => r == null
     ? BorderRadius.zero
@@ -117,6 +124,8 @@ class _ShapeClipper extends CustomClipper<Path> {
 }
 
 TextStyle _ts(double size, Color color, int weight, bool inter, double? lh, double? ls, [TextDecoration? deco]) => TextStyle(
+      inherit: false,
+      textBaseline: TextBaseline.alphabetic,
       fontFamily: inter ? _inter : _jakarta,
       fontSize: size,
       fontWeight: FontWeight.values[((weight ~/ 100).clamp(1, 9)) - 1],
@@ -136,8 +145,8 @@ Widget gText(String s, double size, Color color,
       softWrap: wrap,
       overflow: TextOverflow.visible,
       textHeightBehavior: const TextHeightBehavior(leadingDistribution: TextLeadingDistribution.even));
-  if (wrap) return t;
-  return OverflowBox(alignment: Alignment.topLeft, minWidth: 0, maxWidth: double.infinity, child: t);
+  if (wrap) return IgnorePointer(child: t);
+  return IgnorePointer(child: OverflowBox(alignment: Alignment.topLeft, minWidth: 0, maxWidth: double.infinity, child: t));
 }
 
 /// Texte à plusieurs styles : chaque run = (texte, taille, poids, couleur).
@@ -150,8 +159,8 @@ Widget gRich(List<(String, double, int, Color)> runs,
     overflow: TextOverflow.visible,
     textHeightBehavior: const TextHeightBehavior(leadingDistribution: TextLeadingDistribution.even),
   );
-  if (wrap) return t;
-  return OverflowBox(alignment: Alignment.topLeft, minWidth: 0, maxWidth: double.infinity, child: t);
+  if (wrap) return IgnorePointer(child: t);
+  return IgnorePointer(child: OverflowBox(alignment: Alignment.topLeft, minWidth: 0, maxWidth: double.infinity, child: t));
 }
 
 Widget gImg(String asset, {BoxFit fit = BoxFit.fill}) => asset.endsWith('.svg')
@@ -168,3 +177,229 @@ Widget gClip(double x, double y, double w, double h, List<double>? radii, List<W
         child: ClipRRect(borderRadius: _br(radii), child: Stack(clipBehavior: Clip.hardEdge, children: children)),
       ),
     );
+
+// ---------------------------------------------------------------- couche dynamique
+
+/// Message bref pour les actions simulées (démonstration).
+void gToast(BuildContext context, String message) {
+  final m = ScaffoldMessenger.maybeOf(context);
+  GSound.play('success');
+  m?.hideCurrentSnackBar();
+  m?.showSnackBar(SnackBar(
+    content: Text(message, style: const TextStyle(fontFamily: _jakarta, fontSize: 13, color: Colors.white)),
+    duration: const Duration(milliseconds: 1600),
+    behavior: SnackBarBehavior.floating,
+    backgroundColor: const Color(0xFF111015),
+    margin: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+  ));
+}
+
+/// Interrupteur animé (cliquable).
+class GToggle extends StatefulWidget {
+  const GToggle({super.key, required this.on, required this.onColor, required this.offColor, required this.knob, this.knobColor = Colors.white});
+  final bool on;
+  final Color onColor, offColor, knobColor;
+  final double knob;
+  @override
+  State<GToggle> createState() => _GToggleState();
+}
+
+class _GToggleState extends State<GToggle> {
+  late bool on = widget.on;
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(builder: (context, c) {
+        final pad = (c.maxHeight - widget.knob) / 2;
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            GSound.play('pop');
+            setState(() => on = !on);
+          },
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            decoration: BoxDecoration(color: on ? widget.onColor : widget.offColor, borderRadius: BorderRadius.circular(c.maxHeight / 2)),
+            child: AnimatedAlign(
+              duration: const Duration(milliseconds: 180),
+              alignment: on ? Alignment.centerRight : Alignment.centerLeft,
+              child: Padding(
+                padding: EdgeInsets.all(pad),
+                child: Container(width: widget.knob, height: widget.knob, decoration: BoxDecoration(color: widget.knobColor, shape: BoxShape.circle)),
+              ),
+            ),
+          ),
+        );
+      });
+}
+
+/// Champ de saisie posé exactement sur le rectangle de la maquette.
+class GField extends StatefulWidget {
+  const GField({
+    super.key,
+    required this.hint,
+    required this.size,
+    required this.hintColor,
+    this.initial = '',
+    this.textColor = const Color(0xFF111015),
+    this.weight = 400,
+    this.padL = 16,
+    this.inter = false,
+    this.obscure = false,
+    this.multiline = false,
+  });
+  final String hint, initial;
+  final double size, padL;
+  final Color hintColor, textColor;
+  final int weight;
+  final bool inter, obscure, multiline;
+  @override
+  State<GField> createState() => _GFieldState();
+}
+
+class _GFieldState extends State<GField> {
+  late final TextEditingController c = TextEditingController(text: widget.initial);
+  final FocusNode f = FocusNode();
+  @override
+  void dispose() {
+    c.dispose();
+    f.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final st = TextStyle(
+      inherit: false,
+      textBaseline: TextBaseline.alphabetic,
+      fontFamily: widget.inter ? _inter : _jakarta,
+      fontSize: widget.size,
+      fontWeight: FontWeight.values[((widget.weight ~/ 100).clamp(1, 9)) - 1],
+      color: widget.textColor,
+    );
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: f.requestFocus,
+      child: Padding(
+        padding: EdgeInsets.only(left: widget.padL, right: 14),
+        child: Align(
+          alignment: widget.multiline ? Alignment.topLeft : Alignment.centerLeft,
+          child: TextField(
+            controller: c,
+            focusNode: f,
+            style: st,
+            obscureText: widget.obscure,
+            minLines: widget.multiline ? 2 : 1,
+            maxLines: widget.multiline ? 6 : 1,
+            cursorColor: const Color(0xFF6A4DFF),
+            decoration: InputDecoration(
+              isCollapsed: true,
+              border: InputBorder.none,
+              hintText: widget.hint,
+              hintStyle: st.copyWith(color: widget.hintColor),
+              contentPadding: EdgeInsets.zero,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Une pastille d'un groupe à choix unique.
+class GChip {
+  const GChip(this.x, this.y, this.w, this.h, this.label, this.size, this.weight);
+  final double x, y, w, h, size;
+  final String label;
+  final int weight;
+}
+
+/// Groupe de pastilles / onglets : un seul choix actif à la fois.
+class GChoiceGroup extends StatefulWidget {
+  const GChoiceGroup({
+    super.key,
+    required this.chips,
+    required this.selected,
+    required this.selFill,
+    required this.unselFill,
+    required this.selText,
+    required this.unselText,
+    required this.radius,
+    this.border,
+    this.inter = false,
+  });
+  final List<GChip> chips;
+  final int selected;
+  final Color selFill, unselFill, selText, unselText;
+  final double radius;
+  final Color? border;
+  final bool inter;
+  @override
+  State<GChoiceGroup> createState() => _GChoiceGroupState();
+}
+
+class _GChoiceGroupState extends State<GChoiceGroup> {
+  late int sel = widget.selected;
+  @override
+  Widget build(BuildContext context) => Stack(clipBehavior: Clip.none, children: [
+        for (var i = 0; i < widget.chips.length; i++)
+          Positioned(
+            left: widget.chips[i].x,
+            top: widget.chips[i].y,
+            width: widget.chips[i].w,
+            height: widget.chips[i].h,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                GSound.play('tick');
+                setState(() => sel = i);
+              },
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 160),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: i == sel ? widget.selFill : widget.unselFill,
+                  borderRadius: BorderRadius.circular(widget.radius),
+                  border: widget.border == null || i == sel ? null : Border.all(color: widget.border!),
+                ),
+                child: OverflowBox(
+                  maxWidth: double.infinity,
+                  child: Text(widget.chips[i].label,
+                      softWrap: false,
+                      style: _ts(widget.chips[i].size, i == sel ? widget.selText : widget.unselText, widget.chips[i].weight, widget.inter, null, null)),
+                ),
+              ),
+            ),
+          ),
+      ]);
+}
+
+/// Case à cocher.
+class GCheck extends StatefulWidget {
+  const GCheck({super.key, required this.on, required this.onColor, required this.offColor, required this.radius, this.border});
+  final bool on;
+  final Color onColor, offColor;
+  final Color? border;
+  final double radius;
+  @override
+  State<GCheck> createState() => _GCheckState();
+}
+
+class _GCheckState extends State<GCheck> {
+  late bool on = widget.on;
+  @override
+  Widget build(BuildContext context) => GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          GSound.play('pop');
+          setState(() => on = !on);
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 140),
+          decoration: BoxDecoration(
+            color: on ? widget.onColor : widget.offColor,
+            borderRadius: BorderRadius.circular(widget.radius),
+            border: widget.border == null || on ? null : Border.all(color: widget.border!, width: 1.5),
+          ),
+          child: on ? const FittedBox(child: Icon(Icons.check_rounded, color: Colors.white, size: 40)) : null,
+        ),
+      );
+}

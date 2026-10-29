@@ -14,6 +14,7 @@ import '../live/review.dart';
 import '../live/audit.dart';
 import '../live/admin.dart';
 import '../live/talents.dart';
+import '../live/hackathons.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_164 extends ConsumerWidget {
@@ -37,8 +38,8 @@ class G_164 extends ConsumerWidget {
       gP(31, 71, 22, 22, const SizedBox.expand(), tap: () => gBack(context)),
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
-      gP(76, 70, 122, 26, gText('Team Innov’', 21, Color(0xFF111015), weight: 700)),
-      gP(76, 96, 168, 15, gText('Orange Digital Challenge · J-2', 12, Color(0xFF66636E))),
+      gP(76, 70, 122, 26, Consumer(builder: (context, ref, _) => gText(ref.watch(registrationsProvider).isEmpty ? 'Team Innov’' : ref.watch(registrationsProvider).values.first.teamName, 21, Color(0xFF111015), weight: 700))),
+      gP(76, 96, 168, 15, Consumer(builder: (context, ref, _) => gText(ref.watch(registrationsProvider).isEmpty ? 'Orange Digital Challenge' : hackathons.firstWhere((h) => h.id == ref.watch(registrationsProvider).keys.first).title, 12, Color(0xFF66636E)))),
       gP(60, 134, 68.667, 2, gBox(color: Color(0xFF111015), radii: [1, 1, 1, 1])),
       gP(29, 120, 30, 30, gBox(color: Color(0xFF111015), oval: true)),
       gP(36, 128.25, 16, 12.875, gImg('assets/figma/v/515240907c423e.svg')),
@@ -90,6 +91,9 @@ class G_164 extends ConsumerWidget {
       gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Déposer le projet')),
       gP(224, 778, 121, 18, gText('Déposer le projet', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      gTap(203, 760, 163, 54, () { gOpen(context, '165'); }),
+      gTap(24, 760, 163, 54, () { gToast(context, 'Discussion d’équipe : bientôt disponible'); }),
+      gTap(296, 640, 48, 30, () { gToast(context, 'Message envoyé au mentor'); }),
     ]);
   }
 }

@@ -14,6 +14,7 @@ import '../live/review.dart';
 import '../live/audit.dart';
 import '../live/admin.dart';
 import '../live/talents.dart';
+import '../live/hackathons.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_167 extends ConsumerWidget {
@@ -37,35 +38,35 @@ class G_167 extends ConsumerWidget {
       gP(31, 71, 22, 22, const SizedBox.expand(), tap: () => gBack(context)),
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
-      gP(76, 70, 248, 26, gText('Noter : Serre intelligente', 21, Color(0xFF111015), weight: 700)),
+      gP(76, 70, 248, 26, Consumer(builder: (context, ref, _) => gText('Noter : ${ref.watch(submissionProvider)?.title ?? 'Serre intelligente'}', 21, Color(0xFF111015), weight: 700))),
       gP(24, 120, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 128, 50, 50, gBox(image: 'assets/figma/img/9803b1792923bb371cffd2d64272ebebf74ea2d4.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
-      gP(98, 132, 111, 17, gText('Serre intelligente', 13.5, Color(0xFF111015), weight: 600)),
+      gP(98, 132, 111, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(submissionProvider)?.title ?? 'Serre intelligente', 13.5, Color(0xFF111015), weight: 600))),
       gP(98, 154, 167, 14, gText('Équipe Agronomie · Pitch 5 min', 11.5, Color(0xFF66636E))),
       gP(24, 200, 342, 192, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 214, 64, 16, gText('Innovation', 12.5, Color(0xFF111015), weight: 600)),
-      gP(319, 214, 31, 15, gText('8 / 10', 12, Color(0xFF66636E), weight: 600, align: TextAlign.right)),
+      gP(179, 214, 171, 15, Consumer(builder: (context, ref, _) => gText('${ref.watch(scoresProvider)[0]} / 10', 12, Color(0xFF66636E), weight: 600, wrap: true, align: TextAlign.right))),
       gP(40, 236, 310, 7, gBox(color: Color(0xFFF2EFF6), radii: [4, 4, 4, 4])),
       gP(40, 236, 248, 7, gBox(color: Color(0xFF1F9D6B), radii: [4, 4, 4, 4])),
       gP(40, 258, 62, 16, gText('Faisabilité', 12.5, Color(0xFF111015), weight: 600)),
-      gP(320, 258, 30, 15, gText('7 / 10', 12, Color(0xFF66636E), weight: 600, align: TextAlign.right)),
+      gP(180, 258, 170, 15, Consumer(builder: (context, ref, _) => gText('${ref.watch(scoresProvider)[1]} / 10', 12, Color(0xFF66636E), weight: 600, wrap: true, align: TextAlign.right))),
       gP(40, 280, 310, 7, gBox(color: Color(0xFFF2EFF6), radii: [4, 4, 4, 4])),
       gP(40, 280, 217, 7, gBox(color: Color(0xFF1E4A80), radii: [4, 4, 4, 4])),
       gP(40, 302, 81, 16, gText('Impact social', 12.5, Color(0xFF111015), weight: 600)),
-      gP(319, 302, 31, 15, gText('9 / 10', 12, Color(0xFF66636E), weight: 600, align: TextAlign.right)),
+      gP(179, 302, 171, 15, Consumer(builder: (context, ref, _) => gText('${ref.watch(scoresProvider)[2]} / 10', 12, Color(0xFF66636E), weight: 600, wrap: true, align: TextAlign.right))),
       gP(40, 324, 310, 7, gBox(color: Color(0xFFF2EFF6), radii: [4, 4, 4, 4])),
       gP(40, 324, 279, 7, gBox(color: Color(0xFF1F9D6B), radii: [4, 4, 4, 4])),
       gP(40, 346, 96, 16, gText('Qualité du pitch', 12.5, Color(0xFF111015), weight: 600)),
-      gP(319, 346, 31, 15, gText('6 / 10', 12, Color(0xFF66636E), weight: 600, align: TextAlign.right)),
+      gP(179, 346, 171, 15, Consumer(builder: (context, ref, _) => gText('${ref.watch(scoresProvider)[3]} / 10', 12, Color(0xFF66636E), weight: 600, wrap: true, align: TextAlign.right))),
       gP(40, 368, 310, 7, gBox(color: Color(0xFFF2EFF6), radii: [4, 4, 4, 4])),
       gP(40, 368, 186, 7, gBox(color: Color(0xFF6A4DFF), radii: [4, 4, 4, 4])),
       gP(24, 406, 342, 120, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 420, 64, 18, gText('Synthèse', 14, Color(0xFF111015), weight: 700)),
       gP(40, 454, 67, 16, gText('Note totale', 12.5, Color(0xFF66636E))),
-      gP(305, 454, 45, 16, gText('30 / 40', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),
+      gP(165, 454, 185, 16, Consumer(builder: (context, ref, _) => gText('${ref.watch(scoresProvider).fold(0, (a, b) => a + b)} / 40', 12.5, Color(0xFF111015), weight: 700, wrap: true, align: TextAlign.right))),
       gP(40, 479, 310, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 488, 92, 16, gText('Rang provisoire', 12.5, Color(0xFF66636E))),
-      gP(334, 488, 16, 16, gText('2e', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
+      gP(194, 488, 156, 16, Consumer(builder: (context, ref, _) => gText(ordinal(provisionalRank(ref.watch(scoresProvider))), 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(24, 540, 126, 16, gText('Commentaire du jury', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 560, 342, 96, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(24, 560, 342, 96, GField(hint: 'Points forts et axes d’amélioration…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, multiline: true, padT: 14)),
@@ -75,6 +76,12 @@ class G_167 extends ConsumerWidget {
       gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Valider la note')),
       gP(235, 778, 99, 18, gText('Valider la note', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      gTap(203, 760, 163, 54, () { validateJury(ref, context); }),
+      gTap(24, 760, 163, 54, () { gToast(context, 'Note enregistrée en brouillon'); }),
+      gTap(24, 208, 342, 44, () { ref.read(scoresProvider.notifier).bump(0); }),
+      gTap(24, 252, 342, 44, () { ref.read(scoresProvider.notifier).bump(1); }),
+      gTap(24, 296, 342, 44, () { ref.read(scoresProvider.notifier).bump(2); }),
+      gTap(24, 340, 342, 44, () { ref.read(scoresProvider.notifier).bump(3); }),
     ]);
   }
 }

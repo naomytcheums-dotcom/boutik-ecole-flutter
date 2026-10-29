@@ -745,6 +745,7 @@ import '../live/review.dart';
 import '../live/audit.dart';
 import '../live/admin.dart';
 import '../live/talents.dart';
+import '../live/hackathons.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class %s extends ConsumerWidget {

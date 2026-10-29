@@ -14,6 +14,7 @@ import '../live/review.dart';
 import '../live/audit.dart';
 import '../live/admin.dart';
 import '../live/talents.dart';
+import '../live/hackathons.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_160 extends ConsumerWidget {
@@ -41,7 +42,7 @@ class G_160 extends ConsumerWidget {
       gP(341, 71, 22, 22, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(340.75, 70.75, 20.667, 20.667, gImg('assets/figma/v/eeff0eb6fd6e24.svg')),
       gP(353.308, 83.308, 9.942, 9.942, gImg('assets/figma/v/34172806399cca.svg')),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 55.6, 34, 'Tous', 12.5, 600), GChip(87.6, 120, 85.2, 34, 'En ligne', 12.5, 500), GChip(180.8, 120, 70.4, 34, 'Douala', 12.5, 500), GChip(259.2, 120, 77.8, 34, 'Yaoundé', 12.5, 500), GChip(345, 120, 85.2, 34, 'Gratuits', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 55.6, 34, 'Tous', 12.5, 600), GChip(87.6, 120, 85.2, 34, 'En ligne', 12.5, 500), GChip(180.8, 120, 70.4, 34, 'Douala', 12.5, 500), GChip(259.2, 120, 77.8, 34, 'Yaoundé', 12.5, 500), GChip(345, 120, 85.2, 34, 'Gratuits', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17, onChanged: (i) { ref.read(hackTabProvider.notifier).set(i); })),
       gP(24, 168, 342, 170, gBox(image: 'assets/figma/img/a30d4e56acc9216d03ba2d7972f7dfac533b78bf.png', fit: BoxFit.cover, radii: [24, 24, 24, 24])),
       gP(24, 168, 342, 170, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [24, 24, 24, 24])),
       gP(42, 276, 309, 23, gText('Hackathon Orange Digital Center', 18, Color(0xFFFFFFFF), weight: 700, wrap: true)),
@@ -55,28 +56,28 @@ class G_160 extends ConsumerWidget {
       gP(44.667, 413.333, 9.333, 10.167, gImg('assets/figma/v/ff038cff524fea.svg')),
       gP(58, 413.333, 9.333, 10.167, gImg('assets/figma/v/6d7d6e6c277316.svg')),
       gP(46.333, 428.333, 19.333, 6, gImg('assets/figma/v/3035c903f4ca6a.svg')),
-      gP(48, 411.667, 16, 16.833, gImg('assets/figma/v/ddb12173c17b9f.svg')),
-      gP(88, 402, 163, 17, gText('Orange Digital Challenge', 13.5, Color(0xFF111015), weight: 600)),
-      gP(88, 424, 200, 14, gText('14–16 nov. · Douala · 5 000 000 FCFA', 11.5, Color(0xFF66636E))),
-      gP(293.6, 412, 58.4, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
-      gP(303.8, 416, 38, 14, gText('Ouvert', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
+      gP(48, 411.667, 16, 16.833, gImg('assets/figma/v/ddb12173c17b9f.svg'), show: (ref.watch(visibleHackathonsProvider).length > 0)),
+      gP(88, 402, 163, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(visibleHackathonsProvider).length > 0 ? ref.watch(visibleHackathonsProvider)[0].title : '', 13.5, Color(0xFF111015), weight: 600)), show: (ref.watch(visibleHackathonsProvider).length > 0)),
+      gP(88, 424, 200, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(visibleHackathonsProvider).length > 0 ? ref.watch(visibleHackathonsProvider)[0].listSub : '', 11.5, Color(0xFF66636E))), show: (ref.watch(visibleHackathonsProvider).length > 0)),
+      gP(293.6, 412, 58.4, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: (ref.watch(visibleHackathonsProvider).length > 0)),
+      gP(303.8, 416, 38, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(visibleHackathonsProvider).length > 0 ? ref.watch(visibleHackathonsProvider)[0].status : '', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)), show: (ref.watch(visibleHackathonsProvider).length > 0)),
       gP(88, 456, 266, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(36, 469, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(56.333, 481, 11, 16, gImg('assets/figma/v/3de20d1ecd59fd.svg')),
-      gP(44.667, 481, 11, 16, gImg('assets/figma/v/cfb3b9604bdf74.svg')),
-      gP(88, 468, 162, 17, gText('Hackathon IoT et énergie', 13.5, Color(0xFF111015), weight: 600)),
-      gP(88, 490, 115, 14, gText('28–29 nov. · Yaoundé', 11.5, Color(0xFF66636E))),
-      gP(306.4, 478, 45.6, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11])),
-      gP(318.2, 482, 22, 14, gText('J-12', 11, Color(0xFF8F5400), weight: 600, align: TextAlign.center)),
+      gP(44.667, 481, 11, 16, gImg('assets/figma/v/cfb3b9604bdf74.svg'), show: (ref.watch(visibleHackathonsProvider).length > 1)),
+      gP(88, 468, 162, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(visibleHackathonsProvider).length > 1 ? ref.watch(visibleHackathonsProvider)[1].title : '', 13.5, Color(0xFF111015), weight: 600)), show: (ref.watch(visibleHackathonsProvider).length > 1)),
+      gP(88, 490, 115, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(visibleHackathonsProvider).length > 1 ? ref.watch(visibleHackathonsProvider)[1].listSub : '', 11.5, Color(0xFF66636E))), show: (ref.watch(visibleHackathonsProvider).length > 1)),
+      gP(306.4, 478, 45.6, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11]), show: (ref.watch(visibleHackathonsProvider).length > 1)),
+      gP(318.2, 482, 22, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(visibleHackathonsProvider).length > 1 ? ref.watch(visibleHackathonsProvider)[1].status : '', 11, Color(0xFF8F5400), weight: 600, align: TextAlign.center)), show: (ref.watch(visibleHackathonsProvider).length > 1)),
       gP(88, 522, 266, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(36, 535, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(48, 543.667, 16, 16, gImg('assets/figma/v/f44e883cdba29a.svg')),
       gP(50.5, 557, 11, 6, gImg('assets/figma/v/c4124addb3c439.svg')),
-      gP(51.333, 560.333, 9.333, 6, gImg('assets/figma/v/df31b3079c9886.svg')),
-      gP(88, 534, 203, 17, gText('Concours d’innovation étudia…', 13.5, Color(0xFF111015), weight: 600)),
-      gP(88, 556, 178, 14, gText('En ligne · Prix de 1 000 000 FCFA', 11.5, Color(0xFF66636E))),
-      gP(293.6, 544, 58.4, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
-      gP(303.8, 548, 38, 14, gText('Ouvert', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
+      gP(51.333, 560.333, 9.333, 6, gImg('assets/figma/v/df31b3079c9886.svg'), show: (ref.watch(visibleHackathonsProvider).length > 2)),
+      gP(88, 534, 203, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(visibleHackathonsProvider).length > 2 ? ref.watch(visibleHackathonsProvider)[2].title : '', 13.5, Color(0xFF111015), weight: 600)), show: (ref.watch(visibleHackathonsProvider).length > 2)),
+      gP(88, 556, 178, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(visibleHackathonsProvider).length > 2 ? ref.watch(visibleHackathonsProvider)[2].listSub : '', 11.5, Color(0xFF66636E))), show: (ref.watch(visibleHackathonsProvider).length > 2)),
+      gP(293.6, 544, 58.4, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: (ref.watch(visibleHackathonsProvider).length > 2)),
+      gP(303.8, 548, 38, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(visibleHackathonsProvider).length > 2 ? ref.watch(visibleHackathonsProvider)[2].status : '', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)), show: (ref.watch(visibleHackathonsProvider).length > 2)),
       gP(24, 602, 342, 132, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xFF0F2E4E), Color(0xFF1E4A80)], stops: [0, 1]), radii: [24, 24, 24, 24])),
       gP(222.36, 602, 143.64, 132, gBox(image: 'assets/figma/img/6baf8125049f662c1c5c4c23c6b514db2881910c.png', fit: BoxFit.cover, radii: [24, 24, 24, 24])),
       gP(195, 602, 68.4, 132, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xFF1B3F6E), Color(0x001B3F6E)], stops: [0, 1]))),
@@ -101,6 +102,11 @@ class G_160 extends ConsumerWidget {
       gP(169, 776, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gOpen(context, '03')),
       gP(184, 791, 22, 22, const SizedBox.expand(), tap: () => gOpen(context, '03')),
       gP(183.75, 789.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
+      gTap(24, 396, 342, 62, () { final l = ref.read(visibleHackathonsProvider); if (l.length > 0) { ref.read(selectedEventProvider.notifier).set(l[0].id); gOpen(context, '161'); } }),
+      gTap(24, 462, 342, 62, () { final l = ref.read(visibleHackathonsProvider); if (l.length > 1) { ref.read(selectedEventProvider.notifier).set(l[1].id); gOpen(context, '161'); } }),
+      gTap(24, 528, 342, 62, () { final l = ref.read(visibleHackathonsProvider); if (l.length > 2) { ref.read(selectedEventProvider.notifier).set(l[2].id); gOpen(context, '161'); } }),
+      gTap(24, 168, 342, 170, () { ref.read(selectedEventProvider.notifier).set('orange'); gOpen(context, '161'); }),
+      gTap(24, 694, 160, 28, () { gOpen(context, '163'); }),
     ]);
   }
 }

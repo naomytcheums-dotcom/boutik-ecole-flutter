@@ -55,7 +55,7 @@ Set<String>? allowedRoles(String id) {
   }
   if (n >= 139 && n <= 144) return {'finance', 'direction', admin};
   if (n >= 145 && n <= 147) return {'support', admin};
-  if (n == 168 || n == 169) return {'dept', admin};
+  if (n == 167 || n == 168 || n == 169) return {'dept', admin};
   if (n >= 198 && n <= 200) return {'dept', admin};
   if (n == 213) return {'dept', admin};
   if (n == 239) return {'direction', 'dept', admin};

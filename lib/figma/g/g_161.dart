@@ -14,6 +14,7 @@ import '../live/review.dart';
 import '../live/audit.dart';
 import '../live/admin.dart';
 import '../live/talents.dart';
+import '../live/hackathons.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_161 extends ConsumerWidget {
@@ -40,15 +41,15 @@ class G_161 extends ConsumerWidget {
       gP(76, 70, 112, 26, gText('Hackathon', 21, Color(0xFF111015), weight: 700)),
       gP(24, 120, 342, 180, gBox(image: 'assets/figma/img/e48f8827338ec470670d1109125a15b7d0f21476.png', fit: BoxFit.cover, radii: [24, 24, 24, 24])),
       gP(24, 120, 342, 180, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [24, 24, 24, 24])),
-      gP(42, 238, 309, 23, gText('Orange Digital Challenge', 18, Color(0xFFFFFFFF), weight: 700, wrap: true)),
-      gP(42, 266, 309, 15, gText('Du 14 au 16 novembre 2026 · Douala', 12, Color(0xFFE3ECF7), wrap: true)),
+      gP(42, 238, 309, 23, Consumer(builder: (context, ref, _) => gText(ref.watch(currentEventProvider).title, 18, Color(0xFFFFFFFF), weight: 700, wrap: true))),
+      gP(42, 266, 309, 15, Consumer(builder: (context, ref, _) => gText('${ref.watch(currentEventProvider).dates} · ${ref.watch(currentEventProvider).city}', 12, Color(0xFFE3ECF7), wrap: true))),
       gP(24, 314, 342, 76, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
-      gP(60, 328, 42, 25, gText('48 h', 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
+      gP(60, 328, 42, 25, Consumer(builder: (context, ref, _) => gText('${ref.watch(currentEventProvider).hours} h', 20, Color(0xFF111015), weight: 800, align: TextAlign.center))),
       gP(64, 358, 34, 14, gText('Durée', 11.5, Color(0xFF66636E), align: TextAlign.center)),
-      gP(177.5, 328, 35, 25, gText('5 M', 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
+      gP(177.5, 328, 35, 25, Consumer(builder: (context, ref, _) => gText(prizeShort(ref.watch(currentEventProvider).prize).replaceAll(' FCFA', ''), 20, Color(0xFF111015), weight: 800, align: TextAlign.center))),
       gP(161, 358, 68, 14, gText('FCFA de prix', 11.5, Color(0xFF66636E), align: TextAlign.center)),
       gP(138, 328, 1, 48, gBox(color: Color(0xFFF2EFF6))),
-      gP(291.5, 328, 35, 25, gText('120', 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
+      gP(291.5, 328, 35, 25, Consumer(builder: (context, ref, _) => gText('${placesLeft(ref.watch(currentEventProvider), ref.watch(registrationsProvider))}', 20, Color(0xFF111015), weight: 800, align: TextAlign.center))),
       gP(290.5, 358, 37, 14, gText('Places', 11.5, Color(0xFF66636E), align: TextAlign.center)),
       gP(252, 328, 1, 48, gBox(color: Color(0xFFF2EFF6))),
       gP(24, 440, 342, 1, gBox(color: Color(0xFFECE8F2))),
@@ -57,7 +58,7 @@ class G_161 extends ConsumerWidget {
       gP(119.25, 414, 66, 14, gText('Programme', 11.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
       gP(227.25, 414, 21, 14, gText('Prix', 11.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
       gP(292.75, 414, 61, 14, gText('Règlement', 11.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(24, 458, 345, 61, gText('Concevez en équipe une solution numérique à fort impact pour l’inclusion financière et l’éducation. Mentors et jury d’experts sur place.', 13, Color(0xFF4A4854), lh: 20.15, wrap: true)),
+      gP(24, 458, 345, 61, Consumer(builder: (context, ref, _) => gText(ref.watch(currentEventProvider).desc, 13, Color(0xFF4A4854), lh: 20.15, wrap: true))),
       gP(24, 533, 77, 19, gText('Calendrier', 15, Color(0xFF111015), weight: 700)),
       gP(33, 593, 2, 40, gBox(color: Color(0xFFBFE8D6), radii: [1, 1, 1, 1])),
       gP(24, 572, 20, 20, gBox(color: Color(0xFF1F9D6B), oval: true)),
@@ -80,6 +81,8 @@ class G_161 extends ConsumerWidget {
       gP(341.667, 79, 20.667, 15.167, gImg('assets/figma/v/38cc299702e092.svg')),
       gP(345.333, 69.833, 13.333, 9.667, gImg('assets/figma/v/d83f01d420bc41.svg')),
       gP(349, 69.833, 6, 17.917, gImg('assets/figma/v/7c9d8fa2b191bd.svg')),
+      gTap(203, 797, 163, 54, () { if (ref.read(registrationsProvider).containsKey(ref.read(currentEventProvider).id)) { gToast(context, 'Votre équipe est déjà inscrite.'); gOpen(context, '164'); } else { gOpen(context, '162'); } }),
+      gTap(24, 797, 163, 54, () { gToast(context, 'Lien du concours copié'); }),
     ]);
   }
 }

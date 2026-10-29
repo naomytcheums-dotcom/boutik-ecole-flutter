@@ -2658,5 +2658,394 @@
    "24,436,342,62": "final l = ref.read(visibleOpportunities151); if (l.length > 1) { applyDialog(context, ref, l[1]); }",
    "24,502,342,62": "final l = ref.read(visibleOpportunities151); if (l.length > 2) { applyDialog(context, ref, l[2]); }"
   }
+ },
+ "160": {
+  "nodes": {
+   "60:770": {
+    "onChanged": "ref.read(hackTabProvider.notifier).set(i);"
+   },
+   "60:795": {
+    "show": "ref.watch(visibleHackathonsProvider).length > 0"
+   },
+   "60:796": {
+    "text": "ref.watch(visibleHackathonsProvider).length > 0 ? ref.watch(visibleHackathonsProvider)[0].title : ''",
+    "show": "ref.watch(visibleHackathonsProvider).length > 0"
+   },
+   "60:797": {
+    "text": "ref.watch(visibleHackathonsProvider).length > 0 ? ref.watch(visibleHackathonsProvider)[0].listSub : ''",
+    "show": "ref.watch(visibleHackathonsProvider).length > 0"
+   },
+   "60:798": {
+    "show": "ref.watch(visibleHackathonsProvider).length > 0"
+   },
+   "60:799": {
+    "text": "ref.watch(visibleHackathonsProvider).length > 0 ? ref.watch(visibleHackathonsProvider)[0].status : ''",
+    "show": "ref.watch(visibleHackathonsProvider).length > 0"
+   },
+   "60:804": {
+    "show": "ref.watch(visibleHackathonsProvider).length > 1"
+   },
+   "60:805": {
+    "text": "ref.watch(visibleHackathonsProvider).length > 1 ? ref.watch(visibleHackathonsProvider)[1].title : ''",
+    "show": "ref.watch(visibleHackathonsProvider).length > 1"
+   },
+   "60:806": {
+    "text": "ref.watch(visibleHackathonsProvider).length > 1 ? ref.watch(visibleHackathonsProvider)[1].listSub : ''",
+    "show": "ref.watch(visibleHackathonsProvider).length > 1"
+   },
+   "60:807": {
+    "show": "ref.watch(visibleHackathonsProvider).length > 1"
+   },
+   "60:808": {
+    "text": "ref.watch(visibleHackathonsProvider).length > 1 ? ref.watch(visibleHackathonsProvider)[1].status : ''",
+    "show": "ref.watch(visibleHackathonsProvider).length > 1"
+   },
+   "60:814": {
+    "show": "ref.watch(visibleHackathonsProvider).length > 2"
+   },
+   "60:815": {
+    "text": "ref.watch(visibleHackathonsProvider).length > 2 ? ref.watch(visibleHackathonsProvider)[2].title : ''",
+    "show": "ref.watch(visibleHackathonsProvider).length > 2"
+   },
+   "60:816": {
+    "text": "ref.watch(visibleHackathonsProvider).length > 2 ? ref.watch(visibleHackathonsProvider)[2].listSub : ''",
+    "show": "ref.watch(visibleHackathonsProvider).length > 2"
+   },
+   "60:817": {
+    "show": "ref.watch(visibleHackathonsProvider).length > 2"
+   },
+   "60:818": {
+    "text": "ref.watch(visibleHackathonsProvider).length > 2 ? ref.watch(visibleHackathonsProvider)[2].status : ''",
+    "show": "ref.watch(visibleHackathonsProvider).length > 2"
+   }
+  },
+  "links": {
+   "24,396,342,62": "final l = ref.read(visibleHackathonsProvider); if (l.length > 0) { ref.read(selectedEventProvider.notifier).set(l[0].id); gOpen(context, '161'); }",
+   "24,462,342,62": "final l = ref.read(visibleHackathonsProvider); if (l.length > 1) { ref.read(selectedEventProvider.notifier).set(l[1].id); gOpen(context, '161'); }",
+   "24,528,342,62": "final l = ref.read(visibleHackathonsProvider); if (l.length > 2) { ref.read(selectedEventProvider.notifier).set(l[2].id); gOpen(context, '161'); }",
+   "24,168,342,170": "ref.read(selectedEventProvider.notifier).set('orange'); gOpen(context, '161');",
+   "24,694,160,28": "gOpen(context, '163');"
+  }
+ },
+ "161": {
+  "nodes": {
+   "60:868": {
+    "text": "ref.watch(currentEventProvider).title"
+   },
+   "60:869": {
+    "text": "'${ref.watch(currentEventProvider).dates} · ${ref.watch(currentEventProvider).city}'"
+   },
+   "60:871": {
+    "text": "'${ref.watch(currentEventProvider).hours} h'"
+   },
+   "60:873": {
+    "text": "prizeShort(ref.watch(currentEventProvider).prize).replaceAll(' FCFA', '')"
+   },
+   "60:876": {
+    "text": "'${placesLeft(ref.watch(currentEventProvider), ref.watch(registrationsProvider))}'"
+   },
+   "60:885": {
+    "text": "ref.watch(currentEventProvider).desc"
+   }
+  },
+  "links": {
+   "203,797,163,54": "if (ref.read(registrationsProvider).containsKey(ref.read(currentEventProvider).id)) { gToast(context, 'Votre équipe est déjà inscrite.'); gOpen(context, '164'); } else { gOpen(context, '162'); }",
+   "24,797,163,54": "gToast(context, 'Lien du concours copié');"
+  }
+ },
+ "162": {
+  "nodes": {
+   "60:939": {
+    "onChanged": "ref.read(formProvider.notifier).put('hk_team', v);",
+    "after": [
+     "errorText('hk_team', 28, 312)"
+    ]
+   },
+   "60:965": {
+    "onChanged": "ref.read(formProvider.notifier).put('hk_theme', v);",
+    "after": [
+     "errorText('hk_theme', 28, 606)"
+    ]
+   },
+   "60:948": {
+    "text": "ref.watch(profileAccountProvider).name"
+   },
+   "60:953": {
+    "show": "ref.watch(teamMembersProvider).length > 0"
+   },
+   "60:954": {
+    "text": "ref.watch(teamMembersProvider).length > 0 ? ref.watch(teamMembersProvider)[0].name : ''",
+    "show": "ref.watch(teamMembersProvider).length > 0"
+   },
+   "60:955": {
+    "text": "ref.watch(teamMembersProvider).length > 0 ? ref.watch(teamMembersProvider)[0].skills : ''",
+    "show": "ref.watch(teamMembersProvider).length > 0"
+   },
+   "60:956": {
+    "show": "ref.watch(teamMembersProvider).length > 0"
+   },
+   "60:957": {
+    "text": "ref.watch(teamMembersProvider).length > 0 ? (ref.watch(teamMembersProvider)[0].confirmed ? 'Confirmé' : 'En attente') : ''",
+    "show": "ref.watch(teamMembersProvider).length > 0"
+   },
+   "60:959": {
+    "show": "ref.watch(teamMembersProvider).length > 1"
+   },
+   "60:960": {
+    "text": "ref.watch(teamMembersProvider).length > 1 ? ref.watch(teamMembersProvider)[1].name : ''",
+    "show": "ref.watch(teamMembersProvider).length > 1"
+   },
+   "60:961": {
+    "text": "ref.watch(teamMembersProvider).length > 1 ? ref.watch(teamMembersProvider)[1].skills : ''",
+    "show": "ref.watch(teamMembersProvider).length > 1"
+   },
+   "60:962": {
+    "show": "ref.watch(teamMembersProvider).length > 1"
+   },
+   "60:963": {
+    "text": "ref.watch(teamMembersProvider).length > 1 ? (ref.watch(teamMembersProvider)[1].confirmed ? 'Confirmé' : 'En attente') : ''",
+    "show": "ref.watch(teamMembersProvider).length > 1"
+   },
+   "60:976": {
+    "before": [
+     "gP(24, 616, 22, 22, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFCFCBD6), bw: 1.5, radii: [7.0, 7.0, 7.0, 7.0]), show: !ref.watch(rulesProvider))"
+    ]
+   }
+  },
+  "links": {
+   "24,610,34,34": "ref.read(rulesProvider.notifier).toggle();",
+   "203,760,163,54": "submitRegistration(ref, context);",
+   "24,760,163,54": "gBack(context);",
+   "24,392,342,62": "final l = ref.read(teamMembersProvider); if (l.length > 0 && !l[0].confirmed) { ref.read(teamMembersProvider.notifier).confirm(l[0].name); gToast(context, '${l[0].name} a accepté l’invitation'); }",
+   "24,458,342,62": "final l = ref.read(teamMembersProvider); if (l.length > 1 && !l[1].confirmed) { ref.read(teamMembersProvider.notifier).confirm(l[1].name); gToast(context, '${l[1].name} a accepté l’invitation'); }"
+  }
+ },
+ "163": {
+  "nodes": {
+   "60:998": {
+    "onChanged": "ref.read(mateQueryProvider.notifier).set(v);"
+   },
+   "60:1013": {
+    "onChanged": "ref.read(mateTabProvider.notifier).set(i);"
+   },
+   "60:1021": {
+    "text": "'${ref.watch(visibleMatesProvider).length} talents disponibles'"
+   },
+   "60:1023": {
+    "show": "ref.watch(visibleMatesProvider).length > 0"
+   },
+   "60:1024": {
+    "text": "ref.watch(visibleMatesProvider).length > 0 ? ref.watch(visibleMatesProvider)[0].name : ''",
+    "show": "ref.watch(visibleMatesProvider).length > 0"
+   },
+   "60:1025": {
+    "text": "ref.watch(visibleMatesProvider).length > 0 ? ref.watch(visibleMatesProvider)[0].skills : ''",
+    "show": "ref.watch(visibleMatesProvider).length > 0"
+   },
+   "60:1026": {
+    "fill": "ref.watch(visibleMatesProvider).length > 0 ? inviteFill(ref.watch(teamMembersProvider).any((m) => m.name == ref.watch(visibleMatesProvider)[0].name)) : const Color(0x00000000)",
+    "show": "ref.watch(visibleMatesProvider).length > 0"
+   },
+   "60:1027": {
+    "text": "ref.watch(visibleMatesProvider).length > 0 ? (ref.watch(teamMembersProvider).any((m) => m.name == ref.watch(visibleMatesProvider)[0].name) ? 'Invité' : 'Inviter') : ''",
+    "color": "ref.watch(visibleMatesProvider).length > 0 ? inviteInk(ref.watch(teamMembersProvider).any((m) => m.name == ref.watch(visibleMatesProvider)[0].name)) : const Color(0xFF5A3FE0)",
+    "show": "ref.watch(visibleMatesProvider).length > 0"
+   },
+   "60:1029": {
+    "show": "ref.watch(visibleMatesProvider).length > 1"
+   },
+   "60:1030": {
+    "text": "ref.watch(visibleMatesProvider).length > 1 ? ref.watch(visibleMatesProvider)[1].name : ''",
+    "show": "ref.watch(visibleMatesProvider).length > 1"
+   },
+   "60:1031": {
+    "text": "ref.watch(visibleMatesProvider).length > 1 ? ref.watch(visibleMatesProvider)[1].skills : ''",
+    "show": "ref.watch(visibleMatesProvider).length > 1"
+   },
+   "60:1032": {
+    "fill": "ref.watch(visibleMatesProvider).length > 1 ? inviteFill(ref.watch(teamMembersProvider).any((m) => m.name == ref.watch(visibleMatesProvider)[1].name)) : const Color(0x00000000)",
+    "show": "ref.watch(visibleMatesProvider).length > 1"
+   },
+   "60:1033": {
+    "text": "ref.watch(visibleMatesProvider).length > 1 ? (ref.watch(teamMembersProvider).any((m) => m.name == ref.watch(visibleMatesProvider)[1].name) ? 'Invité' : 'Inviter') : ''",
+    "color": "ref.watch(visibleMatesProvider).length > 1 ? inviteInk(ref.watch(teamMembersProvider).any((m) => m.name == ref.watch(visibleMatesProvider)[1].name)) : const Color(0xFF5A3FE0)",
+    "show": "ref.watch(visibleMatesProvider).length > 1"
+   },
+   "60:1035": {
+    "show": "ref.watch(visibleMatesProvider).length > 2"
+   },
+   "60:1036": {
+    "text": "ref.watch(visibleMatesProvider).length > 2 ? ref.watch(visibleMatesProvider)[2].name : ''",
+    "show": "ref.watch(visibleMatesProvider).length > 2"
+   },
+   "60:1037": {
+    "text": "ref.watch(visibleMatesProvider).length > 2 ? ref.watch(visibleMatesProvider)[2].skills : ''",
+    "show": "ref.watch(visibleMatesProvider).length > 2"
+   },
+   "60:1038": {
+    "fill": "ref.watch(visibleMatesProvider).length > 2 ? inviteFill(ref.watch(teamMembersProvider).any((m) => m.name == ref.watch(visibleMatesProvider)[2].name)) : const Color(0x00000000)",
+    "show": "ref.watch(visibleMatesProvider).length > 2"
+   },
+   "60:1039": {
+    "text": "ref.watch(visibleMatesProvider).length > 2 ? (ref.watch(teamMembersProvider).any((m) => m.name == ref.watch(visibleMatesProvider)[2].name) ? 'Invité' : 'Inviter') : ''",
+    "color": "ref.watch(visibleMatesProvider).length > 2 ? inviteInk(ref.watch(teamMembersProvider).any((m) => m.name == ref.watch(visibleMatesProvider)[2].name)) : const Color(0xFF5A3FE0)",
+    "show": "ref.watch(visibleMatesProvider).length > 2"
+   },
+   "60:1041": {
+    "show": "ref.watch(visibleMatesProvider).length > 3"
+   },
+   "60:1042": {
+    "text": "ref.watch(visibleMatesProvider).length > 3 ? ref.watch(visibleMatesProvider)[3].name : ''",
+    "show": "ref.watch(visibleMatesProvider).length > 3"
+   },
+   "60:1043": {
+    "text": "ref.watch(visibleMatesProvider).length > 3 ? ref.watch(visibleMatesProvider)[3].skills : ''",
+    "show": "ref.watch(visibleMatesProvider).length > 3"
+   },
+   "60:1044": {
+    "fill": "ref.watch(visibleMatesProvider).length > 3 ? inviteFill(ref.watch(teamMembersProvider).any((m) => m.name == ref.watch(visibleMatesProvider)[3].name)) : const Color(0x00000000)",
+    "show": "ref.watch(visibleMatesProvider).length > 3"
+   },
+   "60:1045": {
+    "text": "ref.watch(visibleMatesProvider).length > 3 ? (ref.watch(teamMembersProvider).any((m) => m.name == ref.watch(visibleMatesProvider)[3].name) ? 'Invité' : 'Inviter') : ''",
+    "color": "ref.watch(visibleMatesProvider).length > 3 ? inviteInk(ref.watch(teamMembersProvider).any((m) => m.name == ref.watch(visibleMatesProvider)[3].name)) : const Color(0xFF5A3FE0)",
+    "show": "ref.watch(visibleMatesProvider).length > 3"
+   }
+  },
+  "links": {
+   "24,274,342,62": "final l = ref.read(visibleMatesProvider); if (l.length > 0) { toggleInvite(ref, context, l[0]); }",
+   "24,340,342,62": "final l = ref.read(visibleMatesProvider); if (l.length > 1) { toggleInvite(ref, context, l[1]); }",
+   "24,406,342,62": "final l = ref.read(visibleMatesProvider); if (l.length > 2) { toggleInvite(ref, context, l[2]); }",
+   "24,472,342,62": "final l = ref.read(visibleMatesProvider); if (l.length > 3) { toggleInvite(ref, context, l[3]); }"
+  }
+ },
+ "164": {
+  "nodes": {
+   "60:1067": {
+    "text": "ref.watch(registrationsProvider).isEmpty ? 'Team Innov’' : ref.watch(registrationsProvider).values.first.teamName"
+   },
+   "60:1068": {
+    "text": "ref.watch(registrationsProvider).isEmpty ? 'Orange Digital Challenge' : hackathons.firstWhere((h) => h.id == ref.watch(registrationsProvider).keys.first).title"
+   }
+  },
+  "links": {
+   "203,760,163,54": "gOpen(context, '165');",
+   "24,760,163,54": "gToast(context, 'Discussion d’équipe : bientôt disponible');",
+   "296,640,48,30": "gToast(context, 'Message envoyé au mentor');"
+  }
+ },
+ "165": {
+  "nodes": {
+   "60:1138": {
+    "onChanged": "ref.read(formProvider.notifier).put('dp_title', v);",
+    "after": [
+     "errorText('dp_title', 28, 190)"
+    ]
+   },
+   "60:1145": {
+    "onChanged": "ref.read(formProvider.notifier).put('dp_link', v);",
+    "after": [
+     "errorText('dp_link', 28, 272)"
+    ]
+   },
+   "60:1151": {
+    "onChanged": "ref.read(formProvider.notifier).put('dp_desc', v);",
+    "after": [
+     "errorText('dp_desc', 28, 402)"
+    ]
+   }
+  },
+  "links": {
+   "24,760,163,54": "gToast(context, 'Brouillon enregistré');",
+   "203,760,163,54": "submitDeposit(ref, context);"
+  }
+ },
+ "166": {
+  "nodes": {
+   "60:1204": {
+    "text": "ref.watch(rankingProvider).isEmpty ? '' : '${ref.watch(rankingProvider).first.team} · 1er prix'"
+   },
+   "60:1214": {
+    "text": "ref.watch(rankingProvider).length > 0 ? '${1}. ${ref.watch(rankingProvider)[0].team}' : ''",
+    "show": "ref.watch(rankingProvider).length > 0"
+   },
+   "60:1215": {
+    "text": "ref.watch(rankingProvider).length > 0 ? ref.watch(rankingProvider)[0].project : ''",
+    "show": "ref.watch(rankingProvider).length > 0"
+   },
+   "60:1217": {
+    "text": "ref.watch(rankingProvider).length > 0 ? '${ref.watch(rankingProvider)[0].pts} pts' : ''",
+    "right": true,
+    "show": "ref.watch(rankingProvider).length > 0"
+   },
+   "60:1225": {
+    "text": "ref.watch(rankingProvider).length > 1 ? '${2}. ${ref.watch(rankingProvider)[1].team}' : ''",
+    "show": "ref.watch(rankingProvider).length > 1"
+   },
+   "60:1226": {
+    "text": "ref.watch(rankingProvider).length > 1 ? ref.watch(rankingProvider)[1].project : ''",
+    "show": "ref.watch(rankingProvider).length > 1"
+   },
+   "60:1228": {
+    "text": "ref.watch(rankingProvider).length > 1 ? '${ref.watch(rankingProvider)[1].pts} pts' : ''",
+    "right": true,
+    "show": "ref.watch(rankingProvider).length > 1"
+   },
+   "60:1236": {
+    "text": "ref.watch(rankingProvider).length > 2 ? '${3}. ${ref.watch(rankingProvider)[2].team}' : ''",
+    "show": "ref.watch(rankingProvider).length > 2"
+   },
+   "60:1237": {
+    "text": "ref.watch(rankingProvider).length > 2 ? ref.watch(rankingProvider)[2].project : ''",
+    "show": "ref.watch(rankingProvider).length > 2"
+   },
+   "60:1239": {
+    "text": "ref.watch(rankingProvider).length > 2 ? '${ref.watch(rankingProvider)[2].pts} pts' : ''",
+    "right": true,
+    "show": "ref.watch(rankingProvider).length > 2"
+   }
+  }
+ },
+ "167": {
+  "nodes": {
+   "60:1268": {
+    "text": "'Noter : ${ref.watch(submissionProvider)?.title ?? 'Serre intelligente'}'"
+   },
+   "60:1271": {
+    "text": "ref.watch(submissionProvider)?.title ?? 'Serre intelligente'"
+   },
+   "60:1293": {
+    "text": "'${ref.watch(scoresProvider).fold(0, (a, b) => a + b)} / 40'",
+    "right": true
+   },
+   "60:1296": {
+    "text": "ordinal(provisionalRank(ref.watch(scoresProvider)))",
+    "right": true
+   },
+   "60:1275": {
+    "text": "'${ref.watch(scoresProvider)[0]} / 10'",
+    "right": true
+   },
+   "60:1279": {
+    "text": "'${ref.watch(scoresProvider)[1]} / 10'",
+    "right": true
+   },
+   "60:1283": {
+    "text": "'${ref.watch(scoresProvider)[2]} / 10'",
+    "right": true
+   },
+   "60:1287": {
+    "text": "'${ref.watch(scoresProvider)[3]} / 10'",
+    "right": true
+   }
+  },
+  "links": {
+   "203,760,163,54": "validateJury(ref, context);",
+   "24,760,163,54": "gToast(context, 'Note enregistrée en brouillon');",
+   "24,208,342,44": "ref.read(scoresProvider.notifier).bump(0);",
+   "24,252,342,44": "ref.read(scoresProvider.notifier).bump(1);",
+   "24,296,342,44": "ref.read(scoresProvider.notifier).bump(2);",
+   "24,340,342,44": "ref.read(scoresProvider.notifier).bump(3);"
+  }
  }
 }

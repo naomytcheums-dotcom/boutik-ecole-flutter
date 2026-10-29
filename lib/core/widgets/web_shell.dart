@@ -67,7 +67,12 @@ class WebShell extends StatelessWidget {
           );
           return Scaffold(
             backgroundColor: AppColors.webBackground,
-            drawer: wide ? null : Drawer(backgroundColor: AppColors.webSidebar, child: SafeArea(child: sidebar)),
+            drawer: wide
+                ? null
+                : Drawer(
+                    backgroundColor: AppColors.webSidebar,
+                    child: SafeArea(child: sidebar),
+                  ),
             body: SafeArea(
               child: Column(
                 children: [
@@ -76,7 +81,11 @@ class WebShell extends StatelessWidget {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        if (wide) SizedBox(width: AppSizes.sidebarWidth, child: ColoredBox(color: AppColors.webSidebar, child: sidebar)),
+                        if (wide)
+                          SizedBox(
+                            width: AppSizes.sidebarWidth,
+                            child: ColoredBox(color: AppColors.webSidebar, child: sidebar),
+                          ),
                         Expanded(
                           child: ListView(
                             padding: EdgeInsets.fromLTRB(wide ? 28 : 16, 24, wide ? 28 : 16, 32),
@@ -91,7 +100,10 @@ class WebShell extends StatelessWidget {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Semantics(header: true, child: Text(title, style: AppText.h1.copyWith(fontWeight: FontWeight.w600))),
+                                      Semantics(
+                                        header: true,
+                                        child: Text(title, style: AppText.h1.copyWith(fontWeight: FontWeight.w600)),
+                                      ),
                                       if (subtitle != null) ...[
                                         const SizedBox(height: 6),
                                         Text(subtitle!, style: AppText.secondary),
@@ -99,13 +111,20 @@ class WebShell extends StatelessWidget {
                                     ],
                                   ),
                                   if (headerActions.isNotEmpty || defaultActions)
-                                    Wrap(spacing: 12, runSpacing: 8, children: [
-                                      ...headerActions,
-                                      if (defaultActions) ...[
-                                        const WebChipButton('Actualiser', 'assets/icons/refresh-cw.svg'),
-                                        const WebChipButton('Personnaliser la vue', 'assets/icons/sliders-horizontal.svg'),
+                                    Wrap(
+                                      spacing: 12,
+                                      runSpacing: 8,
+                                      children: [
+                                        ...headerActions,
+                                        if (defaultActions) ...[
+                                          const WebChipButton('Actualiser', 'assets/icons/refresh-cw.svg'),
+                                          const WebChipButton(
+                                            'Personnaliser la vue',
+                                            'assets/icons/sliders-horizontal.svg',
+                                          ),
+                                        ],
                                       ],
-                                    ]),
+                                    ),
                                 ],
                               ),
                               const SizedBox(height: 18),
@@ -168,17 +187,22 @@ class _TopBar extends StatelessWidget {
                       const AppIcon('assets/icons/search.svg', size: 18),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: TextField(
-                          style: AppText.secondary.copyWith(color: AppColors.ink),
-                          decoration: InputDecoration(
-                            hintText: searchHint,
-                            hintStyle: AppText.secondary,
-                            filled: false,
-                            isDense: true,
-                            border: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            contentPadding: EdgeInsets.zero,
+                        // Zone tactile de 44 px qui déborde de 1 px de la pastille, sans changer le rendu.
+                        child: OverflowBox(
+                          minHeight: 44,
+                          maxHeight: 44,
+                          child: TextField(
+                            style: AppText.secondary.copyWith(color: AppColors.ink),
+                            decoration: InputDecoration(
+                              hintText: searchHint,
+                              hintStyle: AppText.secondary,
+                              filled: false,
+                              isDense: true,
+                              border: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              contentPadding: const EdgeInsets.symmetric(vertical: 13.5),
+                            ),
                           ),
                         ),
                       ),
@@ -220,59 +244,65 @@ class _Sidebar extends StatelessWidget {
       final it = items[i];
       final section = it.section ?? (i == 0 ? 'Principal' : null);
       if (section != null && section != lastSection) {
-        rows.add(Padding(
-          padding: const EdgeInsets.fromLTRB(16, 18, 16, 6),
-          child: Text(section, style: AppText.small),
-        ));
+        rows.add(
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 18, 16, 6),
+            child: Text(section, style: AppText.small),
+          ),
+        );
         lastSection = section;
       }
       final active = i == selected;
-      rows.add(Semantics(
-        button: true,
-        selected: active,
-        child: Material(
-          color: active ? Colors.white : Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
-          child: InkWell(
+      rows.add(
+        Semantics(
+          button: true,
+          selected: active,
+          child: Material(
+            color: active ? Colors.white : Colors.transparent,
             borderRadius: BorderRadius.circular(12),
-            onTap: () {
-              if (onNavigate != null) {
-                onNavigate!(it);
-              } else if (it.target != null) {
-                context.go(screenPath(it.target!));
-              }
-            },
-            child: SizedBox(
-              height: 46,
-              child: Row(
-                children: [
-                  const SizedBox(width: 12),
-                  AppIcon(it.icon, size: 18),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Text(
-                      it.label,
-                      style: AppText.secondary.copyWith(
-                        color: AppColors.ink,
-                        fontSize: 15,
-                        fontWeight: active ? FontWeight.w600 : FontWeight.w500,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(12),
+              onTap: () {
+                if (onNavigate != null) {
+                  onNavigate!(it);
+                } else if (it.target != null) {
+                  context.go(screenPath(it.target!));
+                }
+              },
+              child: SizedBox(
+                height: 46,
+                child: Row(
+                  children: [
+                    const SizedBox(width: 12),
+                    AppIcon(it.icon, size: 18),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Text(
+                        it.label,
+                        style: AppText.secondary.copyWith(
+                          color: AppColors.ink,
+                          fontSize: 15,
+                          fontWeight: active ? FontWeight.w600 : FontWeight.w500,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ));
+      );
       rows.add(const SizedBox(height: 4));
     }
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Column(
         children: [
-          Expanded(child: ListView(padding: const EdgeInsets.only(top: 6), children: rows)),
+          Expanded(
+            child: ListView(padding: const EdgeInsets.only(top: 6), children: rows),
+          ),
           Padding(
             padding: const EdgeInsets.only(bottom: 16),
             child: AppCard(
@@ -288,7 +318,11 @@ class _Sidebar extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(accountName, style: AppText.label, overflow: TextOverflow.ellipsis),
-                        Text(accountSubtitle, style: AppText.small.copyWith(fontSize: 12), overflow: TextOverflow.ellipsis),
+                        Text(
+                          accountSubtitle,
+                          style: AppText.small.copyWith(fontSize: 12),
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ],
                     ),
                   ),
@@ -326,7 +360,10 @@ class WebChipButton extends StatelessWidget {
             children: [
               AppIcon(icon, size: 16),
               const SizedBox(width: 10),
-              Text(label, style: AppText.secondary.copyWith(color: AppColors.ink, fontWeight: FontWeight.w500)),
+              Text(
+                label,
+                style: AppText.secondary.copyWith(color: AppColors.ink, fontWeight: FontWeight.w500),
+              ),
             ],
           ),
         ),
@@ -352,7 +389,11 @@ class _DefaultTopAction extends StatelessWidget {
                 for (var i = 0; i < 3; i++)
                   Positioned(
                     left: i * 16.0,
-                    child: Avatar(image: 'assets/images/${['avatar_woman', 'coder', 'student_hijab'][i]}.jpg', size: 34, ring: true),
+                    child: Avatar(
+                      image: 'assets/images/${['avatar_woman', 'coder', 'student_hijab'][i]}.jpg',
+                      size: 34,
+                      ring: true,
+                    ),
                   ),
                 Positioned(left: 56, top: 9, child: Text('+3', style: AppText.small)),
               ],
@@ -374,9 +415,9 @@ class _DefaultTopAction extends StatelessWidget {
           trailingIcon: 'assets/icons/external-link.svg',
           expand: false,
           height: 46,
-          onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Export préparé (données de démonstration).')),
-          ),
+          onPressed: () =>
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(const SnackBar(content: Text('Export préparé (données de démonstration).'))),
         ),
       ],
     );
@@ -399,12 +440,11 @@ class WebTable extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: header
           ? BoxDecoration(color: AppColors.webBackground, borderRadius: BorderRadius.circular(10))
-          : const BoxDecoration(border: Border(bottom: BorderSide(color: AppColors.cardBorder))),
+          : const BoxDecoration(
+              border: Border(bottom: BorderSide(color: AppColors.cardBorder)),
+            ),
       child: Row(
-        children: [
-          for (var i = 0; i < cells.length; i++)
-            Expanded(flex: flex?[i] ?? 1, child: cells[i]),
-        ],
+        children: [for (var i = 0; i < cells.length; i++) Expanded(flex: flex?[i] ?? 1, child: cells[i])],
       ),
     );
     return AppCard(
@@ -458,7 +498,13 @@ class Cell extends StatelessWidget {
 
 /// Grille responsive pour tableaux de bord : n colonnes sur grand écran, 1 sur petit.
 class ResponsiveGrid extends StatelessWidget {
-  const ResponsiveGrid({super.key, required this.children, this.columns = 4, this.spacing = 16, this.minItemWidth = 220});
+  const ResponsiveGrid({
+    super.key,
+    required this.children,
+    this.columns = 4,
+    this.spacing = 16,
+    this.minItemWidth = 220,
+  });
 
   final List<Widget> children;
   final int columns;

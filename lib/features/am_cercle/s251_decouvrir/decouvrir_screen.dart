@@ -16,17 +16,21 @@ class _DecouvrirScreenState extends ConsumerState<DecouvrirScreen> {
   Widget build(BuildContext context) {
     final d = ref.watch(sectionAMDataProvider);
     final t = d.trends;
-    Widget tile(int i, {double? height}) => GestureDetector(
-      onTap: () => context.openScreen(t[i].$2 == 'Live' ? '246' : (i == 0 ? '245' : '244')),
-      child: AmPhoto(
-        t[i].$1,
-        height: height,
-        children: [
-          if (t[i].$2 == 'Live')
-            const Positioned(right: 10, top: 10, child: AmDarkTag('Live', color: amLive))
-          else if (t[i].$2 != null)
-            Positioned(left: 10, top: 10, child: AmDarkTag(t[i].$2!)),
-        ],
+    Widget tile(int i, {double? height}) => Semantics(
+      button: true,
+      label: 'Ouvrir la publication ${i + 1}',
+      child: GestureDetector(
+        onTap: () => context.openScreen(t[i].$2 == 'Live' ? '246' : (i == 0 ? '245' : '244')),
+        child: AmPhoto(
+          t[i].$1,
+          height: height,
+          children: [
+            if (t[i].$2 == 'Live')
+              const Positioned(right: 10, top: 10, child: AmDarkTag('Live', color: amLive))
+            else if (t[i].$2 != null)
+              Positioned(left: 10, top: 10, child: AmDarkTag(t[i].$2!)),
+          ],
+        ),
       ),
     );
     return AppScaffold(

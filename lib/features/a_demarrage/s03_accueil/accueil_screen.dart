@@ -42,9 +42,13 @@ class _AccueilScreenState extends ConsumerState<AccueilScreen> {
               const Spacer(),
               HeaderIcon(AppIcons.search, label: 'Rechercher', onTap: () => context.openScreen('22')),
               HeaderIcon(AppIcons.bell, label: 'Notifications', badge: true, onTap: () => context.openScreen('53')),
-              GestureDetector(
-                onTap: () => context.openScreen('57'),
-                child: const Avatar(image: Photos.avatarWoman, size: 36),
+              Semantics(
+                button: true,
+                label: 'Mon profil',
+                child: GestureDetector(
+                  onTap: () => context.openScreen('57'),
+                  child: const Avatar(image: Photos.avatarWoman, size: 36),
+                ),
               ),
             ],
           ),
@@ -104,7 +108,8 @@ class _AccueilScreenState extends ConsumerState<AccueilScreen> {
                     subtitle: '${p.seller} – ${p.department}',
                     image: p.image,
                     favorite: _favorites.contains(p.id),
-                    onFavorite: () => setState(() => _favorites.contains(p.id) ? _favorites.remove(p.id) : _favorites.add(p.id)),
+                    onFavorite: () =>
+                        setState(() => _favorites.contains(p.id) ? _favorites.remove(p.id) : _favorites.add(p.id)),
                     onTap: () => context.openScreen('05'),
                   ),
                 ),
@@ -171,7 +176,13 @@ class _HeroBanner extends StatelessWidget {
               fit: StackFit.expand,
               children: [
                 Container(color: const Color(0xFF2B1C12)),
-                Positioned(right: 0, top: 0, bottom: 0, width: 220, child: Image.asset(Photos.heroStudent, fit: BoxFit.cover)),
+                Positioned(
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: 220,
+                  child: Image.asset(Photos.heroStudent, fit: BoxFit.cover),
+                ),
                 const DecoratedBox(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -187,7 +198,10 @@ class _HeroBanner extends StatelessWidget {
                     children: [
                       StatusBadge(d.heroBadge, tone: BadgeTone.dark),
                       const SizedBox(height: 10),
-                      Text(d.heroTitle, style: AppText.h2.copyWith(color: Colors.white, fontWeight: FontWeight.w800, height: 1.1)),
+                      Text(
+                        d.heroTitle,
+                        style: AppText.h2.copyWith(color: Colors.white, fontWeight: FontWeight.w800, height: 1.1),
+                      ),
                       const SizedBox(height: 4),
                       Text(d.heroText, style: AppText.small.copyWith(color: Colors.white)),
                       const Spacer(),

@@ -35,3 +35,38 @@ Chaque question indique l'écran concerné, la solution retenue en attendant la 
 17. **13 · Destination après « Continuer »** : Étudiant vendeur → 18b (compléter le profil) ; Entreprise → 262 (accueil B2B) ; Client et autre rôle → accueil 03. Les interactions de prototype n'étant pas lisibles, c'est une déduction.
 18. **19 · Photo de fond** : la photo (lettres de Scrabble) n'est disponible que via la capture, avec logo et texte incrustés ; seule une bande sans texte a été extraite. → Fournir l'original.
 19. **18c · Bouton violet** : seul bouton principal en dégradé violet (au lieu de noir) de l'application. Reproduit tel quel.
+
+## Sections suivantes
+
+Les questions des sections C à AM, des échantillons de référence et du parcours de soutenance sont dans un fichier par section :
+
+- [AA](questions/AA.md)
+- [AD](questions/AD.md)
+- [AI](questions/AI.md)
+- [AM](questions/AM.md)
+- [C](questions/C.md)
+- [D](questions/D.md)
+- [E](questions/E.md)
+- [F](questions/F.md)
+- [G](questions/G.md)
+- [I](questions/I.md)
+- [J](questions/J.md)
+- [K](questions/K.md)
+- [L](questions/L.md)
+- [M](questions/M.md)
+- [O](questions/O.md)
+- [P](questions/P.md)
+- [PARCOURS](questions/PARCOURS.md)
+- [Q](questions/Q.md)
+- [REF](questions/REF.md)
+- [S](questions/S.md)
+- [T](questions/T.md)
+- [U](questions/U.md)
+- [V](questions/V.md)
+- [W](questions/W.md)
+- [X](questions/X.md)
+- [Y](questions/Y.md)
+
+## Accessibilité (relecture finale)
+
+20. **Zones tactiles de 44 px.** L'audit automatique (`flutter test --tags a11y`, rapport `build/a11y_report.txt`) relève encore 75 éléments plus petits sur 46 écrans, tous dessinés à cette taille dans les maquettes : boutons de tableaux web de 36 px (« Qualifier », « Attribuer », 198), icônes de réseaux sociaux de 26 px (77, 89), liens de code de certificat (213), onglets de 40 px (11), champs de saisie de message (53–55, 233–235). Les agrandir changerait le design. Sur le Web à la souris, ils respectent le minimum WCAG 2.2 de 24 px sauf les liens de 18 px de 213. → Valider un agrandissement (invisible pour les champs, visible pour les boutons) ou garder les maquettes ?

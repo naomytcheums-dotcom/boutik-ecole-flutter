@@ -160,11 +160,15 @@ class ProfilMentorScreen extends ConsumerWidget {
                   child: Semantics(
                     button: true,
                     label: name,
-                    child: GestureDetector(
-                      onTap: () => context.toast('Ouvrir $name'),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(7),
-                        child: Image.asset(logo, width: 26, height: 26, fit: BoxFit.cover),
+                    child: Semantics(
+                      button: true,
+                      label: 'Ouvrir $name',
+                      child: GestureDetector(
+                        onTap: () => context.toast('Ouvrir $name'),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(7),
+                          child: Image.asset(logo, width: 26, height: 26, fit: BoxFit.cover),
+                        ),
                       ),
                     ),
                   ),
@@ -172,16 +176,20 @@ class ProfilMentorScreen extends ConsumerWidget {
               const SizedBox(width: 22),
               Semantics(
                 button: true,
-                child: GestureDetector(
-                  onTap: () => context.toast('Ouvrir le portfolio'),
-                  child: Container(
-                    height: 26,
-                    padding: const EdgeInsets.symmetric(horizontal: 13),
-                    decoration: const ShapeDecoration(color: Colors.white, shape: StadiumBorder()),
-                    alignment: Alignment.center,
-                    child: Text(
-                      'Portfolio ↗',
-                      style: AppText.small.copyWith(fontSize: 12, color: AppColors.ink, fontWeight: FontWeight.w600),
+                child: Semantics(
+                  button: true,
+                  label: 'Ouvrir le portfolio',
+                  child: GestureDetector(
+                    onTap: () => context.toast('Ouvrir le portfolio'),
+                    child: Container(
+                      height: 26,
+                      padding: const EdgeInsets.symmetric(horizontal: 13),
+                      decoration: const ShapeDecoration(color: Colors.white, shape: StadiumBorder()),
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Portfolio ↗',
+                        style: AppText.small.copyWith(fontSize: 12, color: AppColors.ink, fontWeight: FontWeight.w600),
+                      ),
                     ),
                   ),
                 ),

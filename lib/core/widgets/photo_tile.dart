@@ -30,6 +30,8 @@ class PhotoTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Une photo touchable doit être annoncée par les lecteurs d'écran.
+    final label = semanticLabel ?? (onTap != null ? 'Ouvrir la photo' : null);
     final picture = image == null
         ? Container(
             decoration: const BoxDecoration(
@@ -45,13 +47,14 @@ class PhotoTile extends StatelessWidget {
         : Image.asset(
             image!,
             fit: BoxFit.cover,
-            semanticLabel: semanticLabel,
+            semanticLabel: label,
             errorBuilder: (_, _, _) => Container(color: AppColors.field),
           );
     return Semantics(
       image: true,
       button: onTap != null,
-      label: semanticLabel,
+      container: onTap != null,
+      label: label,
       child: GestureDetector(
         onTap: onTap,
         child: AspectRatio(

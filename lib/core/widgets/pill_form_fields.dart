@@ -58,7 +58,7 @@ class PillTextField extends StatelessWidget {
           style: AppText.body.copyWith(color: AppColors.ink),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: AppText.secondary.copyWith(fontSize: 13.5, color: const Color(0xFF7A7782)),
+            hintStyle: AppText.secondary.copyWith(fontSize: 13.5, color: const Color(0xFF6F6C77)),
             filled: true,
             fillColor: Colors.white,
             isDense: true,

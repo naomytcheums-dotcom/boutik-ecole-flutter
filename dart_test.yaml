@@ -1,3 +1,5 @@
 tags:
   golden:
     description: Rendus de référence comparés pixel à pixel (régénérer avec --update-goldens).
+  a11y:
+    description: Audit d'accessibilité de chaque écran (rapport dans build/a11y_report.txt, n'échoue pas).

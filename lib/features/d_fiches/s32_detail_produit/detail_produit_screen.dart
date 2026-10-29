@@ -42,9 +42,13 @@ class _DetailProduitScreenState extends ConsumerState<DetailProduitScreen> {
       ],
       children: [
         const SizedBox(height: 2),
-        GestureDetector(
-          onTap: () => context.openScreen('34'),
-          child: DPhoto(d.productHero, height: 230, label: 'Photo du produit, ouvrir la galerie'),
+        Semantics(
+          button: true,
+          label: 'Ouvrir la galerie du produit',
+          child: GestureDetector(
+            onTap: () => context.openScreen('34'),
+            child: DPhoto(d.productHero, height: 230, label: 'Photo du produit, ouvrir la galerie'),
+          ),
         ),
         const SizedBox(height: 15),
         Semantics(

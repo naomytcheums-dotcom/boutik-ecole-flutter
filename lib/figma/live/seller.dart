@@ -11,18 +11,24 @@ import 'store.dart';
 // ------------------------------------------------------------------ annonces
 
 class Listing {
-  const Listing({required this.title, required this.category, required this.price, required this.stock, this.published = true, this.description = ''});
+  const Listing({required this.title, required this.category, required this.price, required this.stock, this.published = true, this.inReview = false, this.description = ''});
   final String title, category, description;
   final int price, stock;
-  final bool published;
+  final bool published, inReview;
 
   static const lowStock = 5;
 
   /// Libellé d'état : Brouillon, Rupture, Stock bas ou Publié.
-  String get label => !published ? 'Brouillon' : (stock == 0 ? 'Rupture' : (stock <= lowStock ? 'Stock bas' : 'Publié'));
+  String get label => !published ? (inReview ? 'En validation' : 'Brouillon') : (stock == 0 ? 'Rupture' : (stock <= lowStock ? 'Stock bas' : 'Publié'));
 
-  Listing copyWith({int? stock, bool? published}) => Listing(
-        title: title, category: category, price: price, stock: stock ?? this.stock, published: published ?? this.published, description: description);
+  Listing copyWith({int? stock, bool? published, bool? inReview}) => Listing(
+        title: title,
+        category: category,
+        price: price,
+        stock: stock ?? this.stock,
+        published: published ?? this.published,
+        inReview: inReview ?? this.inReview,
+        description: description);
 }
 
 class Listings extends Notifier<List<Listing>> {
@@ -37,6 +43,9 @@ class Listings extends Notifier<List<Listing>> {
 
   void add(Listing l) => state = [l, ...state];
   void setStock(String title, int stock) => state = [for (final l in state) l.title == title ? l.copyWith(stock: stock < 0 ? 0 : stock) : l];
+  /// Décision du valideur : publie l'annonce (approve) ou la renvoie en brouillon.
+  void review(String title, bool approve) =>
+      state = [for (final l in state) l.title == title ? l.copyWith(published: approve, inReview: false) : l];
   void publish(String title) => state = [for (final l in state) l.title == title ? l.copyWith(published: true) : l];
 }
 
@@ -144,14 +153,14 @@ Color sellerPillInk(String l) => switch (l) {
 Color listingPillFill(String l) => switch (l) {
       'Publié' => const Color(0xFFDDF5EC),
       'Rupture' => const Color(0xFFFDE6E7),
-      'Stock bas' => const Color(0xFFEEE9FF),
+      'Stock bas' || 'En validation' => const Color(0xFFEEE9FF),
       _ => const Color(0xFFF2EFF6),
     };
 
 Color listingPillInk(String l) => switch (l) {
       'Publié' => const Color(0xFF0F7A52),
       'Rupture' => const Color(0xFFE5484D),
-      'Stock bas' => const Color(0xFF8F5400),
+      'Stock bas' || 'En validation' => const Color(0xFF8F5400),
       _ => const Color(0xFF66636E),
     };
 
@@ -208,11 +217,12 @@ void submitListing(WidgetRef ref, BuildContext context, {required bool publish})
         category: catShort,
         price: int.parse((f['np_price'] ?? '25 000').replaceAll(RegExp(r'[\s ]'), '')),
         stock: int.parse(f['np_stock'] ?? '15'),
-        published: publish,
+        published: false,
+        inReview: publish,
         description: f['np_desc'] ?? '',
       ));
   ref.read(sellerFilterProvider.notifier).set(0);
-  gToast(context, publish ? 'Annonce publiée' : 'Brouillon enregistré');
+  gToast(context, publish ? 'Annonce envoyée en validation au département' : 'Brouillon enregistré');
   gOpen(context, '61');
 }
 

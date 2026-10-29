@@ -1436,5 +1436,420 @@
    "203,760,163,54": "markOrderReady(ref, context);",
    "24,760,163,54": "gToast(context, 'Signalement envoyé au département');"
   }
+ },
+ "110": {
+  "nodes": {
+   "41:410": {
+    "text": "'À valider (${ref.watch(pendingReviewsProvider).length})'"
+   },
+   "41:412": {
+    "text": "'Validées (${reviewCount(ref.watch(reviewDecisionsProvider), 1)})'"
+   },
+   "41:413": {
+    "text": "'Refusées (${reviewCount(ref.watch(reviewDecisionsProvider), 2)})'"
+   },
+   "41:468": {
+    "text": "'${((23 + reviewCount(ref.watch(reviewDecisionsProvider), 1)) * 100 / (25 + reviewCount(ref.watch(reviewDecisionsProvider), 1) + reviewCount(ref.watch(reviewDecisionsProvider), 2))).round()} %'",
+    "right": true
+   },
+   "41:471": {
+    "text": "'${7 + reviewCount(ref.watch(reviewDecisionsProvider), 2)}'",
+    "right": true
+   },
+   "41:423": {
+    "text": "ref.watch(visibleReviewsProvider).length > 0 ? ref.watch(visibleReviewsProvider)[0].title : ''",
+    "show": "ref.watch(visibleReviewsProvider).length > 0"
+   },
+   "41:424": {
+    "text": "ref.watch(visibleReviewsProvider).length > 0 ? ref.watch(visibleReviewsProvider)[0].seller : ''",
+    "show": "ref.watch(visibleReviewsProvider).length > 0"
+   },
+   "41:425": {
+    "text": "ref.watch(visibleReviewsProvider).length > 0 ? ref.watch(visibleReviewsProvider)[0].category : ''",
+    "show": "ref.watch(visibleReviewsProvider).length > 0"
+   },
+   "41:427": {
+    "text": "ref.watch(visibleReviewsProvider).length > 0 ? ref.watch(visibleReviewsProvider)[0].submitted : ''",
+    "show": "ref.watch(visibleReviewsProvider).length > 0"
+   },
+   "41:426": {
+    "text": "ref.watch(visibleReviewsProvider).length > 0 ? fcfa(ref.watch(visibleReviewsProvider)[0].price).replaceAll(' FCFA', '') : ''",
+    "show": "ref.watch(visibleReviewsProvider).length > 0"
+   },
+   "41:429": {
+    "show": "ref.watch(visibleReviewsProvider).length > 0"
+   },
+   "41:431": {
+    "text": "ref.watch(visibleReviewsProvider).length > 1 ? ref.watch(visibleReviewsProvider)[1].title : ''",
+    "show": "ref.watch(visibleReviewsProvider).length > 1"
+   },
+   "41:432": {
+    "text": "ref.watch(visibleReviewsProvider).length > 1 ? ref.watch(visibleReviewsProvider)[1].seller : ''",
+    "show": "ref.watch(visibleReviewsProvider).length > 1"
+   },
+   "41:433": {
+    "text": "ref.watch(visibleReviewsProvider).length > 1 ? ref.watch(visibleReviewsProvider)[1].category : ''",
+    "show": "ref.watch(visibleReviewsProvider).length > 1"
+   },
+   "41:435": {
+    "text": "ref.watch(visibleReviewsProvider).length > 1 ? ref.watch(visibleReviewsProvider)[1].submitted : ''",
+    "show": "ref.watch(visibleReviewsProvider).length > 1"
+   },
+   "41:434": {
+    "text": "ref.watch(visibleReviewsProvider).length > 1 ? fcfa(ref.watch(visibleReviewsProvider)[1].price).replaceAll(' FCFA', '') : ''",
+    "show": "ref.watch(visibleReviewsProvider).length > 1"
+   },
+   "41:437": {
+    "show": "ref.watch(visibleReviewsProvider).length > 1"
+   },
+   "41:439": {
+    "text": "ref.watch(visibleReviewsProvider).length > 2 ? ref.watch(visibleReviewsProvider)[2].title : ''",
+    "show": "ref.watch(visibleReviewsProvider).length > 2"
+   },
+   "41:440": {
+    "text": "ref.watch(visibleReviewsProvider).length > 2 ? ref.watch(visibleReviewsProvider)[2].seller : ''",
+    "show": "ref.watch(visibleReviewsProvider).length > 2"
+   },
+   "41:441": {
+    "text": "ref.watch(visibleReviewsProvider).length > 2 ? ref.watch(visibleReviewsProvider)[2].category : ''",
+    "show": "ref.watch(visibleReviewsProvider).length > 2"
+   },
+   "41:443": {
+    "text": "ref.watch(visibleReviewsProvider).length > 2 ? ref.watch(visibleReviewsProvider)[2].submitted : ''",
+    "show": "ref.watch(visibleReviewsProvider).length > 2"
+   },
+   "41:442": {
+    "text": "ref.watch(visibleReviewsProvider).length > 2 ? fcfa(ref.watch(visibleReviewsProvider)[2].price).replaceAll(' FCFA', '') : ''",
+    "show": "ref.watch(visibleReviewsProvider).length > 2"
+   },
+   "41:445": {
+    "show": "ref.watch(visibleReviewsProvider).length > 2"
+   },
+   "41:447": {
+    "text": "ref.watch(visibleReviewsProvider).length > 3 ? ref.watch(visibleReviewsProvider)[3].title : ''",
+    "show": "ref.watch(visibleReviewsProvider).length > 3"
+   },
+   "41:448": {
+    "text": "ref.watch(visibleReviewsProvider).length > 3 ? ref.watch(visibleReviewsProvider)[3].seller : ''",
+    "show": "ref.watch(visibleReviewsProvider).length > 3"
+   },
+   "41:449": {
+    "text": "ref.watch(visibleReviewsProvider).length > 3 ? ref.watch(visibleReviewsProvider)[3].category : ''",
+    "show": "ref.watch(visibleReviewsProvider).length > 3"
+   },
+   "41:451": {
+    "text": "ref.watch(visibleReviewsProvider).length > 3 ? ref.watch(visibleReviewsProvider)[3].submitted : ''",
+    "show": "ref.watch(visibleReviewsProvider).length > 3"
+   },
+   "41:450": {
+    "text": "ref.watch(visibleReviewsProvider).length > 3 ? fcfa(ref.watch(visibleReviewsProvider)[3].price).replaceAll(' FCFA', '') : ''",
+    "show": "ref.watch(visibleReviewsProvider).length > 3"
+   },
+   "41:453": {
+    "show": "ref.watch(visibleReviewsProvider).length > 3"
+   },
+   "41:455": {
+    "text": "ref.watch(visibleReviewsProvider).length > 4 ? ref.watch(visibleReviewsProvider)[4].title : ''",
+    "show": "ref.watch(visibleReviewsProvider).length > 4"
+   },
+   "41:456": {
+    "text": "ref.watch(visibleReviewsProvider).length > 4 ? ref.watch(visibleReviewsProvider)[4].seller : ''",
+    "show": "ref.watch(visibleReviewsProvider).length > 4"
+   },
+   "41:457": {
+    "text": "ref.watch(visibleReviewsProvider).length > 4 ? ref.watch(visibleReviewsProvider)[4].category : ''",
+    "show": "ref.watch(visibleReviewsProvider).length > 4"
+   },
+   "41:459": {
+    "text": "ref.watch(visibleReviewsProvider).length > 4 ? ref.watch(visibleReviewsProvider)[4].submitted : ''",
+    "show": "ref.watch(visibleReviewsProvider).length > 4"
+   },
+   "41:458": {
+    "text": "ref.watch(visibleReviewsProvider).length > 4 ? fcfa(ref.watch(visibleReviewsProvider)[4].price).replaceAll(' FCFA', '') : ''",
+    "show": "ref.watch(visibleReviewsProvider).length > 4"
+   },
+   "41:461": {
+    "show": "ref.watch(visibleReviewsProvider).length > 4"
+   },
+   "41:428": {
+    "show": "ref.watch(visibleReviewsProvider).length > 0"
+   },
+   "41:436": {
+    "show": "ref.watch(visibleReviewsProvider).length > 1"
+   },
+   "41:444": {
+    "show": "ref.watch(visibleReviewsProvider).length > 2"
+   },
+   "41:452": {
+    "show": "ref.watch(visibleReviewsProvider).length > 3"
+   },
+   "41:460": {
+    "show": "ref.watch(visibleReviewsProvider).length > 4"
+   }
+  },
+  "links": {
+   "268,222,1000,38": "final l = ref.read(visibleReviewsProvider); if (l.length > 0) { reviewDialog(context, ref, l[0]); }",
+   "268,266,1000,38": "final l = ref.read(visibleReviewsProvider); if (l.length > 1) { reviewDialog(context, ref, l[1]); }",
+   "268,310,1000,38": "final l = ref.read(visibleReviewsProvider); if (l.length > 2) { reviewDialog(context, ref, l[2]); }",
+   "268,354,1000,38": "final l = ref.read(visibleReviewsProvider); if (l.length > 3) { reviewDialog(context, ref, l[3]); }",
+   "268,398,1000,38": "final l = ref.read(visibleReviewsProvider); if (l.length > 4) { reviewDialog(context, ref, l[4]); }",
+   "329,122,130,34": "ref.read(reviewTabProvider.notifier).set(0);",
+   "591,122,130,34": "ref.read(reviewTabProvider.notifier).set(1);",
+   "834,122,130,34": "ref.read(reviewTabProvider.notifier).set(2);"
+  }
+ },
+ "108": {
+  "nodes": {
+   "148:118": {
+    "text": "fcfa(4820000 + flowTotal(ref))"
+   },
+   "148:227": {
+    "text": "'${((4820000 + flowTotal(ref)) / 1000).round()} k'"
+   },
+   "148:242": {
+    "text": "ref.watch(pendingReviewsProvider).length > 0 ? ref.watch(pendingReviewsProvider)[0].title : ''",
+    "show": "ref.watch(pendingReviewsProvider).length > 0"
+   },
+   "148:243": {
+    "text": "ref.watch(pendingReviewsProvider).length > 0 ? ref.watch(pendingReviewsProvider)[0].code : ''",
+    "show": "ref.watch(pendingReviewsProvider).length > 0"
+   },
+   "148:244": {
+    "text": "ref.watch(pendingReviewsProvider).length > 0 ? ref.watch(pendingReviewsProvider)[0].seller : ''",
+    "show": "ref.watch(pendingReviewsProvider).length > 0"
+   },
+   "148:246": {
+    "show": "ref.watch(pendingReviewsProvider).length > 0"
+   },
+   "148:247": {
+    "text": "ref.watch(pendingReviewsProvider).length > 0 ? fcfa(ref.watch(pendingReviewsProvider)[0].price).replaceAll(' FCFA', ' F') : ''",
+    "show": "ref.watch(pendingReviewsProvider).length > 0"
+   },
+   "148:249": {
+    "text": "ref.watch(pendingReviewsProvider).length > 1 ? ref.watch(pendingReviewsProvider)[1].title : ''",
+    "show": "ref.watch(pendingReviewsProvider).length > 1"
+   },
+   "148:250": {
+    "text": "ref.watch(pendingReviewsProvider).length > 1 ? ref.watch(pendingReviewsProvider)[1].code : ''",
+    "show": "ref.watch(pendingReviewsProvider).length > 1"
+   },
+   "148:251": {
+    "text": "ref.watch(pendingReviewsProvider).length > 1 ? ref.watch(pendingReviewsProvider)[1].seller : ''",
+    "show": "ref.watch(pendingReviewsProvider).length > 1"
+   },
+   "148:253": {
+    "show": "ref.watch(pendingReviewsProvider).length > 1"
+   },
+   "148:254": {
+    "text": "ref.watch(pendingReviewsProvider).length > 1 ? fcfa(ref.watch(pendingReviewsProvider)[1].price).replaceAll(' FCFA', ' F') : ''",
+    "show": "ref.watch(pendingReviewsProvider).length > 1"
+   },
+   "148:256": {
+    "text": "ref.watch(pendingReviewsProvider).length > 2 ? ref.watch(pendingReviewsProvider)[2].title : ''",
+    "show": "ref.watch(pendingReviewsProvider).length > 2"
+   },
+   "148:257": {
+    "text": "ref.watch(pendingReviewsProvider).length > 2 ? ref.watch(pendingReviewsProvider)[2].code : ''",
+    "show": "ref.watch(pendingReviewsProvider).length > 2"
+   },
+   "148:258": {
+    "text": "ref.watch(pendingReviewsProvider).length > 2 ? ref.watch(pendingReviewsProvider)[2].seller : ''",
+    "show": "ref.watch(pendingReviewsProvider).length > 2"
+   },
+   "148:260": {
+    "show": "ref.watch(pendingReviewsProvider).length > 2"
+   },
+   "148:261": {
+    "text": "ref.watch(pendingReviewsProvider).length > 2 ? fcfa(ref.watch(pendingReviewsProvider)[2].price).replaceAll(' FCFA', ' F') : ''",
+    "show": "ref.watch(pendingReviewsProvider).length > 2"
+   },
+   "148:263": {
+    "text": "ref.watch(pendingReviewsProvider).length > 3 ? ref.watch(pendingReviewsProvider)[3].title : ''",
+    "show": "ref.watch(pendingReviewsProvider).length > 3"
+   },
+   "148:264": {
+    "text": "ref.watch(pendingReviewsProvider).length > 3 ? ref.watch(pendingReviewsProvider)[3].code : ''",
+    "show": "ref.watch(pendingReviewsProvider).length > 3"
+   },
+   "148:265": {
+    "text": "ref.watch(pendingReviewsProvider).length > 3 ? ref.watch(pendingReviewsProvider)[3].seller : ''",
+    "show": "ref.watch(pendingReviewsProvider).length > 3"
+   },
+   "148:267": {
+    "show": "ref.watch(pendingReviewsProvider).length > 3"
+   },
+   "148:268": {
+    "text": "ref.watch(pendingReviewsProvider).length > 3 ? fcfa(ref.watch(pendingReviewsProvider)[3].price).replaceAll(' FCFA', ' F') : ''",
+    "show": "ref.watch(pendingReviewsProvider).length > 3"
+   },
+   "148:270": {
+    "text": "ref.watch(pendingReviewsProvider).length > 4 ? ref.watch(pendingReviewsProvider)[4].title : ''",
+    "show": "ref.watch(pendingReviewsProvider).length > 4"
+   },
+   "148:271": {
+    "text": "ref.watch(pendingReviewsProvider).length > 4 ? ref.watch(pendingReviewsProvider)[4].code : ''",
+    "show": "ref.watch(pendingReviewsProvider).length > 4"
+   },
+   "148:272": {
+    "text": "ref.watch(pendingReviewsProvider).length > 4 ? ref.watch(pendingReviewsProvider)[4].seller : ''",
+    "show": "ref.watch(pendingReviewsProvider).length > 4"
+   },
+   "148:274": {
+    "show": "ref.watch(pendingReviewsProvider).length > 4"
+   },
+   "148:275": {
+    "text": "ref.watch(pendingReviewsProvider).length > 4 ? fcfa(ref.watch(pendingReviewsProvider)[4].price).replaceAll(' FCFA', ' F') : ''",
+    "show": "ref.watch(pendingReviewsProvider).length > 4"
+   }
+  },
+  "links": {
+   "270,485,620,50": "final l = ref.read(pendingReviewsProvider); if (l.length > 0) { reviewDialog(context, ref, l[0]); }",
+   "270,537,620,50": "final l = ref.read(pendingReviewsProvider); if (l.length > 1) { reviewDialog(context, ref, l[1]); }",
+   "270,589,620,50": "final l = ref.read(pendingReviewsProvider); if (l.length > 2) { reviewDialog(context, ref, l[2]); }",
+   "270,641,620,50": "final l = ref.read(pendingReviewsProvider); if (l.length > 3) { reviewDialog(context, ref, l[3]); }",
+   "270,693,620,50": "final l = ref.read(pendingReviewsProvider); if (l.length > 4) { reviewDialog(context, ref, l[4]); }"
+  }
+ },
+ "139": {
+  "nodes": {
+   "148:1048": {
+    "text": "fcfa(48200000 + flowTotal(ref))"
+   },
+   "148:1157": {
+    "text": "'${((48200000 + flowTotal(ref)) / 1000000).toStringAsFixed(1).replaceAll(\".\", \",\")} M'"
+   },
+   "148:1172": {
+    "text": "ref.watch(flowRowsProvider).length > 0 ? ref.watch(flowRowsProvider)[0].ref : ''",
+    "show": "ref.watch(flowRowsProvider).length > 0"
+   },
+   "148:1173": {
+    "text": "ref.watch(flowRowsProvider).length > 0 ? ref.watch(flowRowsProvider)[0].sub : ''",
+    "show": "ref.watch(flowRowsProvider).length > 0"
+   },
+   "148:1174": {
+    "text": "ref.watch(flowRowsProvider).length > 0 ? ref.watch(flowRowsProvider)[0].type : ''",
+    "show": "ref.watch(flowRowsProvider).length > 0"
+   },
+   "148:1177": {
+    "text": "ref.watch(flowRowsProvider).length > 0 ? fcfa(ref.watch(flowRowsProvider)[0].amount).replaceAll(' FCFA', ' F') : ''",
+    "show": "ref.watch(flowRowsProvider).length > 0"
+   },
+   "148:1175": {
+    "fill": "ref.watch(flowRowsProvider).length > 0 ? flowFill(ref.watch(flowRowsProvider)[0].status) : const Color(0x00000000)",
+    "show": "ref.watch(flowRowsProvider).length > 0"
+   },
+   "148:1176": {
+    "text": "ref.watch(flowRowsProvider).length > 0 ? ref.watch(flowRowsProvider)[0].status : ''",
+    "color": "ref.watch(flowRowsProvider).length > 0 ? flowInk(ref.watch(flowRowsProvider)[0].status) : const Color(0xFF0F7A52)",
+    "show": "ref.watch(flowRowsProvider).length > 0"
+   },
+   "148:1179": {
+    "text": "ref.watch(flowRowsProvider).length > 1 ? ref.watch(flowRowsProvider)[1].ref : ''",
+    "show": "ref.watch(flowRowsProvider).length > 1"
+   },
+   "148:1180": {
+    "text": "ref.watch(flowRowsProvider).length > 1 ? ref.watch(flowRowsProvider)[1].sub : ''",
+    "show": "ref.watch(flowRowsProvider).length > 1"
+   },
+   "148:1181": {
+    "text": "ref.watch(flowRowsProvider).length > 1 ? ref.watch(flowRowsProvider)[1].type : ''",
+    "show": "ref.watch(flowRowsProvider).length > 1"
+   },
+   "148:1184": {
+    "text": "ref.watch(flowRowsProvider).length > 1 ? fcfa(ref.watch(flowRowsProvider)[1].amount).replaceAll(' FCFA', ' F') : ''",
+    "show": "ref.watch(flowRowsProvider).length > 1"
+   },
+   "148:1182": {
+    "fill": "ref.watch(flowRowsProvider).length > 1 ? flowFill(ref.watch(flowRowsProvider)[1].status) : const Color(0x00000000)",
+    "show": "ref.watch(flowRowsProvider).length > 1"
+   },
+   "148:1183": {
+    "text": "ref.watch(flowRowsProvider).length > 1 ? ref.watch(flowRowsProvider)[1].status : ''",
+    "color": "ref.watch(flowRowsProvider).length > 1 ? flowInk(ref.watch(flowRowsProvider)[1].status) : const Color(0xFF0F7A52)",
+    "show": "ref.watch(flowRowsProvider).length > 1"
+   },
+   "148:1186": {
+    "text": "ref.watch(flowRowsProvider).length > 2 ? ref.watch(flowRowsProvider)[2].ref : ''",
+    "show": "ref.watch(flowRowsProvider).length > 2"
+   },
+   "148:1187": {
+    "text": "ref.watch(flowRowsProvider).length > 2 ? ref.watch(flowRowsProvider)[2].sub : ''",
+    "show": "ref.watch(flowRowsProvider).length > 2"
+   },
+   "148:1188": {
+    "text": "ref.watch(flowRowsProvider).length > 2 ? ref.watch(flowRowsProvider)[2].type : ''",
+    "show": "ref.watch(flowRowsProvider).length > 2"
+   },
+   "148:1191": {
+    "text": "ref.watch(flowRowsProvider).length > 2 ? fcfa(ref.watch(flowRowsProvider)[2].amount).replaceAll(' FCFA', ' F') : ''",
+    "show": "ref.watch(flowRowsProvider).length > 2"
+   },
+   "148:1189": {
+    "fill": "ref.watch(flowRowsProvider).length > 2 ? flowFill(ref.watch(flowRowsProvider)[2].status) : const Color(0x00000000)",
+    "show": "ref.watch(flowRowsProvider).length > 2"
+   },
+   "148:1190": {
+    "text": "ref.watch(flowRowsProvider).length > 2 ? ref.watch(flowRowsProvider)[2].status : ''",
+    "color": "ref.watch(flowRowsProvider).length > 2 ? flowInk(ref.watch(flowRowsProvider)[2].status) : const Color(0xFF0F7A52)",
+    "show": "ref.watch(flowRowsProvider).length > 2"
+   },
+   "148:1193": {
+    "text": "ref.watch(flowRowsProvider).length > 3 ? ref.watch(flowRowsProvider)[3].ref : ''",
+    "show": "ref.watch(flowRowsProvider).length > 3"
+   },
+   "148:1194": {
+    "text": "ref.watch(flowRowsProvider).length > 3 ? ref.watch(flowRowsProvider)[3].sub : ''",
+    "show": "ref.watch(flowRowsProvider).length > 3"
+   },
+   "148:1195": {
+    "text": "ref.watch(flowRowsProvider).length > 3 ? ref.watch(flowRowsProvider)[3].type : ''",
+    "show": "ref.watch(flowRowsProvider).length > 3"
+   },
+   "148:1198": {
+    "text": "ref.watch(flowRowsProvider).length > 3 ? fcfa(ref.watch(flowRowsProvider)[3].amount).replaceAll(' FCFA', ' F') : ''",
+    "show": "ref.watch(flowRowsProvider).length > 3"
+   },
+   "148:1196": {
+    "fill": "ref.watch(flowRowsProvider).length > 3 ? flowFill(ref.watch(flowRowsProvider)[3].status) : const Color(0x00000000)",
+    "show": "ref.watch(flowRowsProvider).length > 3"
+   },
+   "148:1197": {
+    "text": "ref.watch(flowRowsProvider).length > 3 ? ref.watch(flowRowsProvider)[3].status : ''",
+    "color": "ref.watch(flowRowsProvider).length > 3 ? flowInk(ref.watch(flowRowsProvider)[3].status) : const Color(0xFF0F7A52)",
+    "show": "ref.watch(flowRowsProvider).length > 3"
+   },
+   "148:1200": {
+    "text": "ref.watch(flowRowsProvider).length > 4 ? ref.watch(flowRowsProvider)[4].ref : ''",
+    "show": "ref.watch(flowRowsProvider).length > 4"
+   },
+   "148:1201": {
+    "text": "ref.watch(flowRowsProvider).length > 4 ? ref.watch(flowRowsProvider)[4].sub : ''",
+    "show": "ref.watch(flowRowsProvider).length > 4"
+   },
+   "148:1202": {
+    "text": "ref.watch(flowRowsProvider).length > 4 ? ref.watch(flowRowsProvider)[4].type : ''",
+    "show": "ref.watch(flowRowsProvider).length > 4"
+   },
+   "148:1205": {
+    "text": "ref.watch(flowRowsProvider).length > 4 ? fcfa(ref.watch(flowRowsProvider)[4].amount).replaceAll(' FCFA', ' F') : ''",
+    "show": "ref.watch(flowRowsProvider).length > 4"
+   },
+   "148:1203": {
+    "fill": "ref.watch(flowRowsProvider).length > 4 ? flowFill(ref.watch(flowRowsProvider)[4].status) : const Color(0x00000000)",
+    "show": "ref.watch(flowRowsProvider).length > 4"
+   },
+   "148:1204": {
+    "text": "ref.watch(flowRowsProvider).length > 4 ? ref.watch(flowRowsProvider)[4].status : ''",
+    "color": "ref.watch(flowRowsProvider).length > 4 ? flowInk(ref.watch(flowRowsProvider)[4].status) : const Color(0xFF0F7A52)",
+    "show": "ref.watch(flowRowsProvider).length > 4"
+   }
+  },
+  "links": {
+   "270,485,620,50": "final l = ref.read(flowRowsProvider); if (l.length > 0) { final r = l[0]; if (r.orderId != null && r.status == 'À vérifier') { ref.read(ordersProvider.notifier).markPaid(r.orderId!); gToast(context, 'Paiement ${r.ref} vérifié'); } else { gToast(context, 'Flux ${l[0].ref} : ${l[0].status}'); } }",
+   "270,537,620,50": "final l = ref.read(flowRowsProvider); if (l.length > 1) { final r = l[1]; if (r.orderId != null && r.status == 'À vérifier') { ref.read(ordersProvider.notifier).markPaid(r.orderId!); gToast(context, 'Paiement ${r.ref} vérifié'); } else { gToast(context, 'Flux ${l[1].ref} : ${l[1].status}'); } }",
+   "270,589,620,50": "final l = ref.read(flowRowsProvider); if (l.length > 2) { final r = l[2]; if (r.orderId != null && r.status == 'À vérifier') { ref.read(ordersProvider.notifier).markPaid(r.orderId!); gToast(context, 'Paiement ${r.ref} vérifié'); } else { gToast(context, 'Flux ${l[2].ref} : ${l[2].status}'); } }",
+   "270,641,620,50": "final l = ref.read(flowRowsProvider); if (l.length > 3) { final r = l[3]; if (r.orderId != null && r.status == 'À vérifier') { ref.read(ordersProvider.notifier).markPaid(r.orderId!); gToast(context, 'Paiement ${r.ref} vérifié'); } else { gToast(context, 'Flux ${l[3].ref} : ${l[3].status}'); } }",
+   "270,693,620,50": "final l = ref.read(flowRowsProvider); if (l.length > 4) { final r = l[4]; if (r.orderId != null && r.status == 'À vérifier') { ref.read(ordersProvider.notifier).markPaid(r.orderId!); gToast(context, 'Paiement ${r.ref} vérifié'); } else { gToast(context, 'Flux ${l[4].ref} : ${l[4].status}'); } }"
+  }
  }
 }

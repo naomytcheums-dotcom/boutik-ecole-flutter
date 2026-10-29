@@ -44,7 +44,11 @@ class _DemandeDevisScreenState extends ConsumerState<DemandeDevisScreen> {
     final budgets = [for (final b in d.quoteBudgets) '${fcfa(b.$1, withUnit: false)} – ${fcfa(b.$2)}'];
     return DScaffold(
       title: 'Demande de devis',
-      actions: [DButton(_sent ? 'Demande envoyée' : 'Envoyer la demande', onPressed: _sent ? null : _send)],
+      actions: [
+        _sent
+            ? DButton('Voir mon panier', onPressed: () => context.openScreen('06'))
+            : DButton('Envoyer la demande', onPressed: _send),
+      ],
       children: [
         const SizedBox(height: 2),
         DSummaryCard(
@@ -102,6 +106,19 @@ class _DemandeDevisScreenState extends ConsumerState<DemandeDevisScreen> {
                 trailing: AppIcon(_attached ? AppIcons.x : AppIcons.chevronRight, size: 18),
                 onTap: () => setState(() => _attached = !_attached),
               ),
+              if (_sent) ...[
+                const SizedBox(height: 16),
+                Semantics(
+                  liveRegion: true,
+                  child: Row(
+                    children: [
+                      const AppIcon(AppIcons.circleCheck, size: 18, color: AppColors.success),
+                      const SizedBox(width: 8),
+                      Text('Demande envoyée', style: AppText.bodyStrong.copyWith(color: AppColors.success)),
+                    ],
+                  ),
+                ),
+              ],
             ],
           ),
         ),

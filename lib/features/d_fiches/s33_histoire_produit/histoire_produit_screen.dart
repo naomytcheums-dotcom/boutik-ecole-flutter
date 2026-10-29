@@ -15,13 +15,23 @@ class HistoireProduitScreen extends ConsumerWidget {
         const SizedBox(height: 2),
         _StoryHero(title: d.storyHeadline, subtitle: d.storyTagline),
         const SizedBox(height: 17),
-        Center(child: DAvatar(d.creatorAvatar, size: 84, label: 'Photo de ${d.creatorName}')),
-        const SizedBox(height: 10),
-        Center(
-          child: Text(d.creatorName, style: AppText.h3.copyWith(fontSize: 17, fontWeight: FontWeight.w700)),
+        Semantics(
+          button: true,
+          label: 'Voir le profil de ${d.creatorName}',
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => context.openScreen('10'),
+            child: Column(
+              children: [
+                DAvatar(d.creatorAvatar, size: 84, label: 'Photo de ${d.creatorName}'),
+                const SizedBox(height: 10),
+                Text(d.creatorName, style: AppText.h3.copyWith(fontSize: 17, fontWeight: FontWeight.w700)),
+                const SizedBox(height: 3),
+                Text(d.storyCreatorMeta, style: DTxt.kvLabel),
+              ],
+            ),
+          ),
         ),
-        const SizedBox(height: 3),
-        Center(child: Text(d.storyCreatorMeta, style: DTxt.kvLabel)),
         const SizedBox(height: 9),
         const Center(
           child: DBadge('Créateur vérifié', background: DColors.doneSoft, foreground: DColors.doneText, height: 22),

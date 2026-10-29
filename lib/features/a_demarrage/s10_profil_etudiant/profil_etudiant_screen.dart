@@ -20,10 +20,16 @@ class ProfilEtudiantScreen extends ConsumerWidget {
       padding: EdgeInsets.zero,
       bottomBar: Row(
         children: [
-          Expanded(child: PrimaryButton(label: 'Modifier mon profil', onPressed: () => context.openScreen('58'))),
+          Expanded(
+            child: PrimaryButton(label: 'Modifier mon profil', onPressed: () => context.openScreen('58')),
+          ),
           const SizedBox(width: 12),
           Expanded(
-            child: PrimaryButton(label: 'Partager', variant: ButtonVariant.secondary, onPressed: () => context.openScreen('212')),
+            child: PrimaryButton(
+              label: 'Partager',
+              variant: ButtonVariant.secondary,
+              onPressed: () => context.openScreen('212'),
+            ),
           ),
         ],
       ),
@@ -32,9 +38,23 @@ class ProfilEtudiantScreen extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 18),
           child: Row(
             children: [
-              RoundIconButton(icon: AppIcons.arrowLeft, label: 'Retour', bordered: false, elevated: true, onTap: () => ScreenHeader.back(context)),
-              Expanded(child: Text('Profil étudiant', textAlign: TextAlign.center, style: AppText.h3)),
-              RoundIconButton(icon: AppIcons.ellipsis, label: 'Plus d’options', bordered: false, elevated: true, onTap: () => context.openScreen('148-1')),
+              RoundIconButton(
+                icon: AppIcons.arrowLeft,
+                label: 'Retour',
+                bordered: false,
+                elevated: true,
+                onTap: () => ScreenHeader.back(context),
+              ),
+              Expanded(
+                child: Text('Profil étudiant', textAlign: TextAlign.center, style: AppText.h3),
+              ),
+              RoundIconButton(
+                icon: AppIcons.ellipsis,
+                label: 'Plus d’options',
+                bordered: false,
+                elevated: true,
+                onTap: () => context.openScreen('148-1'),
+              ),
             ],
           ),
         ),
@@ -96,7 +116,8 @@ class ProfilEtudiantScreen extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child: Text(s.bio, textAlign: TextAlign.center, style: AppText.secondary),
         ),
-        gap12,
+        // Compteurs touchables : zone de 44 px, l'espacement visuel reste celui de la maquette.
+        const SizedBox(height: 6),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 18),
           child: Row(
@@ -104,18 +125,33 @@ class ProfilEtudiantScreen extends ConsumerWidget {
               for (final (i, c) in s.counters.indexed) ...[
                 if (i > 0) const SizedBox(width: 8),
                 Expanded(
-                  child: Container(
-                    height: 32,
-                    alignment: Alignment.center,
-                    decoration: ShapeDecoration(color: Colors.white.withValues(alpha: .8), shape: const StadiumBorder()),
-                    child: Text(c, style: AppText.label.copyWith(fontWeight: FontWeight.w600)),
+                  child: Semantics(
+                    button: true,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => context.openScreen(const ['22', '40', '78'][i % 3]),
+                      child: SizedBox(
+                        height: 44,
+                        child: Center(
+                          child: Container(
+                            height: 32,
+                            alignment: Alignment.center,
+                            decoration: ShapeDecoration(
+                              color: Colors.white.withValues(alpha: .8),
+                              shape: const StadiumBorder(),
+                            ),
+                            child: Text(c, style: AppText.label.copyWith(fontWeight: FontWeight.w600)),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ],
             ],
           ),
         ),
-        gap12,
+        const SizedBox(height: 6),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 18),
           child: Row(
@@ -131,9 +167,15 @@ class ProfilEtudiantScreen extends ConsumerWidget {
                     child: Container(
                       width: 30,
                       height: 30,
-                      decoration: BoxDecoration(color: brand[l.network] ?? AppColors.ink, borderRadius: BorderRadius.circular(8)),
+                      decoration: BoxDecoration(
+                        color: brand[l.network] ?? AppColors.ink,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                       alignment: Alignment.center,
-                      child: Text(l.asset, style: AppText.small.copyWith(color: Colors.white, fontWeight: FontWeight.w800)),
+                      child: Text(
+                        l.asset,
+                        style: AppText.small.copyWith(color: Colors.white, fontWeight: FontWeight.w800),
+                      ),
                     ),
                   ),
                 ),
@@ -161,7 +203,13 @@ class ProfilEtudiantScreen extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
             child: Row(
               children: [
-                Expanded(child: Text(s.passport, textAlign: TextAlign.center, style: AppText.bodyStrong.copyWith(fontWeight: FontWeight.w600))),
+                Expanded(
+                  child: Text(
+                    s.passport,
+                    textAlign: TextAlign.center,
+                    style: AppText.bodyStrong.copyWith(fontWeight: FontWeight.w600),
+                  ),
+                ),
                 const AppIcon(AppIcons.chevronRight, size: 16, color: AppColors.accent),
               ],
             ),
@@ -174,7 +222,14 @@ class ProfilEtudiantScreen extends ConsumerWidget {
             children: [
               for (final (i, img) in [Photos.coder, Photos.solar, Photos.technician].indexed) ...[
                 if (i > 0) const SizedBox(width: 8),
-                Expanded(child: PhotoTile(image: img, aspectRatio: 110 / 58, radius: 18, onTap: () => context.openScreen('79'))),
+                Expanded(
+                  child: PhotoTile(
+                    image: img,
+                    aspectRatio: 110 / 58,
+                    radius: 18,
+                    onTap: () => context.openScreen('79'),
+                  ),
+                ),
               ],
             ],
           ),

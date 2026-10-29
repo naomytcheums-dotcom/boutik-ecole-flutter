@@ -23,6 +23,13 @@ flutter test --update-goldens --tags golden   # régénérer les rendus de réf�
 python tool/compare_figma.py <captures>       # maquette / rendu côte à côte dans build/compare
 ```
 
+Parcours de soutenance (03 → … → 237, 24 écrans) :
+
+- sans appareil, inclus dans `flutter test` : `test/journey/demo_journey_test.dart` ;
+- dans un vrai navigateur : lancer `chromedriver --port=4444` (même version que Chrome), puis
+  `flutter drive --driver=test_driver/integration_test.dart --target=integration_test/demo_journey_test.dart -d web-server --browser-name=chrome --profile` ;
+- sur un téléphone ou un émulateur : `flutter test integration_test/demo_journey_test.dart -d <appareil>`.
+
 ## Organisation
 
 | Dossier | Contenu |

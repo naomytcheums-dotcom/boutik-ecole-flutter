@@ -14,7 +14,7 @@ class CommandeConfirmeeScreen extends ConsumerWidget {
       showBack: false,
       actions: [
         EButton('Accueil', kind: EButtonKind.outline, onPressed: () => context.goScreen(NavTargets.home)),
-        EButton('Suivre ma commande', onPressed: () => context.openScreen('46')),
+        EButton('Suivre ma commande', onPressed: () => context.openScreen('09')),
       ],
       children: [
         const SizedBox(height: 11),

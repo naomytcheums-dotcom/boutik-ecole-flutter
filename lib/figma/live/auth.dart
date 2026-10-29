@@ -1,0 +1,281 @@
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../gen.dart';
+import '../nav.dart';
+
+/// Comptes, connexion, inscription, vérification et profil (écrans 10 à 18c).
+class Account {
+  const Account({
+    required this.name,
+    required this.phone,
+    required this.email,
+    required this.password,
+    this.role = 1,
+    this.verified = true,
+    this.city = 'Douala',
+    this.institution = 'IUT de Douala',
+    this.department = 'Génie informatique',
+    this.birth = '',
+  });
+  final String name, phone, email, password, city, institution, department, birth;
+  final int role; // 0 client · 1 étudiant vendeur · 2 entreprise · 3 autre
+  final bool verified;
+
+  String get firstName => name.split(' ').first;
+  String get lastName => name.split(' ').length > 1 ? name.split(' ').skip(1).join(' ') : '';
+
+  Account copyWith({String? name, String? password, int? role, bool? verified, String? city, String? institution, String? department, String? birth}) => Account(
+        name: name ?? this.name,
+        phone: phone,
+        email: email,
+        password: password ?? this.password,
+        role: role ?? this.role,
+        verified: verified ?? this.verified,
+        city: city ?? this.city,
+        institution: institution ?? this.institution,
+        department: department ?? this.department,
+        birth: birth ?? this.birth,
+      );
+}
+
+const demoAccount = Account(name: 'Mariam Essono', phone: '690112233', email: 'mariam@iut-douala.cm', password: 'Boutik2026');
+const demoCode = '482917';
+
+class AuthState {
+  const AuthState({this.accounts = const [demoAccount], this.current, this.pending});
+  final List<Account> accounts;
+  final Account? current, pending;
+  AuthState copy({List<Account>? accounts, Account? current, Account? pending, bool clearCurrent = false, bool clearPending = false}) => AuthState(
+        accounts: accounts ?? this.accounts,
+        current: clearCurrent ? null : (current ?? this.current),
+        pending: clearPending ? null : (pending ?? this.pending),
+      );
+}
+
+class AuthNotifier extends Notifier<AuthState> {
+  @override
+  AuthState build() => const AuthState(current: demoAccount);
+
+  void login(Account a) => state = state.copy(current: a);
+  void logout() => state = state.copy(clearCurrent: true);
+  void register(Account a) => state = state.copy(accounts: [...state.accounts, a], pending: a);
+
+  void update(Account a) {
+    state = state.copy(
+      accounts: [for (final x in state.accounts) x.email == a.email ? a : x],
+      current: state.current?.email == a.email ? a : state.current,
+      pending: state.pending?.email == a.email ? a : state.pending,
+    );
+  }
+}
+
+final authProvider = NotifierProvider<AuthNotifier, AuthState>(AuthNotifier.new);
+
+/// Compte affiché sur le profil : connecté, sinon en cours d'inscription, sinon la démo.
+final profileAccountProvider = Provider<Account>((ref) {
+  final s = ref.watch(authProvider);
+  return s.current ?? s.pending ?? demoAccount;
+});
+
+/// Valeurs saisies dans les formulaires (clé → texte) et messages d'erreur (clé → message).
+class FormValues extends Notifier<Map<String, String>> {
+  @override
+  Map<String, String> build() => const {};
+  void put(String k, String v) => state = {...state, k: v};
+  String get(String k) => state[k] ?? '';
+  void clear(Iterable<String> keys) => state = {for (final e in state.entries) if (!keys.contains(e.key)) e.key: e.value};
+}
+
+final formProvider = NotifierProvider<FormValues, Map<String, String>>(FormValues.new);
+
+class FormErrors extends Notifier<Map<String, String>> {
+  @override
+  Map<String, String> build() => const {};
+  void setAll(Map<String, String> m) => state = m;
+  void clear() => state = const {};
+}
+
+final errorsProvider = NotifierProvider<FormErrors, Map<String, String>>(FormErrors.new);
+
+class Flag extends Notifier<bool> {
+  @override
+  bool build() => true;
+  void set(bool v) => state = v;
+  void toggle() => state = !state;
+}
+
+final termsProvider = NotifierProvider<Flag, bool>(Flag.new);
+
+class IntState extends Notifier<int> {
+  @override
+  int build() => 1;
+  void set(int v) => state = v;
+}
+
+final signupRoleProvider = NotifierProvider<IntState, int>(IntState.new);
+final loginModeProvider = NotifierProvider<IntState, int>(IntState.new);
+
+// ------------------------------------------------------------------ validations
+
+String? validName(String v) => v.trim().length < 3 ? 'Entrez votre nom complet (3 caractères minimum).' : null;
+
+String normPhone(String v) {
+  var d = v.replaceAll(RegExp(r'[^0-9+]'), '');
+  if (d.startsWith('+237')) d = d.substring(4);
+  if (d.startsWith('237') && d.length == 12) d = d.substring(3);
+  return d;
+}
+
+String? validPhone(String v) => RegExp(r'^6\d{8}$').hasMatch(normPhone(v)) ? null : 'Numéro invalide : 9 chiffres commençant par 6.';
+
+String? validEmail(String v) => RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]{2,}$').hasMatch(v.trim()) ? null : 'Adresse e-mail invalide.';
+
+String? validPassword(String v) {
+  if (v.length < 8) return '8 caractères minimum.';
+  if (!RegExp('[A-Z]').hasMatch(v)) return 'Ajoutez une lettre majuscule.';
+  if (!RegExp('[0-9]').hasMatch(v)) return 'Ajoutez un chiffre.';
+  return null;
+}
+
+// ------------------------------------------------------------------ actions
+
+void _errors(WidgetRef ref, Map<String, String?> m) => ref.read(errorsProvider.notifier).setAll({for (final e in m.entries) if (e.value != null) e.key: e.value!});
+
+void submitLogin(WidgetRef ref, BuildContext context) {
+  final f = ref.read(formProvider);
+  final id = (f['li_id'] ?? '').trim();
+  final pw = f['li_pw'] ?? '';
+  final isMail = id.contains('@');
+  final errs = <String, String?>{
+    'li_id': id.isEmpty ? 'Saisissez votre téléphone ou votre e-mail.' : (isMail ? validEmail(id) : validPhone(id)),
+    'li_pw': pw.isEmpty ? 'Saisissez votre mot de passe.' : null,
+  };
+  if (errs.values.any((e) => e != null)) return _errors(ref, errs);
+  final accounts = ref.read(authProvider).accounts;
+  final hit = accounts.where((a) => (isMail ? a.email.toLowerCase() == id.toLowerCase() : a.phone == normPhone(id)) && a.password == pw).toList();
+  if (hit.isEmpty) {
+    _errors(ref, {'li_pw': 'Identifiant ou mot de passe incorrect.'});
+    return;
+  }
+  ref.read(errorsProvider.notifier).clear();
+  ref.read(authProvider.notifier).login(hit.first);
+  gToast(context, 'Bienvenue, ${hit.first.firstName} !');
+  gOpen(context, '03');
+}
+
+void submitSignup(WidgetRef ref, BuildContext context) {
+  final f = ref.read(formProvider);
+  final errs = <String, String?>{
+    'su_name': validName(f['su_name'] ?? ''),
+    'su_phone': validPhone(f['su_phone'] ?? ''),
+    'su_email': validEmail(f['su_email'] ?? ''),
+    'su_pw': validPassword(f['su_pw'] ?? ''),
+    'su_pw2': (f['su_pw'] ?? '') == (f['su_pw2'] ?? '') && (f['su_pw2'] ?? '').isNotEmpty ? null : 'Les mots de passe ne correspondent pas.',
+  };
+  if (errs.values.any((e) => e != null)) return _errors(ref, errs);
+  if (!ref.read(termsProvider)) {
+    gToast(context, 'Acceptez les conditions d’utilisation pour continuer.');
+    return;
+  }
+  final accounts = ref.read(authProvider).accounts;
+  if (accounts.any((a) => a.email.toLowerCase() == (f['su_email'] ?? '').trim().toLowerCase())) {
+    return _errors(ref, {'su_email': 'Un compte existe déjà avec cette adresse.'});
+  }
+  ref.read(errorsProvider.notifier).clear();
+  ref.read(authProvider.notifier).register(Account(
+        name: f['su_name']!.trim(),
+        phone: normPhone(f['su_phone']!),
+        email: f['su_email']!.trim(),
+        password: f['su_pw']!,
+        verified: false,
+      ));
+  ref.read(formProvider.notifier).put('otp', '');
+  gToast(context, 'Code envoyé par SMS (démonstration : $demoCode)');
+  gOpen(context, '14');
+}
+
+void submitOtp(WidgetRef ref, BuildContext context) {
+  final code = ref.read(formProvider)['otp'] ?? '';
+  if (code.length < 6) {
+    gToast(context, 'Entrez les 6 chiffres du code.');
+    return;
+  }
+  if (code != demoCode) {
+    gToast(context, 'Code incorrect. Réessayez.');
+    return;
+  }
+  final p = ref.read(authProvider).pending;
+  if (p != null) {
+    final v = p.copyWith(verified: true);
+    ref.read(authProvider.notifier).update(v);
+    ref.read(authProvider.notifier).login(v);
+  }
+  gToast(context, 'Compte vérifié ✓');
+  gOpen(context, '13');
+}
+
+void submitRole(WidgetRef ref, BuildContext context) {
+  final a = ref.read(authProvider).current;
+  if (a != null) ref.read(authProvider.notifier).update(a.copyWith(role: ref.read(signupRoleProvider)));
+  gOpen(context, '18b');
+}
+
+void submitProfile(WidgetRef ref, BuildContext context) {
+  final f = ref.read(formProvider);
+  final a = ref.read(authProvider).current;
+  final first = (f['pf_first'] ?? a?.firstName ?? '').trim();
+  final last = (f['pf_last'] ?? a?.lastName ?? '').trim();
+  if (first.isEmpty || last.isEmpty) {
+    _errors(ref, {if (first.isEmpty) 'pf_first': 'Prénom obligatoire.', if (last.isEmpty) 'pf_last': 'Nom obligatoire.'});
+    return;
+  }
+  ref.read(errorsProvider.notifier).clear();
+  if (a != null) {
+    ref.read(authProvider.notifier).update(a.copyWith(
+          name: '$first $last',
+          city: (f['pf_city'] ?? a.city).trim(),
+          institution: (f['pf_inst'] ?? a.institution).trim(),
+          department: (f['pf_dept'] ?? a.department).trim(),
+          birth: f['pf_birth'] ?? a.birth,
+        ));
+  }
+  gToast(context, 'Profil enregistré');
+  gOpen(context, '18c');
+}
+
+void submitForgot(WidgetRef ref, BuildContext context) {
+  final id = (ref.read(formProvider)['fg_id'] ?? '').trim();
+  final err = id.isEmpty ? 'Saisissez votre téléphone ou votre e-mail.' : (id.contains('@') ? validEmail(id) : validPhone(id));
+  if (err != null) return _errors(ref, {'fg_id': err});
+  final exists = ref.read(authProvider).accounts.any((a) => id.contains('@') ? a.email.toLowerCase() == id.toLowerCase() : a.phone == normPhone(id));
+  ref.read(errorsProvider.notifier).clear();
+  ref.read(formProvider.notifier).put('fg_target', id);
+  gToast(context, exists ? 'Code de réinitialisation envoyé (démonstration : $demoCode)' : 'Si un compte existe, un code a été envoyé.');
+  gOpen(context, '16');
+}
+
+void submitReset(WidgetRef ref, BuildContext context) {
+  final f = ref.read(formProvider);
+  final errs = <String, String?>{
+    'rs_pw': validPassword(f['rs_pw'] ?? ''),
+    'rs_pw2': (f['rs_pw'] ?? '') == (f['rs_pw2'] ?? '') && (f['rs_pw2'] ?? '').isNotEmpty ? null : 'Les mots de passe ne correspondent pas.',
+  };
+  if (errs.values.any((e) => e != null)) return _errors(ref, errs);
+  final id = f['fg_target'] ?? '';
+  final accounts = ref.read(authProvider).accounts;
+  for (final a in accounts) {
+    if (id.contains('@') ? a.email.toLowerCase() == id.toLowerCase() : a.phone == normPhone(id)) {
+      ref.read(authProvider.notifier).update(a.copyWith(password: f['rs_pw']!));
+    }
+  }
+  ref.read(errorsProvider.notifier).clear();
+  gToast(context, 'Mot de passe modifié. Connectez-vous.');
+  gOpen(context, '11');
+}
+
+/// Message d'erreur rouge sous un champ.
+Widget errorText(String key, double x, double y) => gP(
+      x, y, 320, 13,
+      Consumer(builder: (context, ref, _) => gText(ref.watch(errorsProvider)[key] ?? '', 10.5, const Color(0xFFD92D20), weight: 500)),
+    );

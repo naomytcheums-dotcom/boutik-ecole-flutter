@@ -8,6 +8,7 @@ import '../live/store.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
+import '../live/auth.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_11 extends ConsumerWidget {
@@ -32,19 +33,21 @@ class G_11 extends ConsumerWidget {
       gP(117, 183, 156, 34, gText('Bon retour !', 27, Color(0xFF111015), weight: 800, align: TextAlign.center)),
       gP(43, 223, 304, 18, gText('Connectez-vous pour accéder à votre espace', 14, Color(0xFF66636E), align: TextAlign.center)),
       gP(24, 262, 342, 50, gBox(color: Color(0xFFEFF1F4), radii: [25, 25, 25, 25])),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(28, 266, 168, 42, 'Téléphone', 14.5, 600), GChip(197, 266, 168, 42, 'E-mail', 14.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 21)),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(28, 266, 168, 42, 'Téléphone', 14.5, 600), GChip(197, 266, 168, 42, 'E-mail', 14.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 21, onChanged: (i) { ref.read(loginModeProvider.notifier).set(i); })),
       gP(24, 338, 137, 16, gText('Numéro de téléphone', 13, Color(0xFF111015), weight: 600)),
       gP(24, 362, 342, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
-      gP(24, 362, 342, 52, GField(hint: '6 XX XX XX XX', size: 14.5, hintColor: Color(0xFF66636E), weight: 500, padL: 106)),
+      gP(24, 362, 342, 52, GField(hint: '6 XX XX XX XX', size: 14.5, hintColor: Color(0xFF66636E), weight: 500, padL: 106, onChanged: (v) { ref.read(formProvider.notifier).put('li_id', v); })),
+      errorText('li_id', 28, 416),
       gP(41.458, 377.083, 17.083, 21.833, gImg('assets/figma/v/2660f7e30da185.svg')),
       gP(47, 389.75, 6.008, 6, gImg('assets/figma/v/964b38e3841185.svg')),
       gP(74, 379, 35, 18, gText('+237', 14.5, Color(0xFF111015), weight: 600)),
       gP(116, 376, 1.5, 24, gBox(color: Color(0xFFECE8F2))),
       gP(24, 428, 84, 16, gText('Mot de passe', 13, Color(0xFF111015), weight: 600)),
       gP(24, 452, 342, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
+      gP(24, 452, 342, 52, GField(hint: '••••••••', size: 17, hintColor: Color(0xFF111015), weight: 500, padL: 52, obscure: true, onChanged: (v) { ref.read(formProvider.notifier).put('li_pw', v); }, onSubmitted: (v) { submitLogin(ref, context); })),
+      errorText('li_pw', 28, 506),
       gP(39.875, 474.208, 20.25, 14.708, gImg('assets/figma/v/32a45c6e5f0fcb.svg')),
       gP(43.042, 467.083, 13.917, 13.125, gImg('assets/figma/v/1fb86fed903268.svg')),
-      gP(76, 467.5, 93, 21, gText('••••••••', 17, Color(0xFF111015), weight: 500, ls: 2)),
       gP(327.083, 469.458, 21.833, 17.083, gImg('assets/figma/v/abcfc4162eb13b.svg')),
       gP(332.625, 472.625, 10.75, 10.75, gImg('assets/figma/v/e4edba8fd4f28c.svg')),
       gP(231, 520, 135, 16, gText('Mot de passe oublié ?', 13, Color(0xFF5A3FE0), weight: 600, align: TextAlign.right)),
@@ -59,6 +62,9 @@ class G_11 extends ConsumerWidget {
       gP(134, 695.5, 122, 19, gText('Créer un compte', 15, Color(0xFF111015), weight: 600, align: TextAlign.center)),
       gP(40.5, 773, 309, 34, gText('En continuant, vous acceptez nos Conditions d’utilisation\net notre Politique de confidentialité.', 11.5, Color(0xFF66636E), lh: 17, align: TextAlign.center)),
       gP(125, 884, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      gTap(24, 556, 342, 54, () { submitLogin(ref, context); }),
+      gTap(24, 678, 342, 54, () { gOpen(context, '12'); }),
+      gTap(231, 520, 135, 16, () { gOpen(context, '15'); }),
     ]);
   }
 }

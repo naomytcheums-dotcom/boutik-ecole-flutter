@@ -8,6 +8,7 @@ import '../live/store.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
+import '../live/auth.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_16 extends ConsumerWidget {
@@ -36,9 +37,10 @@ class G_16 extends ConsumerWidget {
       gP(64.5, 264, 261, 40, gText('Choisissez un mot de passe fort que vous\nn’utilisez pas ailleurs.', 13.5, Color(0xFF66636E), lh: 20, align: TextAlign.center)),
       gP(24, 322, 143, 16, gText('Nouveau mot de passe', 13, Color(0xFF111015), weight: 600)),
       gP(24, 346, 342, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
+      gP(24, 346, 342, 52, GField(hint: '••••••••••', size: 17, hintColor: Color(0xFF111015), weight: 500, padL: 52, obscure: true, onChanged: (v) { ref.read(formProvider.notifier).put('rs_pw', v); })),
+      errorText('rs_pw', 28, 400),
       gP(39.875, 368.208, 20.25, 14.708, gImg('assets/figma/v/32a45c6e5f0fcb.svg')),
       gP(43.042, 361.083, 13.917, 13.125, gImg('assets/figma/v/1fb86fed903268.svg')),
-      gP(76, 361.5, 117, 21, gText('••••••••••', 17, Color(0xFF111015), weight: 500, ls: 2)),
       gP(327.083, 363.458, 21.833, 17.083, gImg('assets/figma/v/abcfc4162eb13b.svg')),
       gP(332.625, 366.625, 10.75, 10.75, gImg('assets/figma/v/e4edba8fd4f28c.svg')),
       gP(24, 424, 80, 6, gBox(color: Color(0xFF1F9D6B), radii: [3, 3, 3, 3])),
@@ -60,9 +62,10 @@ class G_16 extends ConsumerWidget {
       gP(56, 573.5, 188, 17, gText('Un caractère spécial (! @ # …)', 13.5, Color(0xFF66636E), weight: 500)),
       gP(24, 618, 164, 16, gText('Confirmer le mot de passe', 13, Color(0xFF111015), weight: 600)),
       gP(24, 642, 342, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
+      gP(24, 642, 342, 52, GField(hint: '••••••••••', size: 17, hintColor: Color(0xFF111015), weight: 500, padL: 52, obscure: true, onChanged: (v) { ref.read(formProvider.notifier).put('rs_pw2', v); }, onSubmitted: (v) { submitReset(ref, context); })),
+      errorText('rs_pw2', 28, 696),
       gP(39.875, 664.208, 20.25, 14.708, gImg('assets/figma/v/32a45c6e5f0fcb.svg')),
       gP(43.042, 657.083, 13.917, 13.125, gImg('assets/figma/v/1fb86fed903268.svg')),
-      gP(76, 657.5, 117, 21, gText('••••••••••', 17, Color(0xFF111015), weight: 500, ls: 2)),
       gP(327.083, 659.458, 21.833, 17.083, gImg('assets/figma/v/abcfc4162eb13b.svg')),
       gP(332.625, 662.625, 10.75, 10.75, gImg('assets/figma/v/e4edba8fd4f28c.svg')),
       gP(24, 724, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x29122640), offset: Offset(0, 5), blurRadius: 12, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Réinitialiser le mot de passe')),
@@ -70,6 +73,7 @@ class G_16 extends ConsumerWidget {
       gP(125, 884, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(166.5, 172.167, 69, 42.167, gImg('assets/figma/r/173_46.png')),
       gP(178.833, 134.667, 44.333, 40.5, gImg('assets/figma/v/9a0bdefbfa5dbf.svg')),
+      gTap(24, 724, 342, 54, () { submitReset(ref, context); }),
     ]);
   }
 }

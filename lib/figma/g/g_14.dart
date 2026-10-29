@@ -8,6 +8,7 @@ import '../live/store.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
+import '../live/auth.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_14 extends ConsumerWidget {
@@ -35,11 +36,11 @@ class G_14 extends ConsumerWidget {
       gP(66, 281.5, 258, 29, gText('Vérification du compte', 23, Color(0xFF111015), weight: 800, align: TextAlign.center)),
       gP(76, 329, 238, 42, gText('Entrez le code à 6 chiffres envoyé au\n+237 6•• •• •• 42', 14, Color(0xFF66636E), lh: 21, align: TextAlign.center)),
       gP(24, 410, 50, 64, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [16, 16, 16, 16])),
-      gP(41, 427, 16, 30, gText('4', 24, Color(0xFF111015), weight: 700, align: TextAlign.center)),
+      gP(41, 427, 16, 30, gText('4', 24, Color(0xFF111015), weight: 700, align: TextAlign.center), show: (false)),
       gP(82, 410, 50, 64, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [16, 16, 16, 16])),
-      gP(99, 427, 16, 30, gText('8', 24, Color(0xFF111015), weight: 700, align: TextAlign.center)),
+      gP(99, 427, 16, 30, gText('8', 24, Color(0xFF111015), weight: 700, align: TextAlign.center), show: (false)),
       gP(140, 410, 50, 64, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [16, 16, 16, 16])),
-      gP(157.5, 427, 15, 30, gText('2', 24, Color(0xFF111015), weight: 700, align: TextAlign.center)),
+      gP(157.5, 427, 15, 30, gText('2', 24, Color(0xFF111015), weight: 700, align: TextAlign.center), show: (false)),
       gP(198, 410, 50, 64, gBox(color: Color(0xFFFFFDF7), border: Color(0xFFF5B730), bw: 2.5, radii: [16, 16, 16, 16])),
       gP(256, 410, 50, 64, gBox(color: Color(0xFFF4F1F8), border: Color(0xFFECE8F2), bw: 1.5, radii: [16, 16, 16, 16])),
       gP(314, 410, 50, 64, gBox(color: Color(0xFFF4F1F8), border: Color(0xFFECE8F2), bw: 1.5, radii: [16, 16, 16, 16])),
@@ -47,6 +48,8 @@ class G_14 extends ConsumerWidget {
       gP(125.5, 537.5, 139, 17, gText('Renvoyer dans 00:45', 13.5, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)),
       gP(24, 598, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x29122640), offset: Offset(0, 5), blurRadius: 12, spreadRadius: 0)], radii: [27, 27, 27, 27])),
       gP(153, 615, 56, 20, gText('Vérifier', 16, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
+      ...List.generate(6, (i) => gP(37.0 + 58.5 * i, 427, 24, 30, Consumer(builder: (c, ref, _) { final o = ref.watch(formProvider)['otp'] ?? ''; return gText(o.length > i ? o[i] : '', 24, Color(0xFF111015), weight: 700, align: TextAlign.center, wrap: true); }))),
+      gP(24, 415, 342, 54, GField(hint: '', size: 20, hintColor: Color(0x00000000), textColor: Color(0x00000000), padL: 0, numeric: true, maxLength: 6, onChanged: (v) { ref.read(formProvider.notifier).put('otp', v); })),
       gP(219.75, 622, 16.5, 6, gImg('assets/figma/v/2d30ecf6147fbb.svg')),
       gP(225, 616.75, 11.25, 16.5, gImg('assets/figma/v/996965d4e56708.svg')),
       gP(132, 679, 126, 18, gText('Modifier le numéro', 14, Color(0xFF111015), weight: 600, align: TextAlign.center)),
@@ -58,6 +61,9 @@ class G_14 extends ConsumerWidget {
       gP(152.666, 207.833, 71.667, 38.334, gImg('assets/figma/r/178_21.png')),
       gP(165.166, 157.833, 46.667, 46.667, gImg('assets/figma/r/178_22.png')),
       gP(211, 182.834, 38.333, 30, gImg('assets/figma/r/178_23.png')),
+      gTap(24, 598, 342, 54, () { submitOtp(ref, context); }),
+      gTap(103, 530, 184, 30, () { gToast(context, 'Nouveau code envoyé (démonstration : 482917)'); }),
+      gTap(132, 679, 126, 18, () { gOpen(context, '12'); }),
     ]);
   }
 }

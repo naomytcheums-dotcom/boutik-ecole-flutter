@@ -8,6 +8,7 @@ import '../live/store.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
+import '../live/auth.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_07 extends ConsumerWidget {
@@ -56,9 +57,9 @@ class G_07 extends ConsumerWidget {
       gP(285.261, 299.367, 59, 13, gText('Sélectionné', 10.009, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center), show: ref.watch(homeDeliveryProvider)),
       gP(26.23, 418.169, 147, 19, gText('Adresse de livraison', 15.186, Color(0xFF111015), weight: 700)),
       gP(24.85, 450.677, 343.752, 52.105, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.381, radii: [15.186, 15.186, 15.186, 15.186])),
+      gP(24.85, 450.677, 343.752, 52.105, GField(hint: '', initial: 'Douala, Cameroun', size: 12.425, hintColor: Color(0xFF111015), weight: 500, padL: 54.531)),
       gP(45.549, 466.59, 17.965, 20.956, gImg('assets/figma/v/4eaba6cfe96f7f.svg')),
       gP(49.288, 470.329, 10.487, 10.487, gImg('assets/figma/v/84555793b853fc.svg')),
-      gP(79.381, 469.068, 111, 16, gText('Douala, Cameroun', 12.425, Color(0xFF111015), weight: 500)),
       gP(339.372, 469.926, 10.142, 14.283, gImg('assets/figma/v/1e9e003afc49b5.svg')),
       gP(26.23, 542.68, 138, 19, gText('Détails de livraison', 15.186, Color(0xFF111015), weight: 700)),
       gP(24.85, 575.188, 343.752, 86.617, gBox(color: Color(0xFFF6F7FA), border: Color(0xFFECE8F2), bw: 1.381, radii: [15.186, 15.186, 15.186, 15.186])),

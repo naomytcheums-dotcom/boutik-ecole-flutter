@@ -807,5 +807,241 @@
    "31,542,329,49": "gOpen(context, '21');",
    "20,625,75,95": "ref.read(searchQueryProvider.notifier).set(''); ref.read(categoryProvider.notifier).set(0); gOpen(context, '22');"
   }
+ },
+ "11": {
+  "nodes": {
+   "20:17": {
+    "onChanged": "ref.read(loginModeProvider.notifier).set(i);"
+   },
+   "20:21": {
+    "onChanged": "ref.read(formProvider.notifier).put('li_id', v);",
+    "after": [
+     "errorText('li_id', 28, 416)"
+    ]
+   },
+   "20:29": {
+    "onChanged": "ref.read(formProvider.notifier).put('li_pw', v);",
+    "onSubmitted": "submitLogin(ref, context);",
+    "after": [
+     "errorText('li_pw', 28, 506)"
+    ]
+   }
+  },
+  "links": {
+   "24,556,342,54": "submitLogin(ref, context);",
+   "24,678,342,54": "gOpen(context, '12');",
+   "231,520,135,16": "gOpen(context, '15');"
+  }
+ },
+ "12": {
+  "nodes": {
+   "20:67": {
+    "onChanged": "ref.read(formProvider.notifier).put('su_name', v);",
+    "after": [
+     "errorText('su_name', 28, 246)"
+    ]
+   },
+   "20:73": {
+    "onChanged": "ref.read(formProvider.notifier).put('su_phone', v);",
+    "after": [
+     "errorText('su_phone', 28, 336)"
+    ]
+   },
+   "20:79": {
+    "onChanged": "ref.read(formProvider.notifier).put('su_email', v);",
+    "after": [
+     "errorText('su_email', 28, 426)"
+    ]
+   },
+   "20:85": {
+    "onChanged": "ref.read(formProvider.notifier).put('su_pw', v);",
+    "after": [
+     "errorText('su_pw', 28, 516)"
+    ]
+   },
+   "20:94": {
+    "onChanged": "ref.read(formProvider.notifier).put('su_pw2', v);",
+    "after": [
+     "errorText('su_pw2', 28, 606)"
+    ]
+   },
+   "20:102": {
+    "show": "ref.watch(termsProvider)"
+   },
+   "20:104": {
+    "after": [
+     "gP(24, 628, 22, 22, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFCFCBD6), bw: 1.5, radii: [7.0, 7.0, 7.0, 7.0]), show: !ref.watch(termsProvider))"
+    ],
+    "show": "ref.watch(termsProvider)"
+   }
+  },
+  "links": {
+   "24,622,34,34": "ref.read(termsProvider.notifier).toggle();",
+   "24,684,342,54": "submitSignup(ref, context);",
+   "236,764,88,17": "gOpen(context, '11');"
+  }
+ },
+ "14": {
+  "nodes": {
+   "20:195": {
+    "show": "false"
+   },
+   "20:197": {
+    "show": "false"
+   },
+   "20:199": {
+    "show": "false"
+   },
+   "20:206": {
+    "after": [
+     "...List.generate(6, (i) => gP(37.0 + 58.5 * i, 427, 24, 30, Consumer(builder: (c, ref, _) { final o = ref.watch(formProvider)['otp'] ?? ''; return gText(o.length > i ? o[i] : '', 24, Color(0xFF111015), weight: 700, align: TextAlign.center, wrap: true); })))",
+     "gP(24, 415, 342, 54, GField(hint: '', size: 20, hintColor: Color(0x00000000), textColor: Color(0x00000000), padL: 0, numeric: true, maxLength: 6, onChanged: (v) { ref.read(formProvider.notifier).put('otp', v); }))"
+    ]
+   }
+  },
+  "links": {
+   "24,598,342,54": "submitOtp(ref, context);",
+   "103,530,184,30": "gToast(context, 'Nouveau code envoyé (démonstration : 482917)');",
+   "132,679,126,18": "gOpen(context, '12');"
+  }
+ },
+ "13": {
+  "nodes": {
+   "22:25": {
+    "before": [
+     "gP(24, 226, 342, 118, gBox(color: Color(0xFFFFFDF7), border: Color(0xFFF5B730), bw: 2.5, radii: [24.0, 24.0, 24.0, 24.0]), show: ref.watch(signupRoleProvider) == 0)"
+    ],
+    "after": [
+     "gP(276, 238, 74, 24, gBox(color: Color(0xFF111015), radii: [12.0, 12.0, 12.0, 12.0]), show: ref.watch(signupRoleProvider) == 0)",
+     "gP(282, 244, 62, 13, gText('Sélectionné', 10, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center, wrap: true), show: ref.watch(signupRoleProvider) == 0)"
+    ]
+   },
+   "22:33": {
+    "before": [
+     "gP(24, 356, 342, 118, gBox(color: Color(0xFFFFFDF7), border: Color(0xFFF5B730), bw: 2.5, radii: [24.0, 24.0, 24.0, 24.0]), show: ref.watch(signupRoleProvider) == 1)"
+    ],
+    "after": [
+     "gP(276, 368, 74, 24, gBox(color: Color(0xFF111015), radii: [12.0, 12.0, 12.0, 12.0]), show: ref.watch(signupRoleProvider) == 1)",
+     "gP(282, 374, 62, 13, gText('Sélectionné', 10, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center, wrap: true), show: ref.watch(signupRoleProvider) == 1)"
+    ]
+   },
+   "22:42": {
+    "before": [
+     "gP(24, 486, 342, 118, gBox(color: Color(0xFFFFFDF7), border: Color(0xFFF5B730), bw: 2.5, radii: [24.0, 24.0, 24.0, 24.0]), show: ref.watch(signupRoleProvider) == 2)"
+    ],
+    "after": [
+     "gP(276, 498, 74, 24, gBox(color: Color(0xFF111015), radii: [12.0, 12.0, 12.0, 12.0]), show: ref.watch(signupRoleProvider) == 2)",
+     "gP(282, 504, 62, 13, gText('Sélectionné', 10, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center, wrap: true), show: ref.watch(signupRoleProvider) == 2)"
+    ]
+   },
+   "22:52": {
+    "before": [
+     "gP(24, 616, 342, 118, gBox(color: Color(0xFFFFFDF7), border: Color(0xFFF5B730), bw: 2.5, radii: [24.0, 24.0, 24.0, 24.0]), show: ref.watch(signupRoleProvider) == 3)"
+    ],
+    "after": [
+     "gP(276, 628, 74, 24, gBox(color: Color(0xFF111015), radii: [12.0, 12.0, 12.0, 12.0]), show: ref.watch(signupRoleProvider) == 3)",
+     "gP(282, 634, 62, 13, gText('Sélectionné', 10, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center, wrap: true), show: ref.watch(signupRoleProvider) == 3)"
+    ]
+   },
+   "22:28": {
+    "show": "ref.watch(signupRoleProvider) == 1",
+    "before": [
+     "gP(24, 356, 342, 118, gBox(color: Color(0xFFFFFFFF), radii: [28.0, 28.0, 28.0, 28.0]), show: ref.watch(signupRoleProvider) != 1)"
+    ]
+   },
+   "22:35": {
+    "show": "ref.watch(signupRoleProvider) == 1"
+   },
+   "22:36": {
+    "show": "ref.watch(signupRoleProvider) == 1"
+   }
+  },
+  "links": {
+   "24,226,342,118": "ref.read(signupRoleProvider.notifier).set(0);",
+   "24,356,342,118": "ref.read(signupRoleProvider.notifier).set(1);",
+   "24,486,342,118": "ref.read(signupRoleProvider.notifier).set(2);",
+   "24,616,342,118": "ref.read(signupRoleProvider.notifier).set(3);",
+   "24,762,342,54": "submitRole(ref, context);"
+  }
+ },
+ "15": {
+  "nodes": {
+   "20:240": {
+    "onChanged": "ref.read(formProvider.notifier).put('fg_id', v);",
+    "onSubmitted": "submitForgot(ref, context);",
+    "after": [
+     "errorText('fg_id', 28, 516)"
+    ]
+   }
+  },
+  "links": {
+   "24,656,342,54": "submitForgot(ref, context);",
+   "123,747,144,18": "gOpen(context, '11');"
+  }
+ },
+ "16": {
+  "nodes": {
+   "22:83": {
+    "onChanged": "ref.read(formProvider.notifier).put('rs_pw', v);",
+    "after": [
+     "errorText('rs_pw', 28, 400)"
+    ]
+   },
+   "22:112": {
+    "onChanged": "ref.read(formProvider.notifier).put('rs_pw2', v);",
+    "onSubmitted": "submitReset(ref, context);",
+    "after": [
+     "errorText('rs_pw2', 28, 696)"
+    ]
+   }
+  },
+  "links": {
+   "24,724,342,54": "submitReset(ref, context);"
+  }
+ },
+ "18b": {
+  "nodes": {
+   "22:152": {
+    "onChanged": "ref.read(formProvider.notifier).put('pf_first', v);",
+    "initial": "ref.read(profileAccountProvider).firstName",
+    "after": [
+     "errorText('pf_first', 28, 396)"
+    ]
+   },
+   "22:158": {
+    "onChanged": "ref.read(formProvider.notifier).put('pf_last', v);",
+    "initial": "ref.read(profileAccountProvider).lastName",
+    "after": [
+     "errorText('pf_last', 205, 396)"
+    ]
+   },
+   "22:164": {
+    "onChanged": "ref.read(formProvider.notifier).put('pf_city', v);",
+    "initial": "ref.read(profileAccountProvider).city"
+   },
+   "22:170": {
+    "onChanged": "ref.read(formProvider.notifier).put('pf_inst', v);",
+    "initial": "ref.read(profileAccountProvider).institution"
+   },
+   "22:181": {
+    "onChanged": "ref.read(formProvider.notifier).put('pf_dept', v);"
+   },
+   "22:189": {
+    "onChanged": "ref.read(formProvider.notifier).put('pf_birth', v);"
+   }
+  },
+  "links": {
+   "24,764,342,54": "submitProfile(ref, context);"
+  }
+ },
+ "10": {
+  "nodes": {
+   "166:106": {
+    "text": "ref.watch(profileAccountProvider).name"
+   },
+   "166:110": {
+    "text": "'${ref.watch(profileAccountProvider).department} · ${ref.watch(profileAccountProvider).institution}'"
+   }
+  }
  }
 }

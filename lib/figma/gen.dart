@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'gsound.dart';
 
@@ -251,7 +252,11 @@ class GField extends StatefulWidget {
     this.multiline = false,
     this.onChanged,
     this.onSubmitted,
+    this.numeric = false,
+    this.maxLength,
   });
+  final bool numeric;
+  final int? maxLength;
   final ValueChanged<String>? onChanged, onSubmitted;
   final String hint, initial;
   final double size, padL;
@@ -294,6 +299,11 @@ class _GFieldState extends State<GField> {
             focusNode: f,
             style: st,
             obscureText: widget.obscure,
+            keyboardType: widget.numeric ? TextInputType.number : null,
+            inputFormatters: [
+              if (widget.numeric) FilteringTextInputFormatter.digitsOnly,
+              if (widget.maxLength != null) LengthLimitingTextInputFormatter(widget.maxLength),
+            ],
             onChanged: widget.onChanged,
             onSubmitted: widget.onSubmitted,
             minLines: widget.multiline ? 2 : 1,

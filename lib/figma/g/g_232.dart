@@ -8,6 +8,7 @@ import '../live/store.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
+import '../live/auth.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_232 extends ConsumerWidget {
@@ -68,9 +69,9 @@ class G_232 extends ConsumerWidget {
       gP(70, 580, 276, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 5), blurRadius: 16, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(88, 594, 245, 57, gText('Compris ! Je lance ton brief : logo + affiche, budget d’environ 200 000 FCFA. Veux-tu aussi une vidéo teaser ?', 13, Color(0xFF111015), weight: 500, lh: 19, wrap: true)),
       gP(20, 688, 350, 62, gBox(color: Color(0xCCFFFFFF), border: Color(0xCCFFFFFF), bw: 1, backBlur: 28, radii: [31, 31, 31, 31])),
+      gP(20, 688, 350, 62, GField(hint: 'Écris ou parle à Kéla…', size: 13, hintColor: Color(0xFF66636E), weight: 400, padL: 54)),
       gP(41.167, 716, 17.667, 6, gImg('assets/figma/v/a601ae14f144f2.svg')),
       gP(47, 710.167, 6, 17.667, gImg('assets/figma/v/148ccb346e3d02.svg')),
-      gP(74, 709, 130, 16, gText('Écris ou parle à Kéla…', 13, Color(0xFF66636E))),
       gP(314, 697, 44, 44, GMic(child: gBox(color: Color(0xFF111015), oval: true))),
       gP(327, 710, 18, 18, const SizedBox.expand(), tap: () => gOpen(context, '230')),
       gP(330.75, 708.5, 10.5, 15, gImg('assets/figma/v/47bc9d3a14157f.svg')),

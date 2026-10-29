@@ -8,6 +8,7 @@ import '../live/store.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
+import '../live/auth.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_188 extends ConsumerWidget {
@@ -31,7 +32,7 @@ class G_188 extends ConsumerWidget {
       gP(963.333, 153.417, 6, 9.167, gImg('assets/figma/v/3221f2f163c9f7.svg')),
       gP(969.667, 159.75, 6, 9.167, gImg('assets/figma/v/3221f2f163c9f7.svg')),
       gP(1009.5, 134, 242.5, 50, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [24, 24, 24, 24])),
-      gP(1059.25, 150, 169, 18, gText('Enregistrer la recherche', 14.5, Color(0xFF111015), weight: 600, inter: true, align: TextAlign.center)),
+      gP(1009.5, 134, 242.5, 50, GField(hint: '', initial: 'Enregistrer la recherche', size: 14.5, hintColor: Color(0xFF111015), weight: 600, padL: 49.75, inter: true)),
       gP(1033.667, 148.917, 20.167, 20.167, gImg('assets/figma/v/48fd286aff90cc.svg')),
       gP(1040.75, 156, 6, 8.833, gImg('assets/figma/v/9fc27387b9ffa1.svg')),
       gP(1040.75, 153.167, 6.007, 6, gImg('assets/figma/v/c499ab72bb5251.svg')),

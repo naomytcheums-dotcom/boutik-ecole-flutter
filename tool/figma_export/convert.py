@@ -292,7 +292,7 @@ def analyze(doc, nid):
             continue
         if tn['style'].get('textAlignHorizontal') == 'CENTER' and abs((t['x'] + t['w'] / 2) - (r['x'] + r['w'] / 2)) < 6:
             continue
-        if left > 48 and len(ts) == 1:
+        if left > 48 and len(ts) == 1 and not named:
             continue
         ROLE[n['id']] = ('input', dict(t=tn, left=left, multi=False))
         SKIP.add(tn['id'])
@@ -735,6 +735,7 @@ import '../live/store.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
+import '../live/auth.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class %s extends ConsumerWidget {

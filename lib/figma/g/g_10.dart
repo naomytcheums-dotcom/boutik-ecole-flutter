@@ -8,6 +8,7 @@ import '../live/store.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
+import '../live/auth.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_10 extends ConsumerWidget {
@@ -37,10 +38,10 @@ class G_10 extends ConsumerWidget {
       gP(138, 273, 114, 114, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFFF4B6E), Color(0xFFFF8A3D), Color(0xFF9B7BFF)], stops: [0, 0.5, 1]), oval: true)),
       gP(143, 278, 104, 104, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x1A403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], oval: true)),
       gP(149, 284, 92, 92, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [46, 46, 46, 46])),
-      gP(112, 392, 166, 29, gText('Mariam Essono', 23, Color(0xFF111015), weight: 500)),
+      gP(112, 392, 166, 29, Consumer(builder: (context, ref, _) => gText(ref.watch(profileAccountProvider).name, 23, Color(0xFF111015), weight: 500))),
       gP(284, 396, 16, 16, gBox(color: Color(0xFF2F7DF6), oval: true)),
       gP(285.667, 398.5, 12.667, 10.583, gImg('assets/figma/v/ca53f14df8dcc8.svg')),
-      gP(101.5, 426, 187, 14, gText('Génie informatique · IUT de Douala', 11.5, Color(0xFF66636E))),
+      gP(101.5, 426, 187, 14, Consumer(builder: (context, ref, _) => gText('${ref.watch(profileAccountProvider).department} · ${ref.watch(profileAccountProvider).institution}', 11.5, Color(0xFF66636E)))),
       gP(118, 446, 154, 15, gText('#Python   #React   #Mobile', 12, Color(0xFF66636E))),
       gP(28.5, 470, 333, 34, gText('Étudiante en informatique, je crée des applications web et mobiles pour des clients locaux.', 11.5, Color(0xFF6F6D77), lh: 17, align: TextAlign.center, wrap: true)),
       gP(34, 512, 104, 30, gBox(color: Color(0xFFF4F3F6), radii: [15, 15, 15, 15])),

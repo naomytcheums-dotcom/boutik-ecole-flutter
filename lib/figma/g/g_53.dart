@@ -8,6 +8,7 @@ import '../live/store.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
+import '../live/auth.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_53 extends ConsumerWidget {
@@ -51,9 +52,9 @@ class G_53 extends ConsumerWidget {
       gP(30, 430, 24, 13, gText('10:15', 10, Color(0xFF8793A5))),
       gP(24, 600, 0, 16, gText('', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 748, 342, 56, gBox(color: Color(0xC7FFFFFF), border: Color(0xFFFFFFFF), bw: 1, shadows: [BoxShadow(color: Color(0x14403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], backBlur: 24, radii: [28, 28, 28, 28])),
+      gP(24, 748, 342, 56, GField(hint: 'Écrire un message…', size: 13, hintColor: Color(0xFF66636E), weight: 400, padL: 56)),
       gP(33, 757, 38, 38, gBox(color: Color(0xFFF1EEFB), oval: true)),
       gP(41.036, 764.624, 21.406, 22.341, gImg('assets/figma/v/b9f90829d9eec8.svg')),
-      gP(80, 767, 121, 16, gText('Écrire un message…', 13, Color(0xFF66636E))),
       gP(286.667, 766.333, 22.667, 19.333, gImg('assets/figma/v/b357168830edbf.svg')),
       gP(292.5, 771.333, 11, 11, gImg('assets/figma/v/3bae74da037db6.svg')),
       gP(318, 756, 40, 40, gBox(color: Color(0xFF111015), oval: true)),

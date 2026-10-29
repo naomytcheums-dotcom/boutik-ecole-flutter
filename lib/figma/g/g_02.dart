@@ -46,7 +46,7 @@ class G_02 extends ConsumerWidget {
       gP(145.875, 730.875, 82, 17, gText('Commencer', 13.542, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(244.135, 736.375, 15.479, 6, gImg('assets/figma/v/16b62525eb5c56.svg')),
       gP(248.875, 731.635, 10.74, 15.479, gImg('assets/figma/v/eba8aeee09e9ea.svg')),
-      gP(155.806, 781.028, 82, 16, gText('Se connecter', 12.639, Color(0xFF111015), weight: 600, align: TextAlign.center)),
+      
       gP(130, 857.639, 130, 4.514, gBox(color: Color(0xFF111015), radii: [2.708, 2.708, 2.708, 2.708])),
       gP(36, 294, 82, 28, gBox(color: Color(0xF0FFFFFF), radii: [14, 14, 14, 14])),
       gP(56, 300, 42, 15, gText('Talents', 12, Color(0xFF111015), weight: 700, align: TextAlign.center)),
@@ -62,7 +62,7 @@ class G_02 extends ConsumerWidget {
       gP(331.5, 19.5, 28, 17, gImg('assets/figma/v/6a818f3296df50.svg')),
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
-      gTap(59, 716, 278, 47, () => gOpen(context, '03')),
+      gTap(59, 716, 278, 47, () => gOpen(context, ref.read(authProvider).current != null ? '03' : '11')),
     ]);
   }
 }

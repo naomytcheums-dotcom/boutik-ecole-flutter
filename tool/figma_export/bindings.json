@@ -3905,5 +3905,16 @@
   "replace": {
    "gP(232, 520, 90, 34, gText('Crée la mission\\npour moi', 12.5, Color(0xFFFFFFFF), weight: 500, lh: 17)),": "gP(232, 520, 120, 34, Consumer(builder: (context, ref, _) => gText(ref.watch(kelaTextProvider).isEmpty ? 'Crée la mission pour moi' : ref.watch(kelaTextProvider), 12.5, Color(0xFFFFFFFF), weight: 500, lh: 17, wrap: true, maxLines: 2))),"
   }
+ },
+ "02": {
+  "replace": {
+   "gP(155.806, 781.028, 82, 16, gText('Se connecter', 12.639, Color(0xFF111015), weight: 600, align: TextAlign.center)),": "",
+   "gTap(59, 716, 278, 47, () => gOpen(context, '03')),": "gTap(59, 716, 278, 47, () => gOpen(context, ref.read(authProvider).current != null ? '03' : '11')),"
+  }
+ },
+ "01": {
+  "replace": {
+   "gP(85, 804, 0, 4, gBox(color: Color(0xFFFFFFFF), radii: [2, 2, 2, 2])),": "gP(85, 804, 220, 4, GSplashBar(onDone: () => gOpen(context, '02'))),"
+  }
  }
 }

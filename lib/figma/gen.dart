@@ -443,3 +443,43 @@ class _GCheckState extends State<GCheck> {
         ),
       );
 }
+
+
+/// Barre de chargement du démarrage : se remplit puis ouvre l'écran suivant (désactivée dans les tests).
+class GSplashBar extends StatefulWidget {
+  const GSplashBar({super.key, required this.onDone});
+  final VoidCallback onDone;
+  @override
+  State<GSplashBar> createState() => _GSplashBarState();
+}
+
+class _GSplashBarState extends State<GSplashBar> with SingleTickerProviderStateMixin {
+  late final AnimationController c = AnimationController(vsync: this, duration: const Duration(milliseconds: 2800));
+  @override
+  void initState() {
+    super.initState();
+    if (GAnim.enabled) {
+      c.forward().whenComplete(() {
+        if (mounted) widget.onDone();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AnimatedBuilder(
+        animation: c,
+        builder: (_, _) => Align(
+          alignment: Alignment.centerLeft,
+          child: FractionallySizedBox(
+            widthFactor: Curves.easeInOut.transform(c.value),
+            child: DecoratedBox(decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(2)), child: const SizedBox.expand()),
+          ),
+        ),
+      );
+}

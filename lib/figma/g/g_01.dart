@@ -47,7 +47,7 @@ class G_01 extends ConsumerWidget {
       gP(97.5, 456, 195, 38, gText('Boutik-École', 30, Color(0xFFFFFFFF), weight: 700)),
       gP(72, 500, 246, 42, gText('La marketplace de l’expertise\net des productions de l’IUT de Douala', 14, Color(0xE5FFFFFF), lh: 21, align: TextAlign.center)),
       gP(85, 804, 220, 4, gBox(color: Color(0x4DFFFFFF), radii: [2, 2, 2, 2])),
-      gP(85, 804, 0, 4, gBox(color: Color(0xFFFFFFFF), radii: [2, 2, 2, 2])),
+      gP(85, 804, 220, 4, GSplashBar(onDone: () => gOpen(context, '02'))),
       gP(157.5, 820, 75, 14, gText('Chargement…', 11, Color(0xBFFFFFFF), weight: 500)),
       gTap(0, 0, 390, 876, () => gOpen(context, '02')),
     ]);

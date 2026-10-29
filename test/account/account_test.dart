@@ -22,7 +22,7 @@ void main() {
     final c = ProviderContainer();
     addTearDown(c.dispose);
     final n = c.read(authProvider.notifier);
-    expect(c.read(authProvider).current?.email, demoAccount.email);
+    expect(c.read(authProvider).current, isNull);
 
     final a = Account(name: 'Paul Nkoa', phone: '677000111', email: 'paul@mail.cm', password: 'Secret123', verified: false);
     n.register(a);

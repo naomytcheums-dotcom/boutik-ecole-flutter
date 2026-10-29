@@ -65,7 +65,7 @@ const seedAccounts = <Account>[
 ];
 
 /// Compte connecté au démarrage (la démonstration commence avec l'étudiante) ; remplaçable dans les tests.
-final initialAccountProvider = Provider<Account?>((_) => demoAccount);
+final initialAccountProvider = Provider<Account?>((_) => null);
 
 class AuthState {
   const AuthState({this.accounts = seedAccounts, this.current, this.pending});

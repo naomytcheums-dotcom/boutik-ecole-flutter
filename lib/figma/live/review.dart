@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gen.dart';
+import 'audit.dart';
 import 'seller.dart';
 import 'store.dart';
 
@@ -97,6 +98,7 @@ Future<void> reviewDialog(BuildContext context, WidgetRef ref, ReviewItem r) {
               return;
             }
             ref.read(reviewDecisionsProvider.notifier).decide(r.title, 2, note.text.trim());
+            ref.read(auditProvider.notifier).log('Dr Mbarga', 'Annonce refusée', r.title, 'Validations', level: 'Sensible');
             if (!r.seed) ref.read(listingsProvider.notifier).review(r.title, false);
             Navigator.of(ctx).pop();
             gToast(context, 'Annonce refusée : le vendeur est averti');
@@ -106,6 +108,7 @@ Future<void> reviewDialog(BuildContext context, WidgetRef ref, ReviewItem r) {
         TextButton(
           onPressed: () {
             ref.read(reviewDecisionsProvider.notifier).decide(r.title, 1, note.text.trim());
+            ref.read(auditProvider.notifier).log('Dr Mbarga', 'Annonce validée', r.title, 'Validations');
             if (!r.seed) ref.read(listingsProvider.notifier).review(r.title, true);
             Navigator.of(ctx).pop();
             gToast(context, 'Annonce validée et publiée');

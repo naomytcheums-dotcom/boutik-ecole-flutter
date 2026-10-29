@@ -11,6 +11,8 @@ import '../live/lfav.dart';
 import '../live/auth.dart';
 import '../live/seller.dart';
 import '../live/review.dart';
+import '../live/audit.dart';
+import '../live/admin.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_08 extends ConsumerWidget {
@@ -83,8 +85,8 @@ class G_08 extends ConsumerWidget {
       gP(184, 833, 22, 22, const SizedBox.expand(), tap: () => gOpen(context, '03')),
       gP(183.75, 831.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       gTap(27, 66, 22, 22, () => gOpen(context, '07')),
-      gTap(23, 713, 344, 59, () { ref.read(ordersProvider.notifier).place(); gOpen(context, '257'); }),
-      gTap(20, 790, 350, 50, () { ref.read(ordersProvider.notifier).place(); gOpen(context, '257'); }),
+      gTap(23, 713, 344, 59, () { final o = ref.read(ordersProvider.notifier).place(); ref.read(auditProvider.notifier).log(ref.read(profileAccountProvider).name, 'Commande créée', o.id, 'Finances'); gOpen(context, '257'); }),
+      gTap(20, 790, 350, 50, () { final o = ref.read(ordersProvider.notifier).place(); ref.read(auditProvider.notifier).log(ref.read(profileAccountProvider).name, 'Commande créée', o.id, 'Finances'); gOpen(context, '257'); }),
       gTap(22, 165, 345, 88, () { ref.read(payMethodProvider.notifier).set(0); gToast(context, 'Orange Money sélectionné'); }),
       gTap(24, 264, 343, 91, () { ref.read(payMethodProvider.notifier).set(1); gToast(context, 'Mobile Money sélectionné'); }),
     ]);

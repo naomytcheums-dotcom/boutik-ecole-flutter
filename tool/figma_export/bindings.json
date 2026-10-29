@@ -100,8 +100,8 @@
   "links": {
    "22,165,345,88": "ref.read(payMethodProvider.notifier).set(0); gToast(context, 'Orange Money sélectionné');",
    "24,264,343,91": "ref.read(payMethodProvider.notifier).set(1); gToast(context, 'Mobile Money sélectionné');",
-   "23,713,344,59": "ref.read(ordersProvider.notifier).place(); gOpen(context, '257');",
-   "20,790,350,50": "ref.read(ordersProvider.notifier).place(); gOpen(context, '257');"
+   "23,713,344,59": "final o = ref.read(ordersProvider.notifier).place(); ref.read(auditProvider.notifier).log(ref.read(profileAccountProvider).name, 'Commande créée', o.id, 'Finances'); gOpen(context, '257');",
+   "20,790,350,50": "final o = ref.read(ordersProvider.notifier).place(); ref.read(auditProvider.notifier).log(ref.read(profileAccountProvider).name, 'Commande créée', o.id, 'Finances'); gOpen(context, '257');"
   }
  },
  "257": {
@@ -1845,11 +1845,379 @@
    }
   },
   "links": {
-   "270,485,620,50": "final l = ref.read(flowRowsProvider); if (l.length > 0) { final r = l[0]; if (r.orderId != null && r.status == 'À vérifier') { ref.read(ordersProvider.notifier).markPaid(r.orderId!); gToast(context, 'Paiement ${r.ref} vérifié'); } else { gToast(context, 'Flux ${l[0].ref} : ${l[0].status}'); } }",
-   "270,537,620,50": "final l = ref.read(flowRowsProvider); if (l.length > 1) { final r = l[1]; if (r.orderId != null && r.status == 'À vérifier') { ref.read(ordersProvider.notifier).markPaid(r.orderId!); gToast(context, 'Paiement ${r.ref} vérifié'); } else { gToast(context, 'Flux ${l[1].ref} : ${l[1].status}'); } }",
-   "270,589,620,50": "final l = ref.read(flowRowsProvider); if (l.length > 2) { final r = l[2]; if (r.orderId != null && r.status == 'À vérifier') { ref.read(ordersProvider.notifier).markPaid(r.orderId!); gToast(context, 'Paiement ${r.ref} vérifié'); } else { gToast(context, 'Flux ${l[2].ref} : ${l[2].status}'); } }",
-   "270,641,620,50": "final l = ref.read(flowRowsProvider); if (l.length > 3) { final r = l[3]; if (r.orderId != null && r.status == 'À vérifier') { ref.read(ordersProvider.notifier).markPaid(r.orderId!); gToast(context, 'Paiement ${r.ref} vérifié'); } else { gToast(context, 'Flux ${l[3].ref} : ${l[3].status}'); } }",
-   "270,693,620,50": "final l = ref.read(flowRowsProvider); if (l.length > 4) { final r = l[4]; if (r.orderId != null && r.status == 'À vérifier') { ref.read(ordersProvider.notifier).markPaid(r.orderId!); gToast(context, 'Paiement ${r.ref} vérifié'); } else { gToast(context, 'Flux ${l[4].ref} : ${l[4].status}'); } }"
+   "270,485,620,50": "final l = ref.read(flowRowsProvider); if (l.length > 0) { final r = l[0]; if (r.orderId != null && r.status == 'À vérifier') { ref.read(ordersProvider.notifier).markPaid(r.orderId!); ref.read(auditProvider.notifier).log('Finance', 'Paiement vérifié', r.ref, 'Finances'); gToast(context, 'Paiement ${r.ref} vérifié'); } else { gToast(context, 'Flux ${l[0].ref} : ${l[0].status}'); } }",
+   "270,537,620,50": "final l = ref.read(flowRowsProvider); if (l.length > 1) { final r = l[1]; if (r.orderId != null && r.status == 'À vérifier') { ref.read(ordersProvider.notifier).markPaid(r.orderId!); ref.read(auditProvider.notifier).log('Finance', 'Paiement vérifié', r.ref, 'Finances'); gToast(context, 'Paiement ${r.ref} vérifié'); } else { gToast(context, 'Flux ${l[1].ref} : ${l[1].status}'); } }",
+   "270,589,620,50": "final l = ref.read(flowRowsProvider); if (l.length > 2) { final r = l[2]; if (r.orderId != null && r.status == 'À vérifier') { ref.read(ordersProvider.notifier).markPaid(r.orderId!); ref.read(auditProvider.notifier).log('Finance', 'Paiement vérifié', r.ref, 'Finances'); gToast(context, 'Paiement ${r.ref} vérifié'); } else { gToast(context, 'Flux ${l[2].ref} : ${l[2].status}'); } }",
+   "270,641,620,50": "final l = ref.read(flowRowsProvider); if (l.length > 3) { final r = l[3]; if (r.orderId != null && r.status == 'À vérifier') { ref.read(ordersProvider.notifier).markPaid(r.orderId!); ref.read(auditProvider.notifier).log('Finance', 'Paiement vérifié', r.ref, 'Finances'); gToast(context, 'Paiement ${r.ref} vérifié'); } else { gToast(context, 'Flux ${l[3].ref} : ${l[3].status}'); } }",
+   "270,693,620,50": "final l = ref.read(flowRowsProvider); if (l.length > 4) { final r = l[4]; if (r.orderId != null && r.status == 'À vérifier') { ref.read(ordersProvider.notifier).markPaid(r.orderId!); ref.read(auditProvider.notifier).log('Finance', 'Paiement vérifié', r.ref, 'Finances'); gToast(context, 'Paiement ${r.ref} vérifié'); } else { gToast(context, 'Flux ${l[4].ref} : ${l[4].status}'); } }"
+  }
+ },
+ "126": {
+  "nodes": {
+   "42:1304": {
+    "onChanged": "ref.read(auditTabProvider.notifier).set(i);"
+   },
+   "42:1287": {
+    "onChanged": "ref.read(auditQueryProvider.notifier).set(v);"
+   },
+   "42:1322": {
+    "text": "ref.watch(institutionAuditProvider).length > 0 ? ref.watch(institutionAuditProvider)[0].time : ''",
+    "show": "ref.watch(institutionAuditProvider).length > 0"
+   },
+   "42:1323": {
+    "text": "ref.watch(institutionAuditProvider).length > 0 ? ref.watch(institutionAuditProvider)[0].actor : ''",
+    "show": "ref.watch(institutionAuditProvider).length > 0"
+   },
+   "42:1324": {
+    "text": "ref.watch(institutionAuditProvider).length > 0 ? ref.watch(institutionAuditProvider)[0].action : ''",
+    "show": "ref.watch(institutionAuditProvider).length > 0"
+   },
+   "42:1325": {
+    "text": "ref.watch(institutionAuditProvider).length > 0 ? ref.watch(institutionAuditProvider)[0].target : ''",
+    "show": "ref.watch(institutionAuditProvider).length > 0"
+   },
+   "42:1326": {
+    "text": "ref.watch(institutionAuditProvider).length > 0 ? ref.watch(institutionAuditProvider)[0].ip : ''",
+    "show": "ref.watch(institutionAuditProvider).length > 0"
+   },
+   "42:1327": {
+    "fill": "ref.watch(institutionAuditProvider).length > 0 ? levelFill(ref.watch(institutionAuditProvider)[0].level) : const Color(0x00000000)",
+    "show": "ref.watch(institutionAuditProvider).length > 0"
+   },
+   "42:1328": {
+    "text": "ref.watch(institutionAuditProvider).length > 0 ? ref.watch(institutionAuditProvider)[0].level : ''",
+    "color": "ref.watch(institutionAuditProvider).length > 0 ? levelInk(ref.watch(institutionAuditProvider)[0].level) : const Color(0xFF0F7A52)",
+    "show": "ref.watch(institutionAuditProvider).length > 0"
+   },
+   "42:1330": {
+    "text": "ref.watch(institutionAuditProvider).length > 1 ? ref.watch(institutionAuditProvider)[1].time : ''",
+    "show": "ref.watch(institutionAuditProvider).length > 1"
+   },
+   "42:1331": {
+    "text": "ref.watch(institutionAuditProvider).length > 1 ? ref.watch(institutionAuditProvider)[1].actor : ''",
+    "show": "ref.watch(institutionAuditProvider).length > 1"
+   },
+   "42:1332": {
+    "text": "ref.watch(institutionAuditProvider).length > 1 ? ref.watch(institutionAuditProvider)[1].action : ''",
+    "show": "ref.watch(institutionAuditProvider).length > 1"
+   },
+   "42:1333": {
+    "text": "ref.watch(institutionAuditProvider).length > 1 ? ref.watch(institutionAuditProvider)[1].target : ''",
+    "show": "ref.watch(institutionAuditProvider).length > 1"
+   },
+   "42:1334": {
+    "text": "ref.watch(institutionAuditProvider).length > 1 ? ref.watch(institutionAuditProvider)[1].ip : ''",
+    "show": "ref.watch(institutionAuditProvider).length > 1"
+   },
+   "42:1335": {
+    "fill": "ref.watch(institutionAuditProvider).length > 1 ? levelFill(ref.watch(institutionAuditProvider)[1].level) : const Color(0x00000000)",
+    "show": "ref.watch(institutionAuditProvider).length > 1"
+   },
+   "42:1336": {
+    "text": "ref.watch(institutionAuditProvider).length > 1 ? ref.watch(institutionAuditProvider)[1].level : ''",
+    "color": "ref.watch(institutionAuditProvider).length > 1 ? levelInk(ref.watch(institutionAuditProvider)[1].level) : const Color(0xFF0F7A52)",
+    "show": "ref.watch(institutionAuditProvider).length > 1"
+   },
+   "42:1338": {
+    "text": "ref.watch(institutionAuditProvider).length > 2 ? ref.watch(institutionAuditProvider)[2].time : ''",
+    "show": "ref.watch(institutionAuditProvider).length > 2"
+   },
+   "42:1339": {
+    "text": "ref.watch(institutionAuditProvider).length > 2 ? ref.watch(institutionAuditProvider)[2].actor : ''",
+    "show": "ref.watch(institutionAuditProvider).length > 2"
+   },
+   "42:1340": {
+    "text": "ref.watch(institutionAuditProvider).length > 2 ? ref.watch(institutionAuditProvider)[2].action : ''",
+    "show": "ref.watch(institutionAuditProvider).length > 2"
+   },
+   "42:1341": {
+    "text": "ref.watch(institutionAuditProvider).length > 2 ? ref.watch(institutionAuditProvider)[2].target : ''",
+    "show": "ref.watch(institutionAuditProvider).length > 2"
+   },
+   "42:1342": {
+    "text": "ref.watch(institutionAuditProvider).length > 2 ? ref.watch(institutionAuditProvider)[2].ip : ''",
+    "show": "ref.watch(institutionAuditProvider).length > 2"
+   },
+   "42:1343": {
+    "fill": "ref.watch(institutionAuditProvider).length > 2 ? levelFill(ref.watch(institutionAuditProvider)[2].level) : const Color(0x00000000)",
+    "show": "ref.watch(institutionAuditProvider).length > 2"
+   },
+   "42:1344": {
+    "text": "ref.watch(institutionAuditProvider).length > 2 ? ref.watch(institutionAuditProvider)[2].level : ''",
+    "color": "ref.watch(institutionAuditProvider).length > 2 ? levelInk(ref.watch(institutionAuditProvider)[2].level) : const Color(0xFF0F7A52)",
+    "show": "ref.watch(institutionAuditProvider).length > 2"
+   },
+   "42:1346": {
+    "text": "ref.watch(institutionAuditProvider).length > 3 ? ref.watch(institutionAuditProvider)[3].time : ''",
+    "show": "ref.watch(institutionAuditProvider).length > 3"
+   },
+   "42:1347": {
+    "text": "ref.watch(institutionAuditProvider).length > 3 ? ref.watch(institutionAuditProvider)[3].actor : ''",
+    "show": "ref.watch(institutionAuditProvider).length > 3"
+   },
+   "42:1348": {
+    "text": "ref.watch(institutionAuditProvider).length > 3 ? ref.watch(institutionAuditProvider)[3].action : ''",
+    "show": "ref.watch(institutionAuditProvider).length > 3"
+   },
+   "42:1349": {
+    "text": "ref.watch(institutionAuditProvider).length > 3 ? ref.watch(institutionAuditProvider)[3].target : ''",
+    "show": "ref.watch(institutionAuditProvider).length > 3"
+   },
+   "42:1350": {
+    "text": "ref.watch(institutionAuditProvider).length > 3 ? ref.watch(institutionAuditProvider)[3].ip : ''",
+    "show": "ref.watch(institutionAuditProvider).length > 3"
+   },
+   "42:1351": {
+    "fill": "ref.watch(institutionAuditProvider).length > 3 ? levelFill(ref.watch(institutionAuditProvider)[3].level) : const Color(0x00000000)",
+    "show": "ref.watch(institutionAuditProvider).length > 3"
+   },
+   "42:1352": {
+    "text": "ref.watch(institutionAuditProvider).length > 3 ? ref.watch(institutionAuditProvider)[3].level : ''",
+    "color": "ref.watch(institutionAuditProvider).length > 3 ? levelInk(ref.watch(institutionAuditProvider)[3].level) : const Color(0xFF0F7A52)",
+    "show": "ref.watch(institutionAuditProvider).length > 3"
+   }
+  }
+ },
+ "137": {
+  "nodes": {
+   "43:1482": {
+    "onChanged": "ref.read(auditTabProvider.notifier).set(i);"
+   },
+   "43:1464": {
+    "onChanged": "ref.read(auditQueryProvider.notifier).set(v);"
+   },
+   "43:1499": {
+    "text": "ref.watch(globalAuditProvider).length > 0 ? ref.watch(globalAuditProvider)[0].time : ''",
+    "show": "ref.watch(globalAuditProvider).length > 0"
+   },
+   "43:1500": {
+    "text": "ref.watch(globalAuditProvider).length > 0 ? ref.watch(globalAuditProvider)[0].actor : ''",
+    "show": "ref.watch(globalAuditProvider).length > 0"
+   },
+   "43:1501": {
+    "text": "ref.watch(globalAuditProvider).length > 0 ? ref.watch(globalAuditProvider)[0].action : ''",
+    "show": "ref.watch(globalAuditProvider).length > 0"
+   },
+   "43:1502": {
+    "text": "ref.watch(globalAuditProvider).length > 0 ? ref.watch(globalAuditProvider)[0].target : ''",
+    "show": "ref.watch(globalAuditProvider).length > 0"
+   },
+   "43:1503": {
+    "text": "ref.watch(globalAuditProvider).length > 0 ? ref.watch(globalAuditProvider)[0].institution : ''",
+    "show": "ref.watch(globalAuditProvider).length > 0"
+   },
+   "43:1504": {
+    "fill": "ref.watch(globalAuditProvider).length > 0 ? levelFill(ref.watch(globalAuditProvider)[0].level) : const Color(0x00000000)",
+    "show": "ref.watch(globalAuditProvider).length > 0"
+   },
+   "43:1505": {
+    "text": "ref.watch(globalAuditProvider).length > 0 ? ref.watch(globalAuditProvider)[0].level : ''",
+    "color": "ref.watch(globalAuditProvider).length > 0 ? levelInk(ref.watch(globalAuditProvider)[0].level) : const Color(0xFF0F7A52)",
+    "show": "ref.watch(globalAuditProvider).length > 0"
+   },
+   "43:1507": {
+    "text": "ref.watch(globalAuditProvider).length > 1 ? ref.watch(globalAuditProvider)[1].time : ''",
+    "show": "ref.watch(globalAuditProvider).length > 1"
+   },
+   "43:1508": {
+    "text": "ref.watch(globalAuditProvider).length > 1 ? ref.watch(globalAuditProvider)[1].actor : ''",
+    "show": "ref.watch(globalAuditProvider).length > 1"
+   },
+   "43:1509": {
+    "text": "ref.watch(globalAuditProvider).length > 1 ? ref.watch(globalAuditProvider)[1].action : ''",
+    "show": "ref.watch(globalAuditProvider).length > 1"
+   },
+   "43:1510": {
+    "text": "ref.watch(globalAuditProvider).length > 1 ? ref.watch(globalAuditProvider)[1].target : ''",
+    "show": "ref.watch(globalAuditProvider).length > 1"
+   },
+   "43:1511": {
+    "text": "ref.watch(globalAuditProvider).length > 1 ? ref.watch(globalAuditProvider)[1].institution : ''",
+    "show": "ref.watch(globalAuditProvider).length > 1"
+   },
+   "43:1512": {
+    "fill": "ref.watch(globalAuditProvider).length > 1 ? levelFill(ref.watch(globalAuditProvider)[1].level) : const Color(0x00000000)",
+    "show": "ref.watch(globalAuditProvider).length > 1"
+   },
+   "43:1513": {
+    "text": "ref.watch(globalAuditProvider).length > 1 ? ref.watch(globalAuditProvider)[1].level : ''",
+    "color": "ref.watch(globalAuditProvider).length > 1 ? levelInk(ref.watch(globalAuditProvider)[1].level) : const Color(0xFF0F7A52)",
+    "show": "ref.watch(globalAuditProvider).length > 1"
+   },
+   "43:1515": {
+    "text": "ref.watch(globalAuditProvider).length > 2 ? ref.watch(globalAuditProvider)[2].time : ''",
+    "show": "ref.watch(globalAuditProvider).length > 2"
+   },
+   "43:1516": {
+    "text": "ref.watch(globalAuditProvider).length > 2 ? ref.watch(globalAuditProvider)[2].actor : ''",
+    "show": "ref.watch(globalAuditProvider).length > 2"
+   },
+   "43:1517": {
+    "text": "ref.watch(globalAuditProvider).length > 2 ? ref.watch(globalAuditProvider)[2].action : ''",
+    "show": "ref.watch(globalAuditProvider).length > 2"
+   },
+   "43:1518": {
+    "text": "ref.watch(globalAuditProvider).length > 2 ? ref.watch(globalAuditProvider)[2].target : ''",
+    "show": "ref.watch(globalAuditProvider).length > 2"
+   },
+   "43:1519": {
+    "text": "ref.watch(globalAuditProvider).length > 2 ? ref.watch(globalAuditProvider)[2].institution : ''",
+    "show": "ref.watch(globalAuditProvider).length > 2"
+   },
+   "43:1520": {
+    "fill": "ref.watch(globalAuditProvider).length > 2 ? levelFill(ref.watch(globalAuditProvider)[2].level) : const Color(0x00000000)",
+    "show": "ref.watch(globalAuditProvider).length > 2"
+   },
+   "43:1521": {
+    "text": "ref.watch(globalAuditProvider).length > 2 ? ref.watch(globalAuditProvider)[2].level : ''",
+    "color": "ref.watch(globalAuditProvider).length > 2 ? levelInk(ref.watch(globalAuditProvider)[2].level) : const Color(0xFF0F7A52)",
+    "show": "ref.watch(globalAuditProvider).length > 2"
+   },
+   "43:1523": {
+    "text": "ref.watch(globalAuditProvider).length > 3 ? ref.watch(globalAuditProvider)[3].time : ''",
+    "show": "ref.watch(globalAuditProvider).length > 3"
+   },
+   "43:1524": {
+    "text": "ref.watch(globalAuditProvider).length > 3 ? ref.watch(globalAuditProvider)[3].actor : ''",
+    "show": "ref.watch(globalAuditProvider).length > 3"
+   },
+   "43:1525": {
+    "text": "ref.watch(globalAuditProvider).length > 3 ? ref.watch(globalAuditProvider)[3].action : ''",
+    "show": "ref.watch(globalAuditProvider).length > 3"
+   },
+   "43:1526": {
+    "text": "ref.watch(globalAuditProvider).length > 3 ? ref.watch(globalAuditProvider)[3].target : ''",
+    "show": "ref.watch(globalAuditProvider).length > 3"
+   },
+   "43:1527": {
+    "text": "ref.watch(globalAuditProvider).length > 3 ? ref.watch(globalAuditProvider)[3].institution : ''",
+    "show": "ref.watch(globalAuditProvider).length > 3"
+   },
+   "43:1528": {
+    "fill": "ref.watch(globalAuditProvider).length > 3 ? levelFill(ref.watch(globalAuditProvider)[3].level) : const Color(0x00000000)",
+    "show": "ref.watch(globalAuditProvider).length > 3"
+   },
+   "43:1529": {
+    "text": "ref.watch(globalAuditProvider).length > 3 ? ref.watch(globalAuditProvider)[3].level : ''",
+    "color": "ref.watch(globalAuditProvider).length > 3 ? levelInk(ref.watch(globalAuditProvider)[3].level) : const Color(0xFF0F7A52)",
+    "show": "ref.watch(globalAuditProvider).length > 3"
+   }
+  }
+ },
+ "128": {
+  "nodes": {
+   "43:284": {
+    "text": "ref.watch(adminUsersProvider).length > 0 ? ref.watch(adminUsersProvider)[0].name : ''",
+    "show": "ref.watch(adminUsersProvider).length > 0"
+   },
+   "43:285": {
+    "text": "ref.watch(adminUsersProvider).length > 0 ? ref.watch(adminUsersProvider)[0].roleLabel : ''",
+    "show": "ref.watch(adminUsersProvider).length > 0"
+   },
+   "43:286": {
+    "text": "ref.watch(adminUsersProvider).length > 0 ? ref.watch(adminUsersProvider)[0].institution : ''",
+    "show": "ref.watch(adminUsersProvider).length > 0"
+   },
+   "43:287": {
+    "fill": "ref.watch(adminUsersProvider).length > 0 ? statusFill(ref.watch(adminUsersProvider)[0].suspended) : const Color(0x00000000)",
+    "show": "ref.watch(adminUsersProvider).length > 0"
+   },
+   "43:288": {
+    "text": "ref.watch(adminUsersProvider).length > 0 ? (ref.watch(adminUsersProvider)[0].suspended ? 'Suspendu' : 'Actif') : ''",
+    "color": "ref.watch(adminUsersProvider).length > 0 ? statusInk(ref.watch(adminUsersProvider)[0].suspended) : const Color(0xFF0F7A52)",
+    "show": "ref.watch(adminUsersProvider).length > 0"
+   },
+   "43:290": {
+    "text": "ref.watch(adminUsersProvider).length > 1 ? ref.watch(adminUsersProvider)[1].name : ''",
+    "show": "ref.watch(adminUsersProvider).length > 1"
+   },
+   "43:291": {
+    "text": "ref.watch(adminUsersProvider).length > 1 ? ref.watch(adminUsersProvider)[1].roleLabel : ''",
+    "show": "ref.watch(adminUsersProvider).length > 1"
+   },
+   "43:292": {
+    "text": "ref.watch(adminUsersProvider).length > 1 ? ref.watch(adminUsersProvider)[1].institution : ''",
+    "show": "ref.watch(adminUsersProvider).length > 1"
+   },
+   "43:293": {
+    "fill": "ref.watch(adminUsersProvider).length > 1 ? statusFill(ref.watch(adminUsersProvider)[1].suspended) : const Color(0x00000000)",
+    "show": "ref.watch(adminUsersProvider).length > 1"
+   },
+   "43:294": {
+    "text": "ref.watch(adminUsersProvider).length > 1 ? (ref.watch(adminUsersProvider)[1].suspended ? 'Suspendu' : 'Actif') : ''",
+    "color": "ref.watch(adminUsersProvider).length > 1 ? statusInk(ref.watch(adminUsersProvider)[1].suspended) : const Color(0xFF0F7A52)",
+    "show": "ref.watch(adminUsersProvider).length > 1"
+   },
+   "43:296": {
+    "text": "ref.watch(adminUsersProvider).length > 2 ? ref.watch(adminUsersProvider)[2].name : ''",
+    "show": "ref.watch(adminUsersProvider).length > 2"
+   },
+   "43:297": {
+    "text": "ref.watch(adminUsersProvider).length > 2 ? ref.watch(adminUsersProvider)[2].roleLabel : ''",
+    "show": "ref.watch(adminUsersProvider).length > 2"
+   },
+   "43:298": {
+    "text": "ref.watch(adminUsersProvider).length > 2 ? ref.watch(adminUsersProvider)[2].institution : ''",
+    "show": "ref.watch(adminUsersProvider).length > 2"
+   },
+   "43:299": {
+    "fill": "ref.watch(adminUsersProvider).length > 2 ? statusFill(ref.watch(adminUsersProvider)[2].suspended) : const Color(0x00000000)",
+    "show": "ref.watch(adminUsersProvider).length > 2"
+   },
+   "43:300": {
+    "text": "ref.watch(adminUsersProvider).length > 2 ? (ref.watch(adminUsersProvider)[2].suspended ? 'Suspendu' : 'Actif') : ''",
+    "color": "ref.watch(adminUsersProvider).length > 2 ? statusInk(ref.watch(adminUsersProvider)[2].suspended) : const Color(0xFF0F7A52)",
+    "show": "ref.watch(adminUsersProvider).length > 2"
+   },
+   "43:302": {
+    "text": "ref.watch(adminUsersProvider).length > 3 ? ref.watch(adminUsersProvider)[3].name : ''",
+    "show": "ref.watch(adminUsersProvider).length > 3"
+   },
+   "43:303": {
+    "text": "ref.watch(adminUsersProvider).length > 3 ? ref.watch(adminUsersProvider)[3].roleLabel : ''",
+    "show": "ref.watch(adminUsersProvider).length > 3"
+   },
+   "43:304": {
+    "text": "ref.watch(adminUsersProvider).length > 3 ? ref.watch(adminUsersProvider)[3].institution : ''",
+    "show": "ref.watch(adminUsersProvider).length > 3"
+   },
+   "43:305": {
+    "fill": "ref.watch(adminUsersProvider).length > 3 ? statusFill(ref.watch(adminUsersProvider)[3].suspended) : const Color(0x00000000)",
+    "show": "ref.watch(adminUsersProvider).length > 3"
+   },
+   "43:306": {
+    "text": "ref.watch(adminUsersProvider).length > 3 ? (ref.watch(adminUsersProvider)[3].suspended ? 'Suspendu' : 'Actif') : ''",
+    "color": "ref.watch(adminUsersProvider).length > 3 ? statusInk(ref.watch(adminUsersProvider)[3].suspended) : const Color(0xFF0F7A52)",
+    "show": "ref.watch(adminUsersProvider).length > 3"
+   },
+   "43:308": {
+    "text": "ref.watch(adminUsersProvider).length > 4 ? ref.watch(adminUsersProvider)[4].name : ''",
+    "show": "ref.watch(adminUsersProvider).length > 4"
+   },
+   "43:309": {
+    "text": "ref.watch(adminUsersProvider).length > 4 ? ref.watch(adminUsersProvider)[4].roleLabel : ''",
+    "show": "ref.watch(adminUsersProvider).length > 4"
+   },
+   "43:310": {
+    "text": "ref.watch(adminUsersProvider).length > 4 ? ref.watch(adminUsersProvider)[4].institution : ''",
+    "show": "ref.watch(adminUsersProvider).length > 4"
+   },
+   "43:311": {
+    "fill": "ref.watch(adminUsersProvider).length > 4 ? statusFill(ref.watch(adminUsersProvider)[4].suspended) : const Color(0x00000000)",
+    "show": "ref.watch(adminUsersProvider).length > 4"
+   },
+   "43:312": {
+    "text": "ref.watch(adminUsersProvider).length > 4 ? (ref.watch(adminUsersProvider)[4].suspended ? 'Suspendu' : 'Actif') : ''",
+    "color": "ref.watch(adminUsersProvider).length > 4 ? statusInk(ref.watch(adminUsersProvider)[4].suspended) : const Color(0xFF0F7A52)",
+    "show": "ref.watch(adminUsersProvider).length > 4"
+   }
+  },
+  "links": {
+   "268,176,647,44": "final l = ref.read(adminUsersProvider); if (l.length > 0) { userDialog(context, ref, l[0]); }",
+   "268,220,647,44": "final l = ref.read(adminUsersProvider); if (l.length > 1) { userDialog(context, ref, l[1]); }",
+   "268,264,647,44": "final l = ref.read(adminUsersProvider); if (l.length > 2) { userDialog(context, ref, l[2]); }",
+   "268,308,647,44": "final l = ref.read(adminUsersProvider); if (l.length > 3) { userDialog(context, ref, l[3]); }",
+   "268,352,647,44": "final l = ref.read(adminUsersProvider); if (l.length > 4) { userDialog(context, ref, l[4]); }"
   }
  }
 }

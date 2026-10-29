@@ -11,6 +11,8 @@ import '../live/lfav.dart';
 import '../live/auth.dart';
 import '../live/seller.dart';
 import '../live/review.dart';
+import '../live/audit.dart';
+import '../live/admin.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_139 extends ConsumerWidget {
@@ -316,11 +318,11 @@ gP(-13, 165.451, 296, 34.583, gImg('assets/figma/v/5ffec176ca9577.svg'))
       gP(894, 620, 336, 34, GField(hint: 'Quels enseignements cherches-tu ?', size: 11, hintColor: Color(0xFF66636E), weight: 400, padL: 16, inter: true)),
       gP(894, 664, 336, 76, gBox(color: Color(0xFFFFFFFF), radii: [16, 16, 16, 16])),
       gP(908, 672, 313, 30, gText('Les reversements vendeurs progressent de 6 %. 18 paiements attendent ta vérification : veux-tu les passer en revue ?', 10.5, Color(0xFF4A4944), inter: true, lh: 15, wrap: true)),
-      gTap(270, 485, 620, 50, () { final l = ref.read(flowRowsProvider); if (l.length > 0) { final r = l[0]; if (r.orderId != null && r.status == 'À vérifier') { ref.read(ordersProvider.notifier).markPaid(r.orderId!); gToast(context, 'Paiement ${r.ref} vérifié'); } else { gToast(context, 'Flux ${l[0].ref} : ${l[0].status}'); } } }),
-      gTap(270, 537, 620, 50, () { final l = ref.read(flowRowsProvider); if (l.length > 1) { final r = l[1]; if (r.orderId != null && r.status == 'À vérifier') { ref.read(ordersProvider.notifier).markPaid(r.orderId!); gToast(context, 'Paiement ${r.ref} vérifié'); } else { gToast(context, 'Flux ${l[1].ref} : ${l[1].status}'); } } }),
-      gTap(270, 589, 620, 50, () { final l = ref.read(flowRowsProvider); if (l.length > 2) { final r = l[2]; if (r.orderId != null && r.status == 'À vérifier') { ref.read(ordersProvider.notifier).markPaid(r.orderId!); gToast(context, 'Paiement ${r.ref} vérifié'); } else { gToast(context, 'Flux ${l[2].ref} : ${l[2].status}'); } } }),
-      gTap(270, 641, 620, 50, () { final l = ref.read(flowRowsProvider); if (l.length > 3) { final r = l[3]; if (r.orderId != null && r.status == 'À vérifier') { ref.read(ordersProvider.notifier).markPaid(r.orderId!); gToast(context, 'Paiement ${r.ref} vérifié'); } else { gToast(context, 'Flux ${l[3].ref} : ${l[3].status}'); } } }),
-      gTap(270, 693, 620, 50, () { final l = ref.read(flowRowsProvider); if (l.length > 4) { final r = l[4]; if (r.orderId != null && r.status == 'À vérifier') { ref.read(ordersProvider.notifier).markPaid(r.orderId!); gToast(context, 'Paiement ${r.ref} vérifié'); } else { gToast(context, 'Flux ${l[4].ref} : ${l[4].status}'); } } }),
+      gTap(270, 485, 620, 50, () { final l = ref.read(flowRowsProvider); if (l.length > 0) { final r = l[0]; if (r.orderId != null && r.status == 'À vérifier') { ref.read(ordersProvider.notifier).markPaid(r.orderId!); ref.read(auditProvider.notifier).log('Finance', 'Paiement vérifié', r.ref, 'Finances'); gToast(context, 'Paiement ${r.ref} vérifié'); } else { gToast(context, 'Flux ${l[0].ref} : ${l[0].status}'); } } }),
+      gTap(270, 537, 620, 50, () { final l = ref.read(flowRowsProvider); if (l.length > 1) { final r = l[1]; if (r.orderId != null && r.status == 'À vérifier') { ref.read(ordersProvider.notifier).markPaid(r.orderId!); ref.read(auditProvider.notifier).log('Finance', 'Paiement vérifié', r.ref, 'Finances'); gToast(context, 'Paiement ${r.ref} vérifié'); } else { gToast(context, 'Flux ${l[1].ref} : ${l[1].status}'); } } }),
+      gTap(270, 589, 620, 50, () { final l = ref.read(flowRowsProvider); if (l.length > 2) { final r = l[2]; if (r.orderId != null && r.status == 'À vérifier') { ref.read(ordersProvider.notifier).markPaid(r.orderId!); ref.read(auditProvider.notifier).log('Finance', 'Paiement vérifié', r.ref, 'Finances'); gToast(context, 'Paiement ${r.ref} vérifié'); } else { gToast(context, 'Flux ${l[2].ref} : ${l[2].status}'); } } }),
+      gTap(270, 641, 620, 50, () { final l = ref.read(flowRowsProvider); if (l.length > 3) { final r = l[3]; if (r.orderId != null && r.status == 'À vérifier') { ref.read(ordersProvider.notifier).markPaid(r.orderId!); ref.read(auditProvider.notifier).log('Finance', 'Paiement vérifié', r.ref, 'Finances'); gToast(context, 'Paiement ${r.ref} vérifié'); } else { gToast(context, 'Flux ${l[3].ref} : ${l[3].status}'); } } }),
+      gTap(270, 693, 620, 50, () { final l = ref.read(flowRowsProvider); if (l.length > 4) { final r = l[4]; if (r.orderId != null && r.status == 'À vérifier') { ref.read(ordersProvider.notifier).markPaid(r.orderId!); ref.read(auditProvider.notifier).log('Finance', 'Paiement vérifié', r.ref, 'Finances'); gToast(context, 'Paiement ${r.ref} vérifié'); } else { gToast(context, 'Flux ${l[4].ref} : ${l[4].status}'); } } }),
     ]);
   }
 }

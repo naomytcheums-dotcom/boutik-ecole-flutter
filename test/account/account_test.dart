@@ -26,7 +26,7 @@ void main() {
 
     final a = Account(name: 'Paul Nkoa', phone: '677000111', email: 'paul@mail.cm', password: 'Secret123', verified: false);
     n.register(a);
-    expect(c.read(authProvider).accounts.length, 2);
+    expect(c.read(authProvider).accounts.length, seedAccounts.length + 1);
     expect(c.read(authProvider).pending?.verified, isFalse);
 
     final v = a.copyWith(verified: true, role: 2);

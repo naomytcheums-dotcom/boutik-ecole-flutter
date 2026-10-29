@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gen.dart';
 import '../nav.dart';
+import 'audit.dart';
 import 'auth.dart';
 import 'store.dart';
 
@@ -51,17 +52,6 @@ class Listings extends Notifier<List<Listing>> {
 
 final listingsProvider = NotifierProvider<Listings, List<Listing>>(Listings.new);
 
-class IntV extends Notifier<int> {
-  @override
-  int build() => 0;
-  void set(int v) => state = v;
-}
-
-class StrV extends Notifier<String> {
-  @override
-  String build() => '';
-  void set(String v) => state = v;
-}
 
 final sellerFilterProvider = NotifierProvider<IntV, int>(IntV.new);
 final sellerQueryProvider = NotifierProvider<StrV, String>(StrV.new);
@@ -222,6 +212,7 @@ void submitListing(WidgetRef ref, BuildContext context, {required bool publish})
         description: f['np_desc'] ?? '',
       ));
   ref.read(sellerFilterProvider.notifier).set(0);
+  ref.read(auditProvider.notifier).log(ref.read(profileAccountProvider).name, publish ? 'Annonce soumise' : 'Brouillon créé', title, 'Validations');
   gToast(context, publish ? 'Annonce envoyée en validation au département' : 'Brouillon enregistré');
   gOpen(context, '61');
 }

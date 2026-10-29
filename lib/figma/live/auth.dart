@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gen.dart';
+import 'audit.dart';
 import '../nav.dart';
 
 /// Comptes, connexion, inscription, vérification et profil (écrans 10 à 18c).
@@ -17,15 +18,20 @@ class Account {
     this.institution = 'IUT de Douala',
     this.department = 'Génie informatique',
     this.birth = '',
+    this.suspended = false,
+    this.staff = '',
   });
   final String name, phone, email, password, city, institution, department, birth;
   final int role; // 0 client · 1 étudiant vendeur · 2 entreprise · 3 autre
-  final bool verified;
+  final bool verified, suspended;
+  final String staff; // rôle interne (Resp. département, Finance, Admin global…)
+
+  String get roleLabel => staff.isNotEmpty ? staff : const ['Client', 'Étudiant-vendeur', 'Entreprise', 'Autre rôle'][role.clamp(0, 3)];
 
   String get firstName => name.split(' ').first;
   String get lastName => name.split(' ').length > 1 ? name.split(' ').skip(1).join(' ') : '';
 
-  Account copyWith({String? name, String? password, int? role, bool? verified, String? city, String? institution, String? department, String? birth}) => Account(
+  Account copyWith({String? name, String? password, int? role, bool? verified, String? city, String? institution, String? department, String? birth, bool? suspended, String? staff}) => Account(
         name: name ?? this.name,
         phone: phone,
         email: email,
@@ -36,14 +42,25 @@ class Account {
         institution: institution ?? this.institution,
         department: department ?? this.department,
         birth: birth ?? this.birth,
+        suspended: suspended ?? this.suspended,
+        staff: staff ?? this.staff,
       );
 }
 
 const demoAccount = Account(name: 'Mariam Essono', phone: '690112233', email: 'mariam@iut-douala.cm', password: 'Boutik2026');
 const demoCode = '482917';
 
+/// Comptes internes de démonstration (écran 128).
+const seedAccounts = <Account>[
+  demoAccount,
+  Account(name: 'Dr Mbarga', phone: '677000001', email: 'mbarga@iut-douala.cm', password: 'Boutik2026', role: 3, staff: 'Resp. département'),
+  Account(name: 'Orange Cameroun', phone: '677000002', email: 'contact@orange.cm', password: 'Boutik2026', role: 2, institution: '—'),
+  Account(name: 'Support 01', phone: '677000003', email: 'support@boutik-ecole.cm', password: 'Boutik2026', role: 3, staff: 'Support', institution: 'Plateforme'),
+  Account(name: 'Carine Mbarga', phone: '677000004', email: 'carine@iut-douala.cm', password: 'Boutik2026', suspended: true),
+];
+
 class AuthState {
-  const AuthState({this.accounts = const [demoAccount], this.current, this.pending});
+  const AuthState({this.accounts = seedAccounts, this.current, this.pending});
   final List<Account> accounts;
   final Account? current, pending;
   AuthState copy({List<Account>? accounts, Account? current, Account? pending, bool clearCurrent = false, bool clearPending = false}) => AuthState(
@@ -156,10 +173,17 @@ void submitLogin(WidgetRef ref, BuildContext context) {
   final hit = accounts.where((a) => (isMail ? a.email.toLowerCase() == id.toLowerCase() : a.phone == normPhone(id)) && a.password == pw).toList();
   if (hit.isEmpty) {
     _errors(ref, {'li_pw': 'Identifiant ou mot de passe incorrect.'});
+    ref.read(auditProvider.notifier).log('Visiteur', 'Échec de connexion', id, 'Connexions', level: 'Sensible');
+    return;
+  }
+  if (hit.first.suspended) {
+    _errors(ref, {'li_pw': 'Compte suspendu. Contactez l’administration.'});
+    ref.read(auditProvider.notifier).log(hit.first.name, 'Connexion refusée (compte suspendu)', id, 'Connexions', level: 'Sensible');
     return;
   }
   ref.read(errorsProvider.notifier).clear();
   ref.read(authProvider.notifier).login(hit.first);
+  ref.read(auditProvider.notifier).log(hit.first.name, 'Connexion réussie', 'Application', 'Connexions');
   gToast(context, 'Bienvenue, ${hit.first.firstName} !');
   gOpen(context, '03');
 }
@@ -191,6 +215,7 @@ void submitSignup(WidgetRef ref, BuildContext context) {
         verified: false,
       ));
   ref.read(formProvider.notifier).put('otp', '');
+  ref.read(auditProvider.notifier).log(f['su_name']!.trim(), 'Compte créé', f['su_email']!.trim(), 'Comptes');
   gToast(context, 'Code envoyé par SMS (démonstration : $demoCode)');
   gOpen(context, '14');
 }

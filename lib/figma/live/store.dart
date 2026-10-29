@@ -242,3 +242,16 @@ class Favorites extends Notifier<List<String>> {
 final favoritesProvider = NotifierProvider<Favorites, List<String>>(Favorites.new);
 
 final favoriteProductsProvider = Provider<List<LiveProduct>>((ref) => [for (final t in ref.watch(favoritesProvider)) productByTitle(t)]);
+
+/// Petits états partagés (entier, texte).
+class IntV extends Notifier<int> {
+  @override
+  int build() => 0;
+  void set(int v) => state = v;
+}
+
+class StrV extends Notifier<String> {
+  @override
+  String build() => '';
+  void set(String v) => state = v;
+}

@@ -34,6 +34,7 @@
 | W · Faible connexion, langues, accessibilité | 182–186 (5 ; 185 en anglais via arb) | fait |
 | X · Web entreprise | 187–190 (4 web) | fait |
 | AI · Kéla et WhatsApp | 230–236 (7) | fait |
+| REF · Échantillons de référence | A1, A2, A3, P1–P5, V1, L1, S1 (splash animé), D1 (12) | fait |
 | AD · Innovations | 216–229 (14 ; 224, 226, 227 web, captures Figma vides) | fait |
 | AM · Cercle, parrainage, publication | 240–254, 244b, 253b (17 ; 250b dans Nouveaux) | fait |
 | Y · Missions sur mesure | 191–205 (15 ; 198, 199, 200 web) | fait |

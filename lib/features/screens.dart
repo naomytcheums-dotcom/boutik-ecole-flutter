@@ -28,6 +28,7 @@ import 'y_missions/screens.dart';
 import 'aa_borne/screens.dart';
 import 'x_web_entreprise/screens.dart';
 import 'ai_kela/screens.dart';
+import 'ref_echantillons/screens.dart';
 
 /// Registre de tous les écrans codés, dans l'ordre du manifeste.
 final List<ScreenEntry> allScreens = [
@@ -60,4 +61,5 @@ final List<ScreenEntry> allScreens = [
   ...sectionAAScreens,
   ...sectionXScreens,
   ...sectionAIScreens,
+  ...sectionREFScreens,
 ];

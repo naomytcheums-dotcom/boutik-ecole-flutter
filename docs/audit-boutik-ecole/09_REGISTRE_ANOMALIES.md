@@ -2,7 +2,7 @@
 
 Audit réalisé le 29 octobre 2026, en lecture seule (aucun déploiement, aucun commit, aucune donnée de production créée ou modifiée). Chaque fiche indique son statut de vérification : **VÉRIFIÉ** (code ou mesure identifiés), **PROBABLE**, **NON VÉRIFIABLE**, **NON IMPLÉMENTÉ**, **À CONFIRMER**.
 
-**Décompte (après recensement) : 30 anomalies — P0 : 3 · P1 : 11 · P2 : 13 · P3 : 3.** **Mise à jour du 29 octobre 2026 : les 3 P0 sont corrigés et vérifiés sur la production (voir « Correctif » dans chaque fiche) ; il reste 27 anomalies ouvertes (P1 : 11, P2 : 13, P3 : 3).** Une anomalie « VÉRIFIÉ par le code » n'a pas été exploitée sur la production (règle de l'audit) ; son exploitabilité découle de la lecture du schéma et de la fonction serveur.
+**Décompte (après recensement) : 30 anomalies — P0 : 3 · P1 : 11 · P2 : 13 · P3 : 3.** **Mise à jour (2e passe) : AN-004 et AN-022 corrigées et testées ; AN-005 corrigée mais non vérifiée.** **Mise à jour du 29 octobre 2026 : les 3 P0 sont corrigés et vérifiés sur la production (voir « Correctif » dans chaque fiche) ; il reste 27 anomalies ouvertes (P1 : 11, P2 : 13, P3 : 3).** Une anomalie « VÉRIFIÉ par le code » n'a pas été exploitée sur la production (règle de l'audit) ; son exploitabilité découle de la lecture du schéma et de la fonction serveur.
 
 ---
 
@@ -47,11 +47,13 @@ Audit réalisé le 29 octobre 2026, en lecture seule (aucun déploiement, aucun 
 
 ## P1 — Bloquants
 
-### AN-004 · Auto-validation d'annonce par le vendeur
+### AN-004 · Auto-validation d'annonce par le vendeur — ✅ CORRIGÉE ET TESTÉE (29/10/2026)
+- **Preuve** (transaction annulée, aucune donnée conservée) : insertion avec `status=approved` → enregistrée `pending` ; mise à jour vers `approved` par le vendeur → refusée (« Seul le département peut valider ou refuser une annonce »).
 - **Statut** : VÉRIFIÉ par le code. `supabase/schema.sql:132` — `for update using (seller_id = auth.uid() or …)` sans `WITH CHECK` : un vendeur peut passer `status` à `approved`.
 - **Impact** : la validation par le département peut être contournée. **Correction** : séparer les colonnes (le vendeur ne modifie pas `status`) ; transition contrôlée côté serveur. **Test** : mise à jour de `status` par un étudiant → refus.
 
-### AN-005 · Paiement : rejeu de référence et montant non vérifié — PARTIELLEMENT CORRIGÉ
+### AN-005 · Paiement : rejeu de référence et montant non vérifié — CORRIGÉE MAIS NON VÉRIFIÉE (blocage : clé Notch Pay absente)
+- **Déploiement confirmé** : la fonction `pay` en ligne applique le nouveau CORS (origine `https://boutik-ecole.vercel.app` renvoyée même pour une origine étrangère). Les contrôles référence/montant/devise sont dans le code déployé mais n'ont pas pu être exercés sans clé Notch Pay.
 - **Effet du correctif AN-003** : `orders.reference` n'est plus écrivable par le client (seule la fonction `pay` la renseigne) et le montant prélevé vient d'une commande calculée par le serveur. **Reste ouvert** : comparaison du montant/devise renvoyés par Notch Pay et webhook signé.
 - **Statut** : VÉRIFIÉ par le code. `pay/index.ts:57-66` : l'action `status` lit `order.reference` (colonne écrite par le client à la création) puis marque la commande payée si Notch Pay renvoie `complete`. Rien ne contrôle que la référence appartient à cette commande ni que le montant payé correspond.
 - **Impact** : une commande peut être marquée payée avec la référence d'un autre paiement terminé. **Correction** : ne stocker la référence que côté serveur, comparer montant et devise à la réponse du fournisseur, ajouter un webhook signé (HMAC `X-Notch-Signature`). **Test** : référence étrangère → refus.
@@ -105,7 +107,7 @@ Audit réalisé le 29 octobre 2026, en lecture seule (aucun déploiement, aucun 
 - **AN-019 · Mise en page non adaptative** (VÉRIFIÉ par le code, `gen.dart` : `FittedBox`) : chaque écran est une toile de taille fixe mise à l'échelle. Les consoles web (1280 px) deviennent illisibles sur téléphone.
 - **AN-020 · Clavier mobile** (PROBABLE) : `resizeToAvoidBottomInset: false` (`gen.dart:38`) évite le redimensionnement de la toile mais peut laisser le clavier masquer un champ ; non testé sur appareil.
 - **AN-021 · Accessibilité non vérifiée** (NON VÉRIFIÉ) : positions absolues, contrastes de gris clair, zones tactiles et sémantique (lecteur d'écran) jamais mesurés ; voir `docs/ACCESSIBILITY.md` pour l'existant.
-- **AN-022 · Journal d'audit falsifiable** (VÉRIFIÉ par le code) : `schema.sql:147` laisse tout utilisateur connecté insérer des lignes arbitraires, y compris sous un autre nom (`actor` libre).
+- **AN-022 · Journal d'audit falsifiable — ✅ CORRIGÉE ET TESTÉE (29/10/2026)** : écriture directe refusée (RLS) ; `log_audit` écrit avec l'acteur pris dans le profil (« Test », non fourni par le client). Ancien constat : (VÉRIFIÉ par le code) : `schema.sql:147` laisse tout utilisateur connecté insérer des lignes arbitraires, y compris sous un autre nom (`actor` libre).
 - **AN-023 · QR de la borne signé côté client** (VÉRIFIÉ) : `missions.dart:32-40`, empreinte maison avec un secret constant embarqué ; l'usage unique n'existe qu'en mémoire locale.
 - **AN-024 · Canal WhatsApp non implémenté** (NON IMPLÉMENTÉ) : écrans 230–236 dessinés sans aucune intégration.
 - **AN-025 · Voix et messagerie** (VÉRIFIÉ pour le code, NON VÉRIFIÉ sur appareil) : la transcription utilise le moteur du système (non open source) ; les messages, photos, fichiers et vocaux restent en mémoire locale (`chat.dart`).

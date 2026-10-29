@@ -10,6 +10,8 @@ Boutik-École est aujourd'hui **un prototype interactif très fidèle à la maqu
 ## Mise à jour du 29 octobre 2026 — correctifs P0
 Les 3 failles critiques (AN-001, AN-002, AN-003) ont été corrigées sur la base de production et vérifiées par requêtes (compte jetable supprimé ensuite). Détail et preuves dans `09_REGISTRE_ANOMALIES.md`. Reste ouvert : 27 anomalies (P1 : 11, P2 : 13, P3 : 3).
 
+**2e passe** : AN-004 (annonces) et AN-022 (journal) corrigées et testées en base ; fonction `pay` mise à jour et confirmée déployée ; application republiée. Le paiement reste non vérifié (clé Notch Pay absente). Anomalies ouvertes : 25.
+
 ## Problèmes bloquants (état à l'audit initial)
 - **3 failles critiques (P0)** dans la configuration serveur : un utilisateur peut s'attribuer le rôle administrateur (AN-001) ; des comptes de démonstration, dont un administrateur, existent en production avec un mot de passe public (AN-002) ; les montants et l'état « payé » d'une commande sont choisis par le client (AN-003).
 - **11 problèmes P1** : auto-validation d'annonce, rejeu de référence de paiement, connexion validée côté client, données non persistées, stock jamais décrémenté, numéros de commande en collision, erreurs ignorées, vérification simulée, tableaux de bord à données de démonstration, droits seulement dans l'interface, paiement non vérifié.

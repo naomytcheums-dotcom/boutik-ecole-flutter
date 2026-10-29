@@ -3,7 +3,7 @@
 Ordre fondé sur les dépendances : on sécurise d'abord ce qui est exposé, puis on crée la source de vérité serveur, puis on raccorde les écrans. Aucune de ces actions n'a été entreprise pendant l'audit.
 
 ## Étape 0 — Immédiat (avant tout usage réel, ≈ 1 jour)
-**État au 29/10/2026 : 0.2 et 0.3 faits ; 0.1 fait en partie (comptes neutralisés, environnements non séparés) ; 0.5 en partie ; 0.4 et 0.6 restent à faire.**
+**État au 29/10/2026 (2e passe) : 0.4 fait et testé ; journal d'audit (1.5) fait et testé ; 0.2 et 0.3 faits ; 0.1 fait en partie (comptes neutralisés, environnements non séparés) ; 0.5 en partie ; 0.4 et 0.6 restent à faire.**
 
 | # | Action | Anomalies | Critère d'acceptation | Test |
 |---|---|---|---|---|

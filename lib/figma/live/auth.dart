@@ -284,7 +284,9 @@ void submitSignup(WidgetRef ref, BuildContext context) {
     verified: false,
   );
   ref.read(authProvider.notifier).register(created);
-  Backend.signUp(created, created.password);
+  Backend.signUp(created, created.password).then((hasSession) {
+    if (hasSession == false && context.mounted) gToast(context, 'Un e-mail de confirmation vous a été envoyé : cliquez sur le lien, puis connectez-vous.');
+  });
   ref.read(formProvider.notifier).put('otp', '');
   ref.read(auditProvider.notifier).log(f['su_name']!.trim(), 'Compte créé', f['su_email']!.trim(), 'Comptes');
   gToast(context, 'Code envoyé par SMS (démonstration : $demoCode)');

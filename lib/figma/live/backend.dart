@@ -29,20 +29,22 @@ class Backend {
     final c = _c;
     if (c == null) return;
     try {
-      await c.auth.signInWithPassword(email: loginOf(a), password: password);
+      final r = await c.auth.signInWithPassword(email: loginOf(a), password: password);
+      await _ensureProfile(a, r.user?.id);
     } on AuthException {
       // Compte local pas encore créé côté serveur : on l'inscrit puis on le connecte.
       await signUp(a, password);
     } catch (_) {}
   }
 
-  static Future<void> signUp(Account a, String password) async {
+  /// Retourne true si une session est ouverte, false si une confirmation d'e-mail est requise, null si le serveur est indisponible.
+  static Future<bool?> signUp(Account a, String password) async {
     final c = _c;
-    if (c == null) return;
+    if (c == null) return null;
     try {
       final r = await c.auth.signUp(email: loginOf(a), password: password);
       final id = r.user?.id;
-      if (id == null) return;
+      if (id == null || r.session == null) return r.user == null ? null : false;
       await c.from('profiles').upsert({
         'id': id,
         'name': a.name,
@@ -53,6 +55,27 @@ class Backend {
         'institution': a.institution,
         'department': a.department,
       });
+      return true;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Crée le profil au premier passage connecté (cas de la confirmation d'e-mail, où l'inscription n'ouvre pas de session).
+  static Future<void> _ensureProfile(Account a, String? id) async {
+    final c = _c;
+    if (c == null || id == null) return;
+    try {
+      await c.from('profiles').upsert({
+        'id': id,
+        'name': a.name,
+        'phone': a.phone,
+        'email': a.email.isEmpty ? null : a.email,
+        'role': const ['client', 'student', 'company', 'other'][a.role.clamp(0, 3)],
+        'city': a.city,
+        'institution': a.institution,
+        'department': a.department,
+      }, ignoreDuplicates: true);
     } catch (_) {}
   }
 
@@ -85,7 +108,8 @@ class Backend {
     final c = _c;
     if (c == null || c.auth.currentUser == null) return;
     try {
-      await c.from('audit_log').insert({'actor': actor, 'action': action, 'target': target, 'category': category, 'level': level});
+      // L'acteur est déterminé par le serveur (jamais fourni par le client).
+      await c.rpc('log_audit', params: {'p_action': action, 'p_target': target, 'p_category': category, 'p_level': level});
     } catch (_) {}
   }
 }

@@ -37,3 +37,14 @@ Pas de compte de test ni d'environnement Supabase dédié aux tests négatifs ; 
 5. **Tests de persistance** : créer une annonce/un favori, recharger, relire.
 6. **Tests de navigation** : retour, onglets, liens entrants (aucun écran métier orphelin).
 7. **Tests de performance** : budget de poids (`main.dart.js` < 3 Mo compressé) et temps du premier affichage.
+
+## Deuxième passe (29/10/2026, après correctifs P0/P1)
+| Vérification | Résultat |
+|---|---|
+| `flutter analyze` | « No issues found! » (172 s) |
+| `flutter test` | **339 tests réussis, 0 échec** (nombre inchangé) |
+| `flutter build web --release` | réussi ; publié sur Vercel ; le bundle en ligne contient `log_audit` |
+| Version de la fonction `pay` | confirmée par sondage CORS : une origine étrangère reçoit l'origine du site (l'ancienne version renvoyait `*`) |
+| Test de sécurité en base (transaction annulée, aucune donnée conservée) | 7 contrôles : annonce insérée `approved` → `pending` ; auto-approbation refusée ; élévation de rôle refusée ; écriture directe `audit_log` refusée ; `log_audit` fonctionne (acteur issu du profil) ; insertion directe de commande payée refusée |
+| Tests P0 précédents (compte jetable, supprimé ensuite) | élévation de rôle refusée ; création de profil admin refusée ; commande directe refusée ; `create_order` recalcule les montants ; ancien mot de passe admin → `user_banned` |
+**Non exécutés (cause précise)** : rejeu de référence de paiement et sous-paiement (clé Notch Pay absente côté serveur : la fonction répond `not_configured`) ; cohérence du stock (le stock n'est pas décrémenté, AN-008 ouverte, rien à tester).

@@ -20,7 +20,7 @@ create table profiles (
   created_at timestamptz not null default now()
 );
 
-create or replace function current_role_name() returns app_role language sql stable security definer as $$
+create or replace function current_role_name() returns app_role language sql stable security definer set search_path = public as $$
   select role from profiles where id = auth.uid()
 $$;
 
@@ -122,6 +122,8 @@ alter table kiosk_sessions enable row level security;
 create policy "profil visible par soi et l'administration" on profiles for select
   using (id = auth.uid() or current_role_name() in ('admin','direction','support'));
 create policy "profil modifiable par soi" on profiles for update using (id = auth.uid());
+create policy "profil créé à l'inscription" on profiles for insert
+  with check (id = auth.uid() and role in ('client','student','company','other'));
 
 create policy "annonces approuvées visibles par tous" on listings for select
   using (status = 'approved' or seller_id = auth.uid() or current_role_name() in ('dept','admin'));
@@ -153,6 +155,6 @@ create policy "mise à jour des missions" on missions for update
 create policy "équipes visibles par tous" on hackathon_teams for select using (true);
 create policy "un étudiant crée son équipe" on hackathon_teams for insert with check (owner_id = auth.uid());
 
-create policy "sessions borne lisibles par tous" on kiosk_sessions for select using (true);
-create policy "sessions borne créées par la borne" on kiosk_sessions for insert with check (true);
-create policy "usage unique du code" on kiosk_sessions for update using (not used);
+create policy "sessions borne lisibles par les connectés" on kiosk_sessions for select using (auth.uid() is not null);
+create policy "sessions borne créées par les connectés" on kiosk_sessions for insert with check (auth.uid() is not null);
+create policy "usage unique du code" on kiosk_sessions for update using (not used and auth.uid() is not null);

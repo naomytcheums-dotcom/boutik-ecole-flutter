@@ -3,6 +3,7 @@ import 'dart:ui' show Color;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/demo/section_a_demo.dart';
+import 'backend.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 /// État partagé du parcours d'achat : fiche produit → panier → livraison → paiement → commande → suivi.
@@ -133,6 +134,7 @@ class Orders extends Notifier<List<Order>> {
       reference: 'OM-${(now.millisecondsSinceEpoch % 0xFFFF).toRadixString(16).toUpperCase()}-${now.second.toString().padLeft(2, '0')}10',
     );
     state = [o, ...state];
+    Backend.saveOrder(o);
     return o;
   }
 

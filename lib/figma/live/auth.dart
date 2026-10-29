@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gen.dart';
 import 'audit.dart';
+import 'backend.dart';
 import '../nav.dart';
 
 /// Comptes, connexion, inscription, vérification et profil (écrans 10 à 18c).
@@ -84,6 +85,7 @@ class AuthNotifier extends Notifier<AuthState> {
   void login(Account a) => state = state.copy(current: a);
   void logout() {
     saveRemembered(null);
+    Backend.signOut();
     state = state.copy(clearCurrent: true);
   }
   void register(Account a) => state = state.copy(accounts: [...state.accounts, a], pending: a);
@@ -249,6 +251,7 @@ void submitLogin(WidgetRef ref, BuildContext context) {
   ref.read(errorsProvider.notifier).clear();
   ref.read(authProvider.notifier).login(hit.first);
   saveRemembered(ref.read(rememberProvider) ? hit.first.email : null);
+  Backend.signIn(hit.first, pw);
   ref.read(auditProvider.notifier).log(hit.first.name, 'Connexion réussie', 'Application', 'Connexions');
   gToast(context, 'Bienvenue, ${hit.first.firstName} !');
   gOpen(context, '03');
@@ -273,13 +276,15 @@ void submitSignup(WidgetRef ref, BuildContext context) {
     return _errors(ref, {'su_email': 'Un compte existe déjà avec cette adresse.'});
   }
   ref.read(errorsProvider.notifier).clear();
-  ref.read(authProvider.notifier).register(Account(
-        name: f['su_name']!.trim(),
-        phone: normPhone(f['su_phone']!),
-        email: f['su_email']!.trim(),
-        password: f['su_pw']!,
-        verified: false,
-      ));
+  final created = Account(
+    name: f['su_name']!.trim(),
+    phone: normPhone(f['su_phone']!),
+    email: f['su_email']!.trim(),
+    password: f['su_pw']!,
+    verified: false,
+  );
+  ref.read(authProvider.notifier).register(created);
+  Backend.signUp(created, created.password);
   ref.read(formProvider.notifier).put('otp', '');
   ref.read(auditProvider.notifier).log(f['su_name']!.trim(), 'Compte créé', f['su_email']!.trim(), 'Comptes');
   gToast(context, 'Code envoyé par SMS (démonstration : $demoCode)');

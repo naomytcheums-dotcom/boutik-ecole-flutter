@@ -1,3 +1,4 @@
+import 'backend.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -32,8 +33,10 @@ class AuditLog extends Notifier<List<AuditEntry>> {
   @override
   List<AuditEntry> build() => const [];
 
-  void log(String actor, String action, String target, String cat, {String level = 'Normal'}) =>
-      state = [AuditEntry(auditNow(), actor, action, target, cat, level: level), ...state];
+  void log(String actor, String action, String target, String cat, {String level = 'Normal'}) {
+    state = [AuditEntry(auditNow(), actor, action, target, cat, level: level), ...state];
+    Backend.audit(actor, action, target, cat, level);
+  }
 }
 
 final auditProvider = NotifierProvider<AuditLog, List<AuditEntry>>(AuditLog.new);

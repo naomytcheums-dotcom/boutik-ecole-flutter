@@ -52,19 +52,19 @@ class G_04 extends ConsumerWidget {
       gP(156.848, 193.587, 25.435, 25.435, gBox(color: Color(0xFFFFFFFF), oval: true)),
       gP(160.678, 198.005, 17.775, 16.598, gImg('assets/figma/v/2b12c20ee1d37c.svg')),
       gP(154.5, 191.239, 30.13, 30.13, GHeart()),
-      gP(24.022, 330.652, 70.652, 19.783, gBox(color: Color(0xFFFFFFFF), radii: [9.891, 9.891, 9.891, 9.891])),
-      gP(29.029, 333.54, 14.007, 14.007, gImg('assets/figma/v/abbc45070a1369.svg')),
-      gP(31.932, 336.442, 8.202, 8.202, gImg('assets/figma/v/03ad1fd81128c4.svg')),
-      gP(45.924, 333.543, 40, 14, gText('Produit', 11.304, Color(0xFF111015), weight: 500)),
+      
+      
+      
+      
       gP(28.967, 363.522, 121, 36, gText('Pots connectés pour\nl’agriculture urbaine', 12.1, Color(0xFF111015), weight: 600, lh: 17.663)),
       gP(28.967, 406.728, 78, 16, gText('15 000 FCFA', 12.717, Color(0xFF111015), weight: 600)),
       gP(28.967, 429.424, 131, 13, gText('Département : Agronomie', 10.598, Color(0xFF66636E))),
       gP(207.717, 187.228, 166.033, 162.5, gBox(image: 'assets/figma/img/209b06d9669544abc2d1f3eb45ceb34026db6495.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
-      gP(341.957, 193.587, 25.435, 25.435, gBox(color: Color(0x8CFFFFFF), oval: true)),
-      gP(345.786, 198.005, 17.775, 16.598, gImg('assets/figma/v/3c86e00b06e768.svg')),
+      gP(341.957, 193.587, 25.435, 25.435, gBox(color: Color(0xFFFFFFFF), oval: true)),
+      gP(345.786, 198.005, 17.775, 16.598, gImg('assets/figma/v/2b12c20ee1d37c.svg')),
       gP(339.609, 191.239, 30.13, 30.13, GHeart()),
-      gP(211.25, 313.696, 62.88, 22.609, gBox(color: Color(0xFF19C3E6), radii: [11.304, 11.304, 11.304, 11.304])),
-      gP(220.337, 317.5, 44, 15, gText('Service', 12.011, Color(0xFF111015), weight: 600, align: TextAlign.center)),
+      
+      
       gP(216.902, 363.522, 124, 36, gText('Développement web\nsur mesure', 12.1, Color(0xFF111015), weight: 600, lh: 17.663)),
       gP(216.902, 406.728, 147, 16, gText('À partir de 30 000 FCFA', 12.717, Color(0xFF111015), weight: 600)),
       gP(216.902, 429.424, 140, 13, gText('Département : Informatique', 10.598, Color(0xFF66636E))),
@@ -72,19 +72,19 @@ class G_04 extends ConsumerWidget {
       gP(156.848, 480.435, 25.435, 25.435, gBox(color: Color(0xFFFFFFFF), oval: true)),
       gP(160.678, 484.853, 17.775, 16.598, gImg('assets/figma/v/2b12c20ee1d37c.svg')),
       gP(154.5, 478.087, 30.13, 30.13, GHeart()),
-      gP(23.315, 600.543, 50.87, 22.609, gBox(color: Color(0xFF19B7DE), radii: [11.304, 11.304, 11.304, 11.304])),
-      gP(30.75, 604.348, 36, 15, gText('Projet', 12.011, Color(0xFF111015), weight: 600, align: TextAlign.center)),
+      
+      
       gP(28.967, 637.652, 121, 36, gText('Système de filtration\nd’eau innovant', 12.1, Color(0xFF111015), weight: 600, lh: 17.663)),
       gP(28.967, 682.359, 154, 13, gText('Département : Génie chimique', 10.598, Color(0xFF66636E))),
       gP(207.717, 474.076, 166.033, 162.5, gBox(image: 'assets/figma/img/8397f0465c777ec9d53e7683ddc72818ff961acd.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
-      gP(341.957, 480.435, 25.435, 25.435, gBox(color: Color(0x8CFFFFFF), oval: true)),
-      gP(345.786, 484.853, 17.775, 16.598, gImg('assets/figma/v/3c86e00b06e768.svg')),
+      gP(341.957, 480.435, 25.435, 25.435, gBox(color: Color(0xFFFFFFFF), oval: true)),
+      gP(345.786, 484.853, 17.775, 16.598, gImg('assets/figma/v/2b12c20ee1d37c.svg')),
       gP(339.609, 478.087, 30.13, 30.13, GHeart()),
-      gP(211.25, 600.543, 55.815, 22.609, gBox(color: Color(0xFF8B7CF6), radii: [11.304, 11.304, 11.304, 11.304])),
-      gP(222.011, 604.348, 35, 15, gText('Talent', 12.011, Color(0xFF111015), weight: 600, align: TextAlign.center)),
+      
+      
       gP(216.902, 637.652, 151, 36, gText('Montage vidéo & création\nde contenu', 12.1, Color(0xFF111015), weight: 600, lh: 17.663)),
       gP(216.902, 680.152, 144, 16, gText('À partir de 10 000 FCFA', 12.717, Color(0xFF111015), weight: 600)),
-      gP(216.902, 702.848, 133, 13, gText('Département : Audiovisuel', 10.598, Color(0xFF66636E))),
+      gP(216.902, 702.848, 133, 13, gText('Département : Audiovisuel', 10.598, Color(0xFF66636E))), gP(24, 328.5, 72, 21, gBox(color: Color(0xFFFFFFFF), radii: [10.5, 10.5, 10.5, 10.5])), gP(24, 331.7, 72, 15, gText('Produit', 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.center)),gP(212, 328.5, 72, 21, gBox(color: Color(0xFFFFFFFF), radii: [10.5, 10.5, 10.5, 10.5])), gP(212, 331.7, 72, 15, gText('Service', 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.center)),gP(24, 615.5, 72, 21, gBox(color: Color(0xFFFFFFFF), radii: [10.5, 10.5, 10.5, 10.5])), gP(24, 618.7, 72, 15, gText('Projet', 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.center)),gP(212, 615.5, 72, 21, gBox(color: Color(0xFFFFFFFF), radii: [10.5, 10.5, 10.5, 10.5])), gP(212, 618.7, 72, 15, gText('Talent', 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.center)),
       gP(18.37, 753.152, 354.674, 151.902, gBox(image: 'assets/figma/img/8f6ca1bb4903a4a383d533c9719e840c10c65c71.png', fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 5), blurRadius: 14, spreadRadius: 0)], radii: [18.37, 18.37, 18.37, 18.37])),
       gP(18.37, 753.152, 354.674, 151.902, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xD1120F1A), Color(0x33120F1A)], stops: [0, 1]), radii: [18.37, 18.37, 18.37, 18.37])),
       gP(36.739, 779.891, 206, 20, gRich([('Vous êtes ', 16.25, 700, Color(0xFFFFFFFF)), ('une entreprise ?', 16.25, 700, Color(0xFFFBC02D))])),

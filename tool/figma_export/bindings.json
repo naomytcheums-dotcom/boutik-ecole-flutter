@@ -817,6 +817,16 @@
    "25,318,300,125": "final l = ref.read(favoriteProductsProvider); if (l.length > 1) { ref.read(selectedProductProvider.notifier).select(l[1].title); gOpen(context, '05'); }",
    "25,458,300,125": "final l = ref.read(favoriteProductsProvider); if (l.length > 2) { ref.read(selectedProductProvider.notifier).select(l[2].title); gOpen(context, '05'); }",
    "25,597,300,125": "final l = ref.read(favoriteProductsProvider); if (l.length > 3) { ref.read(selectedProductProvider.notifier).select(l[3].title); gOpen(context, '05'); }"
+  },
+  "replace": {
+   "gP(344.505, 194.095, 21.051, 19.546, gImg('assets/figma/v/f3ae776e2293c9.svg'), show: (ref.watch(favoriteProductsProvider).length > 0)),": "",
+   "gP(338, 186.837, 34.061, 34.061, GHeartLive(title: ref.watch(favoriteProductsProvider).length > 0 ? ref.watch(favoriteProductsProvider)[0].title : ''), show: (ref.watch(favoriteProductsProvider).length > 0)),": "gP(136, 183.5, 34.061, 34.061, GHeartLive(title: ref.watch(favoriteProductsProvider).length > 0 ? ref.watch(favoriteProductsProvider)[0].title : ''), show: (ref.watch(favoriteProductsProvider).length > 0)),",
+   "gP(344.505, 332.582, 21.051, 19.546, gImg('assets/figma/v/f3ae776e2293c9.svg'), show: (ref.watch(favoriteProductsProvider).length > 1)),": "",
+   "gP(338, 325.325, 34.061, 34.061, GHeartLive(title: ref.watch(favoriteProductsProvider).length > 1 ? ref.watch(favoriteProductsProvider)[1].title : ''), show: (ref.watch(favoriteProductsProvider).length > 1)),": "gP(136, 322, 34.061, 34.061, GHeartLive(title: ref.watch(favoriteProductsProvider).length > 1 ? ref.watch(favoriteProductsProvider)[1].title : ''), show: (ref.watch(favoriteProductsProvider).length > 1)),",
+   "gP(344.505, 472.258, 21.051, 19.546, gImg('assets/figma/v/f3ae776e2293c9.svg'), show: (ref.watch(favoriteProductsProvider).length > 2)),": "",
+   "gP(338, 465.001, 34.061, 34.061, GHeartLive(title: ref.watch(favoriteProductsProvider).length > 2 ? ref.watch(favoriteProductsProvider)[2].title : ''), show: (ref.watch(favoriteProductsProvider).length > 2)),": "gP(136, 461.7, 34.061, 34.061, GHeartLive(title: ref.watch(favoriteProductsProvider).length > 2 ? ref.watch(favoriteProductsProvider)[2].title : ''), show: (ref.watch(favoriteProductsProvider).length > 2)),",
+   "gP(344.505, 611.934, 21.051, 19.546, gImg('assets/figma/v/f3ae776e2293c9.svg'), show: (ref.watch(favoriteProductsProvider).length > 3)),": "",
+   "gP(338, 604.677, 34.061, 34.061, GHeartLive(title: ref.watch(favoriteProductsProvider).length > 3 ? ref.watch(favoriteProductsProvider)[3].title : ''), show: (ref.watch(favoriteProductsProvider).length > 3)),": "gP(136, 601.3, 34.061, 34.061, GHeartLive(title: ref.watch(favoriteProductsProvider).length > 3 ? ref.watch(favoriteProductsProvider)[3].title : ''), show: (ref.watch(favoriteProductsProvider).length > 3)),"
   }
  },
  "19": {
@@ -1629,6 +1639,9 @@
    "329,122,130,34": "ref.read(reviewTabProvider.notifier).set(0);",
    "591,122,130,34": "ref.read(reviewTabProvider.notifier).set(1);",
    "834,122,130,34": "ref.read(reviewTabProvider.notifier).set(2);"
+  },
+  "replace": {
+   "Positioned.fill(child: GChoiceGroup(chips: [GChip(926.5, 10, 170, 36, '+3', 11, 500), GChip(1082, 10, 170, 36, 'Exporter', 12, 600)], selected: 1, selFill: Color(0xFF0B0B0D), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 18, inter: true)),": "gP(1040, 10, 36, 36, gBox(color: Color(0xFFF2EFF6), oval: true)), gP(1040, 22, 36, 13, gText('+3', 11, Color(0xFF4A4854), weight: 600, inter: true, align: TextAlign.center)), gP(1090, 10, 162, 36, gBox(color: Color(0xFF0B0B0D), radii: [18, 18, 18, 18]), tap: () => gToast(context, 'Export des annonces en cours de préparation')), gP(1090, 22, 162, 14, gText('Exporter', 12, Color(0xFFFFFFFF), weight: 600, inter: true, align: TextAlign.center)),"
   }
  },
  "108": {
@@ -3797,6 +3810,25 @@
    "gP(296, 724, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),": "",
    "gP(310.325, 738.325, 15.35, 15.35, gImg('assets/figma/v/95a3a562ff2257.svg')),": "",
    "gP(310.325, 738.325, 15.35, 15.35, gImg('assets/figma/v/dacf8ca54f8b22.svg')),": ""
+  }
+ },
+ "04": {
+  "replace": {
+   "gP(341.957, 193.587, 25.435, 25.435, gBox(color: Color(0x8CFFFFFF), oval: true)),": "gP(341.957, 193.587, 25.435, 25.435, gBox(color: Color(0xFFFFFFFF), oval: true)),",
+   "gP(345.786, 198.005, 17.775, 16.598, gImg('assets/figma/v/3c86e00b06e768.svg')),": "gP(345.786, 198.005, 17.775, 16.598, gImg('assets/figma/v/2b12c20ee1d37c.svg')),",
+   "gP(341.957, 480.435, 25.435, 25.435, gBox(color: Color(0x8CFFFFFF), oval: true)),": "gP(341.957, 480.435, 25.435, 25.435, gBox(color: Color(0xFFFFFFFF), oval: true)),",
+   "gP(345.786, 484.853, 17.775, 16.598, gImg('assets/figma/v/3c86e00b06e768.svg')),": "gP(345.786, 484.853, 17.775, 16.598, gImg('assets/figma/v/2b12c20ee1d37c.svg')),",
+   "gP(24.022, 330.652, 70.652, 19.783, gBox(color: Color(0xFFFFFFFF), radii: [9.891, 9.891, 9.891, 9.891])),": "",
+   "gP(29.029, 333.54, 14.007, 14.007, gImg('assets/figma/v/abbc45070a1369.svg')),": "",
+   "gP(31.932, 336.442, 8.202, 8.202, gImg('assets/figma/v/03ad1fd81128c4.svg')),": "",
+   "gP(45.924, 333.543, 40, 14, gText('Produit', 11.304, Color(0xFF111015), weight: 500)),": "",
+   "gP(211.25, 313.696, 62.88, 22.609, gBox(color: Color(0xFF19C3E6), radii: [11.304, 11.304, 11.304, 11.304])),": "",
+   "gP(220.337, 317.5, 44, 15, gText('Service', 12.011, Color(0xFF111015), weight: 600, align: TextAlign.center)),": "",
+   "gP(23.315, 600.543, 50.87, 22.609, gBox(color: Color(0xFF19B7DE), radii: [11.304, 11.304, 11.304, 11.304])),": "",
+   "gP(30.75, 604.348, 36, 15, gText('Projet', 12.011, Color(0xFF111015), weight: 600, align: TextAlign.center)),": "",
+   "gP(211.25, 600.543, 55.815, 22.609, gBox(color: Color(0xFF8B7CF6), radii: [11.304, 11.304, 11.304, 11.304])),": "",
+   "gP(222.011, 604.348, 35, 15, gText('Talent', 12.011, Color(0xFF111015), weight: 600, align: TextAlign.center)),": "",
+   "gP(216.902, 702.848, 133, 13, gText('Département : Audiovisuel', 10.598, Color(0xFF66636E))),": "gP(216.902, 702.848, 133, 13, gText('Département : Audiovisuel', 10.598, Color(0xFF66636E))), gP(24, 328.5, 72, 21, gBox(color: Color(0xFFFFFFFF), radii: [10.5, 10.5, 10.5, 10.5])), gP(24, 331.7, 72, 15, gText('Produit', 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.center)),gP(212, 328.5, 72, 21, gBox(color: Color(0xFFFFFFFF), radii: [10.5, 10.5, 10.5, 10.5])), gP(212, 331.7, 72, 15, gText('Service', 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.center)),gP(24, 615.5, 72, 21, gBox(color: Color(0xFFFFFFFF), radii: [10.5, 10.5, 10.5, 10.5])), gP(24, 618.7, 72, 15, gText('Projet', 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.center)),gP(212, 615.5, 72, 21, gBox(color: Color(0xFFFFFFFF), radii: [10.5, 10.5, 10.5, 10.5])), gP(212, 618.7, 72, 15, gText('Talent', 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.center)),"
   }
  }
 }

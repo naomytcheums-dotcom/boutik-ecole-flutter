@@ -2219,5 +2219,444 @@
    "268,308,647,44": "final l = ref.read(adminUsersProvider); if (l.length > 3) { userDialog(context, ref, l[3]); }",
    "268,352,647,44": "final l = ref.read(adminUsersProvider); if (l.length > 4) { userDialog(context, ref, l[4]); }"
   }
+ },
+ "70": {
+  "nodes": {
+   "35:430": {
+    "onChanged": "ref.read(talentQueryProvider.notifier).set(v);"
+   },
+   "35:445": {
+    "onChanged": "ref.read(talentTabProvider.notifier).set(i);"
+   },
+   "35:455": {
+    "text": "'${ref.watch(visibleTalentsProvider).where((t) => t.available).length} talents disponibles'"
+   },
+   "35:457": {
+    "show": "ref.watch(visibleTalentsProvider).length > 0"
+   },
+   "35:458": {
+    "text": "ref.watch(visibleTalentsProvider).length > 0 ? ref.watch(visibleTalentsProvider)[0].name : ''",
+    "show": "ref.watch(visibleTalentsProvider).length > 0"
+   },
+   "35:459": {
+    "text": "ref.watch(visibleTalentsProvider).length > 0 ? ref.watch(visibleTalentsProvider)[0].sub : ''",
+    "show": "ref.watch(visibleTalentsProvider).length > 0"
+   },
+   "35:460": {
+    "fill": "ref.watch(visibleTalentsProvider).length > 0 ? availFill(ref.watch(visibleTalentsProvider)[0].available) : const Color(0x00000000)",
+    "show": "ref.watch(visibleTalentsProvider).length > 0"
+   },
+   "35:461": {
+    "text": "ref.watch(visibleTalentsProvider).length > 0 ? (ref.watch(visibleTalentsProvider)[0].available ? 'Disponible' : 'Occupée') : ''",
+    "color": "ref.watch(visibleTalentsProvider).length > 0 ? availInk(ref.watch(visibleTalentsProvider)[0].available) : const Color(0xFF0F7A52)",
+    "show": "ref.watch(visibleTalentsProvider).length > 0"
+   },
+   "35:463": {
+    "show": "ref.watch(visibleTalentsProvider).length > 1"
+   },
+   "35:464": {
+    "text": "ref.watch(visibleTalentsProvider).length > 1 ? ref.watch(visibleTalentsProvider)[1].name : ''",
+    "show": "ref.watch(visibleTalentsProvider).length > 1"
+   },
+   "35:465": {
+    "text": "ref.watch(visibleTalentsProvider).length > 1 ? ref.watch(visibleTalentsProvider)[1].sub : ''",
+    "show": "ref.watch(visibleTalentsProvider).length > 1"
+   },
+   "35:466": {
+    "fill": "ref.watch(visibleTalentsProvider).length > 1 ? availFill(ref.watch(visibleTalentsProvider)[1].available) : const Color(0x00000000)",
+    "show": "ref.watch(visibleTalentsProvider).length > 1"
+   },
+   "35:467": {
+    "text": "ref.watch(visibleTalentsProvider).length > 1 ? (ref.watch(visibleTalentsProvider)[1].available ? 'Disponible' : 'Occupée') : ''",
+    "color": "ref.watch(visibleTalentsProvider).length > 1 ? availInk(ref.watch(visibleTalentsProvider)[1].available) : const Color(0xFF0F7A52)",
+    "show": "ref.watch(visibleTalentsProvider).length > 1"
+   },
+   "35:469": {
+    "show": "ref.watch(visibleTalentsProvider).length > 2"
+   },
+   "35:470": {
+    "text": "ref.watch(visibleTalentsProvider).length > 2 ? ref.watch(visibleTalentsProvider)[2].name : ''",
+    "show": "ref.watch(visibleTalentsProvider).length > 2"
+   },
+   "35:471": {
+    "text": "ref.watch(visibleTalentsProvider).length > 2 ? ref.watch(visibleTalentsProvider)[2].sub : ''",
+    "show": "ref.watch(visibleTalentsProvider).length > 2"
+   },
+   "35:472": {
+    "fill": "ref.watch(visibleTalentsProvider).length > 2 ? availFill(ref.watch(visibleTalentsProvider)[2].available) : const Color(0x00000000)",
+    "show": "ref.watch(visibleTalentsProvider).length > 2"
+   },
+   "35:473": {
+    "text": "ref.watch(visibleTalentsProvider).length > 2 ? (ref.watch(visibleTalentsProvider)[2].available ? 'Disponible' : 'Occupée') : ''",
+    "color": "ref.watch(visibleTalentsProvider).length > 2 ? availInk(ref.watch(visibleTalentsProvider)[2].available) : const Color(0xFF0F7A52)",
+    "show": "ref.watch(visibleTalentsProvider).length > 2"
+   },
+   "35:475": {
+    "show": "ref.watch(visibleTalentsProvider).length > 3"
+   },
+   "35:476": {
+    "text": "ref.watch(visibleTalentsProvider).length > 3 ? ref.watch(visibleTalentsProvider)[3].name : ''",
+    "show": "ref.watch(visibleTalentsProvider).length > 3"
+   },
+   "35:477": {
+    "text": "ref.watch(visibleTalentsProvider).length > 3 ? ref.watch(visibleTalentsProvider)[3].sub : ''",
+    "show": "ref.watch(visibleTalentsProvider).length > 3"
+   },
+   "35:478": {
+    "fill": "ref.watch(visibleTalentsProvider).length > 3 ? availFill(ref.watch(visibleTalentsProvider)[3].available) : const Color(0x00000000)",
+    "show": "ref.watch(visibleTalentsProvider).length > 3"
+   },
+   "35:479": {
+    "text": "ref.watch(visibleTalentsProvider).length > 3 ? (ref.watch(visibleTalentsProvider)[3].available ? 'Disponible' : 'Occupée') : ''",
+    "color": "ref.watch(visibleTalentsProvider).length > 3 ? availInk(ref.watch(visibleTalentsProvider)[3].available) : const Color(0xFF0F7A52)",
+    "show": "ref.watch(visibleTalentsProvider).length > 3"
+   },
+   "35:481": {
+    "show": "ref.watch(visibleTalentsProvider).length > 4"
+   },
+   "35:482": {
+    "text": "ref.watch(visibleTalentsProvider).length > 4 ? ref.watch(visibleTalentsProvider)[4].name : ''",
+    "show": "ref.watch(visibleTalentsProvider).length > 4"
+   },
+   "35:483": {
+    "text": "ref.watch(visibleTalentsProvider).length > 4 ? ref.watch(visibleTalentsProvider)[4].sub : ''",
+    "show": "ref.watch(visibleTalentsProvider).length > 4"
+   },
+   "35:484": {
+    "fill": "ref.watch(visibleTalentsProvider).length > 4 ? availFill(ref.watch(visibleTalentsProvider)[4].available) : const Color(0x00000000)",
+    "show": "ref.watch(visibleTalentsProvider).length > 4"
+   },
+   "35:485": {
+    "text": "ref.watch(visibleTalentsProvider).length > 4 ? (ref.watch(visibleTalentsProvider)[4].available ? 'Disponible' : 'Occupée') : ''",
+    "color": "ref.watch(visibleTalentsProvider).length > 4 ? availInk(ref.watch(visibleTalentsProvider)[4].available) : const Color(0xFF0F7A52)",
+    "show": "ref.watch(visibleTalentsProvider).length > 4"
+   }
+  },
+  "links": {
+   "24,272,342,62": "final l = ref.read(visibleTalentsProvider); if (l.length > 0) { talentDialog(context, ref, l[0]); }",
+   "24,338,342,62": "final l = ref.read(visibleTalentsProvider); if (l.length > 1) { talentDialog(context, ref, l[1]); }",
+   "24,404,342,62": "final l = ref.read(visibleTalentsProvider); if (l.length > 2) { talentDialog(context, ref, l[2]); }",
+   "24,470,342,62": "final l = ref.read(visibleTalentsProvider); if (l.length > 3) { talentDialog(context, ref, l[3]); }",
+   "24,536,342,62": "final l = ref.read(visibleTalentsProvider); if (l.length > 4) { talentDialog(context, ref, l[4]); }"
+  }
+ },
+ "78": {
+  "nodes": {
+   "38:756": {
+    "onChanged": "ref.read(projectTabProvider.notifier).set(i);"
+   },
+   "38:774": {
+    "show": "ref.watch(visibleProjectsProvider).length > 0"
+   },
+   "38:775": {
+    "text": "ref.watch(visibleProjectsProvider).length > 0 ? ref.watch(visibleProjectsProvider)[0].title : ''",
+    "show": "ref.watch(visibleProjectsProvider).length > 0"
+   },
+   "38:776": {
+    "text": "ref.watch(visibleProjectsProvider).length > 0 ? ref.watch(visibleProjectsProvider)[0].sub : ''",
+    "show": "ref.watch(visibleProjectsProvider).length > 0"
+   },
+   "38:777": {
+    "fill": "ref.watch(visibleProjectsProvider).length > 0 ? stageFill(ref.watch(visibleProjectsProvider)[0].stage) : const Color(0x00000000)",
+    "show": "ref.watch(visibleProjectsProvider).length > 0"
+   },
+   "38:778": {
+    "text": "ref.watch(visibleProjectsProvider).length > 0 ? ref.watch(visibleProjectsProvider)[0].stage : ''",
+    "color": "ref.watch(visibleProjectsProvider).length > 0 ? stageInk(ref.watch(visibleProjectsProvider)[0].stage) : const Color(0xFF5A3FE0)",
+    "show": "ref.watch(visibleProjectsProvider).length > 0"
+   },
+   "38:780": {
+    "show": "ref.watch(visibleProjectsProvider).length > 1"
+   },
+   "38:781": {
+    "text": "ref.watch(visibleProjectsProvider).length > 1 ? ref.watch(visibleProjectsProvider)[1].title : ''",
+    "show": "ref.watch(visibleProjectsProvider).length > 1"
+   },
+   "38:782": {
+    "text": "ref.watch(visibleProjectsProvider).length > 1 ? ref.watch(visibleProjectsProvider)[1].sub : ''",
+    "show": "ref.watch(visibleProjectsProvider).length > 1"
+   },
+   "38:783": {
+    "fill": "ref.watch(visibleProjectsProvider).length > 1 ? stageFill(ref.watch(visibleProjectsProvider)[1].stage) : const Color(0x00000000)",
+    "show": "ref.watch(visibleProjectsProvider).length > 1"
+   },
+   "38:784": {
+    "text": "ref.watch(visibleProjectsProvider).length > 1 ? ref.watch(visibleProjectsProvider)[1].stage : ''",
+    "color": "ref.watch(visibleProjectsProvider).length > 1 ? stageInk(ref.watch(visibleProjectsProvider)[1].stage) : const Color(0xFF5A3FE0)",
+    "show": "ref.watch(visibleProjectsProvider).length > 1"
+   },
+   "38:786": {
+    "show": "ref.watch(visibleProjectsProvider).length > 2"
+   },
+   "38:787": {
+    "text": "ref.watch(visibleProjectsProvider).length > 2 ? ref.watch(visibleProjectsProvider)[2].title : ''",
+    "show": "ref.watch(visibleProjectsProvider).length > 2"
+   },
+   "38:788": {
+    "text": "ref.watch(visibleProjectsProvider).length > 2 ? ref.watch(visibleProjectsProvider)[2].sub : ''",
+    "show": "ref.watch(visibleProjectsProvider).length > 2"
+   },
+   "38:789": {
+    "fill": "ref.watch(visibleProjectsProvider).length > 2 ? stageFill(ref.watch(visibleProjectsProvider)[2].stage) : const Color(0x00000000)",
+    "show": "ref.watch(visibleProjectsProvider).length > 2"
+   },
+   "38:790": {
+    "text": "ref.watch(visibleProjectsProvider).length > 2 ? ref.watch(visibleProjectsProvider)[2].stage : ''",
+    "color": "ref.watch(visibleProjectsProvider).length > 2 ? stageInk(ref.watch(visibleProjectsProvider)[2].stage) : const Color(0xFF5A3FE0)",
+    "show": "ref.watch(visibleProjectsProvider).length > 2"
+   },
+   "38:792": {
+    "show": "ref.watch(visibleProjectsProvider).length > 3"
+   },
+   "38:793": {
+    "text": "ref.watch(visibleProjectsProvider).length > 3 ? ref.watch(visibleProjectsProvider)[3].title : ''",
+    "show": "ref.watch(visibleProjectsProvider).length > 3"
+   },
+   "38:794": {
+    "text": "ref.watch(visibleProjectsProvider).length > 3 ? ref.watch(visibleProjectsProvider)[3].sub : ''",
+    "show": "ref.watch(visibleProjectsProvider).length > 3"
+   },
+   "38:795": {
+    "fill": "ref.watch(visibleProjectsProvider).length > 3 ? stageFill(ref.watch(visibleProjectsProvider)[3].stage) : const Color(0x00000000)",
+    "show": "ref.watch(visibleProjectsProvider).length > 3"
+   },
+   "38:796": {
+    "text": "ref.watch(visibleProjectsProvider).length > 3 ? ref.watch(visibleProjectsProvider)[3].stage : ''",
+    "color": "ref.watch(visibleProjectsProvider).length > 3 ? stageInk(ref.watch(visibleProjectsProvider)[3].stage) : const Color(0xFF5A3FE0)",
+    "show": "ref.watch(visibleProjectsProvider).length > 3"
+   }
+  },
+  "links": {
+   "300,66,66,34": "gOpen(context, '80');",
+   "24,392,342,62": "final l = ref.read(visibleProjectsProvider); if (l.length > 0) { ref.read(selectedProjectProvider.notifier).set(l[0].title); gOpen(context, '79'); }",
+   "24,458,342,62": "final l = ref.read(visibleProjectsProvider); if (l.length > 1) { ref.read(selectedProjectProvider.notifier).set(l[1].title); gOpen(context, '79'); }",
+   "24,524,342,62": "final l = ref.read(visibleProjectsProvider); if (l.length > 2) { ref.read(selectedProjectProvider.notifier).set(l[2].title); gOpen(context, '79'); }",
+   "24,590,342,62": "final l = ref.read(visibleProjectsProvider); if (l.length > 3) { ref.read(selectedProjectProvider.notifier).set(l[3].title); gOpen(context, '79'); }"
+  }
+ },
+ "79": {
+  "nodes": {
+   "38:840": {
+    "text": "ref.watch(currentProjectProvider).title"
+   },
+   "38:841": {
+    "text": "'Département ${ref.watch(currentProjectProvider).dept}'"
+   },
+   "38:843": {
+    "text": "'${ref.watch(currentProjectProvider).contributors}'"
+   },
+   "38:845": {
+    "text": "'${ref.watch(currentProjectProvider).progress} %'"
+   },
+   "38:848": {
+    "text": "'${ref.watch(currentProjectProvider).milestones}'"
+   },
+   "38:853": {
+    "text": "'${ref.watch(currentProjectProvider).progress}%'",
+    "right": true
+   },
+   "38:864": {
+    "text": "ref.watch(currentProjectProvider).desc"
+   },
+   "38:868": {
+    "text": "ref.watch(currentProjectProvider).lead"
+   }
+  },
+  "links": {
+   "24,831,342,54": "supportDialog(context, ref);"
+  }
+ },
+ "80": {
+  "nodes": {
+   "38:910": {
+    "onChanged": "ref.read(formProvider.notifier).put('pj_title', v);",
+    "after": [
+     "errorText('pj_title', 28, 258)"
+    ]
+   },
+   "38:917": {
+    "onChanged": "ref.read(formProvider.notifier).put('pj_dept', v);",
+    "after": [
+     "errorText('pj_dept', 28, 340)"
+    ]
+   },
+   "38:925": {
+    "onChanged": "ref.read(formProvider.notifier).put('pj_stage', v);",
+    "after": [
+     "errorText('pj_stage', 28, 422)"
+    ]
+   },
+   "38:934": {
+    "onChanged": "ref.read(formProvider.notifier).put('pj_desc', v);",
+    "after": [
+     "errorText('pj_desc', 28, 552)"
+    ]
+   }
+  },
+  "links": {
+   "24,760,342,54": "submitProject(ref, context);"
+  }
+ },
+ "75": {
+  "nodes": {
+   "38:507": {
+    "onChanged": "ref.read(oppTabProvider.notifier).set(i);"
+   },
+   "38:515": {
+    "text": "'${ref.watch(visibleOpportunities75).length} offres disponibles'"
+   },
+   "38:520": {
+    "show": "ref.watch(visibleOpportunities75).length > 0"
+   },
+   "38:521": {
+    "text": "ref.watch(visibleOpportunities75).length > 0 ? ref.watch(visibleOpportunities75)[0].title : ''",
+    "show": "ref.watch(visibleOpportunities75).length > 0"
+   },
+   "38:522": {
+    "text": "ref.watch(visibleOpportunities75).length > 0 ? ref.watch(visibleOpportunities75)[0].org : ''",
+    "show": "ref.watch(visibleOpportunities75).length > 0"
+   },
+   "38:523": {
+    "fill": "ref.watch(visibleOpportunities75).length > 0 ? oppFill(ref.watch(applicationsProvider).containsKey(ref.watch(visibleOpportunities75)[0].title)) : const Color(0x00000000)",
+    "show": "ref.watch(visibleOpportunities75).length > 0"
+   },
+   "38:524": {
+    "text": "ref.watch(visibleOpportunities75).length > 0 ? (ref.watch(applicationsProvider).containsKey(ref.watch(visibleOpportunities75)[0].title) ? 'Postulé' : 'Postuler') : ''",
+    "color": "ref.watch(visibleOpportunities75).length > 0 ? oppInk(ref.watch(applicationsProvider).containsKey(ref.watch(visibleOpportunities75)[0].title)) : const Color(0xFF5A3FE0)",
+    "show": "ref.watch(visibleOpportunities75).length > 0"
+   },
+   "38:529": {
+    "show": "ref.watch(visibleOpportunities75).length > 1"
+   },
+   "38:530": {
+    "text": "ref.watch(visibleOpportunities75).length > 1 ? ref.watch(visibleOpportunities75)[1].title : ''",
+    "show": "ref.watch(visibleOpportunities75).length > 1"
+   },
+   "38:531": {
+    "text": "ref.watch(visibleOpportunities75).length > 1 ? ref.watch(visibleOpportunities75)[1].org : ''",
+    "show": "ref.watch(visibleOpportunities75).length > 1"
+   },
+   "38:532": {
+    "fill": "ref.watch(visibleOpportunities75).length > 1 ? oppFill(ref.watch(applicationsProvider).containsKey(ref.watch(visibleOpportunities75)[1].title)) : const Color(0x00000000)",
+    "show": "ref.watch(visibleOpportunities75).length > 1"
+   },
+   "38:533": {
+    "text": "ref.watch(visibleOpportunities75).length > 1 ? (ref.watch(applicationsProvider).containsKey(ref.watch(visibleOpportunities75)[1].title) ? 'Postulé' : 'Postuler') : ''",
+    "color": "ref.watch(visibleOpportunities75).length > 1 ? oppInk(ref.watch(applicationsProvider).containsKey(ref.watch(visibleOpportunities75)[1].title)) : const Color(0xFF5A3FE0)",
+    "show": "ref.watch(visibleOpportunities75).length > 1"
+   },
+   "38:538": {
+    "show": "ref.watch(visibleOpportunities75).length > 2"
+   },
+   "38:539": {
+    "text": "ref.watch(visibleOpportunities75).length > 2 ? ref.watch(visibleOpportunities75)[2].title : ''",
+    "show": "ref.watch(visibleOpportunities75).length > 2"
+   },
+   "38:540": {
+    "text": "ref.watch(visibleOpportunities75).length > 2 ? ref.watch(visibleOpportunities75)[2].org : ''",
+    "show": "ref.watch(visibleOpportunities75).length > 2"
+   },
+   "38:541": {
+    "fill": "ref.watch(visibleOpportunities75).length > 2 ? oppFill(ref.watch(applicationsProvider).containsKey(ref.watch(visibleOpportunities75)[2].title)) : const Color(0x00000000)",
+    "show": "ref.watch(visibleOpportunities75).length > 2"
+   },
+   "38:542": {
+    "text": "ref.watch(visibleOpportunities75).length > 2 ? (ref.watch(applicationsProvider).containsKey(ref.watch(visibleOpportunities75)[2].title) ? 'Postulé' : 'Postuler') : ''",
+    "color": "ref.watch(visibleOpportunities75).length > 2 ? oppInk(ref.watch(applicationsProvider).containsKey(ref.watch(visibleOpportunities75)[2].title)) : const Color(0xFF5A3FE0)",
+    "show": "ref.watch(visibleOpportunities75).length > 2"
+   },
+   "38:547": {
+    "show": "ref.watch(visibleOpportunities75).length > 3"
+   },
+   "38:548": {
+    "text": "ref.watch(visibleOpportunities75).length > 3 ? ref.watch(visibleOpportunities75)[3].title : ''",
+    "show": "ref.watch(visibleOpportunities75).length > 3"
+   },
+   "38:549": {
+    "text": "ref.watch(visibleOpportunities75).length > 3 ? ref.watch(visibleOpportunities75)[3].org : ''",
+    "show": "ref.watch(visibleOpportunities75).length > 3"
+   },
+   "38:550": {
+    "fill": "ref.watch(visibleOpportunities75).length > 3 ? oppFill(ref.watch(applicationsProvider).containsKey(ref.watch(visibleOpportunities75)[3].title)) : const Color(0x00000000)",
+    "show": "ref.watch(visibleOpportunities75).length > 3"
+   },
+   "38:551": {
+    "text": "ref.watch(visibleOpportunities75).length > 3 ? (ref.watch(applicationsProvider).containsKey(ref.watch(visibleOpportunities75)[3].title) ? 'Postulé' : 'Postuler') : ''",
+    "color": "ref.watch(visibleOpportunities75).length > 3 ? oppInk(ref.watch(applicationsProvider).containsKey(ref.watch(visibleOpportunities75)[3].title)) : const Color(0xFF5A3FE0)",
+    "show": "ref.watch(visibleOpportunities75).length > 3"
+   }
+  },
+  "links": {
+   "24,206,342,62": "final l = ref.read(visibleOpportunities75); if (l.length > 0) { applyDialog(context, ref, l[0]); }",
+   "24,272,342,62": "final l = ref.read(visibleOpportunities75); if (l.length > 1) { applyDialog(context, ref, l[1]); }",
+   "24,338,342,62": "final l = ref.read(visibleOpportunities75); if (l.length > 2) { applyDialog(context, ref, l[2]); }",
+   "24,404,342,62": "final l = ref.read(visibleOpportunities75); if (l.length > 3) { applyDialog(context, ref, l[3]); }"
+  }
+ },
+ "151": {
+  "nodes": {
+   "60:30": {
+    "onChanged": "ref.read(oppHubTabProvider.notifier).set(i);"
+   },
+   "60:51": {
+    "show": "ref.watch(visibleOpportunities151).length > 0"
+   },
+   "60:52": {
+    "text": "ref.watch(visibleOpportunities151).length > 0 ? ref.watch(visibleOpportunities151)[0].title : ''",
+    "show": "ref.watch(visibleOpportunities151).length > 0"
+   },
+   "60:53": {
+    "text": "ref.watch(visibleOpportunities151).length > 0 ? ref.watch(visibleOpportunities151)[0].org : ''",
+    "show": "ref.watch(visibleOpportunities151).length > 0"
+   },
+   "60:54": {
+    "show": "ref.watch(visibleOpportunities151).length > 0"
+   },
+   "60:55": {
+    "text": "ref.watch(visibleOpportunities151).length > 0 ? (ref.watch(visibleOpportunities151)[0].kind == 'Stage' || ref.watch(visibleOpportunities151)[0].kind == 'Emploi' ? '${ref.watch(visibleOpportunities151)[0].score} %' : ref.watch(visibleOpportunities151)[0].kind) : ''",
+    "show": "ref.watch(visibleOpportunities151).length > 0"
+   },
+   "60:62": {
+    "show": "ref.watch(visibleOpportunities151).length > 1"
+   },
+   "60:63": {
+    "text": "ref.watch(visibleOpportunities151).length > 1 ? ref.watch(visibleOpportunities151)[1].title : ''",
+    "show": "ref.watch(visibleOpportunities151).length > 1"
+   },
+   "60:64": {
+    "text": "ref.watch(visibleOpportunities151).length > 1 ? ref.watch(visibleOpportunities151)[1].org : ''",
+    "show": "ref.watch(visibleOpportunities151).length > 1"
+   },
+   "60:65": {
+    "show": "ref.watch(visibleOpportunities151).length > 1"
+   },
+   "60:66": {
+    "text": "ref.watch(visibleOpportunities151).length > 1 ? (ref.watch(visibleOpportunities151)[1].kind == 'Stage' || ref.watch(visibleOpportunities151)[1].kind == 'Emploi' ? '${ref.watch(visibleOpportunities151)[1].score} %' : ref.watch(visibleOpportunities151)[1].kind) : ''",
+    "show": "ref.watch(visibleOpportunities151).length > 1"
+   },
+   "60:72": {
+    "show": "ref.watch(visibleOpportunities151).length > 2"
+   },
+   "60:73": {
+    "text": "ref.watch(visibleOpportunities151).length > 2 ? ref.watch(visibleOpportunities151)[2].title : ''",
+    "show": "ref.watch(visibleOpportunities151).length > 2"
+   },
+   "60:74": {
+    "text": "ref.watch(visibleOpportunities151).length > 2 ? ref.watch(visibleOpportunities151)[2].org : ''",
+    "show": "ref.watch(visibleOpportunities151).length > 2"
+   },
+   "60:75": {
+    "show": "ref.watch(visibleOpportunities151).length > 2"
+   },
+   "60:76": {
+    "text": "ref.watch(visibleOpportunities151).length > 2 ? (ref.watch(visibleOpportunities151)[2].kind == 'Stage' || ref.watch(visibleOpportunities151)[2].kind == 'Emploi' ? '${ref.watch(visibleOpportunities151)[2].score} %' : ref.watch(visibleOpportunities151)[2].kind) : ''",
+    "show": "ref.watch(visibleOpportunities151).length > 2"
+   }
+  },
+  "links": {
+   "24,370,342,62": "final l = ref.read(visibleOpportunities151); if (l.length > 0) { applyDialog(context, ref, l[0]); }",
+   "24,436,342,62": "final l = ref.read(visibleOpportunities151); if (l.length > 1) { applyDialog(context, ref, l[1]); }",
+   "24,502,342,62": "final l = ref.read(visibleOpportunities151); if (l.length > 2) { applyDialog(context, ref, l[2]); }"
+  }
  }
 }

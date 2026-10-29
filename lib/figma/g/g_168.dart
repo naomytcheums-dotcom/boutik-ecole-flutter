@@ -13,6 +13,7 @@ import '../live/seller.dart';
 import '../live/review.dart';
 import '../live/audit.dart';
 import '../live/admin.dart';
+import '../live/talents.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_168 extends ConsumerWidget {
@@ -47,7 +48,7 @@ class G_168 extends ConsumerWidget {
       gP(781.25, 251.75, 19.5, 18, gImg('assets/figma/v/fbc7a9ade9c600.svg')),
       gP(268, 298, 150, 15, gText('Description et règlement', 12.5, Color(0xFF111015), weight: 600, inter: true)),
       gP(268, 318, 984, 96, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
-      gP(284, 332, 955, 20, gText('Thématique, critères d’évaluation, conditions de participation…', 13.5, Color(0xFF66636E), weight: 500, inter: true, lh: 20, wrap: true)),
+      gP(268, 318, 984, 96, GField(hint: 'Thématique, critères d’évaluation, conditions de participation…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, inter: true, multiline: true, padT: 14)),
       gP(268, 428, 485, 132, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
       gP(280, 436, 50, 50, gBox(image: 'assets/figma/img/af86f2e539ad8f1844ccfbe19576723186ea4d78.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
       gP(342, 440, 107, 16, gText('Dr Paul Tchoupo', 13.5, Color(0xFF111015), weight: 600, inter: true)),

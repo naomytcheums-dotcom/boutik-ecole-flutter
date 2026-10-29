@@ -278,7 +278,7 @@ def analyze(doc, nid):
         tn = t['n']
         if any(o['x'] + o['w'] > t['x'] + 1 for o in ts[:-1]):
             continue
-        if '\n' in tn['characters'] or len(tn['characters']) > 60:
+        if ('\n' in tn['characters'] and r['h'] <= 72) or len(tn['characters']) > 120:
             continue
         left = t['x'] - r['x']
         if not (8 <= left <= 120):
@@ -744,6 +744,7 @@ import '../live/seller.dart';
 import '../live/review.dart';
 import '../live/audit.dart';
 import '../live/admin.dart';
+import '../live/talents.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class %s extends ConsumerWidget {

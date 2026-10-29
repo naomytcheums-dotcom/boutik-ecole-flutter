@@ -13,6 +13,7 @@ import '../live/seller.dart';
 import '../live/review.dart';
 import '../live/audit.dart';
 import '../live/admin.dart';
+import '../live/talents.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_59 extends ConsumerWidget {

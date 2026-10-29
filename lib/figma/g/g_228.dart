@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_228 extends ConsumerWidget {
@@ -40,7 +42,6 @@ class G_228 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 173, 26, gText('Partager mon CV', 21, Color(0xFF111015), weight: 700)),
-      gP(94, 130, 202, 202, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(110, 146, 8.095, 8.095, gBox(color: Color(0xFF111015))),
       gP(118.095, 146, 8.095, 8.095, gBox(color: Color(0xFF111015))),
       gP(126.19, 146, 8.095, 8.095, gBox(color: Color(0xFF111015))),
@@ -304,7 +305,6 @@ class G_228 extends ConsumerWidget {
       gP(263.81, 307.905, 8.095, 8.095, gBox(color: Color(0xFF111015))),
       gP(75.5, 336, 239, 16, gText('boutik-ecole.cm/cv/mariam-essono', 13, Color(0xFF111015), weight: 700, align: TextAlign.center)),
       gP(71.5, 358, 247, 15, gText('Un recruteur le scanne et voit votre CV à jour', 12, Color(0xFF66636E), align: TextAlign.center)),
-      gP(24, 420, 342, 156, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 426, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(51.333, 435.083, 15.583, 16.383, gImg('assets/figma/v/71fd7284e91f41.svg')),
       gP(45.083, 440.534, 15.583, 16.383, gImg('assets/figma/v/1252412bd3fc14.svg')),
@@ -323,7 +323,6 @@ class G_228 extends ConsumerWidget {
       gP(88, 541, 125, 17, gText('Télécharger en PDF', 13.5, Color(0xFF111015), weight: 600)),
       gP(336.75, 542.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
       gP(24, 590, 203, 19, gText('Ce que les recruteurs voient', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 620, 342, 132, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 632, 100, 17, gText('Missions et avis', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 654, 88, 14, gText('Toujours visibles', 11.5, Color(0xFF66636E))),
       gP(326, 644, 24, 17, gText('Oui', 13.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_260 extends ConsumerWidget {
@@ -36,7 +38,6 @@ class G_260 extends ConsumerWidget {
       gP(43.458, 89, 17.083, 6, gImg('assets/figma/v/e130a05f3cf779.svg')),
       gP(163.5, 76, 63, 21, gText('Facture', 17, Color(0xFF111015), weight: 500)),
       gP(147.5, 100, 95, 15, gText('FA-2026-00391', 12, Color(0xFF66636E))),
-      gP(24, 124, 342, 640, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [30, 30, 30, 30])),
       gP(44, 144, 98, 19, gText('Boutik-École', 15, Color(0xFF111015), weight: 700)),
       gP(44, 166, 127, 13, gText('IUT de Douala · Cameroun', 10.5, Color(0xFF66636E))),
       gP(201, 144, 145, 14, Consumer(builder: (context, ref, _) => gText('Facture n° FA-2026-' + ref.watch(lastOrderProvider).id.substring(ref.watch(lastOrderProvider).id.length - 4), 11, Color(0xFF111015), weight: 600))),
@@ -76,7 +77,7 @@ class G_260 extends ConsumerWidget {
       gP(44, 690, 305, 13, gText('Répartition indicative selon la règle validée par l’établissement.', 10, Color(0xFF66636E), wrap: true)),
       gP(24, 790, 342, 52, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x38403366), offset: Offset(0, 8), blurRadius: 18, spreadRadius: 0)], radii: [26, 26, 26, 26])),
       gP(108.5, 808, 173, 16, gText('Télécharger la facture (PDF)', 13, Color(0xFFFFFFFF), weight: 600)),
-      gTap(24, 790, 342, 52, () => gOpen(context, '44')),
+      gTap(24, 790, 342, 52, () => downloadDocument(context, ref, invoice: true)), gP(108, 856, 174, 16, gText('Voir ma commande', 13, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)), gTap(24, 850, 342, 30, () => gOpen(context, '44')),
     ]);
   }
 }

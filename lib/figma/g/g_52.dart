@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_52 extends ConsumerWidget {
@@ -42,12 +44,10 @@ class G_52 extends ConsumerWidget {
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 103, 26, gText('Messages', 21, Color(0xFF111015), weight: 700)),
       gP(339.833, 69.825, 24.363, 24.342, gImg('assets/figma/v/4a22c7321afb4d.svg')),
-      gP(24, 120, 342, 48, gBox(color: Color(0xFFF2EFF6), radii: [24, 24, 24, 24])),
       gP(24, 120, 342, 48, GField(hint: 'Rechercher une conversation', size: 13.5, hintColor: Color(0xFF66636E), weight: 400, padL: 46)),
       gP(40.5, 134.5, 19, 19, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(39.875, 133.875, 18.667, 18.667, gImg('assets/figma/v/50f467eb8a9b46.svg')),
       gP(50.721, 144.721, 9.404, 9.404, gImg('assets/figma/v/18d279137d73d9.svg')),
-      gP(24, 182, 342, 330, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 190, 50, 50, gBox(image: 'assets/figma/img/c15478a4e0a5cc1be462d8179ed1a24390853242.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
       gP(98, 194, 114, 17, gText('Mouanga Yannick', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 216, 175, 14, gText('La lampe est prête pour le retrait', 11.5, Color(0xFF66636E))),

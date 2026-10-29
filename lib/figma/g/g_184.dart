@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_184 extends ConsumerWidget {
@@ -41,7 +43,6 @@ class G_184 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 227, 26, gText('Économie de données', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 264, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 132, 186, 17, gText('Mode économie de données', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 154, 133, 14, gText('Charger moins d’images', 11.5, Color(0xFF66636E))),
       gP(308, 141, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
@@ -57,7 +58,6 @@ class G_184 extends ConsumerWidget {
       gP(40, 330, 205, 17, gText('Synchronisation en arrière-plan', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 352, 114, 14, gText('Uniquement en Wi-Fi', 11.5, Color(0xFF66636E))),
       gP(308, 339, 42, 24, GToggle(on: false, onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18)),
-      gP(24, 398, 342, 120, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 412, 106, 18, gText('Consommation', 14, Color(0xFF111015), weight: 700)),
       gP(40, 446, 136, 16, gText('Données utilisées (30 j)', 12.5, Color(0xFF66636E))),
       gP(308, 446, 42, 16, gText('182 Mo', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),

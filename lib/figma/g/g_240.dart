@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_240 extends ConsumerWidget {
@@ -43,9 +45,7 @@ class G_240 extends ConsumerWidget {
       gP(44, 218, 153, 32, gText('Chaque ami inscrit te rapporte des FCFA.', 11.5, Color(0xFFFFFFFF), lh: 16, wrap: true)),
       gP(44, 266, 170, 32, gBox(color: Color(0x29FFFFFF), radii: [16, 16, 16, 16])),
       gP(66, 274, 126, 14, gText('Mes gains · 12 500 FCFA', 11, Color(0xFFFFFFFF), weight: 600)),
-      gP(24, 328, 342, 96, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 8), blurRadius: 22, spreadRadius: 0)], radii: [30, 30, 30, 30])),
       gP(44, 344, 109, 15, gText('Ton lien d’invitation', 12, Color(0xFF66636E), weight: 500)),
-      gP(44, 366, 222, 40, gBox(color: Color(0xFFF4F1F8), radii: [20, 20, 20, 20])),
       gP(44, 366, 222, 40, GField(hint: '', initial: 'boutik-ecole.cm/r/mariam24', size: 12, hintColor: Color(0xFF111015), weight: 500, padL: 14)),
       gP(274, 366, 74, 40, gBox(color: Color(0xFF111015), radii: [20, 20, 20, 20])),
       gP(287.375, 381.375, 13.042, 13.042, gImg('assets/figma/v/a5ad75fcb14e8a.svg')),
@@ -77,7 +77,6 @@ class G_240 extends ConsumerWidget {
       gP(330.167, 473.5, 12.667, 12.667, gImg('assets/figma/v/50a1540c3efbda.svg')),
       gP(339.333, 473.583, 11, 20.917, gImg('assets/figma/v/d84ac38e1914fb.svg')),
       gP(317.5, 514, 43, 12, gText('Contacts', 9.5, Color(0xFF111015), weight: 500)),
-      gP(24, 540, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 8), blurRadius: 22, spreadRadius: 0)], radii: [32, 32, 32, 32])),
       gP(44, 558, 102, 19, gText('Niveau Argent', 15, Color(0xFF111015), weight: 600)),
       gP(280, 554, 66, 26, gBox(color: Color(0xFFEEE9FF), radii: [100, 100, 100, 100])),
       gP(292, 560, 42, 14, gText('7 filleuls', 11, Color(0xFF5A3FE0), weight: 600)),

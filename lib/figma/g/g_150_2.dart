@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_150_2 extends ConsumerWidget {
@@ -41,7 +43,6 @@ class G_150_2 extends ConsumerWidget {
       gP(54, 414, 282, 50, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [25, 25, 25, 25]), tap: () => gToast(context, 'Démonstration : Se reconnecter')),
       gP(141, 430, 108, 18, gText('Se reconnecter', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(24, 488, 154, 19, gText('Autres états système', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 526, 342, 132, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 539, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(46, 549, 20, 20, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(45.5, 548.5, 19.333, 19.333, gImg('assets/figma/v/94aebfd05b72e8.svg')),

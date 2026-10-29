@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_103 extends ConsumerWidget {
@@ -45,7 +47,6 @@ class G_103 extends ConsumerWidget {
       gP(340.75, 70.75, 20.667, 20.667, gImg('assets/figma/v/eeff0eb6fd6e24.svg')),
       gP(353.308, 83.308, 9.942, 9.942, gImg('assets/figma/v/34172806399cca.svg')),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 77.8, 34, 'Anciens', 12.5, 600), GChip(109.8, 120, 77.8, 34, 'Mentors', 12.5, 500), GChip(195.6, 120, 77.8, 34, 'Groupes', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
-      gP(24, 168, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 176, 50, 50, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
       gP(98, 180, 100, 17, gText('Rodrigue Fotso', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 202, 169, 14, gText('Promo 2021 · Orange Camero…', 11.5, Color(0xFF66636E))),
@@ -71,7 +72,6 @@ class G_103 extends ConsumerWidget {
       gP(42, 472, 86, 28, gBox(color: Color(0xFF111015), radii: [14, 14, 14, 14])),
       gP(61.5, 478, 47, 14, gText('Explorer', 11.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(24, 526, 144, 19, gText('Groupes populaires', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 564, 342, 132, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 577, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(44.667, 596.5, 17.667, 11, gImg('assets/figma/v/b08196471e66d3.svg')),
       gP(47.167, 586.5, 12.667, 12.667, gImg('assets/figma/v/50a1540c3efbda.svg')),

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_V1 extends ConsumerWidget {
@@ -81,7 +83,6 @@ class G_V1 extends ConsumerWidget {
       gP(62, 320, 39, 14, gText('Boosté', 11, Color(0xFF111015), weight: 600)),
       gP(320, 314, 36, 36, gBox(color: Color(0x59FFFFFF), oval: true)),
       gP(332.5, 323.75, 14.167, 16.5, gImg('assets/figma/v/438bff6a4e0841.svg')),
-      gP(20, 672, 350, 170, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 8), blurRadius: 22, spreadRadius: 0)], radii: [30, 30, 30, 30])),
       gP(36, 688, 40, 40, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [20, 20, 20, 20])),
       gP(86, 689, 70, 17, gText('Yannick M.', 13.5, Color(0xFF111015), weight: 600)),
       gP(160, 690, 16, 16, gBox(color: Color(0xFF2F7DF6), oval: true)),
@@ -112,14 +113,12 @@ class G_V1 extends ConsumerWidget {
       gP(128, 900, 130, 210, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28]), rot: -0.07),
       gP(276, 900, 94, 100, gBox(image: 'assets/figma/img/4ca68f79023605aecb4f83724629d508e921e885.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
       gP(276, 1010, 94, 100, gBox(image: 'assets/figma/img/d5a96228e65dc2920e40cfac9b1205c2faee3caf.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
-      gP(20, 1130, 350, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 8), blurRadius: 22, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 1146, 128, 19, gText('Angles du produit', 15, Color(0xFF111015), weight: 600)),
       gP(36, 1170, 313, 16, gText('Touchez pour faire pivoter la lampe et voir chaque face.', 11.5, Color(0xFF66636E), lh: 16, wrap: true)),
       gP(36, 1196, 84, 24, gBox(color: Color(0xFFF1EEFB), radii: [12, 12, 12, 12])),
       gP(59.5, 1201, 37, 14, gText('Vue 3D', 11, Color(0xFF5A3FE0), weight: 500, align: TextAlign.center)),
       gP(20, 1252, 184, 19, gText('Recommandés pour vous', 15, Color(0xFF111015), weight: 600)),
       gP(20, 1284, 170, 150, gBox(image: 'assets/figma/img/4ca68f79023605aecb4f83724629d508e921e885.png', fit: BoxFit.cover, radii: [28, 28, 28, 28])),
-      gP(20, 1442, 170, 64, gBox(color: Color(0xFFFFFFFF), radii: [22, 22, 22, 22])),
       gP(34, 1452, 82, 16, gText('Jus de bissap', 13, Color(0xFF111015), weight: 600)),
       gP(34, 1474, 98, 13, gText('Équipe BTA · 1 500 F', 10.5, Color(0xFF66636E))),
       gP(31.75, 1487.75, 13.5, 13.125, gImg('assets/figma/v/7f531b21f45797.svg')),
@@ -128,7 +127,6 @@ class G_V1 extends ConsumerWidget {
       gP(67.75, 1487.75, 13.5, 13.125, gImg('assets/figma/v/7f531b21f45797.svg')),
       gP(79.75, 1487.75, 13.5, 13.125, gImg('assets/figma/v/7f531b21f45797.svg')),
       gP(200, 1284, 170, 150, gBox(image: 'assets/figma/img/d5a96228e65dc2920e40cfac9b1205c2faee3caf.png', fit: BoxFit.cover, radii: [28, 28, 28, 28])),
-      gP(200, 1442, 170, 64, gBox(color: Color(0xFFFFFFFF), radii: [22, 22, 22, 22])),
       gP(214, 1452, 62, 16, gText('Kit solaire', 13, Color(0xFF111015), weight: 600)),
       gP(214, 1474, 89, 13, gText('Brice N. · 18 000 F', 10.5, Color(0xFF66636E))),
       gP(211.75, 1487.75, 13.5, 13.125, gImg('assets/figma/v/7f531b21f45797.svg')),

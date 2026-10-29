@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_172 extends ConsumerWidget {
@@ -41,14 +43,12 @@ class G_172 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 224, 26, gText('Confiance du vendeur', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 182, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(159, 136, 72, 72, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [36, 36, 36, 36])),
       gP(22.5, 218, 345, 21, gText('Yannick Mouanga', 17, Color(0xFF111015), weight: 700, align: TextAlign.center, wrap: true)),
       gP(22.5, 242, 345, 15, gText('Génie civil · IUT de Douala', 12, Color(0xFF66636E), align: TextAlign.center, wrap: true)),
       gP(137, 268, 116, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
       gP(155, 272, 80, 14, gText('Vendeur vérifié', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
       gP(24, 316, 154, 19, gText('Badges de confiance', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 354, 342, 264, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 367, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(44.658, 375.671, 22.672, 22.665, gImg('assets/figma/v/129b28be71ba2e.svg')),
       gP(50.5, 382.333, 11, 9.333, gImg('assets/figma/v/5fb65d78d14660.svg')),
@@ -82,7 +82,6 @@ class G_172 extends ConsumerWidget {
       gP(88, 586, 78, 14, gText('4,9 / 5 · 38 avis', 11.5, Color(0xFF66636E))),
       gP(312.8, 574, 39.2, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11])),
       gP(323.4, 578, 18, 14, gText('4,9', 11, Color(0xFF8F5400), weight: 600, align: TextAlign.center)),
-      gP(24, 632, 342, 79, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
       gP(36, 655.5, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(41.917, 661.417, 20.167, 20.167, gImg('assets/figma/v/48fd286aff90cc.svg')),
       gP(49, 668.5, 6, 8.833, gImg('assets/figma/v/9fc27387b9ffa1.svg')),

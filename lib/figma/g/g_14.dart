@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_14 extends ConsumerWidget {
@@ -61,7 +63,6 @@ class G_14 extends ConsumerWidget {
       gP(219.75, 622, 16.5, 6, gImg('assets/figma/v/2d30ecf6147fbb.svg')),
       gP(225, 616.75, 11.25, 16.5, gImg('assets/figma/v/996965d4e56708.svg')),
       gP(132, 679, 126, 18, gText('Modifier le numéro', 14, Color(0xFF111015), weight: 600, align: TextAlign.center)),
-      gP(24, 740, 342, 72, gBox(color: Color(0xFFF2EFF6), radii: [22, 22, 22, 22])),
       gP(41.667, 763.833, 20.667, 24.336, gImg('assets/figma/v/4a97fa67bf8752.svg')),
       gP(46.25, 771.167, 11.5, 9.667, gImg('assets/figma/v/e6203e14164ad6.svg')),
       gP(76, 758, 194, 36, gText('Ne partagez jamais ce code.\nIl est valable pendant 10 minutes.', 12.5, Color(0xFF66636E), lh: 18)),

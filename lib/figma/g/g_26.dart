@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_26 extends ConsumerWidget {
@@ -44,7 +46,6 @@ class G_26 extends ConsumerWidget {
       gP(348.584, 70.461, 19.558, 19.558, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(348.029, 69.905, 19.038, 19.038, gImg('assets/figma/v/24ff960311e305.svg')),
       gP(359.193, 81.069, 9.504, 9.504, gImg('assets/figma/v/a93d084de4cf49.svg')),
-      gP(17.257, 120.656, 354.336, 253.794, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x14122640), offset: Offset(0, 3), blurRadius: 12, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(194.425, 136.704, 0.575, 219.915, gBox(color: Color(0xFFF2EFF6))),
       gP(31.637, 137.113, 127.699, 131.726, gBox(image: 'assets/figma/img/3d6379dbe0e12637d54ca9d283be8cb419701599.png', fit: BoxFit.cover, radii: [12.655, 12.655, 12.655, 12.655])),
       gP(228.363, 137.113, 127.124, 131.726, gBox(image: 'assets/figma/img/abbe1a61d7955c52cdd31224bc1569ab44582797.png', fit: BoxFit.cover, radii: [12.655, 12.655, 12.655, 12.655])),
@@ -56,7 +57,6 @@ class G_26 extends ConsumerWidget {
       gP(235.265, 293.438, 71, 17, gText('Sac urbain', 13.805, Color(0xFF111015), weight: 700)),
       gP(235.265, 315.024, 94, 19, gText('32 000 FCFA', 14.956, Color(0xFF111015), weight: 600)),
       gP(235.265, 340.299, 79, 16, gText('Design – MMI', 12.655, Color(0xFF5A3FE0))),
-      gP(17.257, 404.169, 354.336, 279.352, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x14122640), offset: Offset(0, 3), blurRadius: 12, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(32.212, 418.255, 59, 17, gText('Matériau', 13.805, Color(0xFF111015), weight: 600)),
       gP(146.106, 418.255, 80, 17, gText('Tissu recyclé', 13.23, Color(0xFF4A4854))),
       gP(263.451, 418.255, 103, 17, gText('Cuir synthétique', 13.23, Color(0xFF4A4854))),

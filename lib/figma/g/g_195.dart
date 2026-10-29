@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_195 extends ConsumerWidget {
@@ -40,7 +42,6 @@ class G_195 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 193, 26, gText('Ajouter une preuve', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 133, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(44.667, 141.667, 22.667, 14.333, gImg('assets/figma/v/8c9c6b229b6232.svg')),
       gP(44.667, 154.167, 22.667, 10.167, gImg('assets/figma/v/9870aa4d1427a0.svg')),
@@ -53,7 +54,6 @@ class G_195 extends ConsumerWidget {
       gP(24, 238, 108.667, 92, gBox(image: 'assets/figma/img/4b7b6cea2f4622846841cd8342842e81fa1ed891.png', fit: BoxFit.cover, radii: [16, 16, 16, 16])),
       gP(140.667, 238, 108.667, 92, gBox(image: 'assets/figma/img/1574e42a325d3a4ac509841e7a5eb5a285a3d991.png', fit: BoxFit.cover, radii: [16, 16, 16, 16])),
       gP(257.333, 238, 108.667, 92, gBox(image: 'assets/figma/img/768cf16e6d8103ad4296d6cc0fdf1af309f03817.png', fit: BoxFit.cover, radii: [16, 16, 16, 16])),
-      gP(24, 344, 342, 132, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 357, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(44.667, 367.333, 22.667, 19.333, gImg('assets/figma/v/b357168830edbf.svg')),
       gP(50.5, 372.333, 11, 11, gImg('assets/figma/v/3bae74da037db6.svg')),
@@ -68,7 +68,6 @@ class G_195 extends ConsumerWidget {
       gP(88, 444, 107, 14, gText('2 minutes maximum', 11.5, Color(0xFF66636E))),
       gP(336.75, 435.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
       gP(24, 490, 112, 16, gText('Ce qui a été réalisé', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 510, 342, 96, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(24, 510, 342, 96, GField(hint: '', initial: 'Trois pistes de logo, déclinées en couleur et noir et blanc.', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 16, onChanged: (v) { ref.read(formProvider.notifier).put('ms_proof', v); }, multiline: true, padT: 14)),
       errorText('ms_proof', 28, 608),
       gP(24, 620, 342, 62, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),

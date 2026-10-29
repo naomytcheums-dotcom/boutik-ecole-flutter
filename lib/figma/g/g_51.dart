@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_51 extends ConsumerWidget {
@@ -41,7 +43,6 @@ class G_51 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 121, 26, gText('Notification', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 133, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(44.667, 143.333, 16, 17.667, gImg('assets/figma/v/4832049c28e839.svg')),
       gP(50.5, 155, 11, 6, gImg('assets/figma/v/f40c5534a6fd70.svg')),
@@ -68,7 +69,6 @@ class G_51 extends ConsumerWidget {
       gP(24, 462, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true)),
       gP(56, 461, 305, 17, gText('Prête au retrait', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
       gP(56, 481, 305, 14, gText('24 oct. · 14:00', 11.5, Color(0xFF66636E), wrap: true)),
-      gP(24, 537, 342, 118, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 549, 62, 16, gText('Référence', 12.5, Color(0xFF66636E))),
       gP(247, 549, 103, 16, gText('#BE-2026-0142', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
       gP(40, 574, 310, 1, gBox(color: Color(0xFFF2EFF6))),

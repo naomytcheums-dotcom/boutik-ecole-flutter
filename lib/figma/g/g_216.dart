@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_216 extends ConsumerWidget {
@@ -40,12 +42,10 @@ class G_216 extends ConsumerWidget {
       gP(341, 71, 22, 22, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(340.75, 70.75, 20.667, 20.667, gImg('assets/figma/v/eeff0eb6fd6e24.svg')),
       gP(353.308, 83.308, 9.942, 9.942, gImg('assets/figma/v/34172806399cca.svg')),
-      gP(24, 120, 342, 79, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
       gP(36, 143.5, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(42.979, 149.417, 18.042, 17.688, gImg('assets/figma/v/e9085cf2b599c2.svg')),
       gP(76, 134, 277, 51, gText('Voici les produits que les étudiants veulent fabriquer. Précommandez : la production démarre quand le seuil est atteint.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 213, 55.6, 34, 'Tous', 12.5, 600), GChip(87.6, 213, 144.4, 34, 'Presque atteints', 12.5, 500), GChip(240, 213, 85.2, 34, 'Nouveaux', 12.5, 500), GChip(333.2, 213, 144.4, 34, 'Mes précommandes', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
-      gP(24, 261, 342, 140, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(34, 271, 112, 120, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [20, 20, 20, 20])),
       gP(158, 275, 199, 18, gText('Lampe en bois recyclé', 14, Color(0xFF111015), weight: 800, wrap: true)),
       gP(158, 295, 112, 14, gText('par Mouanga Yannick', 11, Color(0xFF66636E), weight: 500)),
@@ -55,7 +55,6 @@ class G_216 extends ConsumerWidget {
       gP(158, 365, 89, 18, gText('25 000 FCFA', 14, Color(0xFFF5A81E), weight: 800)),
       gP(268, 359, 84, 28, gBox(color: Color(0xFF111015), radii: [14, 14, 14, 14])),
       gP(270, 365, 80, 13, gText('Précommander', 10.5, Color(0xFFFFFFFF), weight: 800, align: TextAlign.center)),
-      gP(24, 413, 342, 140, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(34, 423, 112, 120, gBox(image: 'assets/figma/img/4ca68f79023605aecb4f83724629d508e921e885.png', fit: BoxFit.cover, radii: [20, 20, 20, 20])),
       gP(158, 427, 199, 18, gText('Jus de bissap bio', 14, Color(0xFF111015), weight: 800, wrap: true)),
       gP(158, 447, 79, 14, gText('par Équipe BTA', 11, Color(0xFF66636E), weight: 500)),
@@ -65,7 +64,6 @@ class G_216 extends ConsumerWidget {
       gP(158, 517, 76, 18, gText('1 500 FCFA', 14, Color(0xFFF5A81E), weight: 800)),
       gP(268, 511, 84, 28, gBox(color: Color(0xFF111015), radii: [14, 14, 14, 14])),
       gP(270, 517, 80, 13, gText('Précommander', 10.5, Color(0xFFFFFFFF), weight: 800, align: TextAlign.center)),
-      gP(24, 565, 342, 140, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(34, 575, 112, 120, gBox(image: 'assets/figma/img/d5a96228e65dc2920e40cfac9b1205c2faee3caf.png', fit: BoxFit.cover, radii: [20, 20, 20, 20])),
       gP(158, 579, 199, 18, gText('Kit solaire de poche', 14, Color(0xFF111015), weight: 800, wrap: true)),
       gP(158, 599, 103, 14, gText('par Brice Ndoumbe', 11, Color(0xFF66636E), weight: 500)),

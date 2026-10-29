@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_236 extends ConsumerWidget {
@@ -41,7 +43,6 @@ class G_236 extends ConsumerWidget {
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 235, 26, gText('Canaux et notifications', 21, Color(0xFF111015), weight: 700)),
       gP(24, 120, 268, 19, gText('Où voulez-vous suivre vos missions ?', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 158, 342, 264, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 171, 40, 40, gBox(color: Color(0xFFDDF5EC), radii: [13, 13, 13, 13])),
       gP(46, 181, 20, 20, const SizedBox.expand(), tap: () => gOpen(context, '53')),
       gP(44.667, 180.493, 21.84, 21.84, gImg('assets/figma/v/c011934b9b1395.svg')),
@@ -72,11 +73,9 @@ class G_236 extends ConsumerWidget {
       gP(274.4, 378, 77.6, 22, gBox(color: Color(0xFFF2EFF6), radii: [11, 11, 11, 11])),
       gP(286.2, 382, 54, 14, gText('Désactivé', 11, Color(0xFF66636E), weight: 600, align: TextAlign.center)),
       gP(24, 436, 115, 16, gText('Numéro WhatsApp', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 456, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 456, 342, 48, GField(hint: '', initial: '+237 6 XX XX XX XX', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(39, 471, 18, 18, const SizedBox.expand(), tap: () => gOpen(context, '53')),
       gP(37.5, 470.244, 20.256, 20.256, gImg('assets/figma/v/8b8b341bbe1515.svg')),
-      gP(24, 518, 342, 79, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
       gP(36, 541.5, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(43.333, 547.443, 17.333, 20.173, gImg('assets/figma/v/b35e336eb0a1dc.svg')),
       gP(46.875, 553.083, 10.25, 8.833, gImg('assets/figma/v/2bdcafa88f7a43.svg')),

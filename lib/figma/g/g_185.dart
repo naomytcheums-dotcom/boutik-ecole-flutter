@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_185 extends ConsumerWidget {
@@ -41,7 +43,6 @@ class G_185 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 101, 26, gText('Language', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 132, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 132, 55, 17, gText('Français', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 154, 94, 14, gText('Default language', 11.5, Color(0xFF66636E))),
       gP(40, 186, 314, 1, gBox(color: Color(0xFFF2EFF6))),
@@ -50,7 +51,6 @@ class G_185 extends ConsumerWidget {
       gP(293.6, 208, 58.4, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
       gP(305.8, 212, 34, 14, gText('Active', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
       gP(24, 266, 60, 19, gText('Preview', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 304, 342, 132, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 312, 50, 50, gBox(image: 'assets/figma/img/a76e4a9cacb04ffda33cfd8133809ed5cc5c402c.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
       gP(98, 316, 153, 17, gText('Recycled wooden lamp', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 338, 171, 14, gText('25,000 FCFA · Civil Engineering', 11.5, Color(0xFF66636E))),

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_158 extends ConsumerWidget {
@@ -42,7 +44,6 @@ class G_158 extends ConsumerWidget {
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 231, 26, gText('Candidatures classées', 21, Color(0xFF111015), weight: 700)),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 107.4, 34, 'Toutes (23)', 12.5, 500), GChip(139.4, 120, 151.8, 34, 'Très adaptées (6)', 12.5, 600), GChip(299.2, 120, 129.6, 34, 'À relancer (4)', 12.5, 500)], selected: 1, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
-      gP(24, 168, 342, 264, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 176, 50, 50, gBox(image: 'assets/figma/img/ebf23a969ca7b1083d1dcab994c4899c0b4db38b.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
       gP(98, 180, 98, 17, gText('Mariam Essono', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 202, 166, 14, gText('React, Python · Portfolio vérifié', 11.5, Color(0xFF66636E))),

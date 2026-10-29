@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_193 extends ConsumerWidget {
@@ -40,7 +42,6 @@ class G_193 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 187, 26, gText('Paiement sécurisé', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 154, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 134, 88, 18, gText('Récapitulatif', 14, Color(0xFF111015), weight: 700)),
       gP(40, 168, 45, 16, gText('Mission', 12.5, Color(0xFF66636E))),
       gP(115, 168, 235, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(missionProvider).kind, 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
@@ -63,7 +64,6 @@ class G_193 extends ConsumerWidget {
       gP(56, 450, 175, 17, gText('Jalon 3 · Livraison finale', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
       gP(56, 470, 175, 14, Consumer(builder: (context, ref, _) => gText('30 % · ${fcfa(ref.watch(missionProvider).amountOf(2))}', 11.5, Color(0xFF66636E), wrap: true))),
       gP(24, 526, 145, 19, gText('Moyen de paiement', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 564, 342, 132, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 577, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(45.5, 586.5, 21.833, 16.833, gImg('assets/figma/v/9c1483ca7848e1.svg')),
       gP(45.5, 588.167, 21, 19.333, gImg('assets/figma/v/f6a87a84fa91d7.svg')),
@@ -78,7 +78,6 @@ class G_193 extends ConsumerWidget {
       gP(88, 642, 73, 17, gText('MTN MoMo', 13.5, Color(0xFF111015), weight: 600)),
       gP(88, 664, 109, 14, gText('Paiement marchand', 11.5, Color(0xFF66636E))),
       gP(336.75, 655.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
-      gP(24, 710, 342, 79, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
       gP(36, 733.5, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(42.625, 745.792, 18.75, 13.792, gImg('assets/figma/v/98eafa7aa487dc.svg')),
       gP(45.458, 739.417, 13.083, 12.375, gImg('assets/figma/v/cbd17bba51f32b.svg')),

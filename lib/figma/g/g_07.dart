@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_07 extends ConsumerWidget {
@@ -43,16 +45,14 @@ class G_07 extends ConsumerWidget {
       gP(69.717, 63.643, 93, 27, gText('Livraison', 21.398, Color(0xFF111015), weight: 700)),
       gP(26.23, 130.575, 253, 19, gText('Choisissez votre mode de livraison', 15.186, Color(0xFF111015), weight: 700)),
       gP(24.85, 166.466, 345.823, 103.534, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F122640), offset: Offset(0, 3), blurRadius: 10)], radii: [28.0, 28.0, 28.0, 28.0]), show: ref.watch(homeDeliveryProvider)),
-      gP(24.85, 166.466, 345.823, 103.534, gBox(color: Color(0xFFFFFDF7), border: Color(0xFFF5B730), bw: 2.071, shadows: [BoxShadow(color: Color(0x14122640), offset: Offset(0, 3), blurRadius: 10, spreadRadius: 0)], radii: [17.947, 17.947, 17.947, 17.947]), show: (!ref.watch(homeDeliveryProvider))),
-      gP(46.699, 197.692, 34.991, 33.381, gImg('assets/figma/v/e2ad33c38610b8.svg')),
-      gP(46.699, 205.745, 34.991, 6, gImg('assets/figma/v/edade50b9fa79b.svg')),
-      gP(56.363, 210.577, 15.664, 14.053, gImg('assets/figma/v/81794b445602f7.svg')),
+      gP(46.699, 197.0, 35, 35, const Icon(Icons.home_outlined, size: 33, color: Color(0xFF111015))),
+      
+      
       gP(102.85, 191.477, 136, 19, gText('Retrait sur campus', 15.186, Color(0xFF111015), weight: 600)),
       gP(102.85, 215.459, 158, 36, gText('Récupérez votre commande\nà l’IUT de Douala.', 11.735, Color(0xFF66636E), lh: 17.947)),
       gP(276.796, 182.03, 76.619, 21.654, gBox(color: Color(0xFF111015), radii: [11.044, 11.044, 11.044, 11.044]), show: (!ref.watch(homeDeliveryProvider))),
       gP(285.261, 186.357, 59, 13, gText('Sélectionné', 10.009, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center), show: (!ref.watch(homeDeliveryProvider))),
       gP(24.85, 279.474, 345.823, 104.887, gBox(color: Color(0xFFFFFDF7), border: Color(0xFFF5B730), bw: 2.071, shadows: [BoxShadow(color: Color(0x14122640), offset: Offset(0, 3), blurRadius: 10)], radii: [17.947, 17.947, 17.947, 17.947]), show: ref.watch(homeDeliveryProvider)),
-      gP(24.85, 279.474, 345.823, 104.887, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F122640), offset: Offset(0, 3), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28]), show: (!ref.watch(homeDeliveryProvider))),
       gP(45.204, 310.497, 26.018, 29.354, gImg('assets/figma/v/35cdf8ec55f33a.svg')),
       gP(56.881, 333.851, 16.009, 6, gImg('assets/figma/v/60c533c26fe43b.svg')),
       gP(65.221, 317.17, 19.345, 22.681, gImg('assets/figma/v/a80ff7ae7527f1.svg')),
@@ -64,13 +64,11 @@ class G_07 extends ConsumerWidget {
       gP(276.796, 295.04, 76.619, 21.654, gBox(color: Color(0xFF111015), radii: [11.044, 11.044, 11.044, 11.044]), show: ref.watch(homeDeliveryProvider)),
       gP(285.261, 299.367, 59, 13, gText('Sélectionné', 10.009, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center), show: ref.watch(homeDeliveryProvider)),
       gP(26.23, 418.169, 147, 19, gText('Adresse de livraison', 15.186, Color(0xFF111015), weight: 700)),
-      gP(24.85, 450.677, 343.752, 52.105, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.381, radii: [15.186, 15.186, 15.186, 15.186])),
       gP(24.85, 450.677, 343.752, 52.105, GField(hint: '', initial: 'Douala, Cameroun', size: 12.425, hintColor: Color(0xFF111015), weight: 500, padL: 54.531)),
       gP(45.549, 466.59, 17.965, 20.956, gImg('assets/figma/v/4eaba6cfe96f7f.svg')),
       gP(49.288, 470.329, 10.487, 10.487, gImg('assets/figma/v/84555793b853fc.svg')),
       gP(339.372, 469.926, 10.142, 14.283, gImg('assets/figma/v/1e9e003afc49b5.svg')),
       gP(26.23, 542.68, 138, 19, gText('Détails de livraison', 15.186, Color(0xFF111015), weight: 700)),
-      gP(24.85, 575.188, 343.752, 86.617, gBox(color: Color(0xFFF6F7FA), border: Color(0xFFECE8F2), bw: 1.381, radii: [15.186, 15.186, 15.186, 15.186])),
       gP(44.867, 593.402, 69, 15, gText('Délai estimé', 11.735, Color(0xFF66636E))),
       gP(117.416, 592.726, 236, 15, Consumer(builder: (context, ref, _) => gText(ref.watch(homeDeliveryProvider) ? '2 à 5 jours ouvrés' : 'Dès demain', 11.735, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(44.867, 629.267, 91, 15, gText('Frais de livraison', 11.735, Color(0xFF66636E))),

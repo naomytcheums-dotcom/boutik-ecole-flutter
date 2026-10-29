@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_257 extends ConsumerWidget {
@@ -38,7 +40,6 @@ class G_257 extends ConsumerWidget {
       gP(111.5, 100, 167, 15, Consumer(builder: (context, ref, _) => gText('Commande ${ref.watch(lastOrderProvider).id}', 12, Color(0xFF66636E)))),
       gP(67, 300, 256, 25, gText('En attente de confirmation', 20, Color(0xFF111015), weight: 600)),
       gP(46.5, 336, 297, 54, gText('Validez le paiement sur votre téléphone avec votre code Orange Money. Cela peut prendre jusqu’à 2 minutes.', 12, Color(0xFF66636E), lh: 18, align: TextAlign.center, wrap: true)),
-      gP(24, 410, 342, 150, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(44, 430, 39, 15, gText('Moyen', 12, Color(0xFF66636E))),
       gP(116, 430, 230, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(lastOrderProvider).method, 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(44, 462, 48, 15, gText('Montant', 12, Color(0xFF66636E))),
@@ -47,7 +48,6 @@ class G_257 extends ConsumerWidget {
       gP(110, 494, 236, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(lastOrderProvider).reference, 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(44, 526, 72, 15, gText('Délai restant', 12, Color(0xFF66636E))),
       gP(311, 526, 35, 16, gText('01:48', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 580, 342, 70, gBox(color: Color(0x99FFFFFF), border: Color(0xFFFFFFFF), bw: 1, radii: [24, 24, 24, 24])),
       gP(38.25, 611.25, 19.5, 14.25, gImg('assets/figma/v/547ea4a5755a2a.svg')),
       gP(41.25, 604.5, 13.5, 12.75, gImg('assets/figma/v/3cbc362f4fcfa9.svg')),
       gP(70, 596, 273, 32, gText('Ne fermez pas la page. Aucun montant n’est débité tant que vous n’avez pas validé.', 11, Color(0xFF5B5963), lh: 16, wrap: true)),

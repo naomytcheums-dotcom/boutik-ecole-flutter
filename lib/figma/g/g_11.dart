@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_11 extends ConsumerWidget {
@@ -43,7 +45,6 @@ class G_11 extends ConsumerWidget {
       gP(24, 262, 342, 50, gBox(color: Color(0xFFEFF1F4), radii: [25, 25, 25, 25])),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(28, 266, 168, 42, 'Téléphone', 14.5, 600), GChip(197, 266, 168, 42, 'E-mail', 14.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 21, onChanged: (i) { ref.read(loginModeProvider.notifier).set(i); })),
       gP(24, 338, 137, 16, gText('Numéro de téléphone', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 362, 342, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 362, 342, 52, GField(hint: '6 XX XX XX XX', size: 14.5, hintColor: Color(0xFF66636E), weight: 500, padL: 106, onChanged: (v) { ref.read(formProvider.notifier).put('li_id', v); })),
       errorText('li_id', 28, 416),
       gP(41.458, 377.083, 17.083, 21.833, gImg('assets/figma/v/2660f7e30da185.svg')),
@@ -51,9 +52,9 @@ class G_11 extends ConsumerWidget {
       gP(74, 379, 35, 18, gText('+237', 14.5, Color(0xFF111015), weight: 600)),
       gP(116, 376, 1.5, 24, gBox(color: Color(0xFFECE8F2))),
       gP(24, 428, 84, 16, gText('Mot de passe', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 452, 342, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
-      gP(24, 452, 342, 52, GField(hint: '••••••••', size: 17, hintColor: Color(0xFF111015), weight: 500, padL: 52, obscure: true, onChanged: (v) { ref.read(formProvider.notifier).put('li_pw', v); }, onSubmitted: (v) { submitLogin(ref, context); })),
+      gP(24, 452, 342, 52, GField(hint: 'Mot de passe', size: 17, hintColor: Color(0xFF111015), weight: 500, padL: 52, obscure: true, onChanged: (v) { ref.read(formProvider.notifier).put('li_pw', v); }, onSubmitted: (v) { submitLogin(ref, context); })),
       errorText('li_pw', 28, 506),
+      rememberBox(24, 519),
       gP(39.875, 474.208, 20.25, 14.708, gImg('assets/figma/v/32a45c6e5f0fcb.svg')),
       gP(43.042, 467.083, 13.917, 13.125, gImg('assets/figma/v/1fb86fed903268.svg')),
       gP(327.083, 469.458, 21.833, 17.083, gImg('assets/figma/v/abcfc4162eb13b.svg')),

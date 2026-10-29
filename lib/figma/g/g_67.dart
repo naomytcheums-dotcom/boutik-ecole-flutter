@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_67 extends ConsumerWidget {
@@ -39,14 +41,12 @@ class G_67 extends ConsumerWidget {
       gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
       gP(24, 70, 124, 26, gText('Statistiques', 21, Color(0xFF111015), weight: 700)),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 77.8, 34, '7 jours', 12.5, 500), GChip(109.8, 120, 85.2, 34, '30 jours', 12.5, 600), GChip(203, 120, 77.8, 34, '12 mois', 12.5, 500)], selected: 1, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
-      gP(24, 168, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(38, 180, 106, 14, gText('Vues des annonces', 11.5, Color(0xFF66636E), weight: 500)),
       gP(38, 200, 56, 25, gText('4 280', 20, Color(0xFF111015), weight: 800)),
       gP(38, 232, 32, 14, gText('+18 %', 11, Color(0xFF0F7A52), weight: 600)),
       gP(150, 180, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),
       gP(154.75, 186.625, 18.5, 14.75, gImg('assets/figma/v/6c31da6f344600.svg')),
       gP(159.125, 189.125, 9.75, 9.75, gImg('assets/figma/v/b916ebbd5954b5.svg')),
-      gP(200, 168, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(214, 180, 105, 14, gText('Taux de conversion', 11.5, Color(0xFF66636E), weight: 500)),
       gP(214, 200, 59, 25, gText('3,4 %', 20, Color(0xFF111015), weight: 800)),
       gP(214, 232, 39, 14, gText('+0,6 pt', 11, Color(0xFF0F7A52), weight: 600)),
@@ -54,7 +54,6 @@ class G_67 extends ConsumerWidget {
       gP(332.625, 186.625, 14.75, 14.75, gImg('assets/figma/v/b3a3ae04257941.svg')),
       gP(332, 186, 9.125, 9.125, gImg('assets/figma/v/e8118c9116f61a.svg')),
       gP(338.875, 192.875, 9.125, 9.125, gImg('assets/figma/v/e8118c9116f61a.svg')),
-      gP(24, 274, 342, 210, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 288, 133, 18, gText('Ventes par semaine', 14, Color(0xFF111015), weight: 700)),
       gP(320, 290, 30, 14, gText('FCFA', 11.5, Color(0xFF66636E), weight: 500, align: TextAlign.right)),
       gP(44, 328, 302, 1, gBox(color: Color(0xFFF2EFF6))),
@@ -73,7 +72,6 @@ class G_67 extends ConsumerWidget {
       gP(306.992, 328, 27.683, 122, gBox(color: Color(0xFF111015), radii: [6, 6, 6, 6])),
       gP(313.833, 458, 14, 13, gText('S6', 10.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
       gP(24, 498, 233, 19, gText('Annonces les plus performantes', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 536, 342, 148, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 550, 135, 16, gText('Lampe en bois recyclé', 12.5, Color(0xFF111015), weight: 600)),
       gP(322, 550, 28, 15, gText('82%', 12, Color(0xFF66636E), weight: 600, align: TextAlign.right)),
       gP(40, 572, 310, 7, gBox(color: Color(0xFFF2EFF6), radii: [4, 4, 4, 4])),

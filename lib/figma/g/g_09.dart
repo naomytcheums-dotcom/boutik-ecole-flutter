@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_09 extends ConsumerWidget {
@@ -72,7 +74,6 @@ class G_09 extends ConsumerWidget {
       gP(226.317, 256.643, 51, 14, gText('Expédiée', 11.223, Color(0xFF6B6877), weight: 500, align: TextAlign.center), show: (false)),
       gP(320.191, 256.643, 33, 14, gText('Livrée', 11.223, Color(0xFF6B6877), weight: 500, align: TextAlign.center), show: (false)),
       ...liveTimeline(ref),
-      gP(28.058, 304.461, 334.586, 409.517, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 3), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(45.594, 319.55, 163, 18, gText('Détails de la commande', 14.029, Color(0xFF111015), weight: 700)),
       gP(45.594, 357.993, 68.741, 68.253, gBox(image: 'assets/figma/img/34e8344812f71c763e7e4b52e1acffce9319e372.png', fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x26122640), offset: Offset(0, 2), blurRadius: 6, spreadRadius: 0)], radii: [11.223, 11.223, 11.223, 11.223]), show: (ref.watch(viewedOrderProvider).lines.length > 0)),
       gP(128.363, 362.037, 137, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(viewedOrderProvider).lines.length > 0 ? ref.watch(viewedOrderProvider).lines[0].title : '', 12.626, Color(0xFF111015), weight: 700)), show: (ref.watch(viewedOrderProvider).lines.length > 0)),

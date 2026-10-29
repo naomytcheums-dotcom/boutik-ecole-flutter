@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_159 extends ConsumerWidget {
@@ -38,7 +40,6 @@ class G_159 extends ConsumerWidget {
       gP(24, 70, 220, 26, gText('Candidature envoyée', 21, Color(0xFF111015), weight: 700)),
       gP(22.5, 270, 345, 24, gText('Merci pour votre candidature !', 19, Color(0xFF111015), weight: 800, align: TextAlign.center, wrap: true)),
       gP(42.5, 302, 305, 38, gText('Camlight a bien reçu votre dossier. Vous serez notifié à chaque étape.', 13, Color(0xFF66636E), lh: 19, align: TextAlign.center, wrap: true)),
-      gP(24, 374, 342, 188, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 388, 88, 18, gText('Récapitulatif', 14, Color(0xFF111015), weight: 700)),
       gP(40, 422, 33, 16, gText('Offre', 12.5, Color(0xFF66636E))),
       gP(205, 422, 145, 16, gText('Technicien électronique', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),

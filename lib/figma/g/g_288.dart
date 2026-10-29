@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_288 extends ConsumerWidget {
@@ -38,7 +40,6 @@ class G_288 extends ConsumerWidget {
       gP(28, 350, 82, 16, gText('Médiathèque', 13, Color(0xFF111015), weight: 500, inter: true)),
       gP(28, 390, 56, 16, gText('Finances', 13, Color(0xFF111015), weight: 500, inter: true)),
       gP(240, 0, 1040, 64, gBox(color: Color(0xFFFFFFFF))),
-      gP(264, 14, 360, 36, gBox(color: Color(0xFFF1EFEC), radii: [18, 18, 18, 18])),
       gP(264, 14, 360, 36, GField(hint: 'Rechercher une fiche…', size: 13, hintColor: Color(0xFF66636E), weight: 400, padL: 18, inter: true)),
       gP(1140, 14, 110, 36, gBox(color: Color(0xFF111015), radii: [18, 18, 18, 18]), tap: () => gToast(context, 'Démonstration : Exporter')),
       gP(1170, 23, 55, 16, gText('Exporter', 13, Color(0xFFFFFFFF), weight: 600, inter: true)),

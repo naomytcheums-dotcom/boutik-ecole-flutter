@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_186 extends ConsumerWidget {
@@ -42,7 +44,6 @@ class G_186 extends ConsumerWidget {
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 132, 26, gText('Accessibilité', 21, Color(0xFF111015), weight: 700)),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 63, 34, 'Petit', 12.5, 500), GChip(95, 120, 70.4, 34, 'Normal', 12.5, 500), GChip(173.4, 120, 63, 34, 'Grand', 12.5, 600), GChip(244.4, 120, 100, 34, 'Très grand', 12.5, 500)], selected: 2, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
-      gP(24, 168, 342, 264, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 180, 88, 17, gText('Texte agrandi', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 202, 94, 14, gText('Taille 18 px et plus', 11.5, Color(0xFF66636E))),
       gP(308, 189, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
@@ -58,7 +59,6 @@ class G_186 extends ConsumerWidget {
       gP(40, 378, 104, 17, gText('Lecteur d’écran', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 400, 102, 14, gText('Étiquettes vocales', 11.5, Color(0xFF66636E))),
       gP(308, 387, 42, 24, GToggle(on: false, onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18)),
-      gP(24, 446, 342, 154, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 460, 132, 18, gText('Normes appliquées', 14, Color(0xFF111015), weight: 700)),
       gP(40, 494, 145, 16, gText('Zones tactiles minimales', 12.5, Color(0xFF66636E))),
       gP(287, 494, 63, 16, gText('44 × 44 px', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),

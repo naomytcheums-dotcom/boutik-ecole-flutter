@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_46 extends ConsumerWidget {
@@ -41,7 +43,6 @@ class G_46 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 168, 26, gText('Suivi de livraison', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 133, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(44.667, 143.333, 16, 17.667, gImg('assets/figma/v/4832049c28e839.svg')),
       gP(50.5, 155, 11, 6, gImg('assets/figma/v/f40c5534a6fd70.svg')),
@@ -52,7 +53,6 @@ class G_46 extends ConsumerWidget {
       gP(88, 154, 149, 14, gText('Arrivée prévue demain · 14 h', 11.5, Color(0xFF66636E))),
       gP(280.8, 142, 71.2, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
       gP(294.4, 146, 44, 14, gText('En route', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)),
-      gP(24, 200, 342, 170, gBox(color: Color(0xB2FFFFFF), radii: [28, 28, 28, 28])),
       gP(33, 406, 2, 40, gBox(color: Color(0xFFBFE8D6), radii: [1, 1, 1, 1])),
       gP(24, 385, 20, 20, gBox(color: Color(0xFF1F9D6B), oval: true)),
       gP(27.333, 389.25, 13.333, 11.042, gImg('assets/figma/v/23149818a3337a.svg')),
@@ -70,7 +70,6 @@ class G_46 extends ConsumerWidget {
       gP(24, 571, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true)),
       gP(56, 570, 305, 17, gText('Prête au retrait · Bloc A', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
       gP(56, 590, 305, 14, gText('Demain · 14 h', 11.5, Color(0xFF66636E), wrap: true)),
-      gP(24, 646, 342, 84, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 658, 87, 16, gText('Point de retrait', 12.5, Color(0xFF66636E))),
       gP(228, 658, 122, 16, gText('Kiosque IUT – Bloc A', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
       gP(40, 683, 310, 1, gBox(color: Color(0xFFF2EFF6))),

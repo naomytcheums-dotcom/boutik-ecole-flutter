@@ -253,7 +253,7 @@ class _GHeartState extends State<GHeart> with SingleTickerProviderStateMixin {
             final s = on ? 1 + 0.45 * math.sin(c.value * math.pi) : 1.0;
             return Center(
               child: on
-                  ? Transform.scale(scale: s, child: const FittedBox(child: Icon(Icons.favorite_rounded, color: Color(0xFFE5334B), size: 40)))
+                  ? Transform.scale(scale: s, child: Container(margin: const EdgeInsets.all(5), decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle), padding: const EdgeInsets.all(7), child: const FittedBox(child: Icon(Icons.favorite_rounded, color: Color(0xFF111015), size: 40))))
                   : const SizedBox.expand(),
             );
           },

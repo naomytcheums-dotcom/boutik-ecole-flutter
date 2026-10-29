@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_202 extends ConsumerWidget {
@@ -45,7 +47,6 @@ class G_202 extends ConsumerWidget {
       gP(42, 238, 309, 23, gText('Votre marque, de l’idée au produit', 18, Color(0xFFFFFFFF), weight: 800, wrap: true)),
       gP(42, 268, 309, 15, gText('4 filières, un seul interlocuteur', 12, Color(0xD9FFFFFF), weight: 500, wrap: true)),
       gP(24, 314, 117, 19, gText('Ce qui est inclus', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 352, 342, 264, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 365, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(44.667, 373.667, 22.667, 14.333, gImg('assets/figma/v/8c9c6b229b6232.svg')),
       gP(44.667, 386.167, 22.667, 10.167, gImg('assets/figma/v/9870aa4d1427a0.svg')),
@@ -77,7 +78,6 @@ class G_202 extends ConsumerWidget {
       gP(88, 584, 145, 14, gText('GMP · prototype et gabarit', 11.5, Color(0xFF66636E))),
       gP(312.8, 572, 39.2, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
       gP(319.4, 576, 26, 14, gText('GMP', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)),
-      gP(24, 630, 342, 118, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 642, 71, 16, gText('Prix du pack', 12.5, Color(0xFF66636E))),
       gP(262, 642, 88, 16, gText('420 000 FCFA', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),
       gP(40, 667, 310, 1, gBox(color: Color(0xFFF2EFF6))),

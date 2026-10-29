@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_74 extends ConsumerWidget {
@@ -40,7 +42,6 @@ class G_74 extends ConsumerWidget {
       gP(44.833, 169.166, 30.334, 25.668, gImg('assets/figma/r/213_218.png')),
       gP(100, 146, 145, 23, gText('Niveau Confirmé', 18, Color(0xFF111015), weight: 700)),
       gP(100, 172, 228, 14, gText('Passeport n° TP-2026-0187 · vérifié par l’IUT', 11, Color(0xFF66636E))),
-      gP(24, 214, 342, 160, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(44, 230, 158, 18, gText('Compétences vérifiées', 14, Color(0xFF111015), weight: 600)),
       gP(44, 262, 45, 16, gText('Python', 13, Color(0xFF111015), weight: 500)),
       gP(303, 262, 43, 15, gText('Avancé', 12, Color(0xFF66636E), weight: 600)),
@@ -54,7 +55,6 @@ class G_74 extends ConsumerWidget {
       gP(268, 342, 78, 15, gText('Intermédiaire', 12, Color(0xFF66636E), weight: 600)),
       gP(44, 364, 302, 6, gBox(color: Color(0xFFE9E5F5), radii: [3, 3, 3, 3])),
       gP(44, 364, 181.2, 6, gBox(color: Color(0xFF5A3FE0), radii: [3, 3, 3, 3])),
-      gP(24, 390, 342, 112, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(44, 406, 111, 18, gText('Badges obtenus', 14, Color(0xFF111015), weight: 600)),
       gP(44, 436, 96, 56, gBox(color: Color(0xFFF4EFE6), radii: [14, 14, 14, 14])),
       gP(52, 442, 80, 20, gText('Hackathon IUT 2026', 10, Color(0xFF111015), weight: 600)),
@@ -65,7 +65,6 @@ class G_74 extends ConsumerWidget {
       gP(252, 436, 96, 56, gBox(color: Color(0xFFF4EFE6), radii: [14, 14, 14, 14])),
       gP(260, 442, 80, 20, gText('Vendeuse fiable', 10, Color(0xFF111015), weight: 600)),
       gP(260, 474, 34, 14, gText('4,9 / 5', 11, Color(0xFF5A3FE0), weight: 700)),
-      gP(24, 518, 342, 120, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(44, 534, 215, 18, gText('Certificats et recommandations', 14, Color(0xFF111015), weight: 600)),
       gP(44, 562, 237, 15, gText('BE-C-0412 · Lampe en bois recyclé · Émis', 12, Color(0xFF111015), weight: 500)),
       gP(44, 584, 238, 15, gText('BE-C-0377 · Application de stock · Vérifié', 12, Color(0xFF111015), weight: 500)),

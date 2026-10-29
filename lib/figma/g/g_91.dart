@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_91 extends ConsumerWidget {
@@ -42,7 +44,6 @@ class G_91 extends ConsumerWidget {
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 235, 26, gText('Rechercher des talents', 21, Color(0xFF111015), weight: 700)),
       gP(339.833, 70.75, 24.333, 22.5, gImg('assets/figma/v/93e9ba743f301c.svg')),
-      gP(24, 120, 342, 48, gBox(color: Color(0xFFF2EFF6), radii: [24, 24, 24, 24])),
       gP(24, 120, 342, 48, GField(hint: 'Compétence, filière, équipe…', size: 13.5, hintColor: Color(0xFF66636E), weight: 400, padL: 46)),
       gP(40.5, 134.5, 19, 19, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(39.875, 133.875, 18.667, 18.667, gImg('assets/figma/v/50f467eb8a9b46.svg')),
@@ -58,7 +59,6 @@ class G_91 extends ConsumerWidget {
       gP(340.167, 145.75, 6, 9.167, gImg('assets/figma/v/3221f2f163c9f7.svg')),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 182, 55.6, 34, 'Tous', 12.5, 600), GChip(87.6, 182, 122.2, 34, 'Développement', 12.5, 500), GChip(217.8, 182, 70.4, 34, 'Design', 12.5, 500), GChip(296.2, 182, 107.4, 34, 'Audiovisuel', 12.5, 500), GChip(411.6, 182, 77.8, 34, 'Équipes', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
       gP(24, 230, 181, 19, gText('48 profils correspondent', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 268, 342, 264, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 276, 50, 50, gBox(image: 'assets/figma/img/c15478a4e0a5cc1be462d8179ed1a24390853242.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
       gP(98, 280, 98, 17, gText('Mariam Essono', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 302, 142, 14, gText('Génie informatique · 4.9 ★', 11.5, Color(0xFF66636E))),

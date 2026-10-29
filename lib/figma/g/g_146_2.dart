@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_146_2 extends ConsumerWidget {
@@ -41,11 +43,9 @@ class G_146_2 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 259, 26, gText('Remise d’une commande', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 128, 50, 50, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
       gP(98, 132, 114, 17, gText('Yannick Mouanga', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 154, 160, 14, gText('Commande #BE-2026-0142', 11.5, Color(0xFF66636E))),
-      gP(96, 200, 198, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(110, 214, 8.095, 8.095, gBox(color: Color(0xFF111015))),
       gP(118.095, 214, 8.095, 8.095, gBox(color: Color(0xFF111015))),
       gP(126.19, 214, 8.095, 8.095, gBox(color: Color(0xFF111015))),
@@ -271,7 +271,6 @@ class G_146_2 extends ConsumerWidget {
       gP(231.429, 375.905, 8.095, 8.095, gBox(color: Color(0xFF111015))),
       gP(271.905, 375.905, 8.095, 8.095, gBox(color: Color(0xFF111015))),
       gP(24, 412, 345, 39, gText('Scannez le code du client ou saisissez le code de retrait à 6 chiffres.', 12.5, Color(0xFF66636E), lh: 19.375, wrap: true)),
-      gP(24, 465, 342, 154, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 479, 48, 18, gText('Détails', 14, Color(0xFF111015), weight: 700)),
       gP(40, 513, 38, 16, gText('Casier', 12.5, Color(0xFF66636E))),
       gP(332, 513, 18, 16, gText('04', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),

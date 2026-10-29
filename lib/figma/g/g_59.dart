@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_59 extends ConsumerWidget {
@@ -53,11 +55,9 @@ class G_59 extends ConsumerWidget {
       gP(331, 120, 30, 30, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true)),
       gP(316, 158, 60, 14, gText('Publication', 11, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
       gP(24, 188, 91, 16, gText('Titre du service', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 208, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 208, 342, 48, GField(hint: 'Ex. Développement web sur mesure', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 48)),
       gP(38.25, 221.5, 19.5, 21, gImg('assets/figma/v/ba57bd3bc45172.svg')),
       gP(24, 270, 61, 16, gText('Catégorie', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 290, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 290, 342, 48, GField(hint: '', initial: 'Développement', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(38.25, 304.25, 11.25, 11.25, gImg('assets/figma/v/4aa41d01b63de8.svg')),
       gP(46.5, 304.25, 11.25, 11.25, gImg('assets/figma/v/4aa41d01b63de8.svg')),
@@ -65,22 +65,18 @@ class G_59 extends ConsumerWidget {
       gP(38.25, 312.5, 11.25, 11.25, gImg('assets/figma/v/4aa41d01b63de8.svg')),
       gP(334.5, 308.75, 15, 10.5, gImg('assets/figma/v/7abbf201b36418.svg')),
       gP(24, 352, 132, 16, gText('Tarif à partir de (FCFA)', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 372, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 372, 342, 48, GField(hint: '', initial: '30 000', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(24, 434, 74, 16, gText('Délai moyen', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 454, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 454, 342, 48, GField(hint: '', initial: '3 à 7 jours', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(37.5, 467.5, 21, 21, gImg('assets/figma/v/8283e962773df2.svg')),
       gP(45, 470.5, 9, 12, gImg('assets/figma/v/ed425c4c4b79bb.svg')),
       gP(334.5, 472.75, 15, 10.5, gImg('assets/figma/v/7abbf201b36418.svg')),
       gP(24, 516, 119, 16, gText('Mode de prestation', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 536, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 536, 342, 48, GField(hint: '', initial: 'À distance ou sur campus', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(39, 549.5, 18, 21, gImg('assets/figma/v/32cd8858f7ce88.svg')),
       gP(42.75, 553.25, 10.5, 10.5, gImg('assets/figma/v/f34fbbf4909aff.svg')),
       gP(334.5, 554.75, 15, 10.5, gImg('assets/figma/v/7abbf201b36418.svg')),
       gP(24, 598, 135, 16, gText('Description du service', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 618, 342, 96, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(24, 618, 342, 96, GField(hint: 'Ce que vous proposez, livrables, méthode…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, multiline: true, padT: 14)),
       gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
       gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Brouillon')),

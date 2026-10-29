@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_16 extends ConsumerWidget {
@@ -44,8 +46,7 @@ class G_16 extends ConsumerWidget {
       gP(33.5, 233, 323, 26, gText('Créez un nouveau mot de passe', 21, Color(0xFF111015), weight: 800, align: TextAlign.center)),
       gP(64.5, 264, 261, 40, gText('Choisissez un mot de passe fort que vous\nn’utilisez pas ailleurs.', 13.5, Color(0xFF66636E), lh: 20, align: TextAlign.center)),
       gP(24, 322, 143, 16, gText('Nouveau mot de passe', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 346, 342, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
-      gP(24, 346, 342, 52, GField(hint: '••••••••••', size: 17, hintColor: Color(0xFF111015), weight: 500, padL: 52, obscure: true, onChanged: (v) { ref.read(formProvider.notifier).put('rs_pw', v); })),
+      gP(24, 346, 342, 52, GField(hint: 'Mot de passe', size: 17, hintColor: Color(0xFF111015), weight: 500, padL: 52, obscure: true, onChanged: (v) { ref.read(formProvider.notifier).put('rs_pw', v); })),
       errorText('rs_pw', 28, 400),
       gP(39.875, 368.208, 20.25, 14.708, gImg('assets/figma/v/32a45c6e5f0fcb.svg')),
       gP(43.042, 361.083, 13.917, 13.125, gImg('assets/figma/v/1fb86fed903268.svg')),
@@ -69,8 +70,7 @@ class G_16 extends ConsumerWidget {
       gP(24, 572, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFDAD5E4), bw: 1.5, oval: true)),
       gP(56, 573.5, 188, 17, gText('Un caractère spécial (! @ # …)', 13.5, Color(0xFF66636E), weight: 500)),
       gP(24, 618, 164, 16, gText('Confirmer le mot de passe', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 642, 342, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
-      gP(24, 642, 342, 52, GField(hint: '••••••••••', size: 17, hintColor: Color(0xFF111015), weight: 500, padL: 52, obscure: true, onChanged: (v) { ref.read(formProvider.notifier).put('rs_pw2', v); }, onSubmitted: (v) { submitReset(ref, context); })),
+      gP(24, 642, 342, 52, GField(hint: 'Mot de passe', size: 17, hintColor: Color(0xFF111015), weight: 500, padL: 52, obscure: true, onChanged: (v) { ref.read(formProvider.notifier).put('rs_pw2', v); }, onSubmitted: (v) { submitReset(ref, context); })),
       errorText('rs_pw2', 28, 696),
       gP(39.875, 664.208, 20.25, 14.708, gImg('assets/figma/v/32a45c6e5f0fcb.svg')),
       gP(43.042, 657.083, 13.917, 13.125, gImg('assets/figma/v/1fb86fed903268.svg')),

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_217 extends ConsumerWidget {
@@ -44,7 +46,6 @@ class G_217 extends ConsumerWidget {
       gP(24, 120, 342, 190, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x000B2340), Color(0xE00B2340)], stops: [0, 1]), radii: [26, 26, 26, 26])),
       gP(42, 248, 309, 46, gText('Si 200 personnes la veulent, on la fabrique', 18, Color(0xFFFFFFFF), weight: 800, wrap: true)),
       gP(42, 278, 309, 15, gText('Vœu de Mouanga Yannick · Génie civil', 12, Color(0xD9FFFFFF), weight: 500, wrap: true)),
-      gP(24, 324, 342, 120, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(49, 414, 78, 30, gBox(color: Color(0xD98DF03A), layerBlur: 12, oval: true)),
       gP(38, 334, 100, 100, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF0E1A0B), Color(0xFF000000)], stops: [0, 1]), radii: [50, 50, 50, 50])),
       gP(38, 379, 100, 55, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x008DF03A), Color(0xBF8DF03A)], stops: [0, 1]))),
@@ -124,7 +125,6 @@ class G_217 extends ConsumerWidget {
       gP(61.5, 370, 53, 33, gText('78%', 27, Color(0xFF9BE88A), weight: 300, inter: true)),
       gP(152, 358, 201, 19, gText('156 sur 200', 15, Color(0xFF111015), weight: 700, wrap: true)),
       gP(152, 384, 201, 34, gText('Encore 44 précommandes pour lancer la production.', 12, Color(0xFF66636E), lh: 17, wrap: true)),
-      gP(24, 458, 342, 154, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 472, 76, 18, gText('Conditions', 14, Color(0xFF111015), weight: 700)),
       gP(40, 506, 22, 16, gText('Prix', 12.5, Color(0xFF66636E))),
       gP(271, 506, 79, 16, gText('25 000 FCFA', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),

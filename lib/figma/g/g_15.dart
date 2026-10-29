@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_15 extends ConsumerWidget {
@@ -44,12 +46,10 @@ class G_15 extends ConsumerWidget {
       gP(27.5, 282, 335, 28, gText('Réinitialiser votre mot de passe', 22, Color(0xFF111015), weight: 800, align: TextAlign.center)),
       gP(50.5, 332.5, 289, 63, gText('Saisissez votre numéro de téléphone ou votre\ne-mail. Nous vous enverrons un code pour\nréinitialiser votre mot de passe.', 13.5, Color(0xFF66636E), lh: 21, align: TextAlign.center)),
       gP(24, 438, 128, 16, gText('Téléphone ou e-mail', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 462, 342, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 462, 342, 52, GField(hint: 'Ex. +237 6 XX XX XX XX', size: 14.5, hintColor: Color(0xFF66636E), weight: 500, padL: 52, onChanged: (v) { ref.read(formProvider.notifier).put('fg_id', v); }, onSubmitted: (v) { submitForgot(ref, context); })),
       errorText('fg_id', 28, 516),
       gP(39.083, 478.667, 21.833, 18.667, gImg('assets/figma/v/7e8276104a8e4f.svg')),
       gP(39.083, 481.042, 21.833, 11.542, gImg('assets/figma/v/904a4bba0b310b.svg')),
-      gP(24, 546, 342, 72, gBox(color: Color(0xFFF2EFF6), radii: [22, 22, 22, 22])),
       gP(40.75, 578.083, 22.5, 16.083, gImg('assets/figma/v/28a0764538148f.svg')),
       gP(44.417, 569.833, 15.167, 14.25, gImg('assets/figma/v/857bfb88ff06e0.svg')),
       gP(76, 564, 207, 36, gText('Pour votre sécurité, le code envoyé\nest valable pendant 10 minutes.', 12.5, Color(0xFF66636E), lh: 18)),

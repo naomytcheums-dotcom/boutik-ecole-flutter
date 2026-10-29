@@ -36,6 +36,11 @@
   },
   "links": {
    "24,760,345,46": "ref.read(cartProvider.notifier).add(ref.read(selectedProductProvider).toLine()); gToast(context, 'Ajouté au panier'); gOpen(context, '06');"
+  },
+  "replace": {
+   "assets/figma/v/9c92298f9fd6b2.svg": "assets/figma/v/w_9c92298f9fd6b2.svg",
+   "assets/figma/v/bb8ad3c4792df6.svg": "assets/figma/v/w_bb8ad3c4792df6.svg",
+   "assets/figma/v/5bb53be308dfb1.svg": "assets/figma/v/w_5bb53be308dfb1.svg"
   }
  },
  "07": {
@@ -77,6 +82,11 @@
   "links": {
    "25,166,346,104": "ref.read(homeDeliveryProvider.notifier).set(false); gToast(context, 'Retrait sur campus · gratuit');",
    "25,279,346,105": "ref.read(homeDeliveryProvider.notifier).set(true); gToast(context, 'Livraison à domicile · 5 000 FCFA');"
+  },
+  "replace": {
+   "gP(46.699, 197.692, 34.991, 33.381, gImg('assets/figma/v/e2ad33c38610b8.svg')),": "gP(46.699, 197.0, 35, 35, const Icon(Icons.home_outlined, size: 33, color: Color(0xFF111015))),",
+   "gP(46.699, 205.745, 34.991, 6, gImg('assets/figma/v/edade50b9fa79b.svg')),": "",
+   "gP(56.363, 210.577, 15.664, 14.053, gImg('assets/figma/v/81794b445602f7.svg')),": ""
   }
  },
  "08": {
@@ -151,6 +161,9 @@
     "text": "fcfa(ref.watch(lastOrderProvider).total)",
     "right": true
    }
+  },
+  "replace": {
+   "tap: () => gToast(context, 'Démonstration : Télécharger le reçu')": "tap: () => downloadDocument(context, ref, invoice: false)"
   }
  },
  "260": {
@@ -222,6 +235,9 @@
    "184:332": {
     "text": "'Part étudiants / département (${80 - ref.watch(rulesConfigProvider).product} %)'"
    }
+  },
+  "replace": {
+   "gTap(24, 790, 342, 52, () => gOpen(context, '44'))": "gTap(24, 790, 342, 52, () => downloadDocument(context, ref, invoice: true)), gP(108, 856, 174, 16, gText('Voir ma commande', 13, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)), gTap(24, 850, 342, 30, () => gOpen(context, '44'))"
   }
  },
  "44": {
@@ -506,6 +522,16 @@
    "24,338,342,60": "final l = ref.read(ordersAllProvider); if (l.length > 1) { ref.read(selectedOrderIdProvider.notifier).set(l[1].id); gOpen(context, '09'); }",
    "24,404,342,60": "final l = ref.read(ordersAllProvider); if (l.length > 2) { ref.read(selectedOrderIdProvider.notifier).set(l[2].id); gOpen(context, '09'); }",
    "24,470,342,60": "final l = ref.read(ordersAllProvider); if (l.length > 3) { ref.read(selectedOrderIdProvider.notifier).set(l[3].id); gOpen(context, '09'); }"
+  },
+  "rows": {
+   "from": 276,
+   "pitch": 66,
+   "n": 4,
+   "to": 96,
+   "imgFrom": 50,
+   "img": 78,
+   "imgX": 24,
+   "shift": 16
   }
  },
  "22": {
@@ -829,7 +855,8 @@
     "onChanged": "ref.read(formProvider.notifier).put('li_pw', v);",
     "onSubmitted": "submitLogin(ref, context);",
     "after": [
-     "errorText('li_pw', 28, 506)"
+     "errorText('li_pw', 28, 506)",
+     "rememberBox(24, 519)"
     ]
    }
   },
@@ -3755,6 +3782,21 @@
   },
   "links": {
    "24,264,342,60": "gOpen(context, '195');"
+  }
+ },
+ "42": {
+  "replace": {
+   "gP(46.333, 421.667, 19.333, 22.667, gImg('assets/figma/v/e25472574b704c.svg')),": "gP(45, 421, 22, 22, const Icon(Icons.home_outlined, size: 21, color: Color(0xFF5A3FE0))),",
+   "gP(50.5, 425.833, 11, 11, gImg('assets/figma/v/3bae74da037db6.svg')),": ""
+  }
+ },
+ "230": {
+  "replace": {
+   "gP(50, 724, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),": "",
+   "gP(66, 738, 12, 15, gText('IA', 12, Color(0xFF111015), weight: 700, align: TextAlign.center)),": "",
+   "gP(296, 724, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),": "",
+   "gP(310.325, 738.325, 15.35, 15.35, gImg('assets/figma/v/95a3a562ff2257.svg')),": "",
+   "gP(310.325, 738.325, 15.35, 15.35, gImg('assets/figma/v/dacf8ca54f8b22.svg')),": ""
   }
  }
 }

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_05 extends ConsumerWidget {
@@ -46,9 +48,9 @@ class G_05 extends ConsumerWidget {
       gP(294.757, 81.237, 22.728, 21.055, gImg('assets/figma/v/4bd8d8bdb588c8.svg')),
       gP(288.085, 73.728, 36.074, 36.074, GHeartLive(title: ref.watch(selectedProductProvider).title)),
       gP(339.099, 75.993, 32.978, 32.978, gBox(color: Color(0x8C111015), oval: true)),
-      gP(345.922, 89.482, 19.333, 14.333, gImg('assets/figma/v/9c92298f9fd6b2.svg')),
-      gP(349.255, 81.148, 12.667, 9.333, gImg('assets/figma/v/bb8ad3c4792df6.svg')),
-      gP(352.588, 81.148, 6, 16.833, gImg('assets/figma/v/5bb53be308dfb1.svg')),
+      gP(345.922, 89.482, 19.333, 14.333, gImg('assets/figma/v/w_9c92298f9fd6b2.svg')),
+      gP(349.255, 81.148, 12.667, 9.333, gImg('assets/figma/v/w_bb8ad3c4792df6.svg')),
+      gP(352.588, 81.148, 6, 16.833, gImg('assets/figma/v/w_5bb53be308dfb1.svg')),
       gP(0, 337.665, 391.434, 664.577, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), shadows: [BoxShadow(color: Color(0x14122640), offset: Offset(0, -4), blurRadius: 14, spreadRadius: 0)], radii: [24.375, 24.375, 24.375, 24.375])),
       gP(23.658, 357.022, 84.596, 25.809, gBox(color: Color(0xFFEEF1F6), radii: [12.904, 12.904, 12.904, 12.904])),
       gP(31.89, 362.386, 15.081, 15.081, gImg('assets/figma/v/11598d9e192c7a.svg')),
@@ -60,7 +62,6 @@ class G_05 extends ConsumerWidget {
       gP(47.316, 468.963, 23, 17, gText('4.8', 13.621, Color(0xFF111015), weight: 700)),
       gP(70.974, 469.463, 49, 16, gText('(24 avis)', 12.904, Color(0xFF66636E))),
       gP(23.658, 501.346, 355, 44, Consumer(builder: (context, ref, _) => gText(ref.watch(selectedProductProvider).description, 13.621, Color(0xFF4A4854), lh: 21.507))),
-      gP(23.658, 561.342, 119.724, 66.673, gBox(color: Color(0xFFF1F4F8), radii: [17.206, 17.206, 17.206, 17.206])),
       gP(72.853, 573.875, 22.27, 23.206, gImg('assets/figma/v/b2a76abe64993b.svg')),
       gP(70.961, 583.434, 16.515, 14.603, gImg('assets/figma/v/f6dd061407a6b3.svg')),
       gP(33.52, 605.96, 100, 14, gText('Matériaux recyclés', 11.112, Color(0xFF111015), weight: 500, align: TextAlign.center)),

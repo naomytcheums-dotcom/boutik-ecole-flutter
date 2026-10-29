@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_94 extends ConsumerWidget {
@@ -42,7 +44,6 @@ class G_94 extends ConsumerWidget {
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 271, 26, gText('Comparer les propositions', 21, Color(0xFF111015), weight: 700)),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 55.6, 34, 'Prix', 12.5, 600), GChip(87.6, 120, 63, 34, 'Délai', 12.5, 500), GChip(158.6, 120, 55.6, 34, 'Note', 12.5, 500), GChip(222.2, 120, 92.6, 34, 'Portfolio', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
-      gP(24, 168, 342, 260, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(25, 169, 340, 39, gBox(color: Color(0xFFF4F1F8), radii: [15, 15, 15, 15])),
       gP(40, 181, 38, 14, gText('Critère', 11, Color(0xFF66636E), weight: 600)),
       gP(126.8, 181, 52, 14, gText('Mariam E.', 11, Color(0xFF66636E), weight: 600)),

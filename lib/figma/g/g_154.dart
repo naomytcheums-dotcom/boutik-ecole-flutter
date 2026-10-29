@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_154 extends ConsumerWidget {
@@ -41,7 +43,6 @@ class G_154 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 125, 26, gText('Mon dossier', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 120, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(38, 130, 100, 100, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF0E1A0B), Color(0xFF000000)], stops: [0, 1]), radii: [50, 50, 50, 50])),
       gP(38, 175, 100, 55, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x008DF03A), Color(0xBF8DF03A)], stops: [0, 1]))),
       gP(85, 128.5, 6, 14.5, gImg('assets/figma/v/bb3ffcce1ff37a.svg')),
@@ -121,7 +122,6 @@ class G_154 extends ConsumerWidget {
       gP(154, 154, 199, 19, gText('Dossier complet à 78 %', 15, Color(0xFF111015), weight: 700, wrap: true)),
       gP(154, 180, 199, 34, gText('Encore 3 éléments pour postuler partout.', 12, Color(0xFF66636E), lh: 17, wrap: true)),
       gP(24, 254, 69, 19, gText('Checklist', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 292, 342, 330, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 305, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(46.333, 313.667, 19.333, 22.667, gImg('assets/figma/v/8a418070bfb100.svg')),
       gP(54.667, 313.667, 11, 11, gImg('assets/figma/v/2e28e879cb0de7.svg')),

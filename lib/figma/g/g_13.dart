@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_13 extends ConsumerWidget {
@@ -43,7 +45,6 @@ class G_13 extends ConsumerWidget {
       gP(76, 71, 148, 26, gText('Choix du profil', 21, Color(0xFF111015), weight: 700)),
       gP(24, 128, 228, 28, gText('Quel est votre profil ?', 22, Color(0xFF111015), weight: 700)),
       gP(24, 164, 246, 40, gText('Choisissez le rôle qui vous correspond.\nVous pourrez le modifier plus tard.', 13.5, Color(0xFF66636E), lh: 20)),
-      gP(24, 226, 342, 118, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F122640), offset: Offset(0, 3), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(44, 257, 56, 56, gBox(color: Color(0xFFF1EEFB), radii: [18, 18, 18, 18])),
       gP(58.5, 270.333, 27, 29.333, gImg('assets/figma/v/e3652aea7784a1.svg')),
       gP(58.5, 275, 27, 6, gImg('assets/figma/v/281ac9c54a374b.svg')),
@@ -55,7 +56,6 @@ class G_13 extends ConsumerWidget {
       gP(118, 284, 192, 36, gText('Achetez des produits et services\nproposés par les étudiants.', 12.5, Color(0xFF66636E), lh: 18)),
       gP(328, 240, 20, 20, gBox(border: Color(0xFF6B6877), bw: 1.8, oval: true)),
       gP(24, 356, 342, 118, gBox(color: Color(0xFFFFFFFF), radii: [28.0, 28.0, 28.0, 28.0]), show: ref.watch(signupRoleProvider) != 1),
-      gP(24, 356, 342, 118, gBox(color: Color(0xFFFFFDF7), border: Color(0xFFF5B730), bw: 2.5, shadows: [BoxShadow(color: Color(0x0F122640), offset: Offset(0, 3), blurRadius: 10, spreadRadius: 0)], radii: [24, 24, 24, 24]), show: (ref.watch(signupRoleProvider) == 1)),
       gP(44, 387, 56, 56, gBox(color: Color(0xFFFDEFC8), radii: [18, 18, 18, 18])),
       gP(57.333, 403.833, 29.333, 17.667, gImg('assets/figma/v/9334d03309f7e4.svg')),
       gP(62, 412, 20, 14.458, gImg('assets/figma/v/d4b8f4bde082c9.svg')),
@@ -66,7 +66,6 @@ class G_13 extends ConsumerWidget {
       gP(118, 414, 188, 36, gText('Publiez vos produits, services et\nprojets sur la marketplace.', 12.5, Color(0xFF66636E), lh: 18)),
       gP(276, 368, 74, 24, gBox(color: Color(0xFF111015), radii: [12, 12, 12, 12]), show: (ref.watch(signupRoleProvider) == 1)),
       gP(282, 373.5, 62, 13, gText('Sélectionné', 10.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center), show: (ref.watch(signupRoleProvider) == 1)),
-      gP(24, 486, 342, 118, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F122640), offset: Offset(0, 3), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(44, 517, 56, 56, gBox(color: Color(0xFFF1EEFB), radii: [18, 18, 18, 18])),
       gP(57.333, 536.167, 29.333, 22.333, gImg('assets/figma/v/ed6763c2b1ff1f.svg')),
       gP(64.333, 531.5, 15.333, 27, gImg('assets/figma/v/95747c6d5f85d5.svg')),
@@ -76,7 +75,6 @@ class G_13 extends ConsumerWidget {
       gP(282, 504, 62, 13, gText('Sélectionné', 10, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center, wrap: true), show: ref.watch(signupRoleProvider) == 2),
       gP(118, 544, 186, 36, gText('Découvrez des talents et lancez\ndes collaborations.', 12.5, Color(0xFF66636E), lh: 18)),
       gP(328, 500, 20, 20, gBox(border: Color(0xFF6B6877), bw: 1.8, oval: true)),
-      gP(24, 616, 342, 118, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F122640), offset: Offset(0, 3), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(44, 647, 56, 56, gBox(color: Color(0xFFF1EEFB), radii: [18, 18, 18, 18])),
       gP(57.333, 675.5, 22.333, 13, gImg('assets/figma/v/10c680750e7ca9.svg')),
       gP(60.833, 661.5, 15.333, 15.333, gImg('assets/figma/v/87914a6b9ef7bc.svg')),

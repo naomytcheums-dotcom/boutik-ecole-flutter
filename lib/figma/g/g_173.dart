@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_173 extends ConsumerWidget {
@@ -41,12 +43,10 @@ class G_173 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 89, 26, gText('Partager', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 128, 50, 50, gBox(image: 'assets/figma/img/84a49a20614dc5f12ab62f18400caa2290c40ec0.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
       gP(98, 132, 145, 17, gText('Lampe en bois recyclé', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 154, 257, 14, gText('25 000 FCFA · boutik-ecole.cm/p/lampe-0142', 11.5, Color(0xFF66636E))),
       gP(24, 200, 87, 19, gText('Partager via', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 238, 342, 264, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 251, 40, 40, gBox(color: Color(0xFFDDF5EC), radii: [13, 13, 13, 13])),
       gP(44.667, 260.493, 21.84, 21.84, gImg('assets/figma/v/20aa6d17761aae.svg')),
       gP(50.5, 265.5, 11.417, 11, gImg('assets/figma/v/e94e583b29a591.svg')),

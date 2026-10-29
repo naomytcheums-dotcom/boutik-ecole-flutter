@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_93b extends ConsumerWidget {
@@ -41,13 +43,11 @@ class G_93b extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 120, 26, gText('Proposition', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 128, 50, 50, gBox(image: 'assets/figma/img/2bbb6fbaae9e6d864765beabd4e677ca34d5a95e.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
       gP(98, 132, 98, 17, gText('Mariam Essono', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 154, 142, 14, gText('Génie informatique · 4.9 ★', 11.5, Color(0xFF66636E))),
       gP(261.6, 142, 90.4, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
       gP(281.3, 146, 51, 14, gText('Voir profil', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)),
-      gP(24, 200, 342, 188, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 214, 38, 18, gText('Offre', 14, Color(0xFF111015), weight: 700)),
       gP(40, 248, 50, 16, gText('Montant', 12.5, Color(0xFF66636E))),
       gP(269, 248, 81, 16, gText('80 000 FCFA', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),

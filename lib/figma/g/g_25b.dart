@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_25b extends ConsumerWidget {
@@ -43,7 +45,6 @@ class G_25b extends ConsumerWidget {
       gP(76, 70, 160, 26, gText('Mes collections', 21, Color(0xFF111015), weight: 700)),
       gP(342.583, 79, 18.833, 6, gImg('assets/figma/v/6fe571ab77e960.svg')),
       gP(349, 72.583, 6, 18.833, gImg('assets/figma/v/87cbf4a9a18b64.svg')),
-      gP(24, 120, 342, 48, gBox(color: Color(0xFFF2EFF6), radii: [24, 24, 24, 24])),
       gP(24, 120, 342, 48, GField(hint: 'Rechercher dans mes listes', size: 13.5, hintColor: Color(0xFF66636E), weight: 400, padL: 46)),
       gP(40.5, 134.5, 19, 19, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(39.875, 133.875, 18.667, 18.667, gImg('assets/figma/v/50f467eb8a9b46.svg')),
@@ -52,7 +53,6 @@ class G_25b extends ConsumerWidget {
       gP(317, 184, 33, 15, gText('Gérer', 12, Color(0xFF5A3FE0), weight: 500, align: TextAlign.right)),
       gP(352.5, 189, 13, 6, gImg('assets/figma/v/4159f10924eea0.svg')),
       gP(356, 185.5, 9.5, 13, gImg('assets/figma/v/a365eb17b7a19f.svg')),
-      gP(24, 220, 342, 264, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 228, 50, 50, gBox(image: 'assets/figma/img/9803b1792923bb371cffd2d64272ebebf74ea2d4.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
       gP(98, 232, 100, 17, gText('Maison et déco', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 254, 95, 14, gText('12 articles · Privée', 11.5, Color(0xFF66636E))),

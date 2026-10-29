@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_197 extends ConsumerWidget {
@@ -47,7 +49,6 @@ class G_197 extends ConsumerWidget {
       gP(24, 294, 108.667, 84, gBox(image: 'assets/figma/img/4b7b6cea2f4622846841cd8342842e81fa1ed891.png', fit: BoxFit.cover, radii: [16, 16, 16, 16])),
       gP(140.667, 294, 108.667, 84, gBox(image: 'assets/figma/img/1574e42a325d3a4ac509841e7a5eb5a285a3d991.png', fit: BoxFit.cover, radii: [16, 16, 16, 16])),
       gP(257.333, 294, 108.667, 84, gBox(image: 'assets/figma/img/768cf16e6d8103ad4296d6cc0fdf1af309f03817.png', fit: BoxFit.cover, radii: [16, 16, 16, 16])),
-      gP(24, 392, 342, 222, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 406, 157, 18, gText('Libération du paiement', 14, Color(0xFF111015), weight: 700)),
       gP(40, 440, 31, 16, gText('Jalon', 12.5, Color(0xFF66636E))),
       gP(172, 440, 178, 16, Consumer(builder: (context, ref, _) => gText('${(ref.watch(missionProvider).released + 1).clamp(1, 3)} sur 3', 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
@@ -63,7 +64,6 @@ class G_197 extends ConsumerWidget {
       gP(40, 567, 310, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 576, 104, 16, gText('Plateforme (10 %)', 12.5, Color(0xFF66636E))),
       gP(141, 576, 209, 16, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(missionProvider).amountOf(ref.watch(missionProvider).released) * 10 ~/ 100), 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
-      gP(24, 628, 342, 79, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
       gP(36, 651.5, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(43.333, 657.443, 17.333, 20.173, gImg('assets/figma/v/b35e336eb0a1dc.svg')),
       gP(46.875, 663.083, 10.25, 8.833, gImg('assets/figma/v/2bdcafa88f7a43.svg')),

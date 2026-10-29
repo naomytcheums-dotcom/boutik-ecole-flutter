@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_44 extends ConsumerWidget {
@@ -38,7 +40,6 @@ class G_44 extends ConsumerWidget {
       gP(24, 70, 229, 26, gText('Commande confirmée', 21, Color(0xFF111015), weight: 700)),
       gP(22.5, 270, 345, 24, gText('Merci pour votre commande !', 19, Color(0xFF111015), weight: 800, align: TextAlign.center, wrap: true)),
       gP(42.5, 302, 305, 38, gText('Votre commande a bien été enregistrée. Un reçu vous a été envoyé par e-mail.', 13, Color(0xFF66636E), lh: 19, align: TextAlign.center, wrap: true)),
-      gP(24, 374, 342, 188, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 388, 88, 18, gText('Récapitulatif', 14, Color(0xFF111015), weight: 700)),
       gP(40, 422, 62, 16, gText('Référence', 12.5, Color(0xFF66636E))),
       gP(105, 422, 245, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(lastOrderProvider).id, 12.5, Color(0xFF111015), weight: 700, wrap: true, align: TextAlign.right))),

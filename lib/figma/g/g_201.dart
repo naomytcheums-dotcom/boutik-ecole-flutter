@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_201 extends ConsumerWidget {
@@ -37,7 +39,6 @@ class G_201 extends ConsumerWidget {
       gP(331.5, 19.5, 28, 17, gImg('assets/figma/v/6a818f3296df50.svg')),
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(24, 70, 135, 26, gText('Mes missions', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 76, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(74.5, 134, 13, 25, gText('3', 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
       gP(57.5, 164, 47, 14, gText('En cours', 11.5, Color(0xFF66636E), align: TextAlign.center)),
       gP(168.5, 134, 53, 25, Consumer(builder: (context, ref, _) => gText('${(245000 + ref.watch(missionProvider).studentEarned) ~/ 1000} k', 20, Color(0xFF111015), weight: 800, align: TextAlign.center))),
@@ -47,7 +48,6 @@ class G_201 extends ConsumerWidget {
       gP(295, 164, 28, 14, gText('Note', 11.5, Color(0xFF66636E), align: TextAlign.center)),
       gP(252, 134, 1, 48, gBox(color: Color(0xFFF2EFF6))),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 210, 85.2, 34, 'En cours', 12.5, 600), GChip(117.2, 210, 92.6, 34, 'À valider', 12.5, 500), GChip(217.8, 210, 92.6, 34, 'Terminées', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
-      gP(24, 258, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 266, 50, 50, gBox(image: 'assets/figma/img/4b7b6cea2f4622846841cd8342842e81fa1ed891.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
       gP(98, 270, 149, 17, Consumer(builder: (context, ref, _) => gText('${ref.watch(missionProvider).kind} Mbella', 13.5, Color(0xFF111015), weight: 600))),
       gP(98, 292, 73, 14, Consumer(builder: (context, ref, _) => gText('Jalon ${(ref.watch(missionProvider).released + 1).clamp(1, 3)} · ${ref.watch(missionProvider).pct} %', 11.5, Color(0xFF66636E)))),
@@ -65,7 +65,6 @@ class G_201 extends ConsumerWidget {
       gP(98, 424, 114, 14, gText('Attribuée aujourd’hui', 11.5, Color(0xFF66636E))),
       gP(287.2, 412, 64.8, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
       gP(295.6, 416, 48, 14, gText('Nouveau', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
-      gP(24, 470, 342, 120, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 484, 85, 18, gText('Mes revenus', 14, Color(0xFF111015), weight: 700)),
       gP(40, 518, 146, 16, gText('Disponible au versement', 12.5, Color(0xFF66636E))),
       gP(130, 518, 220, 16, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(missionProvider).studentEarned), 12.5, Color(0xFF111015), weight: 700, wrap: true, align: TextAlign.right))),

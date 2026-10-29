@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_205 extends ConsumerWidget {
@@ -52,22 +54,18 @@ class G_205 extends ConsumerWidget {
       gP(331, 120, 30, 30, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true)),
       gP(331.5, 158, 29, 14, gText('Envoi', 11, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
       gP(24, 188, 86, 16, gText('Nom du projet', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 208, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 208, 342, 48, GField(hint: '', initial: 'Serre intelligente pour maraîchers', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(40.5, 221.5, 15, 15, gImg('assets/figma/v/a49ecdd3bef596.svg')),
       gP(42.75, 233.5, 10.5, 6, gImg('assets/figma/v/2e2c4a27235860.svg')),
       gP(43.5, 236.5, 9, 6, gImg('assets/figma/v/ab681c73d5c7eb.svg')),
       gP(24, 270, 99, 16, gText('Problème résolu', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 290, 342, 96, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(24, 290, 342, 96, GField(hint: '', initial: 'Les maraîchers perdent des récoltes à cause de la chaleur…', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 16, multiline: true, padT: 14)),
       gP(24, 400, 116, 19, gText('Aide demandée', 15, Color(0xFF111015), weight: 700)),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 438, 70.4, 34, 'Mentor', 12.5, 600), GChip(102.4, 438, 92.6, 34, 'Prototype', 12.5, 500), GChip(203, 438, 107.4, 34, 'Financement', 12.5, 500), GChip(318.4, 438, 92.6, 34, 'Juridique', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
       gP(24, 486, 138, 16, gText('Besoin de financement', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 506, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 506, 342, 48, GField(hint: '', initial: '1 500 000 FCFA', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(38.25, 520.25, 20.25, 15.75, gImg('assets/figma/v/16ec94a7384869.svg')),
       gP(38.25, 521.75, 19.5, 18, gImg('assets/figma/v/fbc7a9ade9c600.svg')),
-      gP(24, 568, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 581, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(44.667, 600.5, 17.667, 11, gImg('assets/figma/v/b08196471e66d3.svg')),
       gP(47.167, 590.5, 12.667, 12.667, gImg('assets/figma/v/50a1540c3efbda.svg')),

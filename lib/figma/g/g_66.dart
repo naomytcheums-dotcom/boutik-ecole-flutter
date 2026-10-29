@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_66 extends ConsumerWidget {
@@ -38,27 +40,23 @@ class G_66 extends ConsumerWidget {
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
       gP(24, 70, 87, 26, gText('Revenus', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(38, 132, 60, 14, gText('Disponible', 11.5, Color(0xFF66636E), weight: 500)),
       gP(38, 152, 140, 25, gText('845 000 FCFA', 20, Color(0xFF111015), weight: 800)),
       gP(150, 132, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),
       gP(155.375, 137.375, 17.875, 14.125, gImg('assets/figma/v/b45a94448c908a.svg')),
       gP(155.375, 138.625, 17.25, 16, gImg('assets/figma/v/942aaa660c45c9.svg')),
-      gP(200, 120, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(214, 132, 57, 14, gText('En attente', 11.5, Color(0xFF66636E), weight: 500)),
       gP(214, 152, 140, 25, gText('320 000 FCFA', 20, Color(0xFF111015), weight: 800)),
       gP(214, 184, 66, 14, gText('4 paiements', 11, Color(0xFF8F5400), weight: 600)),
       gP(326, 132, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),
       gP(330.75, 136.75, 18.5, 18.5, gImg('assets/figma/v/273a872595c6ee.svg')),
       gP(337, 139.25, 8.5, 11, gImg('assets/figma/v/6dc3ac1ada1685.svg')),
-      gP(24, 226, 342, 190, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 240, 118, 18, gText('Revenus cumulés', 14, Color(0xFF111015), weight: 700)),
       gP(314, 242, 36, 14, gText('6 mois', 11.5, Color(0xFF66636E), weight: 500, align: TextAlign.right)),
       gP(44, 282, 302, 104, gImg('assets/figma/r/37_803.png')),
       gP(41, 279, 308, 110, gImg('assets/figma/v/9213e8c783ec6b.svg')),
       gP(341, 277, 10, 10, gBox(color: Color(0xFF111015), oval: true)),
       gP(24, 430, 145, 19, gText('Relevés disponibles', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 468, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 481, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(46.333, 489.667, 19.333, 22.667, gImg('assets/figma/v/8a418070bfb100.svg')),
       gP(54.667, 489.667, 11, 11, gImg('assets/figma/v/2e28e879cb0de7.svg')),

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_164 extends ConsumerWidget {
@@ -54,7 +56,6 @@ class G_164 extends ConsumerWidget {
       gP(231.833, 158, 27, 14, gText('Pitch', 11, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
       gP(331, 120, 30, 30, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true)),
       gP(329, 158, 34, 14, gText('Dépôt', 11, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(24, 188, 342, 148, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 202, 159, 16, gText('Avancement du prototype', 12.5, Color(0xFF111015), weight: 600)),
       gP(323, 202, 27, 15, gText('65%', 12, Color(0xFF66636E), weight: 600, align: TextAlign.right)),
       gP(40, 224, 310, 7, gBox(color: Color(0xFFF2EFF6), radii: [4, 4, 4, 4])),
@@ -81,7 +82,6 @@ class G_164 extends ConsumerWidget {
       gP(56, 512, 305, 17, gText('Capteurs IoT', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
       gP(56, 532, 305, 14, gText('Brice · À démarrer', 11.5, Color(0xFF66636E), wrap: true)),
       gP(24, 588, 53, 19, gText('Mentor', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 626, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 634, 50, 50, gBox(image: 'assets/figma/img/2bbb6fbaae9e6d864765beabd4e677ca34d5a95e.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
       gP(98, 638, 104, 17, gText('Dr Paul Tchoupo', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 660, 121, 14, gText('Mentor · Génie logiciel', 11.5, Color(0xFF66636E))),

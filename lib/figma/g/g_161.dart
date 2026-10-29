@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_161 extends ConsumerWidget {
@@ -45,7 +47,6 @@ class G_161 extends ConsumerWidget {
       gP(24, 120, 342, 180, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [24, 24, 24, 24])),
       gP(42, 238, 309, 23, Consumer(builder: (context, ref, _) => gText(ref.watch(currentEventProvider).title, 18, Color(0xFFFFFFFF), weight: 700, wrap: true))),
       gP(42, 266, 309, 15, Consumer(builder: (context, ref, _) => gText('${ref.watch(currentEventProvider).dates} · ${ref.watch(currentEventProvider).city}', 12, Color(0xFFE3ECF7), wrap: true))),
-      gP(24, 314, 342, 76, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(60, 328, 42, 25, Consumer(builder: (context, ref, _) => gText('${ref.watch(currentEventProvider).hours} h', 20, Color(0xFF111015), weight: 800, align: TextAlign.center))),
       gP(64, 358, 34, 14, gText('Durée', 11.5, Color(0xFF66636E), align: TextAlign.center)),
       gP(177.5, 328, 35, 25, Consumer(builder: (context, ref, _) => gText(prizeShort(ref.watch(currentEventProvider).prize).replaceAll(' FCFA', ''), 20, Color(0xFF111015), weight: 800, align: TextAlign.center))),

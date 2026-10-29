@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_231 extends ConsumerWidget {
@@ -43,15 +45,12 @@ class G_231 extends ConsumerWidget {
       gP(317, 68, 42, 42, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
       gP(328.306, 78.562, 19.388, 17.156, gImg('assets/figma/v/fc3055d1ee19d1.svg')),
       gP(333.736, 92.694, 8.529, 6.748, gImg('assets/figma/v/698b3315ca6b08.svg')),
-      gP(24, 134, 170, 98, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [26, 26, 26, 26])),
       gP(38, 146, 40, 40, gBox(image: 'assets/figma/img/080dae985392a646cb0fab75bf2db27a07c8e921.png', fit: BoxFit.contain)),
       gP(82, 156, 82, 16, gText('Brief express', 13, Color(0xFF111015), weight: 600)),
       gP(38, 194, 123, 26, gText('Décris ton besoin à voix haute', 10.5, Color(0xFF66636E), wrap: true)),
-      gP(24, 244, 170, 98, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [26, 26, 26, 26])),
       gP(38, 256, 40, 40, gBox(image: 'assets/figma/img/aa1a076fa6963bfae388c034c08844168452c46f.png', fit: BoxFit.contain)),
       gP(82, 266, 81, 16, gText('Voix en texte', 13, Color(0xFF111015), weight: 600)),
       gP(38, 304, 123, 26, gText('Tes notes en transcription', 10.5, Color(0xFF66636E), wrap: true)),
-      gP(204, 134, 162, 208, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [26, 26, 26, 26])),
       gP(216, 146, 56, 56, gBox(image: 'assets/figma/img/75d62324f07569a15dcd7cd5ce6357a2177c94cd.png', fit: BoxFit.contain)),
       gP(218, 214, 87, 20, gText('Parle à Kéla', 16, Color(0xFF111015), weight: 600)),
       gP(218, 238, 117, 14, gText('Essaie dès maintenant', 11, Color(0xFF66636E))),
@@ -60,7 +59,6 @@ class G_231 extends ConsumerWidget {
       gP(24, 362, 57, 19, gText('Thèmes', 15, Color(0xFF111015), weight: 600)),
       gP(318, 364, 48, 15, gText('Tout voir', 12, Color(0xFF66636E), align: TextAlign.right)),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 394, 94, 36, 'Missions', 12.5, 500), GChip(126, 394, 78, 36, 'Design', 12.5, 400), GChip(212, 394, 70, 36, 'Vidéo', 12.5, 400), GChip(290, 394, 94, 36, 'Commerce', 12.5, 400), GChip(392, 394, 62, 36, 'Tech', 12.5, 400)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFFFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 18)),
-      gP(24, 446, 170, 190, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [26, 26, 26, 26])),
       gP(38, 458, 50, 50, gBox(image: 'assets/figma/img/73da21b1c6a4823a1f04e17582334a3c3bc639ed.png', fit: BoxFit.contain)),
       gP(38, 520, 143, 20, gText('Déposer un besoin', 15, Color(0xFF111015), weight: 600, lh: 20, wrap: true)),
       gP(38, 566, 143, 45, gText('Logo, affiche, vidéo : Kéla t’oriente vers les bons talents.', 10.5, Color(0xFF66636E), lh: 15, wrap: true)),
@@ -68,15 +66,13 @@ class G_231 extends ConsumerWidget {
       gP(54, 603, 52, 14, gText('Découvrir', 11, Color(0xFF111015), weight: 500, align: TextAlign.center)),
       gP(117.5, 609, 13, 6, gImg('assets/figma/v/4159f10924eea0.svg')),
       gP(121.5, 606, 9, 12, gImg('assets/figma/v/8fa5d9e08de732.svg')),
-      gP(204, 446, 162, 190, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [26, 26, 26, 26])),
-      gP(216, 456, 56, 56, gBox(image: 'assets/figma/img/2b51b5d6469cca917952ac344a2ddf9cc1440830.png', fit: BoxFit.contain)),
+      gP(216, 456, 56, 56, kelaOrb(image: 'assets/figma/img/2b51b5d6469cca917952ac344a2ddf9cc1440830.png', fit: BoxFit.contain)),
       gP(218, 520, 133, 20, gText('Suivre ma mission', 15, Color(0xFF111015), weight: 600, lh: 20, wrap: true)),
       gP(218, 566, 133, 30, gText('Étapes, preuves et paiement par jalons.', 10.5, Color(0xFF66636E), lh: 15, wrap: true)),
       gP(218, 598, 98, 28, gBox(color: Color(0xFFF2F0EE), radii: [14, 14, 14, 14])),
       gP(234, 603, 52, 14, gText('Découvrir', 11, Color(0xFF111015), weight: 500, align: TextAlign.center)),
       gP(297.5, 609, 13, 6, gImg('assets/figma/v/4159f10924eea0.svg')),
       gP(301.5, 606, 9, 12, gImg('assets/figma/v/8fa5d9e08de732.svg')),
-      gP(24, 654, 342, 66, gBox(color: Color(0x99FFFFFF), border: Color(0xCCFFFFFF), bw: 1, backBlur: 28, radii: [26, 26, 26, 26])),
       gP(36, 666, 42, 42, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, radii: [21, 21, 21, 21])),
       gP(90, 664, 239, 34, gText('2 talents de MMI correspondent à ton brief parfum.', 12, Color(0xFF111015), weight: 500, lh: 17, wrap: true)),
       gP(90, 700, 70, 13, gText('Voir les profils', 10.5, Color(0xFF5A3FE0), weight: 600)),

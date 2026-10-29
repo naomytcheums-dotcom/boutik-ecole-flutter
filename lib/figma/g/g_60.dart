@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_60 extends ConsumerWidget {
@@ -57,7 +59,6 @@ class G_60 extends ConsumerWidget {
       gP(259.2, 453, 101.2, 26, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1, radii: [13, 13, 13, 13])),
       gP(275.8, 459, 68, 14, gText('Bois recyclé', 11.5, Color(0xFF4A4854), weight: 500, align: TextAlign.center)),
       gP(24, 493, 345, 41, gText('Lampe décorative fabriquée à partir de bois recyclé. Écologique, design et idéale pour un intérieur moderne.', 13, Color(0xFF4A4854), lh: 20.15, wrap: true)),
-      gP(24, 548, 342, 118, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 560, 36, 16, gText('Stock', 12.5, Color(0xFF66636E))),
       gP(298, 560, 52, 16, gText('15 unités', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
       gP(40, 585, 310, 1, gBox(color: Color(0xFFF2EFF6))),

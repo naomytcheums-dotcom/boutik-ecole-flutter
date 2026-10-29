@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_243 extends ConsumerWidget {
@@ -39,7 +41,6 @@ class G_243 extends ConsumerWidget {
       gP(316, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
       gP(327.987, 81.988, 20.804, 16.129, gImg('assets/figma/v/39f18607490e1b.svg')),
       gP(327.987, 83.546, 20.025, 18.467, gImg('assets/figma/v/d4b857e4a0c91c.svg')),
-      gP(24, 124, 342, 170, gBox(color: Color(0xB2FFFFFF), border: Color(0xFFFFFFFF), bw: 1, shadows: [BoxShadow(color: Color(0x1A403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], radii: [36, 36, 36, 36])),
       gP(44, 142, 97, 15, gText('Solde disponible', 12, Color(0xFF66636E), weight: 500)),
       gP(44, 162, 204, 43, gText('12 500 FCFA', 34, Color(0xFF111015), weight: 700)),
       gP(242, 136, 104, 25, gBox(color: Color(0xFFE8F7EE), radii: [100, 100, 100, 100])),
@@ -53,17 +54,13 @@ class G_243 extends ConsumerWidget {
       gP(128, 210, 8, 52, gBox(color: Color(0xFF6A4DFF), radii: [4, 4, 4, 4])),
       gP(186, 222, 160, 46, gBox(color: Color(0xFF111015), radii: [23, 23, 23, 23]), tap: () => gToast(context, 'Démonstration : Retirer vers Orange Money')),
       gP(199, 238, 134, 13, gText('Retirer vers Orange Money', 10.5, Color(0xFFFFFFFF), weight: 600)),
-      gP(24, 308, 110, 70, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 16, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(40, 320, 13, 28, gText('7', 22, Color(0xFF111015), weight: 700)),
       gP(40, 352, 36, 14, gText('Filleuls', 11, Color(0xFF66636E))),
-      gP(140, 308, 110, 70, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 16, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(156, 320, 15, 28, gText('4', 22, Color(0xFF111015), weight: 700)),
       gP(156, 352, 31, 14, gText('Actifs', 11, Color(0xFF66636E))),
-      gP(256, 308, 110, 70, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 16, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(272, 320, 14, 28, gText('3', 22, Color(0xFF111015), weight: 700)),
       gP(272, 352, 54, 14, gText('En attente', 11, Color(0xFF66636E))),
       gP(24, 396, 79, 19, gText('Mes filleuls', 15, Color(0xFF111015), weight: 600)),
-      gP(24, 426, 342, 300, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 8), blurRadius: 22, spreadRadius: 0)], radii: [30, 30, 30, 30])),
       gP(40, 441, 40, 40, gBox(image: 'assets/figma/img/ebf23a969ca7b1083d1dcab994c4899c0b4db38b.png', fit: BoxFit.cover, radii: [20, 20, 20, 20])),
       gP(92, 444, 99, 16, gText('Brice Ndoumbe', 13, Color(0xFF111015), weight: 600)),
       gP(92, 463, 92, 24, gBox(color: Color(0xFFE8F7EE), radii: [100, 100, 100, 100])),

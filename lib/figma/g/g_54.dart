@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_54 extends ConsumerWidget {
@@ -42,7 +44,6 @@ class G_54 extends ConsumerWidget {
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 299, 26, gText('Commande #BE-2026-0142', 21, Color(0xFF111015), weight: 700)),
       gP(76, 96, 151, 15, gText('Mouanga Yannick · En ligne', 12, Color(0xFF66636E))),
-      gP(24, 120, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 128, 50, 50, gBox(image: 'assets/figma/img/84a49a20614dc5f12ab62f18400caa2290c40ec0.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
       gP(98, 132, 145, 17, gText('Lampe en bois recyclé', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 154, 160, 14, gText('Prête au retrait · 25 000 FCFA', 11.5, Color(0xFF66636E))),
@@ -55,7 +56,6 @@ class G_54 extends ConsumerWidget {
       gP(133.76, 295, 221.24, 18, gText('Merci ! Je passe cet après-midi.', 12.5, Color(0xFFFFFFFF), lh: 18, wrap: true)),
       gP(336, 328, 24, 13, gText('10:14', 10, Color(0xFF8793A5), align: TextAlign.right)),
       gP(24, 488, 0, 16, gText('', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 748, 342, 56, gBox(color: Color(0xC7FFFFFF), border: Color(0xFFFFFFFF), bw: 1, shadows: [BoxShadow(color: Color(0x14403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], backBlur: 24, radii: [28, 28, 28, 28])),
       gP(24, 748, 342, 56, GField(hint: 'Écrire un message…', size: 13, hintColor: Color(0xFF66636E), weight: 400, padL: 56)),
       gP(33, 757, 38, 38, gBox(color: Color(0xFFF1EEFB), oval: true)),
       gP(41.036, 764.624, 21.406, 22.341, gImg('assets/figma/v/b9f90829d9eec8.svg')),

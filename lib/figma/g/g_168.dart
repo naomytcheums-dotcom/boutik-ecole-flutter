@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_168 extends ConsumerWidget {
@@ -26,31 +28,26 @@ class G_168 extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 1280, h: 890, radius: 16, color: Color(0xFFF7F6F4), children: [
       gP(268, 134, 107, 15, gText('Titre du concours', 12.5, Color(0xFF111015), weight: 600, inter: true)),
-      gP(268, 154, 485, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(268, 154, 485, 48, GField(hint: '', initial: 'Orange Digital Challenge 2026', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48, inter: true)),
       gP(281.5, 169, 9, 9.75, gImg('assets/figma/v/d3a1b40bd4dbe5.svg')),
       gP(293.5, 169, 9, 9.75, gImg('assets/figma/v/d53c036a672d8b.svg')),
       gP(283, 182.5, 18, 6, gImg('assets/figma/v/7317aca1f3cfd0.svg')),
       gP(284.5, 167.5, 15, 15.75, gImg('assets/figma/v/8b173b41fcfba8.svg')),
       gP(767, 134, 143, 15, gText('Date limite d’inscription', 12.5, Color(0xFF111015), weight: 600, inter: true)),
-      gP(767, 154, 485, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(767, 154, 485, 48, GField(hint: '', initial: '05 nov. 2026', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48, inter: true)),
       gP(781.25, 169, 19.5, 19.5, gImg('assets/figma/v/99b18d1a251e8c.svg')),
       gP(791, 167.5, 6, 9, gImg('assets/figma/v/4d0c4aa2d5e373.svg')),
       gP(785, 167.5, 6, 9, gImg('assets/figma/v/4d0c4aa2d5e373.svg')),
       gP(781.25, 173.5, 19.5, 6, gImg('assets/figma/v/40b22babe144e0.svg')),
       gP(268, 216, 26, 15, gText('Lieu', 12.5, Color(0xFF111015), weight: 600, inter: true)),
-      gP(268, 236, 485, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(268, 236, 485, 48, GField(hint: '', initial: 'Douala · Orange Digital Center', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48, inter: true)),
       gP(283, 249.5, 18, 21, gImg('assets/figma/v/32cd8858f7ce88.svg')),
       gP(286.75, 253.25, 10.5, 10.5, gImg('assets/figma/v/f34fbbf4909aff.svg')),
       gP(767, 216, 97, 15, gText('Dotation (FCFA)', 12.5, Color(0xFF111015), weight: 600, inter: true)),
-      gP(767, 236, 485, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(767, 236, 485, 48, GField(hint: '', initial: '5 000 000', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48, inter: true)),
       gP(781.25, 250.25, 20.25, 15.75, gImg('assets/figma/v/a842b4c78dabfc.svg')),
       gP(781.25, 251.75, 19.5, 18, gImg('assets/figma/v/fbc7a9ade9c600.svg')),
       gP(268, 298, 150, 15, gText('Description et règlement', 12.5, Color(0xFF111015), weight: 600, inter: true)),
-      gP(268, 318, 984, 96, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
       gP(268, 318, 984, 96, GField(hint: 'Thématique, critères d’évaluation, conditions de participation…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, inter: true, multiline: true, padT: 14)),
       gP(268, 428, 485, 132, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
       gP(280, 436, 50, 50, gBox(image: 'assets/figma/img/af86f2e539ad8f1844ccfbe19576723186ea4d78.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
@@ -76,7 +73,6 @@ class G_168 extends ConsumerWidget {
       gP(0, 0, 1280, 56, gBox(color: Color(0xFFFFFFFF))),
       gP(20, 10, 36, 34, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(62, 17, 107, 21, gText('Boutik-École', 17, Color(0xFF18181B), weight: 700, inter: true)),
-      gP(240, 12, 330, 34, gBox(color: Color(0xFFF4F3F1), border: Color(0xFFE6E3DE), bw: 1, radii: [17, 17, 17, 17])),
       gP(240, 12, 330, 34, GField(hint: 'Rechercher données, rapports, produits…', size: 11.5, hintColor: Color(0xFF66636E), weight: 400, padL: 36, inter: true)),
       gP(252.5, 21.5, 15, 15, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(251.375, 20.375, 16, 16, gImg('assets/figma/v/3a82c8c513bd84.svg')),

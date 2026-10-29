@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_279 extends ConsumerWidget {
@@ -37,7 +39,6 @@ class G_279 extends ConsumerWidget {
       gP(117, 76, 156, 21, gText('Ajouter des fichiers', 17, Color(0xFF111015), weight: 500)),
       gP(76, 102, 238, 15, gText('Contrôles automatiques avant publication', 12, Color(0xFF66636E))),
       gP(164.917, 136.637, 63.334, 66.612, gImg('assets/figma/r/209_239.png')),
-      gP(24, 226, 342, 120, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(44, 242, 111, 18, gText('Règles de dépôt', 14, Color(0xFF111015), weight: 600)),
       gP(44, 272, 89, 15, gText('Types autorisés', 12, Color(0xFF66636E))),
       gP(153, 272, 193, 15, gText('JPG · PNG · WebP · PDF · MP4 · ZIP', 12, Color(0xFF111015), weight: 600)),
@@ -45,22 +46,18 @@ class G_279 extends ConsumerWidget {
       gP(191, 298, 155, 15, gText('5 Mo image · 200 Mo vidéo', 12, Color(0xFF111015), weight: 600)),
       gP(44, 324, 45, 15, gText('Analyse', 12, Color(0xFF66636E))),
       gP(202, 324, 144, 15, gText('Antivirus à chaque dépôt', 12, Color(0xFF111015), weight: 600)),
-      gP(24, 366, 342, 64, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(40, 382, 10, 10, gBox(color: Color(0xFF0F7A52), oval: true)),
       gP(60, 376, 101, 16, gText('plan-lampe.pdf', 13, Color(0xFF111015), weight: 600)),
       gP(300, 376, 33, 14, gText('2,1 Mo', 11, Color(0xFF66636E), weight: 500)),
       gP(60, 400, 132, 15, gText('Analyse terminée : sain', 12, Color(0xFF0F7A52), weight: 600)),
-      gP(24, 440, 342, 64, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(40, 456, 10, 10, gBox(color: Color(0xFFA35F00), oval: true)),
       gP(60, 450, 85, 16, gText('maquette.zip', 13, Color(0xFF111015), weight: 600)),
       gP(300, 450, 33, 14, gText('48 Mo', 11, Color(0xFF66636E), weight: 500)),
       gP(60, 474, 138, 15, gText('Analyse en cours… 64 %', 12, Color(0xFF8F5400), weight: 600)),
-      gP(24, 514, 342, 64, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(40, 530, 10, 10, gBox(color: Color(0xFFB42318), oval: true)),
       gP(60, 524, 64, 16, gText('script.exe', 13, Color(0xFF111015), weight: 600)),
       gP(300, 524, 33, 14, gText('1,2 Mo', 11, Color(0xFF66636E), weight: 500)),
       gP(60, 548, 150, 15, gText('Refusé : type non autorisé', 12, Color(0xFFB42318), weight: 600)),
-      gP(24, 588, 342, 64, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(40, 604, 10, 10, gBox(color: Color(0xFFB42318), oval: true)),
       gP(60, 598, 114, 16, gText('video-demo.mp4', 13, Color(0xFF111015), weight: 600)),
       gP(300, 598, 37, 14, gText('312 Mo', 11, Color(0xFF66636E), weight: 500)),

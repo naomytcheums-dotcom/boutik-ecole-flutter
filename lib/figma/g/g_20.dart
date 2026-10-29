@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_20 extends ConsumerWidget {
@@ -40,7 +42,6 @@ class G_20 extends ConsumerWidget {
       gP(18.997, 66.58, 18.997, 18.997, const SizedBox.expand(), tap: () => gBack(context)),
       gP(19.955, 67.538, 11.541, 17.082, gImg('assets/figma/v/f6fa21673ff638.svg')),
       gP(19.955, 73.079, 17.082, 6, gImg('assets/figma/v/2ac8074e1f73c6.svg')),
-      gP(52.521, 57.059, 269.312, 39.228, gBox(color: Color(0xFFF2EFF6), radii: [18.438, 18.438, 18.438, 18.438])),
       gP(52.521, 57.059, 269.312, 39.228, GField(hint: '', initial: 'design', size: 15.086, hintColor: Color(0xFF44546A), weight: 500, padL: 39.112)),
       gP(62.02, 67.733, 17.88, 17.88, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(61.255, 66.968, 17.92, 17.92, gImg('assets/figma/v/09733bd88be228.svg')),

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_78 extends ConsumerWidget {
@@ -53,7 +55,6 @@ class G_78 extends ConsumerWidget {
       gP(301, 354, 49, 15, gText('Voir tout', 12, Color(0xFF5A3FE0), weight: 500, align: TextAlign.right)),
       gP(352.5, 359, 13, 6, gImg('assets/figma/v/4159f10924eea0.svg')),
       gP(356, 355.5, 9.5, 13, gImg('assets/figma/v/a365eb17b7a19f.svg')),
-      gP(24, 390, 342, 264, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 398, 50, 50, gBox(image: 'assets/figma/img/9e2ce90f4496911ea5fab01d09cc48a0c7a22b47.png', fit: BoxFit.cover, radii: [12, 12, 12, 12]), show: (ref.watch(visibleProjectsProvider).length > 0)),
       gP(98, 402, 169, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(visibleProjectsProvider).length > 0 ? ref.watch(visibleProjectsProvider)[0].title : '', 13.5, Color(0xFF111015), weight: 600)), show: (ref.watch(visibleProjectsProvider).length > 0)),
       gP(98, 424, 119, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(visibleProjectsProvider).length > 0 ? ref.watch(visibleProjectsProvider)[0].sub : '', 11.5, Color(0xFF66636E))), show: (ref.watch(visibleProjectsProvider).length > 0)),

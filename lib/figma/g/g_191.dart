@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_191 extends ConsumerWidget {
@@ -80,23 +82,19 @@ class G_191 extends ConsumerWidget {
       gP(214, 514, 92, 16, gText('Étude ou audit', 13, Color(0xFFFFFFFF), weight: 800)),
       gP(214, 534, 80, 13, gText('Marché, finance', 10.5, Color(0xCCFFFFFF), weight: 500)),
       gP(24, 572, 130, 16, gText('Décrivez votre besoin', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 592, 342, 96, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(24, 592, 342, 96, GField(hint: 'Ex. identité visuelle complète pour ma marque de parfums…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, onChanged: (v) { ref.read(formProvider.notifier).put('ms_desc', v); }, multiline: true, padT: 14)),
       errorText('ms_desc', 28, 692),
       gP(24, 702, 89, 16, gText('Budget estimé', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 722, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 722, 342, 48, GField(hint: '', initial: '150 000 – 300 000 FCFA', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(38.25, 736.25, 20.25, 15.75, gImg('assets/figma/v/16ec94a7384869.svg')),
       gP(38.25, 737.75, 19.5, 18, gImg('assets/figma/v/fbc7a9ade9c600.svg')),
       gP(334.5, 740.75, 15, 10.5, gImg('assets/figma/v/7abbf201b36418.svg')),
       gP(24, 784, 91, 16, gText('Date souhaitée', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 804, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 804, 342, 48, GField(hint: '', initial: '30 novembre 2026', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(38.25, 819, 19.5, 19.5, gImg('assets/figma/v/99b18d1a251e8c.svg')),
       gP(48, 817.5, 6, 9, gImg('assets/figma/v/4d0c4aa2d5e373.svg')),
       gP(42, 817.5, 6, 9, gImg('assets/figma/v/4d0c4aa2d5e373.svg')),
       gP(38.25, 823.5, 19.5, 6, gImg('assets/figma/v/40b22babe144e0.svg')),
-      gP(24, 866, 342, 79, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
       gP(36, 889.5, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(43.333, 895.443, 17.333, 20.173, gImg('assets/figma/v/b35e336eb0a1dc.svg')),
       gP(46.875, 901.083, 10.25, 8.833, gImg('assets/figma/v/2bdcafa88f7a43.svg')),

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_65 extends ConsumerWidget {
@@ -41,13 +43,11 @@ class G_65 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 239, 26, gText('Vente #BE-2026-0142', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 128, 50, 50, gBox(image: 'assets/figma/img/b49b6a241d16c8c01f026ab4fe2980adaae1b6f4.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
       gP(98, 132, 145, 17, gText('Lampe en bois recyclé', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 154, 113, 14, gText('Qté : 1 · 25 000 FCFA', 11.5, Color(0xFF66636E))),
       gP(268, 142, 84, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11])),
       gP(281.5, 146, 57, 14, gText('À préparer', 11, Color(0xFF8F5400), weight: 600, align: TextAlign.center)),
-      gP(24, 200, 342, 256, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 214, 131, 18, gText('Résumé de la vente', 14, Color(0xFF111015), weight: 700)),
       gP(40, 248, 54, 16, gText('Acheteur', 12.5, Color(0xFF66636E))),
       gP(244, 248, 106, 16, gText('Yannick Mouanga', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),

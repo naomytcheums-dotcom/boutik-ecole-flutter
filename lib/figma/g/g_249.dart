@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_249 extends ConsumerWidget {
@@ -36,31 +38,27 @@ class G_249 extends ConsumerWidget {
       gP(44.325, 84.325, 15.35, 15.35, gImg('assets/figma/v/dacf8ca54f8b22.svg')),
       gP(171.5, 82, 47, 21, gText('Créer', 17, Color(0xFF111015), weight: 500)),
       gP(129.5, 106, 131, 15, gText('Que veux-tu partager ?', 12, Color(0xFF66636E))),
-      gP(24, 140, 342, 116, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 8), blurRadius: 22, spreadRadius: 0)], radii: [32, 32, 32, 32]), tap: () => gOpen(context, '250')),
+      gP(24, 140, 342, 116, const SizedBox.expand(), tap: () => gOpen(context, '250')),
       gP(44, 160, 80, 80, gBox(image: 'assets/figma/img/1574e42a325d3a4ac509841e7a5eb5a285a3d991.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
       gP(142, 170, 82, 19, gText('Publication', 15, Color(0xFF111015), weight: 600)),
       gP(142, 194, 173, 30, gText('Photo, vidéo ou carrousel pour ton fil', 11, Color(0xFF66636E), lh: 15, wrap: true)),
       gP(327, 183, 30, 30, gBox(color: Color(0xFFF4F1F8), oval: true)),
       gP(337.375, 191.75, 9.25, 12.5, gImg('assets/figma/v/7fc706b238185f.svg')),
-      gP(24, 268, 342, 116, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 8), blurRadius: 22, spreadRadius: 0)], radii: [32, 32, 32, 32])),
       gP(44, 288, 80, 80, gBox(image: 'assets/figma/img/d5a96228e65dc2920e40cfac9b1205c2faee3caf.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
       gP(142, 298, 32, 19, gText('Reel', 15, Color(0xFF111015), weight: 600)),
       gP(142, 322, 173, 30, gText('Vidéo verticale courte, plein écran', 11, Color(0xFF66636E), lh: 15, wrap: true)),
       gP(327, 311, 30, 30, gBox(color: Color(0xFFF4F1F8), oval: true)),
       gP(337.375, 319.75, 9.25, 12.5, gImg('assets/figma/v/7fc706b238185f.svg')),
-      gP(24, 396, 342, 116, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 8), blurRadius: 22, spreadRadius: 0)], radii: [32, 32, 32, 32])),
       gP(44, 416, 80, 80, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
       gP(142, 426, 30, 19, gText('Live', 15, Color(0xFF111015), weight: 600), fx: 'pulse'),
       gP(142, 450, 173, 15, gText('Direct sans seuil d’abonnés', 11, Color(0xFF66636E), lh: 15, wrap: true)),
       gP(327, 439, 30, 30, gBox(color: Color(0xFFF4F1F8), oval: true)),
       gP(337.375, 447.75, 9.25, 12.5, gImg('assets/figma/v/7fc706b238185f.svg')),
-      gP(24, 524, 342, 116, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 8), blurRadius: 22, spreadRadius: 0)], radii: [32, 32, 32, 32])),
       gP(44, 544, 80, 80, gBox(image: 'assets/figma/img/4ca68f79023605aecb4f83724629d508e921e885.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
       gP(142, 554, 139, 19, gText('Article de boutique', 15, Color(0xFF111015), weight: 600)),
       gP(142, 578, 173, 15, gText('Produit, service ou offre', 11, Color(0xFF66636E), lh: 15, wrap: true)),
       gP(327, 567, 30, 30, gBox(color: Color(0xFFF4F1F8), oval: true)),
       gP(337.375, 575.75, 9.25, 12.5, gImg('assets/figma/v/7fc706b238185f.svg')),
-      gP(24, 660, 342, 64, gBox(color: Color(0x99FFFFFF), border: Color(0xFFFFFFFF), bw: 1, radii: [26, 26, 26, 26])),
       gP(51, 695, 12.75, 6, gImg('assets/figma/v/077154502d192d.svg')),
       gP(44.25, 682.159, 18.841, 18.841, gImg('assets/figma/v/80acba5fb06071.svg')),
       gP(82, 676, 63, 16, gText('Brouillons', 13, Color(0xFF111015), weight: 600)),

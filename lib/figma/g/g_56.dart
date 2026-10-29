@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_56 extends ConsumerWidget {
@@ -42,7 +44,6 @@ class G_56 extends ConsumerWidget {
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 311, 26, gText('Notifications et confidentialité', 21, Color(0xFF111015), weight: 700)),
       gP(24, 120, 95, 19, gText('Notifications', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 158, 342, 264, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 170, 142, 17, gText('Suivi des commandes', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 192, 147, 14, gText('Expédition, retrait, livraison', 11.5, Color(0xFF66636E))),
       gP(308, 179, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
@@ -59,7 +60,6 @@ class G_56 extends ConsumerWidget {
       gP(40, 390, 134, 14, gText('Rappels après réception', 11.5, Color(0xFF66636E))),
       gP(308, 377, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
       gP(24, 436, 110, 19, gText('Confidentialité', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 474, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 486, 77, 17, gText('Profil public', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 508, 138, 14, gText('Visible par les entreprises', 11.5, Color(0xFF66636E))),
       gP(308, 495, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),

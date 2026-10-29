@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_39 extends ConsumerWidget {
@@ -41,16 +43,13 @@ class G_39 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 300, 26, gText('Demande de renseignements', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 128, 50, 50, gBox(image: 'assets/figma/img/3d6379dbe0e12637d54ca9d283be8cb419701599.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
       gP(98, 132, 145, 17, gText('Lampe en bois recyclé', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 154, 137, 14, gText('25 000 FCFA · Yannick M.', 11.5, Color(0xFF66636E))),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 200, 122.2, 34, 'Disponibilité', 12.5, 600), GChip(154.2, 200, 63, 34, 'Délai', 12.5, 500), GChip(225.2, 200, 144.4, 34, 'Personnalisation', 12.5, 500), GChip(377.6, 200, 92.6, 34, 'Livraison', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
       gP(24, 248, 89, 16, gText('Votre question', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 268, 342, 96, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(24, 268, 342, 96, GField(hint: 'Bonjour, la lampe est-elle disponible en bambou ?', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, multiline: true, padT: 14)),
       gP(24, 378, 165, 16, gText('Votre téléphone (facultatif)', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 398, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 398, 342, 48, GField(hint: '', initial: '+237 6 XX XX XX XX', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(39.75, 411.5, 16.5, 21, gImg('assets/figma/v/f88bf1acb4da04.svg')),
       gP(45, 423.5, 6.008, 6, gImg('assets/figma/v/f943396fb20219.svg')),

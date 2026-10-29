@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_L1 extends ConsumerWidget {
@@ -54,7 +56,6 @@ class G_L1 extends ConsumerWidget {
       gP(246.271, 409.083, 19.458, 19.062, gImg('assets/figma/v/0397ee56e7c9a4.svg')),
       gP(24, 470, 342, 50, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [24, 24, 24, 24]), tap: () => gToast(context, 'Démonstration : Atelier : fabrication de la lampe en bois recyclé')),
       gP(40, 486, 315, 16, gText('Atelier : fabrication de la lampe en bois recyclé', 12.5, Color(0xFF111015), weight: 500, wrap: true)),
-      gP(24, 532, 342, 138, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 8), blurRadius: 22, spreadRadius: 0)], radii: [30, 30, 30, 30])),
       gP(44, 548, 146, 18, gText('Tu peux lancer ce live', 14.5, Color(0xFF111015), weight: 600)),
       gP(299, 544, 47, 26, gBox(color: Color(0xFFE8F7EE), radii: [100, 100, 100, 100])),
       gP(311, 550, 23, 14, gText('3 / 4', 11, Color(0xFF126B49), weight: 600)),
@@ -70,7 +71,6 @@ class G_L1 extends ConsumerWidget {
       gP(202, 624, 22, 22, gBox(color: Color(0xFFE4E1EA), oval: true)),
       gP(232, 628, 97, 15, gText('Charte acceptée', 12, Color(0xFF66636E))),
       gP(44, 648, 202, 13, gText('Aucun seuil d’abonnés sur Boutik-École.', 10.5, Color(0xFF126B49), weight: 500)),
-      gP(24, 682, 342, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 8), blurRadius: 22, spreadRadius: 0)], radii: [30, 30, 30, 30])),
       gP(44, 696, 106, 16, gText('Diffuser aussi sur', 13, Color(0xFF111015), weight: 600)),
       gP(40, 722, 152, 48, gBox(color: Color(0xFFF6F3FA), radii: [24, 24, 24, 24])),
       gP(48, 730, 32, 32, gBox(color: Color(0x24FF1F1F), radii: [11, 11, 11, 11])),

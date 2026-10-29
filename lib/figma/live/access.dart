@@ -127,54 +127,30 @@ class _AccessDeniedState extends ConsumerState<AccessDenied> {
   Widget build(BuildContext context) {
     const f = 'PlusJakartaSans';
     TextStyle st(double s, FontWeight w, Color c) => TextStyle(inherit: false, fontFamily: f, fontSize: s, fontWeight: w, color: c, textBaseline: TextBaseline.alphabetic);
-    final a = ref.watch(authProvider).current;
-    final need = allowedRoles(widget.id)!.map((r) => roleNames[r]!).join(' · ');
-    final quick = <(String, Account)>[
-      for (final s in seedAccounts)
-        if (s.staff.isNotEmpty || s.email == demoAccount.email) (s.staff.isNotEmpty ? s.staff : 'Étudiant', s),
-    ];
+    // Page 404 neutre : ne révèle ni l'existence de l'écran ni les rôles qui y ont accès.
     return Scaffold(
       backgroundColor: const Color(0xFFF4EFE6),
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 460),
+            constraints: const BoxConstraints(maxWidth: 420),
             child: Padding(
               padding: const EdgeInsets.all(28),
               child: Column(mainAxisSize: MainAxisSize.min, children: [
-                Container(
-                  width: 84,
-                  height: 84,
-                  decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFF111015)),
-                  child: const Icon(Icons.lock_rounded, color: Colors.white, size: 38),
-                ),
-                const SizedBox(height: 22),
-                Text('Accès réservé', style: st(24, FontWeight.w700, const Color(0xFF111015))),
-                const SizedBox(height: 10),
-                Text(
-                  'L’écran ${widget.id} est réservé aux rôles : $need.\nVous êtes connecté en tant que ${roleNames[roleKey(a)]}${a == null ? '' : ' (${a.name})'}.',
-                  textAlign: TextAlign.center,
-                  style: st(13.5, FontWeight.w400, const Color(0xFF66636E)).copyWith(height: 1.55),
-                ),
-                const SizedBox(height: 22),
-                Wrap(spacing: 8, runSpacing: 8, alignment: WrapAlignment.center, children: [
-                  for (final (label, acc) in quick)
-                    ActionChip(
-                      label: Text(label, style: st(12, FontWeight.w600, const Color(0xFF111015))),
-                      backgroundColor: Colors.white,
-                      onPressed: () {
-                        ref.read(authProvider.notifier).login(acc);
-                        ref.read(auditProvider.notifier).log(acc.name, 'Changement de compte (démonstration)', roleNames[roleKey(acc)]!, 'Connexions', level: 'Sensible');
-                      },
-                    ),
-                ]),
+                Text('404', style: st(76, FontWeight.w800, const Color(0xFF111015))),
                 const SizedBox(height: 6),
-                Text('Comptes de démonstration : mot de passe Boutik2026', style: st(11, FontWeight.w400, const Color(0xFF66636E))),
-                const SizedBox(height: 22),
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  TextButton(onPressed: () => context.go(screenPath('03')), child: Text('Retour à l’accueil', style: st(13, FontWeight.w600, const Color(0xFF5A3FE0)))),
-                  TextButton(onPressed: () => context.go(screenPath('11')), child: Text('Se connecter', style: st(13, FontWeight.w600, const Color(0xFF5A3FE0)))),
-                ]),
+                Text('Page introuvable', style: st(22, FontWeight.w700, const Color(0xFF111015))),
+                const SizedBox(height: 10),
+                Text('Cette page n’existe pas ou n’est plus disponible.', textAlign: TextAlign.center, style: st(13.5, FontWeight.w400, const Color(0xFF4A4854)).copyWith(height: 1.55)),
+                const SizedBox(height: 26),
+                GestureDetector(
+                  onTap: () => context.go(screenPath('03')),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 14),
+                    decoration: BoxDecoration(color: const Color(0xFF111015), borderRadius: BorderRadius.circular(28)),
+                    child: Text('Retour à l’accueil', style: st(13.5, FontWeight.w600, Colors.white)),
+                  ),
+                ),
               ]),
             ),
           ),

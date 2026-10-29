@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_176 extends ConsumerWidget {
@@ -47,7 +49,6 @@ class G_176 extends ConsumerWidget {
       gP(204, 344, 8, 6, gBox(color: Color(0xFFE6E1EE), radii: [3, 3, 3, 3])),
       gP(24, 366, 345, 28, gText('Trouvez ce qui vous inspire', 22, Color(0xFF111015), weight: 800, wrap: true)),
       gP(24, 398, 345, 38, gText('Parcourez les produits, commandez en toute confiance et retirez au kiosque près de vous.', 13, Color(0xFF66636E), lh: 19, wrap: true)),
-      gP(24, 450, 342, 156, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 456, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(48.833, 479.667, 7.667, 7.667, gImg('assets/figma/v/1494b1f7d3ff5c.svg')),
       gP(58, 479.667, 7.667, 7.667, gImg('assets/figma/v/1494b1f7d3ff5c.svg')),

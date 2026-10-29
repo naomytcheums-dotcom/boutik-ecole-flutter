@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_277 extends ConsumerWidget {
@@ -37,25 +39,21 @@ class G_277 extends ConsumerWidget {
       gP(100, 76, 190, 21, gText('Supervision des bornes', 17, Color(0xFF111015), weight: 500)),
       gP(113, 102, 164, 15, gText('Vue administrateur · 4 bornes', 12, Color(0xFF66636E))),
       gP(167, 144.667, 56, 50.666, gImg('assets/figma/r/200_695.png')),
-      gP(24, 224, 342, 84, gBox(color: Color(0xD9FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [22, 22, 22, 22])),
       gP(40, 240, 12, 12, gBox(color: Color(0xFF12B76A), oval: true)),
       gP(62, 236, 145, 18, gText('Borne 1 · Hall principal', 14, Color(0xFF111015), weight: 600)),
       gP(305, 236, 45, 15, gText('En ligne', 12, Color(0xFF027A48), weight: 700)),
       gP(62, 260, 124, 15, gText('Dernier signal il y a 12 s', 12, Color(0xFF6B6877))),
       gP(62, 282, 217, 14, gText('Redémarrer  ·  Journal  ·  Activer le secours', 11, Color(0xFF5A3FE0), weight: 600)),
-      gP(24, 320, 342, 84, gBox(color: Color(0xD9FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [22, 22, 22, 22])),
       gP(40, 336, 12, 12, gBox(color: Color(0xFFD92D20), oval: true)),
       gP(62, 332, 149, 18, gText('Borne 2 · Bibliothèque', 14, Color(0xFF111015), weight: 600)),
       gP(292, 332, 58, 15, gText('Hors ligne', 12, Color(0xFFD92D20), weight: 700)),
       gP(62, 356, 183, 15, gText('Mode secours actif depuis 6 min', 12, Color(0xFF6B6877))),
       gP(62, 378, 217, 14, gText('Redémarrer  ·  Journal  ·  Activer le secours', 11, Color(0xFF5A3FE0), weight: 600)),
-      gP(24, 416, 342, 84, gBox(color: Color(0xD9FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [22, 22, 22, 22])),
       gP(40, 432, 12, 12, gBox(color: Color(0xFF12B76A), oval: true)),
       gP(62, 428, 184, 18, gText('Borne 3 · Département MMI', 14, Color(0xFF111015), weight: 600)),
       gP(305, 428, 45, 15, gText('En ligne', 12, Color(0xFF027A48), weight: 700)),
       gP(62, 452, 120, 15, gText('Dernier signal il y a 8 s', 12, Color(0xFF6B6877))),
       gP(62, 474, 217, 14, gText('Redémarrer  ·  Journal  ·  Activer le secours', 11, Color(0xFF5A3FE0), weight: 600)),
-      gP(24, 512, 342, 84, gBox(color: Color(0xD9FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [22, 22, 22, 22])),
       gP(40, 528, 12, 12, gBox(color: Color(0xFFF79009), oval: true)),
       gP(62, 524, 161, 18, gText('Borne 4 · Salle des profs', 14, Color(0xFF111015), weight: 600)),
       gP(289, 524, 61, 15, gText('Mise à jour', 12, Color(0xFFB54708), weight: 700)),

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_17 extends ConsumerWidget {
@@ -51,7 +53,6 @@ class G_17 extends ConsumerWidget {
       gP(24, 307, 179, 19, gText('2. Données personnelles', 15, Color(0xFF111015), weight: 700)),
       gP(24, 345, 345, 61, gText('Vos données servent uniquement au fonctionnement du service : commandes, livraison, validation du compte et communication avec les vendeurs.', 13, Color(0xFF4A4854), lh: 20.15, wrap: true)),
       gP(24, 420, 145, 19, gText('Vos consentements', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 458, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 470, 181, 17, gText('Notifications de commande', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 492, 144, 14, gText('Suivi, livraison et réception', 11.5, Color(0xFF66636E))),
       gP(308, 479, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
@@ -64,7 +65,7 @@ class G_17 extends ConsumerWidget {
       gP(40, 624, 161, 14, gText('Aider à améliorer l’application', 11.5, Color(0xFF66636E))),
       gP(308, 611, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
       gP(24, 670, 20, 20, gBox(color: Color(0xFF111015), radii: [6, 6, 6, 6])),
-      gP(26.667, 673.75, 14.667, 11.958, gImg('assets/figma/v/ac006383c9ee5c.svg')),
+      gP(26.667, 673.75, 14.667, 11.958, gImg('assets/figma/v/w_check.svg')),
       gP(54, 671, 315, 36, gText('J’ai lu et j’accepte les Conditions d’utilisation et la Politique de confidentialité.', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
       gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
       gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Accepter et continuer')),

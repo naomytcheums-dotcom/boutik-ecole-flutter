@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_53 extends ConsumerWidget {
@@ -44,7 +46,6 @@ class G_53 extends ConsumerWidget {
       gP(342.583, 69.833, 18.833, 24.333, gImg('assets/figma/v/1b7254365713bc.svg')),
       gP(349, 84.5, 6.01, 6, gImg('assets/figma/v/bebdac7c60f441.svg')),
       gP(76, 96, 44, 15, gText('En ligne', 12, Color(0xFF66636E))),
-      gP(24, 120, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 128, 50, 50, gBox(image: 'assets/figma/img/a76e4a9cacb04ffda33cfd8133809ed5cc5c402c.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
       gP(98, 132, 145, 17, gText('Lampe en bois recyclé', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 154, 73, 14, gText('25 000 FCFA', 11.5, Color(0xFF66636E))),
@@ -59,7 +60,6 @@ class G_53 extends ConsumerWidget {
       gP(38, 379, 221.24, 36, gText('Très bien, je l’emballe avec soin. À demain !', 12.5, Color(0xFF111015), lh: 18, wrap: true)),
       gP(30, 430, 24, 13, gText('10:15', 10, Color(0xFF8793A5))),
       gP(24, 600, 0, 16, gText('', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 748, 342, 56, gBox(color: Color(0xC7FFFFFF), border: Color(0xFFFFFFFF), bw: 1, shadows: [BoxShadow(color: Color(0x14403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], backBlur: 24, radii: [28, 28, 28, 28])),
       gP(24, 748, 342, 56, GField(hint: 'Écrire un message…', size: 13, hintColor: Color(0xFF66636E), weight: 400, padL: 56)),
       gP(33, 757, 38, 38, gBox(color: Color(0xFFF1EEFB), oval: true)),
       gP(41.036, 764.624, 21.406, 22.341, gImg('assets/figma/v/b9f90829d9eec8.svg')),

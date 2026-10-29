@@ -13,7 +13,7 @@ class KioskQr extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final image = QrImage(QrCode(payload: QrPayload.fromString(data), errorCorrectLevel: QrErrorCorrectLevel.high));
+    final image = QrImage(QrCode.fromData(data: data, errorCorrectLevel: QrErrorCorrectLevel.H));
     return SizedBox.square(
       dimension: size,
       child: Stack(

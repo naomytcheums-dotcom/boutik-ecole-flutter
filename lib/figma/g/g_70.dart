@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_70 extends ConsumerWidget {
@@ -44,7 +46,6 @@ class G_70 extends ConsumerWidget {
       gP(341, 71, 22, 22, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(340.75, 70.75, 20.667, 20.667, gImg('assets/figma/v/eeff0eb6fd6e24.svg')),
       gP(353.308, 83.308, 9.942, 9.942, gImg('assets/figma/v/34172806399cca.svg')),
-      gP(24, 120, 342, 48, gBox(color: Color(0xFFF2EFF6), radii: [24, 24, 24, 24])),
       gP(24, 120, 342, 48, GField(hint: 'Rechercher un talent…', size: 13.5, hintColor: Color(0xFF66636E), weight: 400, padL: 46, onChanged: (v) { ref.read(talentQueryProvider.notifier).set(v); })),
       gP(40.5, 134.5, 19, 19, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(39.875, 133.875, 18.667, 18.667, gImg('assets/figma/v/50f467eb8a9b46.svg')),
@@ -60,7 +61,6 @@ class G_70 extends ConsumerWidget {
       gP(340.167, 145.75, 6, 9.167, gImg('assets/figma/v/3221f2f163c9f7.svg')),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 182, 55.6, 34, 'Tous', 12.5, 600), GChip(87.6, 182, 122.2, 34, 'Développement', 12.5, 500), GChip(217.8, 182, 70.4, 34, 'Design', 12.5, 500), GChip(296.2, 182, 107.4, 34, 'Audiovisuel', 12.5, 500), GChip(411.6, 182, 114.8, 34, 'Électronique', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17, onChanged: (i) { ref.read(talentTabProvider.notifier).set(i); })),
       gP(24, 230, 159, 19, Consumer(builder: (context, ref, _) => gText('${ref.watch(visibleTalentsProvider).where((t) => t.available).length} talents disponibles', 15, Color(0xFF111015), weight: 700))),
-      gP(24, 268, 342, 330, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 276, 50, 50, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [25, 25, 25, 25]), show: (ref.watch(visibleTalentsProvider).length > 0)),
       gP(98, 280, 98, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(visibleTalentsProvider).length > 0 ? ref.watch(visibleTalentsProvider)[0].name : '', 13.5, Color(0xFF111015), weight: 600)), show: (ref.watch(visibleTalentsProvider).length > 0)),
       gP(98, 302, 162, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(visibleTalentsProvider).length > 0 ? ref.watch(visibleTalentsProvider)[0].sub : '', 11.5, Color(0xFF66636E))), show: (ref.watch(visibleTalentsProvider).length > 0)),

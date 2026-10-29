@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_166 extends ConsumerWidget {
@@ -46,7 +48,6 @@ class G_166 extends ConsumerWidget {
       gP(42, 228, 309, 23, Consumer(builder: (context, ref, _) => gText(ref.watch(rankingProvider).isEmpty ? '' : '${ref.watch(rankingProvider).first.team} · 1er prix', 18, Color(0xFFFFFFFF), weight: 700, wrap: true))),
       gP(42, 256, 309, 15, gText('Orange Digital Challenge 2026', 12, Color(0xFFE3ECF7), wrap: true)),
       gP(24, 304, 87, 19, gText('Classement', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 342, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 355, 40, 40, gBox(color: Color(0xFFFDEFC8), radii: [13, 13, 13, 13])),
       gP(44.667, 365.333, 9.333, 10.167, gImg('assets/figma/v/ff038cff524fea.svg')),
       gP(58, 365.333, 9.333, 10.167, gImg('assets/figma/v/6d7d6e6c277316.svg')),
@@ -76,7 +77,6 @@ class G_166 extends ConsumerWidget {
       gP(88, 508, 107, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(rankingProvider).length > 2 ? ref.watch(rankingProvider)[2].project : '', 11.5, Color(0xFF66636E))), show: (ref.watch(rankingProvider).length > 2)),
       gP(293.6, 496, 58.4, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11])),
       gP(166.3, 500, 173, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(rankingProvider).length > 2 ? '${ref.watch(rankingProvider)[2].pts} pts' : '', 11, Color(0xFF8F5400), weight: 600, wrap: true, align: TextAlign.right)), show: (ref.watch(rankingProvider).length > 2)),
-      gP(24, 554, 342, 154, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 568, 98, 18, gText('Récompenses', 14, Color(0xFF111015), weight: 700)),
       gP(40, 602, 22, 16, gText('Prix', 12.5, Color(0xFF66636E))),
       gP(250, 602, 100, 16, gText('2 000 000 FCFA', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),

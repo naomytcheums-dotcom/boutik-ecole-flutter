@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_93 extends ConsumerWidget {
@@ -42,7 +44,6 @@ class G_93 extends ConsumerWidget {
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 204, 26, gText('Propositions reçues', 21, Color(0xFF111015), weight: 700)),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 107.4, 34, 'Toutes (23)', 12.5, 600), GChip(139.4, 120, 144.4, 34, 'Présélection (4)', 12.5, 500), GChip(291.8, 120, 85.2, 34, 'Refusées', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
-      gP(24, 168, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 176, 50, 50, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
       gP(98, 180, 98, 17, gText('Mariam Essono', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 202, 116, 14, gText('80 000 FCFA · 7 jours', 11.5, Color(0xFF66636E))),
@@ -60,7 +61,6 @@ class G_93 extends ConsumerWidget {
       gP(98, 334, 115, 14, gText('65 000 FCFA · 6 jours', 11.5, Color(0xFF66636E))),
       gP(300, 322, 52, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11])),
       gP(311, 326, 30, 14, gText('4.8 ★', 11, Color(0xFF8F5400), weight: 600, align: TextAlign.center)),
-      gP(24, 380, 342, 172, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(25, 381, 340, 39, gBox(color: Color(0xFFF4F1F8), radii: [15, 15, 15, 15])),
       gP(40, 393, 32, 14, gText('Talent', 11, Color(0xFF66636E), weight: 600)),
       gP(164, 393, 58, 14, gText('Prix (FCFA)', 11, Color(0xFF66636E), weight: 600)),

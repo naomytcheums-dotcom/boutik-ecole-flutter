@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_211 extends ConsumerWidget {
@@ -44,7 +46,6 @@ class G_211 extends ConsumerWidget {
       gP(24, 120, 342, 170, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [26, 26, 26, 26])),
       gP(42, 228, 309, 23, gText('Lampe en bois recyclé', 18, Color(0xFFFFFFFF), weight: 800, wrap: true)),
       gP(42, 258, 309, 15, gText('Certifié par l’IUT de Douala', 12, Color(0xD9FFFFFF), weight: 500, wrap: true)),
-      gP(24, 304, 342, 188, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 318, 51, 18, gText('Origine', 14, Color(0xFF111015), weight: 700)),
       gP(40, 352, 81, 16, gText('Département', 12.5, Color(0xFF66636E))),
       gP(259, 352, 91, 16, gText('Génie civil · GC', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),

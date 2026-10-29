@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_98 extends ConsumerWidget {
@@ -38,19 +40,16 @@ class G_98 extends ConsumerWidget {
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
       gP(24, 70, 152, 26, gText('Collaborations', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(38, 132, 82, 14, gText('Contrats actifs', 11.5, Color(0xFF66636E), weight: 500)),
       gP(38, 152, 13, 25, gText('3', 20, Color(0xFF111015), weight: 800)),
       gP(150, 132, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),
       gP(156, 136.75, 16, 18.5, gImg('assets/figma/v/ff64e2b6a5eb10.svg')),
       gP(162.25, 136.75, 9.75, 9.75, gImg('assets/figma/v/3b2d5604a267d0.svg')),
-      gP(200, 120, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(214, 132, 44, 14, gText('À signer', 11.5, Color(0xFF66636E), weight: 500)),
       gP(214, 152, 9, 25, gText('1', 20, Color(0xFF111015), weight: 800)),
       gP(214, 184, 83, 14, gText('Avant le 30 oct.', 11, Color(0xFF8F5400), weight: 600)),
       gP(326, 132, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),
       gP(330.75, 136.744, 18.52, 18.506, gImg('assets/figma/v/f8d0b855809950.svg')),
-      gP(24, 226, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 239, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(44.667, 258.5, 17.667, 11, gImg('assets/figma/v/b08196471e66d3.svg')),
       gP(47.167, 248.5, 12.667, 12.667, gImg('assets/figma/v/50a1540c3efbda.svg')),
@@ -76,7 +75,6 @@ class G_98 extends ConsumerWidget {
       gP(280.8, 380, 71.2, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11])),
       gP(294.9, 384, 43, 14, gText('À signer', 11, Color(0xFF8F5400), weight: 600, align: TextAlign.center)),
       gP(24, 438, 150, 19, gText('Suivi du contrat actif', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 476, 342, 104, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 490, 134, 16, gText('Avancement du projet', 12.5, Color(0xFF111015), weight: 600)),
       gP(323, 490, 27, 15, gText('65%', 12, Color(0xFF66636E), weight: 600, align: TextAlign.right)),
       gP(40, 512, 310, 7, gBox(color: Color(0xFFF2EFF6), radii: [4, 4, 4, 4])),

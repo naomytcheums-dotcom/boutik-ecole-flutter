@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_A1 extends ConsumerWidget {
@@ -44,9 +46,9 @@ class G_A1 extends ConsumerWidget {
       gP(104.5, 72, 181, 21, gText('Assistante vocale Kéla', 17, Color(0xFF111015), weight: 500, align: TextAlign.center)),
       gP(161, 98, 68, 16, gText('À l’écoute…', 12.5, Color(0xFF66636E), align: TextAlign.center)),
       gP(316, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
-      gP(328.767, 85.883, 18.467, 12.233, gImg('assets/figma/v/44747303a472e2.svg')),
+      gP(328.767, 83, 18.467, 18.233, gImg('assets/figma/v/menu3.svg')),
       gP(95, 240, 200, 200, gBox(color: Color(0x59FFB36B), layerBlur: 90, oval: true), fx: 'halo'),
-      gP(70, 205, 250, 250, gBox(image: 'assets/figma/img/2b51b5d6469cca917952ac344a2ddf9cc1440830.png', fit: BoxFit.contain, shadows: [BoxShadow(color: Color(0x47FF731A), offset: Offset(0, 18), blurRadius: 28, spreadRadius: 0)])),
+      gP(70, 205, 250, 250, kelaOrb(image: 'assets/figma/img/2b51b5d6469cca917952ac344a2ddf9cc1440830.png', fit: BoxFit.contain, shadows: [BoxShadow(color: Color(0x47FF731A), offset: Offset(0, 18), blurRadius: 28, spreadRadius: 0)])),
       gP(34, 484, 329, 68, gText('Peux-tu m’aider à créer un logo et une affiche', 26, Color(0x52111015), weight: 500, lh: 34, wrap: true)),
       gP(34, 552, 329, 68, gText('pour mon parfum, avant fin novembre ?', 26, Color(0xFF111015), weight: 500, lh: 34, wrap: true)),
       gP(168, 655, 4, 10, gBox(color: Color(0xFF8E7BFF), radii: [2, 2, 2, 2]), fx: 'wave'),
@@ -58,7 +60,7 @@ class G_A1 extends ConsumerWidget {
       gP(228, 655, 4, 10, gBox(color: Color(0xFF8E7BFF), radii: [2, 2, 2, 2]), fx: 'wave'),
       gP(50, 724, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
       gP(66, 738, 12, 15, gText('IA', 12, Color(0xFF111015), weight: 700, align: TextAlign.center)),
-      gP(153, 704, 84, 84, GMic(child: gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x4D000000), offset: Offset(0, 12), blurRadius: 26, spreadRadius: 0)], oval: true))),
+      gP(153, 704, 84, 84, GMic(onResult: (on) => kelaToggle(ref, on), child: gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x4D000000), offset: Offset(0, 12), blurRadius: 26, spreadRadius: 0)], oval: true))),
       gP(180, 731, 30, 30, const SizedBox.expand(), tap: () => gOpen(context, '230')),
       gP(188.25, 730.5, 13.5, 21, gImg('assets/figma/v/2d0fe55c8faa41.svg')),
       gP(183.25, 740.5, 23.5, 16, gImg('assets/figma/v/e0998b9bdd25ce.svg')),

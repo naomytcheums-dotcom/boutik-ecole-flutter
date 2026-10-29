@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_36 extends ConsumerWidget {
@@ -48,7 +50,6 @@ class G_36 extends ConsumerWidget {
       gP(24, 120, 342, 170, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [24, 24, 24, 24])),
       gP(42, 228, 309, 23, gText('Développement web sur mesure', 18, Color(0xFFFFFFFF), weight: 700, wrap: true)),
       gP(42, 256, 309, 15, gText('Par Mariam Essono · Génie informatique', 12, Color(0xFFE3ECF7), wrap: true)),
-      gP(24, 304, 342, 76, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(64, 318, 34, 25, gText('4.9', 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
       gP(67, 348, 28, 14, gText('Note', 11.5, Color(0xFF66636E), align: TextAlign.center)),
       gP(182.5, 318, 25, 25, gText('38', 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
@@ -58,7 +59,6 @@ class G_36 extends ConsumerWidget {
       gP(275.5, 348, 67, 14, gText('Délai moyen', 11.5, Color(0xFF66636E), align: TextAlign.center)),
       gP(252, 318, 1, 48, gBox(color: Color(0xFFF2EFF6))),
       gP(24, 394, 68, 19, gText('Formules', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 432, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 445, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(45.5, 453.667, 21, 22.667, gImg('assets/figma/v/3556935ad08d5d.svg')),
       gP(88, 444, 59, 17, gText('Essentiel', 13.5, Color(0xFF111015), weight: 600)),
@@ -79,7 +79,6 @@ class G_36 extends ConsumerWidget {
       gP(88, 576, 58, 17, gText('Premium', 13.5, Color(0xFF111015), weight: 600)),
       gP(88, 598, 118, 14, gText('Site complet · 14 jours', 11.5, Color(0xFF66636E))),
       gP(258, 588, 92, 17, gText('150 000 FCFA', 13.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),
-      gP(24, 644, 342, 188, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 658, 162, 18, gText('Modalités de prestation', 14, Color(0xFF111015), weight: 700)),
       gP(40, 692, 35, 16, gText('Mode', 12.5, Color(0xFF66636E))),
       gP(197, 692, 153, 16, gText('À distance ou sur campus', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),

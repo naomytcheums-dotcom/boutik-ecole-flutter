@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_225 extends ConsumerWidget {
@@ -33,7 +35,6 @@ class G_225 extends ConsumerWidget {
       gP(43.546, 89, 16.908, 6, gImg('assets/figma/v/876f9e4ca5bd5d.svg')),
       gP(151, 82, 88, 21, gText('Jumeau 3D', 17, Color(0xFF111015), weight: 500)),
       gP(316, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
-      gP(24, 128, 342, 372, gBox(color: Color(0x99FFFFFF), border: Color(0xFFFFFFFF), bw: 1, shadows: [BoxShadow(color: Color(0x14403366), offset: Offset(0, 10), blurRadius: 26, spreadRadius: 0)], radii: [44, 44, 44, 44])),
       gP(85, 190, 220, 220, gBox(color: Color(0x8CCDB2F2), layerBlur: 60, oval: true), fx: 'halo'),
       gP(42, 403, 306, 98, gImg('assets/figma/v/7e3a50b24384df.svg')),
       gP(42, 403, 306, 98, gImg('assets/figma/v/8a0a52a519aa8c.svg')),
@@ -54,7 +55,6 @@ class G_225 extends ConsumerWidget {
       gP(228.5, 630, 21, 13, gText('Dos', 10.5, Color(0xFF66636E))),
       gP(288, 546, 78, 78, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
       gP(312, 630, 30, 13, gText('Détail', 10.5, Color(0xFF66636E))),
-      gP(24, 656, 342, 176, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 8), blurRadius: 22, spreadRadius: 0)], radii: [32, 32, 32, 32])),
       gP(44, 674, 172, 20, gText('Lampe en bois recyclé', 16, Color(0xFF111015), weight: 600)),
       gP(44, 704, 69, 29, gBox(color: Color(0xFFF1EEFB), radii: [100, 100, 100, 100])),
       gP(58, 712, 41, 13, gText('H 42 cm', 10.5, Color(0xFF5A3FE0), weight: 600)),

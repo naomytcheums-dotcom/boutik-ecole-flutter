@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_64 extends ConsumerWidget {
@@ -53,22 +55,20 @@ class G_64 extends ConsumerWidget {
       gP(230.833, 158, 29, 14, gText('Prête', 11, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
       gP(331, 120, 30, 30, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true)),
       gP(326.5, 158, 39, 14, gText('Remise', 11, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(24, 188, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 196, 50, 50, gBox(image: 'assets/figma/img/787285568a50b7daa40a12adc3c3145d4743215c.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
       gP(98, 200, 145, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(currentSellerOrderProvider).title, 13.5, Color(0xFF111015), weight: 600))),
       gP(98, 222, 117, 14, Consumer(builder: (context, ref, _) => gText('Qté : ${ref.watch(currentSellerOrderProvider).qty} · ${fcfa(ref.watch(currentSellerOrderProvider).total)}', 11.5, Color(0xFF66636E)))),
       gP(24, 268, 122, 19, gText('Liste de contrôle', 15, Color(0xFF111015), weight: 700)),
       gP(24, 306, 20, 20, gBox(color: Color(0xFF111015), radii: [6, 6, 6, 6])),
-      gP(26.667, 309.75, 14.667, 11.958, gImg('assets/figma/v/ac006383c9ee5c.svg')),
+      gP(26.667, 309.75, 14.667, 11.958, gImg('assets/figma/v/w_check.svg')),
       gP(54, 307, 315, 18, gText('Article conforme à l’annonce', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
       gP(24, 342, 20, 20, gBox(color: Color(0xFF111015), radii: [6, 6, 6, 6])),
-      gP(26.667, 345.75, 14.667, 11.958, gImg('assets/figma/v/ac006383c9ee5c.svg')),
+      gP(26.667, 345.75, 14.667, 11.958, gImg('assets/figma/v/w_check.svg')),
       gP(54, 343, 315, 18, gText('Emballage soigné et protégé', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
       gP(24, 378, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFDAD5E4), bw: 1.5, radii: [6, 6, 6, 6])),
       gP(54, 379, 315, 18, gText('Photo de l’article ajoutée', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
       gP(24, 414, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFDAD5E4), bw: 1.5, radii: [6, 6, 6, 6])),
       gP(54, 415, 315, 18, gText('Étiquette de retrait imprimée', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
-      gP(24, 450, 342, 120, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 464, 50, 18, gText('Remise', 14, Color(0xFF111015), weight: 700)),
       gP(40, 498, 88, 16, gText('Remise prévue', 12.5, Color(0xFF66636E))),
       gP(228, 498, 122, 16, gText('Kiosque IUT – Bloc A', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),

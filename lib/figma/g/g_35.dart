@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_35 extends ConsumerWidget {
@@ -41,14 +43,12 @@ class G_35 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 129, 26, gText('Disponibilité', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 128, 50, 50, gBox(image: 'assets/figma/img/abbe1a61d7955c52cdd31224bc1569ab44582797.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
       gP(98, 132, 145, 17, gText('Lampe en bois recyclé', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 154, 169, 14, gText('25 000 FCFA · 15 unités au total', 11.5, Color(0xFF66636E))),
       gP(280.8, 142, 71.2, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
       gP(293.4, 146, 46, 14, gText('En stock', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
       gP(24, 200, 69, 19, gText('Variantes', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 238, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 250, 91, 17, gText('Chêne naturel', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 272, 66, 14, gText('SKU LB-001', 11.5, Color(0xFF66636E))),
       gP(261.6, 260, 90.4, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
@@ -63,7 +63,6 @@ class G_35 extends ConsumerWidget {
       gP(40, 404, 69, 14, gText('SKU LB-003', 11.5, Color(0xFF66636E))),
       gP(287.2, 392, 64.8, 22, gBox(color: Color(0xFFFDE6E7), radii: [11, 11, 11, 11])),
       gP(298.1, 396, 43, 14, gText('Rupture', 11, Color(0xFFE5484D), weight: 600, align: TextAlign.center)),
-      gP(24, 450, 342, 188, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 464, 149, 18, gText('Informations de stock', 14, Color(0xFF111015), weight: 700)),
       gP(40, 498, 75, 16, gText('Disponibilité', 12.5, Color(0xFF66636E))),
       gP(298, 498, 52, 16, gText('En stock', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),

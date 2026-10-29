@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_88 extends ConsumerWidget {
@@ -41,20 +43,17 @@ class G_88 extends ConsumerWidget {
       gP(340.75, 69.833, 22.5, 19.75, gImg('assets/figma/v/c416ae6fb27d36.svg')),
       gP(347.442, 87.25, 9.117, 6.922, gImg('assets/figma/v/76ffe03c455014.svg')),
       gP(24, 96, 208, 15, gText('Orange Cameroun · Partenaire vérifié', 12, Color(0xFF66636E))),
-      gP(24, 120, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(38, 132, 87, 14, gText('Besoins publiés', 11.5, Color(0xFF66636E), weight: 500)),
       gP(38, 152, 13, 25, gText('6', 20, Color(0xFF111015), weight: 800)),
       gP(150, 132, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),
       gP(156, 136.75, 16, 18.5, gImg('assets/figma/v/ff64e2b6a5eb10.svg')),
       gP(162.25, 136.75, 9.75, 9.75, gImg('assets/figma/v/3b2d5604a267d0.svg')),
-      gP(200, 120, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(214, 132, 110, 14, gText('Propositions reçues', 11.5, Color(0xFF66636E), weight: 500)),
       gP(214, 152, 25, 25, gText('23', 20, Color(0xFF111015), weight: 800)),
       gP(214, 184, 92, 14, gText('+8 cette semaine', 11, Color(0xFF0F7A52), weight: 600)),
       gP(326, 132, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),
       gP(330.75, 143, 18.5, 7.875, gImg('assets/figma/v/7200c2482969af.svg')),
       gP(330.75, 138, 18.5, 16, gImg('assets/figma/v/137742ca7afd1b.svg')),
-      gP(24, 222, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(38, 234, 79, 14, gText('Devis en cours', 11.5, Color(0xFF66636E), weight: 500)),
       gP(38, 254, 14, 25, gText('4', 20, Color(0xFF111015), weight: 800)),
       gP(38, 286, 53, 14, gText('2 à valider', 11, Color(0xFF8F5400), weight: 600)),
@@ -62,7 +61,6 @@ class G_88 extends ConsumerWidget {
       gP(156, 238.75, 16, 18.5, gImg('assets/figma/v/b8b641560aad30.svg')),
       gP(158.5, 242.5, 11, 11, gImg('assets/figma/v/f82584207e62a2.svg')),
       gP(161, 241.562, 6, 12.875, gImg('assets/figma/v/084a5a2da19358.svg')),
-      gP(200, 222, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(214, 234, 82, 14, gText('Collaborations', 11.5, Color(0xFF66636E), weight: 500)),
       gP(214, 254, 13, 25, gText('3', 20, Color(0xFF111015), weight: 800)),
       gP(214, 286, 52, 14, gText('1 nouvelle', 11, Color(0xFF0F7A52), weight: 600)),
@@ -71,7 +69,6 @@ class G_88 extends ConsumerWidget {
       gP(332.625, 239.375, 11, 11, gImg('assets/figma/v/3bae74da037db6.svg')),
       gP(341.375, 246.956, 7.875, 9.669, gImg('assets/figma/v/7b2b9c968238b1.svg')),
       gP(339.5, 239.456, 7.88, 10.844, gImg('assets/figma/v/7d1afd23f298a1.svg')),
-      gP(24, 328, 342, 210, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 342, 197, 18, gText('Propositions reçues par mois', 14, Color(0xFF111015), weight: 700)),
       gP(314, 344, 36, 14, gText('6 mois', 11.5, Color(0xFF66636E), weight: 500, align: TextAlign.right)),
       gP(44, 382, 302, 1, gBox(color: Color(0xFFF2EFF6))),
@@ -93,7 +90,6 @@ class G_88 extends ConsumerWidget {
       gP(301, 554, 49, 15, gText('Voir tout', 12, Color(0xFF5A3FE0), weight: 500, align: TextAlign.right)),
       gP(352.5, 559, 13, 6, gImg('assets/figma/v/4159f10924eea0.svg')),
       gP(356, 555.5, 9.5, 13, gImg('assets/figma/v/a365eb17b7a19f.svg')),
-      gP(24, 590, 342, 132, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 603, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(48, 611.667, 16, 16, gImg('assets/figma/v/f44e883cdba29a.svg')),
       gP(50.5, 625, 11, 6, gImg('assets/figma/v/c4124addb3c439.svg')),

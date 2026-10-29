@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_32 extends ConsumerWidget {
@@ -58,7 +60,6 @@ class G_32 extends ConsumerWidget {
       gP(24, 483, 345, 41, gText('Lampe décorative fabriquée à partir de bois recyclé. Écologique, design et idéale pour un intérieur moderne.', 13, Color(0xFF4A4854), lh: 20.15, wrap: true)),
       gP(24, 538, 69, 19, gText('Variantes', 15, Color(0xFF111015), weight: 700)),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 576, 122.2, 34, 'Chêne naturel', 12.5, 600), GChip(154.2, 576, 63, 34, 'Noyer', 12.5, 500), GChip(225.2, 576, 70.4, 34, 'Bambou', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
-      gP(24, 624, 342, 188, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 638, 114, 18, gText('Caractéristiques', 14, Color(0xFF111015), weight: 700)),
       gP(40, 672, 52, 16, gText('Matériau', 12.5, Color(0xFF66636E))),
       gP(276, 672, 74, 16, gText('Bois recyclé', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
@@ -71,7 +72,6 @@ class G_32 extends ConsumerWidget {
       gP(40, 765, 310, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 774, 52, 16, gText('Garantie', 12.5, Color(0xFF66636E))),
       gP(311, 774, 39, 16, gText('6 mois', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
-      gP(24, 826, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 834, 50, 50, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
       gP(98, 838, 114, 17, gText('Mouanga Yannick', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 860, 144, 14, gText('Génie civil · Vendeur vérifié', 11.5, Color(0xFF66636E))),

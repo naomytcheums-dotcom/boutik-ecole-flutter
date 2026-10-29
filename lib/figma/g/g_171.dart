@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_171 extends ConsumerWidget {
@@ -41,12 +43,10 @@ class G_171 extends ConsumerWidget {
       gP(76, 70, 187, 26, gText('Paiement sécurisé', 21, Color(0xFF111015), weight: 700)),
       gP(22.5, 270, 345, 24, gText('Vérifiez avant de payer', 19, Color(0xFF111015), weight: 800, align: TextAlign.center, wrap: true)),
       gP(42.5, 302, 305, 38, gText('Ce vendeur demande un paiement en dehors de Boutik-École.', 13, Color(0xFF66636E), lh: 19, align: TextAlign.center, wrap: true)),
-      gP(24, 374, 342, 79, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
       gP(36, 397.5, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(43.333, 403.416, 17.333, 20.169, gImg('assets/figma/v/d9a3b6dd8cdae8.svg')),
       gP(46.875, 409.083, 10.25, 8.833, gImg('assets/figma/v/2bdcafa88f7a43.svg')),
       gP(76, 388, 277, 51, gText('Ne communiquez jamais votre code secret et ne payez qu’au numéro marchand officiel affiché dans l’application.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
-      gP(24, 467, 342, 154, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 481, 92, 18, gText('Comparaison', 14, Color(0xFF111015), weight: 700)),
       gP(40, 515, 91, 16, gText('Numéro officiel', 12.5, Color(0xFF66636E))),
       gP(268, 515, 82, 16, gText('6 9X XX XX XX', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),

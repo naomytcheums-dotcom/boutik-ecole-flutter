@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_12 extends ConsumerWidget {
@@ -43,26 +45,22 @@ class G_12 extends ConsumerWidget {
       gP(76, 71, 172, 26, gText('Créer un compte', 21, Color(0xFF111015), weight: 700)),
       gP(24, 129, 286, 18, gText('Rejoignez la marketplace de l’IUT de Douala', 14, Color(0xFF66636E))),
       gP(24, 168, 86, 16, gText('Nom complet', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 192, 342, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 192, 342, 52, GField(hint: 'Ex. Mariam Essono', size: 14.5, hintColor: Color(0xFF66636E), weight: 500, padL: 52, onChanged: (v) { ref.read(formProvider.notifier).put('su_name', v); })),
       errorText('su_name', 28, 246),
       gP(40.5, 208.5, 19, 19, const SizedBox.expand(), tap: () => gOpen(context, '10')),
       gP(43.042, 207.875, 13.917, 13.917, gImg('assets/figma/v/15e6e73e8eaf8c.svg')),
       gP(40.667, 215.792, 18.667, 12.333, gImg('assets/figma/v/179cc05e604d6c.svg')),
       gP(24, 258, 66, 16, gText('Téléphone', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 282, 342, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 282, 342, 52, GField(hint: '+237 6 XX XX XX XX', size: 14.5, hintColor: Color(0xFF66636E), weight: 500, padL: 52, onChanged: (v) { ref.read(formProvider.notifier).put('su_phone', v); })),
       errorText('su_phone', 28, 336),
       gP(41.458, 297.083, 17.083, 21.833, gImg('assets/figma/v/2660f7e30da185.svg')),
       gP(47, 309.75, 6.008, 6, gImg('assets/figma/v/964b38e3841185.svg')),
       gP(24, 348, 42, 16, gText('E-mail', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 372, 342, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 372, 342, 52, GField(hint: 'exemple@mail.com', size: 14.5, hintColor: Color(0xFF66636E), weight: 500, padL: 52, onChanged: (v) { ref.read(formProvider.notifier).put('su_email', v); })),
       errorText('su_email', 28, 426),
       gP(39.083, 388.667, 21.833, 18.667, gImg('assets/figma/v/7e8276104a8e4f.svg')),
       gP(39.083, 391.042, 21.833, 11.542, gImg('assets/figma/v/904a4bba0b310b.svg')),
       gP(24, 438, 84, 16, gText('Mot de passe', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 462, 342, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 462, 342, 52, GField(hint: '8 caractères minimum', size: 14.5, hintColor: Color(0xFF66636E), weight: 500, padL: 52, onChanged: (v) { ref.read(formProvider.notifier).put('su_pw', v); })),
       errorText('su_pw', 28, 516),
       gP(39.875, 484.208, 20.25, 14.708, gImg('assets/figma/v/32a45c6e5f0fcb.svg')),
@@ -70,7 +68,6 @@ class G_12 extends ConsumerWidget {
       gP(327.083, 479.458, 21.833, 17.083, gImg('assets/figma/v/abcfc4162eb13b.svg')),
       gP(332.625, 482.625, 10.75, 10.75, gImg('assets/figma/v/e4edba8fd4f28c.svg')),
       gP(24, 528, 164, 16, gText('Confirmer le mot de passe', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 552, 342, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 552, 342, 52, GField(hint: 'Confirmez votre mot de passe', size: 14.5, hintColor: Color(0xFF66636E), weight: 500, padL: 52, obscure: true, onChanged: (v) { ref.read(formProvider.notifier).put('su_pw2', v); })),
       errorText('su_pw2', 28, 606),
       gP(39.875, 574.208, 20.25, 14.708, gImg('assets/figma/v/32a45c6e5f0fcb.svg')),

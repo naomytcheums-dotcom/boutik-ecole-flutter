@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_84b extends ConsumerWidget {
@@ -45,10 +47,8 @@ class G_84b extends ConsumerWidget {
       gP(24, 120, 342, 170, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [24, 24, 24, 24])),
       gP(42, 228, 309, 23, gText('Serre intelligente', 18, Color(0xFFFFFFFF), weight: 700, wrap: true)),
       gP(42, 256, 309, 15, gText('Projet Agronomie · Équipe de 3', 12, Color(0xFFE3ECF7), wrap: true)),
-      gP(24, 304, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(38, 316, 48, 14, gText('Collecté', 11.5, Color(0xFF66636E), weight: 500)),
       gP(38, 336, 114, 19, gText('1 250 000 FCFA', 15, Color(0xFF111015), weight: 800)),
-      gP(200, 304, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(214, 316, 47, 14, gText('Objectif', 11.5, Color(0xFF66636E), weight: 500)),
       gP(214, 336, 120, 19, gText('2 000 000 FCFA', 15, Color(0xFF111015), weight: 800)),
       gP(24, 410, 342, 60, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
@@ -56,7 +56,6 @@ class G_84b extends ConsumerWidget {
       gP(323, 424, 27, 15, gText('62%', 12, Color(0xFF66636E), weight: 600, align: TextAlign.right)),
       gP(40, 446, 310, 7, gBox(color: Color(0xFFF2EFF6), radii: [4, 4, 4, 4])),
       gP(40, 446, 192.2, 7, gBox(color: Color(0xFF6A4DFF), radii: [4, 4, 4, 4])),
-      gP(24, 484, 342, 76, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(68, 498, 26, 25, gText('48', 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
       gP(43, 528, 76, 14, gText('Contributeurs', 11.5, Color(0xFF66636E), align: TextAlign.center)),
       gP(184.5, 498, 21, 25, gText('21', 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
@@ -66,7 +65,6 @@ class G_84b extends ConsumerWidget {
       gP(287, 528, 44, 14, gText('Financé', 11.5, Color(0xFF66636E), align: TextAlign.center)),
       gP(252, 498, 1, 48, gBox(color: Color(0xFFF2EFF6))),
       gP(24, 574, 103, 19, gText('Contreparties', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 612, 342, 132, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 625, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(44.667, 633.667, 22.667, 22.667, gImg('assets/figma/v/fea5b000abca5c.svg')),
       gP(53, 642, 6, 9.333, gImg('assets/figma/v/168c15d5e7cb66.svg')),

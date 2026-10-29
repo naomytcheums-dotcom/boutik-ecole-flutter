@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_117 extends ConsumerWidget {
@@ -28,7 +30,6 @@ class G_117 extends ConsumerWidget {
       gP(0, 0, 1272, 56, gBox(color: Color(0xFFFFFFFF))),
       gP(20, 10, 36, 34, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(62, 17, 107, 21, gText('Boutik-École', 17, Color(0xFF18181B), weight: 700, inter: true)),
-      gP(230, 12, 330, 34, gBox(color: Color(0xFFF4F3F1), border: Color(0xFFE6E3DE), bw: 1, radii: [17, 17, 17, 17])),
       gP(230, 12, 330, 34, GField(hint: 'Rechercher données, rapports, produits…', size: 11.5, hintColor: Color(0xFF66636E), weight: 400, padL: 36, inter: true)),
       gP(242.5, 21.5, 15, 15, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(241.375, 20.375, 16, 16, gImg('assets/figma/v/3a82c8c513bd84.svg')),
@@ -318,7 +319,6 @@ gP(-13, 165.451, 296, 34.583, gImg('assets/figma/v/5ffec176ca9577.svg'))
       gP(894, 572, 34, 34, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, radii: [17, 17, 17, 17])),
       gP(938, 574, 94, 15, gText('Assistante Kéla', 12.5, Color(0xFF18181B), weight: 600, inter: true)),
       gP(938, 592, 36, 11, gText('En ligne', 9.5, Color(0xFF66636E), inter: true)),
-      gP(894, 620, 336, 34, gBox(color: Color(0xFFFFFFFF), radii: [17, 17, 17, 17])),
       gP(894, 620, 336, 34, GField(hint: 'Quels enseignements cherches-tu ?', size: 11, hintColor: Color(0xFF66636E), weight: 400, padL: 16, inter: true)),
       gP(894, 664, 336, 76, gBox(color: Color(0xFFFFFFFF), radii: [16, 16, 16, 16])),
       gP(908, 672, 313, 30, gText('L’activité de l’établissement progresse de 11 %. TCO est en retrait ce mois-ci : veux-tu relancer le département ?', 10.5, Color(0xFF4A4944), inter: true, lh: 15, wrap: true)),

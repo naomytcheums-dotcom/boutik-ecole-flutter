@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_22d extends ConsumerWidget {
@@ -85,7 +87,6 @@ class G_22d extends ConsumerWidget {
       gP(301, 633, 49, 15, gText('Voir tout', 12, Color(0xFF5A3FE0), weight: 500, align: TextAlign.right)),
       gP(352.5, 638, 13, 6, gImg('assets/figma/v/fa9a2f5c896b90.svg')),
       gP(356, 634.5, 9.5, 13, gImg('assets/figma/v/18871471ec7ecf.svg')),
-      gP(24, 669, 342, 132, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 677, 50, 50, gBox(image: 'assets/figma/img/2bbb6fbaae9e6d864765beabd4e677ca34d5a95e.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
       gP(98, 681, 90, 17, gText('Aminata Bello', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 703, 115, 14, gText('MMI · UI/UX, Branding', 11.5, Color(0xFF66636E))),

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_212 extends ConsumerWidget {
@@ -37,7 +39,6 @@ class G_212 extends ConsumerWidget {
       gP(331.5, 19.5, 28, 17, gImg('assets/figma/v/6a818f3296df50.svg')),
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(24, 70, 201, 26, gText('Vérifier un certificat', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 133, 40, 40, gBox(color: Color(0xFFDDF5EC), radii: [13, 13, 13, 13])),
       gP(45.5, 142.5, 11.833, 11.833, gImg('assets/figma/v/f14cedcc4f021a.svg')),
       gP(54.667, 142.5, 11.833, 11.833, gImg('assets/figma/v/f14cedcc4f021a.svg')),
@@ -51,7 +52,6 @@ class G_212 extends ConsumerWidget {
       gP(24, 200, 342, 150, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [26, 26, 26, 26])),
       gP(42, 288, 309, 23, gText('Lampe en bois recyclé', 18, Color(0xFFFFFFFF), weight: 800, wrap: true)),
       gP(42, 318, 309, 15, gText('Émis par l’IUT de Douala · GC', 12, Color(0xD9FFFFFF), weight: 500, wrap: true)),
-      gP(24, 364, 342, 188, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 378, 171, 18, gText('Résultat de la vérification', 14, Color(0xFF111015), weight: 700)),
       gP(40, 412, 37, 16, gText('Statut', 12.5, Color(0xFF66636E))),
       gP(274, 412, 76, 16, gText('Émis · vérifié', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),

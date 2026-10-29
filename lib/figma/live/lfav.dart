@@ -26,7 +26,7 @@ class GHeartLive extends ConsumerWidget {
         duration: const Duration(milliseconds: 320),
         curve: Curves.elasticOut,
         builder: (_, v, _) => Center(
-          child: on ? Transform.scale(scale: 0.6 + 0.4 * v, child: const FittedBox(child: Icon(Icons.favorite_rounded, color: Color(0xFFE5334B), size: 40))) : const SizedBox.expand(),
+          child: on ? Transform.scale(scale: 0.6 + 0.4 * v, child: Container(margin: const EdgeInsets.all(5), decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle), padding: const EdgeInsets.all(7), child: const FittedBox(child: Icon(Icons.favorite_rounded, color: Color(0xFF111015), size: 40)))) : const SizedBox.expand(),
         ),
       ),
     );

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_220 extends ConsumerWidget {
@@ -43,13 +45,11 @@ class G_220 extends ConsumerWidget {
       gP(200, 184, 166, 250, gBox(image: 'assets/figma/img/4ca68f79023605aecb4f83724629d508e921e885.png', fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x33403366), offset: Offset(0, 14), blurRadius: 26, spreadRadius: 0)], radii: [38, 38, 38, 38]), rot: -0.035),
       gP(171, 294, 48, 48, gBox(color: Color(0xFF111015), border: Color(0xFFFFFFFF), bw: 3, oval: true)),
       gP(185.5, 310, 19, 18, gText('VS', 14, Color(0xFFFFFFFF), weight: 700)),
-      gP(24, 444, 166, 86, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 16, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 456, 32, 32, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [16, 16, 16, 16])),
       gP(76, 456, 89, 14, gText('Lampe recyclée', 11.5, Color(0xFF111015), weight: 600)),
       gP(76, 474, 99, 12, gText('Yannick M. · Génie civil', 9.5, Color(0xFF66636E))),
       gP(38, 498, 50, 25, gText('58 %', 20, Color(0xFF5A3FE0), weight: 700)),
       gP(122, 506, 54, 13, gText('1 240 votes', 10, Color(0xFF66636E), weight: 500)),
-      gP(200, 444, 166, 86, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 16, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(212, 456, 32, 32, gBox(image: 'assets/figma/img/ebf23a969ca7b1083d1dcab994c4899c0b4db38b.png', fit: BoxFit.cover, radii: [16, 16, 16, 16])),
       gP(252, 456, 73, 14, gText('Jus de bissap', 11.5, Color(0xFF111015), weight: 600)),
       gP(252, 474, 79, 12, gText('Équipe BTA · Agro', 9.5, Color(0xFF66636E))),
@@ -63,17 +63,14 @@ class G_220 extends ConsumerWidget {
       gP(200, 580, 166, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFFFFFFF), bw: 1, shadows: [BoxShadow(color: Color(0x14403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [26, 26, 26, 26]), tap: () => gToast(context, 'Démonstration : Voter pour le jus')),
       gP(237, 596, 92, 15, gText('Voter pour le jus', 12, Color(0xFF111015), weight: 600)),
       gP(24, 652, 175, 18, gText('Classement de la semaine', 14, Color(0xFF111015), weight: 600)),
-      gP(24, 678, 110, 68, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(34, 690, 30, 30, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [15, 15, 15, 15])),
       gP(110, 688, 6, 16, gText('1', 13, Color(0xFF5A3FE0), weight: 700)),
       gP(34, 722, 40, 13, gText('Yannick', 10.5, Color(0xFF111015), weight: 600)),
       gP(34, 734, 41, 12, gText('1 240 pts', 9.5, Color(0xFF66636E))),
-      gP(140, 678, 110, 68, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(150, 690, 30, 30, gBox(image: 'assets/figma/img/c15478a4e0a5cc1be462d8179ed1a24390853242.png', fit: BoxFit.cover, radii: [15, 15, 15, 15])),
       gP(224, 688, 8, 16, gText('2', 13, Color(0xFF5A3FE0), weight: 700)),
       gP(150, 722, 42, 13, gText('Aminata', 10.5, Color(0xFF111015), weight: 600)),
       gP(150, 734, 38, 12, gText('1 105 pts', 9.5, Color(0xFF66636E))),
-      gP(256, 678, 110, 68, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(266, 690, 30, 30, gBox(image: 'assets/figma/img/ebf23a969ca7b1083d1dcab994c4899c0b4db38b.png', fit: BoxFit.cover, radii: [15, 15, 15, 15])),
       gP(340, 688, 8, 16, gText('3', 13, Color(0xFF5A3FE0), weight: 700)),
       gP(266, 722, 27, 13, gText('Brice', 10.5, Color(0xFF111015), weight: 600)),

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_258 extends ConsumerWidget {
@@ -38,7 +40,6 @@ class G_258 extends ConsumerWidget {
       gP(111.5, 100, 167, 15, gText('Commande #BE-2026-0142', 12, Color(0xFF66636E))),
       gP(89.5, 300, 211, 25, gText('Le paiement a échoué', 20, Color(0xFF111015), weight: 600)),
       gP(46.5, 336, 297, 36, gText('Solde insuffisant ou code incorrect. Aucun montant n’a été débité.', 12, Color(0xFF66636E), lh: 18, align: TextAlign.center, wrap: true)),
-      gP(24, 410, 342, 118, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(44, 430, 30, 15, gText('Motif', 12, Color(0xFF66636E))),
       gP(245, 430, 101, 16, gText('Solde insuffisant', 12.5, Color(0xFFE5484D), weight: 600)),
       gP(44, 462, 48, 15, gText('Montant', 12, Color(0xFF66636E))),

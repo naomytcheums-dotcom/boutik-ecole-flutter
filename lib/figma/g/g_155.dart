@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_155 extends ConsumerWidget {
@@ -42,7 +44,6 @@ class G_155 extends ConsumerWidget {
       gP(339.833, 69.833, 24.333, 24.333, gImg('assets/figma/v/e60784a24bd7e3.svg')),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 70.4, 34, 'Toutes', 12.5, 600), GChip(102.4, 120, 77.8, 34, 'Dossier', 12.5, 500), GChip(188.2, 120, 70.4, 34, 'Offres', 12.5, 500), GChip(266.6, 120, 122.2, 34, 'Dates limites', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
       gP(24, 168, 85, 19, gText('Aujourd’hui', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 206, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 219, 40, 40, gBox(color: Color(0xFFFDE6E7), radii: [13, 13, 13, 13])),
       gP(44.652, 228.488, 22.68, 21.012, gImg('assets/figma/v/b4a6b4937f8754.svg')),
       gP(53, 233.5, 6, 9.333, gImg('assets/figma/v/357802c04419d8.svg')),
@@ -68,7 +69,6 @@ class G_155 extends ConsumerWidget {
       gP(312.8, 360, 39.2, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11])),
       gP(323.4, 364, 18, 14, gText('J-2', 11, Color(0xFF8F5400), weight: 600, align: TextAlign.center)),
       gP(24, 418, 107, 19, gText('Cette semaine', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 456, 342, 132, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 469, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(46.333, 477.667, 19.333, 22.667, gImg('assets/figma/v/8a418070bfb100.svg')),
       gP(54.667, 477.667, 11, 11, gImg('assets/figma/v/2e28e879cb0de7.svg')),

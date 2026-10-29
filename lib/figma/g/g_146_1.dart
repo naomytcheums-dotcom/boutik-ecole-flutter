@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_146_1 extends ConsumerWidget {
@@ -41,27 +43,23 @@ class G_146_1 extends ConsumerWidget {
       gP(340.75, 69.833, 22.5, 19.75, gImg('assets/figma/v/c416ae6fb27d36.svg')),
       gP(347.442, 87.25, 9.117, 6.922, gImg('assets/figma/v/76ffe03c455014.svg')),
       gP(24, 96, 167, 15, gText('Gestionnaire · Service retraits', 12, Color(0xFF66636E))),
-      gP(24, 120, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(38, 132, 82, 14, gText('Retraits du jour', 11.5, Color(0xFF66636E), weight: 500)),
       gP(38, 152, 25, 25, gText('24', 20, Color(0xFF111015), weight: 800)),
       gP(150, 132, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),
       gP(155.375, 137.375, 17.25, 16.625, gImg('assets/figma/v/0e7bfe7735ff71.svg')),
       gP(155.375, 140.5, 17.25, 6, gImg('assets/figma/v/fabbebac184fd2.svg')),
       gP(161, 142.375, 6, 9.125, gImg('assets/figma/v/43269c010b1817.svg')),
-      gP(200, 120, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(214, 132, 59, 14, gText('À remettre', 11.5, Color(0xFF66636E), weight: 500)),
       gP(214, 152, 13, 25, gText('9', 20, Color(0xFF111015), weight: 800)),
       gP(214, 184, 52, 14, gText('Avant 17 h', 11, Color(0xFF8F5400), weight: 600)),
       gP(326, 132, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),
       gP(330.75, 136.75, 18.5, 18.5, gImg('assets/figma/v/273a872595c6ee.svg')),
       gP(337, 139.25, 8.5, 11, gImg('assets/figma/v/6dc3ac1ada1685.svg')),
-      gP(24, 222, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(38, 234, 87, 14, gText('Colis en attente', 11.5, Color(0xFF66636E), weight: 500)),
       gP(38, 254, 21, 25, gText('31', 20, Color(0xFF111015), weight: 800)),
       gP(150, 234, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),
       gP(154.75, 245, 18.5, 7.875, gImg('assets/figma/v/7200c2482969af.svg')),
       gP(154.75, 240, 18.5, 16, gImg('assets/figma/v/137742ca7afd1b.svg')),
-      gP(200, 222, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(214, 234, 52, 14, gText('Incidents', 11.5, Color(0xFF66636E), weight: 500)),
       gP(214, 254, 9, 25, gText('1', 20, Color(0xFF111015), weight: 800)),
       gP(214, 286, 87, 14, gText('Casier 12 bloqué', 11, Color(0xFFE5484D), weight: 600)),
@@ -73,7 +71,6 @@ class G_146_1 extends ConsumerWidget {
       gP(301, 330, 49, 15, gText('Voir tout', 12, Color(0xFF5A3FE0), weight: 500, align: TextAlign.right)),
       gP(352.5, 335, 13, 6, gImg('assets/figma/v/4159f10924eea0.svg')),
       gP(356, 331.5, 9.5, 13, gImg('assets/figma/v/a365eb17b7a19f.svg')),
-      gP(24, 366, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 374, 50, 50, gBox(image: 'assets/figma/img/9803b1792923bb371cffd2d64272ebebf74ea2d4.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
       gP(98, 378, 112, 17, gText('#BE-2026-0142', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 400, 123, 14, gText('Y. Mouanga · Casier 04', 11.5, Color(0xFF66636E))),

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_174 extends ConsumerWidget {
@@ -54,7 +56,6 @@ class G_174 extends ConsumerWidget {
       gP(46.667, 253.75, 14.667, 11.958, gImg('assets/figma/v/ac006383c9ee5c.svg')),
       gP(70, 252, 283, 15, gText('Signalez toute demande suspecte', 12, Color(0xFFFFFFFF), weight: 500, wrap: true)),
       gP(24, 302, 52, 19, gText('Guides', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 340, 342, 208, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 346, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(45.5, 355.5, 21.833, 16.833, gImg('assets/figma/v/92f350858b638e.svg')),
       gP(45.5, 357.167, 21, 19.333, gImg('assets/figma/v/f6a87a84fa91d7.svg')),

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_148_2 extends ConsumerWidget {
@@ -41,7 +43,6 @@ class G_148_2 extends ConsumerWidget {
       gP(32.583, 74.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 81, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 71, 189, 26, gText('Centre de sécurité', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 124, 342, 102, gBox(color: Color(0xFFF2FBF7), border: Color(0xFFBFE8D6), bw: 1.5, radii: [24, 24, 24, 24])),
       gP(44, 142, 48, 48, gBox(color: Color(0xFF1F9D6B), oval: true)),
       gP(56.333, 152.166, 23.333, 27.67, gImg('assets/figma/v/629c49f7945fb3.svg')),
       gP(61.75, 160.833, 12.5, 10.333, gImg('assets/figma/v/0ec99ee32049a5.svg')),
@@ -51,7 +52,6 @@ class G_148_2 extends ConsumerWidget {
       gP(44, 202, 244, 6, gBox(color: Color(0xFF1F9D6B), radii: [3, 3, 3, 3])),
       gP(315, 182.5, 31, 15, gText('80 %', 12, Color(0xFF0F7A52), weight: 700, align: TextAlign.right)),
       gP(24, 244.5, 145, 19, gText('Accès et protection', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 274, 342, 168, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 3), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 288, 36, 36, gBox(color: Color(0xFFF1EEFB), radii: [12, 12, 12, 12])),
       gP(47.5, 301.5, 14.25, 14.25, gImg('assets/figma/v/8dc44dcd0da244.svg')),
       gP(54.55, 295.5, 13.2, 13.2, gImg('assets/figma/v/24df6db66bbc97.svg')),
@@ -76,7 +76,6 @@ class G_148_2 extends ConsumerWidget {
       gP(327, 404, 14, 11.5, gImg('assets/figma/v/d9758b2cc9e4ca.svg')),
       gP(24, 466.5, 153, 19, gText('Appareils et sessions', 15, Color(0xFF111015), weight: 700)),
       gP(322, 468, 44, 16, gText('2 actifs', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.right)),
-      gP(24, 496, 342, 126, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 3), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 512, 36, 36, gBox(color: Color(0xFFF1EEFB), radii: [12, 12, 12, 12])),
       gP(49.75, 519.5, 16.5, 21, gImg('assets/figma/v/f88bf1acb4da04.svg')),
       gP(55, 531.5, 6.008, 6, gImg('assets/figma/v/f943396fb20219.svg')),

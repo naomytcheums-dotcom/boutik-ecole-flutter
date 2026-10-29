@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_43 extends ConsumerWidget {
@@ -41,7 +43,6 @@ class G_43 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 255, 26, gText('Instructions de paiement', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 188, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 134, 135, 18, gText('Détails du paiement', 14, Color(0xFF111015), weight: 700)),
       gP(40, 168, 118, 16, gText('Moyen de paiement', 12.5, Color(0xFF66636E))),
       gP(260, 168, 90, 16, gText('Orange Money', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),

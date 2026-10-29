@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_61 extends ConsumerWidget {
@@ -40,7 +42,6 @@ class G_61 extends ConsumerWidget {
       gP(24, 70, 153, 26, gText('Mon catalogue', 21, Color(0xFF111015), weight: 700)),
       gP(342.583, 79, 18.833, 6, gImg('assets/figma/v/6fe571ab77e960.svg')),
       gP(349, 72.583, 6, 18.833, gImg('assets/figma/v/87cbf4a9a18b64.svg')),
-      gP(24, 120, 342, 48, gBox(color: Color(0xFFF2EFF6), radii: [24, 24, 24, 24])),
       gP(24, 120, 342, 48, GField(hint: 'Rechercher une annonce', size: 13.5, hintColor: Color(0xFF66636E), weight: 400, padL: 46, onChanged: (v) { ref.read(sellerQueryProvider.notifier).set(v); })),
       gP(40.5, 134.5, 19, 19, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(39.875, 133.875, 18.667, 18.667, gImg('assets/figma/v/50f467eb8a9b46.svg')),
@@ -55,7 +56,6 @@ class G_61 extends ConsumerWidget {
       gP(333.833, 139.417, 6, 9.167, gImg('assets/figma/v/3221f2f163c9f7.svg')),
       gP(340.167, 145.75, 6, 9.167, gImg('assets/figma/v/3221f2f163c9f7.svg')),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 182, 92.6, 34, 'Tous (${ref.watch(listingsProvider).length})', 12.5, 600), GChip(124.6, 182, 77.8, 34, 'Publiés', 12.5, 500), GChip(210.4, 182, 100, 34, 'Brouillons', 12.5, 500), GChip(318.4, 182, 77.8, 34, 'Rupture', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17, onChanged: (i) { ref.read(sellerFilterProvider.notifier).set(i); })),
-      gP(24, 230, 342, 330, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 238, 50, 50, gBox(image: 'assets/figma/img/3d6379dbe0e12637d54ca9d283be8cb419701599.png', fit: BoxFit.cover, radii: [12, 12, 12, 12]), show: (ref.watch(visibleListingsProvider).length > 0)),
       gP(98, 242, 145, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(visibleListingsProvider).length > 0 ? ref.watch(visibleListingsProvider)[0].title : '', 13.5, Color(0xFF111015), weight: 600)), show: (ref.watch(visibleListingsProvider).length > 0)),
       gP(98, 264, 140, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(visibleListingsProvider).length > 0 ? (ref.watch(visibleListingsProvider)[0].published ? '${fcfa(ref.watch(visibleListingsProvider)[0].price)} · ${ref.watch(visibleListingsProvider)[0].stock} en stock' : '${fcfa(ref.watch(visibleListingsProvider)[0].price)} · Brouillon') : '', 11.5, Color(0xFF66636E))), show: (ref.watch(visibleListingsProvider).length > 0)),

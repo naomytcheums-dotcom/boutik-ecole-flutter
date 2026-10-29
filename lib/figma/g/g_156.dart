@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_156 extends ConsumerWidget {
@@ -42,7 +44,6 @@ class G_156 extends ConsumerWidget {
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 222, 26, gText('Préférences d’alertes', 21, Color(0xFF111015), weight: 700)),
       gP(24, 120, 56, 19, gText('Canaux', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 158, 342, 264, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 170, 202, 17, gText('Notifications dans l’application', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 192, 87, 14, gText('Toujours actives', 11.5, Color(0xFF66636E))),
       gP(308, 179, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
@@ -59,7 +60,6 @@ class G_156 extends ConsumerWidget {
       gP(40, 390, 128, 14, gText('Résumé hebdomadaire', 11.5, Color(0xFF66636E))),
       gP(308, 377, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
       gP(24, 436, 112, 19, gText('Types d’alertes', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 474, 342, 264, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 486, 119, 17, gText('Dossier incomplet', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 508, 187, 14, gText('Documents manquants ou refusés', 11.5, Color(0xFF66636E))),
       gP(308, 495, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
@@ -76,7 +76,6 @@ class G_156 extends ConsumerWidget {
       gP(40, 706, 174, 14, gText('À chaque changement de statut', 11.5, Color(0xFF66636E))),
       gP(308, 693, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
       gP(24, 752, 66, 16, gText('Fréquence', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 772, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 772, 342, 48, GField(hint: '', initial: 'Quotidienne', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(37.5, 785.5, 21, 21, gImg('assets/figma/v/8283e962773df2.svg')),
       gP(45, 788.5, 9, 12, gImg('assets/figma/v/ed425c4c4b79bb.svg')),

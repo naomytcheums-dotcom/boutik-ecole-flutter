@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_75 extends ConsumerWidget {
@@ -44,7 +46,6 @@ class G_75 extends ConsumerWidget {
       gP(339.833, 70.75, 24.333, 22.5, gImg('assets/figma/v/93e9ba743f301c.svg')),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 70.4, 34, 'Stages', 12.5, 600), GChip(102.4, 120, 77.8, 34, 'Emplois', 12.5, 500), GChip(188.2, 120, 63, 34, 'Défis', 12.5, 500), GChip(259.2, 120, 85.2, 34, 'Missions', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17, onChanged: (i) { ref.read(oppTabProvider.notifier).set(i); })),
       gP(24, 168, 150, 19, Consumer(builder: (context, ref, _) => gText('${ref.watch(visibleOpportunities75).length} offres disponibles', 15, Color(0xFF111015), weight: 700))),
-      gP(24, 206, 342, 264, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 219, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(44.667, 231.833, 22.667, 17.667, gImg('assets/figma/v/0b1915710c6b88.svg')),
       gP(49.667, 228.5, 12.667, 21, gImg('assets/figma/v/baf18a4f525e16.svg'), show: (ref.watch(visibleOpportunities75).length > 0)),

@@ -73,7 +73,7 @@ int reviewCount(Map<String, (int, String)> d, int kind) => d.values.where((e) =>
 Future<void> reviewDialog(BuildContext context, WidgetRef ref, ReviewItem r) {
   final note = TextEditingController();
   const st = TextStyle(inherit: false, fontFamily: 'PlusJakartaSans', fontSize: 13, color: Color(0xFF111015), textBaseline: TextBaseline.alphabetic);
-  return showDialog<void>(
+  return gDialog<void>(
     context: context,
     builder: (ctx) => AlertDialog(
       backgroundColor: Colors.white,

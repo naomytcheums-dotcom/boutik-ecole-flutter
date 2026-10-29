@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_280 extends ConsumerWidget {
@@ -38,7 +40,6 @@ class G_280 extends ConsumerWidget {
       gP(116, 102, 158, 15, gText('Réservé aux administrateurs', 12, Color(0xFF66636E))),
       gP(167.292, 158.708, 32.083, 32.083, gImg('assets/figma/r/209_368.png')),
       gP(187.708, 135.375, 35, 35, gImg('assets/figma/r/209_369.png')),
-      gP(24, 222, 342, 130, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(44, 238, 85, 18, gText('API publique', 14, Color(0xFF111015), weight: 600)),
       gP(44, 268, 80, 15, gText('Version active', 12, Color(0xFF66636E))),
       gP(189, 268, 157, 15, gText('v2 (v1 retirée le 31/12/2026)', 12, Color(0xFF111015), weight: 600)),
@@ -46,7 +47,6 @@ class G_280 extends ConsumerWidget {
       gP(217, 294, 129, 15, gText('600 requêtes / minute', 12, Color(0xFF111015), weight: 600)),
       gP(44, 320, 90, 15, gText('Documentation', 12, Color(0xFF66636E))),
       gP(179, 320, 167, 15, gText('api.boutik-ecole.cm/docs ↗', 12, Color(0xFF5A3FE0), weight: 600)),
-      gP(24, 368, 342, 150, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(44, 384, 121, 18, gText('Clés d’intégration', 14, Color(0xFF111015), weight: 600)),
       gP(44, 414, 115, 16, gText('Portail entreprises', 13, Color(0xFF111015), weight: 600)),
       gP(44, 431, 183, 14, gText('be_live_••••8F2A · Créée le 04/06', 11, Color(0xFF66636E))),
@@ -54,7 +54,6 @@ class G_280 extends ConsumerWidget {
       gP(44, 460, 52, 16, gText('Kiosque', 13, Color(0xFF111015), weight: 600)),
       gP(44, 477, 178, 14, gText('be_live_••••19C0 · Créée le 12/07', 11, Color(0xFF66636E))),
       gP(300, 468, 56, 15, gText('Révoquer', 12, Color(0xFFB42318), weight: 600)),
-      gP(24, 534, 342, 128, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(44, 550, 74, 18, gText('Webhooks', 14, Color(0xFF111015), weight: 600)),
       gP(44, 580, 108, 15, gText('commande.payee', 12, Color(0xFF111015), weight: 600)),
       gP(44, 596, 168, 14, gText('https://erp.iut-douala.cm/hook', 11, Color(0xFF66636E))),

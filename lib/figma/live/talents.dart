@@ -16,7 +16,7 @@ const _st = TextStyle(inherit: false, fontFamily: 'PlusJakartaSans', fontSize: 1
 Future<String?> askText(BuildContext context, {required String title, required String body, required String hint, required String ok, int min = 0}) {
   final c = TextEditingController();
   String? error;
-  return showDialog<String>(
+  return gDialog<String>(
     context: context,
     builder: (ctx) => StatefulBuilder(
       builder: (ctx, set) => AlertDialog(

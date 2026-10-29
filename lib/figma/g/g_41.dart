@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_41 extends ConsumerWidget {
@@ -54,35 +56,30 @@ class G_41 extends ConsumerWidget {
       gP(331, 120, 30, 30, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true)),
       gP(311, 158, 70, 14, gText('Confirmation', 11, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
       gP(24, 188, 122, 16, gText('Nom du destinataire', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 208, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 208, 342, 48, GField(hint: '', initial: 'Mariam Essono', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(39, 223, 18, 18, const SizedBox.expand(), tap: () => gOpen(context, '10')),
       gP(41.25, 222.25, 13.5, 13.5, gImg('assets/figma/v/c741934f1ce95f.svg')),
       gP(39, 229.75, 18, 12, gImg('assets/figma/v/f07df42423af95.svg')),
       gP(24, 270, 64, 16, gText('Téléphone', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 290, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 290, 342, 48, GField(hint: '', initial: '+237 6 XX XX XX XX', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(39.75, 303.5, 16.5, 21, gImg('assets/figma/v/f88bf1acb4da04.svg')),
       gP(45, 315.5, 6.008, 6, gImg('assets/figma/v/f943396fb20219.svg')),
       gP(24, 352, 91, 16, gText('Ville et quartier', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 372, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 372, 342, 48, GField(hint: '', initial: 'Douala · Ndokoti', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(39, 385.5, 18, 21, gImg('assets/figma/v/32cd8858f7ce88.svg')),
       gP(42.75, 389.25, 10.5, 10.5, gImg('assets/figma/v/f34fbbf4909aff.svg')),
       gP(334.5, 390.75, 15, 10.5, gImg('assets/figma/v/7abbf201b36418.svg')),
       gP(24, 434, 97, 16, gText('Adresse précise', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 454, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 454, 342, 48, GField(hint: '', initial: 'Rue de l’IUT, face au Bloc A', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(38.25, 468.427, 19.5, 19.147, gImg('assets/figma/v/e1fd0d54c046bf.svg')),
       gP(47.25, 470.323, 6, 17.25, gImg('assets/figma/v/32c1fcbd2d95de.svg')),
       gP(42.75, 468.427, 6, 17.25, gImg('assets/figma/v/32c1fcbd2d95de.svg')),
       gP(24, 516, 93, 16, gText('Point de repère', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 536, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 536, 342, 48, GField(hint: '', initial: 'Près de la bibliothèque', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(39, 549.5, 18, 16.5, gImg('assets/figma/v/30f0e53e8efa49.svg')),
       gP(39, 559.25, 6, 11.25, gImg('assets/figma/v/37382165c8fa4f.svg')),
       gP(24, 598, 20, 20, gBox(color: Color(0xFF111015), radii: [6, 6, 6, 6])),
-      gP(26.667, 601.75, 14.667, 11.958, gImg('assets/figma/v/ac006383c9ee5c.svg')),
+      gP(26.667, 601.75, 14.667, 11.958, gImg('assets/figma/v/w_check.svg')),
       gP(54, 599, 315, 18, gText('Enregistrer cette adresse dans mon carnet', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
       gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
       gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Continuer')),

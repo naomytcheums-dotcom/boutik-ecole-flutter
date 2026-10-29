@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_221 extends ConsumerWidget {
@@ -44,7 +46,6 @@ class G_221 extends ConsumerWidget {
       gP(24, 120, 342, 180, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x000B2340), Color(0xE00B2340)], stops: [0, 1]), radii: [26, 26, 26, 26])),
       gP(42, 238, 309, 23, gText('Aminata Bello remporte le duel', 18, Color(0xFFFFFFFF), weight: 800, wrap: true)),
       gP(42, 268, 309, 15, gText('Logo Parfums Mbella · 214 votes', 12, Color(0xD9FFFFFF), weight: 500, wrap: true)),
-      gP(24, 314, 342, 154, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 328, 65, 18, gText('Paiement', 14, Color(0xFF111015), weight: 700)),
       gP(40, 362, 56, 16, gText('Prix versé', 12.5, Color(0xFF66636E))),
       gP(270, 362, 80, 16, gText('60 000 FCFA', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),
@@ -55,7 +56,6 @@ class G_221 extends ConsumerWidget {
       gP(40, 430, 71, 16, gText('Participants', 12.5, Color(0xFF66636E))),
       gP(282, 430, 68, 16, gText('3 étudiants', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
       gP(24, 482, 87, 19, gText('Classement', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 520, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 528, 50, 50, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
       gP(98, 532, 102, 17, gText('1. Aminata Bello', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 554, 83, 14, gText('45 % des votes', 11.5, Color(0xFF66636E))),

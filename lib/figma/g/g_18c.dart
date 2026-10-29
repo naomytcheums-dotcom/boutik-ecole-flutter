@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_18c extends ConsumerWidget {
@@ -45,12 +47,10 @@ class G_18c extends ConsumerWidget {
       gP(47, 150.667, 6.008, 6, gImg('assets/figma/v/0f091c2614d4b3.svg')),
       gP(76, 139, 250, 36, gText('Ces informations permettent de confirmer\nvotre statut d’étudiant de l’IUT de Douala.', 12.5, Color(0xFF4A4854), lh: 18)),
       gP(24, 198, 59, 16, gText('Matricule', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 222, 342, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 222, 342, 52, GField(hint: '', initial: 'IUT-2023-0412', size: 14.5, hintColor: Color(0xFF111015), weight: 500, padL: 52)),
       gP(39.083, 239.458, 21.833, 13.917, gImg('assets/figma/v/c98361d28851b5.svg')),
       gP(42.25, 245, 15.5, 11.74, gImg('assets/figma/v/6ec829d4faedab.svg')),
       gP(24, 282, 38, 16, gText('Filière', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 306, 342, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 306, 342, 52, GField(hint: '', initial: 'Génie informatique', size: 14.5, hintColor: Color(0xFF111015), weight: 500, padL: 52)),
       gP(39.875, 336.125, 20.25, 6, gImg('assets/figma/v/d7874e6aba6e58.svg')),
       gP(41.458, 321.875, 17.083, 20.25, gImg('assets/figma/v/1b67178ff4d68e.svg')),
@@ -59,13 +59,11 @@ class G_18c extends ConsumerWidget {
       gP(49.375, 327.417, 6.008, 6, gImg('assets/figma/v/3f8aa7666c0108.svg')),
       gP(330.25, 326.625, 15.5, 10.75, gImg('assets/figma/v/debe62e3abf025.svg')),
       gP(24, 366, 96, 16, gText('Niveau d’étude', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 390, 342, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 390, 342, 52, GField(hint: 'Sélectionnez votre niveau', size: 14.5, hintColor: Color(0xFF66636E), weight: 500, padL: 52)),
       gP(39.083, 407.458, 21.833, 13.917, gImg('assets/figma/v/c98361d28851b5.svg')),
       gP(42.25, 413, 15.5, 11.74, gImg('assets/figma/v/6ec829d4faedab.svg')),
       gP(330.25, 410.625, 15.5, 10.75, gImg('assets/figma/v/debe62e3abf025.svg')),
       gP(24, 458.5, 144, 19, gText('Pièces justificatives', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 488, 342, 78, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 504, 50, 48, gBox(color: Color(0xFFF1EEFB), radii: [16, 16, 16, 16])),
       gP(54, 515, 22, 26, gImg('assets/figma/v/31af238caaf3f0.svg')),
       gP(64, 515, 12, 12, gImg('assets/figma/v/8e2e7e901fb142.svg')),
@@ -73,7 +71,6 @@ class G_18c extends ConsumerWidget {
       gP(104, 532.5, 153, 15, gText('carte_etudiant.jpg • 1,2 Mo', 12, Color(0xFF66636E))),
       gP(323, 514, 26, 26, gBox(color: Color(0xFF1F9D6B), oval: true)),
       gP(328.333, 520.5, 15.333, 12.417, gImg('assets/figma/v/ad3423d22b0298.svg')),
-      gP(24, 582, 342, 104, gBox(color: Color(0xFFF8FAFC), border: Color(0xFFB8C2CE), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(175, 596, 40, 40, gBox(color: Color(0xFFFDEFC8), oval: true)),
       gP(184.5, 615.5, 21, 11, gImg('assets/figma/v/e3af7898ac3f9a.svg')),
       gP(187.833, 605.5, 14.333, 10.167, gImg('assets/figma/v/09f03a98f4325f.svg')),

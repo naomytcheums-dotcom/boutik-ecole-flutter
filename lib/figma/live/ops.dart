@@ -99,7 +99,7 @@ Future<void> reportDialog(BuildContext context, WidgetRef ref, Report r) {
   var who = r.assignee == 'Non assigné' ? 'Support 01' : r.assignee;
   var remove = false;
   final canRemove = r.listing.isNotEmpty && ref.read(listingsProvider).any((l) => l.title == r.listing);
-  return showDialog<void>(
+  return gDialog<void>(
     context: context,
     builder: (ctx) => StatefulBuilder(
       builder: (ctx, set) => AlertDialog(
@@ -186,7 +186,7 @@ Future<void> commissionDialog(BuildContext context, WidgetRef ref) {
         padding: const EdgeInsets.only(bottom: 8),
         child: TextField(controller: c, keyboardType: TextInputType.number, style: _st, decoration: InputDecoration(labelText: label, border: const OutlineInputBorder(), isDense: true)),
       );
-  return showDialog<void>(
+  return gDialog<void>(
     context: context,
     builder: (ctx) => StatefulBuilder(
       builder: (ctx, set) => AlertDialog(
@@ -286,7 +286,7 @@ Color decisionInk(String s) => switch (s) {
 
 Future<void> projectReviewDialog(BuildContext context, WidgetRef ref, Project p) {
   final note = TextEditingController();
-  return showDialog<void>(
+  return gDialog<void>(
     context: context,
     builder: (ctx) => AlertDialog(
       backgroundColor: Colors.white,

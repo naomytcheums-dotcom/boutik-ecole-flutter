@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_99 extends ConsumerWidget {
@@ -39,7 +41,6 @@ class G_99 extends ConsumerWidget {
       gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
       gP(24, 70, 107, 26, gText('Historique', 21, Color(0xFF111015), weight: 700)),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 77.8, 34, 'Besoins', 12.5, 600), GChip(109.8, 120, 63, 34, 'Devis', 12.5, 500), GChip(180.8, 120, 77.8, 34, 'Projets', 12.5, 500), GChip(266.6, 120, 70.4, 34, 'Stages', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
-      gP(24, 168, 342, 264, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 181, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(46.333, 189.667, 19.333, 22.667, gImg('assets/figma/v/8a418070bfb100.svg')),
       gP(54.667, 189.667, 11, 11, gImg('assets/figma/v/2e28e879cb0de7.svg')),
@@ -71,13 +72,11 @@ class G_99 extends ConsumerWidget {
       gP(88, 400, 176, 14, gText('Publié le 20 août · 15 propositio…', 11.5, Color(0xFF66636E))),
       gP(287.2, 388, 64.8, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
       gP(298.6, 392, 42, 14, gText('Terminé', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
-      gP(24, 446, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(38, 458, 87, 14, gText('Besoins publiés', 11.5, Color(0xFF66636E), weight: 500)),
       gP(38, 478, 21, 25, gText('12', 20, Color(0xFF111015), weight: 800)),
       gP(150, 458, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),
       gP(156, 462.75, 16, 18.5, gImg('assets/figma/v/ff64e2b6a5eb10.svg')),
       gP(162.25, 462.75, 9.75, 9.75, gImg('assets/figma/v/3b2d5604a267d0.svg')),
-      gP(200, 446, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(214, 458, 84, 14, gText('Projets réalisés', 11.5, Color(0xFF66636E), weight: 500)),
       gP(214, 478, 13, 25, gText('5', 20, Color(0xFF111015), weight: 800)),
       gP(326, 458, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),

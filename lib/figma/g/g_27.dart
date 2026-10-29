@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_27 extends ConsumerWidget {
@@ -44,7 +46,6 @@ class G_27 extends ConsumerWidget {
       gP(345.081, 74.311, 17.967, 17.967, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(344.327, 73.557, 17.978, 17.978, gImg('assets/figma/v/e8558e10aa6b5f.svg')),
       gP(354.584, 83.813, 9.219, 9.219, gImg('assets/figma/v/a79ae7aacdf827.svg')),
-      gP(24.309, 128.259, 345.61, 127.521, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x14122640), offset: Offset(0, 3), blurRadius: 12, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(37.163, 156.121, 25.024, 29.78, gImg('assets/figma/v/4c6aa9d1fade48.svg')),
       gP(43.108, 162.066, 13.134, 13.134, gImg('assets/figma/v/d15dc14bdbcebc.svg')),
       gP(79.797, 149.243, 123, 17, gText('Adresse par défaut', 13.211, Color(0xFF111015), weight: 700)),
@@ -56,7 +57,6 @@ class G_27 extends ConsumerWidget {
       gP(298.252, 296.193, 50, 15, gText('Voir tout', 12.154, Color(0xFF5A3FE0), weight: 500, align: TextAlign.right)),
       gP(352.43, 300.693, 12.782, 6, gImg('assets/figma/v/855926f1899ef7.svg')),
       gP(355.821, 297.302, 9.391, 12.782, gImg('assets/figma/v/aa2eaaf31287b4.svg')),
-      gP(24.309, 334.652, 345.61, 110.568, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x14122640), offset: Offset(0, 3), blurRadius: 12, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(41.39, 359.259, 20.797, 24.496, gImg('assets/figma/v/4530e4fe2e7100.svg')),
       gP(46.014, 363.883, 11.549, 11.549, gImg('assets/figma/v/dbd70a6e45bc06.svg')),
       gP(79.797, 356.136, 45, 16, gText('Maison', 12.683, Color(0xFF111015), weight: 700)),
@@ -64,7 +64,6 @@ class G_27 extends ConsumerWidget {
       gP(79.797, 408.972, 59, 15, gText('Cameroun', 11.626, Color(0xFF5A3FE0))),
       gP(305.976, 358.976, 54.431, 28.748, gBox(color: Color(0xFFFDF0D5), radii: [10.041, 10.041, 10.041, 10.041])),
       gP(308.955, 366.482, 49, 13, gText('Principale', 10.041, Color(0xFF8F5400), weight: 600, align: TextAlign.center)),
-      gP(24.309, 465.859, 345.61, 112.779, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x14122640), offset: Offset(0, 3), blurRadius: 12, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(42.315, 492.128, 18.947, 22.646, gImg('assets/figma/v/0670fa9a3ceee9.svg')),
       gP(46.014, 492.128, 11.549, 9.699, gImg('assets/figma/v/75655af53eeb33.svg')),
       gP(46.939, 500.452, 10.624, 9.699, gImg('assets/figma/v/65db527a4e9160.svg')),
@@ -72,7 +71,6 @@ class G_27 extends ConsumerWidget {
       gP(79.797, 516.591, 74, 15, gText('Akwa, Douala', 11.626, Color(0xFF5A3FE0))),
       gP(79.797, 541.653, 59, 15, gText('Cameroun', 11.626, Color(0xFF5A3FE0))),
       gP(346.309, 500.966, 9.171, 12.341, gImg('assets/figma/v/36e35652505fba.svg')),
-      gP(24.309, 611.808, 345.61, 64.866, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(129.378, 642.715, 17.098, 6, gImg('assets/figma/v/8c26a4a28a3a65.svg')),
       gP(134.927, 637.166, 6, 17.098, gImg('assets/figma/v/88280087bf7b2f.svg')),
       gP(160.65, 638.215, 115, 15, gText('Ajouter une adresse', 12.154, Color(0xFF111015), weight: 500)),

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_233 extends ConsumerWidget {
@@ -48,10 +50,8 @@ class G_233 extends ConsumerWidget {
       gP(338.667, 71.493, 21.84, 21.84, gImg('assets/figma/v/7a51bb41235e6d.svg')),
       gP(150, 130, 90, 22, gBox(color: Color(0xCCFFFFFF), radii: [11, 11, 11, 11])),
       gP(165, 134, 60, 14, gText('Aujourd’hui', 11, Color(0xFF6B6B6B), weight: 500, align: TextAlign.center)),
-      gP(16, 170, 300, 87, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x1A122640), offset: Offset(0, 1), blurRadius: 2, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(28, 180, 279, 57, gText('Bonjour Mme Mbella 👋 Votre mission « Identité visuelle » avance bien : 60 % (étape 3 sur 5).', 13, Color(0xFF111111), lh: 19, wrap: true)),
       gP(282, 239, 24, 13, gText('10:12', 10, Color(0xFF66636E), align: TextAlign.right)),
-      gP(16, 267, 300, 68, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x1A122640), offset: Offset(0, 1), blurRadius: 2, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(28, 277, 279, 38, gText('L’équipe vient de déposer des propositions de logo.', 13, Color(0xFF111111), lh: 19, wrap: true)),
       gP(282, 317, 24, 13, gText('10:12', 10, Color(0xFF66636E), align: TextAlign.right)),
       gP(16, 345, 300, 170, gBox(image: 'assets/figma/img/4b7b6cea2f4622846841cd8342842e81fa1ed891.png', fit: BoxFit.cover, radii: [14, 14, 14, 14])),
@@ -64,7 +64,6 @@ class G_233 extends ConsumerWidget {
       gP(101.5, 597, 129, 16, gText('Voir les propositions', 13, Color(0xFF128C7E), weight: 700, align: TextAlign.center)),
       gP(16, 632, 300, 40, gBox(color: Color(0xFFFFFFFF), radii: [20, 20, 20, 20]), tap: () => gToast(context, 'Démonstration : Écrire à l’équipe')),
       gP(115, 643, 102, 16, gText('Écrire à l’équipe', 13, Color(0xFF128C7E), weight: 700, align: TextAlign.center)),
-      gP(10, 780, 300, 46, gBox(color: Color(0xFFFFFFFF), radii: [23, 23, 23, 23])),
       gP(10, 780, 300, 46, GField(hint: 'Message', size: 14, hintColor: Color(0xFF66636E), weight: 400, padL: 24)),
       gP(320, 780, 46, 46, gBox(color: Color(0xFF128C7E), oval: true)),
       gP(331.667, 791.667, 22.667, 22.667, gImg('assets/figma/v/37684f95055729.svg')),

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_80 extends ConsumerWidget {
@@ -53,21 +55,18 @@ class G_80 extends ConsumerWidget {
       gP(331, 120, 30, 30, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true)),
       gP(331.5, 158, 29, 14, gText('Envoi', 11, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
       gP(24, 188, 84, 16, gText('Titre du projet', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 208, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 208, 342, 48, GField(hint: 'Ex. Serre intelligente', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('pj_title', v); })),
       errorText('pj_title', 28, 258),
       gP(40.5, 221.5, 15, 15, gImg('assets/figma/v/a49ecdd3bef596.svg')),
       gP(42.75, 233.5, 10.5, 6, gImg('assets/figma/v/2e2c4a27235860.svg')),
       gP(43.5, 236.5, 9, 6, gImg('assets/figma/v/ab681c73d5c7eb.svg')),
       gP(24, 270, 82, 16, gText('Département', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 290, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 290, 342, 48, GField(hint: '', initial: 'Génie électrique', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('pj_dept', v); })),
       errorText('pj_dept', 28, 340),
       gP(37.5, 305.75, 21, 13.5, gImg('assets/figma/v/3db12df66b71b5.svg')),
       gP(40.5, 311, 15, 11.438, gImg('assets/figma/v/8ffb7368f57918.svg')),
       gP(334.5, 308.75, 15, 10.5, gImg('assets/figma/v/7abbf201b36418.svg')),
       gP(24, 352, 127, 16, gText('Stade d’avancement', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 372, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 372, 342, 48, GField(hint: '', initial: 'Idée / Prototype / Réalisé', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('pj_stage', v); })),
       errorText('pj_stage', 28, 422),
       gP(37.5, 385.5, 21, 13.5, gImg('assets/figma/v/0370b51a77df29.svg')),
@@ -75,10 +74,8 @@ class G_80 extends ConsumerWidget {
       gP(37.5, 393, 21, 9.75, gImg('assets/figma/v/46243080f34380.svg')),
       gP(334.5, 390.75, 15, 10.5, gImg('assets/figma/v/7abbf201b36418.svg')),
       gP(24, 434, 71, 16, gText('Description', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 454, 342, 96, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(24, 454, 342, 96, GField(hint: 'Problème résolu, solution, impact attendu…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, onChanged: (v) { ref.read(formProvider.notifier).put('pj_desc', v); }, multiline: true, padT: 14)),
       errorText('pj_desc', 28, 552),
-      gP(24, 564, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 577, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(44.667, 596.5, 17.667, 11, gImg('assets/figma/v/b08196471e66d3.svg')),
       gP(47.167, 586.5, 12.667, 12.667, gImg('assets/figma/v/50a1540c3efbda.svg')),

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_22c extends ConsumerWidget {
@@ -83,7 +85,6 @@ class G_22c extends ConsumerWidget {
       gP(301, 799, 49, 15, gText('Voir tout', 12, Color(0xFF5A3FE0), weight: 500, align: TextAlign.right)),
       gP(352.5, 804, 13, 6, gImg('assets/figma/v/fa9a2f5c896b90.svg')),
       gP(356, 800.5, 9.5, 13, gImg('assets/figma/v/18871471ec7ecf.svg')),
-      gP(24, 835, 342, 132, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 843, 50, 50, gBox(image: 'assets/figma/img/787285568a50b7daa40a12adc3c3145d4743215c.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
       gP(98, 847, 173, 17, gText('Support téléphone en bois', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 869, 171, 14, gText('Ajouté aujourd’hui · 8 000 FCFA', 11.5, Color(0xFF66636E))),

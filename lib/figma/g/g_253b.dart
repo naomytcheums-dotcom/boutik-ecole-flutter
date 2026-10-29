@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_253b extends ConsumerWidget {
@@ -54,7 +56,6 @@ class G_253b extends ConsumerWidget {
       gP(260, 233, 30, 30, gBox(color: Color(0xF2FFFFFF), oval: true)),
       gP(303, 233, 30, 30, gBox(color: Color(0x29FFFFFF), oval: true)),
       gP(314, 241, 8, 13, gText('D', 10.5, Color(0xB2FFFFFF), weight: 600)),
-      gP(24, 298, 342, 88, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 8), blurRadius: 22, spreadRadius: 0)], radii: [30, 30, 30, 30])),
       gP(42, 314, 56, 56, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [18, 18, 18, 18])),
       gP(116, 318, 134, 17, gText('Récompense du jour', 13.5, Color(0xFF111015), weight: 600)),
       gP(116, 340, 153, 28, gText('Un boost gratuit de 24 h sur ton prochain post', 10.5, Color(0xFF66636E), lh: 14, wrap: true)),
@@ -63,7 +64,6 @@ class G_253b extends ConsumerWidget {
       gP(24, 404, 138, 19, gText('Défis de la semaine', 15, Color(0xFF111015), weight: 600)),
       gP(253, 402, 113, 25, gBox(color: Color(0xFFEEE9FF), radii: [100, 100, 100, 100])),
       gP(265, 408, 89, 13, gText('Se termine dans 3 j', 10, Color(0xFF5A3FE0), weight: 600)),
-      gP(24, 434, 342, 64, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(35, 447, 38, 38, gBox(color: Color(0xFFF1EEFB), oval: true)),
       gP(51, 469, 12.75, 6, gImg('assets/figma/v/077154502d192d.svg')),
       gP(44.25, 456.159, 18.841, 18.841, gImg('assets/figma/v/80acba5fb06071.svg')),
@@ -73,7 +73,6 @@ class G_253b extends ConsumerWidget {
       gP(86, 480, 20, 12, gText('3 / 3', 9.5, Color(0xFF66636E), weight: 500)),
       gP(282, 454, 70, 25, gBox(color: Color(0xFFFFF1D6), radii: [100, 100, 100, 100])),
       gP(294, 460, 46, 13, gText('+ 200 pts', 10, Color(0xFFB26A00), weight: 600)),
-      gP(24, 506, 342, 64, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(35, 519, 38, 38, gBox(color: Color(0xFFF1EEFB), oval: true)),
       gP(48.75, 532.75, 10.5, 10.5, gImg('assets/figma/v/f34fbbf4909aff.svg')),
       gP(43.457, 529.675, 21.087, 16.65, gImg('assets/figma/v/d6a80e5157a37a.svg')),
@@ -83,7 +82,6 @@ class G_253b extends ConsumerWidget {
       gP(86, 552, 19, 12, gText('0 / 1', 9.5, Color(0xFF66636E), weight: 500)),
       gP(281, 526, 71, 25, gBox(color: Color(0xFFFFF1D6), radii: [100, 100, 100, 100])),
       gP(293, 532, 47, 13, gText('+ 500 pts', 10, Color(0xFFB26A00), weight: 600)),
-      gP(24, 578, 342, 64, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(35, 591, 38, 38, gBox(color: Color(0xFFF1EEFB), oval: true)),
       gP(44.25, 601.922, 19.5, 17.828, gImg('assets/figma/v/617e418415a6b2.svg')),
       gP(86, 588, 169, 16, gText('Répondre à 5 commentaires', 12.5, Color(0xFF111015), weight: 600)),

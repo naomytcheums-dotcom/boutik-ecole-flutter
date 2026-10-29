@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_255 extends ConsumerWidget {
@@ -36,13 +38,11 @@ class G_255 extends ConsumerWidget {
       gP(43.458, 89, 17.083, 6, gImg('assets/figma/v/e130a05f3cf779.svg')),
       gP(116, 76, 158, 21, gText('Suivi de publication', 17, Color(0xFF111015), weight: 500)),
       gP(131.5, 100, 127, 15, gText('Lampe en bois recyclé', 12, Color(0xFF66636E))),
-      gP(24, 124, 342, 84, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 136, 60, 60, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [18, 18, 18, 18])),
       gP(108, 140, 151, 18, gText('Lampe en bois recyclé', 14, Color(0xFF111015), weight: 600)),
       gP(108, 162, 147, 14, gText('Génie civil · soumis le 22 oct.', 11, Color(0xFF66636E))),
       gP(108, 180, 90, 25, gBox(color: Color(0xFFFFF1D6), radii: [100, 100, 100, 100])),
       gP(120, 186, 66, 13, gText('Étape 5 sur 10', 10, Color(0xFFB26A00), weight: 600)),
-      gP(24, 222, 342, 640, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [30, 30, 30, 30])),
       gP(49, 274, 2, 32, gBox(color: Color(0xFF1F9D6B), radii: [1, 1, 1, 1])),
       gP(37, 245, 26, 26, gBox(color: Color(0xFF1F9D6B), oval: true)),
       gP(42.667, 251.75, 14.667, 11.958, gImg('assets/figma/v/c2c3db2cc7ae5f.svg')),

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_196 extends ConsumerWidget {
@@ -54,7 +56,6 @@ class G_196 extends ConsumerWidget {
       gP(24, 390, 253.08, 40, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1, radii: [18, 18, 18, 18]), tap: () => gToast(context, 'Démonstration : Bien sûr, nouvelle version sous 48 h.')),
       gP(38, 401, 228.08, 18, gText('Bien sûr, nouvelle version sous 48 h.', 12.5, Color(0xFF111015), lh: 18, wrap: true)),
       gP(30, 434, 27, 13, gText('10:24', 10, Color(0xFF8793A5))),
-      gP(24, 470, 342, 132, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 483, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(46.333, 491.667, 19.333, 22.667, gImg('assets/figma/v/8a418070bfb100.svg')),
       gP(54.667, 491.667, 11, 11, gImg('assets/figma/v/2e28e879cb0de7.svg')),

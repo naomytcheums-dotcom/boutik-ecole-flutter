@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_238 extends ConsumerWidget {
@@ -41,7 +43,6 @@ class G_238 extends ConsumerWidget {
       gP(24, 120, 342, 160, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x000B2340), Color(0xE00B2340)], stops: [0, 1]), radii: [26, 26, 26, 26])),
       gP(42, 218, 309, 46, gText('Ensemble, nous faisons grandir le Cameroun', 18, Color(0xFFFFFFFF), weight: 800, wrap: true)),
       gP(42, 248, 309, 15, gText('Chiffres mis à jour en temps réel', 12, Color(0xD9FFFFFF), weight: 500, wrap: true)),
-      gP(24, 294, 342, 76, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(57, 308, 48, 25, gText('48 M', 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
       gP(43.5, 338, 75, 14, gText('FCFA injectés', 11.5, Color(0xFF66636E), align: TextAlign.center)),
       gP(178.5, 308, 33, 25, gText('312', 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
@@ -51,7 +52,6 @@ class G_238 extends ConsumerWidget {
       gP(270.5, 338, 77, 14, gText('Emplois créés', 11.5, Color(0xFF66636E), align: TextAlign.center)),
       gP(252, 308, 1, 48, gBox(color: Color(0xFFF2EFF6))),
       gP(24, 384, 74, 19, gText('Par région', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 422, 342, 192, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 436, 94, 16, gText('Littoral · Douala', 12.5, Color(0xFF111015), weight: 600)),
       gP(320, 436, 30, 15, gText('48 %', 12, Color(0xFF66636E), weight: 600, align: TextAlign.right)),
       gP(40, 458, 310, 7, gBox(color: Color(0xFFF2EFF6), radii: [4, 4, 4, 4])),
@@ -68,7 +68,6 @@ class G_238 extends ConsumerWidget {
       gP(328, 568, 22, 15, gText('8 %', 12, Color(0xFF66636E), weight: 600, align: TextAlign.right)),
       gP(40, 590, 310, 7, gBox(color: Color(0xFFF2EFF6), radii: [4, 4, 4, 4])),
       gP(40, 590, 49.6, 7, gBox(color: Color(0xFF1F9D6B), radii: [4, 4, 4, 4])),
-      gP(24, 628, 342, 79, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
       gP(36, 651.5, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(43.318, 657.417, 18.057, 18.75, gImg('assets/figma/v/c0cca46bb96a94.svg')),
       gP(76, 642, 277, 51, gText('Chaque achat et chaque mission financent directement des étudiants et des projets de leur région.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),

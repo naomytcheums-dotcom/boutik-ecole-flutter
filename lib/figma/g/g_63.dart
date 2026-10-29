@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_63 extends ConsumerWidget {
@@ -39,7 +41,6 @@ class G_63 extends ConsumerWidget {
       gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
       gP(24, 70, 205, 26, gText('Commandes reçues', 21, Color(0xFF111015), weight: 700)),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 129.6, 34, 'À préparer (${ref.watch(sellerOrdersProvider).where((o) => statusOf(ref.watch(sellerStatusProvider), o.id) <= 1).length})', 12.5, 600), GChip(161.6, 120, 85.2, 34, 'En cours', 12.5, 500), GChip(254.8, 120, 70.4, 34, 'Prêtes', 12.5, 500), GChip(333.2, 120, 77.8, 34, 'Livrées', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17, onChanged: (i) { ref.read(sellerOrderTabProvider.notifier).set(i); })),
-      gP(24, 168, 342, 264, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 176, 50, 50, gBox(image: 'assets/figma/img/752f5c71aed593a51d18b9662015d455f75b411b.png', fit: BoxFit.cover, radii: [12, 12, 12, 12]), show: (ref.watch(visibleSellerOrdersProvider).length > 0)),
       gP(98, 180, 112, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(visibleSellerOrdersProvider).length > 0 ? ref.watch(visibleSellerOrdersProvider)[0].id : '', 13.5, Color(0xFF111015), weight: 600)), show: (ref.watch(visibleSellerOrdersProvider).length > 0)),
       gP(98, 202, 162, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(visibleSellerOrdersProvider).length > 0 ? '${ref.watch(visibleSellerOrdersProvider)[0].title} · ${ref.watch(visibleSellerOrdersProvider)[0].client}' : '', 11.5, Color(0xFF66636E))), show: (ref.watch(visibleSellerOrdersProvider).length > 0)),

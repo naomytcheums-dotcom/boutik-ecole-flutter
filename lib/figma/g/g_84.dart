@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_84 extends ConsumerWidget {
@@ -54,24 +56,20 @@ class G_84 extends ConsumerWidget {
       gP(331, 120, 30, 30, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true)),
       gP(316, 158, 60, 14, gText('Publication', 11, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
       gP(24, 188, 115, 16, gText('Type de campagne', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 208, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 208, 342, 48, GField(hint: '', initial: 'Financement participatif', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(37.5, 221.5, 21, 13.5, gImg('assets/figma/v/0370b51a77df29.svg')),
       gP(37.5, 232.75, 21, 9.75, gImg('assets/figma/v/46243080f34380.svg')),
       gP(37.5, 229, 21, 9.75, gImg('assets/figma/v/46243080f34380.svg')),
       gP(334.5, 226.75, 15, 10.5, gImg('assets/figma/v/7abbf201b36418.svg')),
       gP(24, 270, 97, 16, gText('Projet concerné', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 290, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 290, 342, 48, GField(hint: '', initial: 'Serre intelligente', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(40.5, 303.5, 15, 15, gImg('assets/figma/v/a49ecdd3bef596.svg')),
       gP(42.75, 315.5, 10.5, 6, gImg('assets/figma/v/2e2c4a27235860.svg')),
       gP(43.5, 318.5, 9, 6, gImg('assets/figma/v/ab681c73d5c7eb.svg')),
       gP(334.5, 308.75, 15, 10.5, gImg('assets/figma/v/7abbf201b36418.svg')),
       gP(24, 352, 162, 16, gText('Objectif à atteindre (FCFA)', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 372, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 372, 342, 48, GField(hint: '', initial: '2 000 000', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(24, 434, 37, 16, gText('Durée', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 454, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 454, 342, 48, GField(hint: '', initial: '30 jours', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(38.25, 469, 19.5, 19.5, gImg('assets/figma/v/99b18d1a251e8c.svg')),
       gP(48, 467.5, 6, 9, gImg('assets/figma/v/4d0c4aa2d5e373.svg')),
@@ -79,9 +77,7 @@ class G_84 extends ConsumerWidget {
       gP(38.25, 473.5, 19.5, 6, gImg('assets/figma/v/40b22babe144e0.svg')),
       gP(334.5, 472.75, 15, 10.5, gImg('assets/figma/v/7abbf201b36418.svg')),
       gP(24, 516, 176, 16, gText('Présentation de la campagne', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 536, 342, 96, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(24, 536, 342, 96, GField(hint: 'Expliquez le projet, l’usage des fonds et l’impact…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, multiline: true, padT: 14)),
-      gP(24, 646, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 659, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(45.5, 672.667, 21, 9.333, gImg('assets/figma/v/eabe15c7345bb6.svg')),
       gP(53, 672.667, 6, 16.833, gImg('assets/figma/v/5bb53be308dfb1.svg')),

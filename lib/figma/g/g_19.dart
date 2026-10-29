@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_19 extends ConsumerWidget {
@@ -47,8 +49,6 @@ class G_19 extends ConsumerWidget {
       gP(25.898, 280.03, 216, 78, gRich([('Trouvez ce qui\n', 31.484, 700, Color(0xFFFFFFFF)), ('vous', 31.484, 700, Color(0xFFFFC72C)), (' inspire', 31.484, 700, Color(0xFFFFFFFF))], lh: 38.594)),
       gP(26.914, 370.834, 221, 69, gText('Produits, services, talents,\nprojets... explorez tout l’univers\nétudiant de l’IUT de Douala.', 14.727, Color(0xFFFFFFFF), weight: 500, lh: 22.852)),
       gP(0, 470.807, 390, 373.193, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), shadows: [BoxShadow(color: Color(0x14122640), offset: Offset(0, -4), blurRadius: 14, spreadRadius: 0)], radii: [30.469, 30.469, 30.469, 30.469])),
-      gP(22.344, 472.592, 346.328, 123.207, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x1F122640), offset: Offset(0, 4), blurRadius: 16, spreadRadius: 0)], radii: [28, 28, 28, 28])),
-      gP(30.977, 480.925, 328.555, 48.212, gBox(color: Color(0xFFF2EFF6), radii: [20.312, 20.312, 20.312, 20.312])),
       gP(30.977, 480.925, 328.555, 48.212, GField(hint: 'Rechercher un produit, service, talent...', size: 13.711, hintColor: Color(0xFF66636E), weight: 400, padL: 44.18, onChanged: (v) { ref.read(searchQueryProvider.notifier).set(v); }, onSubmitted: (v) { ref.read(searchQueryProvider.notifier).set(v); gOpen(context, '22'); })),
       gP(43.164, 495.593, 18.281, 18.281, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(42.449, 494.878, 18.188, 18.188, gImg('assets/figma/v/9961637ab1d06e.svg')),

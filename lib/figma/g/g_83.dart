@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_83 extends ConsumerWidget {
@@ -48,7 +50,6 @@ class G_83 extends ConsumerWidget {
       gP(140.667, 218, 108.667, 84, gBox(image: 'assets/figma/img/abbe1a61d7955c52cdd31224bc1569ab44582797.png', fit: BoxFit.cover, radii: [16, 16, 16, 16])),
       gP(257.333, 218, 108.667, 84, gBox(image: 'assets/figma/img/34e8344812f71c763e7e4b52e1acffce9319e372.png', fit: BoxFit.cover, radii: [16, 16, 16, 16])),
       gP(24, 316, 85, 19, gText('Documents', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 354, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 367, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(46.333, 375.667, 19.333, 22.667, gImg('assets/figma/v/8a418070bfb100.svg')),
       gP(54.667, 375.667, 11, 11, gImg('assets/figma/v/2e28e879cb0de7.svg')),

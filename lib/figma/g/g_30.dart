@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_30 extends ConsumerWidget {
@@ -46,7 +48,6 @@ class G_30 extends ConsumerWidget {
       gP(131.626, 494.698, 133, 16, gText('Évaluer la commande', 12.984, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(50.974, 551.561, 294.303, 59.228, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28]), tap: () => gToast(context, 'Démonstration : Voir le détail')),
       gP(159.626, 573.175, 77, 16, gText('Voir le détail', 12.984, Color(0xFF111015), weight: 700, align: TextAlign.center)),
-      gP(18.274, 651.509, 356.819, 149.551, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(27.891, 672.142, 85, 15, gText('Un problème ?', 12.022, Color(0xFF111015), weight: 700)),
       gP(27.891, 702.756, 188, 13, gText('Signalez un souci pour obtenir de l’aide.', 10.099, Color(0xFF5A3FE0))),
       gP(31.739, 732.947, 331.813, 60.709, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28]), tap: () => gToast(context, 'Démonstration : Contacter le support')),

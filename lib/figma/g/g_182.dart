@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_182 extends ConsumerWidget {
@@ -38,7 +40,6 @@ class G_182 extends ConsumerWidget {
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
       gP(24, 70, 86, 26, gText('Explorer', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 48, gBox(color: Color(0xFFF2EFF6), radii: [24, 24, 24, 24])),
       gP(24, 120, 342, 48, GField(hint: 'Rechercher un produit, service, t…', size: 13.5, hintColor: Color(0xFF66636E), weight: 400, padL: 46)),
       gP(40.5, 134.5, 19, 19, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(39.875, 133.875, 18.667, 18.667, gImg('assets/figma/v/50f467eb8a9b46.svg')),
@@ -53,23 +54,18 @@ class G_182 extends ConsumerWidget {
       gP(333.833, 139.417, 6, 9.167, gImg('assets/figma/v/3221f2f163c9f7.svg')),
       gP(340.167, 145.75, 6, 9.167, gImg('assets/figma/v/3221f2f163c9f7.svg')),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 182, 55.6, 34, 'Tous', 12.5, 600), GChip(87.6, 182, 85.2, 34, 'Produits', 12.5, 500), GChip(180.8, 182, 85.2, 34, 'Services', 12.5, 500), GChip(274, 182, 77.8, 34, 'Talents', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
-      gP(24, 230, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 240, 46, 46, gBox(color: Color(0xFFE9EDF2), radii: [12, 12, 12, 12])),
       gP(94, 246, 171, 12, gBox(color: Color(0xFFE9EDF2), radii: [6, 6, 6, 6])),
       gP(94, 268, 109.44, 10, gBox(color: Color(0xFFF2EFF6), radii: [5, 5, 5, 5])),
-      gP(24, 306, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 316, 46, 46, gBox(color: Color(0xFFE9EDF2), radii: [12, 12, 12, 12])),
       gP(94, 322, 171, 12, gBox(color: Color(0xFFE9EDF2), radii: [6, 6, 6, 6])),
       gP(94, 344, 109.44, 10, gBox(color: Color(0xFFF2EFF6), radii: [5, 5, 5, 5])),
-      gP(24, 382, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 392, 46, 46, gBox(color: Color(0xFFE9EDF2), radii: [12, 12, 12, 12])),
       gP(94, 398, 171, 12, gBox(color: Color(0xFFE9EDF2), radii: [6, 6, 6, 6])),
       gP(94, 420, 109.44, 10, gBox(color: Color(0xFFF2EFF6), radii: [5, 5, 5, 5])),
-      gP(24, 458, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 468, 46, 46, gBox(color: Color(0xFFE9EDF2), radii: [12, 12, 12, 12])),
       gP(94, 474, 171, 12, gBox(color: Color(0xFFE9EDF2), radii: [6, 6, 6, 6])),
       gP(94, 496, 109.44, 10, gBox(color: Color(0xFFF2EFF6), radii: [5, 5, 5, 5])),
-      gP(24, 534, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 544, 46, 46, gBox(color: Color(0xFFE9EDF2), radii: [12, 12, 12, 12])),
       gP(94, 550, 171, 12, gBox(color: Color(0xFFE9EDF2), radii: [6, 6, 6, 6])),
       gP(94, 572, 109.44, 10, gBox(color: Color(0xFFF2EFF6), radii: [5, 5, 5, 5])),

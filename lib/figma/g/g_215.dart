@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_215 extends ConsumerWidget {
@@ -44,7 +46,6 @@ class G_215 extends ConsumerWidget {
       gP(24, 120, 342, 170, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [26, 26, 26, 26])),
       gP(42, 228, 309, 23, gText('Sites, applications et logiciels', 18, Color(0xFFFFFFFF), weight: 800, wrap: true)),
       gP(42, 258, 309, 15, gText('MTIN · 248 étudiants · 137 offres', 12, Color(0xD9FFFFFF), weight: 500, wrap: true)),
-      gP(24, 304, 342, 76, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(65, 318, 32, 25, gText('137', 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
       gP(63, 348, 36, 14, gText('Offres', 11.5, Color(0xFF66636E), align: TextAlign.center)),
       gP(178, 318, 34, 25, gText('4,8', 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
@@ -54,7 +55,6 @@ class G_215 extends ConsumerWidget {
       gP(285.5, 348, 47, 14, gText('Missions', 11.5, Color(0xFF66636E), align: TextAlign.center)),
       gP(252, 318, 1, 48, gBox(color: Color(0xFFF2EFF6))),
       gP(24, 394, 172, 19, gText('Ce que nous proposons', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 432, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 445, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(44.667, 453.667, 22.667, 14.333, gImg('assets/figma/v/8c9c6b229b6232.svg')),
       gP(44.667, 466.167, 22.667, 10.167, gImg('assets/figma/v/9870aa4d1427a0.svg')),
@@ -78,7 +78,6 @@ class G_215 extends ConsumerWidget {
       gP(88, 598, 203, 14, gText('Dès 120 000 FCFA · formation incluse', 11.5, Color(0xFF66636E))),
       gP(336.75, 589.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
       gP(24, 644, 126, 19, gText('Étudiants à la une', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 682, 342, 132, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 690, 50, 50, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
       gP(98, 694, 98, 17, gText('Mariam Essono', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 716, 131, 14, gText('React, Python · score 88', 11.5, Color(0xFF66636E))),

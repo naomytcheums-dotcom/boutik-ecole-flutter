@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_150_1 extends ConsumerWidget {
@@ -41,7 +43,6 @@ class G_150_1 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 166, 26, gText('Synchronisation', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 79, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
       gP(36, 143.5, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(41.917, 149.417, 20.167, 20.167, gImg('assets/figma/v/40366219467bb4.svg')),
       gP(46.521, 158.675, 10.958, 7.012, gImg('assets/figma/v/01a0133cdd5989.svg')),
@@ -50,7 +51,6 @@ class G_150_1 extends ConsumerWidget {
       gP(44.042, 155.204, 9.662, 7.905, gImg('assets/figma/v/703e1a605a7fe0.svg')),
       gP(49, 162.167, 6.007, 6, gImg('assets/figma/v/c499ab72bb5251.svg')),
       gP(76, 134, 277, 51, gText('Mode hors ligne : certaines fonctions sont limitées. Vos actions seront synchronisées au retour du réseau.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
-      gP(24, 213, 342, 120, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(38, 223, 100, 100, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF0E1A0B), Color(0xFF000000)], stops: [0, 1]), radii: [50, 50, 50, 50])),
       gP(38, 268, 100, 55, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x008DF03A), Color(0xBF8DF03A)], stops: [0, 1]))),
       gP(85, 221.5, 6, 14.5, gImg('assets/figma/v/bb3ffcce1ff37a.svg')),
@@ -129,7 +129,6 @@ class G_150_1 extends ConsumerWidget {
       gP(61, 259, 54, 33, gText('72%', 27, Color(0xFF9BE88A), weight: 300, inter: true)),
       gP(154, 247, 199, 19, gText('Synchronisation en cours', 15, Color(0xFF111015), weight: 700, wrap: true)),
       gP(154, 273, 199, 17, gText('3 éléments sur 4 envoyés', 12, Color(0xFF66636E), lh: 17, wrap: true)),
-      gP(24, 347, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 360, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(48.833, 383.667, 7.667, 7.667, gImg('assets/figma/v/1494b1f7d3ff5c.svg')),
       gP(58, 383.667, 7.667, 7.667, gImg('assets/figma/v/1494b1f7d3ff5c.svg')),
@@ -154,11 +153,9 @@ class G_150_1 extends ConsumerWidget {
       gP(88, 513, 98, 14, gText('En attente d’envoi', 11.5, Color(0xFF66636E))),
       gP(268, 501, 84, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11])),
       gP(282.5, 505, 55, 14, gText('En attente', 11, Color(0xFF8F5400), weight: 600, align: TextAlign.center)),
-      gP(24, 559, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 571, 186, 17, gText('Mode économie de données', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 593, 133, 14, gText('Charger moins d’images', 11.5, Color(0xFF66636E))),
       gP(308, 580, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
-      gP(24, 639, 342, 84, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 651, 147, 16, gText('Dernière synchronisation', 12.5, Color(0xFF66636E))),
       gP(245, 651, 105, 16, gText('Aujourd’hui 10:24', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
       gP(40, 676, 310, 1, gBox(color: Color(0xFFF2EFF6))),

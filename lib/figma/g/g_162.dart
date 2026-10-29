@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_162 extends ConsumerWidget {
@@ -58,14 +60,12 @@ class G_162 extends ConsumerWidget {
       gP(249, 198, 63, 16, gText('En équipe', 13, Color(0xFF111015), weight: 700, align: TextAlign.center)),
       gP(220.65, 222, 119.7, 3, gBox(color: Color(0xFF6A4DFF), radii: [2, 2, 2, 2])),
       gP(24, 242, 99, 16, gText('Nom de l’équipe', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 262, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 262, 342, 48, GField(hint: '', initial: 'Team Innov’', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('hk_team', v); })),
       errorText('hk_team', 28, 312),
       gP(37.5, 285.25, 16.5, 10.5, gImg('assets/figma/v/9554e493730083.svg')),
       gP(39.75, 276.25, 12, 12, gImg('assets/figma/v/843504f34e5472.svg')),
       gP(50.25, 285.347, 8.25, 10.403, gImg('assets/figma/v/9ea8fbb18d7cc6.svg')),
       gP(48, 276.348, 8.256, 11.812, gImg('assets/figma/v/322707fcddf123.svg')),
-      gP(24, 324, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 332, 50, 50, gBox(image: 'assets/figma/img/af86f2e539ad8f1844ccfbe19576723186ea4d78.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
       gP(98, 336, 98, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(profileAccountProvider).name, 13.5, Color(0xFF111015), weight: 600))),
       gP(98, 358, 150, 14, gText('Capitaine · Développement', 11.5, Color(0xFF66636E))),
@@ -84,7 +84,6 @@ class G_162 extends ConsumerWidget {
       gP(268, 478, 84, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11]), show: (ref.watch(teamMembersProvider).length > 1)),
       gP(282.5, 482, 55, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(teamMembersProvider).length > 1 ? (ref.watch(teamMembersProvider)[1].confirmed ? 'Confirmé' : 'En attente') : '', 11, Color(0xFF8F5400), weight: 600, align: TextAlign.center)), show: (ref.watch(teamMembersProvider).length > 1)),
       gP(24, 536, 72, 16, gText('Thématique', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 556, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 556, 342, 48, GField(hint: '', initial: 'Inclusion financière', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('hk_theme', v); })),
       errorText('hk_theme', 28, 606),
       gP(40.5, 569.5, 15, 15, gImg('assets/figma/v/a49ecdd3bef596.svg')),
@@ -92,7 +91,7 @@ class G_162 extends ConsumerWidget {
       gP(43.5, 584.5, 9, 6, gImg('assets/figma/v/ab681c73d5c7eb.svg')),
       gP(334.5, 574.75, 15, 10.5, gImg('assets/figma/v/7abbf201b36418.svg')),
       gP(24, 618, 20, 20, gBox(color: Color(0xFF111015), radii: [6, 6, 6, 6])),
-      gP(26.667, 621.75, 14.667, 11.958, gImg('assets/figma/v/ac006383c9ee5c.svg')),
+      gP(26.667, 621.75, 14.667, 11.958, gImg('assets/figma/v/w_check.svg')),
       gP(24, 616, 22, 22, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFCFCBD6), bw: 1.5, radii: [7.0, 7.0, 7.0, 7.0]), show: !ref.watch(rulesProvider)),
       gP(54, 619, 315, 18, gText('J’accepte le règlement du concours.', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
       gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),

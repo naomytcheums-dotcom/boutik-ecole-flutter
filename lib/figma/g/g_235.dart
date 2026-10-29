@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_235 extends ConsumerWidget {
@@ -46,10 +48,8 @@ class G_235 extends ConsumerWidget {
       gP(106, 87, 165, 14, gText('Compte professionnel · en ligne', 11, Color(0xBFFFFFFF))),
       gP(340, 72, 20, 20, const SizedBox.expand(), tap: () => gOpen(context, '53')),
       gP(338.667, 71.493, 21.84, 21.84, gImg('assets/figma/v/7a51bb41235e6d.svg')),
-      gP(16, 130, 310, 68, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x1A122640), offset: Offset(0, 1), blurRadius: 2, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(28, 140, 289, 38, gText('Pour démarrer la mission, payez le jalon 1 : 54 000 FCFA par Orange Money.', 13, Color(0xFF111111), lh: 19, wrap: true)),
       gP(286, 180, 30, 13, gText('09:40', 10, Color(0xFF66636E), align: TextAlign.right)),
-      gP(16, 208, 310, 176, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(16, 208, 310, 48, gBox(color: Color(0xFFFFF3E6), radii: [14, 14, 14, 14])),
       gP(30, 223, 116, 16, gText('Paiement sécurisé', 13, Color(0xFF111015), weight: 800)),
       gP(291, 228.333, 18, 13.333, gImg('assets/figma/v/4b620eedcc4d0b.svg')),
@@ -62,10 +62,8 @@ class G_235 extends ConsumerWidget {
       gP(74, 398, 300, 49, gBox(color: Color(0xFFD9FDD3), shadows: [BoxShadow(color: Color(0x1A122640), offset: Offset(0, 1), blurRadius: 2, spreadRadius: 0)], radii: [14, 14, 14, 14])),
       gP(86, 408, 279, 19, gText('Paiement effectué ✓', 13, Color(0xFF111111), lh: 19, wrap: true)),
       gP(335, 429, 29, 13, gText('09:42', 10, Color(0xFF66636E), align: TextAlign.right)),
-      gP(16, 457, 310, 68, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x1A122640), offset: Offset(0, 1), blurRadius: 2, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(28, 467, 289, 38, gText('Merci ! 54 000 FCFA reçus et bloqués en séquestre. Reçu : boutik-ecole.cm/r/8841', 13, Color(0xFF111111), lh: 19, wrap: true)),
       gP(287, 507, 29, 13, gText('09:42', 10, Color(0xFF66636E), align: TextAlign.right)),
-      gP(10, 780, 300, 46, gBox(color: Color(0xFFFFFFFF), radii: [23, 23, 23, 23])),
       gP(10, 780, 300, 46, GField(hint: 'Message', size: 14, hintColor: Color(0xFF66636E), weight: 400, padL: 24)),
       gP(320, 780, 46, 46, gBox(color: Color(0xFF128C7E), oval: true)),
       gP(331.667, 791.667, 22.667, 22.667, gImg('assets/figma/v/37684f95055729.svg')),

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_153 extends ConsumerWidget {
@@ -41,13 +43,11 @@ class G_153 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 223, 26, gText('Pourquoi cette offre ?', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 133, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(44.667, 145.833, 22.667, 17.667, gImg('assets/figma/v/0b1915710c6b88.svg')),
       gP(49.667, 142.5, 12.667, 21, gImg('assets/figma/v/baf18a4f525e16.svg')),
       gP(88, 132, 157, 17, gText('Stage développeur web', 13.5, Color(0xFF111015), weight: 600)),
       gP(88, 154, 190, 14, gText('Orange Cameroun · Douala · 3 mois', 11.5, Color(0xFF66636E))),
-      gP(24, 200, 342, 120, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(32, 210, 100, 100, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF0E1A0B), Color(0xFF000000)], stops: [0, 1]), radii: [50, 50, 50, 50])),
       gP(32, 255, 100, 55, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x008DF03A), Color(0xBF8DF03A)], stops: [0, 1]))),
       gP(79, 208.5, 6, 14.5, gImg('assets/figma/v/bb3ffcce1ff37a.svg')),
@@ -126,7 +126,6 @@ class G_153 extends ConsumerWidget {
       gP(54.5, 246, 55, 33, gText('92%', 27, Color(0xFF9BE88A), weight: 300, inter: true)),
       gP(154, 234, 199, 19, gText('Compatibilité 92 %', 15, Color(0xFF111015), weight: 700, wrap: true)),
       gP(154, 260, 199, 34, gText('Votre profil correspond très bien à cette offre.', 12, Color(0xFF66636E), lh: 17, wrap: true)),
-      gP(24, 334, 342, 192, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 348, 183, 16, gText('Compétences (React, Python)', 12.5, Color(0xFF111015), weight: 600)),
       gP(323, 348, 27, 15, gText('95%', 12, Color(0xFF66636E), weight: 600, align: TextAlign.right)),
       gP(40, 370, 310, 7, gBox(color: Color(0xFFF2EFF6), radii: [4, 4, 4, 4])),
@@ -144,7 +143,6 @@ class G_153 extends ConsumerWidget {
       gP(40, 502, 310, 7, gBox(color: Color(0xFFF2EFF6), radii: [4, 4, 4, 4])),
       gP(40, 502, 310, 7, gBox(color: Color(0xFF1F9D6B), radii: [4, 4, 4, 4])),
       gP(24, 540, 130, 19, gText('Points à améliorer', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 578, 342, 132, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 591, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(46.333, 599.667, 19.333, 22.667, gImg('assets/figma/v/8a418070bfb100.svg')),
       gP(54.667, 599.667, 11, 11, gImg('assets/figma/v/2e28e879cb0de7.svg')),

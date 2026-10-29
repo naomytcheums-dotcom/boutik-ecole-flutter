@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_177 extends ConsumerWidget {
@@ -47,7 +49,6 @@ class G_177 extends ConsumerWidget {
       gP(204, 344, 18, 6, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(24, 366, 345, 28, gText('Trouvez vos futurs talents', 22, Color(0xFF111015), weight: 800, wrap: true)),
       gP(24, 398, 345, 38, gText('Publiez un besoin, recevez des propositions et laissez l’IA classer les meilleurs dossiers.', 13, Color(0xFF66636E), lh: 19, wrap: true)),
-      gP(24, 450, 342, 156, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 456, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(46.333, 464.667, 19.333, 22.667, gImg('assets/figma/v/8a418070bfb100.svg')),
       gP(54.667, 464.667, 11, 11, gImg('assets/figma/v/2e28e879cb0de7.svg')),

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_38 extends ConsumerWidget {
@@ -41,13 +43,11 @@ class G_38 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 114, 26, gText('Réputation', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 182, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(159, 136, 72, 72, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, radii: [36, 36, 36, 36])),
       gP(22.5, 218, 345, 21, gText('Yannick Mouanga', 17, Color(0xFF111015), weight: 700, align: TextAlign.center, wrap: true)),
       gP(22.5, 242, 345, 15, gText('Génie civil · Vendeur depuis 2025', 12, Color(0xFF66636E), align: TextAlign.center, wrap: true)),
       gP(149.8, 268, 90.4, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11])),
       gP(162, 272, 66, 14, gText('Top vendeur', 11, Color(0xFF8F5400), weight: 600, align: TextAlign.center)),
-      gP(24, 316, 342, 120, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(49, 406, 78, 30, gBox(color: Color(0xD98DF03A), layerBlur: 12, oval: true)),
       gP(38, 326, 100, 100, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF0E1A0B), Color(0xFF000000)], stops: [0, 1]), radii: [50, 50, 50, 50])),
       gP(38, 371, 100, 55, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x008DF03A), Color(0xBF8DF03A)], stops: [0, 1]))),
@@ -127,7 +127,6 @@ class G_38 extends ConsumerWidget {
       gP(60.5, 362, 55, 33, gText('96%', 27, Color(0xFF9BE88A), weight: 300, inter: true)),
       gP(154, 350, 199, 19, gText('4,9 / 5', 15, Color(0xFF111015), weight: 700, wrap: true)),
       gP(154, 376, 199, 34, gText('38 avis · 98 % de recommandations', 12, Color(0xFF66636E), lh: 17, wrap: true)),
-      gP(24, 450, 342, 148, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 464, 51, 16, gText('5 étoiles', 12.5, Color(0xFF111015), weight: 600)),
       gP(320, 464, 30, 15, gText('88 %', 12, Color(0xFF66636E), weight: 600, align: TextAlign.right)),
       gP(40, 486, 310, 7, gBox(color: Color(0xFFF2EFF6), radii: [4, 4, 4, 4])),
@@ -153,7 +152,6 @@ class G_38 extends ConsumerWidget {
       gP(301, 726, 49, 15, gText('Voir tout', 12, Color(0xFF5A3FE0), weight: 500, align: TextAlign.right)),
       gP(352.5, 731, 13, 6, gImg('assets/figma/v/4159f10924eea0.svg')),
       gP(356, 727.5, 9.5, 13, gImg('assets/figma/v/a365eb17b7a19f.svg')),
-      gP(24, 762, 342, 132, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 770, 50, 50, gBox(image: 'assets/figma/img/ebf23a969ca7b1083d1dcab994c4899c0b4db38b.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
       gP(98, 774, 71, 17, gText('Aminata B.', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 796, 163, 14, gText('Produit de très bonne qualité !', 11.5, Color(0xFF66636E))),

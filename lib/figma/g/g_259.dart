@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_259 extends ConsumerWidget {
@@ -38,7 +40,6 @@ class G_259 extends ConsumerWidget {
       gP(111.5, 100, 167, 15, gText('Commande #BE-2026-0142', 12, Color(0xFF66636E))),
       gP(132.5, 218, 125, 23, gText('Paiement reçu', 18, Color(0xFF111015), weight: 600)),
       gP(103.5, 246, 183, 33, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(lastOrderProvider).total), 26, Color(0xFF111015), weight: 700))),
-      gP(24, 296, 342, 299, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [30, 30, 30, 30])),
       gP(44, 316, 44, 15, gText('Reçu n°', 12, Color(0xFF66636E))),
       gP(240, 316, 106, 16, gText('RC-2026-00842', 12.5, Color(0xFF111015), weight: 600)),
       gP(44, 352, 28, 15, gText('Date', 12, Color(0xFF66636E))),
@@ -54,7 +55,7 @@ class G_259 extends ConsumerWidget {
       gP(44, 540, 302, 1, gBox(color: Color(0xFFEEECF1))),
       gP(44, 556, 65, 16, gText('Total payé', 13, Color(0xFF111015), weight: 600)),
       gP(107, 555, 239, 18, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(lastOrderProvider).total), 14, Color(0xFF111015), weight: 700, wrap: true, align: TextAlign.right))),
-      gP(24, 650, 342, 52, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x38403366), offset: Offset(0, 8), blurRadius: 18, spreadRadius: 0)], radii: [26, 26, 26, 26]), tap: () => gToast(context, 'Démonstration : Télécharger le reçu')),
+      gP(24, 650, 342, 52, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x38403366), offset: Offset(0, 8), blurRadius: 18, spreadRadius: 0)], radii: [26, 26, 26, 26]), tap: () => downloadDocument(context, ref, invoice: false)),
       gP(136, 668, 118, 16, gText('Télécharger le reçu', 13, Color(0xFFFFFFFF), weight: 600)),
       gP(24, 714, 342, 48, gBox(color: Color(0xBFFFFFFF), border: Color(0xFFFFFFFF), bw: 1, radii: [24, 24, 24, 24])),
       gP(152, 730, 86, 16, gText('Voir la facture', 13, Color(0xFF111015), weight: 600)),

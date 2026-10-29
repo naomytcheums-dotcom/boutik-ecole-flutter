@@ -24,7 +24,7 @@ Future<void> userDialog(BuildContext context, WidgetRef ref, Account a) {
   const st = TextStyle(inherit: false, fontFamily: 'PlusJakartaSans', fontSize: 13, color: Color(0xFF111015), textBaseline: TextBaseline.alphabetic);
   var role = staffRoles.contains(a.roleLabel) ? a.roleLabel : staffRoles.first;
   var suspended = a.suspended;
-  return showDialog<void>(
+  return gDialog<void>(
     context: context,
     builder: (ctx) => StatefulBuilder(
       builder: (ctx, set) => AlertDialog(

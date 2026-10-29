@@ -1,4 +1,5 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gen.dart';
@@ -81,7 +82,10 @@ class AuthNotifier extends Notifier<AuthState> {
   AuthState build() => AuthState(current: ref.read(initialAccountProvider));
 
   void login(Account a) => state = state.copy(current: a);
-  void logout() => state = state.copy(clearCurrent: true);
+  void logout() {
+    saveRemembered(null);
+    state = state.copy(clearCurrent: true);
+  }
   void register(Account a) => state = state.copy(accounts: [...state.accounts, a], pending: a);
 
   void update(Account a) {
@@ -165,6 +169,61 @@ String? validPassword(String v) {
 
 void _errors(WidgetRef ref, Map<String, String?> m) => ref.read(errorsProvider.notifier).setAll({for (final e in m.entries) if (e.value != null) e.key: e.value!});
 
+/// Case « Se souvenir de moi » : garde le compte connecté entre deux visites.
+class RememberV extends Notifier<bool> {
+  @override
+  bool build() => false;
+  void set(bool v) => state = v;
+}
+
+final rememberProvider = NotifierProvider<RememberV, bool>(RememberV.new);
+const _rememberKey = 'boutik_remember_email';
+
+Future<void> saveRemembered(String? email) async {
+  try {
+    final p = await SharedPreferences.getInstance();
+    if (email == null) {
+      await p.remove(_rememberKey);
+    } else {
+      await p.setString(_rememberKey, email);
+    }
+  } catch (_) {}
+}
+
+Future<Account?> loadRemembered() async {
+  try {
+    final p = await SharedPreferences.getInstance();
+    final e = p.getString(_rememberKey);
+    if (e == null) return null;
+    for (final a in seedAccounts) {
+      if (a.email == e && !a.suspended) return a;
+    }
+  } catch (_) {}
+  return null;
+}
+
+Widget rememberBox(double x, double y) => gP(
+      x, y, 150, 18,
+      Consumer(builder: (context, ref, _) {
+        final on = ref.watch(rememberProvider);
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => ref.read(rememberProvider.notifier).set(!on),
+          child: Row(children: [
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 140),
+              width: 16,
+              height: 16,
+              decoration: BoxDecoration(color: on ? const Color(0xFF111015) : Colors.transparent, borderRadius: BorderRadius.circular(5), border: on ? null : Border.all(color: const Color(0xFF66636E), width: 1.4)),
+              child: on ? const Icon(Icons.check_rounded, color: Colors.white, size: 12) : null,
+            ),
+            const SizedBox(width: 8),
+            const Text('Se souvenir de moi', style: TextStyle(inherit: false, fontFamily: 'PlusJakartaSans', fontSize: 11.5, fontWeight: FontWeight.w500, color: Color(0xFF111015), textBaseline: TextBaseline.alphabetic)),
+          ]),
+        );
+      }),
+    );
+
 void submitLogin(WidgetRef ref, BuildContext context) {
   final f = ref.read(formProvider);
   final id = (f['li_id'] ?? '').trim();
@@ -189,6 +248,7 @@ void submitLogin(WidgetRef ref, BuildContext context) {
   }
   ref.read(errorsProvider.notifier).clear();
   ref.read(authProvider.notifier).login(hit.first);
+  saveRemembered(ref.read(rememberProvider) ? hit.first.email : null);
   ref.read(auditProvider.notifier).log(hit.first.name, 'Connexion réussie', 'Application', 'Connexions');
   gToast(context, 'Bienvenue, ${hit.first.firstName} !');
   gOpen(context, '03');

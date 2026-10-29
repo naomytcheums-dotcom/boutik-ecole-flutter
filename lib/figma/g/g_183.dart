@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_183 extends ConsumerWidget {
@@ -38,7 +40,6 @@ class G_183 extends ConsumerWidget {
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
       gP(24, 70, 174, 26, gText('Mes commandes', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 79, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
       gP(36, 143.5, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(41.917, 149.417, 20.167, 20.167, gImg('assets/figma/v/40366219467bb4.svg')),
       gP(46.521, 158.675, 10.958, 7.012, gImg('assets/figma/v/01a0133cdd5989.svg')),
@@ -47,7 +48,6 @@ class G_183 extends ConsumerWidget {
       gP(44.042, 155.204, 9.662, 7.905, gImg('assets/figma/v/703e1a605a7fe0.svg')),
       gP(49, 162.167, 6.007, 6, gImg('assets/figma/v/c499ab72bb5251.svg')),
       gP(76, 134, 277, 51, gText('Vous êtes hors ligne. Les données affichées sont celles de votre dernière synchronisation (aujourd’hui 10:24).', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
-      gP(24, 213, 342, 132, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 221, 50, 50, gBox(image: 'assets/figma/img/787285568a50b7daa40a12adc3c3145d4743215c.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
       gP(98, 225, 112, 17, gText('#BE-2026-0142', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 247, 111, 14, gText('Livrée · 32 500 FCFA', 11.5, Color(0xFF66636E))),

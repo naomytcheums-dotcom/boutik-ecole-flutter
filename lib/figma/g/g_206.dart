@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_206 extends ConsumerWidget {
@@ -32,7 +34,7 @@ class G_206 extends ConsumerWidget {
       gP(128, 56, 181, 35, gText('Boutik-École', 28, Color(0xFF111015), weight: 600)),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(520, 50, 68, 48, 'FR', 20, 600), GChip(596, 50, 68, 48, 'EN', 20, 600)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 24)),
       gP(596, 50, 68, 48, gBox(color: Color(0xFFFFFFFF), radii: [24, 24, 24, 24])),
-      gP(100, 170, 520, 520, gBox(image: 'assets/figma/img/2b51b5d6469cca917952ac344a2ddf9cc1440830.png', fit: BoxFit.contain, shadows: [BoxShadow(color: Color(0x4D403366), offset: Offset(0, 24), blurRadius: 40, spreadRadius: 0)])),
+      gP(100, 170, 520, 520, kelaOrb(image: 'assets/figma/img/2b51b5d6469cca917952ac344a2ddf9cc1440830.png', fit: BoxFit.contain, shadows: [BoxShadow(color: Color(0x4D403366), offset: Offset(0, 24), blurRadius: 40, spreadRadius: 0)])),
       gP(38.5, 716, 643, 108, gText('Les talents de l’IUT de Douala,\nà portée de main', 44, Color(0xFF111015), weight: 600, lh: 54, align: TextAlign.center, wrap: true)),
       gP(58.5, 832, 603, 28, gText('Achetez, commandez un service ou lancez une mission.', 22, Color(0xFF66636E), align: TextAlign.center, wrap: true)),
       gP(110, 930, 500, 110, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x4D403366), offset: Offset(0, 14), blurRadius: 30, spreadRadius: 0)], radii: [55, 55, 55, 55])),

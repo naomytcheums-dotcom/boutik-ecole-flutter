@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_28 extends ConsumerWidget {
@@ -49,25 +51,21 @@ class G_28 extends ConsumerWidget {
       gP(207.912, 141.921, 43, 16, gText('Livrées', 12.426, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
       gP(280.074, 127.34, 85.074, 45.161, gBox(color: Color(0xFFF2EFF6), radii: [14.577, 14.577, 14.577, 14.577])),
       gP(295.11, 141.921, 55, 16, gText('Annulées', 12.426, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(19.596, 203.596, 351.287, 111.053, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, 3), blurRadius: 12, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(23.419, 227.663, 60.699, 60.699, gBox(image: 'assets/figma/img/34e8344812f71c763e7e4b52e1acffce9319e372.png', fit: BoxFit.cover, radii: [9.559, 9.559, 9.559, 9.559])),
       gP(98.456, 226.691, 108, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(ordersAllProvider).length > 0 ? ref.watch(ordersAllProvider)[0].id : '', 12.904, Color(0xFF111015), weight: 700))),
       gP(98.456, 259.526, 149, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(ordersAllProvider).length > 0 ? '${ref.watch(ordersAllProvider)[0].date}  •  ${fcfa(ref.watch(ordersAllProvider)[0].total)}' : '', 10.993, Color(0xFF5A3FE0), weight: 500))),
       gP(316.397, 226.547, 46.36, 32.575, gBox(color: (badgeFill((ref.watch(ordersAllProvider).length > 0 ? ref.watch(ordersAllProvider)[0].badge : 'En cours'))), radii: [10.515, 10.515, 10.515, 10.515])),
       gP(322.577, 235.835, 34, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(ordersAllProvider).length > 0 ? ref.watch(ordersAllProvider)[0].badge : '', 11.471, (badgeInk((ref.watch(ordersAllProvider).length > 0 ? ref.watch(ordersAllProvider)[0].badge : 'En cours'))), weight: 600, align: TextAlign.center))),
-      gP(19.596, 333.158, 351.287, 111.053, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, 3), blurRadius: 12, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(23.419, 357.224, 60.699, 60.699, gBox(image: 'assets/figma/img/9e2ce90f4496911ea5fab01d09cc48a0c7a22b47.png', fit: BoxFit.cover, radii: [9.559, 9.559, 9.559, 9.559])),
       gP(98.456, 356.253, 108, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(ordersAllProvider).length > 1 ? ref.watch(ordersAllProvider)[1].id : '', 12.904, Color(0xFF111015), weight: 700))),
       gP(98.456, 389.088, 145, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(ordersAllProvider).length > 1 ? '${ref.watch(ordersAllProvider)[1].date}  •  ${fcfa(ref.watch(ordersAllProvider)[1].total)}' : '', 10.993, Color(0xFF5A3FE0), weight: 500))),
       gP(302.537, 356.109, 60.221, 32.575, gBox(color: (badgeFill((ref.watch(ordersAllProvider).length > 1 ? ref.watch(ordersAllProvider)[1].badge : 'En cours'))), radii: [10.515, 10.515, 10.515, 10.515])),
       gP(309.147, 365.396, 47, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(ordersAllProvider).length > 1 ? ref.watch(ordersAllProvider)[1].badge : '', 11.471, (badgeInk((ref.watch(ordersAllProvider).length > 1 ? ref.watch(ordersAllProvider)[1].badge : 'En cours'))), weight: 600, align: TextAlign.center))),
-      gP(19.596, 462.719, 351.287, 111.053, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, 3), blurRadius: 12, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(23.419, 486.786, 60.699, 60.699, gBox(image: 'assets/figma/img/55fe764cd9b0e1fc03c630662e027fb0f9f7ade4.png', fit: BoxFit.cover, radii: [9.559, 9.559, 9.559, 9.559])),
       gP(98.456, 485.814, 107, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(ordersAllProvider).length > 2 ? ref.watch(ordersAllProvider)[2].id : '', 12.904, Color(0xFF111015), weight: 700))),
       gP(98.456, 518.649, 148, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(ordersAllProvider).length > 2 ? '${ref.watch(ordersAllProvider)[2].date}  •  ${fcfa(ref.watch(ordersAllProvider)[2].total)}' : '', 10.993, Color(0xFF5A3FE0), weight: 500))),
       gP(316.397, 485.67, 46.36, 32.575, gBox(color: (badgeFill((ref.watch(ordersAllProvider).length > 2 ? ref.watch(ordersAllProvider)[2].badge : 'En cours'))), radii: [10.515, 10.515, 10.515, 10.515])),
       gP(322.577, 494.958, 34, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(ordersAllProvider).length > 2 ? ref.watch(ordersAllProvider)[2].badge : '', 11.471, (badgeInk((ref.watch(ordersAllProvider).length > 2 ? ref.watch(ordersAllProvider)[2].badge : 'En cours'))), weight: 600, align: TextAlign.center))),
-      gP(19.596, 592.281, 351.287, 111.053, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, 3), blurRadius: 12, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(23.419, 616.347, 60.699, 60.699, gBox(image: 'assets/figma/img/9803b1792923bb371cffd2d64272ebebf74ea2d4.png', fit: BoxFit.cover, radii: [9.559, 9.559, 9.559, 9.559])),
       gP(98.456, 615.375, 105, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(ordersAllProvider).length > 3 ? ref.watch(ordersAllProvider)[3].id : '', 12.904, Color(0xFF111015), weight: 700))),
       gP(98.456, 648.211, 152, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(ordersAllProvider).length > 3 ? '${ref.watch(ordersAllProvider)[3].date}  •  ${fcfa(ref.watch(ordersAllProvider)[3].total)}' : '', 10.993, Color(0xFF5A3FE0), weight: 500))),

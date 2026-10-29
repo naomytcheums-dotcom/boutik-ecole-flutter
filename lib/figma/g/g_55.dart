@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_55 extends ConsumerWidget {
@@ -42,7 +44,6 @@ class G_55 extends ConsumerWidget {
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 189, 26, gText('Orange Cameroun', 21, Color(0xFF111015), weight: 700)),
       gP(76, 96, 203, 15, gText('Partenaire vérifié · Répond sous 24 h', 12, Color(0xFF66636E))),
-      gP(24, 120, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 133, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(44.667, 145.833, 22.667, 17.667, gImg('assets/figma/v/0b1915710c6b88.svg')),
       gP(49.667, 142.5, 12.667, 21, gImg('assets/figma/v/baf18a4f525e16.svg')),
@@ -50,7 +51,6 @@ class G_55 extends ConsumerWidget {
       gP(88, 154, 188, 14, gText('Budget 300 000 – 500 000 FCFA', 11.5, Color(0xFF66636E))),
       gP(293.6, 142, 58.4, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
       gP(303.8, 146, 38, 14, gText('Ouvert', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
-      gP(24, 200, 246.24, 76, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(38, 211, 221.24, 54, gText('Bonjour Mariam, votre proposition nous intéresse. Pouvez-vous présenter votre portfolio ?', 12.5, Color(0xFF111015), lh: 18, wrap: true)),
       gP(30, 280, 30, 13, gText('09:30', 10, Color(0xFF8793A5))),
       gP(119.76, 302, 246.24, 58, gBox(color: Color(0xFF111015), radii: [18, 18, 18, 18]), tap: () => gToast(context, 'Démonstration : Bonjour, voici mon portfolio et deux références.')),
@@ -60,7 +60,6 @@ class G_55 extends ConsumerWidget {
       gP(38, 397, 221.24, 36, gText('Parfait, nous planifions un entretien jeudi.', 12.5, Color(0xFF111015), lh: 18, wrap: true)),
       gP(30, 448, 28, 13, gText('10:05', 10, Color(0xFF8793A5))),
       gP(24, 568, 0, 16, gText('', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 748, 342, 56, gBox(color: Color(0xC7FFFFFF), border: Color(0xFFFFFFFF), bw: 1, shadows: [BoxShadow(color: Color(0x14403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], backBlur: 24, radii: [28, 28, 28, 28])),
       gP(24, 748, 342, 56, GField(hint: 'Répondre à l’entreprise…', size: 13, hintColor: Color(0xFF66636E), weight: 400, padL: 56)),
       gP(33, 757, 38, 38, gBox(color: Color(0xFFF1EEFB), oval: true)),
       gP(41.036, 764.624, 21.406, 22.341, gImg('assets/figma/v/b9f90829d9eec8.svg')),

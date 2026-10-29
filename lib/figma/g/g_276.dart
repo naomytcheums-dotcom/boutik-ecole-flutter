@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_276 extends ConsumerWidget {
@@ -40,13 +42,11 @@ class G_276 extends ConsumerWidget {
       gP(151.25, 146.25, 87.499, 87.499, gImg('assets/figma/r/200_583.png')),
       gP(24.5, 262, 341, 21, gText('Connexion momentanément indisponible', 17, Color(0xFF111015), weight: 700)),
       gP(74, 294, 242, 16, gText('Le catalogue est consultable hors ligne.', 13, Color(0xFF6B6877))),
-      gP(24, 336, 342, 150, gBox(color: Color(0xD9FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [22, 22, 22, 22])),
       gP(44, 354, 140, 18, gText('Disponible hors ligne', 14, Color(0xFF111015), weight: 600)),
       gP(44, 380, 215, 16, gText('• 120 produits et services en vitrine', 13, Color(0xFF6B6877), weight: 500)),
       gP(44, 402, 185, 16, gText('• Cartes de visite et QR codes', 13, Color(0xFF6B6877), weight: 500)),
       gP(44, 424, 152, 16, gText('• Plan de l’IUT et horaires', 13, Color(0xFF6B6877), weight: 500)),
       gP(44, 452, 302, 14, gText('Paiements et commandes : reprise dès le retour du réseau.', 11, Color(0xFF6B6877))),
-      gP(24, 506, 342, 76, gBox(color: Color(0xD9FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [22, 22, 22, 22])),
       gP(44, 522, 103, 18, gText('Besoin d’aide ?', 14, Color(0xFF111015), weight: 600)),
       gP(44, 546, 206, 15, gText('Adressez-vous à l’accueil · poste 214', 12, Color(0xFF6B6877))),
       gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => gToast(context, 'Démonstration : Parcourir le catalogue hors ligne')),

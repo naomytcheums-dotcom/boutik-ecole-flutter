@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_85 extends ConsumerWidget {
@@ -41,7 +43,6 @@ class G_85 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 186, 26, gText('Objectifs et jalons', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 120, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(38, 130, 100, 100, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF0E1A0B), Color(0xFF000000)], stops: [0, 1]), radii: [50, 50, 50, 50])),
       gP(38, 175, 100, 55, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x008DF03A), Color(0xBF8DF03A)], stops: [0, 1]))),
       gP(85, 128.5, 6, 14.5, gImg('assets/figma/v/bb3ffcce1ff37a.svg')),
@@ -138,7 +139,6 @@ class G_85 extends ConsumerWidget {
       gP(24, 479, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true)),
       gP(56, 478, 305, 17, gText('2 000 000 FCFA · Lancement', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
       gP(56, 498, 305, 14, gText('', 11.5, Color(0xFF66636E), wrap: true)),
-      gP(24, 554, 342, 188, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 568, 138, 18, gText('Utilisation des fonds', 14, Color(0xFF111015), weight: 700)),
       gP(40, 602, 48, 16, gText('Matériel', 12.5, Color(0xFF66636E))),
       gP(318, 602, 32, 16, gText('40 %', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),

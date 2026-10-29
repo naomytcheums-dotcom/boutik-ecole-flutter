@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_163 extends ConsumerWidget {
@@ -41,7 +43,6 @@ class G_163 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 244, 26, gText('Trouver des coéquipiers', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 48, gBox(color: Color(0xFFF2EFF6), radii: [24, 24, 24, 24])),
       gP(24, 120, 342, 48, GField(hint: 'Compétence, filière, nom…', size: 13.5, hintColor: Color(0xFF66636E), weight: 400, padL: 46, onChanged: (v) { ref.read(mateQueryProvider.notifier).set(v); })),
       gP(40.5, 134.5, 19, 19, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(39.875, 133.875, 18.667, 18.667, gImg('assets/figma/v/50f467eb8a9b46.svg')),
@@ -57,7 +58,6 @@ class G_163 extends ConsumerWidget {
       gP(340.167, 145.75, 6, 9.167, gImg('assets/figma/v/3221f2f163c9f7.svg')),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 182, 114.8, 34, 'Développeurs', 12.5, 600), GChip(146.8, 182, 92.6, 34, 'Designers', 12.5, 500), GChip(247.4, 182, 85.2, 34, 'Business', 12.5, 500), GChip(340.6, 182, 100, 34, 'IA et data', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17, onChanged: (i) { ref.read(mateTabProvider.notifier).set(i); })),
       gP(24, 230, 156, 19, Consumer(builder: (context, ref, _) => gText('${ref.watch(visibleMatesProvider).length} talents disponibles', 15, Color(0xFF111015), weight: 700))),
-      gP(24, 268, 342, 264, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 276, 50, 50, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, radii: [25, 25, 25, 25]), show: (ref.watch(visibleMatesProvider).length > 0)),
       gP(98, 280, 93, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(visibleMatesProvider).length > 0 ? ref.watch(visibleMatesProvider)[0].name : '', 13.5, Color(0xFF111015), weight: 600)), show: (ref.watch(visibleMatesProvider).length > 0)),
       gP(98, 302, 155, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(visibleMatesProvider).length > 0 ? ref.watch(visibleMatesProvider)[0].skills : '', 11.5, Color(0xFF66636E))), show: (ref.watch(visibleMatesProvider).length > 0)),
@@ -81,7 +81,6 @@ class G_163 extends ConsumerWidget {
       gP(98, 500, 133, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(visibleMatesProvider).length > 3 ? ref.watch(visibleMatesProvider)[3].skills : '', 11.5, Color(0xFF66636E))), show: (ref.watch(visibleMatesProvider).length > 3)),
       gP(287.2, 488, 64.8, 22, gBox(color: (ref.watch(visibleMatesProvider).length > 3 ? inviteFill(ref.watch(teamMembersProvider).any((m) => m.name == ref.watch(visibleMatesProvider)[3].name)) : const Color(0x00000000)), radii: [11, 11, 11, 11]), show: (ref.watch(visibleMatesProvider).length > 3)),
       gP(302.6, 492, 34, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(visibleMatesProvider).length > 3 ? (ref.watch(teamMembersProvider).any((m) => m.name == ref.watch(visibleMatesProvider)[3].name) ? 'Invité' : 'Inviter') : '', 11, (ref.watch(visibleMatesProvider).length > 3 ? inviteInk(ref.watch(teamMembersProvider).any((m) => m.name == ref.watch(visibleMatesProvider)[3].name)) : const Color(0xFF5A3FE0)), weight: 600, align: TextAlign.center)), show: (ref.watch(visibleMatesProvider).length > 3)),
-      gP(24, 546, 342, 79, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
       gP(36, 569.5, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(42.625, 575.417, 18.75, 16.625, gImg('assets/figma/v/b2ae09d0fd46bb.svg')),
       gP(47.796, 588.875, 8.408, 6.712, gImg('assets/figma/v/f59da0513c0b4c.svg')),

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_P5 extends ConsumerWidget {
@@ -43,13 +45,11 @@ class G_P5 extends ConsumerWidget {
       gP(44, 150, 193, 69, gText('Relie tes outils,\nton profil se met\nà jour tout seul.', 17, Color(0xFFFFFFFF), weight: 600, lh: 23, wrap: true)),
       gP(44, 226, 106, 26, gBox(color: Color(0x29FFFFFF), radii: [13, 13, 13, 13])),
       gP(50.5, 232, 93, 13, gText('3 outils connectés', 10.5, Color(0xFFFFFFFF), weight: 600)),
-      gP(24, 280, 342, 48, gBox(color: Color(0xB2FFFFFF), border: Color(0xFFFFFFFF), bw: 1, backBlur: 24, radii: [24, 24, 24, 24])),
       gP(24, 280, 342, 48, GField(hint: 'Rechercher un outil ou un réseau', size: 13, hintColor: Color(0xFF66636E), weight: 400, padL: 48)),
       gP(39.5, 295.5, 17, 17, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(38.625, 294.625, 17.333, 17.333, gImg('assets/figma/v/fc3dbed79a7c48.svg')),
       gP(48.329, 304.329, 9.046, 9.046, gImg('assets/figma/v/a4779ccb4d017c.svg')),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 342, 60, 34, 'Tout', 12, 500), GChip(92, 342, 84, 34, 'Réseaux', 12, 400), GChip(184, 342, 100, 34, 'Portfolio', 12, 400), GChip(292, 342, 84, 34, 'Gestion', 12, 400), GChip(384, 342, 92, 34, 'Paiement', 12, 400)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFFFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 17)),
-      gP(24, 392, 342, 408, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 8), blurRadius: 22, spreadRadius: 0)], radii: [32, 32, 32, 32])),
       gP(44, 410, 120, 19, gText('Réseaux sociaux', 15, Color(0xFF111015), weight: 600)),
       gP(322, 412, 24, 14, gText('3 / 5', 11.5, Color(0xFF66636E), weight: 500)),
       gP(41, 445, 50, 50, gImg('assets/figma/v/b366cd75bc5628.svg')),
@@ -98,7 +98,6 @@ class G_P5 extends ConsumerWidget {
       gP(277.5, 712, 55, 13, gText('Connecter', 10.5, Color(0xFFFFFFFF), weight: 600)),
       gP(44, 768, 111, 15, gText('Voir 4 outils de plus', 12, Color(0xFF5A3FE0), weight: 600)),
       gP(341.25, 770.5, 9.5, 13, gImg('assets/figma/v/a365eb17b7a19f.svg')),
-      gP(24, 816, 342, 284, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 8), blurRadius: 22, spreadRadius: 0)], radii: [32, 32, 32, 32])),
       gP(44, 834, 153, 19, gText('Portfolio et stockage', 15, Color(0xFF111015), weight: 600)),
       gP(325, 836, 21, 14, gText('1 / 3', 11.5, Color(0xFF66636E), weight: 500)),
       gP(41, 869, 50, 50, gImg('assets/figma/v/a6c6c24cce583c.svg')),
@@ -128,7 +127,6 @@ class G_P5 extends ConsumerWidget {
       gP(277.5, 1012, 55, 13, gText('Connecter', 10.5, Color(0xFFFFFFFF), weight: 600)),
       gP(44, 1068, 110, 15, gText('Voir 5 outils de plus', 12, Color(0xFF5A3FE0), weight: 600)),
       gP(341.25, 1070.5, 9.5, 13, gImg('assets/figma/v/a365eb17b7a19f.svg')),
-      gP(24, 1116, 342, 284, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 8), blurRadius: 22, spreadRadius: 0)], radii: [32, 32, 32, 32])),
       gP(44, 1134, 129, 19, gText('Gestion et équipe', 15, Color(0xFF111015), weight: 600)),
       gP(321, 1136, 25, 14, gText('0 / 3', 11.5, Color(0xFF66636E), weight: 500)),
       gP(44, 1172, 44, 44, gBox(color: Color(0x210079BF), radii: [15, 15, 15, 15])),
@@ -153,7 +151,6 @@ class G_P5 extends ConsumerWidget {
       gP(277.5, 1312, 55, 13, gText('Connecter', 10.5, Color(0xFFFFFFFF), weight: 600)),
       gP(44, 1368, 110, 15, gText('Voir 6 outils de plus', 12, Color(0xFF5A3FE0), weight: 600)),
       gP(341.25, 1370.5, 9.5, 13, gImg('assets/figma/v/a365eb17b7a19f.svg')),
-      gP(24, 1416, 342, 184, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 8), blurRadius: 22, spreadRadius: 0)], radii: [32, 32, 32, 32])),
       gP(44, 1434, 69, 19, gText('Paiement', 15, Color(0xFF111015), weight: 600)),
       gP(321, 1436, 25, 14, gText('0 / 2', 11.5, Color(0xFF66636E), weight: 500)),
       gP(44, 1472, 44, 44, gBox(color: Color(0x21FF7900), radii: [15, 15, 15, 15])),
@@ -169,7 +166,6 @@ class G_P5 extends ConsumerWidget {
       gP(100, 1558, 112, 14, gText('Reçois tes paiements', 11, Color(0xFF66636E))),
       gP(264, 1543, 82, 28, gBox(color: Color(0xFF111015), radii: [14, 14, 14, 14])),
       gP(277.5, 1550, 55, 13, gText('Connecter', 10.5, Color(0xFFFFFFFF), weight: 600)),
-      gP(24, 1616, 342, 64, gBox(color: Color(0x99FFFFFF), border: Color(0xFF6A4DFF), bw: 1.5, radii: [24, 24, 24, 24])),
       gP(42, 1632, 32, 32, gBox(color: Color(0xFFEEE9FF), oval: true)),
       gP(50.625, 1645, 14.75, 6, gImg('assets/figma/v/4a21eafe2f996f.svg')),
       gP(55, 1640.625, 6, 14.75, gImg('assets/figma/v/4c74d775e86184.svg')),

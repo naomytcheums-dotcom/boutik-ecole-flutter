@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_194 extends ConsumerWidget {
@@ -46,7 +48,6 @@ class G_194 extends ConsumerWidget {
       gP(24, 120, 342, 170, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [26, 26, 26, 26])),
       gP(42, 228, 309, 23, Consumer(builder: (context, ref, _) => gText('${ref.watch(missionProvider).kind} · ${ref.watch(missionProvider).id}', 18, Color(0xFFFFFFFF), weight: 800, wrap: true))),
       gP(42, 258, 309, 15, gText('Équipe MMI · TCO · livraison le 28 nov.', 12, Color(0xD9FFFFFF), weight: 500, wrap: true)),
-      gP(24, 304, 342, 120, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(49, 394, 78, 30, gBox(color: Color(0xD98DF03A), layerBlur: 12, oval: true)),
       gP(38, 314, 100, 100, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF0E1A0B), Color(0xFF000000)], stops: [0, 1]), radii: [50, 50, 50, 50])),
       gP(38, 359, 100, 55, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x008DF03A), Color(0xBF8DF03A)], stops: [0, 1]))),
@@ -154,7 +155,6 @@ class G_194 extends ConsumerWidget {
       gP(24, 813, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true)),
       gP(56, 812, 175, 17, gText('Livraison finale', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
       gP(56, 832, 175, 14, gText('28 nov.', 11.5, Color(0xFF66636E), wrap: true)),
-      gP(24, 910, 342, 84, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 922, 57, 16, gText('Paiement', 12.5, Color(0xFF66636E))),
       gP(192, 922, 158, 16, gText('Libéré 60 % · Bloqué 40 %', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
       gP(40, 947, 310, 1, gBox(color: Color(0xFFF2EFF6))),

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_62 extends ConsumerWidget {
@@ -41,27 +43,23 @@ class G_62 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 72, 26, gText('Stocks', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(38, 132, 47, 14, gText('En stock', 11.5, Color(0xFF66636E), weight: 500)),
       gP(38, 152, 97, 25, Consumer(builder: (context, ref, _) => gText('${ref.watch(listingsProvider).fold<int>(0, (a, l) => a + l.stock)} unités', 20, Color(0xFF111015), weight: 800))),
       gP(150, 132, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),
       gP(155.375, 137.375, 17.25, 16.625, gImg('assets/figma/v/0e7bfe7735ff71.svg')),
       gP(155.375, 140.5, 17.25, 6, gImg('assets/figma/v/fabbebac184fd2.svg')),
       gP(161, 142.375, 6, 9.125, gImg('assets/figma/v/43269c010b1817.svg')),
-      gP(200, 120, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(214, 132, 55, 14, gText('Stock bas', 11.5, Color(0xFF66636E), weight: 500)),
       gP(214, 152, 90, 25, Consumer(builder: (context, ref, _) => gText('${ref.watch(listingsProvider).where((l) => l.published && l.stock > 0 && l.stock <= Listing.lowStock).length} articles', 20, Color(0xFF111015), weight: 800))),
       gP(326, 132, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),
       gP(330.739, 137.366, 18.51, 17.259, gImg('assets/figma/v/2adfe02c023131.svg')),
       gP(337, 141.125, 6, 8.5, gImg('assets/figma/v/c96460ed96947c.svg')),
       gP(337, 146.125, 6.006, 6, gImg('assets/figma/v/ea7a417c4e88fe.svg')),
-      gP(24, 222, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(38, 234, 50, 14, gText('Ruptures', 11.5, Color(0xFF66636E), weight: 500)),
       gP(38, 254, 89, 25, Consumer(builder: (context, ref, _) => gText('${ref.watch(listingsProvider).where((l) => l.published && l.stock == 0).length} articles', 20, Color(0xFF111015), weight: 800))),
       gP(150, 234, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),
       gP(157.25, 241.25, 13.5, 13.5, gImg('assets/figma/v/8ca5bf288e293b.svg')),
       gP(157.25, 241.25, 13.5, 13.5, gImg('assets/figma/v/d9d26aa83768ed.svg')),
-      gP(200, 222, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(214, 234, 83, 14, gText('Réassort prévu', 11.5, Color(0xFF66636E), weight: 500)),
       gP(214, 254, 90, 25, gText('3 articles', 20, Color(0xFF111015), weight: 800)),
       gP(326, 234, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),
@@ -71,7 +69,6 @@ class G_62 extends ConsumerWidget {
       gP(338.875, 247.5, 8.5, 8.5, gImg('assets/figma/v/669da69bca44b2.svg')),
       gP(332.625, 247.5, 8.5, 8.5, gImg('assets/figma/v/669da69bca44b2.svg')),
       gP(24, 328, 137, 19, gText('Articles à surveiller', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 366, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 374, 50, 50, gBox(image: 'assets/figma/img/9803b1792923bb371cffd2d64272ebebf74ea2d4.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
       gP(98, 378, 124, 17, Consumer(builder: (context, ref, _) => gText((ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock))).length > 0 ? (ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock)))[0].title : '', 13.5, Color(0xFF111015), weight: 600)), show: ((ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock))).length > 0)),
       gP(98, 400, 104, 14, Consumer(builder: (context, ref, _) => gText((ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock))).length > 0 ? 'Seuil : ${Listing.lowStock} · Restant : ${(ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock)))[0].stock}' : '', 11.5, Color(0xFF66636E))), show: ((ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock))).length > 0)),
@@ -90,7 +87,6 @@ class G_62 extends ConsumerWidget {
       gP(319.2, 520, 32.8, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
       gP(190.1, 524, 151, 14, Consumer(builder: (context, ref, _) => gText((ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock))).length > 2 ? '${(ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock)))[2].stock}' : '', 11, Color(0xFF0F7A52), weight: 600, wrap: true, align: TextAlign.right)), show: ((ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock))).length > 2)),
       gP(24, 578, 53, 19, gText('Alertes', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 616, 342, 132, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 628, 105, 17, gText('Alerte stock bas', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 650, 107, 14, gText('Notifier sous le seuil', 11.5, Color(0xFF66636E))),
       gP(308, 637, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
@@ -99,7 +95,6 @@ class G_62 extends ConsumerWidget {
       gP(40, 716, 89, 14, gText('Notifier à 0 unité', 11.5, Color(0xFF66636E))),
       gP(308, 703, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
       gP(24, 762, 95, 16, gText('Seuil par défaut', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 782, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 782, 342, 48, GField(hint: '', initial: '5 unités', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(38.25, 796.25, 19.5, 18.75, gImg('assets/figma/v/959bd6157e02d7.svg')),
       gP(38.25, 800, 19.5, 6, gImg('assets/figma/v/40b22babe144e0.svg')),

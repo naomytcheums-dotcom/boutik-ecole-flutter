@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_203 extends ConsumerWidget {
@@ -40,7 +42,6 @@ class G_203 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 190, 26, gText('Mes compétences', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 76, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(68.5, 134, 25, 25, gText('82', 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
       gP(46, 164, 70, 14, gText('Score global', 11.5, Color(0xFF66636E), align: TextAlign.center)),
       gP(184.5, 134, 21, 25, gText('18', 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
@@ -50,7 +51,6 @@ class G_203 extends ConsumerWidget {
       gP(298, 164, 22, 14, gText('Avis', 11.5, Color(0xFF66636E), align: TextAlign.center)),
       gP(252, 134, 1, 48, gBox(color: Color(0xFFF2EFF6))),
       gP(24, 210, 142, 19, gText('Domaines maîtrisés', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 248, 342, 192, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 262, 95, 16, gText('Identité visuelle', 12.5, Color(0xFF111015), weight: 600)),
       gP(335, 262, 15, 15, gText('92', 12, Color(0xFF66636E), weight: 600, align: TextAlign.right)),
       gP(40, 284, 310, 7, gBox(color: Color(0xFFF2EFF6), radii: [4, 4, 4, 4])),
@@ -68,7 +68,6 @@ class G_203 extends ConsumerWidget {
       gP(40, 416, 310, 7, gBox(color: Color(0xFFF2EFF6), radii: [4, 4, 4, 4])),
       gP(40, 416, 170.5, 7, gBox(color: Color(0xFF8FB4E8), radii: [4, 4, 4, 4])),
       gP(24, 454, 143, 19, gText('Pourquoi ce score ?', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 492, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 505, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(48, 513.667, 16, 16, gImg('assets/figma/v/3a82c8c513bd84.svg')),
       gP(48.833, 522.75, 14.333, 13.583, gImg('assets/figma/v/b22a24959a2f97.svg')),

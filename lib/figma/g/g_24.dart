@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_24 extends ConsumerWidget {
@@ -57,7 +59,6 @@ class G_24 extends ConsumerWidget {
       gP(289.223, 239.629, 21.209, 21.203, gImg('assets/figma/v/29ca001164ff33.svg')),
       gP(294.553, 245.708, 10.561, 9.041, gImg('assets/figma/v/3f3aa7e88e58a9.svg')),
       gP(131.711, 271.946, 227, 15, gText('Étudiant · Génie informatique · IUT Douala', 11.54, Color(0xFF5A3FE0), weight: 500)),
-      gP(20.526, 306.693, 351.228, 79.645, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x14122640), offset: Offset(0, 3), blurRadius: 12, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(51.219, 321.317, 23, 29, gText('12', 22.807, Color(0xFF111015), weight: 700, align: TextAlign.center)),
       gP(35.219, 353.469, 55, 17, gText('Produits', 13.684, Color(0xFF66636E), align: TextAlign.center)),
       gP(137.254, 321.317, 14, 29, gText('3', 22.807, Color(0xFF111015), weight: 700, align: TextAlign.center)),

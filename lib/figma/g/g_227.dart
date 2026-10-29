@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_227 extends ConsumerWidget {
@@ -40,13 +42,11 @@ class G_227 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 146, 26, gText('Mon CV vivant', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 128, 50, 50, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
       gP(98, 132, 98, 17, gText('Mariam Essono', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 154, 180, 14, gText('Génie informatique · mis à jour il …', 11.5, Color(0xFF66636E))),
       gP(306.4, 142, 45.6, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
       gP(316.2, 146, 26, 14, gText('Auto', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
-      gP(24, 200, 342, 76, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(70.5, 214, 21, 25, gText('18', 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
       gP(57.5, 244, 47, 14, gText('Missions', 11.5, Color(0xFF66636E), align: TextAlign.center)),
       gP(178, 214, 34, 25, gText('4,9', 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
@@ -71,7 +71,6 @@ class G_227 extends ConsumerWidget {
       gP(56, 452, 305, 17, gText('Duel gagné · Logo Mbella', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
       gP(56, 472, 305, 14, gText('22 oct. · badge « Gagnante »', 11.5, Color(0xFF66636E), wrap: true)),
       gP(24, 528, 177, 19, gText('Compétences prouvées', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 566, 342, 148, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 580, 128, 16, gText('Développement web', 12.5, Color(0xFF111015), weight: 600)),
       gP(335, 580, 15, 15, gText('92', 12, Color(0xFF66636E), weight: 600, align: TextAlign.right)),
       gP(40, 602, 310, 7, gBox(color: Color(0xFFF2EFF6), radii: [4, 4, 4, 4])),

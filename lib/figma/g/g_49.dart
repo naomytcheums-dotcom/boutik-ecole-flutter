@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_49 extends ConsumerWidget {
@@ -41,13 +43,11 @@ class G_49 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 159, 26, gText('Aide et support', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 48, gBox(color: Color(0xFFF2EFF6), radii: [24, 24, 24, 24])),
       gP(24, 120, 342, 48, GField(hint: 'Comment pouvons-nous vous aider ?', size: 13.5, hintColor: Color(0xFF66636E), weight: 400, padL: 46)),
       gP(40.5, 134.5, 19, 19, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(39.875, 133.875, 18.667, 18.667, gImg('assets/figma/v/50f467eb8a9b46.svg')),
       gP(50.721, 144.721, 9.404, 9.404, gImg('assets/figma/v/18d279137d73d9.svg')),
       gP(24, 182, 126, 19, gText('Sujets populaires', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 220, 342, 156, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 226, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(45.5, 235.5, 21, 20.167, gImg('assets/figma/v/3ce22d6edc53c9.svg')),
       gP(45.5, 239.667, 21, 6, gImg('assets/figma/v/dd90762ca86114.svg')),
@@ -68,7 +68,6 @@ class G_49 extends ConsumerWidget {
       gP(88, 341, 126, 17, gText('Compte et sécurité', 13.5, Color(0xFF111015), weight: 600)),
       gP(336.75, 342.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
       gP(24, 390, 159, 19, gText('Questions fréquentes', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 428, 342, 156, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 445, 217, 17, gText('Comment suivre ma commande ?', 13.5, Color(0xFF111015), weight: 600)),
       gP(336.75, 446.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
       gP(40, 480, 314, 1, gBox(color: Color(0xFFF2EFF6))),

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_285 extends ConsumerWidget {
@@ -37,7 +39,6 @@ class G_285 extends ConsumerWidget {
       gP(138, 76, 114, 21, gText('Espace projet', 17, Color(0xFF111015), weight: 500)),
       gP(87, 102, 216, 15, gText('Mission : Identité visuelle · Mbella SARL', 12, Color(0xFF66636E))),
       gP(167, 134.667, 56, 50.667, gImg('assets/figma/r/209_1004.png')),
-      gP(24, 212, 342, 210, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(44, 228, 127, 18, gText('Contrat de mission', 14, Color(0xFF111015), weight: 600)),
       gP(44, 258, 48, 15, gText('Montant', 12, Color(0xFF66636E))),
       gP(253, 258, 93, 15, gText('1 200 000 FCFA', 12, Color(0xFF111015), weight: 600)),
@@ -48,7 +49,6 @@ class G_285 extends ConsumerWidget {
       gP(44, 336, 41, 15, gText('Équipe', 12, Color(0xFF66636E))),
       gP(254, 336, 92, 15, gText('4 étudiants MMI', 12, Color(0xFF111015), weight: 600)),
       gP(44, 372, 127, 15, gText('Voir le contrat (PDF)  ↗', 12, Color(0xFF5A3FE0), weight: 600)),
-      gP(24, 438, 342, 200, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(44, 454, 42, 18, gText('Jalons', 14, Color(0xFF111015), weight: 600)),
       gP(44, 489, 10, 10, gBox(color: Color(0xFF0F7A52), oval: true)),
       gP(64, 486, 83, 16, gText('1 · Brief validé', 13, Color(0xFF111015), weight: 500)),
@@ -62,7 +62,6 @@ class G_285 extends ConsumerWidget {
       gP(44, 591, 10, 10, gBox(color: Color(0xFF66636E), oval: true)),
       gP(64, 588, 72, 16, gText('4 · Livraison', 13, Color(0xFF111015), weight: 500)),
       gP(306, 588, 40, 15, gText('À venir', 12, Color(0xFF66636E), weight: 700)),
-      gP(24, 654, 342, 70, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(44, 676, 278, 16, gText('Messagerie du projet · 3 nouveaux messages', 13, Color(0xFF111015), weight: 600)),
       gP(44, 696, 210, 14, gText('Historique des échanges et des versions', 11, Color(0xFF66636E))),
       gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => gToast(context, 'Démonstration : Valider le jalon 3')),

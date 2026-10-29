@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_179 extends ConsumerWidget {
@@ -41,13 +43,11 @@ class G_179 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 187, 26, gText('Guide d’utilisation', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 48, gBox(color: Color(0xFFF2EFF6), radii: [24, 24, 24, 24])),
       gP(24, 120, 342, 48, GField(hint: 'Rechercher dans le guide', size: 13.5, hintColor: Color(0xFF66636E), weight: 400, padL: 46)),
       gP(40.5, 134.5, 19, 19, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(39.875, 133.875, 18.667, 18.667, gImg('assets/figma/v/50f467eb8a9b46.svg')),
       gP(50.721, 144.721, 9.404, 9.404, gImg('assets/figma/v/18d279137d73d9.svg')),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 182, 77.8, 34, 'Débuter', 12.5, 600), GChip(109.8, 182, 77.8, 34, 'Acheter', 12.5, 500), GChip(195.6, 182, 70.4, 34, 'Vendre', 12.5, 500), GChip(274, 182, 114.8, 34, 'Opportunités', 12.5, 500), GChip(396.8, 182, 100, 34, 'Hackathons', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
-      gP(24, 230, 342, 264, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 243, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(48, 252.5, 17.667, 21, gImg('assets/figma/v/e8ee59089ca8c3.svg')),
       gP(88, 242, 194, 17, gText('Prendre en main Boutik-École', 13.5, Color(0xFF111015), weight: 600)),

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_256 extends ConsumerWidget {
@@ -39,7 +41,6 @@ class G_256 extends ConsumerWidget {
       gP(24, 128, 176, 19, gText('Contrôles automatiques', 15, Color(0xFF111015), weight: 600)),
       gP(275, 124, 91, 25, gBox(color: Color(0xFFE8F7EE), radii: [100, 100, 100, 100])),
       gP(287, 130, 67, 13, gText('12 / 12 réussis', 10.5, Color(0xFF126B49), weight: 600)),
-      gP(24, 160, 342, 300, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(38, 180, 20, 20, gBox(color: Color(0xFF1F9D6B), oval: true)),
       gP(41.333, 184.25, 13.333, 11.042, gImg('assets/figma/v/1841ce310c7a6d.svg')),
       gP(68, 182, 120, 15, gText('Champs obligatoires', 12, Color(0xFF111015), weight: 500)),
@@ -75,7 +76,6 @@ class G_256 extends ConsumerWidget {
       gP(24, 480, 185, 19, gText('Contrôles réglementaires', 15, Color(0xFF111015), weight: 600)),
       gP(320, 476, 46, 25, gBox(color: Color(0xFFFFF1D6), radii: [100, 100, 100, 100])),
       gP(332, 482, 22, 13, gText('3 / 5', 10.5, Color(0xFFB26A00), weight: 600)),
-      gP(24, 512, 342, 250, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(38, 532, 20, 20, gBox(color: Color(0xFF1F9D6B), oval: true)),
       gP(41.333, 536.25, 13.333, 11.042, gImg('assets/figma/v/1841ce310c7a6d.svg')),
       gP(68, 534, 233, 30, gText('Propriété intellectuelle : droits d’utilisation', 12, Color(0xFF111015), weight: 500, wrap: true)),

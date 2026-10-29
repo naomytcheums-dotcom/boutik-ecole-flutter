@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_223 extends ConsumerWidget {
@@ -45,7 +47,6 @@ class G_223 extends ConsumerWidget {
       gP(42, 258, 309, 15, gText('Génie civil · 124 spectateurs', 12, Color(0xD9FFFFFF), weight: 500, wrap: true)),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 304, 107.4, 34, 'Aujourd’hui', 12.5, 600), GChip(139.4, 304, 122.2, 34, 'Cette semaine', 12.5, 500), GChip(269.6, 304, 107.4, 34, 'Mes rappels', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
       gP(24, 352, 50, 19, gText('À venir', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 390, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 398, 50, 50, gBox(image: 'assets/figma/img/4ca68f79023605aecb4f83724629d508e921e885.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
       gP(98, 402, 179, 17, gText('Fabrication du jus de bissap', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 424, 111, 14, gText('BTA · Aujourd’hui 16 h', 11.5, Color(0xFF66636E))),

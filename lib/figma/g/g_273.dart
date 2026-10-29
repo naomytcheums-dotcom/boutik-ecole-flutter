@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_273 extends ConsumerWidget {
@@ -41,13 +43,11 @@ class G_273 extends ConsumerWidget {
       gP(158.583, 209.917, 72.833, 11.5, gImg('assets/figma/r/200_238.png')),
       gP(81.5, 250, 227, 25, gText('Vous gardez le contrôle', 20, Color(0xFF111015), weight: 700)),
       gP(26.5, 280, 337, 16, gText('Téléchargez ou supprimez vos données à tout moment.', 13, Color(0xFF6B6877))),
-      gP(24, 320, 342, 150, gBox(color: Color(0xD9FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [22, 22, 22, 22])),
       gP(44, 338, 163, 19, gText('Exporter mes données', 15, Color(0xFF111015), weight: 600)),
       gP(44, 362, 286, 15, gText('Profil, projets, commandes, messages · ZIP + JSON', 12, Color(0xFF6B6877))),
       gP(44, 382, 209, 15, gText('Prêt sous 24 h · lien envoyé par e-mail', 12, Color(0xFF6B6877))),
       gP(44, 412, 160, 40, gBox(color: Color(0xFF111015), radii: [20, 20, 20, 20]), tap: () => gToast(context, 'Démonstration : Demander l’export')),
       gP(60, 424, 118, 16, gText('Demander l’export', 13, Color(0xFFFFFFFF), weight: 600)),
-      gP(24, 490, 342, 160, gBox(color: Color(0xD9FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [22, 22, 22, 22])),
       gP(44, 508, 172, 19, gText('Supprimer mon compte', 15, Color(0xFFC2410C), weight: 600)),
       gP(44, 532, 302, 20, gText('Délai de rétractation de 30 jours. Les certificats émis et les factures sont conservés (obligation légale).', 12, Color(0xFF6B6877))),
       gP(44, 598, 170, 40, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFC2410C), bw: 1.5, radii: [20, 20, 20, 20]), tap: () => gToast(context, 'Démonstration : Supprimer le compte')),

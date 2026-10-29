@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_250 extends ConsumerWidget {
@@ -42,7 +44,6 @@ class G_250 extends ConsumerWidget {
       gP(52, 150, 43, 13, gText('Modifier', 10.5, Color(0xFF111015), weight: 600)),
       gP(268, 144, 82, 25, gBox(color: Color(0xB2111015), radii: [100, 100, 100, 100])),
       gP(280, 150, 58, 13, gText('Couverture', 10.5, Color(0xFFFFFFFF), weight: 600)),
-      gP(24, 352, 342, 70, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(40, 364, 313, 36, gText('Spot promo pour le parfum Mbella : tournage, montage et étalonnage. #vidéo #MMI', 12.5, Color(0xFF111015), lh: 18, wrap: true)),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 434, 109.6, 30, 'Publication', 11, 500), GChip(139.6, 434, 56.4, 30, 'Reel', 11, 400), GChip(202, 434, 56.4, 30, 'Live', 11, 400), GChip(264.4, 434, 86.8, 30, 'Boutique', 11, 400)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFFFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 15)),
       gP(24, 482, 194, 18, gText('Publier aussi sur mes réseaux', 14, Color(0xFF111015), weight: 600)),

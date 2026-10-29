@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_22b extends ConsumerWidget {
@@ -49,7 +51,6 @@ class G_22b extends ConsumerWidget {
       gP(325, 170, 25, 15, gText('Trier', 12, Color(0xFF5A3FE0), weight: 500, align: TextAlign.right)),
       gP(352.5, 175, 13, 6, gImg('assets/figma/v/4159f10924eea0.svg')),
       gP(356, 171.5, 9.5, 13, gImg('assets/figma/v/a365eb17b7a19f.svg')),
-      gP(24, 206, 342, 330, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 214, 50, 50, gBox(image: 'assets/figma/img/9803b1792923bb371cffd2d64272ebebf74ea2d4.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
       gP(98, 218, 211, 17, gText('Développement web sur mesure', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 240, 168, 14, gText('À partir de 30 000 FCFA · 4.9 ★', 11.5, Color(0xFF66636E))),

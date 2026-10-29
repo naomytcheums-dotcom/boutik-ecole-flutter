@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_72 extends ConsumerWidget {
@@ -47,11 +49,9 @@ class G_72 extends ConsumerWidget {
       gP(274, 130, 70, 16, gText('Réalisation', 13, Color(0xFF111015), weight: 700, align: TextAlign.center)),
       gP(269.1, 154, 79.8, 3, gBox(color: Color(0xFF6A4DFF), radii: [2, 2, 2, 2])),
       gP(24, 174, 123, 16, gText('Titre de la réalisation', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 194, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 194, 342, 48, GField(hint: '', initial: 'Application mobile Boutik', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(37.5, 207.493, 21.024, 21.007, gImg('assets/figma/v/b644eb09a59fd6.svg')),
       gP(24, 256, 61, 16, gText('Catégorie', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 276, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 276, 342, 48, GField(hint: '', initial: 'Développement', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(38.25, 290.25, 11.25, 11.25, gImg('assets/figma/v/4aa41d01b63de8.svg')),
       gP(46.5, 290.25, 11.25, 11.25, gImg('assets/figma/v/4aa41d01b63de8.svg')),
@@ -59,16 +59,13 @@ class G_72 extends ConsumerWidget {
       gP(38.25, 298.5, 11.25, 11.25, gImg('assets/figma/v/4aa41d01b63de8.svg')),
       gP(334.5, 294.75, 15, 10.5, gImg('assets/figma/v/7abbf201b36418.svg')),
       gP(24, 338, 29, 16, gText('Date', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 358, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 358, 342, 48, GField(hint: '', initial: 'Octobre 2026', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(38.25, 373, 19.5, 19.5, gImg('assets/figma/v/99b18d1a251e8c.svg')),
       gP(48, 371.5, 6, 9, gImg('assets/figma/v/4d0c4aa2d5e373.svg')),
       gP(42, 371.5, 6, 9, gImg('assets/figma/v/4d0c4aa2d5e373.svg')),
       gP(38.25, 377.5, 19.5, 6, gImg('assets/figma/v/40b22babe144e0.svg')),
       gP(24, 420, 71, 16, gText('Description', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 440, 342, 96, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(24, 440, 342, 96, GField(hint: 'Contexte, rôle, résultats obtenus…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, multiline: true, padT: 14)),
-      gP(24, 550, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 563, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(45.5, 572.5, 21, 21, gImg('assets/figma/v/ffe808ced2c9ec.svg')),
       gP(48.833, 575.833, 9.333, 9.333, gImg('assets/figma/v/87052a066968e5.svg')),

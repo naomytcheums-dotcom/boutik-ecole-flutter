@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_254 extends ConsumerWidget {
@@ -42,7 +44,6 @@ class G_254 extends ConsumerWidget {
       gP(265, 206, 85, 25, gBox(color: Color(0xFF111015), radii: [100, 100, 100, 100])),
       gP(277, 212, 61, 13, gText('Programmer', 10, Color(0xFFFFFFFF), weight: 600)),
       gP(24, 254, 72, 16, gText('Aujourd’hui', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 280, 342, 64, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(38, 292, 40, 40, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, radii: [20, 20, 20, 20])),
       gP(65, 319, 18, 18, gBox(color: Color(0xFF111015), oval: true)),
       gP(66.833, 322.083, 14.333, 11.833, gImg('assets/figma/v/ca476f2c09572f.svg')),
@@ -51,7 +52,6 @@ class G_254 extends ConsumerWidget {
       gP(92, 324, 44, 12, gText('Il y a 5 min', 9.5, Color(0xFF66636E))),
       gP(282, 299, 70, 24, gBox(color: Color(0xFFEEE9FF), radii: [100, 100, 100, 100])),
       gP(294, 305, 46, 12, gText('Répondre', 9.5, Color(0xFF5A3FE0), weight: 600)),
-      gP(24, 354, 342, 64, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(38, 366, 40, 40, gBox(image: 'assets/figma/img/ebf23a969ca7b1083d1dcab994c4899c0b4db38b.png', fit: BoxFit.cover, radii: [20, 20, 20, 20])),
       gP(65, 393, 18, 18, gBox(color: Color(0xFF111015), oval: true)),
       gP(69.75, 397.75, 8.5, 8.5, gImg('assets/figma/v/f14b0370ba6095.svg')),
@@ -60,7 +60,6 @@ class G_254 extends ConsumerWidget {
       gP(92, 398, 48, 12, gText('Il y a 12 min', 9.5, Color(0xFF66636E))),
       gP(273, 373, 79, 24, gBox(color: Color(0xFFEEE9FF), radii: [100, 100, 100, 100])),
       gP(285, 379, 55, 12, gText('Me rappeler', 9.5, Color(0xFF5A3FE0), weight: 600)),
-      gP(24, 428, 342, 64, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(38, 440, 40, 40, gBox(image: 'assets/figma/img/c15478a4e0a5cc1be462d8179ed1a24390853242.png', fit: BoxFit.cover, radii: [20, 20, 20, 20])),
       gP(65, 467, 18, 18, gBox(color: Color(0xFF111015), oval: true)),
       gP(66.833, 474.25, 11.833, 8.5, gImg('assets/figma/v/fde37cd9ae03ef.svg')),
@@ -70,7 +69,6 @@ class G_254 extends ConsumerWidget {
       gP(92, 472, 31, 12, gText('Il y a 1 h', 9.5, Color(0xFF66636E))),
       gP(256, 447, 96, 24, gBox(color: Color(0xFFEEE9FF), radii: [100, 100, 100, 100])),
       gP(268, 453, 72, 12, gText('Suivre en retour', 9.5, Color(0xFF5A3FE0), weight: 600)),
-      gP(24, 502, 342, 64, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(38, 514, 40, 40, gBox(image: 'assets/figma/img/8d2db59994dcfe0c5b9851845e0b9f6aec49d36d.png', fit: BoxFit.cover, radii: [20, 20, 20, 20])),
       gP(65, 541, 18, 18, gBox(color: Color(0xFF111015), oval: true)),
       gP(67.25, 542.833, 13.5, 14.333, gImg('assets/figma/v/ce67cdad087ace.svg')),
@@ -79,7 +77,6 @@ class G_254 extends ConsumerWidget {
       gP(283, 521, 69, 24, gBox(color: Color(0xFFEEE9FF), radii: [100, 100, 100, 100])),
       gP(295, 527, 45, 12, gText('Propulser', 9.5, Color(0xFF5A3FE0), weight: 600)),
       gP(24, 584, 26, 16, gText('Hier', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 610, 342, 64, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(38, 622, 40, 40, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [20, 20, 20, 20])),
       gP(65, 649, 18, 18, gBox(color: Color(0xFF111015), oval: true)),
       gP(68.083, 651.25, 11.833, 13.917, gImg('assets/figma/v/01364af59f843c.svg')),
@@ -87,7 +84,6 @@ class G_254 extends ConsumerWidget {
       gP(92, 654, 50, 12, gText('Hier · 19:00', 9.5, Color(0xFF66636E))),
       gP(280, 629, 72, 24, gBox(color: Color(0xFFEEE9FF), radii: [100, 100, 100, 100])),
       gP(292, 635, 48, 12, gText('Récupérer', 9.5, Color(0xFF5A3FE0), weight: 600)),
-      gP(24, 684, 342, 64, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(38, 696, 40, 40, gBox(image: 'assets/figma/img/2bbb6fbaae9e6d864765beabd4e677ca34d5a95e.png', fit: BoxFit.cover, radii: [20, 20, 20, 20])),
       gP(65, 723, 18, 18, gBox(color: Color(0xFF111015), oval: true)),
       gP(67.25, 726.179, 13.5, 12.571, gImg('assets/figma/v/66876156171174.svg')),

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_151 extends ConsumerWidget {
@@ -55,7 +57,6 @@ class G_151 extends ConsumerWidget {
       gP(301, 328, 49, 15, gText('Voir tout', 12, Color(0xFF5A3FE0), weight: 500, align: TextAlign.right)),
       gP(352.5, 333, 13, 6, gImg('assets/figma/v/4159f10924eea0.svg')),
       gP(356, 329.5, 9.5, 13, gImg('assets/figma/v/a365eb17b7a19f.svg')),
-      gP(24, 364, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 377, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(44.667, 389.833, 22.667, 17.667, gImg('assets/figma/v/0b1915710c6b88.svg')),
       gP(49.667, 386.5, 12.667, 21, gImg('assets/figma/v/baf18a4f525e16.svg'), show: (ref.watch(visibleOpportunities151).length > 0)),
@@ -83,7 +84,6 @@ class G_151 extends ConsumerWidget {
       gP(306.4, 518, 45.6, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11]), show: (ref.watch(visibleOpportunities151).length > 2)),
       gP(318.2, 522, 22, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(visibleOpportunities151).length > 2 ? (ref.watch(visibleOpportunities151)[2].kind == 'Stage' || ref.watch(visibleOpportunities151)[2].kind == 'Emploi' ? '${ref.watch(visibleOpportunities151)[2].score} %' : ref.watch(visibleOpportunities151)[2].kind) : '', 11, Color(0xFF8F5400), weight: 600, align: TextAlign.center)), show: (ref.watch(visibleOpportunities151).length > 2)),
       gP(24, 576, 157, 19, gText('Dates limites proches', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 614, 342, 132, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 627, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(44.667, 635.667, 22.667, 22.667, gImg('assets/figma/v/fea5b000abca5c.svg')),
       gP(53, 639, 9.333, 12.667, gImg('assets/figma/v/abb8a0dfdd76de.svg')),

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_104 extends ConsumerWidget {
@@ -42,14 +44,11 @@ class G_104 extends ConsumerWidget {
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 213, 26, gText('Carte de l’innovation', 21, Color(0xFF111015), weight: 700)),
       gP(339.833, 70.75, 24.333, 22.5, gImg('assets/figma/v/93e9ba743f301c.svg')),
-      gP(24, 120, 342, 48, gBox(color: Color(0xFFF2EFF6), radii: [24, 24, 24, 24])),
       gP(24, 120, 342, 48, GField(hint: 'Rechercher un acteur, un lieu…', size: 13.5, hintColor: Color(0xFF66636E), weight: 400, padL: 46)),
       gP(40.5, 134.5, 19, 19, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(39.875, 133.875, 18.667, 18.667, gImg('assets/figma/v/50f467eb8a9b46.svg')),
       gP(50.721, 144.721, 9.404, 9.404, gImg('assets/figma/v/18d279137d73d9.svg')),
-      gP(24, 182, 342, 300, gBox(color: Color(0xB2FFFFFF), radii: [30, 30, 30, 30])),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 496, 55.6, 34, 'Tous', 12.5, 600), GChip(87.6, 496, 85.2, 34, 'Ateliers', 12.5, 500), GChip(180.8, 496, 107.4, 34, 'Entreprises', 12.5, 500), GChip(296.2, 496, 85.2, 34, 'Kiosques', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
-      gP(24, 544, 342, 132, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 557, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(46.333, 565.667, 19.333, 22.667, gImg('assets/figma/v/e25472574b704c.svg')),
       gP(50.5, 569.833, 11, 11, gImg('assets/figma/v/3bae74da037db6.svg')),

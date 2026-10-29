@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_286 extends ConsumerWidget {
@@ -37,20 +39,16 @@ class G_286 extends ConsumerWidget {
       gP(103, 76, 184, 21, gText('Soumissions et équipe', 17, Color(0xFF111015), weight: 500)),
       gP(144, 102, 102, 15, gText('Département MMI', 12, Color(0xFF66636E))),
       gP(24, 128, 178, 18, gText('Soumissions en attente (3)', 14, Color(0xFF111015), weight: 600)),
-      gP(24, 156, 342, 64, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(44, 166, 140, 16, gText('Lampe en bois recyclé', 13, Color(0xFF111015), weight: 600)),
       gP(44, 188, 95, 14, gText('Mariam E. · Il y a 2 h', 11, Color(0xFF66636E))),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(250, 174, 50, 28, 'Valider', 11, 600), GChip(306.5, 174, 50, 28, 'Refuser', 11, 600)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFFB42318), radius: 14)),
-      gP(24, 230, 342, 64, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(44, 240, 128, 16, gText('Tote bag sérigraphié', 13, Color(0xFF111015), weight: 600)),
       gP(44, 262, 100, 14, gText('Yannick M. · Il y a 5 h', 11, Color(0xFF66636E))),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(250, 248, 50, 28, 'Valider', 11, 600), GChip(306.5, 248, 50, 28, 'Refuser', 11, 600)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFFB42318), radius: 14)),
-      gP(24, 304, 342, 64, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(44, 314, 144, 16, gText('Site vitrine boulangerie', 13, Color(0xFF111015), weight: 600)),
       gP(44, 336, 77, 14, gText('Carine M. · Hier', 11, Color(0xFF66636E))),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(250, 322, 50, 28, 'Valider', 11, 600), GChip(306.5, 322, 50, 28, 'Refuser', 11, 600)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFFB42318), radius: 14)),
       gP(24, 392, 149, 18, gText('Équipe et permissions', 14, Color(0xFF111015), weight: 600)),
-      gP(24, 420, 342, 260, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(44, 434, 150, 16, gText('Dr Ngono · Responsable', 13, Color(0xFF111015), weight: 600)),
       gP(44, 452, 123, 14, gText('Valider · Publier · Équipe', 11, Color(0xFF66636E))),
       gP(44, 482, 198, 16, gText('Pr Fotso · Référent de validation', 13, Color(0xFF111015), weight: 600)),

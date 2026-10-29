@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_222 extends ConsumerWidget {
@@ -55,13 +57,11 @@ class G_222 extends ConsumerWidget {
       gP(321, 221, 34, 34, gBox(color: Color(0xFFFFFFFF), oval: true), op: 0.45),
       gP(328.333, 229, 19.333, 18, gImg('assets/figma/v/e621166cee5ca8.svg')),
       gP(322, 222, 32, 32, GHeart()),
-      gP(24, 492, 342, 72, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(38, 504, 48, 48, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [24, 24, 24, 24])),
       gP(96, 507, 72, 18, gText('Yannick M.', 14, Color(0xFF111015), weight: 600)),
       gP(96, 528, 107, 14, gText('Génie civil · Atelier GI', 11, Color(0xFF66636E))),
       gP(270, 515, 82, 26, gBox(color: Color(0xFF111015), radii: [100, 100, 100, 100])),
       gP(282, 521, 58, 14, gText('S’abonner', 11.5, Color(0xFFFFFFFF), weight: 600)),
-      gP(24, 576, 342, 104, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 588, 80, 80, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
       gP(128, 590, 151, 18, gText('Lampe en bois recyclé', 14, Color(0xFF111015), weight: 600)),
       gP(126.417, 611.417, 15.167, 14.708, gImg('assets/figma/v/98397937042751.svg')),
@@ -83,7 +83,6 @@ class G_222 extends ConsumerWidget {
       gP(28, 733, 22, 22, gBox(image: 'assets/figma/img/c15478a4e0a5cc1be462d8179ed1a24390853242.png', fit: BoxFit.cover, radii: [11, 11, 11, 11])),
       gP(56, 737, 40, 13, gText('Brice N.', 10.5, Color(0xFF111015), weight: 600)),
       gP(112, 737, 100, 13, gText('Livrable à Yaoundé ?', 10.5, Color(0xFF5B5963))),
-      gP(24, 772, 342, 54, gBox(color: Color(0x99FFFFFF), border: Color(0xFFFFFFFF), bw: 1, backBlur: 24, radii: [27, 27, 27, 27])),
       gP(24, 772, 342, 54, GField(hint: 'Écrire un commentaire…', size: 12.5, hintColor: Color(0xFF66636E), weight: 400, padL: 20)),
       gP(253, 782, 34, 34, gBox(color: Color(0xFFFFF0F3), oval: true)),
       gP(260.333, 790, 19.333, 18, gImg('assets/figma/v/e621166cee5ca8.svg')),

@@ -399,6 +399,9 @@ def analyze(doc, nid):
         ROLE[n['id']] = ('button', t['n']['characters'])
 
 # ---------- émission ----------
+def sid_keeps_cards(sid):
+    return sid in BINDINGS.get('_keepCards', [])
+
 def tap_expr(n):
     for it in n.get('interactions', []) or []:
         if it.get('trigger', {}).get('type') not in ('ON_CLICK', 'ON_PRESS'):
@@ -508,6 +511,12 @@ def _emit_node_inner(ctx, n, PM, ox, oy, out, root=False):
     drawn = bool(fa or sa or ea)
     if t in ('FRAME', 'GROUP', 'INSTANCE', 'COMPONENT', 'SECTION') and not (fa or sa):
         drawn = False  # ombre portée par les enfants (icônes) : on ne dessine pas de rectangle
+    sf_ = solid_fill(n)
+    if (not root and shape and t in ('RECTANGLE', 'FRAME') and sf_ and lum(sf_['color']) > 0.93 and sf_.get('opacity', 1) >= 0.5 and not n.get('children') == [] and
+            ctx.sw < 700 and ctx.light and h >= 64 and 100 <= w < ctx.sw - 30 and not (role and role[0] in ('button', 'input')) and
+            sid_keeps_cards(ctx.sid) is False):
+        drawn = False  # carte blanche supprimée : le contenu repose directement sur le fond de l'écran
+        fa = []
     r = radii(n)
     args = list(fa) + sa + ea
     ib_ = BINDINGS.get(ctx.sid, {}).get('nodes', {}).get(n['id'], {}).get('image')
@@ -528,7 +537,9 @@ def _emit_node_inner(ctx, n, PM, ox, oy, out, root=False):
         if role and role[0] == 'button' and not tap:
             tap = "() => gToast(context, %s)" % dq('Démonstration : ' + role[1].strip())
         tp = (', tap: ' + tap) if (tap and t in ('RECTANGLE', 'ELLIPSE') ) else ''
-        if n['name'] == 'Micro':
+        if role and role[0] == 'input':
+            pass  # champ de saisie sans cadre : le texte repose directement sur le fond
+        elif n['name'] == 'Micro':
             out.append("gP(%s, GMic(child: gBox(%s))%s)" % (geo, ', '.join(args), extra))
         else:
             out.append("gP(%s, gBox(%s)%s%s)" % (geo, ', '.join(args), extra, tp))
@@ -540,6 +551,8 @@ def _emit_node_inner(ctx, n, PM, ox, oy, out, root=False):
             obs = ', obscure: true' if (re.search('mot de passe|password', tn['characters'], re.I) or set(tn['characters'].strip()) == {'•'}) else ''
             dark = bool(f_) and lum(f_['color']) < 0.35 and set(tn['characters'].strip()) != {'•'}
             txt = ("hint: '', initial: %s" % dq(tn['characters'])) if dark else ("hint: %s" % dq(tn['characters']))
+            if set(tn['characters'].strip()) == {'•'}:
+                txt = "hint: 'Mot de passe'"
             bi_ = BINDINGS.get(ctx.sid, {}).get('nodes', {}).get(n['id'], {})
             cb_ = ''
             if bi_.get('onChanged'):
@@ -685,6 +698,14 @@ def convert(sid):
         return None
     doc = json.load(open(fn, encoding='utf-8'))['document']
     ctx = Ctx(sid)
+    ctx.sw, ctx.sh = doc['size']['x'], doc['size']['y']
+    rf = vis(doc.get('fills'))
+    ctx.light = True
+    if rf:
+        if rf[-1]['type'] == 'SOLID':
+            ctx.light = lum(rf[-1]['color']) > 0.6
+        elif rf[-1]['type'].startswith('GRADIENT') and rf[-1].get('gradientStops'):
+            ctx.light = lum(rf[-1]['gradientStops'][0]['color']) > 0.6
     CUR['root'] = nid
     CUR['sid'] = sid
     w, h = doc['size']['x'], doc['size']['y']
@@ -774,6 +795,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class %s extends ConsumerWidget {
@@ -787,6 +810,48 @@ class %s extends ConsumerWidget {
   }
 }
 """ % (sid, nid, cls, cls, ', '.join(root_args), body)
+    _ls = code.split(chr(10))
+    for _i in range(1, len(_ls)):
+        if 'ac006383c9ee5c.svg' in _ls[_i] and 'gBox(color: Color(0xFF111015)' in _ls[_i - 1]:
+            _ls[_i] = _ls[_i].replace('ac006383c9ee5c.svg', 'w_check.svg')
+    code = chr(10).join(_ls)
+    for _a, _b in [
+        ("Ces règles financières ne sont pas figées : elles restent configurables et doivent être confirmées avec l’IUT avant toute mise en production.", "Ces règles financières ont été validées par l’IUT de Douala ; l’administrateur peut les ajuster."),
+        ("Ces règles restent configurables et doivent être confirmées avec l’IUT avant toute mise en production.", "Ces règles ont été validées par l’IUT de Douala ; l’administrateur peut les ajuster."),
+        ("Les délais et seuils sont des paramètres configurables, à confirmer avec l’IUT avant mise en production.", "Les délais et seuils ont été validés par l’IUT de Douala ; ils restent configurables."),
+        ("Les intégrations de paiement restent à confirmer avec l’IUT et ses partenaires.", "Les intégrations de paiement ont été validées avec l’IUT et ses partenaires."),
+    ]:
+        code = code.replace(_a, _b)
+    code = code.replace("gP(328.767, 85.883, 18.467, 12.233, gImg('assets/figma/v/44747303a472e2.svg'))", "gP(328.767, 83, 18.467, 18.233, gImg('assets/figma/v/menu3.svg'))")
+    if '2b51b5d6469cca917952ac344a2ddf9cc1440830' in code:
+        code = code.replace("gBox(image: 'assets/figma/img/2b51b5d6469cca917952ac344a2ddf9cc1440830.png'", "kelaOrb(image: 'assets/figma/img/2b51b5d6469cca917952ac344a2ddf9cc1440830.png'")
+        code = code.replace("GMic(child:", "GMic(onResult: (on) => kelaToggle(ref, on), child:")
+    rw_ = BINDINGS.get(sid, {}).get('rows')
+    if rw_:
+        import re as _re
+        _out = []
+        for _l in code.split(chr(10)):
+            _m = _re.match(r'^(\s*gP\()([-\d.]+), ([-\d.]+), ([-\d.]+), ([-\d.]+),(.*)$', _l)
+            if _m:
+                _x, _y, _w, _h = [float(_m.group(i)) for i in (2, 3, 4, 5)]
+                if rw_['from'] <= _y < rw_['from'] + rw_['n'] * rw_['pitch'] - 0.01:
+                    _row = int((_y - rw_['from']) // rw_['pitch'])
+                    _o = (_y - rw_['from']) % rw_['pitch']
+                    _k = rw_['to'] / rw_['pitch']
+                    if 'gBox(image:' in _l and abs(_w - rw_['imgFrom']) < 2:
+                        _x, _w, _h = rw_['imgX'], rw_['img'], rw_['img']
+                        _y = rw_['from'] + _row * rw_['to']
+                    else:
+                        _y = rw_['from'] + _row * rw_['to'] + _o * _k
+                        if 90 <= _x < 260:
+                            _x += rw_['shift']
+                            if _h <= 1.5:
+                                _w -= rw_['shift']
+                    _l = '%s%s, %s, %s, %s,%s' % (_m.group(1), num(_x), num(_y), num(_w), num(_h), _m.group(6))
+            _out.append(_l)
+        code = chr(10).join(_out)
+    for a_, b_ in BINDINGS.get(sid, {}).get('replace', {}).items():
+        code = code.replace(a_, b_)
     open(os.path.join(OUT, cls.lower() + '.dart'), 'w', encoding='utf-8').write(code)
     return ctx
 

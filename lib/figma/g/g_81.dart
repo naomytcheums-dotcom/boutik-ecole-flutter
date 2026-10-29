@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_81 extends ConsumerWidget {
@@ -43,7 +45,6 @@ class G_81 extends ConsumerWidget {
       gP(76, 70, 168, 26, gText('Équipe du projet', 21, Color(0xFF111015), weight: 700)),
       gP(342.583, 79, 18.833, 6, gImg('assets/figma/v/6fe571ab77e960.svg')),
       gP(349, 72.583, 6, 18.833, gImg('assets/figma/v/87cbf4a9a18b64.svg')),
-      gP(24, 120, 342, 264, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 128, 50, 50, gBox(image: 'assets/figma/img/2bbb6fbaae9e6d864765beabd4e677ca34d5a95e.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
       gP(98, 132, 102, 17, gText('Brice Ndoumbe', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 154, 157, 14, gText('Électronique · Chef de projet', 11.5, Color(0xFF66636E))),
@@ -68,7 +69,6 @@ class G_81 extends ConsumerWidget {
       gP(300, 340, 52, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
       gP(309.5, 344, 33, 14, gText('Média', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
       gP(24, 398, 227, 19, gText('Répartition des responsabilités', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 436, 342, 148, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 450, 73, 16, gText('Conception', 12.5, Color(0xFF111015), weight: 600)),
       gP(321, 450, 29, 15, gText('80%', 12, Color(0xFF66636E), weight: 600, align: TextAlign.right)),
       gP(40, 472, 310, 7, gBox(color: Color(0xFFF2EFF6), radii: [4, 4, 4, 4])),

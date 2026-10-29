@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_100 extends ConsumerWidget {
@@ -67,7 +69,6 @@ class G_100 extends ConsumerWidget {
       gP(331.571, 147, 20, 20, gText('26', 16, Color(0xFF111015), weight: 700, align: TextAlign.center)),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 192, 55.6, 34, 'Tous', 12.5, 600), GChip(87.6, 192, 107.4, 34, 'Expositions', 12.5, 500), GChip(203, 192, 85.2, 34, 'Ateliers', 12.5, 500), GChip(296.2, 192, 107.4, 34, 'Conférences', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
       gP(24, 240, 107, 19, gText('Cette semaine', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 278, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 291, 40, 40, gBox(color: Color(0xFFFDEFC8), radii: [13, 13, 13, 13])),
       gP(45.5, 301.333, 21, 21, gImg('assets/figma/v/ffe808ced2c9ec.svg')),
       gP(56.333, 299.667, 6, 9.333, gImg('assets/figma/v/357802c04419d8.svg')),

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_250b extends ConsumerWidget {
@@ -42,7 +44,6 @@ class G_250b extends ConsumerWidget {
       gP(52, 150, 43, 13, gText('Modifier', 10.5, Color(0xFF111015), weight: 600)),
       gP(268, 144, 82, 25, gBox(color: Color(0xB2111015), radii: [100, 100, 100, 100])),
       gP(280, 150, 58, 13, gText('Couverture', 10.5, Color(0xFFFFFFFF), weight: 600)),
-      gP(24, 352, 342, 70, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(40, 364, 313, 36, gRich([('Spot promo pour le parfum Mbella : tournage, montage et étalonnage. #vidéo ', 12.5, 400, Color(0xFF111015)), ('@mb', 12.5, 400, Color(0xFF6A4DFF))], lh: 18, wrap: true)),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 434, 109.6, 30, 'Publication', 11, 500), GChip(139.6, 434, 56.4, 30, 'Reel', 11, 400), GChip(202, 434, 56.4, 30, 'Live', 11, 400), GChip(264.4, 434, 86.8, 30, 'Boutique', 11, 400)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFFFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 15)),
       gP(24, 482, 194, 18, gText('Publier aussi sur mes réseaux', 14, Color(0xFF111015), weight: 600)),
@@ -95,7 +96,6 @@ class G_250b extends ConsumerWidget {
       gP(304, 390, 13, 18, gText('#', 14, Color(0xFF5A3FE0), weight: 700)),
       gP(326, 386, 26, 26, gBox(color: Color(0xFFEDE7FF), oval: true)),
       gP(332, 390, 13, 18, gText('@', 14, Color(0xFF5A3FE0), weight: 700)),
-      gP(24, 428, 342, 200, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x38332666), offset: Offset(0, 10), blurRadius: 28, spreadRadius: 0)], radii: [22, 22, 22, 22])),
       gP(42, 442, 111, 15, gText('Comptes suggérés', 12, Color(0xFF6B6877), weight: 600)),
       gP(42, 468, 38, 38, gBox(color: Color(0xFFF4B48A), oval: true)),
       gP(55, 477, 14, 19, gText('M', 15, Color(0xFF111015), weight: 700)),

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_214 extends ConsumerWidget {
@@ -45,7 +47,6 @@ class G_214 extends ConsumerWidget {
       gP(353.308, 83.308, 9.942, 9.942, gImg('assets/figma/v/34172806399cca.svg')),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 55.6, 34, 'Tous', 12.5, 600), GChip(87.6, 120, 92.6, 34, 'Tertiaire', 12.5, 500), GChip(188.2, 120, 92.6, 34, 'Industrie', 12.5, 500), GChip(288.8, 120, 92.6, 34, 'Numérique', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
       gP(24, 168, 222, 19, gText('Technologies du Tertiaire · MTT', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 206, 342, 396, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 214, 50, 50, gBox(image: 'assets/figma/img/da09067eb69ddc3887afe8e05918616892a12b70.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
       gP(98, 218, 184, 17, gText('GLT · Logistique et transport', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 240, 119, 14, gText('Plans, stock, tournées', 11.5, Color(0xFF66636E))),
@@ -76,7 +77,6 @@ class G_214 extends ConsumerWidget {
       gP(98, 570, 139, 14, gText('Budgets, audits, tableaux', 11.5, Color(0xFF66636E))),
       gP(336.75, 561.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
       gP(24, 616, 226, 19, gText('Technologies Industrielles · MTI', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 654, 342, 264, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 662, 50, 50, gBox(image: 'assets/figma/img/e3a1b5107e8b2a5b3a542598c9ff80a2e1376935.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
       gP(98, 666, 201, 17, gText('GIM · Industriel et maintenance', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 688, 119, 14, gText('Plans de maintenance', 11.5, Color(0xFF66636E))),
@@ -97,7 +97,6 @@ class G_214 extends ConsumerWidget {
       gP(98, 886, 120, 14, gText('Jus, confitures, farines', 11.5, Color(0xFF66636E))),
       gP(336.75, 877.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
       gP(24, 932, 235, 19, gText('Information et Numérique · MTIN', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 970, 342, 264, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 978, 50, 50, gBox(image: 'assets/figma/img/94a337c5633b49c8c6a9be401d680eb87e17ad08.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
       gP(98, 982, 206, 17, gText('GEII · Électrique et informatique', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 1004, 104, 14, gText('Cartes, domotique', 11.5, Color(0xFF66636E))),

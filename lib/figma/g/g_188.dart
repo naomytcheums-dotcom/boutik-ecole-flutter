@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_188 extends ConsumerWidget {
@@ -25,7 +27,6 @@ class G_188 extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 1280, h: 890, radius: 16, color: Color(0xFFF7F6F4), children: [
-      gP(268, 134, 727.5, 48, gBox(color: Color(0xFFF2EFF6), radii: [24, 24, 24, 24])),
       gP(268, 134, 727.5, 48, GField(hint: 'Compétence, filière, nom…', size: 13.5, hintColor: Color(0xFF66636E), weight: 400, padL: 46, inter: true)),
       gP(284.5, 148.5, 19, 19, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(283.875, 147.875, 18.667, 18.667, gImg('assets/figma/v/50f467eb8a9b46.svg')),
@@ -39,7 +40,6 @@ class G_188 extends ConsumerWidget {
       gP(968.083, 147.083, 6, 9.167, gImg('assets/figma/v/3221f2f163c9f7.svg')),
       gP(963.333, 153.417, 6, 9.167, gImg('assets/figma/v/3221f2f163c9f7.svg')),
       gP(969.667, 159.75, 6, 9.167, gImg('assets/figma/v/3221f2f163c9f7.svg')),
-      gP(1009.5, 134, 242.5, 50, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [24, 24, 24, 24])),
       gP(1009.5, 134, 242.5, 50, GField(hint: '', initial: 'Enregistrer la recherche', size: 14.5, hintColor: Color(0xFF111015), weight: 600, padL: 49.75, inter: true)),
       gP(1033.667, 148.917, 20.167, 20.167, gImg('assets/figma/v/48fd286aff90cc.svg')),
       gP(1040.75, 156, 6, 8.833, gImg('assets/figma/v/9fc27387b9ffa1.svg')),
@@ -76,7 +76,6 @@ class G_188 extends ConsumerWidget {
       gP(0, 0, 1280, 56, gBox(color: Color(0xFFFFFFFF))),
       gP(20, 10, 36, 34, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(62, 17, 107, 21, gText('Boutik-École', 17, Color(0xFF18181B), weight: 700, inter: true)),
-      gP(240, 12, 330, 34, gBox(color: Color(0xFFF4F3F1), border: Color(0xFFE6E3DE), bw: 1, radii: [17, 17, 17, 17])),
       gP(240, 12, 330, 34, GField(hint: 'Rechercher données, rapports, produits…', size: 11.5, hintColor: Color(0xFF66636E), weight: 400, padL: 36, inter: true)),
       gP(252.5, 21.5, 15, 15, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(251.375, 20.375, 16, 16, gImg('assets/figma/v/3a82c8c513bd84.svg')),

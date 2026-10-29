@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_95 extends ConsumerWidget {
@@ -43,7 +45,6 @@ class G_95 extends ConsumerWidget {
       gP(41.1, 154, 79.8, 3, gBox(color: Color(0xFF6A4DFF), radii: [2, 2, 2, 2])),
       gP(164.5, 130, 61, 16, gText('Acceptés', 13, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
       gP(284, 130, 50, 16, gText('Refusés', 13, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(24, 174, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 187, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(46.333, 195.667, 19.333, 22.667, gImg('assets/figma/v/6b7ab80aa88481.svg')),
       gP(49.667, 200.667, 12.667, 12.667, gImg('assets/figma/v/3d81e69f675694.svg')),

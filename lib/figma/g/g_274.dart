@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_274 extends ConsumerWidget {
@@ -38,7 +40,6 @@ class G_274 extends ConsumerWidget {
       gP(88, 102, 214, 15, gText('Version 2.1 · mise à jour le 02/09/2026', 12, Color(0xFF66636E))),
       gP(160.167, 137.833, 69.667, 84.333, gImg('assets/figma/r/200_351.png')),
       gP(174.833, 137.833, 55, 66, gImg('assets/figma/r/200_352.png')),
-      gP(24, 250, 342, 300, gBox(color: Color(0xD9FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [22, 22, 22, 22])),
       gP(44, 268, 223, 18, gText('CGU · Utilisation de la plateforme', 14, Color(0xFF111015), weight: 600)),
       gP(44, 292, 302, 20, gText('Comptes, contenus publiés, propriété intellectuelle des productions étudiantes, modération.', 12, Color(0xFF6B6877))),
       gP(44, 356, 164, 18, gText('CGV · Ventes et services', 14, Color(0xFF111015), weight: 600)),

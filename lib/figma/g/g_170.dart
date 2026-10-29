@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_170 extends ConsumerWidget {
@@ -41,13 +43,12 @@ class G_170 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 218, 26, gText('Signaler une annonce', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 128, 50, 50, gBox(image: 'assets/figma/img/9803b1792923bb371cffd2d64272ebebf74ea2d4.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
       gP(98, 132, 145, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(selectedProductProvider).title, 13.5, Color(0xFF111015), weight: 600))),
       gP(98, 154, 196, 14, gText('25 000 FCFA · Vendeur : Y. Mouanga', 11.5, Color(0xFF66636E))),
       gP(24, 200, 154, 19, gText('Motif du signalement', 15, Color(0xFF111015), weight: 700)),
       gP(24, 238, 20, 20, gBox(color: Color(0xFF111015), radii: [6, 6, 6, 6])),
-      gP(26.667, 241.75, 14.667, 11.958, gImg('assets/figma/v/ac006383c9ee5c.svg')),
+      gP(26.667, 241.75, 14.667, 11.958, gImg('assets/figma/v/w_check.svg')),
       gP(54, 239, 315, 18, gText('Annonce frauduleuse ou trompeuse', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
       gP(24, 274, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFDAD5E4), bw: 1.5, radii: [6, 6, 6, 6])),
       gP(54, 275, 315, 18, gText('Photos ou description non conformes', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
@@ -56,9 +57,7 @@ class G_170 extends ConsumerWidget {
       gP(24, 360, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFDAD5E4), bw: 1.5, radii: [6, 6, 6, 6])),
       gP(54, 361, 315, 18, gText('Contenu inapproprié', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
       gP(24, 396, 130, 16, gText('Précisions (facultatif)', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 416, 342, 96, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(24, 416, 342, 96, GField(hint: 'Expliquez ce qui pose problème…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, multiline: true, padT: 14)),
-      gP(24, 526, 342, 79, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
       gP(36, 549.5, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(43.333, 555.416, 17.333, 20.169, gImg('assets/figma/v/d9a3b6dd8cdae8.svg')),
       gP(46.875, 561.083, 10.25, 8.833, gImg('assets/figma/v/2bdcafa88f7a43.svg')),

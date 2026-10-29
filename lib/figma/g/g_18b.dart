@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_18b extends ConsumerWidget {
@@ -50,26 +52,22 @@ class G_18b extends ConsumerWidget {
       gP(227, 257.667, 10, 10, gImg('assets/figma/v/d54cbc802ab6f7.svg')),
       gP(141.5, 288, 107, 16, gText('Ajouter une photo', 12.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
       gP(24, 318, 50, 16, gText('Prénom', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 342, 165, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 342, 165, 52, GField(hint: 'Mariam', initial: ref.read(profileAccountProvider).firstName, size: 14.5, hintColor: Color(0xFF66636E), weight: 500, padL: 52, onChanged: (v) { ref.read(formProvider.notifier).put('pf_first', v); })),
       errorText('pf_first', 28, 396),
       gP(40.5, 358.5, 19, 19, const SizedBox.expand(), tap: () => gOpen(context, '10')),
       gP(43.042, 357.875, 13.917, 13.917, gImg('assets/figma/v/15e6e73e8eaf8c.svg')),
       gP(40.667, 365.792, 18.667, 12.333, gImg('assets/figma/v/179cc05e604d6c.svg')),
       gP(201, 318, 31, 16, gText('Nom', 13, Color(0xFF111015), weight: 600)),
-      gP(201, 342, 165, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(201, 342, 165, 52, GField(hint: 'Essono', initial: ref.read(profileAccountProvider).lastName, size: 14.5, hintColor: Color(0xFF66636E), weight: 500, padL: 52, onChanged: (v) { ref.read(formProvider.notifier).put('pf_last', v); })),
       errorText('pf_last', 205, 396),
       gP(217.5, 358.5, 19, 19, const SizedBox.expand(), tap: () => gOpen(context, '10')),
       gP(220.042, 357.875, 13.917, 13.917, gImg('assets/figma/v/15e6e73e8eaf8c.svg')),
       gP(217.667, 365.792, 18.667, 12.333, gImg('assets/figma/v/179cc05e604d6c.svg')),
       gP(24, 402, 27, 16, gText('Ville', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 426, 342, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 426, 342, 52, GField(hint: '', initial: ref.read(profileAccountProvider).city, size: 14.5, hintColor: Color(0xFF111015), weight: 500, padL: 52, onChanged: (v) { ref.read(formProvider.notifier).put('pf_city', v); })),
       gP(40.667, 441.083, 18.667, 21.833, gImg('assets/figma/v/ca6f47051d57ee.svg')),
       gP(44.625, 445.042, 10.75, 10.75, gImg('assets/figma/v/e4edba8fd4f28c.svg')),
       gP(24, 486, 90, 16, gText('Établissement', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 510, 342, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 510, 342, 52, GField(hint: '', initial: ref.read(profileAccountProvider).institution, size: 14.5, hintColor: Color(0xFF111015), weight: 500, padL: 52, onChanged: (v) { ref.read(formProvider.notifier).put('pf_inst', v); })),
       gP(39.875, 540.125, 20.25, 6, gImg('assets/figma/v/9fb7039520b7d8.svg')),
       gP(41.458, 525.875, 17.083, 20.25, gImg('assets/figma/v/1bbed30d4cf1bb.svg')),
@@ -78,13 +76,11 @@ class G_18b extends ConsumerWidget {
       gP(49.375, 531.417, 6.008, 6, gImg('assets/figma/v/964b38e3841185.svg')),
       gP(330.25, 530.625, 15.5, 10.75, gImg('assets/figma/v/8b32726bc37872.svg')),
       gP(24, 570, 85, 16, gText('Département', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 594, 342, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 594, 342, 52, GField(hint: 'Sélectionnez votre département', size: 14.5, hintColor: Color(0xFF66636E), weight: 500, padL: 52, onChanged: (v) { ref.read(formProvider.notifier).put('pf_dept', v); })),
       gP(39.083, 611.458, 21.833, 13.917, gImg('assets/figma/v/f8f1468656c247.svg')),
       gP(42.25, 617, 15.5, 11.74, gImg('assets/figma/v/1428c626f14b2f.svg')),
       gP(330.25, 614.625, 15.5, 10.75, gImg('assets/figma/v/8b32726bc37872.svg')),
       gP(24, 654, 114, 16, gText('Date de naissance', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 678, 342, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 678, 342, 52, GField(hint: 'JJ / MM / AAAA', size: 14.5, hintColor: Color(0xFF66636E), weight: 500, padL: 52, onChanged: (v) { ref.read(formProvider.notifier).put('pf_birth', v); })),
       gP(40.5, 694.5, 19, 19, const SizedBox.expand(), tap: () => gOpen(context, '10')),
       gP(43.042, 693.875, 13.917, 13.917, gImg('assets/figma/v/15e6e73e8eaf8c.svg')),

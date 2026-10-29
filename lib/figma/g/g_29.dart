@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_29 extends ConsumerWidget {
@@ -60,7 +62,6 @@ class G_29 extends ConsumerWidget {
       gP(337.218, 225.643, 16.617, 16.617, gBox(color: Color(0xFF1F9D6B), oval: true)),
       gP(339.268, 228.507, 12.516, 10.48, gImg('assets/figma/v/2aa6dab576de7d.svg')),
       gP(330.526, 262.247, 30, 13, gText('Livrée', 10.263, Color(0xFF66636E), align: TextAlign.center)),
-      gP(17.594, 307.246, 358.722, 275.411, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, 3), blurRadius: 12, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(26.391, 326.879, 50, 17, gText('Articles', 13.195, Color(0xFF111015), weight: 700)),
       gP(26.391, 379.379, 67.444, 64.511, gBox(image: 'assets/figma/img/84a49a20614dc5f12ab62f18400caa2290c40ec0.png', fit: BoxFit.cover, radii: [9.774, 9.774, 9.774, 9.774])),
       gP(107.03, 368.598, 94, 15, gText('Sac à dos design', 11.729, Color(0xFF111015), weight: 500)),

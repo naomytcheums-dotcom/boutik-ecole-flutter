@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_283 extends ConsumerWidget {
@@ -38,27 +40,22 @@ class G_283 extends ConsumerWidget {
       gP(90.5, 102, 209, 15, gText('Émission réservée aux rôles autorisés', 12, Color(0xFF66636E))),
       gP(175, 132, 40, 40, gImg('assets/figma/r/209_758.png')),
       gP(177.666, 161.332, 34.668, 29.335, gImg('assets/figma/r/209_759.png')),
-      gP(24, 216, 342, 82, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(44, 228, 221, 16, gText('BE-C-0412 · Lampe en bois recyclé', 13, Color(0xFF111015), weight: 600)),
       gP(318, 228, 28, 15, gText('Émis', 12, Color(0xFF0F7A52), weight: 700)),
       gP(44, 254, 155, 15, gText('Par Dr Ngono · 02/09/2026', 12, Color(0xFF66636E))),
       gP(44, 274, 201, 14, gText('Journalisé · empreinte SHA-256 ancrée', 11, Color(0xFF66636E))),
-      gP(24, 308, 342, 82, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(44, 320, 215, 16, gText('BE-C-0398 · Chaise ergonomique', 13, Color(0xFF111015), weight: 600)),
       gP(308, 320, 38, 15, gText('Vérifié', 12, Color(0xFF5A3FE0), weight: 700)),
       gP(44, 346, 146, 15, gText('Scan public · 29/08/2026', 12, Color(0xFF66636E))),
       gP(44, 366, 201, 14, gText('Journalisé · empreinte SHA-256 ancrée', 11, Color(0xFF66636E))),
-      gP(24, 400, 342, 82, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(44, 412, 197, 16, gText('BE-C-0377 · Panneau solaire V1', 13, Color(0xFF111015), weight: 600)),
       gP(287, 412, 59, 15, gText('Remplacé', 12, Color(0xFF8F5400), weight: 700)),
       gP(44, 438, 146, 15, gText('Remplacé par BE-C-0419', 12, Color(0xFF66636E))),
       gP(44, 458, 201, 14, gText('Journalisé · empreinte SHA-256 ancrée', 11, Color(0xFF66636E))),
-      gP(24, 492, 342, 82, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(44, 504, 186, 16, gText('BE-C-0351 · Prototype drone', 13, Color(0xFF111015), weight: 600)),
       gP(294, 504, 52, 15, gText('Révoqué', 12, Color(0xFFB42318), weight: 700)),
       gP(44, 530, 206, 15, gText('Motif : non-conformité · 14/08/2026', 12, Color(0xFF66636E))),
       gP(44, 550, 201, 14, gText('Journalisé · empreinte SHA-256 ancrée', 11, Color(0xFF66636E))),
-      gP(24, 590, 342, 76, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(44, 604, 126, 16, gText('Émission journalisée', 13, Color(0xFF111015), weight: 600)),
       gP(44, 626, 302, 20, gText('Chaque émission, remplacement ou révocation enregistre l’auteur, la date et le motif.', 11, Color(0xFF66636E))),
       gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => gToast(context, 'Démonstration : Émettre un certificat')),

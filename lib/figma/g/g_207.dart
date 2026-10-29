@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_207 extends ConsumerWidget {
@@ -31,7 +33,6 @@ class G_207 extends ConsumerWidget {
       gP(128, 56, 181, 35, gText('Boutik-École', 28, Color(0xFF111015), weight: 600)),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(520, 50, 68, 48, 'FR', 20, 600), GChip(596, 50, 68, 48, 'EN', 20, 600)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 24)),
       gP(596, 50, 68, 48, gBox(color: Color(0xFFFFFFFF), radii: [24, 24, 24, 24])),
-      gP(48, 140, 624, 84, gBox(color: Color(0x99FFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 8), blurRadius: 24, spreadRadius: 0)], backBlur: 28, radii: [42, 42, 42, 42])),
       gP(48, 140, 624, 84, GField(hint: 'Que cherchez-vous ?', size: 26, hintColor: Color(0xFF66636E), weight: 400, padL: 88, onChanged: (v) { ref.read(kioskQueryProvider.notifier).set(v); }, multiline: true, padT: 24)),
       gP(84, 166, 32, 32, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(85, 167, 27.333, 27.333, gImg('assets/figma/v/6942bfb3846595.svg')),

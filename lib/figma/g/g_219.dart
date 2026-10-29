@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_219 extends ConsumerWidget {
@@ -53,26 +55,22 @@ class G_219 extends ConsumerWidget {
       gP(331, 120, 30, 30, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true)),
       gP(316, 158, 60, 14, gText('Lancement', 11, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
       gP(24, 188, 77, 16, gText('Votre besoin', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 208, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 208, 342, 48, GField(hint: '', initial: 'Logo pour ma marque de parfums', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(37.5, 225.25, 21, 16.5, gImg('assets/figma/v/ac757bdc89629a.svg')),
       gP(42, 222.25, 12, 19.5, gImg('assets/figma/v/cf16d6836ecbbe.svg')),
       gP(24, 270, 197, 19, gText('Combien de propositions ?', 15, Color(0xFF111015), weight: 700)),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 308, 107.4, 34, '3 étudiants', 12.5, 600), GChip(139.4, 308, 107.4, 34, '5 étudiants', 12.5, 500), GChip(254.8, 308, 107.4, 34, '8 étudiants', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
       gP(24, 356, 119, 16, gText('Prix pour le gagnant', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 376, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 376, 342, 48, GField(hint: '', initial: '60 000 FCFA', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(37.5, 391, 9, 9.75, gImg('assets/figma/v/d3a1b40bd4dbe5.svg')),
       gP(49.5, 391, 9, 9.75, gImg('assets/figma/v/d53c036a672d8b.svg')),
       gP(39, 404.5, 18, 6, gImg('assets/figma/v/7317aca1f3cfd0.svg')),
       gP(40.5, 389.5, 15, 15.75, gImg('assets/figma/v/8b173b41fcfba8.svg')),
       gP(24, 438, 83, 16, gText('Durée du duel', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 458, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 458, 342, 48, GField(hint: '', initial: '48 h', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(37.5, 471.5, 21, 21, gImg('assets/figma/v/8283e962773df2.svg')),
       gP(45, 474.5, 9, 12, gImg('assets/figma/v/ed425c4c4b79bb.svg')),
       gP(334.5, 476.75, 15, 10.5, gImg('assets/figma/v/7abbf201b36418.svg')),
-      gP(24, 520, 342, 154, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 534, 65, 18, gText('Paiement', 14, Color(0xFF111015), weight: 700)),
       gP(40, 568, 91, 16, gText('Prix du gagnant', 12.5, Color(0xFF66636E))),
       gP(270, 568, 80, 16, gText('60 000 FCFA', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),
@@ -82,7 +80,6 @@ class G_219 extends ConsumerWidget {
       gP(40, 627, 310, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 636, 153, 16, gText('Total bloqué en séquestre', 12.5, Color(0xFF66636E))),
       gP(272, 636, 78, 16, gText('75 000 FCFA', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),
-      gP(24, 688, 342, 79, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
       gP(36, 711.5, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(43.333, 717.443, 17.333, 20.173, gImg('assets/figma/v/b35e336eb0a1dc.svg')),
       gP(46.875, 723.083, 10.25, 8.833, gImg('assets/figma/v/2bdcafa88f7a43.svg')),

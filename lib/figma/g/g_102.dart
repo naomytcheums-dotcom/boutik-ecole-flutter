@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_102 extends ConsumerWidget {
@@ -45,7 +47,6 @@ class G_102 extends ConsumerWidget {
       gP(24, 120, 342, 200, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [24, 24, 24, 24])),
       gP(42, 258, 309, 23, gText('Collection « Recyclé & Design »', 18, Color(0xFFFFFFFF), weight: 700, wrap: true)),
       gP(42, 286, 309, 15, gText('Lancement officiel le 24 octobre', 12, Color(0xFFE3ECF7), wrap: true)),
-      gP(24, 334, 342, 76, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(68.5, 348, 25, 25, gText('24', 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
       gP(62.5, 378, 37, 14, gText('Pièces', 11.5, Color(0xFF66636E), align: TextAlign.center)),
       gP(188.5, 348, 13, 25, gText('9', 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),

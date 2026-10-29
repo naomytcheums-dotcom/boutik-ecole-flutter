@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_275 extends ConsumerWidget {
@@ -40,17 +42,13 @@ class G_275 extends ConsumerWidget {
       gP(24, 150, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFD92D20), bw: 1.5, radii: [14, 14, 14, 14])),
       gP(28, 202, 218, 14, gText('Le titre est obligatoire (3 à 80 caractères).', 11, Color(0xFFD92D20), weight: 500)),
       gP(28, 236, 63, 15, gText('Prix (FCFA)', 12, Color(0xFF6B6877), weight: 600)),
-      gP(24, 256, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFD92D20), bw: 1.5, radii: [14, 14, 14, 14])),
       gP(24, 256, 342, 48, GField(hint: 'Ex : 25 000', size: 14, hintColor: Color(0xFF77747F), weight: 500, padL: 16)),
       gP(28, 308, 246, 14, gText('Entrez un montant entier supérieur à 500 FCFA.', 11, Color(0xFFD92D20), weight: 500)),
       gP(28, 342, 59, 15, gText('Catégorie', 12, Color(0xFF6B6877), weight: 600)),
-      gP(24, 362, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFDAD8DF), bw: 1, radii: [14, 14, 14, 14])),
       gP(24, 362, 342, 48, GField(hint: '', initial: 'Mobilier · Bois recyclé', size: 14, hintColor: Color(0xFF111015), weight: 500, padL: 16)),
       gP(28, 442, 96, 15, gText('Photo principale', 12, Color(0xFF6B6877), weight: 600)),
-      gP(24, 462, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFD92D20), bw: 1.5, radii: [14, 14, 14, 14])),
       gP(24, 462, 342, 48, GField(hint: '', initial: 'image-trop-lourde.png · 9,4 Mo', size: 14, hintColor: Color(0xFF111015), weight: 500, padL: 16)),
       gP(28, 514, 274, 14, gText('Fichier trop lourd : 5 Mo maximum (JPG, PNG, WebP).', 11, Color(0xFFD92D20), weight: 500)),
-      gP(24, 560, 342, 64, gBox(color: Color(0xFFFEF3F2), border: Color(0xFFFECDCA), bw: 1, radii: [18, 18, 18, 18])),
       gP(36.817, 579.983, 26.366, 22.866, gImg('assets/figma/r/200_479.png')),
       gP(48.483, 588.15, 3.045, 12.366, gImg('assets/figma/r/200_480.png')),
       gP(72, 576, 274, 20, gText('3 champs à corriger avant de continuer. Votre brouillon est enregistré.', 12, Color(0xFFB42318), weight: 500)),

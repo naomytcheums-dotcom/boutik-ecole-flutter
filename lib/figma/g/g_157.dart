@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_157 extends ConsumerWidget {
@@ -50,20 +52,17 @@ class G_157 extends ConsumerWidget {
       gP(70, 228, 283, 15, gText('2 dossiers incomplets à relancer', 12, Color(0xFFFFFFFF), weight: 500, wrap: true)),
       gP(46.667, 253.75, 14.667, 11.958, gImg('assets/figma/v/ac006383c9ee5c.svg')),
       gP(70, 252, 283, 15, gText('1 échéance dans 3 jours', 12, Color(0xFFFFFFFF), weight: 500, wrap: true)),
-      gP(24, 302, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(38, 314, 71, 14, gText('Propositions', 11.5, Color(0xFF66636E), weight: 500)),
       gP(38, 334, 25, 25, gText('23', 20, Color(0xFF111015), weight: 800)),
       gP(38, 366, 14, 14, gText('+8', 11, Color(0xFF0F7A52), weight: 600)),
       gP(150, 314, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),
       gP(154.75, 325, 18.5, 7.875, gImg('assets/figma/v/7200c2482969af.svg')),
       gP(154.75, 320, 18.5, 16, gImg('assets/figma/v/137742ca7afd1b.svg')),
-      gP(200, 302, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(214, 314, 78, 14, gText('Très adaptées', 11.5, Color(0xFF66636E), weight: 500)),
       gP(214, 334, 13, 25, gText('6', 20, Color(0xFF111015), weight: 800)),
       gP(326, 314, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),
       gP(331.688, 318.75, 16.625, 16.312, gImg('assets/figma/v/fe264a6287764c.svg')),
       gP(339.5, 326.875, 9.75, 9.75, gImg('assets/figma/v/cbe15983b22c8f.svg')),
-      gP(24, 404, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(38, 416, 112, 14, gText('Dossiers incomplets', 11.5, Color(0xFF66636E), weight: 500)),
       gP(38, 436, 14, 25, gText('4', 20, Color(0xFF111015), weight: 800)),
       gP(38, 468, 54, 14, gText('À relancer', 11, Color(0xFF8F5400), weight: 600)),
@@ -71,7 +70,6 @@ class G_157 extends ConsumerWidget {
       gP(154.739, 421.366, 18.51, 17.259, gImg('assets/figma/v/2adfe02c023131.svg')),
       gP(161, 425.125, 6, 8.5, gImg('assets/figma/v/c96460ed96947c.svg')),
       gP(161, 430.125, 6.006, 6, gImg('assets/figma/v/ea7a417c4e88fe.svg')),
-      gP(200, 404, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(214, 416, 61, 14, gText('Échéances', 11.5, Color(0xFF66636E), weight: 500)),
       gP(214, 436, 9, 25, gText('1', 20, Color(0xFF111015), weight: 800)),
       gP(214, 468, 64, 14, gText('Dans 3 jours', 11, Color(0xFFE5484D), weight: 600)),
@@ -82,7 +80,6 @@ class G_157 extends ConsumerWidget {
       gP(301, 512, 49, 15, gText('Voir tout', 12, Color(0xFF5A3FE0), weight: 500, align: TextAlign.right)),
       gP(352.5, 517, 13, 6, gImg('assets/figma/v/4159f10924eea0.svg')),
       gP(356, 513.5, 9.5, 13, gImg('assets/figma/v/a365eb17b7a19f.svg')),
-      gP(24, 548, 342, 132, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 556, 50, 50, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
       gP(98, 560, 98, 17, gText('Mariam Essono', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 582, 143, 14, gText('Application de suivi clients', 11.5, Color(0xFF66636E))),

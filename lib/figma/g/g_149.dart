@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_149 extends ConsumerWidget {
@@ -42,7 +44,6 @@ class G_149 extends ConsumerWidget {
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 202, 26, gText('Langue et affichage', 21, Color(0xFF111015), weight: 700)),
       gP(24, 120, 54, 19, gText('Langue', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 158, 342, 132, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 170, 55, 17, gText('Français', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 192, 100, 14, gText('Langue par défaut', 11.5, Color(0xFF66636E))),
       gP(300, 180, 52, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
@@ -52,7 +53,6 @@ class G_149 extends ConsumerWidget {
       gP(40, 258, 107, 14, gText('English (Cameroon)', 11.5, Color(0xFF66636E))),
       gP(336.75, 249.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
       gP(24, 304, 94, 19, gText('Accessibilité', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 342, 342, 264, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 354, 88, 17, gText('Texte agrandi', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 376, 159, 14, gText('Augmenter la taille des textes', 11.5, Color(0xFF66636E))),
       gP(308, 363, 42, 24, GToggle(on: false, onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18)),

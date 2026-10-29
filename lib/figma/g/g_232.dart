@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_232 extends ConsumerWidget {
@@ -43,7 +45,7 @@ class G_232 extends ConsumerWidget {
       gP(43.546, 89, 16.908, 6, gImg('assets/figma/v/876f9e4ca5bd5d.svg')),
       gP(143.5, 82, 103, 21, gText('Voix en texte', 17, Color(0xFF111015), weight: 500, align: TextAlign.center)),
       gP(316, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
-      gP(328.767, 85.883, 18.467, 12.233, gImg('assets/figma/v/44747303a472e2.svg')),
+      gP(328.767, 83, 18.467, 18.233, gImg('assets/figma/v/menu3.svg')),
       gP(150, 140, 216, 56, gBox(color: Color(0xFF111015), radii: [28, 28, 28, 28])),
       gP(162, 150, 36, 36, gBox(color: Color(0xFFFFFFFF), oval: true)),
       gP(175, 159, 15.333, 18, gImg('assets/figma/v/000d96af5ca0a3.svg')),
@@ -66,7 +68,6 @@ class G_232 extends ConsumerWidget {
       gP(341, 202, 25, 13, gText('16:43', 10, Color(0xFF66636E), align: TextAlign.right)),
       gP(22, 232, 36, 36, gBox(color: Color(0xFF111015), oval: true)),
       gP(24, 234, 32, 32, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, radii: [16, 16, 16, 16])),
-      gP(70, 226, 276, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 5), blurRadius: 16, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(88, 240, 245, 76, gText('Décris-moi ton parfum : cible, style et budget. Je prépare le brief et je contacte les étudiants de MMI et de TCO.', 13, Color(0xFF111015), weight: 500, lh: 19, wrap: true)),
       gP(70, 334, 25, 13, gText('16:43', 10, Color(0xFF66636E))),
       gP(226, 364, 140, 120, gBox(image: 'assets/figma/img/4ca68f79023605aecb4f83724629d508e921e885.png', fit: BoxFit.cover, border: Color(0xFFFFFFFF), bw: 2, radii: [20, 20, 20, 20])),
@@ -74,9 +75,7 @@ class G_232 extends ConsumerWidget {
       gP(214, 514, 152, 46, gBox(color: Color(0xFF111015), radii: [23, 23, 23, 23])),
       gP(232, 520, 90, 34, gText('Crée la mission\npour moi', 12.5, Color(0xFFFFFFFF), weight: 500, lh: 17)),
       gP(24, 590, 32, 32, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, radii: [16, 16, 16, 16])),
-      gP(70, 580, 276, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 5), blurRadius: 16, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(88, 594, 245, 57, gText('Compris ! Je lance ton brief : logo + affiche, budget d’environ 200 000 FCFA. Veux-tu aussi une vidéo teaser ?', 13, Color(0xFF111015), weight: 500, lh: 19, wrap: true)),
-      gP(20, 688, 350, 62, gBox(color: Color(0xCCFFFFFF), border: Color(0xCCFFFFFF), bw: 1, backBlur: 28, radii: [31, 31, 31, 31])),
       gP(20, 688, 350, 62, GField(hint: 'Écris ou parle à Kéla…', size: 13, hintColor: Color(0xFF66636E), weight: 400, padL: 54)),
       gP(41.167, 716, 17.667, 6, gImg('assets/figma/v/a601ae14f144f2.svg')),
       gP(47, 710.167, 6, 17.667, gImg('assets/figma/v/148ccb346e3d02.svg')),

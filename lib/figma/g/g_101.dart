@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_101 extends ConsumerWidget {
@@ -45,7 +47,6 @@ class G_101 extends ConsumerWidget {
       gP(24, 120, 342, 190, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [24, 24, 24, 24])),
       gP(42, 248, 309, 23, gText('Exposition des innovations', 18, Color(0xFFFFFFFF), weight: 700, wrap: true)),
       gP(42, 276, 309, 15, gText('Samedi 24 octobre 2026 · Hall principal', 12, Color(0xFFE3ECF7), wrap: true)),
-      gP(24, 324, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(38, 336, 27, 14, gText('Date', 11.5, Color(0xFF66636E), weight: 500)),
       gP(38, 356, 124, 25, gText('24 oct. · 10 h', 20, Color(0xFF111015), weight: 800)),
       gP(150, 336, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),
@@ -53,7 +54,6 @@ class G_101 extends ConsumerWidget {
       gP(163.5, 340.75, 6, 8.5, gImg('assets/figma/v/c96460ed96947c.svg')),
       gP(158.5, 340.75, 6, 8.5, gImg('assets/figma/v/c96460ed96947c.svg')),
       gP(155.375, 345.75, 17.25, 6, gImg('assets/figma/v/fabbebac184fd2.svg')),
-      gP(200, 324, 166, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(214, 336, 91, 14, gText('Places restantes', 11.5, Color(0xFF66636E), weight: 500)),
       gP(214, 356, 78, 25, gText('86 / 150', 20, Color(0xFF111015), weight: 800)),
       gP(326, 336, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),

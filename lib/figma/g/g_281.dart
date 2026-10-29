@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_281 extends ConsumerWidget {
@@ -38,7 +40,6 @@ class G_281 extends ConsumerWidget {
       gP(124, 102, 142, 15, gText('Institution : IUT de Douala', 12, Color(0xFF66636E))),
       gP(173, 135.25, 27.5, 27.5, gImg('assets/figma/r/209_494.png')),
       gP(163.375, 136.625, 63.25, 49.5, gImg('assets/figma/r/209_495.png')),
-      gP(24, 214, 342, 420, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(44, 228, 24, 14, gText('Rôle', 11, Color(0xFF66636E), weight: 600)),
       gP(230, 228, 20, 14, gText('Lire', 11, Color(0xFF66636E), weight: 600)),
       gP(270, 228, 31, 14, gText('Écrire', 11, Color(0xFF66636E), weight: 600)),
@@ -79,7 +80,6 @@ class G_281 extends ConsumerWidget {
       gP(236, 572, 12, 15, gText('●', 12, Color(0xFF111015), weight: 700)),
       gP(282, 572, 12, 15, gText('●', 12, Color(0xFF111015), weight: 700)),
       gP(330, 572, 12, 15, gText('●', 12, Color(0xFF111015), weight: 700)),
-      gP(24, 650, 342, 100, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(44, 664, 164, 18, gText('Isolation des institutions', 14, Color(0xFF111015), weight: 600)),
       gP(44, 688, 302, 20, gText('Chaque compte voit uniquement les données de son institution. Les actions sensibles sont journalisées.', 12, Color(0xFF66636E))),
     ]);

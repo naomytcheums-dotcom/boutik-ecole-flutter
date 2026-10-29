@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_272 extends ConsumerWidget {
@@ -51,7 +53,6 @@ class G_272 extends ConsumerWidget {
       gP(258, 340, 48, 60, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFDAD8DF), bw: 1, radii: [14, 14, 14, 14])),
       gP(315, 340, 48, 60, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFDAD8DF), bw: 1, radii: [14, 14, 14, 14])),
       gP(103.5, 420, 183, 16, gText('Renvoyer le code dans 00:42', 13, Color(0xFF5A3FE0), weight: 600)),
-      gP(24, 470, 342, 92, gBox(color: Color(0xD9FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [22, 22, 22, 22])),
       gP(44, 486, 108, 16, gText('Autres méthodes', 13, Color(0xFF111015), weight: 600)),
       gP(44, 512, 194, 16, gText('Application d’authentification  ›', 13, Color(0xFF6B6877), weight: 500)),
       gP(44, 536, 147, 16, gText('Codes de secours (10)  ›', 13, Color(0xFF6B6877), weight: 500)),

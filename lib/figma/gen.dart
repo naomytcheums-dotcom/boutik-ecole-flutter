@@ -189,15 +189,26 @@ Widget gClip(double x, double y, double w, double h, List<double>? radii, List<W
 void gToast(BuildContext context, String message) {
   final m = ScaffoldMessenger.maybeOf(context);
   GSound.play('success');
+  final w = math.min(320.0, MediaQuery.sizeOf(context).width - 32);
   m?.hideCurrentSnackBar();
   m?.showSnackBar(SnackBar(
-    content: Text(message, style: const TextStyle(fontFamily: _jakarta, fontSize: 13, color: Colors.white)),
-    duration: const Duration(milliseconds: 1600),
+    content: Text(message, textAlign: TextAlign.center, style: const TextStyle(fontFamily: _jakarta, fontSize: 13, fontWeight: FontWeight.w500, color: Colors.white)),
+    duration: const Duration(milliseconds: 1800),
     behavior: SnackBarBehavior.floating,
     backgroundColor: const Color(0xFF111015),
-    margin: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+    width: w,
+    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 13),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+    elevation: 6,
   ));
 }
+
+/// Fenêtre de dialogue contenue : largeur limitée, voile léger (jamais plein écran noir).
+Future<T?> gDialog<T>({required BuildContext context, required WidgetBuilder builder}) => showDialog<T>(
+      context: context,
+      barrierColor: const Color(0x40111015),
+      builder: (ctx) => Center(child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 380), child: builder(ctx))),
+    );
 
 /// Interrupteur animé (cliquable).
 class GToggle extends StatefulWidget {

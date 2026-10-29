@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_31 extends ConsumerWidget {
@@ -76,7 +78,6 @@ class G_31 extends ConsumerWidget {
       gP(226.615, 248.758, 2.023, 10.365, gBox(color: Color(0xFFF9B934), radii: [3.541, 3.541, 3.541, 3.541])),
       gP(348.708, 248.44, 16, 11, gText('0%', 9.105, Color(0xFF66636E), align: TextAlign.right)),
       gP(28.327, 324.898, 77, 18, gText('Avis clients', 14.163, Color(0xFF111015), weight: 700)),
-      gP(27.315, 360.551, 337.393, 233.211, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, 3), blurRadius: 12, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(37.938, 378.816, 40.467, 40.467, gBox(image: 'assets/figma/img/8d2db59994dcfe0c5b9851845e0b9f6aec49d36d.png', fit: BoxFit.cover, radii: [20.233, 20.233, 20.233, 20.233])),
       gP(91.556, 377.223, 68, 17, gText('Aminata B.', 13.152, Color(0xFF111015), weight: 500)),
       gP(91.556, 404.395, 63, 13, gText('20 oct. 2026', 10.117, Color(0xFF66636E))),
@@ -85,7 +86,6 @@ class G_31 extends ConsumerWidget {
       gP(38.444, 438.998, 260, 43, gText('Produit de très bonne qualité ! Le design est\nvraiment original et bien fini.', 12.646, Color(0xFF4A4854), lh: 21.245)),
       gP(39.455, 516.102, 81.946, 54.63, gBox(image: 'assets/figma/img/787285568a50b7daa40a12adc3c3145d4743215c.png', fit: BoxFit.cover, radii: [9.105, 9.105, 9.105, 9.105])),
       gP(139.611, 516.102, 83.969, 54.63, gBox(image: 'assets/figma/img/752f5c71aed593a51d18b9662015d455f75b411b.png', fit: BoxFit.cover, radii: [9.105, 9.105, 9.105, 9.105])),
-      gP(27.315, 614.491, 337.393, 140.667, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, 3), blurRadius: 12, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(37.938, 633.496, 40.467, 40.467, gBox(image: 'assets/figma/img/2bbb6fbaae9e6d864765beabd4e677ca34d5a95e.png', fit: BoxFit.cover, radii: [20.233, 20.233, 20.233, 20.233])),
       gP(91.556, 634.125, 62, 17, gText('Kouassi T.', 13.152, Color(0xFF111015), weight: 500)),
       gP(91.556, 659.816, 59, 13, gText('15 oct. 2026', 10.117, Color(0xFF66636E))),

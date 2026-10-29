@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_79 extends ConsumerWidget {
@@ -45,7 +47,6 @@ class G_79 extends ConsumerWidget {
       gP(24, 120, 342, 180, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [24, 24, 24, 24])),
       gP(42, 238, 309, 23, Consumer(builder: (context, ref, _) => gText(ref.watch(currentProjectProvider).title, 18, Color(0xFFFFFFFF), weight: 700, wrap: true))),
       gP(42, 266, 309, 15, Consumer(builder: (context, ref, _) => gText('Département ${ref.watch(currentProjectProvider).dept}', 12, Color(0xFFE3ECF7), wrap: true))),
-      gP(24, 314, 342, 76, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(74, 328, 14, 25, Consumer(builder: (context, ref, _) => gText('${ref.watch(currentProjectProvider).contributors}', 20, Color(0xFF111015), weight: 800, align: TextAlign.center))),
       gP(43, 358, 76, 14, gText('Contributeurs', 11.5, Color(0xFF66636E), align: TextAlign.center)),
       gP(170.5, 328, 49, 25, Consumer(builder: (context, ref, _) => gText('${ref.watch(currentProjectProvider).progress} %', 20, Color(0xFF111015), weight: 800, align: TextAlign.center))),
@@ -54,7 +55,6 @@ class G_79 extends ConsumerWidget {
       gP(302.5, 328, 13, 25, Consumer(builder: (context, ref, _) => gText('${ref.watch(currentProjectProvider).milestones}', 20, Color(0xFF111015), weight: 800, align: TextAlign.center))),
       gP(292, 358, 34, 14, gText('Jalons', 11.5, Color(0xFF66636E), align: TextAlign.center)),
       gP(252, 328, 1, 48, gBox(color: Color(0xFFF2EFF6))),
-      gP(24, 404, 342, 148, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 418, 117, 16, gText('Avancement global', 12.5, Color(0xFF111015), weight: 600)),
       gP(183, 418, 167, 15, Consumer(builder: (context, ref, _) => gText('${ref.watch(currentProjectProvider).progress}%', 12, Color(0xFF66636E), weight: 600, wrap: true, align: TextAlign.right))),
       gP(40, 440, 310, 7, gBox(color: Color(0xFFF2EFF6), radii: [4, 4, 4, 4])),
@@ -69,7 +69,6 @@ class G_79 extends ConsumerWidget {
       gP(40, 528, 124, 7, gBox(color: Color(0xFF1E4A80), radii: [4, 4, 4, 4])),
       gP(24, 566, 345, 41, Consumer(builder: (context, ref, _) => gText(ref.watch(currentProjectProvider).desc, 13, Color(0xFF4A4854), lh: 20.15, wrap: true))),
       gP(24, 621, 51, 19, gText('Équipe', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 659, 342, 132, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 667, 50, 50, gBox(image: 'assets/figma/img/c15478a4e0a5cc1be462d8179ed1a24390853242.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
       gP(98, 671, 102, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(currentProjectProvider).lead, 13.5, Color(0xFF111015), weight: 600))),
       gP(98, 693, 80, 14, gText('Chef de projet', 11.5, Color(0xFF66636E))),

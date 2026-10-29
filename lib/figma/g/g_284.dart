@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_284 extends ConsumerWidget {
@@ -38,7 +40,6 @@ class G_284 extends ConsumerWidget {
       gP(111.5, 102, 167, 15, gText('Commande #BE-2026-0142', 12, Color(0xFF66636E))),
       gP(167, 132, 40, 40, gImg('assets/figma/r/209_883.png')),
       gP(177.667, 140, 45.333, 40, gImg('assets/figma/r/209_884.png')),
-      gP(24, 214, 342, 300, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(44, 232, 80, 16, gText('Montant brut', 13, Color(0xFF66636E))),
       gP(254, 232, 92, 16, gText('330 000 FCFA', 13, Color(0xFF111015), weight: 600)),
       gP(44, 266, 151, 16, gText('Frais de paiement (1,5 %)', 13, Color(0xFF66636E))),
@@ -55,7 +56,6 @@ class G_284 extends ConsumerWidget {
       gP(267, 436, 79, 16, gText('54 354 FCFA', 13, Color(0xFF111015), weight: 600)),
       gP(44, 470, 127, 16, gText('Part étudiants (70 %)', 13, Color(0xFF66636E))),
       gP(262, 470, 84, 16, gText('190 239 FCFA', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 530, 342, 92, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(44, 546, 153, 16, gText('Répartition configurable', 13, Color(0xFF111015), weight: 600)),
       gP(44, 568, 302, 20, gText('70 / 20 / 10 par défaut · modifiable par l’administrateur global, avec historique.', 11, Color(0xFF66636E))),
       gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => gToast(context, 'Démonstration : Exporter le registre (CSV)')),

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_247 extends ConsumerWidget {
@@ -56,7 +58,6 @@ class G_247 extends ConsumerWidget {
       gP(280, 200, 76, 26, const SizedBox.expand(), tap: () => gOpen(context, '248')),
       gP(292, 206, 52, 14, gText('Boutique', 11.5, Color(0xFF5A3FE0), weight: 600)),
       gP(24, 246, 345, 34, gText('Je crée des identités visuelles et des vidéos pour des marques locales, du logo à la campagne.', 12, Color(0xFF5B5963), lh: 17, wrap: true)),
-      gP(24, 290, 342, 64, gBox(color: Color(0xB2FFFFFF), border: Color(0xFFFFFFFF), bw: 1, shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 16, spreadRadius: 0)], radii: [26, 26, 26, 26])),
       gP(53, 302, 28, 21, gText('124', 17, Color(0xFF111015), weight: 700)),
       gP(39, 328, 56, 12, gText('Publications', 9.5, Color(0xFF66636E))),
       gP(132.8, 302, 39, 21, gText('2,7 k', 17, Color(0xFF111015), weight: 700)),

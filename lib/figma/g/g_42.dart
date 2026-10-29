@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_42 extends ConsumerWidget {
@@ -55,7 +57,6 @@ class G_42 extends ConsumerWidget {
       gP(220.333, 158, 50, 14, gText('Paiement', 11, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
       gP(329, 118, 34, 34, gBox(color: Color(0xFF111015), oval: true)),
       gP(310.5, 158, 71, 14, gText('Confirmation', 11, Color(0xFF111015), weight: 700, align: TextAlign.center)),
-      gP(24, 188, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 196, 50, 50, gBox(image: 'assets/figma/img/abbe1a61d7955c52cdd31224bc1569ab44582797.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
       gP(98, 200, 180, 17, gText('Ordinateur portable proto…', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 222, 33, 14, gText('Qté : 1', 11.5, Color(0xFF66636E))),
@@ -70,10 +71,9 @@ class G_42 extends ConsumerWidget {
       gP(98, 332, 155, 17, gText('Logo et identité visuelle', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 354, 33, 14, gText('Qté : 1', 11.5, Color(0xFF66636E))),
       gP(301, 344, 49, 17, gText('50 000', 13.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),
-      gP(24, 400, 342, 132, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 413, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
-      gP(46.333, 421.667, 19.333, 22.667, gImg('assets/figma/v/e25472574b704c.svg')),
-      gP(50.5, 425.833, 11, 11, gImg('assets/figma/v/3bae74da037db6.svg')),
+      gP(45, 421, 22, 22, const Icon(Icons.home_outlined, size: 21, color: Color(0xFF5A3FE0))),
+      
       gP(88, 412, 121, 17, gText('Retrait sur campus', 13.5, Color(0xFF111015), weight: 600)),
       gP(88, 434, 184, 14, gText('IUT de Douala – Bâtiment principal', 11.5, Color(0xFF66636E))),
       gP(336.75, 425.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
@@ -84,7 +84,6 @@ class G_42 extends ConsumerWidget {
       gP(88, 478, 97, 17, gText('Orange Money', 13.5, Color(0xFF111015), weight: 600)),
       gP(88, 500, 85, 14, gText('Compte IUT DFI', 11.5, Color(0xFF66636E))),
       gP(336.75, 491.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
-      gP(24, 546, 342, 118, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 558, 64, 16, gText('Sous-total', 12.5, Color(0xFF66636E))),
       gP(263, 558, 87, 16, gText('325 000 FCFA', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
       gP(40, 583, 310, 1, gBox(color: Color(0xFFF2EFF6))),
@@ -94,7 +93,7 @@ class G_42 extends ConsumerWidget {
       gP(40, 626, 29, 16, gText('Total', 12.5, Color(0xFF66636E))),
       gP(262, 626, 88, 16, gText('330 000 FCFA', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),
       gP(24, 678, 20, 20, gBox(color: Color(0xFF111015), radii: [6, 6, 6, 6])),
-      gP(26.667, 681.75, 14.667, 11.958, gImg('assets/figma/v/ac006383c9ee5c.svg')),
+      gP(26.667, 681.75, 14.667, 11.958, gImg('assets/figma/v/w_check.svg')),
       gP(54, 679, 315, 36, gText('J’accepte les conditions de vente et la politique de retour.', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
       gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
       gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Confirmer la commande')),

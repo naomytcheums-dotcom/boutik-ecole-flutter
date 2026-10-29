@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_96 extends ConsumerWidget {
@@ -49,7 +51,6 @@ class G_96 extends ConsumerWidget {
       gP(42, 228, 309, 46, gText('Défi Orange : paiement mobile inclusif', 18, Color(0xFFFFFFFF), weight: 700, wrap: true)),
       gP(42, 256, 309, 15, gText('Prix de 500 000 FCFA · Clôture le 30 nov.', 12, Color(0xFFE3ECF7), wrap: true)),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 304, 77.8, 34, 'Ouverts', 12.5, 600), GChip(109.8, 304, 85.2, 34, 'En cours', 12.5, 500), GChip(203, 304, 85.2, 34, 'Terminés', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
-      gP(24, 352, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 365, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(48, 373.667, 16, 16, gImg('assets/figma/v/f44e883cdba29a.svg')),
       gP(50.5, 387, 11, 6, gImg('assets/figma/v/c4124addb3c439.svg')),

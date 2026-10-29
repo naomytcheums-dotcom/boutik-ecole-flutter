@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_204 extends ConsumerWidget {
@@ -41,7 +43,6 @@ class G_204 extends ConsumerWidget {
       gP(24, 120, 342, 190, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [26, 26, 26, 26])),
       gP(42, 248, 309, 23, gText('Lancez votre projet avec l’IUT', 18, Color(0xFFFFFFFF), weight: 800, wrap: true)),
       gP(42, 278, 309, 15, gText('Équipe, mentor, prototype, visibilité', 12, Color(0xD9FFFFFF), weight: 500, wrap: true)),
-      gP(24, 324, 342, 76, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(70.5, 338, 21, 25, gText('12', 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
       gP(61.5, 368, 39, 14, gText('Projets', 11.5, Color(0xFF66636E), align: TextAlign.center)),
       gP(188, 338, 14, 25, gText('4', 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
@@ -67,7 +68,6 @@ class G_204 extends ConsumerWidget {
       gP(301, 522, 49, 15, gText('Voir tout', 12, Color(0xFF5A3FE0), weight: 500, align: TextAlign.right)),
       gP(352.5, 527, 13, 6, gImg('assets/figma/v/4159f10924eea0.svg')),
       gP(356, 523.5, 9.5, 13, gImg('assets/figma/v/a365eb17b7a19f.svg')),
-      gP(24, 558, 342, 132, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 566, 50, 50, gBox(image: 'assets/figma/img/4ca68f79023605aecb4f83724629d508e921e885.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
       gP(98, 570, 111, 17, gText('Serre intelligente', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 592, 165, 14, gText('BTA · Agronomie · 62 % financé', 11.5, Color(0xFF66636E))),

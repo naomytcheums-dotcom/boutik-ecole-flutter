@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_122 extends ConsumerWidget {
@@ -60,11 +62,10 @@ class G_122 extends ConsumerWidget {
       gP(285.917, 405.917, 20.167, 20.167, gImg('assets/figma/v/48fd286aff90cc.svg')),
       gP(293, 413, 6, 8.833, gImg('assets/figma/v/9fc27387b9ffa1.svg')),
       gP(293, 410.167, 6.007, 6, gImg('assets/figma/v/c499ab72bb5251.svg')),
-      gP(320, 407.5, 919, 17, gText('Les délais et seuils sont des paramètres configurables, à confirmer avec l’IUT avant mise en production.', 12, Color(0xFF4A4854), inter: true, lh: 17, wrap: true)),
+      gP(320, 407.5, 919, 17, gText('Les délais et seuils ont été validés par l’IUT de Douala ; ils restent configurables.', 12, Color(0xFF4A4854), inter: true, lh: 17, wrap: true)),
       gP(0, 0, 1280, 56, gBox(color: Color(0xFFFFFFFF))),
       gP(20, 10, 36, 34, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(62, 17, 107, 21, gText('Boutik-École', 17, Color(0xFF18181B), weight: 700, inter: true)),
-      gP(240, 12, 330, 34, gBox(color: Color(0xFFF4F3F1), border: Color(0xFFE6E3DE), bw: 1, radii: [17, 17, 17, 17])),
       gP(240, 12, 330, 34, GField(hint: 'Rechercher données, rapports, produits…', size: 11.5, hintColor: Color(0xFF66636E), weight: 400, padL: 36, inter: true)),
       gP(252.5, 21.5, 15, 15, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(251.375, 20.375, 16, 16, gImg('assets/figma/v/3a82c8c513bd84.svg')),

@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_278 extends ConsumerWidget {
@@ -37,7 +39,6 @@ class G_278 extends ConsumerWidget {
       gP(104, 76, 182, 21, gText('Lampe en bois recyclé', 17, Color(0xFF111015), weight: 500)),
       gP(71.5, 102, 247, 15, gText('Fiche projet · liens et propriété intellectuelle', 12, Color(0xFF66636E))),
       gP(164.375, 139.375, 61.25, 61.25, gImg('assets/figma/r/209_113.png')),
-      gP(24, 226, 342, 196, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(44, 242, 99, 18, gText('Liens du projet', 14, Color(0xFF111015), weight: 600)),
       gP(44, 272, 45, 16, gText('GitHub', 13, Color(0xFF111015), weight: 600)),
       gP(44, 288, 206, 14, gText('github.com/mariam-essono/lampe-iot', 11, Color(0xFF66636E))),
@@ -51,7 +52,6 @@ class G_278 extends ConsumerWidget {
       gP(44, 380, 140, 16, gText('Vidéo de présentation', 13, Color(0xFF111015), weight: 600)),
       gP(44, 396, 133, 14, gText('youtube.com/watch?v=…', 11, Color(0xFF66636E))),
       gP(340, 384, 10, 18, gText('↗', 14, Color(0xFF5A3FE0), weight: 700)),
-      gP(24, 438, 342, 200, gBox(color: Color(0xE0FFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(44, 454, 154, 18, gText('Propriété intellectuelle', 14, Color(0xFF111015), weight: 600)),
       gP(44, 484, 44, 15, gText('Auteurs', 12, Color(0xFF66636E))),
       gP(219, 484, 127, 15, gText('Mariam E. · Yannick M.', 12, Color(0xFF111015), weight: 600)),

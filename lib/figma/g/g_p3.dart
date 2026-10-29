@@ -17,6 +17,8 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/docs.dart';
+import '../live/kela.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_P3 extends ConsumerWidget {
@@ -43,7 +45,6 @@ class G_P3 extends ConsumerWidget {
       gP(272, 84, 16, 16, gBox(color: Color(0xFF2F7DF6), oval: true)),
       gP(273.667, 86.5, 12.667, 10.583, gImg('assets/figma/v/ca53f14df8dcc8.svg')),
       gP(316, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
-      gP(24, 134, 342, 130, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(46, 150, 75, 58, gText('4,9', 46, Color(0xFF111015), weight: 700)),
       gP(44.5, 206.5, 21, 20.25, gImg('assets/figma/v/eefc2446394ee8.svg')),
       gP(65.5, 206.5, 21, 20.25, gImg('assets/figma/v/eefc2446394ee8.svg')),
@@ -65,7 +66,6 @@ class G_P3 extends ConsumerWidget {
       gP(43.667, 295, 16.667, 13.333, gImg('assets/figma/v/693d015ba41fc9.svg')),
       gP(76, 294, 273, 16, gText('Recommandée par 9 clients et 3 entreprises', 12.5, Color(0xFF126B49), weight: 600, wrap: true)),
       gP(24, 352, 118, 20, gText('Avis des clients', 16, Color(0xFF111015), weight: 600)),
-      gP(24, 384, 342, 96, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 4), blurRadius: 14, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(38, 398, 36, 36, gBox(image: 'assets/figma/img/c15478a4e0a5cc1be462d8179ed1a24390853242.png', fit: BoxFit.cover, radii: [18, 18, 18, 18])),
       gP(82, 398, 78, 16, gText('Mbella SARL', 13, Color(0xFF111015), weight: 600)),
       gP(80, 416, 16, 15.5, gImg('assets/figma/v/f28e859127eede.svg')),
@@ -74,7 +74,6 @@ class G_P3 extends ConsumerWidget {
       gP(125, 416, 16, 15.5, gImg('assets/figma/v/f28e859127eede.svg')),
       gP(140, 416, 16, 15.5, gImg('assets/figma/v/f28e859127eede.svg')),
       gP(38, 444, 313, 15, gText('Logo livré en 4 jours, très pro.', 12, Color(0xFF5B5963), wrap: true)),
-      gP(24, 492, 342, 96, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 4), blurRadius: 14, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(38, 506, 36, 36, gBox(image: 'assets/figma/img/8d2db59994dcfe0c5b9851845e0b9f6aec49d36d.png', fit: BoxFit.cover, radii: [18, 18, 18, 18])),
       gP(82, 506, 104, 16, gText('Mairie de Douala', 13, Color(0xFF111015), weight: 600)),
       gP(80, 524, 16, 15.5, gImg('assets/figma/v/f28e859127eede.svg')),

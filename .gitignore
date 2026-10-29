@@ -46,3 +46,7 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Jeton Figma (ne jamais commiter)
+tool/figma_export/.figma_token
+tool/figma_export/cache/

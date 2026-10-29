@@ -23,7 +23,9 @@ void main() {
     c.read(projectTabProvider.notifier).set(3); // Financement
     expect(c.read(visibleProjectsProvider).map((p) => p.title), ['Serre intelligente']);
     c.read(projectTabProvider.notifier).set(0);
-    c.read(projectsProvider.notifier).add(const Project('Four solaire', 'Génie civil', 10, 'Prototype'));
+    c.read(projectsProvider.notifier).add(const Project('Four solaire', 'Génie civil', 10, 'Prototype', review: 'À valider'));
+    expect(c.read(visibleProjectsProvider).any((p) => p.title == 'Four solaire'), isFalse); // pas encore validé
+    c.read(projectsProvider.notifier).setReview('Four solaire', 'Validé');
     c.read(projectTabProvider.notifier).set(1); // Prototypes
     expect(c.read(visibleProjectsProvider).first.title, 'Four solaire');
     c.read(selectedProjectProvider.notifier).set('Four solaire');

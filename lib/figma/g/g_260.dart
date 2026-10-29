@@ -15,6 +15,7 @@ import '../live/audit.dart';
 import '../live/admin.dart';
 import '../live/talents.dart';
 import '../live/hackathons.dart';
+import '../live/ops.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_260 extends ConsumerWidget {
@@ -62,10 +63,10 @@ class G_260 extends ConsumerWidget {
       gP(145, 438, 201, 14, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(lastOrderProvider).total * 0.015), 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(44, 468, 96, 14, gText('Taxes applicables', 11.5, Color(0xFF66636E))),
       gP(306, 468, 40, 14, gText('0 FCFA', 11.5, Color(0xFF111015), weight: 600)),
-      gP(44, 498, 194, 14, gText('Commission de la plateforme (10 %)', 11.5, Color(0xFF66636E))),
-      gP(141, 498, 205, 14, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(lastOrderProvider).total * 0.10), 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
-      gP(44, 528, 194, 14, gText('Part étudiants / département (70 %)', 11.5, Color(0xFF66636E))),
-      gP(134, 528, 212, 14, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(lastOrderProvider).total * 0.70), 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
+      gP(44, 498, 194, 14, Consumer(builder: (context, ref, _) => gText('Commission de la plateforme (${ref.watch(rulesConfigProvider).product} %)', 11.5, Color(0xFF66636E)))),
+      gP(141, 498, 205, 14, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(lastOrderProvider).total * ref.watch(rulesConfigProvider).product / 100), 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
+      gP(44, 528, 194, 14, Consumer(builder: (context, ref, _) => gText('Part étudiants / département (${80 - ref.watch(rulesConfigProvider).product} %)', 11.5, Color(0xFF66636E)))),
+      gP(134, 528, 212, 14, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(lastOrderProvider).total * (80 - ref.watch(rulesConfigProvider).product) / 100), 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(44, 558, 141, 14, gText('Fonds d’innovation (20 %)', 11.5, Color(0xFF66636E))),
       gP(137, 558, 209, 14, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(lastOrderProvider).total * 0.20), 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(44, 604, 302, 60, gBox(color: Color(0xFFF4F1F8), radii: [22, 22, 22, 22])),

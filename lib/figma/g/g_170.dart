@@ -15,6 +15,7 @@ import '../live/audit.dart';
 import '../live/admin.dart';
 import '../live/talents.dart';
 import '../live/hackathons.dart';
+import '../live/ops.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_170 extends ConsumerWidget {
@@ -41,7 +42,7 @@ class G_170 extends ConsumerWidget {
       gP(76, 70, 218, 26, gText('Signaler une annonce', 21, Color(0xFF111015), weight: 700)),
       gP(24, 120, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 128, 50, 50, gBox(image: 'assets/figma/img/9803b1792923bb371cffd2d64272ebebf74ea2d4.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
-      gP(98, 132, 145, 17, gText('Lampe en bois recyclé', 13.5, Color(0xFF111015), weight: 600)),
+      gP(98, 132, 145, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(selectedProductProvider).title, 13.5, Color(0xFF111015), weight: 600))),
       gP(98, 154, 196, 14, gText('25 000 FCFA · Vendeur : Y. Mouanga', 11.5, Color(0xFF66636E))),
       gP(24, 200, 154, 19, gText('Motif du signalement', 15, Color(0xFF111015), weight: 700)),
       gP(24, 238, 20, 20, gBox(color: Color(0xFF111015), radii: [6, 6, 6, 6])),
@@ -67,6 +68,12 @@ class G_170 extends ConsumerWidget {
       gP(203, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE5484D), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Envoyer le signalement')),
       gP(204, 778, 161, 18, gText('Envoyer le signalement', 14.5, Color(0xFFE5484D), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      gTap(24, 232, 342, 34, () { ref.read(reportReasonProvider.notifier).set(0); gToast(context, 'Motif : ${reportReasons[0].$2}'); }),
+      gTap(24, 268, 342, 34, () { ref.read(reportReasonProvider.notifier).set(1); gToast(context, 'Motif : ${reportReasons[1].$2}'); }),
+      gTap(24, 304, 342, 44, () { ref.read(reportReasonProvider.notifier).set(2); gToast(context, 'Motif : ${reportReasons[2].$2}'); }),
+      gTap(24, 354, 342, 34, () { ref.read(reportReasonProvider.notifier).set(3); gToast(context, 'Motif : ${reportReasons[3].$2}'); }),
+      gTap(24, 760, 163, 54, () { gBack(context); }),
+      gTap(203, 760, 163, 54, () { submitReport(ref, context); }),
     ]);
   }
 }

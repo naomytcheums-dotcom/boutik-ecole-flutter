@@ -59,6 +59,10 @@ void main() {
           ok = true;
         } else {
           await tester.pump(const Duration(seconds: 3)); // laisse disparaître un éventuel message bref
+          if (find.byType(AlertDialog).evaluate().isNotEmpty) {
+            await tester.tapAt(const Offset(3, 3)); // ferme une boîte de dialogue ouverte par l'essai
+            await tester.pumpAndSettle();
+          }
           router().go('/s/$from');
           await tester.pumpAndSettle();
         }

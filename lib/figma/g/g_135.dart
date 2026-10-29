@@ -15,6 +15,7 @@ import '../live/audit.dart';
 import '../live/admin.dart';
 import '../live/talents.dart';
 import '../live/hackathons.dart';
+import '../live/ops.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_135 extends ConsumerWidget {
@@ -26,19 +27,19 @@ class G_135 extends ConsumerWidget {
       gP(268, 134, 485, 222, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
       gP(284, 148, 208, 17, gText('Règles actuelles (modifiables)', 14, Color(0xFF111015), weight: 700, inter: true)),
       gP(284, 182, 167, 15, gText('Commission sur les produits', 12.5, Color(0xFF66636E), inter: true)),
-      gP(715, 182, 22, 15, gText('5 %', 12.5, Color(0xFF111015), weight: 600, inter: true, align: TextAlign.right)),
+      gP(575, 182, 162, 15, Consumer(builder: (context, ref, _) => gText('${ref.watch(rulesConfigProvider).product} %', 12.5, Color(0xFF111015), weight: 600, inter: true, wrap: true, align: TextAlign.right))),
       gP(284, 207, 453, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(284, 216, 168, 15, gText('Commission sur les services', 12.5, Color(0xFF66636E), inter: true)),
-      gP(716, 216, 21, 15, gText('7 %', 12.5, Color(0xFF111015), weight: 600, inter: true, align: TextAlign.right)),
+      gP(576, 216, 161, 15, Consumer(builder: (context, ref, _) => gText('${ref.watch(rulesConfigProvider).service} %', 12.5, Color(0xFF111015), weight: 600, inter: true, wrap: true, align: TextAlign.right))),
       gP(284, 241, 453, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(284, 250, 217, 15, gText('Commission financement participatif', 12.5, Color(0xFF66636E), inter: true)),
-      gP(715, 250, 22, 15, gText('4 %', 12.5, Color(0xFF111015), weight: 600, inter: true, align: TextAlign.right)),
+      gP(575, 250, 162, 15, Consumer(builder: (context, ref, _) => gText('${ref.watch(rulesConfigProvider).financing} %', 12.5, Color(0xFF111015), weight: 600, inter: true, wrap: true, align: TextAlign.right))),
       gP(284, 275, 453, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(284, 284, 136, 15, gText('Frais de retrait kiosque', 12.5, Color(0xFF66636E), inter: true)),
       gP(695, 284, 42, 15, gText('Gratuit', 12.5, Color(0xFF111015), weight: 600, inter: true, align: TextAlign.right)),
       gP(284, 309, 453, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(284, 318, 158, 15, gText('Seuil de paiement vendeur', 12.5, Color(0xFF66636E), inter: true)),
-      gP(659, 318, 78, 15, gText('10 000 FCFA', 12.5, Color(0xFF111015), weight: 600, inter: true, align: TextAlign.right)),
+      gP(519, 318, 218, 15, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(rulesConfigProvider).threshold), 12.5, Color(0xFF111015), weight: 600, inter: true, wrap: true, align: TextAlign.right))),
       gP(767, 134, 485, 132, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
       gP(779, 147, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(790.167, 158.167, 17.667, 17.667, gImg('assets/figma/v/ce24693e5a670e.svg')),
@@ -54,7 +55,7 @@ class G_135 extends ConsumerWidget {
       gP(788.5, 222.5, 10.167, 10.167, gImg('assets/figma/v/b5845d52cef132.svg')),
       gP(796, 225.833, 9.333, 11.833, gImg('assets/figma/v/42754a1c3e0ea3.svg')),
       gP(831, 212, 188, 16, gText('Historique des changements', 13.5, Color(0xFF111015), weight: 600, inter: true)),
-      gP(831, 234, 124, 14, gText('Dernier : 01 sept. 2026', 11.5, Color(0xFF66636E), inter: true)),
+      gP(831, 234, 124, 14, Consumer(builder: (context, ref, _) => gText('Dernier : ${ref.watch(rulesConfigProvider).updated}', 11.5, Color(0xFF66636E), inter: true))),
       gP(1192.4, 222, 45.6, 22, gBox(color: Color(0xFFF2EFF6), radii: [11, 11, 11, 11])),
       gP(1203.7, 226, 22, 13, gText('Voir', 11, Color(0xFF66636E), weight: 600, inter: true, align: TextAlign.center)),
       gP(268, 370, 984, 52, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
@@ -142,6 +143,8 @@ class G_135 extends ConsumerWidget {
       gP(1095.833, 90.917, 8.167, 8.167, gImg('assets/figma/v/aa6a66611de441.svg')),
       gP(1100.167, 94.167, 8.167, 8.167, gImg('assets/figma/v/aa6a66611de441.svg')),
       gP(1118, 87, 111, 14, gText('Personnaliser la vue', 11.5, Color(0xFF111015), weight: 500, inter: true)),
+      gTap(1150, 148, 100, 36, () { commissionDialog(context, ref); }),
+      gTap(1180, 150, 70, 34, () { commissionDialog(context, ref); }),
     ]);
   }
 }

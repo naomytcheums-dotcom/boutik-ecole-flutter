@@ -113,8 +113,8 @@ Future<void> talentDialog(BuildContext context, WidgetRef ref, Talent t) async {
 // ------------------------------------------------------------------ projets (78, 79, 80)
 
 class Project {
-  const Project(this.title, this.dept, this.progress, this.stage, {this.lead = 'Brice Ndoumbe', this.contributors = 4, this.milestones = 3, this.desc = ''});
-  final String title, dept, stage, lead, desc;
+  const Project(this.title, this.dept, this.progress, this.stage, {this.lead = 'Brice Ndoumbe', this.contributors = 4, this.milestones = 3, this.desc = '', this.review = 'Validé'});
+  final String title, dept, stage, lead, desc, review; // review : Validé · À valider · À corriger
   final int progress, contributors, milestones;
   String get sub => '$dept · $progress %';
 }
@@ -128,6 +128,12 @@ class Projects extends Notifier<List<Project>> {
         Project('Panneaux solaires mobiles', 'Génie électrique', 30, 'Prototype', lead: 'Yannick Mouanga', contributors: 6, milestones: 5, desc: 'Des panneaux solaires démontables pour marchés et événements.'),
       ];
   void add(Project p) => state = [p, ...state];
+  void setReview(String title, String review) => state = [
+        for (final p in state)
+          p.title == title
+              ? Project(p.title, p.dept, p.progress, p.stage, lead: p.lead, contributors: p.contributors, milestones: p.milestones, desc: p.desc, review: review)
+              : p,
+      ];
 }
 
 final projectsProvider = NotifierProvider<Projects, List<Project>>(Projects.new);
@@ -137,7 +143,7 @@ final selectedProjectProvider = NotifierProvider<StrV, String>(StrV.new);
 final visibleProjectsProvider = Provider<List<Project>>((ref) {
   final tab = ref.watch(projectTabProvider);
   final wanted = const [null, 'Prototype', 'En cours', 'Financement'][tab.clamp(0, 3)];
-  return [for (final p in ref.watch(projectsProvider)) if (wanted == null || p.stage == wanted) p];
+  return [for (final p in ref.watch(projectsProvider)) if (p.review == 'Validé' && (wanted == null || p.stage == wanted)) p];
 });
 
 final currentProjectProvider = Provider<Project>((ref) {
@@ -183,10 +189,10 @@ void submitProject(WidgetRef ref, BuildContext context) {
   ref.read(errorsProvider.notifier).clear();
   final real = stage.contains('réal') || stage.contains('real');
   final me = ref.read(profileAccountProvider);
-  ref.read(projectsProvider.notifier).add(Project(title, dept, real ? 40 : 10, real ? 'En cours' : 'Prototype', lead: me.name, contributors: 1, milestones: 1, desc: desc));
+  ref.read(projectsProvider.notifier).add(Project(title, dept, real ? 40 : 10, real ? 'En cours' : 'Prototype', lead: me.name, contributors: 1, milestones: 1, desc: desc, review: 'À valider'));
   ref.read(auditProvider.notifier).log(me.name, 'Projet soumis', title, 'Validations');
   ref.read(projectTabProvider.notifier).set(0);
-  gToast(context, 'Projet soumis : il apparaît dans le catalogue');
+  gToast(context, 'Projet soumis : en attente de validation du département');
   gOpen(context, '78');
 }
 

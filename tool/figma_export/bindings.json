@@ -205,16 +205,22 @@
     "right": true
    },
    "184:331": {
-    "text": "fcfa(ref.watch(lastOrderProvider).total * 0.10)",
+    "text": "fcfa(ref.watch(lastOrderProvider).total * ref.watch(rulesConfigProvider).product / 100)",
     "right": true
    },
    "184:333": {
-    "text": "fcfa(ref.watch(lastOrderProvider).total * 0.70)",
+    "text": "fcfa(ref.watch(lastOrderProvider).total * (80 - ref.watch(rulesConfigProvider).product) / 100)",
     "right": true
    },
    "184:335": {
     "text": "fcfa(ref.watch(lastOrderProvider).total * 0.20)",
     "right": true
+   },
+   "184:330": {
+    "text": "'Commission de la plateforme (${ref.watch(rulesConfigProvider).product} %)'"
+   },
+   "184:332": {
+    "text": "'Part étudiants / département (${80 - ref.watch(rulesConfigProvider).product} %)'"
    }
   }
  },
@@ -3046,6 +3052,402 @@
    "24,252,342,44": "ref.read(scoresProvider.notifier).bump(1);",
    "24,296,342,44": "ref.read(scoresProvider.notifier).bump(2);",
    "24,340,342,44": "ref.read(scoresProvider.notifier).bump(3);"
+  }
+ },
+ "131": {
+  "nodes": {
+   "43:672": {
+    "text": "'${reportCounters(ref.watch(allReportsProvider)).open}'"
+   },
+   "43:679": {
+    "text": "'${reportCounters(ref.watch(allReportsProvider)).work}'"
+   },
+   "43:686": {
+    "text": "'${reportCounters(ref.watch(allReportsProvider)).done}'"
+   },
+   "43:705": {
+    "text": "ref.watch(allReportsProvider).length > 0 ? ref.watch(allReportsProvider)[0].title : ''",
+    "show": "ref.watch(allReportsProvider).length > 0"
+   },
+   "43:706": {
+    "text": "ref.watch(allReportsProvider).length > 0 ? ref.watch(allReportsProvider)[0].type : ''",
+    "show": "ref.watch(allReportsProvider).length > 0"
+   },
+   "43:707": {
+    "text": "ref.watch(allReportsProvider).length > 0 ? ref.watch(allReportsProvider)[0].received : ''",
+    "show": "ref.watch(allReportsProvider).length > 0"
+   },
+   "43:708": {
+    "text": "ref.watch(allReportsProvider).length > 0 ? ref.watch(allReportsProvider)[0].assignee : ''",
+    "show": "ref.watch(allReportsProvider).length > 0"
+   },
+   "43:709": {
+    "fill": "ref.watch(allReportsProvider).length > 0 ? reportFill(ref.watch(allReportsProvider)[0].status) : const Color(0x00000000)",
+    "show": "ref.watch(allReportsProvider).length > 0"
+   },
+   "43:710": {
+    "text": "ref.watch(allReportsProvider).length > 0 ? ref.watch(allReportsProvider)[0].status : ''",
+    "color": "ref.watch(allReportsProvider).length > 0 ? reportInk(ref.watch(allReportsProvider)[0].status) : const Color(0xFF5A3FE0)",
+    "show": "ref.watch(allReportsProvider).length > 0"
+   },
+   "43:712": {
+    "text": "ref.watch(allReportsProvider).length > 1 ? ref.watch(allReportsProvider)[1].title : ''",
+    "show": "ref.watch(allReportsProvider).length > 1"
+   },
+   "43:713": {
+    "text": "ref.watch(allReportsProvider).length > 1 ? ref.watch(allReportsProvider)[1].type : ''",
+    "show": "ref.watch(allReportsProvider).length > 1"
+   },
+   "43:714": {
+    "text": "ref.watch(allReportsProvider).length > 1 ? ref.watch(allReportsProvider)[1].received : ''",
+    "show": "ref.watch(allReportsProvider).length > 1"
+   },
+   "43:715": {
+    "text": "ref.watch(allReportsProvider).length > 1 ? ref.watch(allReportsProvider)[1].assignee : ''",
+    "show": "ref.watch(allReportsProvider).length > 1"
+   },
+   "43:716": {
+    "fill": "ref.watch(allReportsProvider).length > 1 ? reportFill(ref.watch(allReportsProvider)[1].status) : const Color(0x00000000)",
+    "show": "ref.watch(allReportsProvider).length > 1"
+   },
+   "43:717": {
+    "text": "ref.watch(allReportsProvider).length > 1 ? ref.watch(allReportsProvider)[1].status : ''",
+    "color": "ref.watch(allReportsProvider).length > 1 ? reportInk(ref.watch(allReportsProvider)[1].status) : const Color(0xFF5A3FE0)",
+    "show": "ref.watch(allReportsProvider).length > 1"
+   },
+   "43:719": {
+    "text": "ref.watch(allReportsProvider).length > 2 ? ref.watch(allReportsProvider)[2].title : ''",
+    "show": "ref.watch(allReportsProvider).length > 2"
+   },
+   "43:720": {
+    "text": "ref.watch(allReportsProvider).length > 2 ? ref.watch(allReportsProvider)[2].type : ''",
+    "show": "ref.watch(allReportsProvider).length > 2"
+   },
+   "43:721": {
+    "text": "ref.watch(allReportsProvider).length > 2 ? ref.watch(allReportsProvider)[2].received : ''",
+    "show": "ref.watch(allReportsProvider).length > 2"
+   },
+   "43:722": {
+    "text": "ref.watch(allReportsProvider).length > 2 ? ref.watch(allReportsProvider)[2].assignee : ''",
+    "show": "ref.watch(allReportsProvider).length > 2"
+   },
+   "43:723": {
+    "fill": "ref.watch(allReportsProvider).length > 2 ? reportFill(ref.watch(allReportsProvider)[2].status) : const Color(0x00000000)",
+    "show": "ref.watch(allReportsProvider).length > 2"
+   },
+   "43:724": {
+    "text": "ref.watch(allReportsProvider).length > 2 ? ref.watch(allReportsProvider)[2].status : ''",
+    "color": "ref.watch(allReportsProvider).length > 2 ? reportInk(ref.watch(allReportsProvider)[2].status) : const Color(0xFF5A3FE0)",
+    "show": "ref.watch(allReportsProvider).length > 2"
+   },
+   "43:726": {
+    "text": "ref.watch(allReportsProvider).length > 3 ? ref.watch(allReportsProvider)[3].title : ''",
+    "show": "ref.watch(allReportsProvider).length > 3"
+   },
+   "43:727": {
+    "text": "ref.watch(allReportsProvider).length > 3 ? ref.watch(allReportsProvider)[3].type : ''",
+    "show": "ref.watch(allReportsProvider).length > 3"
+   },
+   "43:728": {
+    "text": "ref.watch(allReportsProvider).length > 3 ? ref.watch(allReportsProvider)[3].received : ''",
+    "show": "ref.watch(allReportsProvider).length > 3"
+   },
+   "43:729": {
+    "text": "ref.watch(allReportsProvider).length > 3 ? ref.watch(allReportsProvider)[3].assignee : ''",
+    "show": "ref.watch(allReportsProvider).length > 3"
+   },
+   "43:730": {
+    "fill": "ref.watch(allReportsProvider).length > 3 ? reportFill(ref.watch(allReportsProvider)[3].status) : const Color(0x00000000)",
+    "show": "ref.watch(allReportsProvider).length > 3"
+   },
+   "43:731": {
+    "text": "ref.watch(allReportsProvider).length > 3 ? ref.watch(allReportsProvider)[3].status : ''",
+    "color": "ref.watch(allReportsProvider).length > 3 ? reportInk(ref.watch(allReportsProvider)[3].status) : const Color(0xFF5A3FE0)",
+    "show": "ref.watch(allReportsProvider).length > 3"
+   }
+  },
+  "links": {
+   "268,282,980,40": "final l = ref.read(allReportsProvider); if (l.length > 0) { reportDialog(context, ref, l[0]); }",
+   "268,326,980,40": "final l = ref.read(allReportsProvider); if (l.length > 1) { reportDialog(context, ref, l[1]); }",
+   "268,370,980,40": "final l = ref.read(allReportsProvider); if (l.length > 2) { reportDialog(context, ref, l[2]); }",
+   "268,414,980,40": "final l = ref.read(allReportsProvider); if (l.length > 3) { reportDialog(context, ref, l[3]); }"
+  }
+ },
+ "170": {
+  "nodes": {
+   "61:19": {
+    "text": "ref.watch(selectedProductProvider).title"
+   }
+  },
+  "links": {
+   "24,232,342,34": "ref.read(reportReasonProvider.notifier).set(0); gToast(context, 'Motif : ${reportReasons[0].$2}');",
+   "24,268,342,34": "ref.read(reportReasonProvider.notifier).set(1); gToast(context, 'Motif : ${reportReasons[1].$2}');",
+   "24,304,342,44": "ref.read(reportReasonProvider.notifier).set(2); gToast(context, 'Motif : ${reportReasons[2].$2}');",
+   "24,354,342,34": "ref.read(reportReasonProvider.notifier).set(3); gToast(context, 'Motif : ${reportReasons[3].$2}');",
+   "24,760,163,54": "gBack(context);",
+   "203,760,163,54": "submitReport(ref, context);"
+  }
+ },
+ "135": {
+  "nodes": {
+   "43:1222": {
+    "text": "'${ref.watch(rulesConfigProvider).product} %'",
+    "right": true
+   },
+   "43:1225": {
+    "text": "'${ref.watch(rulesConfigProvider).service} %'",
+    "right": true
+   },
+   "43:1228": {
+    "text": "'${ref.watch(rulesConfigProvider).financing} %'",
+    "right": true
+   },
+   "43:1234": {
+    "text": "fcfa(ref.watch(rulesConfigProvider).threshold)",
+    "right": true
+   },
+   "43:1252": {
+    "text": "'Dernier : ${ref.watch(rulesConfigProvider).updated}'"
+   }
+  },
+  "links": {
+   "1150,148,100,36": "commissionDialog(context, ref);",
+   "1180,150,70,34": "commissionDialog(context, ref);"
+  }
+ },
+ "132": {
+  "nodes": {
+   "43:815": {
+    "text": "'${212 + ref.watch(ordersProvider).length}'"
+   },
+   "43:823": {
+    "text": "'${64 + ref.watch(ordersProvider).where((o) => o.status < 3).length}'"
+   },
+   "43:851": {
+    "text": "ref.watch(orderRowsProvider).length > 0 ? ref.watch(orderRowsProvider)[0].id : ''",
+    "show": "ref.watch(orderRowsProvider).length > 0"
+   },
+   "43:852": {
+    "text": "ref.watch(orderRowsProvider).length > 0 ? ref.watch(orderRowsProvider)[0].client : ''",
+    "show": "ref.watch(orderRowsProvider).length > 0"
+   },
+   "43:853": {
+    "text": "ref.watch(orderRowsProvider).length > 0 ? ref.watch(orderRowsProvider)[0].seller : ''",
+    "show": "ref.watch(orderRowsProvider).length > 0"
+   },
+   "43:854": {
+    "text": "ref.watch(orderRowsProvider).length > 0 ? fcfa(ref.watch(orderRowsProvider)[0].amount).replaceAll(' FCFA', '') : ''",
+    "show": "ref.watch(orderRowsProvider).length > 0"
+   },
+   "43:855": {
+    "fill": "ref.watch(orderRowsProvider).length > 0 ? orderRowFill(ref.watch(orderRowsProvider)[0].status) : const Color(0x00000000)",
+    "show": "ref.watch(orderRowsProvider).length > 0"
+   },
+   "43:856": {
+    "text": "ref.watch(orderRowsProvider).length > 0 ? ref.watch(orderRowsProvider)[0].status : ''",
+    "color": "ref.watch(orderRowsProvider).length > 0 ? orderRowInk(ref.watch(orderRowsProvider)[0].status) : const Color(0xFF5A3FE0)",
+    "show": "ref.watch(orderRowsProvider).length > 0"
+   },
+   "43:858": {
+    "text": "ref.watch(orderRowsProvider).length > 1 ? ref.watch(orderRowsProvider)[1].id : ''",
+    "show": "ref.watch(orderRowsProvider).length > 1"
+   },
+   "43:859": {
+    "text": "ref.watch(orderRowsProvider).length > 1 ? ref.watch(orderRowsProvider)[1].client : ''",
+    "show": "ref.watch(orderRowsProvider).length > 1"
+   },
+   "43:860": {
+    "text": "ref.watch(orderRowsProvider).length > 1 ? ref.watch(orderRowsProvider)[1].seller : ''",
+    "show": "ref.watch(orderRowsProvider).length > 1"
+   },
+   "43:861": {
+    "text": "ref.watch(orderRowsProvider).length > 1 ? fcfa(ref.watch(orderRowsProvider)[1].amount).replaceAll(' FCFA', '') : ''",
+    "show": "ref.watch(orderRowsProvider).length > 1"
+   },
+   "43:862": {
+    "fill": "ref.watch(orderRowsProvider).length > 1 ? orderRowFill(ref.watch(orderRowsProvider)[1].status) : const Color(0x00000000)",
+    "show": "ref.watch(orderRowsProvider).length > 1"
+   },
+   "43:863": {
+    "text": "ref.watch(orderRowsProvider).length > 1 ? ref.watch(orderRowsProvider)[1].status : ''",
+    "color": "ref.watch(orderRowsProvider).length > 1 ? orderRowInk(ref.watch(orderRowsProvider)[1].status) : const Color(0xFF5A3FE0)",
+    "show": "ref.watch(orderRowsProvider).length > 1"
+   },
+   "43:865": {
+    "text": "ref.watch(orderRowsProvider).length > 2 ? ref.watch(orderRowsProvider)[2].id : ''",
+    "show": "ref.watch(orderRowsProvider).length > 2"
+   },
+   "43:866": {
+    "text": "ref.watch(orderRowsProvider).length > 2 ? ref.watch(orderRowsProvider)[2].client : ''",
+    "show": "ref.watch(orderRowsProvider).length > 2"
+   },
+   "43:867": {
+    "text": "ref.watch(orderRowsProvider).length > 2 ? ref.watch(orderRowsProvider)[2].seller : ''",
+    "show": "ref.watch(orderRowsProvider).length > 2"
+   },
+   "43:868": {
+    "text": "ref.watch(orderRowsProvider).length > 2 ? fcfa(ref.watch(orderRowsProvider)[2].amount).replaceAll(' FCFA', '') : ''",
+    "show": "ref.watch(orderRowsProvider).length > 2"
+   },
+   "43:869": {
+    "fill": "ref.watch(orderRowsProvider).length > 2 ? orderRowFill(ref.watch(orderRowsProvider)[2].status) : const Color(0x00000000)",
+    "show": "ref.watch(orderRowsProvider).length > 2"
+   },
+   "43:870": {
+    "text": "ref.watch(orderRowsProvider).length > 2 ? ref.watch(orderRowsProvider)[2].status : ''",
+    "color": "ref.watch(orderRowsProvider).length > 2 ? orderRowInk(ref.watch(orderRowsProvider)[2].status) : const Color(0xFF5A3FE0)",
+    "show": "ref.watch(orderRowsProvider).length > 2"
+   },
+   "43:872": {
+    "text": "ref.watch(orderRowsProvider).length > 3 ? ref.watch(orderRowsProvider)[3].id : ''",
+    "show": "ref.watch(orderRowsProvider).length > 3"
+   },
+   "43:873": {
+    "text": "ref.watch(orderRowsProvider).length > 3 ? ref.watch(orderRowsProvider)[3].client : ''",
+    "show": "ref.watch(orderRowsProvider).length > 3"
+   },
+   "43:874": {
+    "text": "ref.watch(orderRowsProvider).length > 3 ? ref.watch(orderRowsProvider)[3].seller : ''",
+    "show": "ref.watch(orderRowsProvider).length > 3"
+   },
+   "43:875": {
+    "text": "ref.watch(orderRowsProvider).length > 3 ? fcfa(ref.watch(orderRowsProvider)[3].amount).replaceAll(' FCFA', '') : ''",
+    "show": "ref.watch(orderRowsProvider).length > 3"
+   },
+   "43:876": {
+    "fill": "ref.watch(orderRowsProvider).length > 3 ? orderRowFill(ref.watch(orderRowsProvider)[3].status) : const Color(0x00000000)",
+    "show": "ref.watch(orderRowsProvider).length > 3"
+   },
+   "43:877": {
+    "text": "ref.watch(orderRowsProvider).length > 3 ? ref.watch(orderRowsProvider)[3].status : ''",
+    "color": "ref.watch(orderRowsProvider).length > 3 ? orderRowInk(ref.watch(orderRowsProvider)[3].status) : const Color(0xFF5A3FE0)",
+    "show": "ref.watch(orderRowsProvider).length > 3"
+   }
+  },
+  "links": {
+   "268,282,980,40": "final l = ref.read(orderRowsProvider); if (l.length > 0) { final r = l[0]; if (r.real) { ref.read(ordersProvider.notifier).advance(r.id); ref.read(auditProvider.notifier).log('Super admin', 'Commande avancée', r.id, 'Finances'); gToast(context, 'Commande ${r.id} : étape suivante'); } else { gToast(context, 'Commande ${r.id} : ${r.status}'); } }",
+   "268,326,980,40": "final l = ref.read(orderRowsProvider); if (l.length > 1) { final r = l[1]; if (r.real) { ref.read(ordersProvider.notifier).advance(r.id); ref.read(auditProvider.notifier).log('Super admin', 'Commande avancée', r.id, 'Finances'); gToast(context, 'Commande ${r.id} : étape suivante'); } else { gToast(context, 'Commande ${r.id} : ${r.status}'); } }",
+   "268,370,980,40": "final l = ref.read(orderRowsProvider); if (l.length > 2) { final r = l[2]; if (r.real) { ref.read(ordersProvider.notifier).advance(r.id); ref.read(auditProvider.notifier).log('Super admin', 'Commande avancée', r.id, 'Finances'); gToast(context, 'Commande ${r.id} : étape suivante'); } else { gToast(context, 'Commande ${r.id} : ${r.status}'); } }",
+   "268,414,980,40": "final l = ref.read(orderRowsProvider); if (l.length > 3) { final r = l[3]; if (r.real) { ref.read(ordersProvider.notifier).advance(r.id); ref.read(auditProvider.notifier).log('Super admin', 'Commande avancée', r.id, 'Finances'); gToast(context, 'Commande ${r.id} : étape suivante'); } else { gToast(context, 'Commande ${r.id} : ${r.status}'); } }"
+  }
+ },
+ "111": {
+  "nodes": {
+   "41:550": {
+    "text": "'${21 + ref.watch(projectsProvider).where((p) => p.review != 'Validé').length}'"
+   },
+   "41:558": {
+    "text": "'${5 + ref.watch(projectsProvider).where((p) => p.review == 'À valider').length}'"
+   },
+   "41:571": {
+    "text": "'${3 + ref.watch(projectsProvider).where((p) => p.review == 'À corriger').length}'"
+   },
+   "41:583": {
+    "text": "ref.watch(projectQueueProvider).length > 0 ? ref.watch(projectQueueProvider)[0].title : ''",
+    "show": "ref.watch(projectQueueProvider).length > 0"
+   },
+   "41:584": {
+    "text": "ref.watch(projectQueueProvider).length > 0 ? ref.watch(projectQueueProvider)[0].dept : ''",
+    "show": "ref.watch(projectQueueProvider).length > 0"
+   },
+   "41:585": {
+    "text": "ref.watch(projectQueueProvider).length > 0 ? ref.watch(projectQueueProvider)[0].stage : ''",
+    "show": "ref.watch(projectQueueProvider).length > 0"
+   },
+   "41:586": {
+    "text": "ref.watch(projectQueueProvider).length > 0 ? '${ref.watch(projectQueueProvider)[0].progress} %' : ''",
+    "show": "ref.watch(projectQueueProvider).length > 0"
+   },
+   "41:587": {
+    "fill": "ref.watch(projectQueueProvider).length > 0 ? decisionFill(ref.watch(projectQueueProvider)[0].review) : const Color(0x00000000)",
+    "show": "ref.watch(projectQueueProvider).length > 0"
+   },
+   "41:588": {
+    "text": "ref.watch(projectQueueProvider).length > 0 ? ref.watch(projectQueueProvider)[0].review : ''",
+    "color": "ref.watch(projectQueueProvider).length > 0 ? decisionInk(ref.watch(projectQueueProvider)[0].review) : const Color(0xFF8F5400)",
+    "show": "ref.watch(projectQueueProvider).length > 0"
+   },
+   "41:590": {
+    "text": "ref.watch(projectQueueProvider).length > 1 ? ref.watch(projectQueueProvider)[1].title : ''",
+    "show": "ref.watch(projectQueueProvider).length > 1"
+   },
+   "41:591": {
+    "text": "ref.watch(projectQueueProvider).length > 1 ? ref.watch(projectQueueProvider)[1].dept : ''",
+    "show": "ref.watch(projectQueueProvider).length > 1"
+   },
+   "41:592": {
+    "text": "ref.watch(projectQueueProvider).length > 1 ? ref.watch(projectQueueProvider)[1].stage : ''",
+    "show": "ref.watch(projectQueueProvider).length > 1"
+   },
+   "41:593": {
+    "text": "ref.watch(projectQueueProvider).length > 1 ? '${ref.watch(projectQueueProvider)[1].progress} %' : ''",
+    "show": "ref.watch(projectQueueProvider).length > 1"
+   },
+   "41:594": {
+    "fill": "ref.watch(projectQueueProvider).length > 1 ? decisionFill(ref.watch(projectQueueProvider)[1].review) : const Color(0x00000000)",
+    "show": "ref.watch(projectQueueProvider).length > 1"
+   },
+   "41:595": {
+    "text": "ref.watch(projectQueueProvider).length > 1 ? ref.watch(projectQueueProvider)[1].review : ''",
+    "color": "ref.watch(projectQueueProvider).length > 1 ? decisionInk(ref.watch(projectQueueProvider)[1].review) : const Color(0xFF8F5400)",
+    "show": "ref.watch(projectQueueProvider).length > 1"
+   },
+   "41:597": {
+    "text": "ref.watch(projectQueueProvider).length > 2 ? ref.watch(projectQueueProvider)[2].title : ''",
+    "show": "ref.watch(projectQueueProvider).length > 2"
+   },
+   "41:598": {
+    "text": "ref.watch(projectQueueProvider).length > 2 ? ref.watch(projectQueueProvider)[2].dept : ''",
+    "show": "ref.watch(projectQueueProvider).length > 2"
+   },
+   "41:599": {
+    "text": "ref.watch(projectQueueProvider).length > 2 ? ref.watch(projectQueueProvider)[2].stage : ''",
+    "show": "ref.watch(projectQueueProvider).length > 2"
+   },
+   "41:600": {
+    "text": "ref.watch(projectQueueProvider).length > 2 ? '${ref.watch(projectQueueProvider)[2].progress} %' : ''",
+    "show": "ref.watch(projectQueueProvider).length > 2"
+   },
+   "41:601": {
+    "fill": "ref.watch(projectQueueProvider).length > 2 ? decisionFill(ref.watch(projectQueueProvider)[2].review) : const Color(0x00000000)",
+    "show": "ref.watch(projectQueueProvider).length > 2"
+   },
+   "41:602": {
+    "text": "ref.watch(projectQueueProvider).length > 2 ? ref.watch(projectQueueProvider)[2].review : ''",
+    "color": "ref.watch(projectQueueProvider).length > 2 ? decisionInk(ref.watch(projectQueueProvider)[2].review) : const Color(0xFF8F5400)",
+    "show": "ref.watch(projectQueueProvider).length > 2"
+   },
+   "41:604": {
+    "text": "ref.watch(projectQueueProvider).length > 3 ? ref.watch(projectQueueProvider)[3].title : ''",
+    "show": "ref.watch(projectQueueProvider).length > 3"
+   },
+   "41:605": {
+    "text": "ref.watch(projectQueueProvider).length > 3 ? ref.watch(projectQueueProvider)[3].dept : ''",
+    "show": "ref.watch(projectQueueProvider).length > 3"
+   },
+   "41:606": {
+    "text": "ref.watch(projectQueueProvider).length > 3 ? ref.watch(projectQueueProvider)[3].stage : ''",
+    "show": "ref.watch(projectQueueProvider).length > 3"
+   },
+   "41:607": {
+    "text": "ref.watch(projectQueueProvider).length > 3 ? '${ref.watch(projectQueueProvider)[3].progress} %' : ''",
+    "show": "ref.watch(projectQueueProvider).length > 3"
+   },
+   "41:608": {
+    "fill": "ref.watch(projectQueueProvider).length > 3 ? decisionFill(ref.watch(projectQueueProvider)[3].review) : const Color(0x00000000)",
+    "show": "ref.watch(projectQueueProvider).length > 3"
+   },
+   "41:609": {
+    "text": "ref.watch(projectQueueProvider).length > 3 ? ref.watch(projectQueueProvider)[3].review : ''",
+    "color": "ref.watch(projectQueueProvider).length > 3 ? decisionInk(ref.watch(projectQueueProvider)[3].review) : const Color(0xFF8F5400)",
+    "show": "ref.watch(projectQueueProvider).length > 3"
+   }
+  },
+  "links": {
+   "268,282,980,42": "final l = ref.read(projectQueueProvider); if (l.length > 0) { projectReviewDialog(context, ref, l[0]); }",
+   "268,326,980,42": "final l = ref.read(projectQueueProvider); if (l.length > 1) { projectReviewDialog(context, ref, l[1]); }",
+   "268,370,980,42": "final l = ref.read(projectQueueProvider); if (l.length > 2) { projectReviewDialog(context, ref, l[2]); }",
+   "268,414,980,42": "final l = ref.read(projectQueueProvider); if (l.length > 3) { projectReviewDialog(context, ref, l[3]); }"
   }
  }
 }

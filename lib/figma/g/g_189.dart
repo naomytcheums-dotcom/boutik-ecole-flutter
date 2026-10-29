@@ -1,14 +1,18 @@
 // GÉNÉRÉ par tool/figma_export/convert.py — écran 189 (nœud Figma 61:1493). Ne pas éditer à la main.
 // ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/store.dart';
+import '../live/l06.dart';
+import '../../data/repositories/repositories.dart' show cartProvider;
 
-class G_189 extends StatelessWidget {
+class G_189 extends ConsumerWidget {
   const G_189({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 1280, h: 890, radius: 16, color: Color(0xFFF7F6F4), children: [
       Positioned.fill(child: GChoiceGroup(chips: [GChip(268, 134, 107.4, 34, 'Toutes (23)', 12.5, 600), GChip(383.4, 134, 144.4, 34, 'Présélection (4)', 12.5, 500), GChip(535.8, 134, 85.2, 34, 'Refusées', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17, inter: true)),
       gP(268, 182, 582, 216, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),

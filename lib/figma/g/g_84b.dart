@@ -1,14 +1,18 @@
 // GÉNÉRÉ par tool/figma_export/convert.py — écran 84b (nœud Figma 39:63). Ne pas éditer à la main.
 // ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/store.dart';
+import '../live/l06.dart';
+import '../../data/repositories/repositories.dart' show cartProvider;
 
-class G_84b extends StatelessWidget {
+class G_84b extends ConsumerWidget {
   const G_84b({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 390, h: 868, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 136.44, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 596.48, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),

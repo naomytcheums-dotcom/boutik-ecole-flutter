@@ -1,0 +1,214 @@
+{
+ "03": {
+  "links": {
+   "14,559,178,229": "ref.read(selectedProductProvider.notifier).select('Lampe en bois recyclé'); gOpen(context, '05');",
+   "198,559,178,229": "ref.read(selectedProductProvider.notifier).select('Drone éducatif'); gOpen(context, '05');"
+  }
+ },
+ "05": {
+  "nodes": {
+   "18:296": {
+    "text": "ref.watch(selectedProductProvider).title"
+   },
+   "18:297": {
+    "text": "fcfa(ref.watch(selectedProductProvider).price)"
+   },
+   "18:324": {
+    "text": "ref.watch(selectedProductProvider).seller"
+   },
+   "18:325": {
+    "text": "'Département : ${ref.watch(selectedProductProvider).department}'"
+   },
+   "18:302": {
+    "text": "ref.watch(selectedProductProvider).description"
+   }
+  },
+  "links": {
+   "24,760,345,46": "ref.read(cartProvider.notifier).add(ref.read(selectedProductProvider).toLine()); gToast(context, 'Ajouté au panier'); gOpen(context, '06');"
+  }
+ },
+ "07": {
+  "nodes": {
+   "14:146": {
+    "before": [
+     "gP(24.85, 166.466, 345.823, 103.534, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F122640), offset: Offset(0, 3), blurRadius: 10)], radii: [28.0, 28.0, 28.0, 28.0]), show: ref.watch(homeDeliveryProvider))"
+    ],
+    "show": "!ref.watch(homeDeliveryProvider)"
+   },
+   "14:153": {
+    "show": "!ref.watch(homeDeliveryProvider)"
+   },
+   "14:154": {
+    "show": "!ref.watch(homeDeliveryProvider)"
+   },
+   "14:155": {
+    "before": [
+     "gP(24.85, 279.474, 345.823, 104.887, gBox(color: Color(0xFFFFFDF7), border: Color(0xFFF5B730), bw: 2.071, shadows: [BoxShadow(color: Color(0x14122640), offset: Offset(0, 3), blurRadius: 10)], radii: [17.947, 17.947, 17.947, 17.947]), show: ref.watch(homeDeliveryProvider))"
+    ],
+    "show": "!ref.watch(homeDeliveryProvider)"
+   },
+   "14:164": {
+    "show": "!ref.watch(homeDeliveryProvider)",
+    "after": [
+     "gP(276.796, 295.04, 76.619, 21.654, gBox(color: Color(0xFF111015), radii: [11.044, 11.044, 11.044, 11.044]), show: ref.watch(homeDeliveryProvider))",
+     "gP(285.261, 299.367, 59, 13, gText('Sélectionné', 10.009, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center), show: ref.watch(homeDeliveryProvider))"
+    ]
+   },
+   "14:176": {
+    "text": "ref.watch(homeDeliveryProvider) ? '2 à 5 jours ouvrés' : 'Dès demain'",
+    "right": true
+   },
+   "14:178": {
+    "text": "ref.watch(totalsProvider).fee == 0 ? 'Gratuit' : fcfa(ref.watch(totalsProvider).fee)",
+    "right": true
+   }
+  },
+  "links": {
+   "25,166,346,104": "ref.read(homeDeliveryProvider.notifier).set(false); gToast(context, 'Retrait sur campus · gratuit');",
+   "25,279,346,105": "ref.read(homeDeliveryProvider.notifier).set(true); gToast(context, 'Livraison à domicile · 5 000 FCFA');"
+  }
+ },
+ "08": {
+  "nodes": {
+   "14:246": {
+    "text": "'Articles (${ref.watch(totalsProvider).count})'"
+   },
+   "14:247": {
+    "text": "fcfa(ref.watch(totalsProvider).subtotal)",
+    "right": true
+   },
+   "14:249": {
+    "text": "fcfa(ref.watch(totalsProvider).fee)",
+    "right": true
+   },
+   "14:252": {
+    "text": "fcfa(ref.watch(totalsProvider).total)",
+    "right": true
+   }
+  },
+  "links": {
+   "22,165,345,88": "ref.read(payMethodProvider.notifier).set(0); gToast(context, 'Orange Money sélectionné');",
+   "24,264,343,91": "ref.read(payMethodProvider.notifier).set(1); gToast(context, 'Mobile Money sélectionné');",
+   "23,713,344,59": "ref.read(ordersProvider.notifier).place(); gOpen(context, '257');",
+   "20,790,350,50": "ref.read(ordersProvider.notifier).place(); gOpen(context, '257');"
+  }
+ },
+ "257": {
+  "nodes": {
+   "184:185": {
+    "text": "'Commande ${ref.watch(lastOrderProvider).id}'"
+   },
+   "184:194": {
+    "text": "ref.watch(lastOrderProvider).method",
+    "right": true
+   },
+   "184:196": {
+    "text": "fcfa(ref.watch(lastOrderProvider).total)",
+    "right": true
+   },
+   "184:198": {
+    "text": "ref.watch(lastOrderProvider).reference",
+    "right": true
+   }
+  },
+  "links": {
+   "24,680,342,52": "ref.read(ordersProvider.notifier).markPaid(ref.read(lastOrderProvider).id); gOpen(context, '259');"
+  }
+ },
+ "259": {
+  "nodes": {
+   "184:269": {
+    "text": "fcfa(ref.watch(lastOrderProvider).total)"
+   },
+   "184:274": {
+    "text": "'${ref.watch(lastOrderProvider).date} · 14:32'",
+    "right": true
+   },
+   "184:276": {
+    "text": "ref.watch(lastOrderProvider).method",
+    "right": true
+   },
+   "184:278": {
+    "text": "ref.watch(lastOrderProvider).reference",
+    "right": true
+   },
+   "184:282": {
+    "text": "ref.watch(homeDeliveryProvider) ? 'Domicile · Douala' : 'Kiosque IUT · Bloc A'",
+    "right": true
+   },
+   "184:285": {
+    "text": "fcfa(ref.watch(lastOrderProvider).total)",
+    "right": true
+   }
+  }
+ },
+ "260": {
+  "nodes": {
+   "184:306": {
+    "text": "ref.watch(lastOrderProvider).date",
+    "right": true
+   },
+   "184:325": {
+    "text": "fcfa(ref.watch(lastOrderProvider).total)",
+    "right": true
+   },
+   "184:338": {
+    "text": "fcfa(ref.watch(lastOrderProvider).total)",
+    "right": true
+   }
+  }
+ },
+ "44": {
+  "nodes": {
+   "36:307": {
+    "text": "ref.watch(lastOrderProvider).id",
+    "right": true
+   },
+   "36:310": {
+    "text": "ref.watch(lastOrderProvider).date",
+    "right": true
+   },
+   "36:313": {
+    "text": "fcfa(ref.watch(lastOrderProvider).total)",
+    "right": true
+   },
+   "36:315": {
+    "text": "ref.watch(homeDeliveryProvider) ? 'Livraison' : 'Retrait'",
+    "right": true
+   },
+   "36:316": {
+    "text": "ref.watch(homeDeliveryProvider) ? 'Douala, Cameroun' : 'Kiosque IUT – Bloc A'",
+    "right": true
+   }
+  }
+ },
+ "09": {
+  "nodes": {
+   "15:17": {
+    "text": "ref.watch(lastOrderProvider).id"
+   },
+   "15:18": {
+    "text": "ref.watch(lastOrderProvider).date"
+   },
+   "15:20": {
+    "text": "statusLabel(ref.watch(lastOrderProvider).status)"
+   }
+  }
+ },
+ "06": {
+  "skipRegion": [
+   125,
+   800
+  ],
+  "liveCall": "liveCart(context, ref)",
+  "dropLinks": [
+   "26,748,339,47",
+   "20,790,350,50"
+  ],
+  "nodes": {
+   "14:17": {
+    "text": "'${ref.watch(totalsProvider).count} article${ref.watch(totalsProvider).count > 1 ? \"s\" : \"\"}'"
+   }
+  }
+ }
+}

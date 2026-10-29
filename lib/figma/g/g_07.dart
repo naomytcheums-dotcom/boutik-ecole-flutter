@@ -1,14 +1,18 @@
 // GÉNÉRÉ par tool/figma_export/convert.py — écran 07 (nœud Figma 14:130). Ne pas éditer à la main.
 // ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/store.dart';
+import '../live/l06.dart';
+import '../../data/repositories/repositories.dart' show cartProvider;
 
-class G_07 extends StatelessWidget {
+class G_07 extends ConsumerWidget {
   const G_07({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 390, h: 900, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 147, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 624, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
@@ -27,15 +31,17 @@ class G_07 extends StatelessWidget {
       gP(27.142, 74.143, 18.885, 6, gImg('assets/figma/v/10d75f20133fcb.svg')),
       gP(69.717, 63.643, 93, 27, gText('Livraison', 21.398, Color(0xFF111015), weight: 700)),
       gP(26.23, 130.575, 253, 19, gText('Choisissez votre mode de livraison', 15.186, Color(0xFF111015), weight: 700)),
-      gP(24.85, 166.466, 345.823, 103.534, gBox(color: Color(0xFFFFFDF7), border: Color(0xFFF5B730), bw: 2.071, shadows: [BoxShadow(color: Color(0x14122640), offset: Offset(0, 3), blurRadius: 10, spreadRadius: 0)], radii: [17.947, 17.947, 17.947, 17.947])),
+      gP(24.85, 166.466, 345.823, 103.534, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F122640), offset: Offset(0, 3), blurRadius: 10)], radii: [28.0, 28.0, 28.0, 28.0]), show: ref.watch(homeDeliveryProvider)),
+      gP(24.85, 166.466, 345.823, 103.534, gBox(color: Color(0xFFFFFDF7), border: Color(0xFFF5B730), bw: 2.071, shadows: [BoxShadow(color: Color(0x14122640), offset: Offset(0, 3), blurRadius: 10, spreadRadius: 0)], radii: [17.947, 17.947, 17.947, 17.947]), show: (!ref.watch(homeDeliveryProvider))),
       gP(46.699, 197.692, 34.991, 33.381, gImg('assets/figma/v/e2ad33c38610b8.svg')),
       gP(46.699, 205.745, 34.991, 6, gImg('assets/figma/v/edade50b9fa79b.svg')),
       gP(56.363, 210.577, 15.664, 14.053, gImg('assets/figma/v/81794b445602f7.svg')),
       gP(102.85, 191.477, 136, 19, gText('Retrait sur campus', 15.186, Color(0xFF111015), weight: 600)),
       gP(102.85, 215.459, 158, 36, gText('Récupérez votre commande\nà l’IUT de Douala.', 11.735, Color(0xFF66636E), lh: 17.947)),
-      gP(276.796, 182.03, 76.619, 21.654, gBox(color: Color(0xFF111015), radii: [11.044, 11.044, 11.044, 11.044])),
-      gP(285.261, 186.357, 59, 13, gText('Sélectionné', 10.009, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
-      gP(24.85, 279.474, 345.823, 104.887, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F122640), offset: Offset(0, 3), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
+      gP(276.796, 182.03, 76.619, 21.654, gBox(color: Color(0xFF111015), radii: [11.044, 11.044, 11.044, 11.044]), show: (!ref.watch(homeDeliveryProvider))),
+      gP(285.261, 186.357, 59, 13, gText('Sélectionné', 10.009, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center), show: (!ref.watch(homeDeliveryProvider))),
+      gP(24.85, 279.474, 345.823, 104.887, gBox(color: Color(0xFFFFFDF7), border: Color(0xFFF5B730), bw: 2.071, shadows: [BoxShadow(color: Color(0x14122640), offset: Offset(0, 3), blurRadius: 10)], radii: [17.947, 17.947, 17.947, 17.947]), show: ref.watch(homeDeliveryProvider)),
+      gP(24.85, 279.474, 345.823, 104.887, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F122640), offset: Offset(0, 3), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28]), show: (!ref.watch(homeDeliveryProvider))),
       gP(45.204, 310.497, 26.018, 29.354, gImg('assets/figma/v/35cdf8ec55f33a.svg')),
       gP(56.881, 333.851, 16.009, 6, gImg('assets/figma/v/60c533c26fe43b.svg')),
       gP(65.221, 317.17, 19.345, 22.681, gImg('assets/figma/v/a80ff7ae7527f1.svg')),
@@ -43,7 +49,9 @@ class G_07 extends StatelessWidget {
       gP(50.208, 330.515, 12.673, 12.673, gImg('assets/figma/v/417dd9bef7a068.svg')),
       gP(102.85, 300.425, 143, 19, gText('Livraison à domicile', 15.186, Color(0xFF111015), weight: 600)),
       gP(102.85, 325.083, 145, 36, gText('Recevez votre commande\nà l’adresse de votre choix.', 11.735, Color(0xFF66636E), lh: 17.947)),
-      gP(336.85, 303.009, 15.186, 15.186, gBox(border: Color(0xFF6B6877), bw: 1.381, oval: true)),
+      gP(336.85, 303.009, 15.186, 15.186, gBox(border: Color(0xFF6B6877), bw: 1.381, oval: true), show: (!ref.watch(homeDeliveryProvider))),
+      gP(276.796, 295.04, 76.619, 21.654, gBox(color: Color(0xFF111015), radii: [11.044, 11.044, 11.044, 11.044]), show: ref.watch(homeDeliveryProvider)),
+      gP(285.261, 299.367, 59, 13, gText('Sélectionné', 10.009, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center), show: ref.watch(homeDeliveryProvider)),
       gP(26.23, 418.169, 147, 19, gText('Adresse de livraison', 15.186, Color(0xFF111015), weight: 700)),
       gP(24.85, 450.677, 343.752, 52.105, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.381, radii: [15.186, 15.186, 15.186, 15.186])),
       gP(45.549, 466.59, 17.965, 20.956, gImg('assets/figma/v/4eaba6cfe96f7f.svg')),
@@ -53,9 +61,9 @@ class G_07 extends StatelessWidget {
       gP(26.23, 542.68, 138, 19, gText('Détails de livraison', 15.186, Color(0xFF111015), weight: 700)),
       gP(24.85, 575.188, 343.752, 86.617, gBox(color: Color(0xFFF6F7FA), border: Color(0xFFECE8F2), bw: 1.381, radii: [15.186, 15.186, 15.186, 15.186])),
       gP(44.867, 593.402, 69, 15, gText('Délai estimé', 11.735, Color(0xFF66636E))),
-      gP(257.416, 592.726, 96, 15, gText('2 à 5 jours ouvrés', 11.735, Color(0xFF111015), weight: 600, align: TextAlign.right)),
+      gP(117.416, 592.726, 236, 15, Consumer(builder: (context, ref, _) => gText(ref.watch(homeDeliveryProvider) ? '2 à 5 jours ouvrés' : 'Dès demain', 11.735, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(44.867, 629.267, 91, 15, gText('Frais de livraison', 11.735, Color(0xFF66636E))),
-      gP(286.416, 629.267, 67, 15, gText('5 000 FCFA', 11.735, Color(0xFF111015), weight: 600, align: TextAlign.right)),
+      gP(146.416, 629.267, 207, 15, Consumer(builder: (context, ref, _) => gText(ref.watch(totalsProvider).fee == 0 ? 'Gratuit' : fcfa(ref.watch(totalsProvider).fee), 11.735, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(26.23, 722.707, 342.372, 51.429, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x29122640), offset: Offset(0, 5), blurRadius: 12, spreadRadius: 0)], radii: [26.23, 26.23, 26.23, 26.23])),
       gP(155.752, 740.598, 64, 17, gText('Continuer', 13.115, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(227.865, 746.098, 13.65, 6, gImg('assets/figma/v/4aff2c0774b03c.svg')),
@@ -80,6 +88,8 @@ class G_07 extends StatelessWidget {
       gTap(26, 66, 22, 22, () => gOpen(context, '06')),
       gTap(26, 723, 342, 51, () => gOpen(context, '08')),
       gTap(20, 790, 350, 50, () => gOpen(context, '08')),
+      gTap(25, 166, 346, 104, () { ref.read(homeDeliveryProvider.notifier).set(false); gToast(context, 'Retrait sur campus · gratuit'); }),
+      gTap(25, 279, 346, 105, () { ref.read(homeDeliveryProvider.notifier).set(true); gToast(context, 'Livraison à domicile · 5 000 FCFA'); }),
     ]);
   }
 }

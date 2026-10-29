@@ -1,14 +1,18 @@
 // GÉNÉRÉ par tool/figma_export/convert.py — écran 09 (nœud Figma 15:2). Ne pas éditer à la main.
 // ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/store.dart';
+import '../live/l06.dart';
+import '../../data/repositories/repositories.dart' show cartProvider;
 
-class G_09 extends StatelessWidget {
+class G_09 extends ConsumerWidget {
   const G_09({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 390, h: 900, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 147, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 624, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
@@ -26,10 +30,10 @@ class G_09 extends StatelessWidget {
       gP(27.629, 65.397, 12.547, 19.094, gImg('assets/figma/v/7e2937543469d6.svg')),
       gP(27.629, 71.944, 19.094, 6, gImg('assets/figma/v/388ccbb9b59042.svg')),
       gP(69.442, 60.775, 157, 27, gText('Ma commande', 21.745, Color(0xFF111015), weight: 700)),
-      gP(31.565, 125.336, 142, 21, gText('#BE-2025-0018', 16.835, Color(0xFF111015), weight: 700)),
-      gP(31.565, 151.087, 112, 15, gText('12 avril 2025 • 14h32', 11.924, Color(0xFF66636E))),
+      gP(31.565, 125.336, 142, 21, Consumer(builder: (context, ref, _) => gText(ref.watch(lastOrderProvider).id, 16.835, Color(0xFF111015), weight: 700))),
+      gP(31.565, 151.087, 112, 15, Consumer(builder: (context, ref, _) => gText(ref.watch(lastOrderProvider).date, 11.924, Color(0xFF66636E)))),
       gP(274.263, 122.454, 86.277, 26.766, gBox(color: Color(0xFF111015), radii: [14.029, 14.029, 14.029, 14.029])),
-      gP(292.55, 128.336, 49, 15, gText('En cours', 11.924, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
+      gP(292.55, 128.336, 49, 15, Consumer(builder: (context, ref, _) => gText(statusLabel(ref.watch(lastOrderProvider).status), 11.924, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center))),
       gP(72.95, 221.487, 60.324, 2.677, gBox(color: Color(0xFF111015), radii: [1.403, 1.403, 1.403, 1.403])),
       gP(176.763, 221.487, 56.115, 2.677, gBox(color: Color(0xFFE6E1EE), radii: [1.403, 1.403, 1.403, 1.403])),
       gP(267.95, 221.487, 53.309, 2.677, gBox(color: Color(0xFFE6E1EE), radii: [1.403, 1.403, 1.403, 1.403])),

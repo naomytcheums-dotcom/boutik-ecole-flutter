@@ -1,14 +1,18 @@
 // GÉNÉRÉ par tool/figma_export/convert.py — écran 44 (nœud Figma 36:285). Ne pas éditer à la main.
 // ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/store.dart';
+import '../live/l06.dart';
+import '../../data/repositories/repositories.dart' show cartProvider;
 
-class G_44 extends StatelessWidget {
+class G_44 extends ConsumerWidget {
   const G_44({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF5F0E8), Color(0xFFEFE9F4), Color(0xFFF7E9DB)], stops: [0, 0.55, 1]), children: [
       gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
@@ -26,16 +30,16 @@ class G_44 extends StatelessWidget {
       gP(24, 374, 342, 188, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 388, 88, 18, gText('Récapitulatif', 14, Color(0xFF111015), weight: 700)),
       gP(40, 422, 62, 16, gText('Référence', 12.5, Color(0xFF66636E))),
-      gP(245, 422, 105, 16, gText('#BE-2026-0142', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),
+      gP(105, 422, 245, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(lastOrderProvider).id, 12.5, Color(0xFF111015), weight: 700, wrap: true, align: TextAlign.right))),
       gP(40, 447, 310, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 456, 29, 16, gText('Date', 12.5, Color(0xFF66636E))),
-      gP(274, 456, 76, 16, gText('22 oct. 2026', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
+      gP(134, 456, 216, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(lastOrderProvider).date, 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(40, 481, 310, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 490, 50, 16, gText('Montant', 12.5, Color(0xFF66636E))),
-      gP(262, 490, 88, 16, gText('330 000 FCFA', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),
+      gP(122, 490, 228, 16, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(lastOrderProvider).total), 12.5, Color(0xFF111015), weight: 700, wrap: true, align: TextAlign.right))),
       gP(40, 515, 310, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(40, 524, 40, 16, gText('Retrait', 12.5, Color(0xFF66636E))),
-      gP(228, 524, 122, 16, gText('Kiosque IUT – Bloc A', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
+      gP(-100, 524, 180, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(homeDeliveryProvider) ? 'Livraison' : 'Retrait', 12.5, Color(0xFF66636E), wrap: true, align: TextAlign.right))),
+      gP(88, 524, 262, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(homeDeliveryProvider) ? 'Douala, Cameroun' : 'Kiosque IUT – Bloc A', 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(24, 576, 342, 62, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
       gP(36, 591, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(42.625, 596.917, 18.75, 16.625, gImg('assets/figma/v/b2ae09d0fd46bb.svg')),

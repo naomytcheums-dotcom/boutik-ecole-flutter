@@ -1,14 +1,18 @@
 // GÉNÉRÉ par tool/figma_export/convert.py — écran 03 (nœud Figma 3:3). Ne pas éditer à la main.
 // ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/store.dart';
+import '../live/l06.dart';
+import '../../data/repositories/repositories.dart' show cartProvider;
 
-class G_03 extends StatelessWidget {
+class G_03 extends ConsumerWidget {
   const G_03({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 390, h: 939, radius: 43.333, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 139.08, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 666.36, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
@@ -124,9 +128,10 @@ class G_03 extends StatelessWidget {
       gP(183.75, 870.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       gP(72, 70, 69, 31, gBox(color: Color(0xB2FFFFFF), border: Color(0xFFFFFFFF), bw: 1, shadows: [BoxShadow(color: Color(0x1A403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], backBlur: 20, radii: [100, 100, 100, 100])),
       gP(87, 78, 39, 15, gText('Cercle', 12, Color(0xFF111015), weight: 600)),
-      gTap(14, 559, 178, 229, () => gOpen(context, '05')),
+      gTap(14, 559, 178, 229, () { ref.read(selectedProductProvider.notifier).select('Lampe en bois recyclé'); gOpen(context, '05'); }),
       gTap(72, 70, 69, 31, () => gOpen(context, '244')),
       gTap(24, 180, 342, 48, () => gOpen(context, '19')),
+      gTap(198, 559, 178, 229, () { ref.read(selectedProductProvider.notifier).select('Drone éducatif'); gOpen(context, '05'); }),
     ]);
   }
 }

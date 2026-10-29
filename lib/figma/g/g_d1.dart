@@ -1,14 +1,18 @@
 // GÉNÉRÉ par tool/figma_export/convert.py — écran D1 (nœud Figma 94:745). Ne pas éditer à la main.
 // ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/store.dart';
+import '../live/l06.dart';
+import '../../data/repositories/repositories.dart' show cartProvider;
 
-class G_D1 extends StatelessWidget {
+class G_D1 extends ConsumerWidget {
   const G_D1({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 1500, h: 1100, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFFFF3C9), Color(0xFFFFE7A0), Color(0xFFF9C860)], stops: [0, 0.45, 1]), children: [
       gP(70, 64, 439, 136, gText('Nouvelle', 112, Color(0xFF111015), weight: 500, inter: true, ls: -4)),
       gP(70, 176, 188, 136, gText('vue', 112, Color(0xFF000000), weight: 500, inter: true, ls: -4)),

@@ -1,14 +1,18 @@
 // GÉNÉRÉ par tool/figma_export/convert.py — écran P4 (nœud Figma 94:506). Ne pas éditer à la main.
 // ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/store.dart';
+import '../live/l06.dart';
+import '../../data/repositories/repositories.dart' show cartProvider;
 
-class G_P4 extends StatelessWidget {
+class G_P4 extends ConsumerWidget {
   const G_P4({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 390, h: 844, radius: 46, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF1EEE6), Color(0xFFECE7F2), Color(0xFFF3E3D6)], stops: [0, 0.6, 1]), children: [
       gP(220, 70, 260, 260, gBox(color: Color(0x80CDB2F2), layerBlur: 90, oval: true), fx: 'halo'),
       gP(30, 14, 28, 18, gText('9:41', 14, Color(0xFF111015), weight: 600)),

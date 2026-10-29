@@ -1,14 +1,18 @@
 // GÉNÉRÉ par tool/figma_export/convert.py — écran 133 (nœud Figma 43:879). Ne pas éditer à la main.
 // ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/store.dart';
+import '../live/l06.dart';
+import '../../data/repositories/repositories.dart' show cartProvider;
 
-class G_133 extends StatelessWidget {
+class G_133 extends ConsumerWidget {
   const G_133({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 1280, h: 880, radius: 16, color: Color(0xFFF7F6F4), children: [
       gP(268, 160, 984, 1, gBox(color: Color(0xFFECE8F2))),
       gP(398.5, 134, 66, 16, gText('Litiges (6)', 13, Color(0xFF111015), weight: 700, inter: true, align: TextAlign.center)),

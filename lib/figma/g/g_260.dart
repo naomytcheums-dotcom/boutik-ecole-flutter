@@ -1,14 +1,18 @@
 // GÉNÉRÉ par tool/figma_export/convert.py — écran 260 (nœud Figma 184:290). Ne pas éditer à la main.
 // ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/store.dart';
+import '../live/l06.dart';
+import '../../data/repositories/repositories.dart' show cartProvider;
 
-class G_260 extends StatelessWidget {
+class G_260 extends ConsumerWidget {
   const G_260({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 390, h: 900, radius: 46, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 140, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 580, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
@@ -25,7 +29,7 @@ class G_260 extends StatelessWidget {
       gP(44, 144, 98, 19, gText('Boutik-École', 15, Color(0xFF111015), weight: 700)),
       gP(44, 166, 127, 13, gText('IUT de Douala · Cameroun', 10.5, Color(0xFF66636E))),
       gP(201, 144, 145, 14, gText('Facture n° FA-2026-00391', 11, Color(0xFF111015), weight: 600)),
-      gP(283, 164, 63, 13, gText('22 oct. 2026', 10.5, Color(0xFF66636E))),
+      gP(143, 164, 203, 13, Consumer(builder: (context, ref, _) => gText(ref.watch(lastOrderProvider).date, 10.5, Color(0xFF66636E), wrap: true, align: TextAlign.right))),
       gP(44, 200, 302, 30, gBox(color: Color(0xFFF4F1F8), radii: [10, 10, 10, 10])),
       gP(54, 208, 61, 13, gText('Désignation', 10.5, Color(0xFF66636E), weight: 500)),
       gP(226, 208, 20, 13, gText('Qté', 10.5, Color(0xFF66636E), weight: 500)),
@@ -44,7 +48,7 @@ class G_260 extends StatelessWidget {
       gP(44, 356, 302, 1, gBox(color: Color(0xFFEEECF1))),
       gP(44, 380, 103, 15, gText('Détail du montant', 12, Color(0xFF111015), weight: 600)),
       gP(44, 408, 71, 14, gText('Montant brut', 11.5, Color(0xFF66636E))),
-      gP(273, 408, 73, 14, gText('98 000 FCFA', 11.5, Color(0xFF111015), weight: 600)),
+      gP(133, 408, 213, 14, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(lastOrderProvider).total), 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(44, 438, 97, 14, gText('Frais de paiement', 11.5, Color(0xFF66636E))),
       gP(285, 438, 61, 14, gText('1 470 FCFA', 11.5, Color(0xFF111015), weight: 600)),
       gP(44, 468, 96, 14, gText('Taxes applicables', 11.5, Color(0xFF66636E))),
@@ -57,7 +61,7 @@ class G_260 extends StatelessWidget {
       gP(277, 558, 69, 14, gText('19 600 FCFA', 11.5, Color(0xFF111015), weight: 600)),
       gP(44, 604, 302, 60, gBox(color: Color(0xFFF4F1F8), radii: [22, 22, 22, 22])),
       gP(60, 626, 61, 18, gText('Total TTC', 14, Color(0xFF111015), weight: 600)),
-      gP(216, 624, 114, 23, gText('98 000 FCFA', 18, Color(0xFF111015), weight: 700)),
+      gP(76, 624, 254, 23, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(lastOrderProvider).total), 18, Color(0xFF111015), weight: 700, wrap: true, align: TextAlign.right))),
       gP(44, 690, 305, 13, gText('Répartition indicative selon la règle validée par l’établissement.', 10, Color(0xFF66636E), wrap: true)),
       gP(24, 790, 342, 52, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x38403366), offset: Offset(0, 8), blurRadius: 18, spreadRadius: 0)], radii: [26, 26, 26, 26])),
       gP(108.5, 808, 173, 16, gText('Télécharger la facture (PDF)', 13, Color(0xFFFFFFFF), weight: 600)),

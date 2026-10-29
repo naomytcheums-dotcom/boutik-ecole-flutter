@@ -1,14 +1,18 @@
 // GÉNÉRÉ par tool/figma_export/convert.py — écran 287 (nœud Figma 210:16). Ne pas éditer à la main.
 // ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/store.dart';
+import '../live/l06.dart';
+import '../../data/repositories/repositories.dart' show cartProvider;
 
-class G_287 extends StatelessWidget {
+class G_287 extends ConsumerWidget {
   const G_287({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 768, h: 1024, radius: 32, bg: LinearGradient(begin: Alignment(-0.241, -1.103), end: Alignment(0.448, 0.621), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(40, 50, 433, 35, gText('Catalogue du département MMI', 28, Color(0xFF111015), weight: 700)),
       gP(40, 92, 327, 18, gText('18 fiches · 12 publiées · 4 en validation · 2 brouillons', 14, Color(0xFF66636E))),

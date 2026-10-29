@@ -1,14 +1,18 @@
 // GÉNÉRÉ par tool/figma_export/convert.py — écran 05 (nœud Figma 18:266). Ne pas éditer à la main.
 // ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/store.dart';
+import '../live/l06.dart';
+import '../../data/repositories/repositories.dart' show cartProvider;
 
-class G_05 extends StatelessWidget {
+class G_05 extends ConsumerWidget {
   const G_05({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 390, h: 1002, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 180.66, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 711.72, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
@@ -39,12 +43,12 @@ class G_05 extends StatelessWidget {
       gP(31.89, 362.386, 15.081, 15.081, gImg('assets/figma/v/11598d9e192c7a.svg')),
       gP(35.182, 365.678, 8.497, 8.497, gImg('assets/figma/v/51abe2cfdb0d9e.svg')),
       gP(53.051, 362.426, 44, 15, gText('Produit', 12.188, Color(0xFF111015), weight: 500)),
-      gP(23.658, 393.423, 248, 29, gText('Lampe en bois recyclé', 22.941, Color(0xFF111015), weight: 700)),
-      gP(23.658, 434.419, 118, 23, gText('25 000 FCFA', 18.64, Color(0xFF111015), weight: 700)),
+      gP(23.658, 393.423, 248, 29, Consumer(builder: (context, ref, _) => gText(ref.watch(selectedProductProvider).title, 22.941, Color(0xFF111015), weight: 700))),
+      gP(23.658, 434.419, 118, 23, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(selectedProductProvider).price), 18.64, Color(0xFF111015), weight: 700))),
       gP(22.689, 467.892, 19.143, 18.499, gImg('assets/figma/v/89c75ee41a3d6e.svg')),
       gP(47.316, 468.963, 23, 17, gText('4.8', 13.621, Color(0xFF111015), weight: 700)),
       gP(70.974, 469.463, 49, 16, gText('(24 avis)', 12.904, Color(0xFF66636E))),
-      gP(23.658, 501.346, 355, 44, gText('Lampe décorative fabriquée à partir de bois recyclé.\nÉcologique, design et idéale pour un intérieur moderne.', 13.621, Color(0xFF4A4854), lh: 21.507)),
+      gP(23.658, 501.346, 355, 44, Consumer(builder: (context, ref, _) => gText(ref.watch(selectedProductProvider).description, 13.621, Color(0xFF4A4854), lh: 21.507))),
       gP(23.658, 561.342, 119.724, 66.673, gBox(color: Color(0xFFF1F4F8), radii: [17.206, 17.206, 17.206, 17.206])),
       gP(72.853, 573.875, 22.27, 23.206, gImg('assets/figma/v/b2a76abe64993b.svg')),
       gP(70.961, 583.434, 16.515, 14.603, gImg('assets/figma/v/f6dd061407a6b3.svg')),
@@ -63,8 +67,8 @@ class G_05 extends StatelessWidget {
       gP(23.658, 647.371, 346.268, 0.717, gBox(color: Color(0xFFECE8F2))),
       gP(23.658, 663.86, 67.39, 67.39, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, radii: [33.695, 33.695, 33.695, 33.695])),
       gP(106.82, 668.331, 55, 14, gText('Créée par', 11.471, Color(0xFF5A3FE0))),
-      gP(106.82, 684.971, 123, 18, gText('Mouanga Yannick', 14.338, Color(0xFF111015), weight: 700)),
-      gP(106.82, 709.195, 136, 14, gText('Département : Génie civil', 11.471, Color(0xFF66636E))),
+      gP(106.82, 684.971, 123, 18, Consumer(builder: (context, ref, _) => gText(ref.watch(selectedProductProvider).seller, 14.338, Color(0xFF111015), weight: 700))),
+      gP(106.82, 709.195, 136, 14, Consumer(builder: (context, ref, _) => gText('Département : ${ref.watch(selectedProductProvider).department}', 11.471, Color(0xFF66636E)))),
       gP(23.658, 759.926, 344.835, 45.882, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [22.941, 22.941, 22.941, 22.941]), tap: () => gOpen(context, '06')),
       gP(134.934, 774.085, 123, 19, gText('Ajouter au panier', 15.055, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(23.658, 828.033, 346.268, 0.717, gBox(color: Color(0xFFF2EFF6))),
@@ -79,7 +83,7 @@ class G_05 extends StatelessWidget {
       gP(23.658, 967.831, 346.268, 0.717, gBox(color: Color(0xFFF2EFF6))),
       gP(131.195, 988.621, 129.044, 3.585, gBox(color: Color(0xFF111015), radii: [2.151, 2.151, 2.151, 2.151])),
       gTap(29, 79, 20, 20, () => gOpen(context, '04')),
-      gTap(24, 760, 345, 46, () => gOpen(context, '06')),
+      gTap(24, 760, 345, 46, () { ref.read(cartProvider.notifier).add(ref.read(selectedProductProvider).toLine()); gToast(context, 'Ajouté au panier'); gOpen(context, '06'); }),
       gTap(20, 832, 350, 36, () => gOpen(context, '33')),
     ]);
   }

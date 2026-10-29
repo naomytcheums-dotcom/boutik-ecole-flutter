@@ -1,14 +1,18 @@
 // GÉNÉRÉ par tool/figma_export/convert.py — écran 08 (nœud Figma 14:205). Ne pas éditer à la main.
 // ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/store.dart';
+import '../live/l06.dart';
+import '../../data/repositories/repositories.dart' show cartProvider;
 
-class G_08 extends StatelessWidget {
+class G_08 extends ConsumerWidget {
   const G_08({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 390, h: 900, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 147, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 624, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
@@ -40,13 +44,13 @@ class G_08 extends StatelessWidget {
       gP(334.383, 301.299, 16.278, 16.278, gBox(border: Color(0xFF6B6877), bw: 1.696, oval: true)),
       gP(24.417, 383.596, 341.843, 182.697, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(43.409, 399.039, 94, 19, gText('Récapitulatif', 14.922, Color(0xFF111015), weight: 700)),
-      gP(43.409, 442.163, 61, 15, gText('Articles (3)', 12.209, Color(0xFF66636E))),
-      gP(271.339, 442.163, 80, 15, gText('325 000 FCFA', 11.53, Color(0xFF5A3FE0), weight: 600, align: TextAlign.right)),
+      gP(43.409, 442.163, 61, 15, Consumer(builder: (context, ref, _) => gText('Articles (${ref.watch(totalsProvider).count})', 12.209, Color(0xFF66636E)))),
+      gP(131.339, 442.163, 220, 15, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(totalsProvider).subtotal), 11.53, Color(0xFF5A3FE0), weight: 600, wrap: true, align: TextAlign.right))),
       gP(43.409, 475.197, 51, 15, gText('Livraison', 12.209, Color(0xFF66636E))),
-      gP(285.339, 475.197, 66, 15, gText('5 000 FCFA', 11.53, Color(0xFF5A3FE0), weight: 600, align: TextAlign.right)),
+      gP(145.339, 475.197, 206, 15, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(totalsProvider).fee), 11.53, Color(0xFF5A3FE0), weight: 600, wrap: true, align: TextAlign.right))),
       gP(42.052, 511.011, 309.287, 0.674, gBox(color: Color(0xFFECE8F2))),
       gP(43.409, 527.803, 36, 19, gText('Total', 14.922, Color(0xFF111015), weight: 700)),
-      gP(217.339, 523.955, 134, 24, gText('330 000 FCFA', 18.991, Color(0xFF5A3FE0), weight: 700, align: TextAlign.right)),
+      gP(77.339, 523.955, 274, 24, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(totalsProvider).total), 18.991, Color(0xFF5A3FE0), weight: 700, wrap: true, align: TextAlign.right))),
       gP(21.704, 585.169, 345.913, 87.64, gBox(color: Color(0xFFF2EFF6), radii: [18.991, 18.991, 18.991, 18.991])),
       gP(44.817, 611.714, 20.243, 14.704, gImg('assets/figma/v/81b4d0fd4381d5.svg')),
       gP(47.983, 604.593, 13.913, 13.122, gImg('assets/figma/v/de25b67eb8d42d.svg')),
@@ -74,8 +78,10 @@ class G_08 extends StatelessWidget {
       gP(184, 833, 22, 22, const SizedBox.expand(), tap: () => gOpen(context, '03')),
       gP(183.75, 831.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       gTap(27, 66, 22, 22, () => gOpen(context, '07')),
-      gTap(23, 713, 344, 59, () => gOpen(context, '09')),
-      gTap(20, 790, 350, 50, () => gOpen(context, '257')),
+      gTap(23, 713, 344, 59, () { ref.read(ordersProvider.notifier).place(); gOpen(context, '257'); }),
+      gTap(20, 790, 350, 50, () { ref.read(ordersProvider.notifier).place(); gOpen(context, '257'); }),
+      gTap(22, 165, 345, 88, () { ref.read(payMethodProvider.notifier).set(0); gToast(context, 'Orange Money sélectionné'); }),
+      gTap(24, 264, 343, 91, () { ref.read(payMethodProvider.notifier).set(1); gToast(context, 'Mobile Money sélectionné'); }),
     ]);
   }
 }

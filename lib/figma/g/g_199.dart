@@ -1,14 +1,18 @@
 // GÉNÉRÉ par tool/figma_export/convert.py — écran 199 (nœud Figma 83:1295). Ne pas éditer à la main.
 // ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/store.dart';
+import '../live/l06.dart';
+import '../../data/repositories/repositories.dart' show cartProvider;
 
-class G_199 extends StatelessWidget {
+class G_199 extends ConsumerWidget {
   const G_199({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 1280, h: 866, radius: 20, color: Color(0xFFF7F6F4), children: [
       gP(280, 146, 336, 150, gBox(image: 'assets/figma/img/4b7b6cea2f4622846841cd8342842e81fa1ed891.png', fit: BoxFit.cover, radii: [24, 24, 24, 24])),
       gP(288, 314, 138, 22, gText('Parfums Mbella', 18, Color(0xFF111015), weight: 700, inter: true)),

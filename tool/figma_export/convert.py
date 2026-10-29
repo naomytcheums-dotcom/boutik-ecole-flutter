@@ -32,6 +32,10 @@ NODE2ID = {v: k for k, v in REG.items()}
 SIZES = {}
 LINKS = {}
 CUR = {'root': ''}
+BINDINGS = {}
+_bf = os.path.join(HERE, 'bindings.json')
+if os.path.exists(_bf):
+    BINDINGS = json.load(open(_bf, encoding='utf-8'))
 for _l in open(os.path.join(HERE, 'links.txt'), encoding='utf-8'):
     _l = _l.strip()
     if not _l:
@@ -409,7 +413,7 @@ def pos(M, w, h, ox, oy):
     rot = math.atan2(M[1][0], M[0][0])
     return M[0][2] - ox, M[1][2] - oy, rot
 
-def emit_node(ctx, n, PM, ox, oy, out, root=False):
+def _emit_node_inner(ctx, n, PM, ox, oy, out, root=False):
     if not n.get('visible', True) or n.get('isMask') or n['id'] in SKIP:
         return
     t = n['type']
@@ -546,6 +550,21 @@ def emit_node(ctx, n, PM, ox, oy, out, root=False):
             for c in kids:
                 emit_node(ctx, c, M, ox, oy, out)
 
+
+def emit_node(ctx, n, PM, ox, oy, out, root=False):
+    b = BINDINGS.get(ctx.sid, {}).get('nodes', {}).get(n.get('id'), {}) if not root else {}
+    if b.get('before'):
+        out.extend(b['before'])
+    start = len(out)
+    _emit_node_inner(ctx, n, PM, ox, oy, out, root)
+    if b.get('show'):
+        for k in range(start, len(out)):
+            e = out[k]
+            if e.startswith('gP(') and e.endswith(')'):
+                out[k] = e[:-1] + ', show: (%s))' % b['show']
+    if b.get('after'):
+        out.extend(b['after'])
+
 def emit_text(ctx, n, geo, x, y, w, h, extra, tap, out):
     st = n['style']
     fam = st.get('fontFamily', '')
@@ -562,6 +581,7 @@ def emit_text(ctx, n, geo, x, y, w, h, extra, tap, out):
     ls = st.get('letterSpacing') or 0
     al = {'LEFT': 'left', 'CENTER': 'center', 'RIGHT': 'right', 'JUSTIFIED': 'justify'}.get(st.get('textAlignHorizontal', 'LEFT'), 'left')
     wrap = st.get('textAutoResize', 'WIDTH_AND_HEIGHT') != 'WIDTH_AND_HEIGHT'
+    rb = False
     chars = n['characters']
     if st.get('textCase') == 'UPPER':
         chars = chars.upper()
@@ -603,9 +623,18 @@ def emit_text(ctx, n, geo, x, y, w, h, extra, tap, out):
             i = j
         w_ = 'gRich([%s]%s)' % (', '.join(runs), ''.join(', ' + a for a in common if not a.startswith('deco')))
     else:
-        w_ = 'gText(%s, %s, %s%s)' % (dq(chars), num(size), col, (', weight: %d' % weight if weight != 400 else '') + ''.join(', ' + a for a in common))
+        b_ = BINDINGS.get(ctx.sid, {}).get('nodes', {}).get(n['id'], {})
+        if b_.get('text'):
+            if b_.get('right') and not wrap:
+                rb = True
+                common = [a for a in common if not a.startswith(('wrap', 'align'))] + ['wrap: true', 'align: TextAlign.right']
+            w_ = 'Consumer(builder: (context, ref, _) => gText(%s, %s, %s%s))' % (b_['text'], num(size), col, (', weight: %d' % weight if weight != 400 else '') + ''.join(', ' + a for a in common))
+        else:
+            w_ = 'gText(%s, %s, %s%s)' % (dq(chars), num(size), col, (', weight: %d' % weight if weight != 400 else '') + ''.join(', ' + a for a in common))
     gx, gy, gw, gh = x, y, w, h
-    if wrap:
+    if rb:
+        gx, gw = x + w - (w + 140), w + 140
+    elif wrap:
         # tolérance de 3 px pour éviter les retours à la ligne dus aux petites différences de police
         d = {'left': 0, 'center': 1.5, 'right': 3, 'justify': 0}[al]
         gx, gw = x - d, w + 3
@@ -631,12 +660,33 @@ def convert(sid):
     analyze(doc, nid)
     out = []
     ident = [[1, 0, 0], [0, 1, 0]]
+    sk = BINDINGS.get(sid, {}).get('skipRegion')
+    inserted = False
     for c in doc.get('children', []):
+        if sk:
+            cy = c['relativeTransform'][1][2]
+            if sk[0] <= cy < sk[1]:
+                if not inserted:
+                    out.append('...' + BINDINGS[sid]['liveCall'])
+                    inserted = True
+                continue
         emit_node(ctx, c, ident, 0, 0, out)
+    bl = BINDINGS.get(sid, {}).get('links', {})
+    used = set()
+    drop = set(BINDINGS.get(sid, {}).get('dropLinks', []))
     for box, dest in LINKS.get(nid, []):
-        if dest in NODE2ID and dest != nid:
-            bx = [float(v) for v in box.split(',')]
+        bx = [float(v) for v in box.split(',')]
+        if box in drop:
+            continue
+        if box in bl:
+            used.add(box)
+            out.append("gTap(%s, %s, %s, %s, () { %s })" % (num(bx[0]), num(bx[1]), num(bx[2]), num(bx[3]), bl[box]))
+        elif dest in NODE2ID and dest != nid:
             out.append("gTap(%s, %s, %s, %s, () => gOpen(context, %s))" % (num(bx[0]), num(bx[1]), num(bx[2]), num(bx[3]), dq(NODE2ID[dest])))
+    for box, stmt in bl.items():
+        if box not in used:
+            bx = [float(v) for v in box.split(',')]
+            out.append("gTap(%s, %s, %s, %s, () { %s })" % (num(bx[0]), num(bx[1]), num(bx[2]), num(bx[3]), stmt))
     root_args = ['w: %s' % num(w), 'h: %s' % num(h)]
     rr = doc.get('cornerRadius', 0)
     if rr:
@@ -652,14 +702,18 @@ def convert(sid):
     code = """// GÉNÉRÉ par tool/figma_export/convert.py — écran %s (nœud Figma %s). Ne pas éditer à la main.
 // ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/store.dart';
+import '../live/l06.dart';
+import '../../data/repositories/repositories.dart' show cartProvider;
 
-class %s extends StatelessWidget {
+class %s extends ConsumerWidget {
   const %s({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(%s, children: [
       %s,
     ]);

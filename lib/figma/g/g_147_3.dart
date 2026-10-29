@@ -1,14 +1,18 @@
 // GÉNÉRÉ par tool/figma_export/convert.py — écran 147-3 (nœud Figma 43:2887). Ne pas éditer à la main.
 // ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/store.dart';
+import '../live/l06.dart';
+import '../../data/repositories/repositories.dart' show cartProvider;
 
-class G_147_3 extends StatelessWidget {
+class G_147_3 extends ConsumerWidget {
   const G_147_3({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 1280, h: 890, radius: 16, color: Color(0xFFF7F6F4), children: [
       gP(277, 156, 2, 40, gBox(color: Color(0xFFBFE8D6), radii: [1, 1, 1, 1])),
       gP(268, 135, 20, 20, gBox(color: Color(0xFF1F9D6B), oval: true)),

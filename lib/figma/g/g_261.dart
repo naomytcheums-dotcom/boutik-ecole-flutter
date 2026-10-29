@@ -1,14 +1,18 @@
 // GÉNÉRÉ par tool/figma_export/convert.py — écran 261 (nœud Figma 184:342). Ne pas éditer à la main.
 // ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/store.dart';
+import '../live/l06.dart';
+import '../../data/repositories/repositories.dart' show cartProvider;
 
-class G_261 extends StatelessWidget {
+class G_261 extends ConsumerWidget {
   const G_261({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 390, h: 900, radius: 46, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFFFF3C9), Color(0xFFFFF8EA), Color(0xFFFFE9B0)], stops: [0, 0.5, 1]), children: [
       gP(24, 70, 92, 16, gText('Bonjour Mariam', 12.5, Color(0xFF66636E))),
       gP(24, 90, 193, 28, gText('Mon espace client', 22, Color(0xFF111015), weight: 600)),

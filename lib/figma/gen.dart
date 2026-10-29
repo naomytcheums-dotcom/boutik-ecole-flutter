@@ -50,7 +50,8 @@ class GScreen extends StatelessWidget {
 
 /// Positionne un élément (avec rotation, opacité, animation d'entrée, effet ambiant et retour tactile).
 Widget gP(double x, double y, double w, double h, Widget child,
-    {double rot = 0, double op = 1, VoidCallback? tap, String? fx, String sound = 'click'}) {
+    {double rot = 0, double op = 1, VoidCallback? tap, String? fx, String sound = 'click', bool show = true}) {
+  if (!show) return const Positioned(left: 0, top: 0, width: 0, height: 0, child: SizedBox.shrink());
   Widget c = SizedBox(width: w, height: h, child: child);
   if (fx != null && GAnim.enabled) c = GFx(kind: fx, seed: x * 7 + y, child: c);
   if (rot != 0) c = Transform.rotate(angle: rot, alignment: Alignment.topLeft, child: c);
@@ -138,12 +139,13 @@ TextStyle _ts(double size, Color color, int weight, bool inter, double? lh, doub
 
 /// Texte d'un seul style. [wrap] = boîte de largeur fixe (retour à la ligne) ; sinon une ligne.
 Widget gText(String s, double size, Color color,
-    {int weight = 400, bool inter = false, double? lh, double? ls, TextAlign align = TextAlign.left, bool wrap = false, TextDecoration? deco}) {
+    {int weight = 400, bool inter = false, double? lh, double? ls, TextAlign align = TextAlign.left, bool wrap = false, TextDecoration? deco, int? maxLines}) {
   final t = Text(s,
       style: _ts(size, color, weight, inter, lh, ls, deco),
       textAlign: align,
       softWrap: wrap,
-      overflow: TextOverflow.visible,
+      maxLines: maxLines,
+      overflow: maxLines != null ? TextOverflow.ellipsis : TextOverflow.visible,
       textHeightBehavior: const TextHeightBehavior(leadingDistribution: TextLeadingDistribution.even));
   if (wrap) return IgnorePointer(child: t);
   return IgnorePointer(child: OverflowBox(alignment: Alignment.topLeft, minWidth: 0, maxWidth: double.infinity, child: t));
@@ -163,9 +165,11 @@ Widget gRich(List<(String, double, int, Color)> runs,
   return IgnorePointer(child: OverflowBox(alignment: Alignment.topLeft, minWidth: 0, maxWidth: double.infinity, child: t));
 }
 
-Widget gImg(String asset, {BoxFit fit = BoxFit.fill}) => asset.endsWith('.svg')
-    ? SvgPicture.asset(asset, fit: fit)
-    : Image.asset(asset, fit: fit, filterQuality: FilterQuality.high, gaplessPlayback: true);
+Widget gImg(String asset, {BoxFit fit = BoxFit.fill}) => IgnorePointer(
+      child: asset.endsWith('.svg')
+          ? SvgPicture.asset(asset, fit: fit)
+          : Image.asset(asset, fit: fit, filterQuality: FilterQuality.high, gaplessPlayback: true),
+    );
 
 /// Cadre qui rogne son contenu (photos qui débordent). Les enfants sont en coordonnées locales.
 Widget gClip(double x, double y, double w, double h, List<double>? radii, List<Widget> children) => Positioned(

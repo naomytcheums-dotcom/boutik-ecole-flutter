@@ -1,14 +1,18 @@
 // GÉNÉRÉ par tool/figma_export/convert.py — écran 232 (nœud Figma 106:227). Ne pas éditer à la main.
 // ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/store.dart';
+import '../live/l06.dart';
+import '../../data/repositories/repositories.dart' show cartProvider;
 
-class G_232 extends StatelessWidget {
+class G_232 extends ConsumerWidget {
   const G_232({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 390, h: 844, radius: 46, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFEEE8F6), Color(0xFFF3EAE4), Color(0xFFEFDCCD)], stops: [0, 0.5, 1]), children: [
       gP(-90, 100, 260, 260, gBox(color: Color(0x80CDB2F2), layerBlur: 90, oval: true), fx: 'halo'),
       gP(230, 390, 260, 260, gBox(color: Color(0x80F7C9A4), layerBlur: 90, oval: true), fx: 'halo'),

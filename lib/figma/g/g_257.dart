@@ -1,14 +1,18 @@
 // GÉNÉRÉ par tool/figma_export/convert.py — écran 257 (nœud Figma 184:174). Ne pas éditer à la main.
 // ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/store.dart';
+import '../live/l06.dart';
+import '../../data/repositories/repositories.dart' show cartProvider;
 
-class G_257 extends StatelessWidget {
+class G_257 extends ConsumerWidget {
   const G_257({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 390, h: 844, radius: 46, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 140, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 580, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
@@ -20,16 +24,16 @@ class G_257 extends StatelessWidget {
       gP(43.458, 83.458, 11.542, 17.083, gImg('assets/figma/v/7a21623fe0dfea.svg')),
       gP(43.458, 89, 17.083, 6, gImg('assets/figma/v/e130a05f3cf779.svg')),
       gP(156, 76, 78, 21, gText('Paiement', 17, Color(0xFF111015), weight: 500)),
-      gP(111.5, 100, 167, 15, gText('Commande #BE-2026-0142', 12, Color(0xFF66636E))),
+      gP(111.5, 100, 167, 15, Consumer(builder: (context, ref, _) => gText('Commande ${ref.watch(lastOrderProvider).id}', 12, Color(0xFF66636E)))),
       gP(67, 300, 256, 25, gText('En attente de confirmation', 20, Color(0xFF111015), weight: 600)),
       gP(46.5, 336, 297, 54, gText('Validez le paiement sur votre téléphone avec votre code Orange Money. Cela peut prendre jusqu’à 2 minutes.', 12, Color(0xFF66636E), lh: 18, align: TextAlign.center, wrap: true)),
       gP(24, 410, 342, 150, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(44, 430, 39, 15, gText('Moyen', 12, Color(0xFF66636E))),
-      gP(256, 430, 90, 16, gText('Orange Money', 12.5, Color(0xFF111015), weight: 600)),
+      gP(116, 430, 230, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(lastOrderProvider).method, 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(44, 462, 48, 15, gText('Montant', 12, Color(0xFF66636E))),
-      gP(258, 462, 88, 16, gText('330 000 FCFA', 12.5, Color(0xFF111015), weight: 600)),
+      gP(118, 462, 228, 16, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(lastOrderProvider).total), 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(44, 494, 60, 15, gText('Référence', 12, Color(0xFF66636E))),
-      gP(250, 494, 96, 16, gText('OM-7F3A-2210', 12.5, Color(0xFF111015), weight: 600)),
+      gP(110, 494, 236, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(lastOrderProvider).reference, 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(44, 526, 72, 15, gText('Délai restant', 12, Color(0xFF66636E))),
       gP(311, 526, 35, 16, gText('01:48', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 580, 342, 70, gBox(color: Color(0x99FFFFFF), border: Color(0xFFFFFFFF), bw: 1, radii: [24, 24, 24, 24])),
@@ -44,7 +48,7 @@ class G_257 extends StatelessWidget {
       gP(24, 744, 342, 48, const SizedBox.expand(), tap: () => gOpen(context, '258')),
       gP(145.167, 180.167, 99.667, 99.667, gImg('assets/figma/r/195_20.png')),
       gP(188.5, 197.5, 30.335, 47.668, gImg('assets/figma/r/195_21.png')),
-      gTap(24, 680, 342, 52, () => gOpen(context, '259')),
+      gTap(24, 680, 342, 52, () { ref.read(ordersProvider.notifier).markPaid(ref.read(lastOrderProvider).id); gOpen(context, '259'); }),
       gTap(24, 744, 342, 48, () => gOpen(context, '258')),
     ]);
   }

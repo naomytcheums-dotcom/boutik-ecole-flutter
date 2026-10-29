@@ -3,6 +3,14 @@
   "links": {
    "14,559,178,229": "ref.read(selectedProductProvider.notifier).select('Lampe en bois recyclé'); gOpen(context, '05');",
    "198,559,178,229": "ref.read(selectedProductProvider.notifier).select('Drone éducatif'); gOpen(context, '05');"
+  },
+  "nodes": {
+   "3:91": {
+    "favorite": "'Lampe en bois recyclé'"
+   },
+   "3:99": {
+    "favorite": "'Drone éducatif'"
+   }
   }
  },
  "05": {
@@ -21,6 +29,9 @@
    },
    "18:302": {
     "text": "ref.watch(selectedProductProvider).description"
+   },
+   "18:283": {
+    "favorite": "ref.watch(selectedProductProvider).title"
    }
   },
   "links": {
@@ -489,6 +500,311 @@
    "24,338,342,60": "final l = ref.read(ordersAllProvider); if (l.length > 1) { ref.read(selectedOrderIdProvider.notifier).set(l[1].id); gOpen(context, '09'); }",
    "24,404,342,60": "final l = ref.read(ordersAllProvider); if (l.length > 2) { ref.read(selectedOrderIdProvider.notifier).set(l[2].id); gOpen(context, '09'); }",
    "24,470,342,60": "final l = ref.read(ordersAllProvider); if (l.length > 3) { ref.read(selectedOrderIdProvider.notifier).set(l[3].id); gOpen(context, '09'); }"
+  }
+ },
+ "22": {
+  "nodes": {
+   "35:342": {
+    "show": "ref.watch(filteredProductsProvider).length > 0"
+   },
+   "35:343": {
+    "show": "ref.watch(filteredProductsProvider).length > 0",
+    "image": "ref.watch(filteredProductsProvider).length > 0 ? ref.watch(filteredProductsProvider)[0].image : ''"
+   },
+   "35:347": {
+    "text": "ref.watch(filteredProductsProvider).length > 0 ? ref.watch(filteredProductsProvider)[0].title : ''",
+    "show": "ref.watch(filteredProductsProvider).length > 0"
+   },
+   "35:348": {
+    "text": "ref.watch(filteredProductsProvider).length > 0 ? fcfa(ref.watch(filteredProductsProvider)[0].price) : ''",
+    "show": "ref.watch(filteredProductsProvider).length > 0"
+   },
+   "35:349": {
+    "text": "ref.watch(filteredProductsProvider).length > 0 ? ref.watch(filteredProductsProvider)[0].department : ''",
+    "show": "ref.watch(filteredProductsProvider).length > 0"
+   },
+   "35:345": {
+    "favorite": "ref.watch(filteredProductsProvider).length > 0 ? ref.watch(filteredProductsProvider)[0].title : ''",
+    "show": "ref.watch(filteredProductsProvider).length > 0"
+   },
+   "35:344": {
+    "show": "ref.watch(filteredProductsProvider).length > 0"
+   },
+   "35:350": {
+    "show": "ref.watch(filteredProductsProvider).length > 1"
+   },
+   "35:351": {
+    "show": "ref.watch(filteredProductsProvider).length > 1",
+    "image": "ref.watch(filteredProductsProvider).length > 1 ? ref.watch(filteredProductsProvider)[1].image : ''"
+   },
+   "35:355": {
+    "text": "ref.watch(filteredProductsProvider).length > 1 ? ref.watch(filteredProductsProvider)[1].title : ''",
+    "show": "ref.watch(filteredProductsProvider).length > 1"
+   },
+   "35:356": {
+    "text": "ref.watch(filteredProductsProvider).length > 1 ? fcfa(ref.watch(filteredProductsProvider)[1].price) : ''",
+    "show": "ref.watch(filteredProductsProvider).length > 1"
+   },
+   "35:357": {
+    "text": "ref.watch(filteredProductsProvider).length > 1 ? ref.watch(filteredProductsProvider)[1].department : ''",
+    "show": "ref.watch(filteredProductsProvider).length > 1"
+   },
+   "35:353": {
+    "favorite": "ref.watch(filteredProductsProvider).length > 1 ? ref.watch(filteredProductsProvider)[1].title : ''",
+    "show": "ref.watch(filteredProductsProvider).length > 1"
+   },
+   "35:352": {
+    "show": "ref.watch(filteredProductsProvider).length > 1"
+   },
+   "35:358": {
+    "show": "ref.watch(filteredProductsProvider).length > 2"
+   },
+   "35:359": {
+    "show": "ref.watch(filteredProductsProvider).length > 2",
+    "image": "ref.watch(filteredProductsProvider).length > 2 ? ref.watch(filteredProductsProvider)[2].image : ''"
+   },
+   "35:363": {
+    "text": "ref.watch(filteredProductsProvider).length > 2 ? ref.watch(filteredProductsProvider)[2].title : ''",
+    "show": "ref.watch(filteredProductsProvider).length > 2"
+   },
+   "35:364": {
+    "text": "ref.watch(filteredProductsProvider).length > 2 ? fcfa(ref.watch(filteredProductsProvider)[2].price) : ''",
+    "show": "ref.watch(filteredProductsProvider).length > 2"
+   },
+   "35:365": {
+    "text": "ref.watch(filteredProductsProvider).length > 2 ? ref.watch(filteredProductsProvider)[2].department : ''",
+    "show": "ref.watch(filteredProductsProvider).length > 2"
+   },
+   "35:361": {
+    "favorite": "ref.watch(filteredProductsProvider).length > 2 ? ref.watch(filteredProductsProvider)[2].title : ''",
+    "show": "ref.watch(filteredProductsProvider).length > 2"
+   },
+   "35:360": {
+    "show": "ref.watch(filteredProductsProvider).length > 2"
+   },
+   "35:366": {
+    "show": "ref.watch(filteredProductsProvider).length > 3"
+   },
+   "35:367": {
+    "show": "ref.watch(filteredProductsProvider).length > 3",
+    "image": "ref.watch(filteredProductsProvider).length > 3 ? ref.watch(filteredProductsProvider)[3].image : ''"
+   },
+   "35:371": {
+    "text": "ref.watch(filteredProductsProvider).length > 3 ? ref.watch(filteredProductsProvider)[3].title : ''",
+    "show": "ref.watch(filteredProductsProvider).length > 3"
+   },
+   "35:372": {
+    "text": "ref.watch(filteredProductsProvider).length > 3 ? fcfa(ref.watch(filteredProductsProvider)[3].price) : ''",
+    "show": "ref.watch(filteredProductsProvider).length > 3"
+   },
+   "35:373": {
+    "text": "ref.watch(filteredProductsProvider).length > 3 ? ref.watch(filteredProductsProvider)[3].department : ''",
+    "show": "ref.watch(filteredProductsProvider).length > 3"
+   },
+   "35:369": {
+    "favorite": "ref.watch(filteredProductsProvider).length > 3 ? ref.watch(filteredProductsProvider)[3].title : ''",
+    "show": "ref.watch(filteredProductsProvider).length > 3"
+   },
+   "35:368": {
+    "show": "ref.watch(filteredProductsProvider).length > 3"
+   },
+   "35:374": {
+    "show": "ref.watch(filteredProductsProvider).length > 4"
+   },
+   "35:375": {
+    "show": "ref.watch(filteredProductsProvider).length > 4",
+    "image": "ref.watch(filteredProductsProvider).length > 4 ? ref.watch(filteredProductsProvider)[4].image : ''"
+   },
+   "35:379": {
+    "text": "ref.watch(filteredProductsProvider).length > 4 ? ref.watch(filteredProductsProvider)[4].title : ''",
+    "show": "ref.watch(filteredProductsProvider).length > 4"
+   },
+   "35:380": {
+    "text": "ref.watch(filteredProductsProvider).length > 4 ? fcfa(ref.watch(filteredProductsProvider)[4].price) : ''",
+    "show": "ref.watch(filteredProductsProvider).length > 4"
+   },
+   "35:381": {
+    "text": "ref.watch(filteredProductsProvider).length > 4 ? ref.watch(filteredProductsProvider)[4].department : ''",
+    "show": "ref.watch(filteredProductsProvider).length > 4"
+   },
+   "35:377": {
+    "favorite": "ref.watch(filteredProductsProvider).length > 4 ? ref.watch(filteredProductsProvider)[4].title : ''",
+    "show": "ref.watch(filteredProductsProvider).length > 4"
+   },
+   "35:376": {
+    "show": "ref.watch(filteredProductsProvider).length > 4"
+   },
+   "35:382": {
+    "show": "ref.watch(filteredProductsProvider).length > 5"
+   },
+   "35:383": {
+    "show": "ref.watch(filteredProductsProvider).length > 5",
+    "image": "ref.watch(filteredProductsProvider).length > 5 ? ref.watch(filteredProductsProvider)[5].image : ''"
+   },
+   "35:387": {
+    "text": "ref.watch(filteredProductsProvider).length > 5 ? ref.watch(filteredProductsProvider)[5].title : ''",
+    "show": "ref.watch(filteredProductsProvider).length > 5"
+   },
+   "35:388": {
+    "text": "ref.watch(filteredProductsProvider).length > 5 ? fcfa(ref.watch(filteredProductsProvider)[5].price) : ''",
+    "show": "ref.watch(filteredProductsProvider).length > 5"
+   },
+   "35:389": {
+    "text": "ref.watch(filteredProductsProvider).length > 5 ? ref.watch(filteredProductsProvider)[5].department : ''",
+    "show": "ref.watch(filteredProductsProvider).length > 5"
+   },
+   "35:385": {
+    "favorite": "ref.watch(filteredProductsProvider).length > 5 ? ref.watch(filteredProductsProvider)[5].title : ''",
+    "show": "ref.watch(filteredProductsProvider).length > 5"
+   },
+   "35:384": {
+    "show": "ref.watch(filteredProductsProvider).length > 5"
+   },
+   "35:337": {
+    "text": "ref.watch(searchQueryProvider).trim().isEmpty ? '${ref.watch(filteredProductsProvider).length} produits' : '${ref.watch(filteredProductsProvider).length} résultat${ref.watch(filteredProductsProvider).length > 1 ? \"s\" : \"\"} pour « ${ref.watch(searchQueryProvider).trim()} »'"
+   },
+   "35:325": {
+    "onChanged": "ref.read(categoryProvider.notifier).set(i);"
+   }
+  },
+  "links": {
+   "24,206,132,186": "final l = ref.read(filteredProductsProvider); if (l.length > 0) { ref.read(selectedProductProvider.notifier).select(l[0].title); gOpen(context, '05'); }",
+   "24,254,165,138": "final l = ref.read(filteredProductsProvider); if (l.length > 0) { ref.read(selectedProductProvider.notifier).select(l[0].title); gOpen(context, '05'); }",
+   "201,206,132,186": "final l = ref.read(filteredProductsProvider); if (l.length > 1) { ref.read(selectedProductProvider.notifier).select(l[1].title); gOpen(context, '05'); }",
+   "201,254,165,138": "final l = ref.read(filteredProductsProvider); if (l.length > 1) { ref.read(selectedProductProvider.notifier).select(l[1].title); gOpen(context, '05'); }",
+   "24,404,132,186": "final l = ref.read(filteredProductsProvider); if (l.length > 2) { ref.read(selectedProductProvider.notifier).select(l[2].title); gOpen(context, '05'); }",
+   "24,452,165,138": "final l = ref.read(filteredProductsProvider); if (l.length > 2) { ref.read(selectedProductProvider.notifier).select(l[2].title); gOpen(context, '05'); }",
+   "201,404,132,186": "final l = ref.read(filteredProductsProvider); if (l.length > 3) { ref.read(selectedProductProvider.notifier).select(l[3].title); gOpen(context, '05'); }",
+   "201,452,165,138": "final l = ref.read(filteredProductsProvider); if (l.length > 3) { ref.read(selectedProductProvider.notifier).select(l[3].title); gOpen(context, '05'); }",
+   "24,601,132,186": "final l = ref.read(filteredProductsProvider); if (l.length > 4) { ref.read(selectedProductProvider.notifier).select(l[4].title); gOpen(context, '05'); }",
+   "24,649,165,138": "final l = ref.read(filteredProductsProvider); if (l.length > 4) { ref.read(selectedProductProvider.notifier).select(l[4].title); gOpen(context, '05'); }",
+   "201,601,132,186": "final l = ref.read(filteredProductsProvider); if (l.length > 5) { ref.read(selectedProductProvider.notifier).select(l[5].title); gOpen(context, '05'); }",
+   "201,649,165,138": "final l = ref.read(filteredProductsProvider); if (l.length > 5) { ref.read(selectedProductProvider.notifier).select(l[5].title); gOpen(context, '05'); }"
+  },
+  "dropLinks": [
+   "28,205,160,125"
+  ]
+ },
+ "25": {
+  "nodes": {
+   "29:375": {
+    "show": "ref.watch(favoriteProductsProvider).length > 0"
+   },
+   "29:376": {
+    "show": "ref.watch(favoriteProductsProvider).length > 0",
+    "image": "ref.watch(favoriteProductsProvider).length > 0 ? ref.watch(favoriteProductsProvider)[0].image : ''"
+   },
+   "29:377": {
+    "text": "ref.watch(favoriteProductsProvider).length > 0 ? ref.watch(favoriteProductsProvider)[0].title : ''",
+    "show": "ref.watch(favoriteProductsProvider).length > 0"
+   },
+   "29:378": {
+    "text": "ref.watch(favoriteProductsProvider).length > 0 ? fcfa(ref.watch(favoriteProductsProvider)[0].price) : ''",
+    "show": "ref.watch(favoriteProductsProvider).length > 0"
+   },
+   "29:379": {
+    "text": "ref.watch(favoriteProductsProvider).length > 0 ? ref.watch(favoriteProductsProvider)[0].department : ''",
+    "show": "ref.watch(favoriteProductsProvider).length > 0"
+   },
+   "29:380": {
+    "favorite": "ref.watch(favoriteProductsProvider).length > 0 ? ref.watch(favoriteProductsProvider)[0].title : ''",
+    "show": "ref.watch(favoriteProductsProvider).length > 0"
+   },
+   "29:384": {
+    "show": "ref.watch(favoriteProductsProvider).length > 1"
+   },
+   "29:385": {
+    "show": "ref.watch(favoriteProductsProvider).length > 1",
+    "image": "ref.watch(favoriteProductsProvider).length > 1 ? ref.watch(favoriteProductsProvider)[1].image : ''"
+   },
+   "29:386": {
+    "text": "ref.watch(favoriteProductsProvider).length > 1 ? ref.watch(favoriteProductsProvider)[1].title : ''",
+    "show": "ref.watch(favoriteProductsProvider).length > 1"
+   },
+   "29:387": {
+    "text": "ref.watch(favoriteProductsProvider).length > 1 ? fcfa(ref.watch(favoriteProductsProvider)[1].price) : ''",
+    "show": "ref.watch(favoriteProductsProvider).length > 1"
+   },
+   "29:388": {
+    "text": "ref.watch(favoriteProductsProvider).length > 1 ? ref.watch(favoriteProductsProvider)[1].department : ''",
+    "show": "ref.watch(favoriteProductsProvider).length > 1"
+   },
+   "29:389": {
+    "favorite": "ref.watch(favoriteProductsProvider).length > 1 ? ref.watch(favoriteProductsProvider)[1].title : ''",
+    "show": "ref.watch(favoriteProductsProvider).length > 1"
+   },
+   "29:393": {
+    "show": "ref.watch(favoriteProductsProvider).length > 2"
+   },
+   "29:394": {
+    "show": "ref.watch(favoriteProductsProvider).length > 2",
+    "image": "ref.watch(favoriteProductsProvider).length > 2 ? ref.watch(favoriteProductsProvider)[2].image : ''"
+   },
+   "29:395": {
+    "text": "ref.watch(favoriteProductsProvider).length > 2 ? ref.watch(favoriteProductsProvider)[2].title : ''",
+    "show": "ref.watch(favoriteProductsProvider).length > 2"
+   },
+   "29:396": {
+    "text": "ref.watch(favoriteProductsProvider).length > 2 ? fcfa(ref.watch(favoriteProductsProvider)[2].price) : ''",
+    "show": "ref.watch(favoriteProductsProvider).length > 2"
+   },
+   "29:397": {
+    "text": "ref.watch(favoriteProductsProvider).length > 2 ? ref.watch(favoriteProductsProvider)[2].department : ''",
+    "show": "ref.watch(favoriteProductsProvider).length > 2"
+   },
+   "29:398": {
+    "favorite": "ref.watch(favoriteProductsProvider).length > 2 ? ref.watch(favoriteProductsProvider)[2].title : ''",
+    "show": "ref.watch(favoriteProductsProvider).length > 2"
+   },
+   "29:402": {
+    "show": "ref.watch(favoriteProductsProvider).length > 3"
+   },
+   "29:403": {
+    "show": "ref.watch(favoriteProductsProvider).length > 3",
+    "image": "ref.watch(favoriteProductsProvider).length > 3 ? ref.watch(favoriteProductsProvider)[3].image : ''"
+   },
+   "29:404": {
+    "text": "ref.watch(favoriteProductsProvider).length > 3 ? ref.watch(favoriteProductsProvider)[3].title : ''",
+    "show": "ref.watch(favoriteProductsProvider).length > 3"
+   },
+   "29:405": {
+    "text": "ref.watch(favoriteProductsProvider).length > 3 ? fcfa(ref.watch(favoriteProductsProvider)[3].price) : ''",
+    "show": "ref.watch(favoriteProductsProvider).length > 3"
+   },
+   "29:406": {
+    "text": "ref.watch(favoriteProductsProvider).length > 3 ? ref.watch(favoriteProductsProvider)[3].department : ''",
+    "show": "ref.watch(favoriteProductsProvider).length > 3"
+   },
+   "29:407": {
+    "favorite": "ref.watch(favoriteProductsProvider).length > 3 ? ref.watch(favoriteProductsProvider)[3].title : ''",
+    "show": "ref.watch(favoriteProductsProvider).length > 3"
+   }
+  },
+  "links": {
+   "25,179,300,125": "final l = ref.read(favoriteProductsProvider); if (l.length > 0) { ref.read(selectedProductProvider.notifier).select(l[0].title); gOpen(context, '05'); }",
+   "25,318,300,125": "final l = ref.read(favoriteProductsProvider); if (l.length > 1) { ref.read(selectedProductProvider.notifier).select(l[1].title); gOpen(context, '05'); }",
+   "25,458,300,125": "final l = ref.read(favoriteProductsProvider); if (l.length > 2) { ref.read(selectedProductProvider.notifier).select(l[2].title); gOpen(context, '05'); }",
+   "25,597,300,125": "final l = ref.read(favoriteProductsProvider); if (l.length > 3) { ref.read(selectedProductProvider.notifier).select(l[3].title); gOpen(context, '05'); }"
+  }
+ },
+ "19": {
+  "dropLinks": [
+   "20,478,350,52"
+  ],
+  "nodes": {
+   "29:29": {
+    "noRole": true
+   },
+   "29:24": {
+    "onChanged": "ref.read(searchQueryProvider.notifier).set(v);",
+    "onSubmitted": "ref.read(searchQueryProvider.notifier).set(v); gOpen(context, '22');"
+   },
+   "187:18": {
+    "skip": true
+   }
+  },
+  "links": {
+   "31,542,329,49": "gOpen(context, '21');"
   }
  }
 }

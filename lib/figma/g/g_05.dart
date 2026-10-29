@@ -7,6 +7,7 @@ import '../nav.dart';
 import '../live/store.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
+import '../live/lfav.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_05 extends ConsumerWidget {
@@ -34,7 +35,7 @@ class G_05 extends ConsumerWidget {
       gP(29.858, 85.897, 17.71, 6, gImg('assets/figma/v/9d3dbce6f297e2.svg')),
       gP(286.048, 71.691, 40.147, 40.147, gBox(color: Color(0x8C111015), oval: true)),
       gP(294.757, 81.237, 22.728, 21.055, gImg('assets/figma/v/4bd8d8bdb588c8.svg')),
-      gP(288.085, 73.728, 36.074, 36.074, GHeart()),
+      gP(288.085, 73.728, 36.074, 36.074, GHeartLive(title: ref.watch(selectedProductProvider).title)),
       gP(339.099, 75.993, 32.978, 32.978, gBox(color: Color(0x8C111015), oval: true)),
       gP(345.922, 89.482, 19.333, 14.333, gImg('assets/figma/v/9c92298f9fd6b2.svg')),
       gP(349.255, 81.148, 12.667, 9.333, gImg('assets/figma/v/bb8ad3c4792df6.svg')),

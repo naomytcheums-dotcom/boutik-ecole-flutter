@@ -31,7 +31,7 @@ REG = read_registry()
 NODE2ID = {v: k for k, v in REG.items()}
 SIZES = {}
 LINKS = {}
-CUR = {'root': ''}
+CUR = {'root': '', 'sid': ''}
 BINDINGS = {}
 _bf = os.path.join(HERE, 'bindings.json')
 if os.path.exists(_bf):
@@ -233,7 +233,10 @@ def analyze(doc, nid):
     texts = [i for i in items if i['n']['type'] == 'TEXT']
     rects = [i for i in items if i['n']['type'] == 'RECTANGLE' and not i['rot']]
     ells = [i for i in items if i['n']['type'] == 'ELLIPSE']
-    links = [[float(v) for v in box.split(',')] for box, dest in LINKS.get(nid, [])]
+    _drop = set(BINDINGS.get(CUR['sid'], {}).get('dropLinks', []))
+    _nb = BINDINGS.get(CUR['sid'], {}).get('nodes', {})
+    links = [[float(v) for v in box.split(',')] for box, dest in LINKS.get(nid, []) if box not in _drop]
+    rects = [r_ for r_ in rects if not _nb.get(r_['n']['id'], {}).get('noRole')]
 
     def inside(a, b, m=1):
         return a['x'] >= b['x'] - m and a['y'] >= b['y'] - m and a['x'] + a['w'] <= b['x'] + b['w'] + m and a['y'] + a['h'] <= b['y'] + b['h'] + m
@@ -459,9 +462,10 @@ def _emit_node_inner(ctx, n, PM, ox, oy, out, root=False):
         if ust:
             bd = ', border: ' + ust[0][8:]
         inter = 'inter' in d['row'][0][1]['n']['style'].get('fontFamily', '').lower()
-        out.append("Positioned.fill(child: GChoiceGroup(chips: [%s], selected: %d, selFill: %s, unselFill: %s, selText: %s, unselText: %s, radius: %s%s%s))" % (
+        oc_ = BINDINGS.get(ctx.sid, {}).get('nodes', {}).get(n['id'], {}).get('onChanged')
+        out.append("Positioned.fill(child: GChoiceGroup(chips: [%s], selected: %d, selFill: %s, unselFill: %s, selText: %s, unselText: %s, radius: %s%s%s%s))" % (
             ', '.join(chips), d['sel'], color(selc[2]['color'], selc[2].get('opacity', 1)), color(unsel[2]['color'], unsel[2].get('opacity', 1)),
-            tcol(selc), tcol(unsel), num(rad(d['row'][0][0]['n'])), bd, ', inter: true' if inter else ''))
+            tcol(selc), tcol(unsel), num(rad(d['row'][0][0]['n'])), bd, ', inter: true' if inter else '', (', onChanged: (i) { %s }' % oc_) if oc_ else ''))
         return
 
     # --- rastérisation : icônes à texture (chrome) et formes complexes
@@ -500,6 +504,9 @@ def _emit_node_inner(ctx, n, PM, ox, oy, out, root=False):
         drawn = False  # ombre portée par les enfants (icônes) : on ne dessine pas de rectangle
     r = radii(n)
     args = list(fa) + sa + ea
+    ib_ = BINDINGS.get(ctx.sid, {}).get('nodes', {}).get(n['id'], {}).get('image')
+    if ib_:
+        args = [('image: (%s)' % ib_) if a.startswith('image: ') else a for a in args]
     fb_ = BINDINGS.get(ctx.sid, {}).get('nodes', {}).get(n['id'], {}).get('fill')
     if fb_:
         args = [('color: (%s)' % fb_) if a.startswith('color: ') else a for a in args]
@@ -527,9 +534,17 @@ def _emit_node_inner(ctx, n, PM, ox, oy, out, root=False):
             obs = ', obscure: true' if (re.search('mot de passe|password', tn['characters'], re.I) or set(tn['characters'].strip()) == {'•'}) else ''
             dark = bool(f_) and lum(f_['color']) < 0.35 and set(tn['characters'].strip()) != {'•'}
             txt = ("hint: '', initial: %s" % dq(tn['characters'])) if dark else ("hint: %s" % dq(tn['characters']))
-            out.append("gP(%s, GField(%s, size: %s, hintColor: %s, weight: %d, padL: %s%s%s))" % (
+            bi_ = BINDINGS.get(ctx.sid, {}).get('nodes', {}).get(n['id'], {})
+            cb_ = ''
+            if bi_.get('onChanged'):
+                cb_ += ', onChanged: (v) { %s }' % bi_['onChanged']
+            if bi_.get('onSubmitted'):
+                cb_ += ', onSubmitted: (v) { %s }' % bi_['onSubmitted']
+            if bi_.get('initial'):
+                txt = txt.split(', initial')[0] + ', initial: ' + bi_['initial'] if 'initial' in txt else txt + ', initial: ' + bi_['initial']
+            out.append("gP(%s, GField(%s, size: %s, hintColor: %s, weight: %d, padL: %s%s%s%s))" % (
                 geo, txt, num(st_.get('fontSize', 14)), hc, int(st_.get('fontWeight', 400)), num(role[1]['left']),
-                ', inter: true' if 'inter' in st_.get('fontFamily', '').lower() else '', obs))
+                ', inter: true' if 'inter' in st_.get('fontFamily', '').lower() else '', obs, cb_))
     elif tap and t in ('RECTANGLE', 'ELLIPSE', 'FRAME', 'GROUP', 'INSTANCE', 'COMPONENT'):
         out.append("gP(%s, const SizedBox.expand()%s, tap: %s)" % (geo, extra, tap))
     if t in ('FRAME', 'GROUP', 'INSTANCE', 'COMPONENT', 'SECTION'):
@@ -539,7 +554,8 @@ def _emit_node_inner(ctx, n, PM, ox, oy, out, root=False):
         if t == 'FRAME' and nm.startswith('icon/heart'):
             for c in kids:
                 emit_node(ctx, c, M, ox, oy, out)
-            out.append("gP(%s, GHeart())" % ', '.join([num(x - 8), num(y - 8), num(w + 16), num(h + 16)]))
+            fav_ = BINDINGS.get(ctx.sid, {}).get('nodes', {}).get(n['id'], {}).get('favorite')
+            out.append("gP(%s, %s)" % (', '.join([num(x - 8), num(y - 8), num(w + 16), num(h + 16)]), ('GHeartLive(title: %s)' % fav_) if fav_ else 'GHeart()'))
             return
         clip = n.get('clipsContent') and any(
             (c['absoluteBoundingBox']['x'] < n['absoluteBoundingBox']['x'] - 1 or c['absoluteBoundingBox']['y'] < n['absoluteBoundingBox']['y'] - 1 or
@@ -558,6 +574,8 @@ def _emit_node_inner(ctx, n, PM, ox, oy, out, root=False):
 
 def emit_node(ctx, n, PM, ox, oy, out, root=False):
     b = BINDINGS.get(ctx.sid, {}).get('nodes', {}).get(n.get('id'), {}) if not root else {}
+    if b.get('skip'):
+        return
     if b.get('before'):
         out.extend(b['before'])
     start = len(out)
@@ -662,6 +680,7 @@ def convert(sid):
     doc = json.load(open(fn, encoding='utf-8'))['document']
     ctx = Ctx(sid)
     CUR['root'] = nid
+    CUR['sid'] = sid
     w, h = doc['size']['x'], doc['size']['y']
     SIZES[sid] = (w, h)
     analyze(doc, nid)
@@ -715,6 +734,7 @@ import '../nav.dart';
 import '../live/store.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
+import '../live/lfav.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class %s extends ConsumerWidget {

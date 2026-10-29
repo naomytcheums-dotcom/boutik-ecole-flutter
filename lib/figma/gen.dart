@@ -249,7 +249,10 @@ class GField extends StatefulWidget {
     this.inter = false,
     this.obscure = false,
     this.multiline = false,
+    this.onChanged,
+    this.onSubmitted,
   });
+  final ValueChanged<String>? onChanged, onSubmitted;
   final String hint, initial;
   final double size, padL;
   final Color hintColor, textColor;
@@ -291,6 +294,8 @@ class _GFieldState extends State<GField> {
             focusNode: f,
             style: st,
             obscureText: widget.obscure,
+            onChanged: widget.onChanged,
+            onSubmitted: widget.onSubmitted,
             minLines: widget.multiline ? 2 : 1,
             maxLines: widget.multiline ? 6 : 1,
             cursorColor: const Color(0xFF6A4DFF),
@@ -333,7 +338,9 @@ class GChoiceGroup extends StatefulWidget {
     required this.radius,
     this.border,
     this.inter = false,
+    this.onChanged,
   });
+  final ValueChanged<int>? onChanged;
   final List<GChip> chips;
   final int selected;
   final Color selFill, unselFill, selText, unselText;
@@ -359,6 +366,7 @@ class _GChoiceGroupState extends State<GChoiceGroup> {
               onTap: () {
                 GSound.play('tick');
                 setState(() => sel = i);
+                widget.onChanged?.call(i);
               },
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 160),

@@ -7,6 +7,7 @@ import '../nav.dart';
 import '../live/store.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
+import '../live/lfav.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_44 extends ConsumerWidget {

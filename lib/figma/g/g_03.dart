@@ -7,6 +7,7 @@ import '../nav.dart';
 import '../live/store.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
+import '../live/lfav.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_03 extends ConsumerWidget {
@@ -95,14 +96,14 @@ class G_03 extends ConsumerWidget {
       gP(14.444, 558.819, 177.847, 163, gBox(image: 'assets/figma/img/9803b1792923bb371cffd2d64272ebebf74ea2d4.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
       gP(161.597, 567.847, 21.667, 21.667, gBox(color: Color(0xFFFFFFFF), radii: [10.833, 10.833, 10.833, 10.833])),
       gP(164.541, 571.28, 15.78, 14.802, gImg('assets/figma/v/d9c8f50f0367c0.svg')),
-      gP(158.562, 564.812, 27.736, 27.736, GHeart()),
+      gP(158.562, 564.812, 27.736, 27.736, GHeartLive(title: 'Lampe en bois recyclé')),
       gP(21.667, 731.278, 122, 14, gText('Lampe en bois recyclé', 11.285, Color(0xFF111015), weight: 700)),
       gP(21.667, 749.833, 66, 13, gText('25 000 FCFA', 10.382, Color(0xFF111015), weight: 600)),
       gP(21.667, 768.389, 98, 12, gText('Ngoné M. – Génie civil', 9.479, Color(0xFF6B7A8C))),
       gP(204.931, 558.819, 177.847, 163, gBox(image: 'assets/figma/img/84a49a20614dc5f12ab62f18400caa2290c40ec0.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
       gP(352.083, 567.847, 21.667, 21.667, gBox(color: Color(0xFFFFFFFF), radii: [10.833, 10.833, 10.833, 10.833])),
       gP(355.027, 571.28, 15.78, 14.802, gImg('assets/figma/v/d9c8f50f0367c0.svg')),
-      gP(349.049, 564.812, 27.736, 27.736, GHeart()),
+      gP(349.049, 564.812, 27.736, 27.736, GHeartLive(title: 'Drone éducatif')),
       gP(212.153, 731.278, 83, 14, gText('Drone éducatif', 11.285, Color(0xFF111015), weight: 700)),
       gP(212.153, 749.833, 71, 13, gText('150 000 FCFA', 10.382, Color(0xFF111015), weight: 600)),
       gP(212.153, 768.389, 136, 12, gText('Team Innov’ – Génie électrique', 9.479, Color(0xFF6B7A8C))),

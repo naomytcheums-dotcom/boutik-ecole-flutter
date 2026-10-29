@@ -18,8 +18,8 @@ String fcfa(num v) {
 }
 
 class LiveProduct {
-  const LiveProduct(this.title, this.department, this.price, this.seller, this.description, this.image);
-  final String title, department, seller, description, image;
+  const LiveProduct(this.title, this.department, this.price, this.seller, this.description, this.image, {this.category = 'Maison'});
+  final String title, department, seller, description, image, category;
   final int price;
 
   CartLine toLine() => CartLine(title, 'Département : $department', price, image);
@@ -27,21 +27,27 @@ class LiveProduct {
 
 const liveCatalog = <LiveProduct>[
   LiveProduct('Lampe en bois recyclé', 'Génie civil', 25000, 'Mouanga Yannick',
-      'Lampe décorative fabriquée à partir de bois de récupération, avec éclairage LED économe.', 'assets/figma/img/3d6379dbe0e12637d54ca9d283be8cb419701599.png'),
-  LiveProduct('Ordinateur portable prototype', 'Informatique', 250000, 'Essono Mariam',
-      'Prototype d’ordinateur portable conçu et assemblé par les étudiants du département.', 'assets/figma/img/3a64dd639155a57b27bff9e6c8c6d8fa81362afc.png'),
-  LiveProduct('Logo et identité visuelle', 'MMI', 50000, 'Tagne Kouassi',
-      'Création d’un logo et d’une identité visuelle complète pour votre projet.', 'assets/figma/img/abbe1a61d7955c52cdd31224bc1569ab44582797.png'),
+      'Lampe décorative fabriquée à partir de bois de récupération, avec éclairage LED économe.', 'assets/figma/img/9803b1792923bb371cffd2d64272ebebf74ea2d4.png', category: 'Maison'),
   LiveProduct('Drone éducatif', 'Génie électrique', 150000, 'Mbarga Carine',
-      'Drone pédagogique programmable, idéal pour l’apprentissage de la robotique.', 'assets/figma/img/3d6379dbe0e12637d54ca9d283be8cb419701599.png'),
+      'Drone pédagogique programmable, idéal pour l’apprentissage de la robotique.', 'assets/figma/img/84a49a20614dc5f12ab62f18400caa2290c40ec0.png', category: 'Tech'),
   LiveProduct('Sac à dos design', 'Design – MMI', 25000, 'Fotso Brice',
-      'Sac à dos en toile recyclée, dessiné et cousu par les étudiants.', 'assets/figma/img/abbe1a61d7955c52cdd31224bc1569ab44582797.png'),
+      'Sac à dos en toile recyclée, dessiné et cousu par les étudiants.', 'assets/figma/img/3a64dd639155a57b27bff9e6c8c6d8fa81362afc.png', category: 'Mode'),
   LiveProduct('Pots connectés', 'Agronomie', 15000, 'Ngono Aminata',
-      'Pots de plantes connectés avec capteur d’humidité.', 'assets/figma/img/3d6379dbe0e12637d54ca9d283be8cb419701599.png'),
+      'Pots de plantes connectés avec capteur d’humidité.', 'assets/figma/img/3d6379dbe0e12637d54ca9d283be8cb419701599.png', category: 'Maison'),
   LiveProduct('Support téléphone', 'Génie industriel', 8000, 'Biyick Éric',
-      'Support de téléphone imprimé en 3D, plusieurs coloris.', 'assets/figma/img/abbe1a61d7955c52cdd31224bc1569ab44582797.png'),
+      'Support de téléphone imprimé en 3D, plusieurs coloris.', 'assets/figma/img/abbe1a61d7955c52cdd31224bc1569ab44582797.png', category: 'Tech'),
   LiveProduct('Tableau décoratif', 'Arts – Génie civil', 18000, 'Mouanga Yannick',
-      'Tableau décoratif peint à la main.', 'assets/figma/img/3a64dd639155a57b27bff9e6c8c6d8fa81362afc.png'),
+      'Tableau décoratif peint à la main.', 'assets/figma/img/34e8344812f71c763e7e4b52e1acffce9319e372.png', category: 'Art'),
+  LiveProduct('Ordinateur portable prototype', 'Informatique', 250000, 'Essono Mariam',
+      'Prototype d’ordinateur portable conçu et assemblé par les étudiants du département.', 'assets/figma/img/3a64dd639155a57b27bff9e6c8c6d8fa81362afc.png', category: 'Tech'),
+  LiveProduct('Logo et identité visuelle', 'MMI', 50000, 'Tagne Kouassi',
+      'Création d’un logo et d’une identité visuelle complète pour votre projet.', 'assets/figma/img/97b7907df36c390ae2383cc290f76358e22d2d7a.png', category: 'Art'),
+  LiveProduct('Cours de soutien en maths', 'Informatique', 10000, 'Nkoa Paul',
+      'Cours de soutien en mathématiques pour lycéens et étudiants de première année.', 'assets/figma/img/8397f0465c777ec9d53e7683ddc72818ff961acd.png', category: 'Tech'),
+  LiveProduct('Confiture artisanale', 'Agronomie', 3000, 'Ngono Aminata',
+      'Confiture de fruits locaux préparée au laboratoire de transformation.', 'assets/figma/img/3d6379dbe0e12637d54ca9d283be8cb419701599.png', category: 'Alimentation'),
+  LiveProduct('Jus de bissap', 'Agronomie', 1500, 'Ngono Aminata',
+      'Jus de bissap frais, sans conservateur.', 'assets/figma/img/9803b1792923bb371cffd2d64272ebebf74ea2d4.png', category: 'Alimentation'),
 ];
 
 LiveProduct productByTitle(String t) => liveCatalog.firstWhere((p) => p.title == t, orElse: () => liveCatalog.first);
@@ -190,3 +196,56 @@ Color badgeInk(String b) => switch (b) {
       'Annulée' => const Color(0xFFE5484D),
       _ => const Color(0xFF5A3FE0),
     };
+
+// ------------------------------------------------------------------ recherche et favoris
+
+const liveCategories = ['Tous', 'Maison', 'Mode', 'Tech', 'Art', 'Alimentation'];
+
+class SearchQuery extends Notifier<String> {
+  @override
+  String build() => '';
+  void set(String v) => state = v;
+}
+
+final searchQueryProvider = NotifierProvider<SearchQuery, String>(SearchQuery.new);
+
+class CategoryIndex extends Notifier<int> {
+  @override
+  int build() => 0;
+  void set(int v) => state = v;
+}
+
+final categoryProvider = NotifierProvider<CategoryIndex, int>(CategoryIndex.new);
+
+String _norm(String s) => s
+    .toLowerCase()
+    .replaceAll(RegExp('[éèêë]'), 'e')
+    .replaceAll(RegExp('[àâä]'), 'a')
+    .replaceAll(RegExp('[ôö]'), 'o')
+    .replaceAll(RegExp('[ùûü]'), 'u')
+    .replaceAll('î', 'i')
+    .replaceAll('ç', 'c');
+
+/// Produits correspondant à la recherche et à la catégorie choisies.
+final filteredProductsProvider = Provider<List<LiveProduct>>((ref) {
+  final q = _norm(ref.watch(searchQueryProvider).trim());
+  final cat = liveCategories[ref.watch(categoryProvider).clamp(0, liveCategories.length - 1)];
+  return [
+    for (final p in liveCatalog)
+      if ((cat == 'Tous' || p.category == cat) && (q.isEmpty || _norm('${p.title} ${p.department} ${p.category} ${p.seller}').contains(q))) p,
+  ];
+});
+
+/// Favoris partagés (titres des produits), le plus récent en premier.
+class Favorites extends Notifier<List<String>> {
+  @override
+  List<String> build() => const ['Sac à dos design', 'Logo et identité visuelle', 'Cours de soutien en maths', 'Drone éducatif'];
+
+  bool has(String title) => state.contains(title);
+
+  void toggle(String title) => state = state.contains(title) ? [for (final f in state) if (f != title) f] : [title, ...state];
+}
+
+final favoritesProvider = NotifierProvider<Favorites, List<String>>(Favorites.new);
+
+final favoriteProductsProvider = Provider<List<LiveProduct>>((ref) => [for (final t in ref.watch(favoritesProvider)) productByTitle(t)]);

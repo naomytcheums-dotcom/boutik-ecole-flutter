@@ -16,6 +16,7 @@ import '../live/admin.dart';
 import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
+import '../live/missions.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_194 extends ConsumerWidget {
@@ -43,7 +44,7 @@ class G_194 extends ConsumerWidget {
       gP(339.833, 70.743, 23.424, 23.424, gImg('assets/figma/v/67b9e5fdf63250.svg')),
       gP(24, 120, 342, 170, gBox(image: 'assets/figma/img/4b7b6cea2f4622846841cd8342842e81fa1ed891.png', fit: BoxFit.cover, radii: [26, 26, 26, 26])),
       gP(24, 120, 342, 170, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [26, 26, 26, 26])),
-      gP(42, 228, 309, 23, gText('Identité visuelle · Parfums Mbella', 18, Color(0xFFFFFFFF), weight: 800, wrap: true)),
+      gP(42, 228, 309, 23, Consumer(builder: (context, ref, _) => gText('${ref.watch(missionProvider).kind} · ${ref.watch(missionProvider).id}', 18, Color(0xFFFFFFFF), weight: 800, wrap: true))),
       gP(42, 258, 309, 15, gText('Équipe MMI · TCO · livraison le 28 nov.', 12, Color(0xD9FFFFFF), weight: 500, wrap: true)),
       gP(24, 304, 342, 120, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(49, 394, 78, 30, gBox(color: Color(0xD98DF03A), layerBlur: 12, oval: true)),
@@ -122,8 +123,8 @@ class G_194 extends ConsumerWidget {
       gP(76.58, 313.24, 7.47, 14.37, gImg('assets/figma/v/9eeba09b250050.svg')),
       gP(80.77, 312.68, 6.74, 14.47, gImg('assets/figma/v/4510aeb054463f.svg')),
       gP(80.667, 332.083, 14.667, 16.833, gImg('assets/figma/v/fb0d9d095f4d85.svg')),
-      gP(60.5, 350, 55, 33, gText('60%', 27, Color(0xFF9BE88A), weight: 300, inter: true)),
-      gP(152, 338, 201, 19, gText('Étape 3 sur 5', 15, Color(0xFF111015), weight: 700, wrap: true)),
+      gP(60.5, 350, 55, 33, Consumer(builder: (context, ref, _) => gText('${ref.watch(missionProvider).pct}%', 27, Color(0xFF9BE88A), weight: 300, inter: true))),
+      gP(152, 338, 201, 19, Consumer(builder: (context, ref, _) => gText('Étape ${(ref.watch(missionProvider).released + ref.watch(missionProvider).funded + 1).clamp(1, 5)} sur 5', 15, Color(0xFF111015), weight: 700, wrap: true))),
       gP(152, 364, 201, 34, gText('Propositions de logo en cours de réalisation.', 12, Color(0xFF66636E), lh: 17, wrap: true)),
       gP(24, 438, 93, 19, gText('Avancement', 15, Color(0xFF111015), weight: 700)),
       gP(33, 498, 2, 62, gBox(color: Color(0xFFBFE8D6), radii: [1, 1, 1, 1])),
@@ -165,6 +166,9 @@ class G_194 extends ConsumerWidget {
       gP(203, 1034, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Voir le dossier')),
       gP(236, 1052, 97, 18, gText('Voir le dossier', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 1104, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      gTap(250, 560, 60, 30, () { gOpen(context, '197'); }),
+      gTap(250, 644, 60, 30, () { gOpen(context, '197'); }),
+      gTap(24, 910, 342, 84, () { gToast(context, 'Message envoyé à l’équipe'); }),
     ]);
   }
 }

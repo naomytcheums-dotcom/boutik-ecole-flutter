@@ -16,6 +16,7 @@ import '../live/admin.dart';
 import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
+import '../live/missions.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_193 extends ConsumerWidget {
@@ -42,25 +43,25 @@ class G_193 extends ConsumerWidget {
       gP(24, 120, 342, 154, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 134, 88, 18, gText('Récapitulatif', 14, Color(0xFF111015), weight: 700)),
       gP(40, 168, 45, 16, gText('Mission', 12.5, Color(0xFF66636E))),
-      gP(255, 168, 95, 16, gText('Identité visuelle', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
+      gP(115, 168, 235, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(missionProvider).kind, 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(40, 193, 310, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 202, 29, 16, gText('Total', 12.5, Color(0xFF66636E))),
-      gP(264, 202, 86, 16, gText('180 000 FCFA', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),
+      gP(124, 202, 226, 16, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(missionProvider).total), 12.5, Color(0xFF111015), weight: 700, wrap: true, align: TextAlign.right))),
       gP(40, 227, 310, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 236, 133, 16, gText('Frais plateforme inclus', 12.5, Color(0xFF66636E))),
-      gP(273, 236, 77, 16, gText('18 000 FCFA', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
+      gP(133, 236, 217, 16, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(missionProvider).fee), 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(24, 288, 126, 19, gText('Réparti par jalons', 15, Color(0xFF111015), weight: 700)),
       gP(33, 348, 2, 40, gBox(color: Color(0xFFE4E8EE), radii: [1, 1, 1, 1])),
       gP(24, 327, 20, 20, gBox(color: Color(0xFF111015), oval: true)),
       gP(56, 326, 175, 17, gText('Jalon 1 · Brief validé', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
-      gP(56, 346, 175, 14, gText('30 % · 54 000 FCFA', 11.5, Color(0xFF66636E), wrap: true)),
+      gP(56, 346, 175, 14, Consumer(builder: (context, ref, _) => gText('30 % · ${fcfa(ref.watch(missionProvider).amountOf(0))}', 11.5, Color(0xFF66636E), wrap: true))),
       gP(33, 410, 2, 40, gBox(color: Color(0xFFE4E8EE), radii: [1, 1, 1, 1])),
       gP(24, 389, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true)),
       gP(56, 388, 175, 17, gText('Jalon 2 · Propositions', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
-      gP(56, 408, 175, 14, gText('40 % · 72 000 FCFA', 11.5, Color(0xFF66636E), wrap: true)),
+      gP(56, 408, 175, 14, Consumer(builder: (context, ref, _) => gText('40 % · ${fcfa(ref.watch(missionProvider).amountOf(1))}', 11.5, Color(0xFF66636E), wrap: true))),
       gP(24, 451, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true)),
       gP(56, 450, 175, 17, gText('Jalon 3 · Livraison finale', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
-      gP(56, 470, 175, 14, gText('30 % · 54 000 FCFA', 11.5, Color(0xFF66636E), wrap: true)),
+      gP(56, 470, 175, 14, Consumer(builder: (context, ref, _) => gText('30 % · ${fcfa(ref.watch(missionProvider).amountOf(2))}', 11.5, Color(0xFF66636E), wrap: true))),
       gP(24, 526, 145, 19, gText('Moyen de paiement', 15, Color(0xFF111015), weight: 700)),
       gP(24, 564, 342, 132, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 577, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
@@ -84,8 +85,9 @@ class G_193 extends ConsumerWidget {
       gP(76, 724, 277, 51, gText('L’argent est bloqué par Boutik-École et versé aux étudiants uniquement après votre validation de chaque jalon.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
       gP(0, 813, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
       gP(24, 829, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Payer 54 000 FCFA')),
-      gP(128, 847, 134, 18, gText('Payer 54 000 FCFA', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
+      gP(128, 847, 134, 18, Consumer(builder: (context, ref, _) => gText(ref.watch(missionProvider).funded >= 3 ? 'Tout est financé' : 'Payer ${fcfa(ref.watch(missionProvider).amountOf(ref.watch(missionProvider).funded))}', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center))),
       gP(125, 899, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      gTap(24, 829, 342, 54, () { payNextMilestone(ref, context); }),
     ]);
   }
 }

@@ -16,6 +16,7 @@ import '../live/admin.dart';
 import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
+import '../live/missions.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_208 extends ConsumerWidget {
@@ -30,7 +31,7 @@ class G_208 extends ConsumerWidget {
       gP(128, 56, 181, 35, gText('Boutik-École', 28, Color(0xFF111015), weight: 600)),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(520, 50, 68, 48, 'FR', 20, 600), GChip(596, 50, 68, 48, 'EN', 20, 600)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 24)),
       gP(596, 50, 68, 48, gBox(color: Color(0xFFFFFFFF), radii: [24, 24, 24, 24])),
-      gP(48, 140, 624, 440, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x2E403366), offset: Offset(0, 18), blurRadius: 34, spreadRadius: 0)], radii: [56, 56, 56, 56])),
+      gP(48, 140, 624, 440, gBox(image: (ref.watch(kioskCurrentProvider).image), fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x2E403366), offset: Offset(0, 18), blurRadius: 34, spreadRadius: 0)], radii: [56, 56, 56, 56])),
       gP(72, 164, 128, 48, gBox(color: Color(0xFFFFFFFF), radii: [24, 24, 24, 24])),
       gP(84.75, 175.833, 22.5, 24.333, gImg('assets/figma/v/c39381e3f69bf5.svg')),
       gP(114, 175, 67, 24, gText('Boosté', 19, Color(0xFF111015), weight: 600)),
@@ -39,18 +40,18 @@ class G_208 extends ConsumerWidget {
       gP(272, 600, 96, 96, gBox(image: 'assets/figma/img/4b7b6cea2f4622846841cd8342842e81fa1ed891.png', fit: BoxFit.cover, radii: [28, 28, 28, 28])),
       gP(384, 600, 96, 96, gBox(image: 'assets/figma/img/4ca68f79023605aecb4f83724629d508e921e885.png', fit: BoxFit.cover, radii: [28, 28, 28, 28])),
       gP(48, 716, 624, 370, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 10), blurRadius: 26, spreadRadius: 0)], radii: [48, 48, 48, 48])),
-      gP(80, 744, 430, 50, gText('Lampe en bois recyclé', 40, Color(0xFF111015), weight: 600)),
+      gP(80, 744, 430, 50, Consumer(builder: (context, ref, _) => gText(ref.watch(kioskCurrentProvider).title, 40, Color(0xFF111015), weight: 600))),
       gP(77, 807, 26, 25, gImg('assets/figma/v/56eb5ae66b4825.svg')),
       gP(105, 807, 26, 25, gImg('assets/figma/v/56eb5ae66b4825.svg')),
       gP(133, 807, 26, 25, gImg('assets/figma/v/56eb5ae66b4825.svg')),
       gP(161, 807, 26, 25, gImg('assets/figma/v/56eb5ae66b4825.svg')),
       gP(189, 807, 26, 25, gImg('assets/figma/v/56eb5ae66b4825.svg')),
       gP(240, 810, 103, 25, gText('4,8 · 12 avis', 20, Color(0xFF66636E))),
-      gP(426, 792, 214, 43, gText('25 000 FCFA', 34, Color(0xFF5A3FE0), weight: 700)),
+      gP(286, 792, 354, 43, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(kioskCurrentProvider).price), 34, Color(0xFF5A3FE0), weight: 700, wrap: true, align: TextAlign.right))),
       gP(80, 866, 560, 90, gBox(color: Color(0xFFF6F3FA), radii: [34, 34, 34, 34])),
       gP(92, 876, 70, 70, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [35, 35, 35, 35])),
-      gP(180, 884, 124, 30, gText('Yannick M.', 24, Color(0xFF111015), weight: 600)),
-      gP(180, 916, 193, 21, gText('Génie civil · Talent vérifié', 17, Color(0xFF66636E))),
+      gP(180, 884, 124, 30, Consumer(builder: (context, ref, _) => gText(ref.watch(kioskCurrentProvider).seller, 24, Color(0xFF111015), weight: 600))),
+      gP(180, 916, 193, 21, Consumer(builder: (context, ref, _) => gText('${ref.watch(kioskCurrentProvider).department} · Talent vérifié', 17, Color(0xFF66636E)))),
       gP(80, 980, 360, 82, gBox(color: Color(0xFF111015), radii: [41, 41, 41, 41])),
       gP(119.5, 1005.5, 21, 31, gImg('assets/figma/v/d6e92e7a815044.svg')),
       gP(125.75, 1025.5, 8.5, 6, gImg('assets/figma/v/9950f56d62ea5b.svg')),
@@ -75,7 +76,8 @@ class G_208 extends ConsumerWidget {
       gP(586.65, 1149.612, 14.7, 20.888, gImg('assets/figma/v/ea16a39cf97c64.svg')),
       gP(575, 1190, 38, 21, gText('Aide', 17, Color(0xFF111015), weight: 500)),
       gP(80, 980, 360, 82, const SizedBox.expand(), tap: () => gOpen(context, '209')),
-      gTap(80, 980, 360, 82, () => gOpen(context, '209')),
+      gTap(80, 980, 360, 82, () { startPhoneTransfer(ref, context); }),
+      gTap(452, 980, 188, 82, () { ref.read(cartProvider.notifier).add(ref.read(kioskCurrentProvider).toLine()); gToast(context, 'Ajouté au panier : retrait à la borne');  }),
     ]);
   }
 }

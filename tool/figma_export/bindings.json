@@ -3449,5 +3449,312 @@
    "268,370,980,42": "final l = ref.read(projectQueueProvider); if (l.length > 2) { projectReviewDialog(context, ref, l[2]); }",
    "268,414,980,42": "final l = ref.read(projectQueueProvider); if (l.length > 3) { projectReviewDialog(context, ref, l[3]); }"
   }
+ },
+ "207": {
+  "nodes": {
+   "108:34": {
+    "onChanged": "ref.read(kioskQueryProvider.notifier).set(v);"
+   },
+   "108:48": {
+    "show": "ref.watch(kioskProductsProvider).length > 0",
+    "image": "ref.watch(kioskProductsProvider).length > 0 ? ref.watch(kioskProductsProvider)[0].image : ''"
+   },
+   "108:53": {
+    "show": "ref.watch(kioskProductsProvider).length > 0"
+   },
+   "108:54": {
+    "text": "ref.watch(kioskProductsProvider).length > 0 ? ref.watch(kioskProductsProvider)[0].title : ''",
+    "show": "ref.watch(kioskProductsProvider).length > 0"
+   },
+   "108:55": {
+    "text": "ref.watch(kioskProductsProvider).length > 0 ? ref.watch(kioskProductsProvider)[0].department : ''",
+    "show": "ref.watch(kioskProductsProvider).length > 0"
+   },
+   "108:56": {
+    "text": "ref.watch(kioskProductsProvider).length > 0 ? fcfa(ref.watch(kioskProductsProvider)[0].price) : ''",
+    "show": "ref.watch(kioskProductsProvider).length > 0"
+   },
+   "108:67": {
+    "show": "ref.watch(kioskProductsProvider).length > 1",
+    "image": "ref.watch(kioskProductsProvider).length > 1 ? ref.watch(kioskProductsProvider)[1].image : ''"
+   },
+   "108:68": {
+    "show": "ref.watch(kioskProductsProvider).length > 1"
+   },
+   "108:69": {
+    "text": "ref.watch(kioskProductsProvider).length > 1 ? ref.watch(kioskProductsProvider)[1].title : ''",
+    "show": "ref.watch(kioskProductsProvider).length > 1"
+   },
+   "108:70": {
+    "text": "ref.watch(kioskProductsProvider).length > 1 ? ref.watch(kioskProductsProvider)[1].department : ''",
+    "show": "ref.watch(kioskProductsProvider).length > 1"
+   },
+   "108:71": {
+    "text": "ref.watch(kioskProductsProvider).length > 1 ? fcfa(ref.watch(kioskProductsProvider)[1].price) : ''",
+    "show": "ref.watch(kioskProductsProvider).length > 1"
+   },
+   "108:82": {
+    "show": "ref.watch(kioskProductsProvider).length > 2",
+    "image": "ref.watch(kioskProductsProvider).length > 2 ? ref.watch(kioskProductsProvider)[2].image : ''"
+   },
+   "108:83": {
+    "show": "ref.watch(kioskProductsProvider).length > 2"
+   },
+   "108:84": {
+    "text": "ref.watch(kioskProductsProvider).length > 2 ? ref.watch(kioskProductsProvider)[2].title : ''",
+    "show": "ref.watch(kioskProductsProvider).length > 2"
+   },
+   "108:85": {
+    "text": "ref.watch(kioskProductsProvider).length > 2 ? ref.watch(kioskProductsProvider)[2].department : ''",
+    "show": "ref.watch(kioskProductsProvider).length > 2"
+   },
+   "108:86": {
+    "text": "ref.watch(kioskProductsProvider).length > 2 ? fcfa(ref.watch(kioskProductsProvider)[2].price) : ''",
+    "show": "ref.watch(kioskProductsProvider).length > 2"
+   },
+   "108:97": {
+    "show": "ref.watch(kioskProductsProvider).length > 3",
+    "image": "ref.watch(kioskProductsProvider).length > 3 ? ref.watch(kioskProductsProvider)[3].image : ''"
+   },
+   "108:98": {
+    "show": "ref.watch(kioskProductsProvider).length > 3"
+   },
+   "108:99": {
+    "text": "ref.watch(kioskProductsProvider).length > 3 ? ref.watch(kioskProductsProvider)[3].title : ''",
+    "show": "ref.watch(kioskProductsProvider).length > 3"
+   },
+   "108:100": {
+    "text": "ref.watch(kioskProductsProvider).length > 3 ? ref.watch(kioskProductsProvider)[3].department : ''",
+    "show": "ref.watch(kioskProductsProvider).length > 3"
+   },
+   "108:101": {
+    "text": "ref.watch(kioskProductsProvider).length > 3 ? fcfa(ref.watch(kioskProductsProvider)[3].price) : ''",
+    "show": "ref.watch(kioskProductsProvider).length > 3"
+   }
+  },
+  "links": {
+   "48,340,304,360": "final l = ref.read(kioskProductsProvider); if (l.length > 0) { ref.read(kioskProductProvider.notifier).set(l[0].title); gOpen(context, '208'); }",
+   "368,340,304,360": "final l = ref.read(kioskProductsProvider); if (l.length > 1) { ref.read(kioskProductProvider.notifier).set(l[1].title); gOpen(context, '208'); }",
+   "48,720,304,360": "final l = ref.read(kioskProductsProvider); if (l.length > 2) { ref.read(kioskProductProvider.notifier).set(l[2].title); gOpen(context, '208'); }",
+   "368,720,304,360": "final l = ref.read(kioskProductsProvider); if (l.length > 3) { ref.read(kioskProductProvider.notifier).set(l[3].title); gOpen(context, '208'); }"
+  }
+ },
+ "208": {
+  "nodes": {
+   "108:139": {
+    "image": "ref.watch(kioskCurrentProvider).image"
+   },
+   "108:149": {
+    "text": "ref.watch(kioskCurrentProvider).title"
+   },
+   "108:161": {
+    "text": "fcfa(ref.watch(kioskCurrentProvider).price)",
+    "right": true
+   },
+   "108:164": {
+    "text": "ref.watch(kioskCurrentProvider).seller"
+   },
+   "108:165": {
+    "text": "'${ref.watch(kioskCurrentProvider).department} · Talent vérifié'"
+   }
+  },
+  "links": {
+   "80,980,360,82": "startPhoneTransfer(ref, context);",
+   "452,980,188,82": "ref.read(cartProvider.notifier).add(ref.read(kioskCurrentProvider).toLine()); gToast(context, 'Ajouté au panier : retrait à la borne'); "
+  }
+ },
+ "209": {
+  "nodes": {
+   "110:335": {
+    "text": "countdown(ref)"
+   }
+  },
+  "links": {
+   "130,290,460,460": "scanQr(ref, context);",
+   "230,1130,260,84": "ref.read(kioskSessionProvider.notifier).clear(); gOpen(context, '207');"
+  }
+ },
+ "210": {
+  "nodes": {
+   "110:372": {
+    "text": "kioskView(ref).title"
+   },
+   "110:373": {
+    "text": "'${kioskView(ref).department} · IUT de Douala'"
+   },
+   "110:374": {
+    "text": "fcfa(kioskView(ref).price)"
+   },
+   "110:376": {
+    "text": "'${ref.watch(nowProvider).day} ${const [\"janv.\", \"févr.\", \"mars\", \"avr.\", \"mai\", \"juin\", \"juil.\", \"août\", \"sept.\", \"oct.\", \"nov.\", \"déc.\"][ref.watch(nowProvider).month - 1]} ${ref.watch(nowProvider).year}'"
+   },
+   "110:378": {
+    "text": "'${ref.watch(nowProvider).hour.toString().padLeft(2, \"0\")}:${ref.watch(nowProvider).minute.toString().padLeft(2, \"0\")}'"
+   },
+   "110:382": {
+    "text": "ref.watch(kioskSessionProvider)?.tracking ?? 'BE-2210-7F3A'"
+   }
+  },
+  "links": {
+   "130,1100,300,92": "gToast(context, 'Ticket envoyé à l’imprimante de la borne');"
+  }
+ },
+ "191": {
+  "nodes": {
+   "83:58": {
+    "onChanged": "ref.read(formProvider.notifier).put('ms_desc', v);",
+    "after": [
+     "errorText('ms_desc', 28, 692)"
+    ]
+   }
+  },
+  "links": {
+   "24,985,342,54": "submitBrief(ref, context);",
+   "24,226,166,104": "ref.read(missionKindProvider.notifier).set(0); gToast(context, 'Catégorie : ${missionKinds[0]}');",
+   "200,226,166,104": "ref.read(missionKindProvider.notifier).set(1); gToast(context, 'Catégorie : ${missionKinds[1]}');",
+   "24,340,166,104": "ref.read(missionKindProvider.notifier).set(2); gToast(context, 'Catégorie : ${missionKinds[2]}');",
+   "200,340,166,104": "ref.read(missionKindProvider.notifier).set(3); gToast(context, 'Catégorie : ${missionKinds[3]}');",
+   "24,454,166,104": "ref.read(missionKindProvider.notifier).set(4); gToast(context, 'Catégorie : ${missionKinds[4]}');",
+   "200,454,166,104": "ref.read(missionKindProvider.notifier).set(5); gToast(context, 'Catégorie : ${missionKinds[5]}');"
+  }
+ },
+ "192": {
+  "nodes": {
+   "83:106": {
+    "text": "ref.watch(missionProvider).kind"
+   },
+   "83:107": {
+    "text": "'Brief ${ref.watch(missionProvider).id} · reçu le ${ref.watch(missionProvider).date}'"
+   },
+   "83:144": {
+    "text": "fcfa(ref.watch(missionProvider).total)",
+    "right": true
+   }
+  },
+  "links": {
+   "203,818,163,54": "acceptQuote(ref, context);",
+   "24,818,163,54": "gToast(context, 'Question envoyée à l’administrateur');"
+  }
+ },
+ "193": {
+  "nodes": {
+   "83:172": {
+    "text": "ref.watch(missionProvider).kind",
+    "right": true
+   },
+   "83:175": {
+    "text": "fcfa(ref.watch(missionProvider).total)",
+    "right": true
+   },
+   "83:178": {
+    "text": "fcfa(ref.watch(missionProvider).fee)",
+    "right": true
+   },
+   "83:183": {
+    "text": "'30 % · ${fcfa(ref.watch(missionProvider).amountOf(0))}'"
+   },
+   "83:187": {
+    "text": "'40 % · ${fcfa(ref.watch(missionProvider).amountOf(1))}'"
+   },
+   "83:190": {
+    "text": "'30 % · ${fcfa(ref.watch(missionProvider).amountOf(2))}'"
+   },
+   "83:218": {
+    "text": "ref.watch(missionProvider).funded >= 3 ? 'Tout est financé' : 'Payer ${fcfa(ref.watch(missionProvider).amountOf(ref.watch(missionProvider).funded))}'"
+   }
+  },
+  "links": {
+   "24,829,342,54": "payNextMilestone(ref, context);"
+  }
+ },
+ "194": {
+  "nodes": {
+   "83:239": {
+    "text": "'${ref.watch(missionProvider).kind} · ${ref.watch(missionProvider).id}'"
+   },
+   "164:575": {
+    "text": "'${ref.watch(missionProvider).pct}%'"
+   },
+   "83:246": {
+    "text": "'Étape ${(ref.watch(missionProvider).released + ref.watch(missionProvider).funded + 1).clamp(1, 5)} sur 5'"
+   }
+  },
+  "links": {
+   "250,560,60,30": "gOpen(context, '197');",
+   "250,644,60,30": "gOpen(context, '197');",
+   "24,910,342,84": "gToast(context, 'Message envoyé à l’équipe');"
+  }
+ },
+ "195": {
+  "nodes": {
+   "83:338": {
+    "onChanged": "ref.read(formProvider.notifier).put('ms_proof', v);",
+    "after": [
+     "errorText('ms_proof', 28, 608)"
+    ]
+   }
+  },
+  "links": {
+   "203,760,163,54": "submitProof(ref, context);",
+   "24,760,163,54": "gToast(context, 'Brouillon enregistré');"
+  }
+ },
+ "197": {
+  "nodes": {
+   "83:425": {
+    "text": "'Valider le jalon ${ref.watch(missionProvider).released + 1}'"
+   },
+   "83:436": {
+    "text": "'${(ref.watch(missionProvider).released + 1).clamp(1, 3)} sur 3'",
+    "right": true
+   },
+   "83:439": {
+    "text": "fcfa(ref.watch(missionProvider).amountOf(ref.watch(missionProvider).released))",
+    "right": true
+   },
+   "83:442": {
+    "text": "fcfa(ref.watch(missionProvider).amountOf(ref.watch(missionProvider).released) * 70 ~/ 100)",
+    "right": true
+   },
+   "83:445": {
+    "text": "fcfa(ref.watch(missionProvider).amountOf(ref.watch(missionProvider).released) * 20 ~/ 100)",
+    "right": true
+   },
+   "83:448": {
+    "text": "fcfa(ref.watch(missionProvider).amountOf(ref.watch(missionProvider).released) * 10 ~/ 100)",
+    "right": true
+   }
+  },
+  "links": {
+   "203,760,163,54": "releaseMilestone(ref, context);",
+   "24,760,163,54": "askCorrection(ref, context);"
+  }
+ },
+ "201": {
+  "nodes": {
+   "83:476": {
+    "text": "'${(245000 + ref.watch(missionProvider).studentEarned) ~/ 1000} k'"
+   },
+   "83:490": {
+    "text": "'${ref.watch(missionProvider).kind} Mbella'"
+   },
+   "83:491": {
+    "text": "'Jalon ${(ref.watch(missionProvider).released + 1).clamp(1, 3)} · ${ref.watch(missionProvider).pct} %'"
+   },
+   "83:493": {
+    "text": "ref.watch(missionProvider).proof > ref.watch(missionProvider).released ? 'À valider' : 'Livrer'"
+   },
+   "83:509": {
+    "text": "fcfa(ref.watch(missionProvider).studentEarned)",
+    "right": true
+   },
+   "83:512": {
+    "text": "fcfa(ref.watch(missionProvider).pendingAmount)",
+    "right": true
+   }
+  },
+  "links": {
+   "24,264,342,60": "gOpen(context, '195');"
+  }
  }
 }

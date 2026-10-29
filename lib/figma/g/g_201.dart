@@ -16,6 +16,7 @@ import '../live/admin.dart';
 import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
+import '../live/missions.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_201 extends ConsumerWidget {
@@ -39,7 +40,7 @@ class G_201 extends ConsumerWidget {
       gP(24, 120, 342, 76, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(74.5, 134, 13, 25, gText('3', 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
       gP(57.5, 164, 47, 14, gText('En cours', 11.5, Color(0xFF66636E), align: TextAlign.center)),
-      gP(168.5, 134, 53, 25, gText('245 k', 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
+      gP(168.5, 134, 53, 25, Consumer(builder: (context, ref, _) => gText('${(245000 + ref.watch(missionProvider).studentEarned) ~/ 1000} k', 20, Color(0xFF111015), weight: 800, align: TextAlign.center))),
       gP(173, 164, 44, 14, gText('Gagnés', 11.5, Color(0xFF66636E), align: TextAlign.center)),
       gP(138, 134, 1, 48, gBox(color: Color(0xFFF2EFF6))),
       gP(292, 134, 34, 25, gText('4,9', 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
@@ -48,10 +49,10 @@ class G_201 extends ConsumerWidget {
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 210, 85.2, 34, 'En cours', 12.5, 600), GChip(117.2, 210, 92.6, 34, 'À valider', 12.5, 500), GChip(217.8, 210, 92.6, 34, 'Terminées', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
       gP(24, 258, 342, 198, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 266, 50, 50, gBox(image: 'assets/figma/img/4b7b6cea2f4622846841cd8342842e81fa1ed891.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
-      gP(98, 270, 149, 17, gText('Identité visuelle Mbella', 13.5, Color(0xFF111015), weight: 600)),
-      gP(98, 292, 73, 14, gText('Jalon 2 · 60 %', 11.5, Color(0xFF66636E))),
+      gP(98, 270, 149, 17, Consumer(builder: (context, ref, _) => gText('${ref.watch(missionProvider).kind} Mbella', 13.5, Color(0xFF111015), weight: 600))),
+      gP(98, 292, 73, 14, Consumer(builder: (context, ref, _) => gText('Jalon ${(ref.watch(missionProvider).released + 1).clamp(1, 3)} · ${ref.watch(missionProvider).pct} %', 11.5, Color(0xFF66636E)))),
       gP(293.6, 280, 58.4, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11])),
-      gP(307.8, 284, 30, 14, gText('Livrer', 11, Color(0xFF8F5400), weight: 600, align: TextAlign.center)),
+      gP(307.8, 284, 30, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(missionProvider).proof > ref.watch(missionProvider).released ? 'À valider' : 'Livrer', 11, Color(0xFF8F5400), weight: 600, align: TextAlign.center))),
       gP(98, 324, 256, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(36, 332, 50, 50, gBox(image: 'assets/figma/img/4ca68f79023605aecb4f83724629d508e921e885.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
       gP(98, 336, 165, 17, gText('Emballage savons Kamga', 13.5, Color(0xFF111015), weight: 600)),
@@ -67,10 +68,10 @@ class G_201 extends ConsumerWidget {
       gP(24, 470, 342, 120, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(40, 484, 85, 18, gText('Mes revenus', 14, Color(0xFF111015), weight: 700)),
       gP(40, 518, 146, 16, gText('Disponible au versement', 12.5, Color(0xFF66636E))),
-      gP(270, 518, 80, 16, gText('50 400 FCFA', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),
+      gP(130, 518, 220, 16, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(missionProvider).studentEarned), 12.5, Color(0xFF111015), weight: 700, wrap: true, align: TextAlign.right))),
       gP(40, 543, 310, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 552, 139, 16, gText('En attente de validation', 12.5, Color(0xFF66636E))),
-      gP(272, 552, 78, 16, gText('72 000 FCFA', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
+      gP(132, 552, 218, 16, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(missionProvider).pendingAmount), 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(125, 832, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
       gP(47.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '244')),
@@ -88,6 +89,7 @@ class G_201 extends ConsumerWidget {
       gP(169, 762, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gOpen(context, '03')),
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gOpen(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
+      gTap(24, 264, 342, 60, () { gOpen(context, '195'); }),
     ]);
   }
 }

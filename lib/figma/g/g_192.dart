@@ -16,6 +16,7 @@ import '../live/admin.dart';
 import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
+import '../live/missions.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_192 extends ConsumerWidget {
@@ -43,8 +44,8 @@ class G_192 extends ConsumerWidget {
       gP(36, 133, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(44.667, 145.833, 22.667, 17.667, gImg('assets/figma/v/0b1915710c6b88.svg')),
       gP(49.667, 142.5, 12.667, 21, gImg('assets/figma/v/baf18a4f525e16.svg')),
-      gP(88, 132, 157, 17, gText('Identité visuelle · Parfu…', 13.5, Color(0xFF111015), weight: 600)),
-      gP(88, 154, 166, 14, gText('Brief #BR-0412 · reçu le 12 oc…', 11.5, Color(0xFF66636E))),
+      gP(88, 132, 157, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(missionProvider).kind, 13.5, Color(0xFF111015), weight: 600))),
+      gP(88, 154, 166, 14, Consumer(builder: (context, ref, _) => gText('Brief ${ref.watch(missionProvider).id} · reçu le ${ref.watch(missionProvider).date}', 11.5, Color(0xFF66636E)))),
       gP(268, 142, 84, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
       gP(283, 146, 54, 14, gText('Devis prêt', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
       gP(24, 200, 148, 19, gText('Étapes de validation', 15, Color(0xFF111015), weight: 700)),
@@ -78,7 +79,7 @@ class G_192 extends ConsumerWidget {
       gP(201, 616, 149, 16, gText('3 étudiants + 1 encadreur', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
       gP(40, 641, 310, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 650, 29, 16, gText('Total', 12.5, Color(0xFF66636E))),
-      gP(264, 650, 86, 16, gText('180 000 FCFA', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),
+      gP(124, 650, 226, 16, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(missionProvider).total), 12.5, Color(0xFF111015), weight: 700, wrap: true, align: TextAlign.right))),
       gP(24, 702, 108.667, 76, gBox(image: 'assets/figma/img/4b7b6cea2f4622846841cd8342842e81fa1ed891.png', fit: BoxFit.cover, radii: [16, 16, 16, 16])),
       gP(140.667, 702, 108.667, 76, gBox(image: 'assets/figma/img/1574e42a325d3a4ac509841e7a5eb5a285a3d991.png', fit: BoxFit.cover, radii: [16, 16, 16, 16])),
       gP(257.333, 702, 108.667, 76, gBox(image: 'assets/figma/img/768cf16e6d8103ad4296d6cc0fdf1af309f03817.png', fit: BoxFit.cover, radii: [16, 16, 16, 16])),
@@ -88,6 +89,8 @@ class G_192 extends ConsumerWidget {
       gP(203, 818, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Accepter le devis')),
       gP(224, 836, 121, 18, gText('Accepter le devis', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 888, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      gTap(203, 818, 163, 54, () { acceptQuote(ref, context); }),
+      gTap(24, 818, 163, 54, () { gToast(context, 'Question envoyée à l’administrateur'); }),
     ]);
   }
 }

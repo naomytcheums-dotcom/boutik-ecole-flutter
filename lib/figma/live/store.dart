@@ -255,3 +255,6 @@ class StrV extends Notifier<String> {
   String build() => '';
   void set(String v) => state = v;
 }
+
+/// Horloge de l'application (remplaçable dans les tests pour des rendus stables).
+final nowProvider = Provider<DateTime>((_) => DateTime.now());

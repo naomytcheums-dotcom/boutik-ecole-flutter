@@ -16,6 +16,7 @@ import '../live/admin.dart';
 import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
+import '../live/missions.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_210 extends ConsumerWidget {
@@ -37,17 +38,17 @@ class G_210 extends ConsumerWidget {
       gP(584, 762, 52, 52, gBox(color: Color(0xFFF0EBF2), oval: true)),
       gP(147, 785, 426, 6, gImg('assets/figma/v/25156d5fff55a1.svg')),
       gP(146, 546, 108, 108, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [30, 30, 30, 30])),
-      gP(274, 556, 313, 35, gText('Lampe en bois recyclé', 28, Color(0xFF111015), weight: 600, wrap: true)),
-      gP(274, 612, 313, 23, gText('Atelier Génie civil · IUT de Douala', 18, Color(0xFF66636E), wrap: true)),
-      gP(274, 646, 164, 33, gText('25 000 FCFA', 26, Color(0xFF5A3FE0), weight: 700)),
+      gP(274, 556, 313, 35, Consumer(builder: (context, ref, _) => gText(kioskView(ref).title, 28, Color(0xFF111015), weight: 600, wrap: true))),
+      gP(274, 612, 313, 23, Consumer(builder: (context, ref, _) => gText('${kioskView(ref).department} · IUT de Douala', 18, Color(0xFF66636E), wrap: true))),
+      gP(274, 646, 164, 33, Consumer(builder: (context, ref, _) => gText(fcfa(kioskView(ref).price), 26, Color(0xFF5A3FE0), weight: 700))),
       gP(146, 696, 35, 19, gText('Date', 15, Color(0xFF66636E))),
-      gP(146, 720, 115, 24, gText('27 oct. 2026', 19, Color(0xFF111015), weight: 600)),
+      gP(146, 720, 115, 24, Consumer(builder: (context, ref, _) => gText('${ref.watch(nowProvider).day} ${const ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."][ref.watch(nowProvider).month - 1]} ${ref.watch(nowProvider).year}', 19, Color(0xFF111015), weight: 600))),
       gP(298, 696, 44, 19, gText('Heure', 15, Color(0xFF66636E))),
-      gP(298, 720, 52, 24, gText('10:42', 19, Color(0xFF111015), weight: 600)),
+      gP(298, 720, 52, 24, Consumer(builder: (context, ref, _) => gText('${ref.watch(nowProvider).hour.toString().padLeft(2, "0")}:${ref.watch(nowProvider).minute.toString().padLeft(2, "0")}', 19, Color(0xFF111015), weight: 600))),
       gP(450, 696, 48, 19, gText('Retrait', 15, Color(0xFF66636E))),
       gP(450, 720, 94, 24, gText('Atelier GC', 19, Color(0xFF111015), weight: 600)),
       gP(308.5, 826, 103, 20, gText('Code de suivi', 16, Color(0xFF66636E))),
-      gP(235.5, 854, 249, 43, gText('BE-2210-7F3A', 34, Color(0xFF111015), weight: 700)),
+      gP(235.5, 854, 249, 43, Consumer(builder: (context, ref, _) => gText(ref.watch(kioskSessionProvider)?.tracking ?? 'BE-2210-7F3A', 34, Color(0xFF111015), weight: 700))),
       gP(173, 927, 8, 76, gImg('assets/figma/v/bc15be253fcc8c.svg')),
       gP(181, 927, 10, 76, gImg('assets/figma/v/833619e80c5a5a.svg')),
       gP(189, 927, 12, 76, gImg('assets/figma/v/1b82a3c6ea8156.svg')),
@@ -104,6 +105,7 @@ class G_210 extends ConsumerWidget {
       gP(288.75, 190.75, 142.5, 142.5, gImg('assets/figma/r/178_50.png')),
       gP(326.25, 237.625, 67.5, 55, gImg('assets/figma/r/178_51.png')),
       gTap(446, 1100, 144, 92, () => gOpen(context, '237')),
+      gTap(130, 1100, 300, 92, () { gToast(context, 'Ticket envoyé à l’imprimante de la borne'); }),
     ]);
   }
 }

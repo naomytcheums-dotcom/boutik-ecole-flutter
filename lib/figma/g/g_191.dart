@@ -16,6 +16,7 @@ import '../live/admin.dart';
 import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
+import '../live/missions.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_191 extends ConsumerWidget {
@@ -80,7 +81,8 @@ class G_191 extends ConsumerWidget {
       gP(214, 534, 80, 13, gText('Marché, finance', 10.5, Color(0xCCFFFFFF), weight: 500)),
       gP(24, 572, 130, 16, gText('Décrivez votre besoin', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 592, 342, 96, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
-      gP(24, 592, 342, 96, GField(hint: 'Ex. identité visuelle complète pour ma marque de parfums…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, multiline: true, padT: 14)),
+      gP(24, 592, 342, 96, GField(hint: 'Ex. identité visuelle complète pour ma marque de parfums…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, onChanged: (v) { ref.read(formProvider.notifier).put('ms_desc', v); }, multiline: true, padT: 14)),
+      errorText('ms_desc', 28, 692),
       gP(24, 702, 89, 16, gText('Budget estimé', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 722, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 722, 342, 48, GField(hint: '', initial: '150 000 – 300 000 FCFA', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
@@ -103,6 +105,13 @@ class G_191 extends ConsumerWidget {
       gP(24, 985, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Envoyer mon besoin')),
       gP(124.5, 1003, 141, 18, gText('Envoyer mon besoin', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 1055, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      gTap(24, 985, 342, 54, () { submitBrief(ref, context); }),
+      gTap(24, 226, 166, 104, () { ref.read(missionKindProvider.notifier).set(0); gToast(context, 'Catégorie : ${missionKinds[0]}'); }),
+      gTap(200, 226, 166, 104, () { ref.read(missionKindProvider.notifier).set(1); gToast(context, 'Catégorie : ${missionKinds[1]}'); }),
+      gTap(24, 340, 166, 104, () { ref.read(missionKindProvider.notifier).set(2); gToast(context, 'Catégorie : ${missionKinds[2]}'); }),
+      gTap(200, 340, 166, 104, () { ref.read(missionKindProvider.notifier).set(3); gToast(context, 'Catégorie : ${missionKinds[3]}'); }),
+      gTap(24, 454, 166, 104, () { ref.read(missionKindProvider.notifier).set(4); gToast(context, 'Catégorie : ${missionKinds[4]}'); }),
+      gTap(200, 454, 166, 104, () { ref.read(missionKindProvider.notifier).set(5); gToast(context, 'Catégorie : ${missionKinds[5]}'); }),
     ]);
   }
 }

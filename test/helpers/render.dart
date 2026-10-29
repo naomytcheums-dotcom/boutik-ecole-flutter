@@ -1,3 +1,4 @@
+import 'package:boutik_ecole/figma/live/store.dart';
 import 'package:boutik_ecole/figma/live/auth.dart';
 import 'package:boutik_ecole/figma/gsound.dart';
 import 'dart:io';
@@ -41,7 +42,10 @@ Future<void> pumpScreen(WidgetTester tester, String id, {Size size = const Size(
   addTearDown(tester.view.reset);
   // Les rendus de référence sont pris avec le compte administrateur (tous les écrans sont accessibles).
   await tester.pumpWidget(ProviderScope(
-    overrides: [initialAccountProvider.overrideWithValue(seedAccounts.last)],
+    overrides: [
+      initialAccountProvider.overrideWithValue(seedAccounts.last),
+      nowProvider.overrideWithValue(DateTime(2026, 10, 27, 10, 42)),
+    ],
     child: BoutikEcoleApp(initialLocation: '/s/$id'),
   ));
   await tester.pumpAndSettle();

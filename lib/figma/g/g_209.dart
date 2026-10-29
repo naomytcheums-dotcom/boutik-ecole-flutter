@@ -16,6 +16,7 @@ import '../live/admin.dart';
 import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
+import '../live/missions.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_209 extends ConsumerWidget {
@@ -353,7 +354,7 @@ class G_209 extends ConsumerWidget {
       gP(334, 496, 52, 48, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(311, 776, 98, 98, gImg('assets/figma/v/a1196a0ad770a6.svg')),
       gP(311, 868, 98, 98, gImg('assets/figma/v/eddce2566388cb.svg'), rot: -1.571),
-      gP(335, 806, 50, 28, gText('4:59', 22, Color(0xFF111015), weight: 700)),
+      gP(335, 806, 50, 28, Consumer(builder: (context, ref, _) => gText(countdown(ref), 22, Color(0xFF111015), weight: 700))),
       gP(306.5, 884, 107, 21, gText('Code valable', 17, Color(0xFF66636E))),
       gP(48, 930, 200, 150, gBox(color: Color(0x99FFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 8), blurRadius: 24, spreadRadius: 0)], backBlur: 28, radii: [36, 36, 36, 36])),
       gP(68, 948, 48, 48, gBox(color: Color(0xFF111015), oval: true)),
@@ -370,7 +371,8 @@ class G_209 extends ConsumerWidget {
       gP(230, 1130, 260, 84, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x14403366), offset: Offset(0, 6), blurRadius: 16, spreadRadius: 0)], radii: [42, 42, 42, 42])),
       gP(315.5, 1152, 89, 30, gText('Annuler', 24, Color(0xFF111015), weight: 600)),
       gP(130, 290, 460, 460, const SizedBox.expand(), tap: () => gOpen(context, '210')),
-      gTap(130, 290, 460, 460, () => gOpen(context, '210')),
+      gTap(130, 290, 460, 460, () { scanQr(ref, context); }),
+      gTap(230, 1130, 260, 84, () { ref.read(kioskSessionProvider.notifier).clear(); gOpen(context, '207'); }),
     ]);
   }
 }

@@ -75,9 +75,7 @@ class G_P4 extends StatelessWidget {
       gP(24, 790, 166, 40, gBox(color: Color(0xFFFFFFFF), radii: [20, 20, 20, 20])),
       gP(40.333, 800.333, 19.333, 19.333, gImg('assets/figma/v/94aebfd05b72e8.svg')),
       gP(47, 803, 8.667, 11.333, gImg('assets/figma/v/92fb5f1c9637a7.svg')),
-      gP(68, 802, 48, 16, gText('Planifier', 12.5, Color(0xFF111015), weight: 500)),
-      gP(200, 790, 166, 40, gBox(color: Color(0xFF111015), radii: [20, 20, 20, 20]), tap: () => gToast(context, 'Démonstration : Propulser ce post')),
-      gP(230, 802, 106, 16, gText('Propulser ce post', 12.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(9, 790, 166, 40, 'Planifier', 12.5, 500), GChip(200, 790, 166, 40, 'Propulser ce post', 12.5, 600)], selected: 1, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 20)),
       gP(22, 38, 34, 32, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
     ]);
   }

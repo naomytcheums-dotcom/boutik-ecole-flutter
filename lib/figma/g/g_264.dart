@@ -21,10 +21,8 @@ class G_264 extends StatelessWidget {
       gP(940, 15, 28, 28, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, border: Color(0xFFFFFFFF), bw: 2, oval: true)),
       gP(960, 15, 28, 28, gBox(image: 'assets/figma/img/c15478a4e0a5cc1be462d8179ed1a24390853242.png', fit: BoxFit.cover, border: Color(0xFFFFFFFF), bw: 2, oval: true)),
       gP(980, 15, 28, 28, gBox(image: 'assets/figma/img/8d2db59994dcfe0c5b9851845e0b9f6aec49d36d.png', fit: BoxFit.cover, border: Color(0xFFFFFFFF), bw: 2, oval: true)),
-      gP(1004, 22, 15, 13, gText('+3', 11, Color(0xFF66636E), weight: 500, inter: true)),
       gP(1026, 17, 24, 24, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFF6A4DFF), Color(0xFFB46BFF)], stops: [0, 1]), oval: true)),
-      gP(1082, 10, 170, 36, gBox(color: Color(0xFF0B0B0D), radii: [18, 18, 18, 18])),
-      gP(1112.5, 20, 51, 15, gText('Exporter', 12, Color(0xFFFFFFFF), weight: 600, inter: true)),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(926.5, 10, 170, 36, '+3', 11, 500), GChip(1082, 10, 170, 36, 'Exporter', 12, 600)], selected: 1, selFill: Color(0xFF0B0B0D), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 18, inter: true)),
       gP(1214.125, 20.125, 15.75, 15.75, gImg('assets/figma/v/fa3cac59b84f88.svg')),
       gP(0, 56, 240, 834, gBox(color: Color(0xFFF1EFEC))),
       gP(20, 84, 42, 12, gText('Principal', 10, Color(0xFF716D65), weight: 500, inter: true)),
@@ -94,10 +92,8 @@ class G_264 extends StatelessWidget {
       gP(881, 190, 349, 40, GField(hint: '', initial: 'Titre : Les talents de l’IUT de Douala', size: 11.5, hintColor: Color(0xFF111015), weight: 400, padL: 14, inter: true)),
       gP(881, 246, 349, 220, gBox(color: Color(0xFFF4F3F1), radii: [14, 14, 14, 14])),
       gP(895, 262, 263, 14, gText('Bloc héros · texte · liste de produits en vedette…', 11.5, Color(0xFF66636E), inter: true)),
-      gP(881, 500, 120, 36, gBox(color: Color(0xFF0B0B0D), radii: [18, 18, 18, 18]), tap: () => gToast(context, 'Démonstration : Publier')),
-      gP(921, 510, 40, 14, gText('Publier', 11.5, Color(0xFFFFFFFF), weight: 600, inter: true)),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(881, 500, 120, 36, 'Publier', 11.5, 600), GChip(1001, 500, 120, 36, 'Aperçu', 11.5, 500)], selected: 0, selFill: Color(0xFF0B0B0D), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 18, inter: true)),
       gP(1011, 500, 100, 36, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E3DE), bw: 1, radii: [18, 18, 18, 18]), tap: () => gToast(context, 'Démonstration : Aperçu')),
-      gP(1041, 510, 40, 14, gText('Aperçu', 11.5, Color(0xFF111015), weight: 500, inter: true)),
       gP(881, 560, 165, 13, gText('Historique des versions conservé', 10.5, Color(0xFF66636E), inter: true)),
     ]);
   }

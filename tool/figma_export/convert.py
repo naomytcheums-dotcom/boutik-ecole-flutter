@@ -264,22 +264,28 @@ def analyze(doc, nid):
         if not sf or lum(sf['color']) < 0.5:
             continue
         ts = [t for t in texts if inside(t, r, 2) and t['n']['id'] not in SKIP]
-        if len(ts) != 1:
+        if not ts or len(ts) > 3:
             continue
-        t = ts[0]
+        ts.sort(key=lambda t_: t_['x'])
+        t = ts[-1]
         tn = t['n']
+        if any(o['x'] + o['w'] > t['x'] + 1 for o in ts[:-1]):
+            continue
         if '\n' in tn['characters'] or len(tn['characters']) > 60:
             continue
         left = t['x'] - r['x']
-        if not (8 <= left <= 48):
+        if not (8 <= left <= 120):
             continue
         if t['h'] > 1.7 * tn['style'].get('fontSize', 12):
             continue
         col = solid_fill(tn)
         grey = col and abs(col['color']['r'] - col['color']['g']) < 0.08 and 0.3 < lum(col['color']) < 0.8
-        if not (grey or named):
+        dots = set(tn['characters'].strip()) == {'•'}
+        if not (grey or named or dots):
             continue
         if tn['style'].get('textAlignHorizontal') == 'CENTER' and abs((t['x'] + t['w'] / 2) - (r['x'] + r['w'] / 2)) < 6:
+            continue
+        if left > 48 and len(ts) == 1:
             continue
         ROLE[n['id']] = ('input', dict(t=tn, left=left, multi=False))
         SKIP.add(tn['id'])
@@ -324,6 +330,48 @@ def analyze(doc, nid):
             SKIP.add(c[1]['n']['id'])
             if c[0]['n']['id'] != row[0][0]['n']['id']:
                 SKIP.add(c[0]['n']['id'])
+
+    # onglets segmentés : une pastille sombre sélectionnée + libellés voisins sans rectangle
+    done = {k for v in ROLE.values() if v[0] == 'choice' for c in v[1]['row'] for k in (c[0]['n']['id'],)}
+    for r in rects:
+        n = r['n']
+        if n['id'] in ROLE or n['id'] in SKIP or n['id'] in done or linked(r):
+            continue
+        sf = solid_fill(n)
+        if not sf or lum(sf['color']) > 0.3 or not (24 <= r['h'] <= 50 and 50 <= r['w'] <= 220 and rad(n) >= r['h'] / 2 - 3):
+            continue
+        own = [t for t in texts if inside(t, r, 2) and t['n']['id'] not in SKIP]
+        if len(own) != 1:
+            continue
+        cy = r['y'] + r['h'] / 2
+        near = [t for t in texts if t is not own[0] and t['n']['id'] not in SKIP and abs(t['y'] + t['h'] / 2 - cy) <= 4
+                and not inside(t, r, 2) and r['x'] - 260 <= t['x'] <= r['x'] + r['w'] + 260
+                and abs(t['n']['style'].get('fontSize', 0) - own[0]['n']['style'].get('fontSize', 0)) <= 1.5]
+        if not (1 <= len(near) <= 5):
+            continue
+        row = [(r, own[0], sf)]
+        for t in near:
+            tc = solid_fill(t['n'])
+            if not tc:
+                row = None
+                break
+            fake = dict(x=t['x'] + t['w'] / 2 - r['w'] / 2, y=r['y'], w=r['w'], h=r['h'], rot=False, n=dict(id='seg-' + t['n']['id'], name='seg', type='RECTANGLE', cornerRadius=rad(n), fills=[]))
+            row.append((fake, t, dict(type='SOLID', color=dict(r=1, g=1, b=1, a=0), opacity=1)))
+        if not row:
+            continue
+        row.sort(key=lambda c: c[0]['x'])
+        sel = [i for i, c in enumerate(row) if c[0]['n']['id'] == n['id']][0]
+        unsel = [c for c in row if c[0]['n']['id'] != n['id']][0]
+        ROLE[row[0][0]['n']['id']] = ('choice', dict(row=row, sel=sel, unsel=unsel, selc=(r, own[0], sf)))
+        for c in row:
+            SKIP.add(c[1]['n']['id'])
+            if c[0]['n']['id'] != row[0][0]['n']['id']:
+                SKIP.add(c[0]['n']['id'])
+        if row[0][0]['n']['id'].startswith('seg-'):
+            # le premier élément est un faux rectangle : on ancre le rôle sur la pastille sélectionnée
+            del ROLE[row[0][0]['n']['id']]
+            ROLE[n['id']] = ('choice', dict(row=row, sel=sel, unsel=unsel, selc=(r, own[0], sf)))
+            SKIP.discard(n['id'])
     # boutons : rectangle arrondi + libellé centré, sans lien
     for r in rects:
         n = r['n']
@@ -464,8 +512,8 @@ def emit_node(ctx, n, PM, ox, oy, out, root=False):
             st_ = tn['style']
             f_ = solid_fill(tn)
             hc = color(f_['color'], f_.get('opacity', 1)) if f_ else 'Color(0xFF8C8A93)'
-            obs = ', obscure: true' if re.search('mot de passe|password', tn['characters'], re.I) else ''
-            dark = bool(f_) and lum(f_['color']) < 0.35
+            obs = ', obscure: true' if (re.search('mot de passe|password', tn['characters'], re.I) or set(tn['characters'].strip()) == {'•'}) else ''
+            dark = bool(f_) and lum(f_['color']) < 0.35 and set(tn['characters'].strip()) != {'•'}
             txt = ("hint: '', initial: %s" % dq(tn['characters'])) if dark else ("hint: %s" % dq(tn['characters']))
             out.append("gP(%s, GField(%s, size: %s, hintColor: %s, weight: %d, padL: %s%s%s))" % (
                 geo, txt, num(st_.get('fontSize', 14)), hc, int(st_.get('fontWeight', 400)), num(role[1]['left']),

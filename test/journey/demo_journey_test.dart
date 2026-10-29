@@ -50,6 +50,7 @@ void main() {
         if (router().state.uri.path == '/s/$to') {
           ok = true;
         } else {
+          await tester.pump(const Duration(seconds: 3)); // laisse disparaître un éventuel message bref
           router().go('/s/$from');
           await tester.pumpAndSettle();
         }

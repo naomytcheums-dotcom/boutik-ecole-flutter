@@ -802,6 +802,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class %s extends ConsumerWidget {

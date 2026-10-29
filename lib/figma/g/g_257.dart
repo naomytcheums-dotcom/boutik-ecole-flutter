@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_257 extends ConsumerWidget {
@@ -57,11 +58,11 @@ class G_257 extends ConsumerWidget {
       gP(146, 698, 98, 16, gText('Vérifier le statut', 13, Color(0xFFFFFFFF), weight: 600)),
       gP(24, 744, 342, 48, gBox(color: Color(0xBFFFFFFF), border: Color(0xFFFFFFFF), bw: 1, radii: [24, 24, 24, 24])),
       gP(95, 760, 200, 16, gText('Changer de moyen de paiement', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 680, 342, 52, const SizedBox.expand(), tap: () => gOpen(context, '259')),
+      
       gP(24, 744, 342, 48, const SizedBox.expand(), tap: () => gOpen(context, '258')),
       gP(145.167, 180.167, 99.667, 99.667, gImg('assets/figma/r/195_20.png')),
       gP(188.5, 197.5, 30.335, 47.668, gImg('assets/figma/r/195_21.png')),
-      gTap(24, 680, 342, 52, () { ref.read(ordersProvider.notifier).markPaid(ref.read(lastOrderProvider).id); gOpen(context, '259'); }),
+      gTap(24, 680, 342, 52, () { ref.read(payProvider.notifier).check(context, ref.read(lastOrderProvider)); }),
       gTap(24, 744, 342, 48, () => gOpen(context, '258')),
     ]);
   }

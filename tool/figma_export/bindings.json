@@ -117,6 +117,11 @@
    "24,264,343,91": "ref.read(payMethodProvider.notifier).set(1); gToast(context, 'Mobile Money sélectionné');",
    "23,713,344,59": "final o = ref.read(ordersProvider.notifier).place(); ref.read(auditProvider.notifier).log(ref.read(profileAccountProvider).name, 'Commande créée', o.id, 'Finances'); gOpen(context, '257');",
    "20,790,350,50": "final o = ref.read(ordersProvider.notifier).place(); ref.read(auditProvider.notifier).log(ref.read(profileAccountProvider).name, 'Commande créée', o.id, 'Finances'); gOpen(context, '257');"
+  },
+  "replace": {
+   "gTap(23, 713, 344, 59, () { final o = ref.read(ordersProvider.notifier).place(); ref.read(auditProvider.notifier).log(ref.read(profileAccountProvider).name, 'Commande créée', o.id, 'Finances'); gOpen(context, '257'); }),": "gTap(23, 713, 344, 59, () { startPayment(ref, context); }),",
+   "gTap(20, 790, 350, 50, () { final o = ref.read(ordersProvider.notifier).place(); ref.read(auditProvider.notifier).log(ref.read(profileAccountProvider).name, 'Commande créée', o.id, 'Finances'); gOpen(context, '257'); }),": "",
+   "gP(43.409, 399.039, 94, 19, gText('Récapitulatif', 14.922, Color(0xFF111015), weight: 700)),": "gP(43, 362, 70, 20, gText('Numéro :', 12, Color(0xFF66636E), weight: 500)), gP(100, 356, 240, 30, Consumer(builder: (context, ref, _) => GField(hint: '6XX XX XX XX', initial: ref.read(payPhoneProvider), size: 13, hintColor: Color(0xFF8C8A93), weight: 600, padL: 0, numeric: true, maxLength: 12, onChanged: (v) { ref.read(payPhoneProvider.notifier).set(v); }))), gP(43.409, 399.039, 94, 19, gText('Récapitulatif', 14.922, Color(0xFF111015), weight: 700)),"
   }
  },
  "257": {
@@ -139,6 +144,10 @@
   },
   "links": {
    "24,680,342,52": "ref.read(ordersProvider.notifier).markPaid(ref.read(lastOrderProvider).id); gOpen(context, '259');"
+  },
+  "replace": {
+   "gP(24, 680, 342, 52, const SizedBox.expand(), tap: () => gOpen(context, '259')),": "",
+   "gTap(24, 680, 342, 52, () { ref.read(ordersProvider.notifier).markPaid(ref.read(lastOrderProvider).id); gOpen(context, '259'); }),": "gTap(24, 680, 342, 52, () { ref.read(payProvider.notifier).check(context, ref.read(lastOrderProvider)); }),"
   }
  },
  "259": {

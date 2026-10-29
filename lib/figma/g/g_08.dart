@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_08 extends ConsumerWidget {
@@ -55,7 +56,7 @@ class G_08 extends ConsumerWidget {
       gP(153.287, 288.629, 130, 16, gText('Mobile Money (autre)', 12.887, Color(0xFF111015), weight: 500)),
       gP(153.287, 313.899, 118, 14, gText('MTN Money, Wave, etc.', 10.852, Color(0xFF66636E))),
       gP(334.383, 301.299, 16.278, 16.278, gBox(border: Color(0xFF6B6877), bw: 1.696, oval: true)),
-      gP(43.409, 399.039, 94, 19, gText('Récapitulatif', 14.922, Color(0xFF111015), weight: 700)),
+      gP(43, 362, 70, 20, gText('Numéro :', 12, Color(0xFF66636E), weight: 500)), gP(100, 356, 240, 30, Consumer(builder: (context, ref, _) => GField(hint: '6XX XX XX XX', initial: ref.read(payPhoneProvider), size: 13, hintColor: Color(0xFF8C8A93), weight: 600, padL: 0, numeric: true, maxLength: 12, onChanged: (v) { ref.read(payPhoneProvider.notifier).set(v); }))), gP(43.409, 399.039, 94, 19, gText('Récapitulatif', 14.922, Color(0xFF111015), weight: 700)),
       gP(43.409, 442.163, 61, 15, Consumer(builder: (context, ref, _) => gText('Articles (${ref.watch(totalsProvider).count})', 12.209, Color(0xFF66636E)))),
       gP(131.339, 442.163, 220, 15, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(totalsProvider).subtotal), 11.53, Color(0xFF5A3FE0), weight: 600, wrap: true, align: TextAlign.right))),
       gP(43.409, 475.197, 51, 15, gText('Livraison', 12.209, Color(0xFF66636E))),
@@ -89,8 +90,8 @@ class G_08 extends ConsumerWidget {
       gP(184, 833, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 831.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       gTap(27, 66, 22, 22, () => gOpen(context, '07')),
-      gTap(23, 713, 344, 59, () { final o = ref.read(ordersProvider.notifier).place(); ref.read(auditProvider.notifier).log(ref.read(profileAccountProvider).name, 'Commande créée', o.id, 'Finances'); gOpen(context, '257'); }),
-      gTap(20, 790, 350, 50, () { final o = ref.read(ordersProvider.notifier).place(); ref.read(auditProvider.notifier).log(ref.read(profileAccountProvider).name, 'Commande créée', o.id, 'Finances'); gOpen(context, '257'); }),
+      gTap(23, 713, 344, 59, () { startPayment(ref, context); }),
+      
       gTap(22, 165, 345, 88, () { ref.read(payMethodProvider.notifier).set(0); gToast(context, 'Orange Money sélectionné'); }),
       gTap(24, 264, 343, 91, () { ref.read(payMethodProvider.notifier).set(1); gToast(context, 'Mobile Money sélectionné'); }),
     ]);

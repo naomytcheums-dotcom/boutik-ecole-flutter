@@ -1,11 +1,12 @@
 // GÉNÉRÉ par tool/figma_export/convert.py — écran 95b (nœud Figma 39:872). Ne pas éditer à la main.
-// ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: camel_case_types, prefer_is_empty, prefer_interpolation_to_compose_strings, unnecessary_string_interpolations, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/l06.dart';
+import '../live/l09.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_95b extends ConsumerWidget {

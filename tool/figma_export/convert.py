@@ -500,6 +500,11 @@ def _emit_node_inner(ctx, n, PM, ox, oy, out, root=False):
         drawn = False  # ombre portée par les enfants (icônes) : on ne dessine pas de rectangle
     r = radii(n)
     args = list(fa) + sa + ea
+    fb_ = BINDINGS.get(ctx.sid, {}).get('nodes', {}).get(n['id'], {}).get('fill')
+    if fb_:
+        args = [('color: (%s)' % fb_) if a.startswith('color: ') else a for a in args]
+        if not any(a.startswith('color: ') for a in args):
+            args.append('color: (%s)' % fb_)
     if r and not (t == 'ELLIPSE'):
         args.append('radii: ' + r)
     if t == 'ELLIPSE':
@@ -625,6 +630,8 @@ def emit_text(ctx, n, geo, x, y, w, h, extra, tap, out):
     else:
         b_ = BINDINGS.get(ctx.sid, {}).get('nodes', {}).get(n['id'], {})
         if b_.get('text'):
+            if b_.get('color'):
+                col = '(%s)' % b_['color']
             if b_.get('right') and not wrap:
                 rb = True
                 common = [a for a in common if not a.startswith(('wrap', 'align'))] + ['wrap: true', 'align: TextAlign.right']
@@ -700,13 +707,14 @@ def convert(sid):
     body = ',\n      '.join(out)
     cls = class_name(sid)
     code = """// GÉNÉRÉ par tool/figma_export/convert.py — écran %s (nœud Figma %s). Ne pas éditer à la main.
-// ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: camel_case_types, prefer_is_empty, prefer_interpolation_to_compose_strings, unnecessary_string_interpolations, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/l06.dart';
+import '../live/l09.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class %s extends ConsumerWidget {

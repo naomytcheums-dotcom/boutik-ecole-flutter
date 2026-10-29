@@ -1,11 +1,12 @@
 // GÉNÉRÉ par tool/figma_export/convert.py — écran 260 (nœud Figma 184:290). Ne pas éditer à la main.
-// ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: camel_case_types, prefer_is_empty, prefer_interpolation_to_compose_strings, unnecessary_string_interpolations, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/l06.dart';
+import '../live/l09.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_260 extends ConsumerWidget {
@@ -28,37 +29,37 @@ class G_260 extends ConsumerWidget {
       gP(24, 124, 342, 640, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [30, 30, 30, 30])),
       gP(44, 144, 98, 19, gText('Boutik-École', 15, Color(0xFF111015), weight: 700)),
       gP(44, 166, 127, 13, gText('IUT de Douala · Cameroun', 10.5, Color(0xFF66636E))),
-      gP(201, 144, 145, 14, gText('Facture n° FA-2026-00391', 11, Color(0xFF111015), weight: 600)),
+      gP(201, 144, 145, 14, Consumer(builder: (context, ref, _) => gText('Facture n° FA-2026-' + ref.watch(lastOrderProvider).id.substring(ref.watch(lastOrderProvider).id.length - 4), 11, Color(0xFF111015), weight: 600))),
       gP(143, 164, 203, 13, Consumer(builder: (context, ref, _) => gText(ref.watch(lastOrderProvider).date, 10.5, Color(0xFF66636E), wrap: true, align: TextAlign.right))),
       gP(44, 200, 302, 30, gBox(color: Color(0xFFF4F1F8), radii: [10, 10, 10, 10])),
       gP(54, 208, 61, 13, gText('Désignation', 10.5, Color(0xFF66636E), weight: 500)),
       gP(226, 208, 20, 13, gText('Qté', 10.5, Color(0xFF66636E), weight: 500)),
       gP(293, 208, 43, 13, gText('Montant', 10.5, Color(0xFF66636E), weight: 500)),
-      gP(54, 248, 128, 15, gText('Lampe en bois recyclé', 12, Color(0xFF111015), weight: 500)),
-      gP(230, 248, 8, 15, gText('2', 12, Color(0xFF111015))),
-      gP(292, 248, 44, 15, gText('50 000', 12, Color(0xFF111015), weight: 600)),
+      gP(54, 248, 128, 15, Consumer(builder: (context, ref, _) => gText(ref.watch(lastOrderProvider).lines.length > 0 ? ref.watch(lastOrderProvider).lines[0].title : '', 12, Color(0xFF111015), weight: 500))),
+      gP(230, 248, 8, 15, Consumer(builder: (context, ref, _) => gText(ref.watch(lastOrderProvider).lines.length > 0 ? '${ref.watch(lastOrderProvider).lines[0].qty}' : '', 12, Color(0xFF111015)))),
+      gP(152, 248, 184, 15, Consumer(builder: (context, ref, _) => gText(ref.watch(lastOrderProvider).lines.length > 0 ? fcfa(ref.watch(lastOrderProvider).lines[0].price * ref.watch(lastOrderProvider).lines[0].qty).replaceAll(' FCFA', '') : '', 12, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(44, 276, 302, 1, gBox(color: Color(0xFFEEECF1))),
-      gP(54, 288, 108, 15, gText('Kit solaire portable', 12, Color(0xFF111015), weight: 500)),
-      gP(230, 288, 5, 15, gText('1', 12, Color(0xFF111015))),
-      gP(295, 288, 41, 15, gText('18 000', 12, Color(0xFF111015), weight: 600)),
+      gP(54, 288, 108, 15, Consumer(builder: (context, ref, _) => gText(ref.watch(lastOrderProvider).lines.length > 1 ? ref.watch(lastOrderProvider).lines[1].title : '', 12, Color(0xFF111015), weight: 500))),
+      gP(230, 288, 5, 15, Consumer(builder: (context, ref, _) => gText(ref.watch(lastOrderProvider).lines.length > 1 ? '${ref.watch(lastOrderProvider).lines[1].qty}' : '', 12, Color(0xFF111015)))),
+      gP(155, 288, 181, 15, Consumer(builder: (context, ref, _) => gText(ref.watch(lastOrderProvider).lines.length > 1 ? fcfa(ref.watch(lastOrderProvider).lines[1].price * ref.watch(lastOrderProvider).lines[1].qty).replaceAll(' FCFA', '') : '', 12, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(44, 316, 302, 1, gBox(color: Color(0xFFEEECF1))),
-      gP(54, 328, 114, 15, gText('Support de tablette', 12, Color(0xFF111015), weight: 500)),
-      gP(230, 328, 8, 15, gText('5', 12, Color(0xFF111015))),
-      gP(292, 328, 44, 15, gText('30 000', 12, Color(0xFF111015), weight: 600)),
+      gP(54, 328, 114, 15, Consumer(builder: (context, ref, _) => gText(ref.watch(lastOrderProvider).lines.length > 2 ? ref.watch(lastOrderProvider).lines[2].title : '', 12, Color(0xFF111015), weight: 500))),
+      gP(230, 328, 8, 15, Consumer(builder: (context, ref, _) => gText(ref.watch(lastOrderProvider).lines.length > 2 ? '${ref.watch(lastOrderProvider).lines[2].qty}' : '', 12, Color(0xFF111015)))),
+      gP(152, 328, 184, 15, Consumer(builder: (context, ref, _) => gText(ref.watch(lastOrderProvider).lines.length > 2 ? fcfa(ref.watch(lastOrderProvider).lines[2].price * ref.watch(lastOrderProvider).lines[2].qty).replaceAll(' FCFA', '') : '', 12, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(44, 356, 302, 1, gBox(color: Color(0xFFEEECF1))),
       gP(44, 380, 103, 15, gText('Détail du montant', 12, Color(0xFF111015), weight: 600)),
       gP(44, 408, 71, 14, gText('Montant brut', 11.5, Color(0xFF66636E))),
       gP(133, 408, 213, 14, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(lastOrderProvider).total), 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(44, 438, 97, 14, gText('Frais de paiement', 11.5, Color(0xFF66636E))),
-      gP(285, 438, 61, 14, gText('1 470 FCFA', 11.5, Color(0xFF111015), weight: 600)),
+      gP(145, 438, 201, 14, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(lastOrderProvider).total * 0.015), 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(44, 468, 96, 14, gText('Taxes applicables', 11.5, Color(0xFF66636E))),
       gP(306, 468, 40, 14, gText('0 FCFA', 11.5, Color(0xFF111015), weight: 600)),
       gP(44, 498, 194, 14, gText('Commission de la plateforme (10 %)', 11.5, Color(0xFF66636E))),
-      gP(281, 498, 65, 14, gText('9 800 FCFA', 11.5, Color(0xFF111015), weight: 600)),
+      gP(141, 498, 205, 14, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(lastOrderProvider).total * 0.10), 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(44, 528, 194, 14, gText('Part étudiants / département (70 %)', 11.5, Color(0xFF66636E))),
-      gP(274, 528, 72, 14, gText('68 600 FCFA', 11.5, Color(0xFF111015), weight: 600)),
+      gP(134, 528, 212, 14, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(lastOrderProvider).total * 0.70), 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(44, 558, 141, 14, gText('Fonds d’innovation (20 %)', 11.5, Color(0xFF66636E))),
-      gP(277, 558, 69, 14, gText('19 600 FCFA', 11.5, Color(0xFF111015), weight: 600)),
+      gP(137, 558, 209, 14, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(lastOrderProvider).total * 0.20), 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(44, 604, 302, 60, gBox(color: Color(0xFFF4F1F8), radii: [22, 22, 22, 22])),
       gP(60, 626, 61, 18, gText('Total TTC', 14, Color(0xFF111015), weight: 600)),
       gP(76, 624, 254, 23, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(lastOrderProvider).total), 18, Color(0xFF111015), weight: 700, wrap: true, align: TextAlign.right))),

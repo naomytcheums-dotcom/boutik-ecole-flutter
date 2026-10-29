@@ -1,11 +1,12 @@
 // GÉNÉRÉ par tool/figma_export/convert.py — écran 45 (nœud Figma 54:841). Ne pas éditer à la main.
-// ignore_for_file: camel_case_types, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: camel_case_types, prefer_is_empty, prefer_interpolation_to_compose_strings, unnecessary_string_interpolations, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/l06.dart';
+import '../live/l09.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_45 extends ConsumerWidget {
@@ -45,34 +46,34 @@ class G_45 extends ConsumerWidget {
       gP(333.833, 139.417, 6, 9.167, gImg('assets/figma/v/3221f2f163c9f7.svg')),
       gP(340.167, 145.75, 6, 9.167, gImg('assets/figma/v/3221f2f163c9f7.svg')),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 182, 70.4, 34, 'Toutes', 12.5, 600), GChip(102.4, 182, 85.2, 34, 'En cours', 12.5, 500), GChip(195.6, 182, 77.8, 34, 'Livrées', 12.5, 500), GChip(281.4, 182, 85.2, 34, 'Annulées', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
-      gP(24, 230, 109, 19, gText('12 commandes', 15, Color(0xFF111015), weight: 700)),
+      gP(24, 230, 109, 19, Consumer(builder: (context, ref, _) => gText('${ref.watch(ordersAllProvider).length + 8} commandes', 15, Color(0xFF111015), weight: 700))),
       gP(325, 232, 25, 15, gText('Trier', 12, Color(0xFF5A3FE0), weight: 500, align: TextAlign.right)),
       gP(352.5, 237, 13, 6, gImg('assets/figma/v/4159f10924eea0.svg')),
       gP(356, 233.5, 9.5, 13, gImg('assets/figma/v/a365eb17b7a19f.svg')),
       gP(24, 268, 342, 264, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 276, 50, 50, gBox(image: 'assets/figma/img/abbe1a61d7955c52cdd31224bc1569ab44582797.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
-      gP(98, 280, 112, 17, gText('#BE-2026-0142', 13.5, Color(0xFF111015), weight: 600)),
-      gP(98, 302, 148, 14, gText('22 oct. 2026 · 32 500 FCFA', 11.5, Color(0xFF66636E))),
-      gP(293.6, 290, 58.4, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
-      gP(306.3, 294, 33, 14, gText('Livrée', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
+      gP(98, 280, 112, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(ordersAllProvider).length > 0 ? ref.watch(ordersAllProvider)[0].id : '', 13.5, Color(0xFF111015), weight: 600))),
+      gP(98, 302, 148, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(ordersAllProvider).length > 0 ? '${ref.watch(ordersAllProvider)[0].date}  •  ${fcfa(ref.watch(ordersAllProvider)[0].total)}' : '', 11.5, Color(0xFF66636E)))),
+      gP(293.6, 290, 58.4, 22, gBox(color: (badgeFill((ref.watch(ordersAllProvider).length > 0 ? ref.watch(ordersAllProvider)[0].badge : 'En cours'))), radii: [11, 11, 11, 11])),
+      gP(306.3, 294, 33, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(ordersAllProvider).length > 0 ? ref.watch(ordersAllProvider)[0].badge : '', 11, (badgeInk((ref.watch(ordersAllProvider).length > 0 ? ref.watch(ordersAllProvider)[0].badge : 'En cours'))), weight: 600, align: TextAlign.center))),
       gP(98, 334, 256, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(36, 342, 50, 50, gBox(image: 'assets/figma/img/34e8344812f71c763e7e4b52e1acffce9319e372.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
-      gP(98, 346, 112, 17, gText('#BE-2026-0138', 13.5, Color(0xFF111015), weight: 600)),
-      gP(98, 368, 143, 14, gText('18 oct. 2026 · 17 000 FCFA', 11.5, Color(0xFF66636E))),
-      gP(280.8, 356, 71.2, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
-      gP(293.9, 360, 45, 14, gText('En cours', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)),
+      gP(98, 346, 112, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(ordersAllProvider).length > 1 ? ref.watch(ordersAllProvider)[1].id : '', 13.5, Color(0xFF111015), weight: 600))),
+      gP(98, 368, 143, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(ordersAllProvider).length > 1 ? '${ref.watch(ordersAllProvider)[1].date}  •  ${fcfa(ref.watch(ordersAllProvider)[1].total)}' : '', 11.5, Color(0xFF66636E)))),
+      gP(280.8, 356, 71.2, 22, gBox(color: (badgeFill((ref.watch(ordersAllProvider).length > 1 ? ref.watch(ordersAllProvider)[1].badge : 'En cours'))), radii: [11, 11, 11, 11])),
+      gP(293.9, 360, 45, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(ordersAllProvider).length > 1 ? ref.watch(ordersAllProvider)[1].badge : '', 11, (badgeInk((ref.watch(ordersAllProvider).length > 1 ? ref.watch(ordersAllProvider)[1].badge : 'En cours'))), weight: 600, align: TextAlign.center))),
       gP(98, 400, 256, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(36, 408, 50, 50, gBox(image: 'assets/figma/img/9e2ce90f4496911ea5fab01d09cc48a0c7a22b47.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
-      gP(98, 412, 110, 17, gText('#BE-2026-0127', 13.5, Color(0xFF111015), weight: 600)),
-      gP(98, 434, 147, 14, gText('12 oct. 2026 · 45 000 FCFA', 11.5, Color(0xFF66636E))),
-      gP(293.6, 422, 58.4, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
-      gP(306.3, 426, 33, 14, gText('Livrée', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
+      gP(98, 412, 110, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(ordersAllProvider).length > 2 ? ref.watch(ordersAllProvider)[2].id : '', 13.5, Color(0xFF111015), weight: 600))),
+      gP(98, 434, 147, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(ordersAllProvider).length > 2 ? '${ref.watch(ordersAllProvider)[2].date}  •  ${fcfa(ref.watch(ordersAllProvider)[2].total)}' : '', 11.5, Color(0xFF66636E)))),
+      gP(293.6, 422, 58.4, 22, gBox(color: (badgeFill((ref.watch(ordersAllProvider).length > 2 ? ref.watch(ordersAllProvider)[2].badge : 'En cours'))), radii: [11, 11, 11, 11])),
+      gP(306.3, 426, 33, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(ordersAllProvider).length > 2 ? ref.watch(ordersAllProvider)[2].badge : '', 11, (badgeInk((ref.watch(ordersAllProvider).length > 2 ? ref.watch(ordersAllProvider)[2].badge : 'En cours'))), weight: 600, align: TextAlign.center))),
       gP(98, 466, 256, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(36, 474, 50, 50, gBox(image: 'assets/figma/img/55fe764cd9b0e1fc03c630662e027fb0f9f7ade4.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
-      gP(98, 478, 108, 17, gText('#BE-2026-0119', 13.5, Color(0xFF111015), weight: 600)),
-      gP(98, 500, 151, 14, gText('05 oct. 2026 · 28 000 FCFA', 11.5, Color(0xFF66636E))),
-      gP(287.2, 488, 64.8, 22, gBox(color: Color(0xFFFDE6E7), radii: [11, 11, 11, 11])),
-      gP(297.6, 492, 44, 14, gText('Annulée', 11, Color(0xFFE5484D), weight: 600, align: TextAlign.center)),
+      gP(98, 478, 108, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(ordersAllProvider).length > 3 ? ref.watch(ordersAllProvider)[3].id : '', 13.5, Color(0xFF111015), weight: 600))),
+      gP(98, 500, 151, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(ordersAllProvider).length > 3 ? '${ref.watch(ordersAllProvider)[3].date}  •  ${fcfa(ref.watch(ordersAllProvider)[3].total)}' : '', 11.5, Color(0xFF66636E)))),
+      gP(287.2, 488, 64.8, 22, gBox(color: (badgeFill((ref.watch(ordersAllProvider).length > 3 ? ref.watch(ordersAllProvider)[3].badge : 'En cours'))), radii: [11, 11, 11, 11])),
+      gP(297.6, 492, 44, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(ordersAllProvider).length > 3 ? ref.watch(ordersAllProvider)[3].badge : '', 11, (badgeInk((ref.watch(ordersAllProvider).length > 3 ? ref.watch(ordersAllProvider)[3].badge : 'En cours'))), weight: 600, align: TextAlign.center))),
       gP(125, 832, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
       gP(47.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '244')),
@@ -90,6 +91,10 @@ class G_45 extends ConsumerWidget {
       gP(169, 762, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gOpen(context, '03')),
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gOpen(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
+      gTap(24, 272, 342, 60, () { final l = ref.read(ordersAllProvider); if (l.length > 0) { ref.read(selectedOrderIdProvider.notifier).set(l[0].id); gOpen(context, '09'); } }),
+      gTap(24, 338, 342, 60, () { final l = ref.read(ordersAllProvider); if (l.length > 1) { ref.read(selectedOrderIdProvider.notifier).set(l[1].id); gOpen(context, '09'); } }),
+      gTap(24, 404, 342, 60, () { final l = ref.read(ordersAllProvider); if (l.length > 2) { ref.read(selectedOrderIdProvider.notifier).set(l[2].id); gOpen(context, '09'); } }),
+      gTap(24, 470, 342, 60, () { final l = ref.read(ordersAllProvider); if (l.length > 3) { ref.read(selectedOrderIdProvider.notifier).set(l[3].id); gOpen(context, '09'); } }),
     ]);
   }
 }

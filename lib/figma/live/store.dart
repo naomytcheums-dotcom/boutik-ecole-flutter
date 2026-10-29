@@ -1,3 +1,5 @@
+import 'dart:ui' show Color;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/demo/section_a_demo.dart';
@@ -85,24 +87,25 @@ final totalsProvider = Provider<Totals>((ref) {
 });
 
 class Order {
-  const Order({required this.id, required this.date, required this.lines, required this.subtotal, required this.fee, required this.method, required this.reference, this.status = 0, this.paid = false});
+  const Order({required this.id, required this.date, required this.lines, required this.subtotal, required this.fee, required this.method, required this.reference, this.status = 0, this.paid = false, this.cancelled = false});
   final String id, date, method, reference;
   final List<CartLine> lines;
   final int subtotal, fee;
   final int status; // 0 confirmée · 1 en préparation · 2 expédiée · 3 livrée
-  final bool paid;
+  final bool paid, cancelled;
   int get total => subtotal + fee;
+  String get badge => cancelled ? 'Annulée' : (status >= 3 ? 'Livrée' : 'En cours');
 
   Order copyWith({int? status, bool? paid}) => Order(
         id: id, date: date, lines: lines, subtotal: subtotal, fee: fee, method: method, reference: reference,
-        status: status ?? this.status, paid: paid ?? this.paid,
+        status: status ?? this.status, paid: paid ?? this.paid, cancelled: cancelled,
       );
 }
 
 const _mois = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
 
 class Orders extends Notifier<List<Order>> {
-  int _n = 142;
+  int _n = 143;
   @override
   List<Order> build() => const [];
 
@@ -140,3 +143,50 @@ final lastOrderProvider = Provider<Order>((ref) {
 });
 
 String statusLabel(int s) => const ['Confirmée', 'En préparation', 'Expédiée', 'Livrée'][s.clamp(0, 3)];
+
+/// Historique de démonstration (maquettes 28 et 45) : les nouvelles commandes passent devant.
+final _history = <Order>[
+  Order(id: '#BE-2026-0142', date: '22 oct. 2026', lines: [liveLine('Lampe en bois recyclé', 25000)], subtotal: 32500, fee: 0, method: 'Orange Money', reference: 'OM-7F3A-2210', status: 3, paid: true),
+  Order(id: '#BE-2026-0138', date: '18 oct. 2026', lines: [liveLine('Support téléphone', 8000)], subtotal: 17000, fee: 0, method: 'Orange Money', reference: 'OM-5B21-1873', status: 1, paid: true),
+  Order(id: '#BE-2026-0127', date: '12 oct. 2026', lines: [liveLine('Logo et identité visuelle', 45000)], subtotal: 45000, fee: 0, method: 'Mobile Money', reference: 'MM-9C40-0521', status: 3, paid: true),
+  Order(id: '#BE-2026-0119', date: '05 oct. 2026', lines: [liveLine('Tableau décoratif', 28000)], subtotal: 28000, fee: 0, method: 'Mobile Money', reference: 'MM-1D77-9004', status: 0, paid: false, cancelled: true),
+];
+
+CartLine liveLine(String title, int price) {
+  final p = productByTitle(title);
+  return CartLine(p.title, 'Département : ${p.department}', price, p.image);
+}
+
+final ordersAllProvider = Provider<List<Order>>((ref) => [...ref.watch(ordersProvider), ..._history]);
+
+/// Commande ouverte depuis l'historique (sinon : la dernière).
+class SelectedOrderId extends Notifier<String?> {
+  @override
+  String? build() => null;
+  void set(String? v) => state = v;
+}
+
+final selectedOrderIdProvider = NotifierProvider<SelectedOrderId, String?>(SelectedOrderId.new);
+
+final viewedOrderProvider = Provider<Order>((ref) {
+  final all = ref.watch(ordersAllProvider);
+  final id = ref.watch(selectedOrderIdProvider);
+  if (id != null) {
+    for (final o in all) {
+      if (o.id == id) return o;
+    }
+  }
+  return ref.watch(lastOrderProvider);
+});
+
+Color badgeFill(String b) => switch (b) {
+      'Livrée' => const Color(0xFFDDF5EC),
+      'Annulée' => const Color(0xFFFDE6E7),
+      _ => const Color(0xFFEFEBFA),
+    };
+
+Color badgeInk(String b) => switch (b) {
+      'Livrée' => const Color(0xFF0F7A52),
+      'Annulée' => const Color(0xFFE5484D),
+      _ => const Color(0xFF5A3FE0),
+    };

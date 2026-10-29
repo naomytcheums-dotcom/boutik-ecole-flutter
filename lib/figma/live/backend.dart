@@ -1,7 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'auth.dart';
-import 'store.dart';
+import '../../data/demo/section_a_demo.dart' show CartLine;
 
 /// Connexion à la base Supabase (projet « boutik-ecole »).
 /// La clé « publishable » est publique par conception : la sécurité repose sur les règles RLS de la base.
@@ -62,20 +62,23 @@ class Backend {
     } catch (_) {}
   }
 
-  static Future<void> saveOrder(Order o) async {
+  /// Création de commande côté serveur : le serveur recalcule les prix, le client n'envoie que des titres et des quantités.
+  /// Retourne {number, subtotal, fee} ou {error: message}.
+  static Future<Map<String, dynamic>> createOrder(List<CartLine> lines, bool home, String method) async {
     final c = _c;
-    final uid = c?.auth.currentUser?.id;
-    if (c == null || uid == null) return;
+    if (c == null || c.auth.currentUser == null) return {'error': 'Connexion requise pour passer commande.'};
     try {
-      final row = await c
-          .from('orders')
-          .insert({'number': o.id, 'buyer_id': uid, 'subtotal': o.subtotal, 'fee': o.fee, 'method': o.method, 'reference': o.reference, 'status': o.status, 'paid': o.paid})
-          .select('id')
-          .single();
-      await c.from('order_lines').insert([
-        for (final l in o.lines) {'order_id': row['id'], 'title': l.title, 'unit_price': l.price, 'qty': l.qty},
-      ]);
-    } catch (_) {}
+      final r = await c.rpc('create_order', params: {
+        'p_items': [for (final l in lines) {'title': l.title, 'qty': l.qty}],
+        'p_home': home,
+        'p_method': method,
+      });
+      return Map<String, dynamic>.from(r as Map);
+    } on PostgrestException catch (e) {
+      return {'error': e.message};
+    } catch (_) {
+      return {'error': 'Connexion impossible au serveur.'};
+    }
   }
 
   static Future<void> audit(String actor, String action, String target, String category, String level) async {

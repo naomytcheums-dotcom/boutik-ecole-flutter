@@ -3,7 +3,6 @@ import 'dart:ui' show Color;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/demo/section_a_demo.dart';
-import 'backend.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 /// État partagé du parcours d'achat : fiche produit → panier → livraison → paiement → commande → suivi.
@@ -106,6 +105,12 @@ class Order {
   int get total => subtotal + fee;
   String get badge => cancelled ? 'Annulée' : (status >= 3 ? 'Livrée' : 'En cours');
 
+  /// Identité et montants imposés par le serveur.
+  Order withServer(String id, int subtotal, int fee) => Order(
+        id: id, date: date, lines: lines, subtotal: subtotal, fee: fee, method: method, reference: reference,
+        status: status, paid: paid, cancelled: cancelled,
+      );
+
   Order copyWith({int? status, bool? paid}) => Order(
         id: id, date: date, lines: lines, subtotal: subtotal, fee: fee, method: method, reference: reference,
         status: status ?? this.status, paid: paid ?? this.paid, cancelled: cancelled,
@@ -134,10 +139,11 @@ class Orders extends Notifier<List<Order>> {
       reference: 'OM-${(now.millisecondsSinceEpoch % 0xFFFF).toRadixString(16).toUpperCase()}-${now.second.toString().padLeft(2, '0')}10',
     );
     state = [o, ...state];
-    Backend.saveOrder(o);
     return o;
   }
 
+  void adopt(String oldId, String id, int subtotal, int fee) => state = [for (final o in state) o.id == oldId ? o.withServer(id, subtotal, fee) : o];
+  void discard(String id) => state = [for (final o in state) if (o.id != id) o];
   void markPaid(String id) => state = [for (final o in state) o.id == id ? o.copyWith(paid: true) : o];
   void advance(String id) => state = [for (final o in state) o.id == id ? o.copyWith(status: (o.status + 1).clamp(0, 3)) : o];
 }

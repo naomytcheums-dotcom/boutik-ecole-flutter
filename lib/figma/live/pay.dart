@@ -112,8 +112,17 @@ Future<void> startPayment(WidgetRef ref, BuildContext context) async {
     return;
   }
   pay.set(const PayState(PayPhase.starting));
-  final o = ref.read(ordersProvider.notifier).place();
-  await Backend.saveOrder(o);
+  var o = ref.read(ordersProvider.notifier).place();
+  final created = await Backend.createOrder(o.lines, ref.read(homeDeliveryProvider), o.method);
+  if (created['error'] != null) {
+    ref.read(ordersProvider.notifier).discard(o.id);
+    final msg = created['error'] as String;
+    pay.set(PayState(PayPhase.failed, msg));
+    if (context.mounted) gToast(context, msg);
+    return;
+  }
+  ref.read(ordersProvider.notifier).adopt(o.id, created['number'] as String, (created['subtotal'] as num).toInt(), (created['fee'] as num).toInt());
+  o = ref.read(ordersProvider).firstWhere((x) => x.id == created['number']);
   final orange = ref.read(payMethodProvider) == 0 || phone.startsWith('69') || RegExp(r'^65[5-9]').hasMatch(phone);
   final res = await _call({
     'action': 'start',

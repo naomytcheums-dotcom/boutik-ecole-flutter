@@ -7,22 +7,16 @@
 | A · Démarrage | 01–10 | fait |
 | B · Authentification | 11–20 (12) | fait |
 | N · Administration globale | 127–138 (12, web) | fait |
-
 | E · Commandes, livraison, assistance | 41–49 (9) | fait |
-
 | F · Communication et notifications | 50–56 (7) | fait |
-
 | G · Espace étudiant et vendeur | 57–69 (12) | fait |
-
 | C · Découverte et achats | 21–31 (15) | fait |
 | D · Fiches produits, services, prestataires | 32–40 (8) | fait |
-
 | I · Projets, innovations, financement | 78–87 (11) | fait |
 | K · Événements, communautés, impact | 100–107, 237–239 (11) | fait |
 | L · Département | 108–116 (web), 214–215 (11) | fait |
 | M · Administration institutionnelle | 117–126 (10, web) | fait |
 | H · Talents et parcours | 70, 72, 73, 75, 76, 77 (6) | fait |
-
 | O · Finance et paiements | 139–144 (6, web) | fait |
 | P · Kiosques, support, exploitation | 145, 146-1, 146-2, 147-1/2/3 (6) | fait |
 | Q · Paramètres et états système | 148-1/2, 149, 150-1/2/3/4 (7) | fait |
@@ -39,3 +33,9 @@
 | AM · Cercle, parrainage, publication | 240–254, 244b, 253b (17 ; 250b dans Nouveaux) | fait |
 | Y · Missions sur mesure | 191–205 (15 ; 198, 199, 200 web) | fait |
 | AA · Borne phygitale | 206–210 (5 ; borne 720×1280, FR/EN) | fait |
+| Parcours de soutenance | 24 écrans, test sans appareil + Chrome (integration_test) | fait |
+| Relecture finale | navigation (315/315 enregistrés, aucun lien mort), accessibilité (docs/ACCESSIBILITY.md), build Web release | fait |
+
+**Total : 315 écrans sur 315.** `flutter analyze` : aucun problème. `flutter test` : 1300 tests verts (textes clés et comportements, 315 goldens, parcours, audit d'accessibilité).
+
+Non fait (hors maquettes, voir [BACKEND_PLAN.md](BACKEND_PLAN.md)) : serveur, droits par rôle côté serveur, paiements réels, QR signé côté serveur, journal d'audit, certificats, sauvegardes. L'application fonctionne avec des données de démonstration locales.

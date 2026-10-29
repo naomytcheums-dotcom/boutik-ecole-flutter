@@ -19,6 +19,8 @@ import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
+import '../live/chat.dart';
+import '../live/share.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_194 extends ConsumerWidget {
@@ -42,7 +44,7 @@ class G_194 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 113, 26, gText('Ma mission', 21, Color(0xFF111015), weight: 700)),
-      gP(341, 71, 22, 22, const SizedBox.expand(), tap: () => gOpen(context, '53')),
+      gP(341, 71, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '53')),
       gP(339.833, 70.743, 23.424, 23.424, gImg('assets/figma/v/67b9e5fdf63250.svg')),
       gP(24, 120, 342, 170, gBox(image: 'assets/figma/img/4b7b6cea2f4622846841cd8342842e81fa1ed891.png', fit: BoxFit.cover, radii: [26, 26, 26, 26])),
       gP(24, 120, 342, 170, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [26, 26, 26, 26])),

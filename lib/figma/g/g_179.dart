@@ -19,6 +19,8 @@ import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
+import '../live/chat.dart';
+import '../live/share.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_179 extends ConsumerWidget {
@@ -44,7 +46,7 @@ class G_179 extends ConsumerWidget {
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 187, 26, gText('Guide d’utilisation', 21, Color(0xFF111015), weight: 700)),
       gP(24, 120, 342, 48, GField(hint: 'Rechercher dans le guide', size: 13.5, hintColor: Color(0xFF66636E), weight: 400, padL: 46)),
-      gP(40.5, 134.5, 19, 19, const SizedBox.expand(), tap: () => gOpen(context, '244')),
+      gP(40.5, 134.5, 19, 19, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(39.875, 133.875, 18.667, 18.667, gImg('assets/figma/v/50f467eb8a9b46.svg')),
       gP(50.721, 144.721, 9.404, 9.404, gImg('assets/figma/v/18d279137d73d9.svg')),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 182, 77.8, 34, 'Débuter', 12.5, 600), GChip(109.8, 182, 77.8, 34, 'Acheter', 12.5, 500), GChip(195.6, 182, 70.4, 34, 'Vendre', 12.5, 500), GChip(274, 182, 114.8, 34, 'Opportunités', 12.5, 500), GChip(396.8, 182, 100, 34, 'Hackathons', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
@@ -87,20 +89,20 @@ class G_179 extends ConsumerWidget {
       gP(72.5, 606, 81, 14, gText('Lancer la visite', 11.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 832, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
-      gP(47.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '244')),
+      gP(47.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(47.125, 777.125, 20, 20, gImg('assets/figma/v/96285515fb0e14.svg')),
       gP(59.113, 789.113, 9.762, 9.762, gImg('assets/figma/v/524f40fa464a05.svg')),
-      gP(113.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '53')),
+      gP(113.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '53')),
       gP(112.25, 777.118, 22.632, 22.632, gImg('assets/figma/v/5610544a74c77c.svg')),
-      gP(255.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '230')),
+      gP(255.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '230')),
       gP(260.375, 776.25, 11.25, 16.5, gImg('assets/figma/v/3adad339ddf7e4.svg')),
       gP(256.875, 783.25, 18.25, 13, gImg('assets/figma/v/9c6e9349b8c3b4.svg')),
       gP(263, 790.25, 6, 9.5, gImg('assets/figma/v/c403dd00a5d407.svg')),
-      gP(321.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '10')),
+      gP(321.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '10')),
       gP(324.625, 777.125, 14.75, 14.75, gImg('assets/figma/v/c6a28fb600186c.svg')),
       gP(322, 785.875, 20, 13, gImg('assets/figma/v/de7faa24b27dad.svg')),
-      gP(169, 762, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gOpen(context, '03')),
-      gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gOpen(context, '03')),
+      gP(169, 762, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gTab(context, '03')),
+      gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
     ]);
   }

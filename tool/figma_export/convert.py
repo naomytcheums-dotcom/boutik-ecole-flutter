@@ -50,7 +50,7 @@ for _l in open(os.path.join(HERE, 'links.txt'), encoding='utf-8'):
         else:  # première entrée : "x,y,w,h>dest"
             pass
 CERCLE = {'152:17', '152:125', '152:191', '153:16', '153:124', '153:205', '154:96', '156:16', '156:130', '157:16', '157:124'}
-NAV_DEST = {'icon/search': '152:17', 'icon/chat': '36:709', 'icon/mic': '106:89', 'icon/user': '15:96', 'icon/home': '3:3', 'Accueil': '3:3'}
+NAV_DEST = {'icon/search': '29:2', 'icon/chat': '36:709', 'icon/mic': '106:89', 'icon/user': '15:96', 'icon/home': '3:3', 'Accueil': '3:3'}
 NAV_DEST_CERCLE = {'icon/search': '154:96', 'icon/chat': '36:709', 'icon/mic': '106:89', 'icon/user': '153:16', 'icon/home': '152:17', 'Accueil': '152:17'}
 
 # ---------- utilitaires ----------
@@ -414,7 +414,7 @@ def tap_expr(n):
                 return "() => gBack(context)"
     tbl = NAV_DEST_CERCLE if CUR['root'] in CERCLE else NAV_DEST
     if n['name'] in tbl and tbl[n['name']] in NODE2ID and tbl[n['name']] != CUR['root']:
-        return "() => gOpen(context, %s)" % dq(NODE2ID[tbl[n['name']]])
+        return "() => gTab(context, %s)" % dq(NODE2ID[tbl[n['name']]])
     if n['name'] in ('Bouton rond', 'icon/back'):
         return "() => gBack(context)"
     return None
@@ -513,7 +513,7 @@ def _emit_node_inner(ctx, n, PM, ox, oy, out, root=False):
         drawn = False  # ombre portée par les enfants (icônes) : on ne dessine pas de rectangle
     sf_ = solid_fill(n)
     if (not root and shape and t in ('RECTANGLE', 'FRAME') and sf_ and lum(sf_['color']) > 0.93 and sf_.get('opacity', 1) >= 0.5 and not n.get('children') == [] and
-            ctx.sw < 700 and ctx.light and h >= 64 and 100 <= w < ctx.sw - 30 and not (role and role[0] in ('button', 'input')) and
+            ctx.sw < 700 and ctx.light and h >= 64 and 150 <= w < ctx.sw - 30 and not (role and role[0] in ('button', 'input')) and
             sid_keeps_cards(ctx.sid) is False):
         drawn = False  # carte blanche supprimée : le contenu repose directement sur le fond de l'écran
         fa = []
@@ -535,7 +535,10 @@ def _emit_node_inner(ctx, n, PM, ox, oy, out, root=False):
         return
     if shape and drawn:
         if role and role[0] == 'button' and not tap:
-            tap = "() => gToast(context, %s)" % dq('Démonstration : ' + role[1].strip())
+            if 'artager' in role[1]:
+                tap = "() => shareText(context, 'Découvrez Boutik-École, la marketplace de l’IUT de Douala : ' + siteUrl)"
+            else:
+                tap = "() => gToast(context, %s)" % dq('Démonstration : ' + role[1].strip())
         tp = (', tap: ' + tap) if (tap and t in ('RECTANGLE', 'ELLIPSE') ) else ''
         if role and role[0] == 'input':
             pass  # champ de saisie sans cadre : le texte repose directement sur le fond
@@ -797,6 +800,8 @@ import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
+import '../live/chat.dart';
+import '../live/share.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class %s extends ConsumerWidget {
@@ -822,10 +827,10 @@ class %s extends ConsumerWidget {
         ("Les intégrations de paiement restent à confirmer avec l’IUT et ses partenaires.", "Les intégrations de paiement ont été validées avec l’IUT et ses partenaires."),
     ]:
         code = code.replace(_a, _b)
-    code = code.replace("gP(328.767, 85.883, 18.467, 12.233, gImg('assets/figma/v/44747303a472e2.svg'))", "gP(328.767, 83, 18.467, 18.233, gImg('assets/figma/v/menu3.svg'))")
+    code = code.replace("gP(328.767, 85.883, 18.467, 12.233, gImg('assets/figma/v/44747303a472e2.svg'))", "gP(328.767, 83, 18.467, 18.233, gImg('assets/figma/v/menu3.svg')), gTap(316, 70, 44, 44, () => gOpen(context, '231'))")
     if '2b51b5d6469cca917952ac344a2ddf9cc1440830' in code:
         code = code.replace("gBox(image: 'assets/figma/img/2b51b5d6469cca917952ac344a2ddf9cc1440830.png'", "kelaOrb(image: 'assets/figma/img/2b51b5d6469cca917952ac344a2ddf9cc1440830.png'")
-        code = code.replace("GMic(child:", "GMic(onResult: (on) => kelaToggle(ref, on), child:")
+        code = code.replace("GMic(child:", "GMic(onResult: (on) => kelaToggle(ref, on, context), child:")
     rw_ = BINDINGS.get(sid, {}).get('rows')
     if rw_:
         import re as _re

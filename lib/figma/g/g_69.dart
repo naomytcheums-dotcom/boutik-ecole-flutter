@@ -19,6 +19,8 @@ import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
+import '../live/chat.dart';
+import '../live/share.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_69 extends ConsumerWidget {
@@ -123,7 +125,7 @@ class G_69 extends ConsumerWidget {
       gP(154, 154, 199, 19, gText('Conformité du compte', 15, Color(0xFF111015), weight: 700, wrap: true)),
       gP(154, 180, 199, 17, gText('3 justificatifs sur 4 validés', 12, Color(0xFF66636E), lh: 17, wrap: true)),
       gP(36, 267, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
-      gP(46, 277, 20, 20, const SizedBox.expand(), tap: () => gOpen(context, '10')),
+      gP(46, 277, 20, 20, const SizedBox.expand(), tap: () => gTab(context, '10')),
       gP(48.833, 276.5, 14.333, 14.333, gImg('assets/figma/v/89c36cb8c670bc.svg')),
       gP(46.333, 284.833, 19.333, 12.667, gImg('assets/figma/v/4e3ce9c030e64b.svg')),
       gP(88, 266, 52, 17, gText('Identité', 13.5, Color(0xFF111015), weight: 600)),

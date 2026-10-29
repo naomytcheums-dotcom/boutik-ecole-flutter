@@ -19,6 +19,8 @@ import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
+import '../live/chat.dart';
+import '../live/share.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_207 extends ConsumerWidget {
@@ -34,7 +36,7 @@ class G_207 extends ConsumerWidget {
       Positioned.fill(child: GChoiceGroup(chips: [GChip(520, 50, 68, 48, 'FR', 20, 600), GChip(596, 50, 68, 48, 'EN', 20, 600)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 24)),
       gP(596, 50, 68, 48, gBox(color: Color(0xFFFFFFFF), radii: [24, 24, 24, 24])),
       gP(48, 140, 624, 84, GField(hint: 'Que cherchez-vous ?', size: 26, hintColor: Color(0xFF66636E), weight: 400, padL: 88, onChanged: (v) { ref.read(kioskQueryProvider.notifier).set(v); }, multiline: true, padT: 24)),
-      gP(84, 166, 32, 32, const SizedBox.expand(), tap: () => gOpen(context, '244')),
+      gP(84, 166, 32, 32, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(85, 167, 27.333, 27.333, gImg('assets/figma/v/6942bfb3846595.svg')),
       gP(103.267, 185.267, 11.733, 11.733, gImg('assets/figma/v/e1a28e5ccaba89.svg')),
       gP(598, 152, 60, 60, GMic(child: gBox(color: Color(0xFF111015), oval: true))),
@@ -90,11 +92,11 @@ class G_207 extends ConsumerWidget {
       gP(599.5, 1031.5, 21, 20.25, gImg('assets/figma/v/5d0c07559d57d2.svg')),
       gP(621.5, 1031.5, 21, 20.25, gImg('assets/figma/v/5d0c07559d57d2.svg')),
       gP(48, 1112, 624, 124, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 8), blurRadius: 24, spreadRadius: 0)], backBlur: 28, radii: [62, 62, 62, 62])),
-      gP(108, 1142, 36, 36, const SizedBox.expand(), tap: () => gOpen(context, '03')),
+      gP(108, 1142, 36, 36, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(109.5, 1142.03, 33, 34.47, gImg('assets/figma/v/591e7e13beabb7.svg')),
-      gP(96, 1190, 60, 21, gText('Accueil', 17, Color(0xFF111015), weight: 500), tap: () => gOpen(context, '03')),
+      gP(96, 1190, 60, 21, gText('Accueil', 17, Color(0xFF111015), weight: 500), tap: () => gTab(context, '03')),
       gP(212, 1126, 140, 96, gBox(color: Color(0xFF111015), radii: [48, 48, 48, 48])),
-      gP(264, 1142, 36, 36, const SizedBox.expand(), tap: () => gOpen(context, '244')),
+      gP(264, 1142, 36, 36, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(265.5, 1143.5, 30, 30, gImg('assets/figma/v/0e0e8a6ca98696.svg')),
       gP(286.05, 1164.05, 12.45, 12.45, gImg('assets/figma/v/b24debd4c97b40.svg')),
       gP(247.5, 1190, 69, 21, gText('Explorer', 17, Color(0xFFFFFFFF), weight: 600)),

@@ -3,10 +3,24 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:speech_to_text/speech_to_text.dart';
+
 import '../gen.dart';
+import '../nav.dart';
 
 /// Assistante Kéla : l'orbe tourne quand elle écoute ou réfléchit, puis s'arrête dès qu'elle a répondu.
 enum KelaPhase { idle, listening, thinking, answered }
+
+/// Texte reconnu à la voix, affiché en direct pendant que l'utilisateur parle.
+class KelaText extends Notifier<String> {
+  @override
+  String build() => '';
+  void set(String v) => state = v;
+}
+
+final kelaTextProvider = NotifierProvider<KelaText, String>(KelaText.new);
+final _speech = SpeechToText();
+bool _speechReady = false;
 
 class KelaNotifier extends Notifier<KelaPhase> {
   Timer? _t;
@@ -29,7 +43,33 @@ class KelaNotifier extends Notifier<KelaPhase> {
 
 final kelaProvider = NotifierProvider<KelaNotifier, KelaPhase>(KelaNotifier.new);
 
-void kelaToggle(WidgetRef ref, bool listening) => ref.read(kelaProvider.notifier).toggle(listening);
+/// Micro de Kéla : transcription vocale réelle (reconnaissance du système), puis ouverture du fil de discussion.
+Future<void> kelaToggle(WidgetRef ref, bool listening, BuildContext context) async {
+  final n = ref.read(kelaProvider.notifier);
+  final text = ref.read(kelaTextProvider.notifier);
+  if (listening) {
+    text.set('');
+    n.toggle(true);
+    try {
+      _speechReady = _speechReady || await _speech.initialize(onError: (_) {});
+      if (!_speechReady) {
+        if (context.mounted) gToast(context, 'Reconnaissance vocale indisponible : utilisez Chrome ou autorisez le micro.');
+        return;
+      }
+      await _speech.listen(onResult: (r) => text.set(r.recognizedWords), listenOptions: SpeechListenOptions(partialResults: true, localeId: 'fr_FR'));
+    } catch (_) {
+      if (context.mounted) gToast(context, 'Micro indisponible sur cet appareil.');
+    }
+    return;
+  }
+  try {
+    await _speech.stop();
+  } catch (_) {}
+  n.toggle(false);
+  if (ref.read(kelaTextProvider).trim().isEmpty) return;
+  await Future<void>.delayed(const Duration(milliseconds: 2400));
+  if (context.mounted) gOpen(context, '232');
+}
 
 /// Même signature que gBox pour l'image de l'orbe, avec rotation pilotée par l'état de Kéla.
 Widget kelaOrb({String? image, BoxFit fit = BoxFit.contain, List<BoxShadow>? shadows}) => Consumer(

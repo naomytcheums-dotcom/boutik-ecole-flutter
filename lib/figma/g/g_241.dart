@@ -19,6 +19,8 @@ import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
+import '../live/chat.dart';
+import '../live/share.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_241 extends ConsumerWidget {
@@ -39,7 +41,7 @@ class G_241 extends ConsumerWidget {
       gP(140, 76, 110, 21, gText('Mes contacts', 17, Color(0xFF111015), weight: 500)),
       gP(89, 100, 212, 15, gText('WhatsApp et répertoire du téléphone', 12, Color(0xFF66636E))),
       gP(316, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
-      gP(328.65, 82.65, 18.7, 18.7, const SizedBox.expand(), tap: () => gOpen(context, '244')),
+      gP(328.65, 82.65, 18.7, 18.7, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(327.987, 81.988, 18.467, 18.467, gImg('assets/figma/v/027b8aa954f1e6.svg')),
       gP(338.662, 92.662, 9.35, 9.35, gImg('assets/figma/v/096e5d96dc48c0.svg')),
       gP(34, 146, 40, 40, gBox(color: Color(0xFFEEE9FF), oval: true)),
@@ -49,7 +51,7 @@ class G_241 extends ConsumerWidget {
       gP(86, 162, 213, 30, gText('Rien n’est enregistré sans ton accord.\nTu peux le retirer à tout moment.', 10.5, Color(0xFF66636E), lh: 15, wrap: true)),
       gP(318, 154, 36, 22, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 16)),
       gP(24, 220, 342, 46, GField(hint: 'Rechercher un contact', size: 12.5, hintColor: Color(0xFF66636E), weight: 400, padL: 46)),
-      gP(38, 235, 16, 16, const SizedBox.expand(), tap: () => gOpen(context, '244')),
+      gP(38, 235, 16, 16, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(37, 234, 16.667, 16.667, gImg('assets/figma/v/6cd505732f55fa.svg')),
       gP(46.133, 243.133, 8.867, 8.867, gImg('assets/figma/v/9ff6d75c1f17b1.svg')),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 278, 94, 34, 'WhatsApp', 12, 500), GChip(126, 278, 102, 34, 'Téléphone', 12, 400), GChip(236, 278, 62, 34, 'Tous', 12, 400)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFFFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 17)),

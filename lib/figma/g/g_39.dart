@@ -19,6 +19,8 @@ import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
+import '../live/chat.dart';
+import '../live/share.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_39 extends ConsumerWidget {
@@ -55,7 +57,7 @@ class G_39 extends ConsumerWidget {
       gP(45, 423.5, 6.008, 6, gImg('assets/figma/v/f943396fb20219.svg')),
       gP(24, 460, 342, 62, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
       gP(36, 475, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
-      gP(43.5, 482.5, 17, 17, const SizedBox.expand(), tap: () => gOpen(context, '53')),
+      gP(43.5, 482.5, 17, 17, const SizedBox.expand(), tap: () => gTab(context, '53')),
       gP(41.917, 481.619, 19.464, 19.464, gImg('assets/figma/v/f5885e2a055a40.svg')),
       gP(76, 474, 277, 34, gText('Le vendeur répond généralement sous 24 h dans la messagerie.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
       gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),

@@ -19,6 +19,8 @@ import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
+import '../live/chat.dart';
+import '../live/share.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_150_2 extends ConsumerWidget {
@@ -44,7 +46,7 @@ class G_150_2 extends ConsumerWidget {
       gP(141, 430, 108, 18, gText('Se reconnecter', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(24, 488, 154, 19, gText('Autres états système', 15, Color(0xFF111015), weight: 700)),
       gP(36, 539, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
-      gP(46, 549, 20, 20, const SizedBox.expand(), tap: () => gOpen(context, '244')),
+      gP(46, 549, 20, 20, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(45.5, 548.5, 19.333, 19.333, gImg('assets/figma/v/94aebfd05b72e8.svg')),
       gP(56.917, 559.917, 9.583, 9.583, gImg('assets/figma/v/8e33baf2fbbc49.svg')),
       gP(88, 538, 110, 17, gText('Page introuvable', 13.5, Color(0xFF111015), weight: 600)),

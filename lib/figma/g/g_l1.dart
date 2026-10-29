@@ -19,6 +19,8 @@ import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
+import '../live/chat.dart';
+import '../live/share.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_L1 extends ConsumerWidget {
@@ -49,7 +51,7 @@ class G_L1 extends ConsumerWidget {
       gP(299, 150, 39, 14, gText('Aperçu', 11, Color(0xFFFFFFFF), weight: 600)),
       gP(108, 398, 174, 44, gBox(color: Color(0x4DFFFFFF), border: Color(0xFFFFFFFF), bw: 1, backBlur: 20, radii: [22, 22, 22, 22])),
       gP(123.875, 409.875, 20.25, 20.25, gImg('assets/figma/v/386cd2103449c2.svg')),
-      gP(185.5, 410.5, 19, 19, const SizedBox.expand(), tap: () => gOpen(context, '230')),
+      gP(185.5, 410.5, 19, 19, const SizedBox.expand(), tap: () => gTab(context, '230')),
       gP(189.625, 409.083, 10.75, 15.5, gImg('assets/figma/v/ad77f88d6a6e8f.svg')),
       gP(186.458, 415.417, 17.083, 12.333, gImg('assets/figma/v/590a1cb98d88e9.svg')),
       gP(192, 421.75, 6, 9.167, gImg('assets/figma/v/6c8704a6160690.svg')),

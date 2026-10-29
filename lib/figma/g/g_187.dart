@@ -19,6 +19,8 @@ import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
+import '../live/chat.dart';
+import '../live/share.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_187 extends ConsumerWidget {
@@ -31,7 +33,7 @@ class G_187 extends ConsumerWidget {
       gP(20, 10, 36, 34, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(62, 17, 107, 21, gText('Boutik-École', 17, Color(0xFF18181B), weight: 700, inter: true)),
       gP(230, 12, 330, 34, GField(hint: 'Rechercher données, rapports, produits…', size: 11.5, hintColor: Color(0xFF66636E), weight: 400, padL: 36, inter: true)),
-      gP(242.5, 21.5, 15, 15, const SizedBox.expand(), tap: () => gOpen(context, '244')),
+      gP(242.5, 21.5, 15, 15, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(241.375, 20.375, 16, 16, gImg('assets/figma/v/3a82c8c513bd84.svg')),
       gP(249.938, 28.938, 8.687, 8.687, gImg('assets/figma/v/ee5ed5a7003f46.svg')),
       gP(920, 14, 28, 28, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, border: Color(0xFFFFFFFF), bw: 2, radii: [14, 14, 14, 14])),
@@ -58,11 +60,11 @@ class G_187 extends ConsumerWidget {
       gP(26.5, 193.25, 6, 7.875, gImg('assets/figma/v/5eccc4607ecf23.svg')),
       gP(52, 187, 121, 15, gText('Recherche de talents', 12, Color(0xFF55524C), inter: true)),
       gP(20, 236, 37, 12, gText('Gestion', 10, Color(0xFF716D65), weight: 500, inter: true)),
-      gP(24.5, 259.5, 15, 15, const SizedBox.expand(), tap: () => gOpen(context, '10')),
+      gP(24.5, 259.5, 15, 15, const SizedBox.expand(), tap: () => gTab(context, '10')),
       gP(25.875, 258.375, 12.25, 12.25, gImg('assets/figma/v/24e83dedb394fa.svg')),
       gP(24, 264.625, 16, 11, gImg('assets/figma/v/4d0783d7dec623.svg')),
       gP(52, 259, 71, 15, gText('Propositions', 12, Color(0xFF55524C), inter: true)),
-      gP(24.5, 299.5, 15, 15, const SizedBox.expand(), tap: () => gOpen(context, '10')),
+      gP(24.5, 299.5, 15, 15, const SizedBox.expand(), tap: () => gTab(context, '10')),
       gP(25.875, 298.375, 12.25, 12.25, gImg('assets/figma/v/24e83dedb394fa.svg')),
       gP(24, 304.625, 16, 11, gImg('assets/figma/v/4d0783d7dec623.svg')),
       gP(52, 299, 32, 15, gText('Devis', 12, Color(0xFF55524C), inter: true)),
@@ -71,7 +73,7 @@ class G_187 extends ConsumerWidget {
       gP(31.5, 338.438, 9.75, 17.188, gImg('assets/figma/v/220d9dfaf6b6b7.svg')),
       gP(52, 339, 82, 15, gText('Collaborations', 12, Color(0xFF55524C), inter: true)),
       gP(20, 390, 24, 12, gText('Suivi', 10, Color(0xFF716D65), weight: 500, inter: true)),
-      gP(24.5, 413.5, 15, 15, const SizedBox.expand(), tap: () => gOpen(context, '53')),
+      gP(24.5, 413.5, 15, 15, const SizedBox.expand(), tap: () => gTab(context, '53')),
       gP(22.75, 412.37, 17.88, 17.88, gImg('assets/figma/v/53b47db12afe77.svg')),
       gP(52, 413, 114, 15, gText('Hackathons et défis', 12, Color(0xFF55524C), inter: true)),
       gP(156, 414, 22, 18, gBox(color: Color(0xFF111015), radii: [9, 9, 9, 9])),

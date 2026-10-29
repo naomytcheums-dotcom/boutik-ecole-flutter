@@ -19,6 +19,8 @@ import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
+import '../live/chat.dart';
+import '../live/share.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_26 extends ConsumerWidget {
@@ -43,7 +45,7 @@ class G_26 extends ConsumerWidget {
       gP(23.173, 70.605, 12.04, 18.08, gImg('assets/figma/v/d05cf247dc0965.svg')),
       gP(23.173, 76.645, 18.08, 6, gImg('assets/figma/v/e039016b8fa2b9.svg')),
       gP(60.973, 65.456, 209, 26, gText('Comparer des offres', 20.708, Color(0xFF111015), weight: 700)),
-      gP(348.584, 70.461, 19.558, 19.558, const SizedBox.expand(), tap: () => gOpen(context, '244')),
+      gP(348.584, 70.461, 19.558, 19.558, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(348.029, 69.905, 19.038, 19.038, gImg('assets/figma/v/24ff960311e305.svg')),
       gP(359.193, 81.069, 9.504, 9.504, gImg('assets/figma/v/a93d084de4cf49.svg')),
       gP(194.425, 136.704, 0.575, 219.915, gBox(color: Color(0xFFF2EFF6))),

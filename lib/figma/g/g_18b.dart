@@ -19,6 +19,8 @@ import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
+import '../live/chat.dart';
+import '../live/share.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_18b extends ConsumerWidget {
@@ -54,13 +56,13 @@ class G_18b extends ConsumerWidget {
       gP(24, 318, 50, 16, gText('Prénom', 13, Color(0xFF111015), weight: 600)),
       gP(24, 342, 165, 52, GField(hint: 'Mariam', initial: ref.read(profileAccountProvider).firstName, size: 14.5, hintColor: Color(0xFF66636E), weight: 500, padL: 52, onChanged: (v) { ref.read(formProvider.notifier).put('pf_first', v); })),
       errorText('pf_first', 28, 396),
-      gP(40.5, 358.5, 19, 19, const SizedBox.expand(), tap: () => gOpen(context, '10')),
+      gP(40.5, 358.5, 19, 19, const SizedBox.expand(), tap: () => gTab(context, '10')),
       gP(43.042, 357.875, 13.917, 13.917, gImg('assets/figma/v/15e6e73e8eaf8c.svg')),
       gP(40.667, 365.792, 18.667, 12.333, gImg('assets/figma/v/179cc05e604d6c.svg')),
       gP(201, 318, 31, 16, gText('Nom', 13, Color(0xFF111015), weight: 600)),
       gP(201, 342, 165, 52, GField(hint: 'Essono', initial: ref.read(profileAccountProvider).lastName, size: 14.5, hintColor: Color(0xFF66636E), weight: 500, padL: 52, onChanged: (v) { ref.read(formProvider.notifier).put('pf_last', v); })),
       errorText('pf_last', 205, 396),
-      gP(217.5, 358.5, 19, 19, const SizedBox.expand(), tap: () => gOpen(context, '10')),
+      gP(217.5, 358.5, 19, 19, const SizedBox.expand(), tap: () => gTab(context, '10')),
       gP(220.042, 357.875, 13.917, 13.917, gImg('assets/figma/v/15e6e73e8eaf8c.svg')),
       gP(217.667, 365.792, 18.667, 12.333, gImg('assets/figma/v/179cc05e604d6c.svg')),
       gP(24, 402, 27, 16, gText('Ville', 13, Color(0xFF111015), weight: 600)),
@@ -82,7 +84,7 @@ class G_18b extends ConsumerWidget {
       gP(330.25, 614.625, 15.5, 10.75, gImg('assets/figma/v/8b32726bc37872.svg')),
       gP(24, 654, 114, 16, gText('Date de naissance', 13, Color(0xFF111015), weight: 600)),
       gP(24, 678, 342, 52, GField(hint: 'JJ / MM / AAAA', size: 14.5, hintColor: Color(0xFF66636E), weight: 500, padL: 52, onChanged: (v) { ref.read(formProvider.notifier).put('pf_birth', v); })),
-      gP(40.5, 694.5, 19, 19, const SizedBox.expand(), tap: () => gOpen(context, '10')),
+      gP(40.5, 694.5, 19, 19, const SizedBox.expand(), tap: () => gTab(context, '10')),
       gP(43.042, 693.875, 13.917, 13.917, gImg('assets/figma/v/15e6e73e8eaf8c.svg')),
       gP(40.667, 701.792, 18.667, 12.333, gImg('assets/figma/v/179cc05e604d6c.svg')),
       gP(24, 764, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x29122640), offset: Offset(0, 5), blurRadius: 12, spreadRadius: 0)], radii: [27, 27, 27, 27])),

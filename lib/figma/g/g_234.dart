@@ -19,6 +19,8 @@ import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
+import '../live/chat.dart';
+import '../live/share.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_234 extends ConsumerWidget {
@@ -46,7 +48,7 @@ class G_234 extends ConsumerWidget {
       gP(58, 66, 32, 32, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(106, 66, 98, 19, gText('Boutik-École', 15, Color(0xFFFFFFFF), weight: 700)),
       gP(106, 87, 165, 14, gText('Compte professionnel · en ligne', 11, Color(0xBFFFFFFF))),
-      gP(340, 72, 20, 20, const SizedBox.expand(), tap: () => gOpen(context, '53')),
+      gP(340, 72, 20, 20, const SizedBox.expand(), tap: () => gTab(context, '53')),
       gP(338.667, 71.493, 21.84, 21.84, gImg('assets/figma/v/7a51bb41235e6d.svg')),
       gP(28, 140, 289, 38, gText('Le jalon 2 « Propositions de logo » est terminé. Montant à libérer : 72 000 FCFA.', 13, Color(0xFF111111), lh: 19, wrap: true)),
       gP(288, 180, 28, 13, gText('10:20', 10, Color(0xFF66636E), align: TextAlign.right)),

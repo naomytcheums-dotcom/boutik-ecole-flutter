@@ -19,6 +19,8 @@ import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
+import '../live/chat.dart';
+import '../live/share.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_D1 extends ConsumerWidget {
@@ -37,7 +39,7 @@ class G_D1 extends ConsumerWidget {
       gP(134, 358, 36, 34, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(176, 365, 107, 21, gText('Boutik-École', 17, Color(0xFF18181B), weight: 700, inter: true)),
       gP(344, 360, 330, 34, GField(hint: 'Rechercher données, rapports, produits…', size: 11.5, hintColor: Color(0xFF66636E), weight: 400, padL: 36, inter: true)),
-      gP(356.5, 369.5, 15, 15, const SizedBox.expand(), tap: () => gOpen(context, '244')),
+      gP(356.5, 369.5, 15, 15, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(355.375, 368.375, 16, 16, gImg('assets/figma/v/3a82c8c513bd84.svg')),
       gP(363.938, 376.938, 8.687, 8.687, gImg('assets/figma/v/ee5ed5a7003f46.svg')),
       gP(1034, 362, 28, 28, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, border: Color(0xFFFFFFFF), bw: 2, radii: [14, 14, 14, 14])),
@@ -64,11 +66,11 @@ class G_D1 extends ConsumerWidget {
       gP(140.5, 541.25, 6, 7.875, gImg('assets/figma/v/5eccc4607ecf23.svg')),
       gP(166, 535, 60, 15, gText('Analytique', 12, Color(0xFF55524C), inter: true)),
       gP(134, 584, 44, 12, gText('Contacts', 10, Color(0xFF716D65), weight: 500, inter: true)),
-      gP(138.5, 607.5, 15, 15, const SizedBox.expand(), tap: () => gOpen(context, '10')),
+      gP(138.5, 607.5, 15, 15, const SizedBox.expand(), tap: () => gTab(context, '10')),
       gP(139.875, 606.375, 12.25, 12.25, gImg('assets/figma/v/24e83dedb394fa.svg')),
       gP(138, 612.625, 16, 11, gImg('assets/figma/v/4d0783d7dec623.svg')),
       gP(166, 607, 72, 15, gText('Mbella SARL', 12, Color(0xFF55524C), inter: true)),
-      gP(138.5, 647.5, 15, 15, const SizedBox.expand(), tap: () => gOpen(context, '10')),
+      gP(138.5, 647.5, 15, 15, const SizedBox.expand(), tap: () => gTab(context, '10')),
       gP(139.875, 646.375, 12.25, 12.25, gImg('assets/figma/v/24e83dedb394fa.svg')),
       gP(138, 652.625, 16, 11, gImg('assets/figma/v/4d0783d7dec623.svg')),
       gP(166, 647, 95, 15, gText('Mairie de Douala', 12, Color(0xFF55524C), inter: true)),
@@ -77,7 +79,7 @@ class G_D1 extends ConsumerWidget {
       gP(145.5, 686.438, 9.75, 17.188, gImg('assets/figma/v/220d9dfaf6b6b7.svg')),
       gP(166, 687, 78, 15, gText('Équipe studio', 12, Color(0xFF55524C), inter: true)),
       gP(134, 738, 32, 12, gText('Autres', 10, Color(0xFF716D65), weight: 500, inter: true)),
-      gP(138.5, 761.5, 15, 15, const SizedBox.expand(), tap: () => gOpen(context, '53')),
+      gP(138.5, 761.5, 15, 15, const SizedBox.expand(), tap: () => gTab(context, '53')),
       gP(136.75, 760.37, 17.88, 17.88, gImg('assets/figma/v/53b47db12afe77.svg')),
       gP(166, 761, 58, 15, gText('Messages', 12, Color(0xFF55524C), inter: true)),
       gP(270, 762, 22, 18, gBox(color: Color(0xFF111015), radii: [9, 9, 9, 9])),

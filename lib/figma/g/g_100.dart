@@ -19,6 +19,8 @@ import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
+import '../live/chat.dart';
+import '../live/share.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_100 extends ConsumerWidget {
@@ -43,7 +45,7 @@ class G_100 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 127, 26, gText('Événements', 21, Color(0xFF111015), weight: 700)),
-      gP(341, 71, 22, 22, const SizedBox.expand(), tap: () => gOpen(context, '244')),
+      gP(341, 71, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(340.75, 70.75, 20.667, 20.667, gImg('assets/figma/v/eeff0eb6fd6e24.svg')),
       gP(353.308, 83.308, 9.942, 9.942, gImg('assets/figma/v/34172806399cca.svg')),
       gP(26, 120, 44.857, 58, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1, radii: [16, 16, 16, 16])),
@@ -90,7 +92,7 @@ class G_100 extends ConsumerWidget {
       gP(288.7, 370, 49, 14, gText('12 places', 11, Color(0xFF8F5400), weight: 600, align: TextAlign.center)),
       gP(88, 410, 266, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(36, 423, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
-      gP(46, 433, 20, 20, const SizedBox.expand(), tap: () => gOpen(context, '230')),
+      gP(46, 433, 20, 20, const SizedBox.expand(), tap: () => gTab(context, '230')),
       gP(50.5, 431.667, 11, 16, gImg('assets/figma/v/22d610f8612e15.svg')),
       gP(47.167, 438.333, 17.667, 12.667, gImg('assets/figma/v/6098ffef87a747.svg')),
       gP(53, 445, 6, 9.333, gImg('assets/figma/v/357802c04419d8.svg')),
@@ -107,20 +109,20 @@ class G_100 extends ConsumerWidget {
       gP(60.5, 588, 49, 14, gText('Réserver', 11.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 832, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
-      gP(47.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '244')),
+      gP(47.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(47.125, 777.125, 20, 20, gImg('assets/figma/v/96285515fb0e14.svg')),
       gP(59.113, 789.113, 9.762, 9.762, gImg('assets/figma/v/524f40fa464a05.svg')),
-      gP(113.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '53')),
+      gP(113.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '53')),
       gP(112.25, 777.118, 22.632, 22.632, gImg('assets/figma/v/5610544a74c77c.svg')),
-      gP(255.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '230')),
+      gP(255.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '230')),
       gP(260.375, 776.25, 11.25, 16.5, gImg('assets/figma/v/3adad339ddf7e4.svg')),
       gP(256.875, 783.25, 18.25, 13, gImg('assets/figma/v/9c6e9349b8c3b4.svg')),
       gP(263, 790.25, 6, 9.5, gImg('assets/figma/v/c403dd00a5d407.svg')),
-      gP(321.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '10')),
+      gP(321.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '10')),
       gP(324.625, 777.125, 14.75, 14.75, gImg('assets/figma/v/c6a28fb600186c.svg')),
       gP(322, 785.875, 20, 13, gImg('assets/figma/v/de7faa24b27dad.svg')),
-      gP(169, 762, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gOpen(context, '03')),
-      gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gOpen(context, '03')),
+      gP(169, 762, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gTab(context, '03')),
+      gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
     ]);
   }

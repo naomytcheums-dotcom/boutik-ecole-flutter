@@ -19,6 +19,8 @@ import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
+import '../live/chat.dart';
+import '../live/share.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_P5 extends ConsumerWidget {
@@ -37,7 +39,7 @@ class G_P5 extends ConsumerWidget {
       gP(108.5, 76, 173, 21, gText('Connecter mes outils', 17, Color(0xFF111015), weight: 500)),
       gP(112.5, 100, 165, 15, gText('Ton profil, tes outils, ton choix', 12, Color(0xFF66636E))),
       gP(316, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
-      gP(328.65, 82.65, 18.7, 18.7, const SizedBox.expand(), tap: () => gOpen(context, '244')),
+      gP(328.65, 82.65, 18.7, 18.7, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(327.987, 81.988, 18.467, 18.467, gImg('assets/figma/v/027b8aa954f1e6.svg')),
       gP(338.662, 92.662, 9.35, 9.35, gImg('assets/figma/v/096e5d96dc48c0.svg')),
       gP(24, 132, 342, 132, gBox(gradient: LinearGradient(begin: Alignment(-1.24, -0.68), end: Alignment(0.36, 0.52), colors: [Color(0xFF1B1630), Color(0xFF4A38B8)], stops: [0, 1]), shadows: [BoxShadow(color: Color(0x40403366), offset: Offset(0, 12), blurRadius: 26, spreadRadius: 0)], radii: [32, 32, 32, 32])),
@@ -46,7 +48,7 @@ class G_P5 extends ConsumerWidget {
       gP(44, 226, 106, 26, gBox(color: Color(0x29FFFFFF), radii: [13, 13, 13, 13])),
       gP(50.5, 232, 93, 13, gText('3 outils connectés', 10.5, Color(0xFFFFFFFF), weight: 600)),
       gP(24, 280, 342, 48, GField(hint: 'Rechercher un outil ou un réseau', size: 13, hintColor: Color(0xFF66636E), weight: 400, padL: 48)),
-      gP(39.5, 295.5, 17, 17, const SizedBox.expand(), tap: () => gOpen(context, '244')),
+      gP(39.5, 295.5, 17, 17, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(38.625, 294.625, 17.333, 17.333, gImg('assets/figma/v/fc3dbed79a7c48.svg')),
       gP(48.329, 304.329, 9.046, 9.046, gImg('assets/figma/v/a4779ccb4d017c.svg')),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 342, 60, 34, 'Tout', 12, 500), GChip(92, 342, 84, 34, 'Réseaux', 12, 400), GChip(184, 342, 100, 34, 'Portfolio', 12, 400), GChip(292, 342, 84, 34, 'Gestion', 12, 400), GChip(384, 342, 92, 34, 'Paiement', 12, 400)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFFFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 17)),

@@ -19,6 +19,8 @@ import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
+import '../live/chat.dart';
+import '../live/share.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_10 extends ConsumerWidget {
@@ -69,25 +71,25 @@ class G_10 extends ConsumerWidget {
       gP(163.5, 559.5, 19, 19, gImg('assets/figma/v/8f84eb67c72226.svg')),
       gP(166.967, 562.967, 12.067, 12.067, gImg('assets/figma/v/4750520cc7ff60.svg')),
       gP(172.871, 561.071, 8.058, 8.058, gImg('assets/figma/v/39063a6ecfe984.svg')),
-      gP(24, 630, 110, 58, gBox(image: 'assets/figma/img/768cf16e6d8103ad4296d6cc0fdf1af309f03817.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
-      gP(140, 630, 110, 58, gBox(image: 'assets/figma/img/d5a96228e65dc2920e40cfac9b1205c2faee3caf.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
-      gP(256, 630, 110, 58, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
+      gP(24, 624, 110, 70, gBox(image: 'assets/figma/img/768cf16e6d8103ad4296d6cc0fdf1af309f03817.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
+      gP(140, 624, 110, 70, gBox(image: 'assets/figma/img/d5a96228e65dc2920e40cfac9b1205c2faee3caf.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
+      gP(256, 624, 110, 70, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 700, 200, 44, 'Modifier mon profil', 12.5, 600), GChip(199, 700, 200, 44, 'Partager', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 22)),
-      gP(232, 700, 134, 44, gBox(color: Color(0xB2FFFFFF), border: Color(0xFFFFFFFF), bw: 1, radii: [22, 22, 22, 22]), tap: () => gToast(context, 'Démonstration : Partager')),
+      gP(232, 700, 134, 44, gBox(color: Color(0xB2FFFFFF), border: Color(0xFFFFFFFF), bw: 1, radii: [22, 22, 22, 22]), tap: () => shareText(context, 'Découvrez Boutik-École, la marketplace de l’IUT de Douala : ' + siteUrl)),
       gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
-      gP(47.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '244')),
+      gP(47.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(47.125, 777.125, 20, 20, gImg('assets/figma/v/96285515fb0e14.svg')),
       gP(59.113, 789.113, 9.762, 9.762, gImg('assets/figma/v/524f40fa464a05.svg')),
-      gP(113.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '53')),
+      gP(113.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '53')),
       gP(112.25, 777.118, 22.632, 22.632, gImg('assets/figma/v/5610544a74c77c.svg')),
-      gP(255.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '230')),
+      gP(255.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '230')),
       gP(260.375, 776.25, 11.25, 16.5, gImg('assets/figma/v/3adad339ddf7e4.svg')),
       gP(256.875, 783.25, 18.25, 13, gImg('assets/figma/v/9c6e9349b8c3b4.svg')),
       gP(263, 790.25, 6, 9.5, gImg('assets/figma/v/c403dd00a5d407.svg')),
       gP(324.625, 777.125, 14.75, 14.75, gImg('assets/figma/v/c6a28fb600186c.svg')),
       gP(322, 785.875, 20, 13, gImg('assets/figma/v/de7faa24b27dad.svg')),
-      gP(169, 762, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gOpen(context, '03')),
-      gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gOpen(context, '03')),
+      gP(169, 762, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gTab(context, '03')),
+      gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/ec9f8d654b9909.svg')),
       gP(123, 553, 32, 32, gImg('assets/figma/v/2d3ef0cebe3113.svg')),
       gP(128.958, 559.631, 20.04, 18.694, gImg('assets/figma/v/31ca13725eac3f.svg')),
@@ -97,13 +99,13 @@ class G_10 extends ConsumerWidget {
       gP(232, 556, 82, 26, gBox(color: Color(0xCCFFFFFF), border: Color(0xFFFFFFFF), bw: 1, radii: [100, 100, 100, 100])),
       gP(245, 562, 56, 14, gText('Portfolio ↗', 11, Color(0xFF120F14), weight: 600)),
       gP(326, 556, 26, 26, gBox(color: Color(0xFF111015), oval: true)),
-      gP(333.5, 559, 11, 20, gText('+', 16, Color(0xFFFFFFFF), weight: 700)),
+      gP(326, 556, 26, 26, const Icon(Icons.add_rounded, size: 18, color: Color(0xFFFFFFFF))),
       gP(24, 592, 342, 30, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [15, 15, 15, 15])),
       gP(37, 600, 10, 10, gImg('assets/figma/r/213_260.png')),
       gP(37.667, 607.334, 8.666, 7.333, gImg('assets/figma/r/213_261.png')),
       gP(60, 600, 214, 15, gText('Talent Passport · Confirmé · 3 badges', 12, Color(0xFF111015), weight: 600)),
       gP(344, 598, 6, 19, gText('›', 15, Color(0xFF5A3FE0), weight: 700)),
-      gTap(326, 556, 26, 26, () => gOpen(context, '271')),
+      gTap(326, 556, 26, 26, () => gOpen(context, '271')), gTap(89, 553, 32, 32, () => openUrl(context, 'https://www.instagram.com/')), gTap(123, 553, 32, 32, () => openUrl(context, 'https://www.linkedin.com/')), gTap(160, 556, 26, 26, () => openUrl(context, 'https://www.tiktok.com/')), gTap(194, 556, 26, 26, () => openUrl(context, 'https://github.com/')), gTap(232, 556, 82, 26, () => openUrl(context, 'https://boutik-ecole.vercel.app/#/s/10')),
       gTap(24, 596, 342, 92, () => gOpen(context, '40')),
       gTap(24, 592, 342, 30, () => gOpen(context, '74')),
     ]);

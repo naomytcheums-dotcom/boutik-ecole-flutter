@@ -19,6 +19,8 @@ import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
+import '../live/chat.dart';
+import '../live/share.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_53 extends ConsumerWidget {
@@ -50,26 +52,26 @@ class G_53 extends ConsumerWidget {
       gP(98, 132, 145, 17, gText('Lampe en bois recyclé', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 154, 73, 14, gText('25 000 FCFA', 11.5, Color(0xFF66636E))),
       gP(324, 144, 26, 17, gText('Voir', 13.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),
-      gP(24, 200, 246.24, 58, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28]), tap: () => gToast(context, 'Démonstration : Bonjour ! Votre lampe est prête, vous pouvez venir la retirer demain.')),
-      gP(38, 211, 221.24, 36, gText('Bonjour ! Votre lampe est prête, vous pouvez venir la retirer demain.', 12.5, Color(0xFF111015), lh: 18, wrap: true)),
-      gP(30, 262, 24, 13, gText('10:12', 10, Color(0xFF8793A5))),
-      gP(119.76, 284, 246.24, 58, gBox(color: Color(0xFF111015), radii: [18, 18, 18, 18]), tap: () => gToast(context, 'Démonstration : Parfait, merci. Je passe à 14 h au Bloc A.')),
-      gP(133.76, 295, 221.24, 36, gText('Parfait, merci. Je passe à 14 h au Bloc A.', 12.5, Color(0xFFFFFFFF), lh: 18, wrap: true)),
-      gP(336, 346, 24, 13, gText('10:14', 10, Color(0xFF8793A5), align: TextAlign.right)),
-      gP(24, 368, 246.24, 58, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28]), tap: () => gToast(context, 'Démonstration : Très bien, je l’emballe avec soin. À demain !')),
-      gP(38, 379, 221.24, 36, gText('Très bien, je l’emballe avec soin. À demain !', 12.5, Color(0xFF111015), lh: 18, wrap: true)),
-      gP(30, 430, 24, 13, gText('10:15', 10, Color(0xFF8793A5))),
-      gP(24, 600, 0, 16, gText('', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 748, 342, 56, GField(hint: 'Écrire un message…', size: 13, hintColor: Color(0xFF66636E), weight: 400, padL: 56)),
-      gP(33, 757, 38, 38, gBox(color: Color(0xFFF1EEFB), oval: true)),
-      gP(41.036, 764.624, 21.406, 22.341, gImg('assets/figma/v/b9f90829d9eec8.svg')),
-      gP(286.667, 766.333, 22.667, 19.333, gImg('assets/figma/v/b357168830edbf.svg')),
-      gP(292.5, 771.333, 11, 11, gImg('assets/figma/v/3bae74da037db6.svg')),
-      gP(318, 756, 40, 40, gBox(color: Color(0xFF111015), oval: true)),
-      gP(328.5, 766.5, 19, 19, const SizedBox.expand(), tap: () => gOpen(context, '230')),
-      gP(332.625, 765.083, 10.75, 15.5, gImg('assets/figma/v/ad77f88d6a6e8f.svg')),
-      gP(329.458, 771.417, 17.083, 12.333, gImg('assets/figma/v/590a1cb98d88e9.svg')),
-      gP(335, 777.75, 6, 9.167, gImg('assets/figma/v/6c8704a6160690.svg')),
+      chatPanel('Mouanga Yannick', const [ChatMsg('Bonjour ! Votre lampe est prête, vous pouvez venir la retirer demain.', false, '10:12'), ChatMsg('Parfait, merci. Je passe à 14 h au Bloc A.', true, '10:14'), ChatMsg('Très bien, je l’emballe avec soin. À demain !', false, '10:15')]),
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      gP(328.5, 766.5, 19, 19, const SizedBox.expand(), tap: () => gTab(context, '230')),
+      
+      
+      
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
     ]);
   }

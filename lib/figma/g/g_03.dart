@@ -19,6 +19,8 @@ import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
+import '../live/chat.dart';
+import '../live/share.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_03 extends ConsumerWidget {
@@ -40,7 +42,7 @@ class G_03 extends ConsumerWidget {
       gP(338.222, 23.292, 22, 13, gImg('assets/figma/v/0a1ead9f468035.svg')),
       gP(359.722, 24.792, 8, 10, gImg('assets/figma/v/c55261ef5c9f82.svg')),
       gP(15.347, 62.292, 45.139, 39.722, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
-      gP(258.646, 69.965, 20.764, 20.764, const SizedBox.expand(), tap: () => gOpen(context, '244')),
+      gP(258.646, 69.965, 20.764, 20.764, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(258.241, 69.561, 19.843, 19.843, gImg('assets/figma/v/24c238585949ab.svg')),
       gP(270.094, 81.413, 9.72, 9.72, gImg('assets/figma/v/e06720259342ce.svg')),
       gP(303.38, 68.696, 21.573, 18.977, gImg('assets/figma/v/a20eafbb9e4256.svg')),
@@ -50,7 +52,7 @@ class G_03 extends ConsumerWidget {
       gP(18.056, 115.097, 117, 28, gText('Bienvenue', 22.569, Color(0xFF111015), weight: 800)),
       gP(18.056, 146.778, 165, 17, gText('Explorez le talent étudiant', 13.542, Color(0xFF4A4854))),
       gP(18.056, 181.458, 362.917, 41.528, gBox(color: Color(0xFFEFF1F4), radii: [20.764, 20.764, 20.764, 20.764])),
-      gP(32.5, 193.194, 16.25, 16.25, const SizedBox.expand(), tap: () => gOpen(context, '244')),
+      gP(32.5, 193.194, 16.25, 16.25, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(31.531, 192.226, 16.833, 16.833, gImg('assets/figma/v/77841836149ddf.svg')),
       gP(40.807, 201.502, 8.911, 8.911, gImg('assets/figma/v/38a886aa441c16.svg')),
       gP(60.486, 193.819, 214, 15, gText('Rechercher un produit, service, talent…', 11.736, Color(0xFF66636E))),
@@ -79,7 +81,7 @@ class G_03 extends ConsumerWidget {
       gP(194.106, 251.358, 12.62, 20.896, gImg('assets/figma/v/1a1eeaec24f790.svg')),
       gP(178.917, 287.806, 43, 13, gText('Services', 10.382, Color(0xFF111015), weight: 500, align: TextAlign.center)),
       gP(248.264, 238.333, 57.778, 46.944, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1, radii: [16.25, 16.25, 16.25, 16.25])),
-      gP(267.222, 251.875, 19.861, 19.861, const SizedBox.expand(), tap: () => gOpen(context, '10')),
+      gP(267.222, 251.875, 19.861, 19.861, const SizedBox.expand(), tap: () => gTab(context, '10')),
       gP(270.015, 251.358, 14.275, 14.275, gImg('assets/figma/v/fa6123b26c6cdd.svg')),
       gP(267.532, 259.633, 19.241, 12.62, gImg('assets/figma/v/b5c59f8332fa97.svg')),
       gP(259.153, 287.806, 36, 13, gText('Talents', 10.382, Color(0xFF111015), weight: 500, align: TextAlign.center)),
@@ -125,24 +127,24 @@ class G_03 extends ConsumerWidget {
       gP(14.444, 896.972, 368.333, 27.083, gBox(image: 'assets/figma/img/e48f8827338ec470670d1109125a15b7d0f21476.png', fit: BoxFit.cover)),
       gP(133.611, 988.153, 130.903, 4.514, gBox(color: Color(0xFF111015), radii: [2.708, 2.708, 2.708, 2.708])),
       gP(22, 851, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
-      gP(47.5, 872.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '244')),
+      gP(47.5, 872.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(47.125, 872.125, 20, 20, gImg('assets/figma/v/96285515fb0e14.svg')),
       gP(59.113, 884.113, 9.762, 9.762, gImg('assets/figma/v/524f40fa464a05.svg')),
-      gP(113.5, 872.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '53')),
+      gP(113.5, 872.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '53')),
       gP(112.25, 872.118, 22.632, 22.632, gImg('assets/figma/v/5610544a74c77c.svg')),
-      gP(255.5, 872.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '230')),
+      gP(255.5, 872.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '230')),
       gP(260.375, 871.25, 11.25, 16.5, gImg('assets/figma/v/3adad339ddf7e4.svg')),
       gP(256.875, 878.25, 18.25, 13, gImg('assets/figma/v/9c6e9349b8c3b4.svg')),
       gP(263, 885.25, 6, 9.5, gImg('assets/figma/v/c403dd00a5d407.svg')),
-      gP(321.5, 872.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '10')),
+      gP(321.5, 872.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '10')),
       gP(324.625, 872.125, 14.75, 14.75, gImg('assets/figma/v/c6a28fb600186c.svg')),
       gP(322, 880.875, 20, 13, gImg('assets/figma/v/de7faa24b27dad.svg')),
       gP(169, 857, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true)),
       gP(183.75, 870.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
-      gP(72, 70, 69, 31, gBox(color: Color(0xB2FFFFFF), border: Color(0xFFFFFFFF), bw: 1, shadows: [BoxShadow(color: Color(0x1A403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], backBlur: 20, radii: [100, 100, 100, 100])),
-      gP(87, 78, 39, 15, gText('Cercle', 12, Color(0xFF111015), weight: 600)),
+      
+      
       gTap(14, 559, 178, 229, () { ref.read(selectedProductProvider.notifier).select('Lampe en bois recyclé'); gOpen(context, '05'); }),
-      gTap(72, 70, 69, 31, () => gOpen(context, '244')),
+      
       gTap(24, 180, 342, 48, () => gOpen(context, '19')),
       gTap(198, 559, 178, 229, () { ref.read(selectedProductProvider.notifier).select('Drone éducatif'); gOpen(context, '05'); }),
     ]);

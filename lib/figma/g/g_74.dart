@@ -19,6 +19,8 @@ import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
+import '../live/chat.dart';
+import '../live/share.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_74 extends ConsumerWidget {
@@ -69,7 +71,7 @@ class G_74 extends ConsumerWidget {
       gP(44, 562, 237, 15, gText('BE-C-0412 · Lampe en bois recyclé · Émis', 12, Color(0xFF111015), weight: 500)),
       gP(44, 584, 238, 15, gText('BE-C-0377 · Application de stock · Vérifié', 12, Color(0xFF111015), weight: 500)),
       gP(44, 606, 306, 15, gText('2 recommandations d’entreprises · Orange Cameroun', 12, Color(0xFF66636E))),
-      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => gToast(context, 'Démonstration : Partager mon passport (QR / PDF)')),
+      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => shareText(context, 'Découvrez Boutik-École, la marketplace de l’IUT de Douala : ' + siteUrl)),
       gP(73, 788, 244, 19, gText('Partager mon passport (QR / PDF)', 15, Color(0xFFFFFFFF), weight: 600)),
       gTap(30, 70, 44, 44, () => gOpen(context, '10')),
     ]);

@@ -35,6 +35,7 @@ class GScreen extends StatelessWidget {
     );
     return Scaffold(
       backgroundColor: const Color(0xFFE9E6EE),
+      resizeToAvoidBottomInset: false,
       body: LayoutBuilder(builder: (context, c) {
         if (h > 1000 && w < 700) {
           // Écran long : on adapte la largeur et on fait défiler.

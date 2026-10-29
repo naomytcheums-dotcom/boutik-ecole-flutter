@@ -19,6 +19,8 @@ import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
+import '../live/chat.dart';
+import '../live/share.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_12 extends ConsumerWidget {
@@ -47,7 +49,7 @@ class G_12 extends ConsumerWidget {
       gP(24, 168, 86, 16, gText('Nom complet', 13, Color(0xFF111015), weight: 600)),
       gP(24, 192, 342, 52, GField(hint: 'Ex. Mariam Essono', size: 14.5, hintColor: Color(0xFF66636E), weight: 500, padL: 52, onChanged: (v) { ref.read(formProvider.notifier).put('su_name', v); })),
       errorText('su_name', 28, 246),
-      gP(40.5, 208.5, 19, 19, const SizedBox.expand(), tap: () => gOpen(context, '10')),
+      gP(40.5, 208.5, 19, 19, const SizedBox.expand(), tap: () => gTab(context, '10')),
       gP(43.042, 207.875, 13.917, 13.917, gImg('assets/figma/v/15e6e73e8eaf8c.svg')),
       gP(40.667, 215.792, 18.667, 12.333, gImg('assets/figma/v/179cc05e604d6c.svg')),
       gP(24, 258, 66, 16, gText('Téléphone', 13, Color(0xFF111015), weight: 600)),

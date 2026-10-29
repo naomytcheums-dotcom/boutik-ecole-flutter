@@ -19,6 +19,8 @@ import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
+import '../live/chat.dart';
+import '../live/share.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_264 extends ConsumerWidget {
@@ -31,7 +33,7 @@ class G_264 extends ConsumerWidget {
       gP(20, 10, 36, 34, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(62, 17, 107, 21, gText('Boutik-École', 17, Color(0xFF18181B), weight: 700, inter: true)),
       gP(240, 12, 330, 34, GField(hint: 'Rechercher données, rapports, produits…', size: 11.5, hintColor: Color(0xFF66636E), weight: 400, padL: 36, inter: true)),
-      gP(252.5, 21.5, 15, 15, const SizedBox.expand(), tap: () => gOpen(context, '244')),
+      gP(252.5, 21.5, 15, 15, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(254.375, 23.375, 10, 10, gImg('assets/figma/r/190_281.png')),
       gP(262.938, 31.938, 2.687, 2.687, gImg('assets/figma/r/190_282.png')),
       gP(940, 15, 28, 28, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, border: Color(0xFFFFFFFF), bw: 2, oval: true)),
@@ -55,7 +57,7 @@ class G_264 extends ConsumerWidget {
       gP(28.875, 191.875, 2.5, 2.5, gImg('assets/figma/r/190_308.png')),
       gP(28.25, 194.58, 9.375, 6.045, gImg('assets/figma/r/190_309.png')),
       gP(52, 187, 56, 15, gText('Bannières', 12, Color(0xFF55524C), inter: true)),
-      gP(24.5, 227.5, 15, 15, const SizedBox.expand(), tap: () => gOpen(context, '53')),
+      gP(24.5, 227.5, 15, 15, const SizedBox.expand(), tap: () => gTab(context, '53')),
       gP(25.75, 229.37, 11.88, 11.88, gImg('assets/figma/r/190_312.png')),
       gP(52, 227, 23, 15, gText('FAQ', 12, Color(0xFF55524C), inter: true)),
       gP(12, 814, 216, 56, gBox(color: Color(0xFFFFFFFF), radii: [14, 14, 14, 14])),
@@ -79,7 +81,7 @@ class G_264 extends ConsumerWidget {
       gP(290, 191, 25, 12, gText('Page', 10, Color(0xFF66636E), weight: 500, inter: true)),
       gP(518, 191, 73, 12, gText('Dernière modif.', 10, Color(0xFF66636E), weight: 500, inter: true)),
       gP(668, 191, 30, 12, gText('Statut', 10, Color(0xFF66636E), weight: 500, inter: true)),
-      gP(290, 232, 42, 14, gText('Accueil', 11.5, Color(0xFF18181B), weight: 600, inter: true), tap: () => gOpen(context, '03')),
+      gP(290, 232, 42, 14, gText('Accueil', 11.5, Color(0xFF18181B), weight: 600, inter: true), tap: () => gTab(context, '03')),
       gP(518, 232, 82, 14, gText('22 oct. · Admin', 11.5, Color(0xFF3D3B37), inter: true)),
       gP(668, 232, 40, 14, gText('Publiée', 11.5, Color(0xFF3D3B37), inter: true)),
       gP(282, 258, 543, 1, gBox(color: Color(0xFFEEECE8))),

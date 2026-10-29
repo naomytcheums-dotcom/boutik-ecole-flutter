@@ -19,6 +19,8 @@ import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
+import '../live/chat.dart';
+import '../live/share.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_261 extends ConsumerWidget {
@@ -35,15 +37,18 @@ class G_261 extends ConsumerWidget {
       gP(44, 182, 243, 32, gText('1 devis en attente de réponse · 1 mission à valider', 11.5, Color(0xD9FFFFFF), lh: 16, wrap: true)),
       gP(44, 226, 139, 26, gBox(color: Color(0x33FFFFFF), radii: [100, 100, 100, 100])),
       gP(56, 232, 115, 14, gText('Suivre ma commande', 11, Color(0xFFFFFFFF), weight: 600)),
+      gP(24, 300, 110, 86, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(40.333, 326.333, 7.333, 7.333, gImg('assets/figma/v/2e1654e048bb4e.svg')),
       gP(47.667, 326.333, 7.333, 7.333, gImg('assets/figma/v/2e1654e048bb4e.svg')),
       gP(35.667, 313.667, 20.667, 16, gImg('assets/figma/v/4e442248cc10b3.svg')),
       gP(38, 340, 20, 25, gText('12', 20, Color(0xFF111015), weight: 700)),
       gP(38, 366, 65, 13, gText('Commandes', 10.5, Color(0xFF66636E))),
+      gP(140, 300, 110, 86, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(153.667, 314.333, 16.667, 19.333, gImg('assets/figma/v/a409449823bd96.svg')),
       gP(157, 314.333, 13.333, 16, gImg('assets/figma/v/311f1201027aa2.svg')),
       gP(154, 340, 13, 25, gText('3', 20, Color(0xFF111015), weight: 700)),
       gP(154, 366, 28, 13, gText('Devis', 10.5, Color(0xFF66636E))),
+      gP(256, 300, 110, 86, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(268.333, 315, 19.333, 18, gImg('assets/figma/v/f9499677feb01f.svg')),
       gP(262, 308, 32, 32, GHeart()),
       gP(270, 340, 13, 25, gText('8', 20, Color(0xFF111015), weight: 700)),
@@ -71,20 +76,20 @@ class G_261 extends ConsumerWidget {
       gP(301, 744, 53, 25, gBox(color: Color(0xFF111015), radii: [100, 100, 100, 100])),
       gP(313, 750, 29, 13, gText('Noter', 10.5, Color(0xFFFFFFFF), weight: 600)),
       gP(22, 812, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
-      gP(47.5, 833.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '244')),
+      gP(47.5, 833.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(47.125, 833.125, 20, 20, gImg('assets/figma/v/e5210bb60df49f.svg')),
       gP(59.113, 845.113, 9.762, 9.762, gImg('assets/figma/v/83a6239e1dfd4c.svg')),
-      gP(113.5, 833.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '53')),
+      gP(113.5, 833.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '53')),
       gP(112.25, 833.118, 22.632, 22.632, gImg('assets/figma/v/3ab5d8934a12b4.svg')),
-      gP(255.5, 833.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '230')),
+      gP(255.5, 833.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '230')),
       gP(260.375, 832.25, 11.25, 16.5, gImg('assets/figma/v/9bd69de833ad92.svg')),
       gP(256.875, 839.25, 18.25, 13, gImg('assets/figma/v/ced0119d5c616c.svg')),
       gP(263, 846.25, 6, 9.5, gImg('assets/figma/v/41c4de9afecb0e.svg')),
-      gP(321.5, 833.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '10')),
+      gP(321.5, 833.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '10')),
       gP(324.625, 833.125, 14.75, 14.75, gImg('assets/figma/v/2e9ae9c74a1517.svg')),
       gP(322, 841.875, 20, 13, gImg('assets/figma/v/12e378ac34408f.svg')),
-      gP(169, 818, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, oval: true), tap: () => gOpen(context, '03')),
-      gP(184, 833, 22, 22, const SizedBox.expand(), tap: () => gOpen(context, '03')),
+      gP(169, 818, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, oval: true), tap: () => gTab(context, '03')),
+      gP(184, 833, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 831.852, 22.5, 23.398, gImg('assets/figma/v/f18e2be5aba56b.svg')),
       gTap(44, 226, 170, 28, () => gOpen(context, '09')),
     ]);

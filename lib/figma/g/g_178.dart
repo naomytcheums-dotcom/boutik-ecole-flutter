@@ -19,6 +19,8 @@ import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
+import '../live/chat.dart';
+import '../live/share.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_178 extends ConsumerWidget {
@@ -62,7 +64,7 @@ class G_178 extends ConsumerWidget {
       gP(336.75, 520.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
       gP(88, 554, 266, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(36, 560, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
-      gP(46, 570, 20, 20, const SizedBox.expand(), tap: () => gOpen(context, '53')),
+      gP(46, 570, 20, 20, const SizedBox.expand(), tap: () => gTab(context, '53')),
       gP(44.667, 569.493, 21.84, 21.84, gImg('assets/figma/v/c011934b9b1395.svg')),
       gP(88, 571, 142, 17, gText('Commentaires au jury', 13.5, Color(0xFF111015), weight: 600)),
       gP(336.75, 572.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),

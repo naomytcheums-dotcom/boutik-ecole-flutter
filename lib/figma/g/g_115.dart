@@ -19,6 +19,8 @@ import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
+import '../live/chat.dart';
+import '../live/share.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_115 extends ConsumerWidget {
@@ -39,7 +41,7 @@ class G_115 extends ConsumerWidget {
       gP(678.4, 160, 50, 13, gText('Confirmé', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center)),
       gP(332, 200, 409, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(280, 213, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
-      gP(290, 223, 20, 20, const SizedBox.expand(), tap: () => gOpen(context, '230')),
+      gP(290, 223, 20, 20, const SizedBox.expand(), tap: () => gTab(context, '230')),
       gP(294.5, 221.667, 11, 16, gImg('assets/figma/v/22d610f8612e15.svg')),
       gP(291.167, 228.333, 17.667, 12.667, gImg('assets/figma/v/6098ffef87a747.svg')),
       gP(297, 235, 6, 9.333, gImg('assets/figma/v/357802c04419d8.svg')),
@@ -94,7 +96,7 @@ class G_115 extends ConsumerWidget {
       gP(20, 10, 36, 34, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(62, 17, 107, 21, gText('Boutik-École', 17, Color(0xFF18181B), weight: 700, inter: true)),
       gP(240, 12, 330, 34, GField(hint: 'Rechercher données, rapports, produits…', size: 11.5, hintColor: Color(0xFF66636E), weight: 400, padL: 36, inter: true)),
-      gP(252.5, 21.5, 15, 15, const SizedBox.expand(), tap: () => gOpen(context, '244')),
+      gP(252.5, 21.5, 15, 15, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(251.375, 20.375, 16, 16, gImg('assets/figma/v/3a82c8c513bd84.svg')),
       gP(259.938, 28.938, 8.687, 8.687, gImg('assets/figma/v/ee5ed5a7003f46.svg')),
       gP(940, 15, 28, 28, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, border: Color(0xFFFFFFFF), bw: 2, oval: true)),

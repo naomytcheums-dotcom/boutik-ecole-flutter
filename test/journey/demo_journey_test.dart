@@ -42,7 +42,10 @@ void main() {
       await tester.pumpAndSettle();
       var ok = false;
       final taps = find.descendant(of: find.byType(Scaffold).last, matching: find.byType(GestureDetector));
-      for (var k = 0; k < taps.evaluate().length && !ok; k++) {
+      // Les boutons principaux sont en bas de l'écran : on les essaie en premier (les poubelles, +/- ne doivent pas vider le panier).
+      final order = List<int>.generate(taps.evaluate().length, (k) => k)..sort((a, b) => tester.getCenter(taps.at(b)).dy.compareTo(tester.getCenter(taps.at(a)).dy));
+      for (final k in order) {
+        if (ok) break;
         final g = tester.widget<GestureDetector>(taps.at(k));
         if (g.onTap == null) continue;
         await tester.tapAt(tester.getCenter(taps.at(k)));

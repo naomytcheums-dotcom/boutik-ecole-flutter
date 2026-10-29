@@ -9,6 +9,7 @@ import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
 import '../live/auth.dart';
+import '../live/seller.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_167 extends ConsumerWidget {
@@ -63,7 +64,7 @@ class G_167 extends ConsumerWidget {
       gP(334, 488, 16, 16, gText('2e', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
       gP(24, 540, 126, 16, gText('Commentaire du jury', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 560, 342, 96, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
-      gP(40, 574, 313, 20, gText('Points forts et axes d’amélioration…', 13.5, Color(0xFF66636E), weight: 500, lh: 20, wrap: true)),
+      gP(24, 560, 342, 96, GField(hint: 'Points forts et axes d’amélioration…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, multiline: true, padT: 14)),
       gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
       gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Enregistrer')),
       gP(66.5, 778, 78, 18, gText('Enregistrer', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),

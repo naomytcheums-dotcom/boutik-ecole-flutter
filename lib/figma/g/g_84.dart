@@ -9,6 +9,7 @@ import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
 import '../live/auth.dart';
+import '../live/seller.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_84 extends ConsumerWidget {
@@ -72,7 +73,7 @@ class G_84 extends ConsumerWidget {
       gP(334.5, 472.75, 15, 10.5, gImg('assets/figma/v/7abbf201b36418.svg')),
       gP(24, 516, 176, 16, gText('Présentation de la campagne', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 536, 342, 96, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
-      gP(40, 550, 313, 40, gText('Expliquez le projet, l’usage des fonds et l’impact…', 13.5, Color(0xFF66636E), weight: 500, lh: 20, wrap: true)),
+      gP(24, 536, 342, 96, GField(hint: 'Expliquez le projet, l’usage des fonds et l’impact…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, multiline: true, padT: 14)),
       gP(24, 646, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 659, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(45.5, 672.667, 21, 9.333, gImg('assets/figma/v/eabe15c7345bb6.svg')),

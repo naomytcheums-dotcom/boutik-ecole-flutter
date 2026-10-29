@@ -9,6 +9,7 @@ import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
 import '../live/auth.dart';
+import '../live/seller.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_64 extends ConsumerWidget {
@@ -32,7 +33,7 @@ class G_64 extends ConsumerWidget {
       gP(31, 71, 22, 22, const SizedBox.expand(), tap: () => gBack(context)),
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
-      gP(76, 70, 268, 26, gText('Préparer #BE-2026-0142', 21, Color(0xFF111015), weight: 700)),
+      gP(76, 70, 268, 26, Consumer(builder: (context, ref, _) => gText('Préparer ${ref.watch(currentSellerOrderProvider).id}', 21, Color(0xFF111015), weight: 700))),
       gP(60, 134, 68.667, 2, gBox(color: Color(0xFF111015), radii: [1, 1, 1, 1])),
       gP(29, 120, 30, 30, gBox(color: Color(0xFF111015), oval: true)),
       gP(36, 128.25, 16, 12.875, gImg('assets/figma/v/515240907c423e.svg')),
@@ -47,8 +48,8 @@ class G_64 extends ConsumerWidget {
       gP(326.5, 158, 39, 14, gText('Remise', 11, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
       gP(24, 188, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 196, 50, 50, gBox(image: 'assets/figma/img/787285568a50b7daa40a12adc3c3145d4743215c.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
-      gP(98, 200, 145, 17, gText('Lampe en bois recyclé', 13.5, Color(0xFF111015), weight: 600)),
-      gP(98, 222, 117, 14, gText('Qté : 1 · Chêne naturel', 11.5, Color(0xFF66636E))),
+      gP(98, 200, 145, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(currentSellerOrderProvider).title, 13.5, Color(0xFF111015), weight: 600))),
+      gP(98, 222, 117, 14, Consumer(builder: (context, ref, _) => gText('Qté : ${ref.watch(currentSellerOrderProvider).qty} · ${fcfa(ref.watch(currentSellerOrderProvider).total)}', 11.5, Color(0xFF66636E)))),
       gP(24, 268, 122, 19, gText('Liste de contrôle', 15, Color(0xFF111015), weight: 700)),
       gP(24, 306, 20, 20, gBox(color: Color(0xFF111015), radii: [6, 6, 6, 6])),
       gP(26.667, 309.75, 14.667, 11.958, gImg('assets/figma/v/ac006383c9ee5c.svg')),
@@ -78,6 +79,8 @@ class G_64 extends ConsumerWidget {
       gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Marquer prête')),
       gP(234.5, 778, 100, 18, gText('Marquer prête', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      gTap(203, 760, 163, 54, () { markOrderReady(ref, context); }),
+      gTap(24, 760, 163, 54, () { gToast(context, 'Signalement envoyé au département'); }),
     ]);
   }
 }

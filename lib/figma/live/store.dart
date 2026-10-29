@@ -50,7 +50,10 @@ const liveCatalog = <LiveProduct>[
       'Jus de bissap frais, sans conservateur.', 'assets/figma/img/9803b1792923bb371cffd2d64272ebebf74ea2d4.png', category: 'Alimentation'),
 ];
 
-LiveProduct productByTitle(String t) => liveCatalog.firstWhere((p) => p.title == t, orElse: () => liveCatalog.first);
+/// Produits ajoutés par les vendeurs (mis à jour par allProductsProvider).
+List<LiveProduct> extraProducts = const [];
+
+LiveProduct productByTitle(String t) => [...extraProducts, ...liveCatalog].firstWhere((p) => p.title == t, orElse: () => liveCatalog.first);
 
 class SelectedProduct extends Notifier<LiveProduct> {
   @override
@@ -217,7 +220,7 @@ class CategoryIndex extends Notifier<int> {
 
 final categoryProvider = NotifierProvider<CategoryIndex, int>(CategoryIndex.new);
 
-String _norm(String s) => s
+String normText(String s) => s
     .toLowerCase()
     .replaceAll(RegExp('[éèêë]'), 'e')
     .replaceAll(RegExp('[àâä]'), 'a')
@@ -225,16 +228,6 @@ String _norm(String s) => s
     .replaceAll(RegExp('[ùûü]'), 'u')
     .replaceAll('î', 'i')
     .replaceAll('ç', 'c');
-
-/// Produits correspondant à la recherche et à la catégorie choisies.
-final filteredProductsProvider = Provider<List<LiveProduct>>((ref) {
-  final q = _norm(ref.watch(searchQueryProvider).trim());
-  final cat = liveCategories[ref.watch(categoryProvider).clamp(0, liveCategories.length - 1)];
-  return [
-    for (final p in liveCatalog)
-      if ((cat == 'Tous' || p.category == cat) && (q.isEmpty || _norm('${p.title} ${p.department} ${p.category} ${p.seller}').contains(q))) p,
-  ];
-});
 
 /// Favoris partagés (titres des produits), le plus récent en premier.
 class Favorites extends Notifier<List<String>> {

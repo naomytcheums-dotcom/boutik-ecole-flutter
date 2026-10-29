@@ -9,6 +9,7 @@ import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
 import '../live/auth.dart';
+import '../live/seller.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_170 extends ConsumerWidget {
@@ -49,7 +50,7 @@ class G_170 extends ConsumerWidget {
       gP(54, 361, 315, 18, gText('Contenu inapproprié', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
       gP(24, 396, 130, 16, gText('Précisions (facultatif)', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 416, 342, 96, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
-      gP(40, 430, 313, 20, gText('Expliquez ce qui pose problème…', 13.5, Color(0xFF66636E), weight: 500, lh: 20, wrap: true)),
+      gP(24, 416, 342, 96, GField(hint: 'Expliquez ce qui pose problème…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, multiline: true, padT: 14)),
       gP(24, 526, 342, 79, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
       gP(36, 549.5, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(43.333, 555.416, 17.333, 20.169, gImg('assets/figma/v/d9a3b6dd8cdae8.svg')),

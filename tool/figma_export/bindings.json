@@ -1043,5 +1043,398 @@
     "text": "'${ref.watch(profileAccountProvider).department} · ${ref.watch(profileAccountProvider).institution}'"
    }
   }
+ },
+ "57": {
+  "nodes": {
+   "37:132": {
+    "text": "fcfa(1245000 + ref.watch(ordersProvider).fold<int>(0, (a, o) => a + o.total)).replaceAll(' FCFA', '')"
+   },
+   "37:140": {
+    "text": "'${38 + ref.watch(ordersProvider).length}'"
+   },
+   "37:157": {
+    "text": "'${ref.watch(listingsProvider).where((l) => l.published).length}'"
+   },
+   "37:158": {
+    "text": "'${ref.watch(listingsProvider).where((l) => !l.published).length} en brouillon'"
+   },
+   "37:190": {
+    "text": "ref.watch(sellerOrdersProvider).length > 0 ? '${ref.watch(sellerOrdersProvider)[0].id} · ${ref.watch(sellerOrdersProvider)[0].title}' : ''",
+    "show": "ref.watch(sellerOrdersProvider).length > 0"
+   },
+   "37:191": {
+    "text": "ref.watch(sellerOrdersProvider).length > 0 ? '${ref.watch(sellerOrdersProvider)[0].client} · ${fcfa(ref.watch(sellerOrdersProvider)[0].total)}' : ''",
+    "show": "ref.watch(sellerOrdersProvider).length > 0"
+   },
+   "37:192": {
+    "fill": "sellerPillFill(sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), ref.watch(sellerOrdersProvider)[0].id)))",
+    "show": "ref.watch(sellerOrdersProvider).length > 0"
+   },
+   "37:193": {
+    "text": "sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), ref.watch(sellerOrdersProvider)[0].id))",
+    "color": "sellerPillInk(sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), ref.watch(sellerOrdersProvider)[0].id)))",
+    "show": "ref.watch(sellerOrdersProvider).length > 0"
+   },
+   "37:196": {
+    "text": "ref.watch(sellerOrdersProvider).length > 1 ? '${ref.watch(sellerOrdersProvider)[1].id} · ${ref.watch(sellerOrdersProvider)[1].title}' : ''",
+    "show": "ref.watch(sellerOrdersProvider).length > 1"
+   },
+   "37:197": {
+    "text": "ref.watch(sellerOrdersProvider).length > 1 ? '${ref.watch(sellerOrdersProvider)[1].client} · ${fcfa(ref.watch(sellerOrdersProvider)[1].total)}' : ''",
+    "show": "ref.watch(sellerOrdersProvider).length > 1"
+   },
+   "37:198": {
+    "fill": "sellerPillFill(sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), ref.watch(sellerOrdersProvider)[1].id)))",
+    "show": "ref.watch(sellerOrdersProvider).length > 1"
+   },
+   "37:199": {
+    "text": "sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), ref.watch(sellerOrdersProvider)[1].id))",
+    "color": "sellerPillInk(sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), ref.watch(sellerOrdersProvider)[1].id)))",
+    "show": "ref.watch(sellerOrdersProvider).length > 1"
+   },
+   "37:189": {
+    "show": "ref.watch(sellerOrdersProvider).length > 0"
+   },
+   "37:195": {
+    "show": "ref.watch(sellerOrdersProvider).length > 1"
+   }
+  },
+  "links": {
+   "301,552,49,15": "gOpen(context, '63');",
+   "24,590,342,132": "gOpen(context, '63');"
+  }
+ },
+ "58": {
+  "nodes": {
+   "37:262": {
+    "onChanged": "ref.read(formProvider.notifier).put('np_title', v);",
+    "after": [
+     "errorText('np_title', 28, 338)"
+    ]
+   },
+   "37:268": {
+    "onChanged": "ref.read(formProvider.notifier).put('np_cat', v);",
+    "after": [
+     "errorText('np_cat', 28, 420)"
+    ]
+   },
+   "37:278": {
+    "onChanged": "ref.read(formProvider.notifier).put('np_price', v);",
+    "after": [
+     "errorText('np_price', 28, 502)"
+    ]
+   },
+   "37:284": {
+    "onChanged": "ref.read(formProvider.notifier).put('np_stock', v);",
+    "after": [
+     "errorText('np_stock', 28, 584)"
+    ]
+   },
+   "37:291": {
+    "onChanged": "ref.read(formProvider.notifier).put('np_desc', v);"
+   }
+  },
+  "links": {
+   "24,760,163,54": "submitListing(ref, context, publish: false);",
+   "203,760,163,54": "submitListing(ref, context, publish: true);"
+  }
+ },
+ "61": {
+  "nodes": {
+   "37:441": {
+    "onChanged": "ref.read(sellerQueryProvider.notifier).set(v);"
+   },
+   "37:456": {
+    "onChanged": "ref.read(sellerFilterProvider.notifier).set(i);",
+    "labels": [
+     "'Tous (${ref.watch(listingsProvider).length})'",
+     "'Publiés'",
+     "'Brouillons'",
+     "'Rupture'"
+    ]
+   },
+   "37:465": {
+    "show": "ref.watch(visibleListingsProvider).length > 0"
+   },
+   "37:466": {
+    "text": "ref.watch(visibleListingsProvider).length > 0 ? ref.watch(visibleListingsProvider)[0].title : ''",
+    "show": "ref.watch(visibleListingsProvider).length > 0"
+   },
+   "37:467": {
+    "text": "ref.watch(visibleListingsProvider).length > 0 ? (ref.watch(visibleListingsProvider)[0].published ? '${fcfa(ref.watch(visibleListingsProvider)[0].price)} · ${ref.watch(visibleListingsProvider)[0].stock} en stock' : '${fcfa(ref.watch(visibleListingsProvider)[0].price)} · Brouillon') : ''",
+    "show": "ref.watch(visibleListingsProvider).length > 0"
+   },
+   "37:468": {
+    "fill": "ref.watch(visibleListingsProvider).length > 0 ? listingPillFill(ref.watch(visibleListingsProvider)[0].label) : const Color(0x00000000)",
+    "show": "ref.watch(visibleListingsProvider).length > 0"
+   },
+   "37:469": {
+    "text": "ref.watch(visibleListingsProvider).length > 0 ? ref.watch(visibleListingsProvider)[0].label : ''",
+    "color": "ref.watch(visibleListingsProvider).length > 0 ? listingPillInk(ref.watch(visibleListingsProvider)[0].label) : const Color(0xFF66636E)",
+    "show": "ref.watch(visibleListingsProvider).length > 0"
+   },
+   "37:471": {
+    "show": "ref.watch(visibleListingsProvider).length > 1"
+   },
+   "37:472": {
+    "text": "ref.watch(visibleListingsProvider).length > 1 ? ref.watch(visibleListingsProvider)[1].title : ''",
+    "show": "ref.watch(visibleListingsProvider).length > 1"
+   },
+   "37:473": {
+    "text": "ref.watch(visibleListingsProvider).length > 1 ? (ref.watch(visibleListingsProvider)[1].published ? '${fcfa(ref.watch(visibleListingsProvider)[1].price)} · ${ref.watch(visibleListingsProvider)[1].stock} en stock' : '${fcfa(ref.watch(visibleListingsProvider)[1].price)} · Brouillon') : ''",
+    "show": "ref.watch(visibleListingsProvider).length > 1"
+   },
+   "37:474": {
+    "fill": "ref.watch(visibleListingsProvider).length > 1 ? listingPillFill(ref.watch(visibleListingsProvider)[1].label) : const Color(0x00000000)",
+    "show": "ref.watch(visibleListingsProvider).length > 1"
+   },
+   "37:475": {
+    "text": "ref.watch(visibleListingsProvider).length > 1 ? ref.watch(visibleListingsProvider)[1].label : ''",
+    "color": "ref.watch(visibleListingsProvider).length > 1 ? listingPillInk(ref.watch(visibleListingsProvider)[1].label) : const Color(0xFF66636E)",
+    "show": "ref.watch(visibleListingsProvider).length > 1"
+   },
+   "37:477": {
+    "show": "ref.watch(visibleListingsProvider).length > 2"
+   },
+   "37:478": {
+    "text": "ref.watch(visibleListingsProvider).length > 2 ? ref.watch(visibleListingsProvider)[2].title : ''",
+    "show": "ref.watch(visibleListingsProvider).length > 2"
+   },
+   "37:479": {
+    "text": "ref.watch(visibleListingsProvider).length > 2 ? (ref.watch(visibleListingsProvider)[2].published ? '${fcfa(ref.watch(visibleListingsProvider)[2].price)} · ${ref.watch(visibleListingsProvider)[2].stock} en stock' : '${fcfa(ref.watch(visibleListingsProvider)[2].price)} · Brouillon') : ''",
+    "show": "ref.watch(visibleListingsProvider).length > 2"
+   },
+   "37:480": {
+    "fill": "ref.watch(visibleListingsProvider).length > 2 ? listingPillFill(ref.watch(visibleListingsProvider)[2].label) : const Color(0x00000000)",
+    "show": "ref.watch(visibleListingsProvider).length > 2"
+   },
+   "37:481": {
+    "text": "ref.watch(visibleListingsProvider).length > 2 ? ref.watch(visibleListingsProvider)[2].label : ''",
+    "color": "ref.watch(visibleListingsProvider).length > 2 ? listingPillInk(ref.watch(visibleListingsProvider)[2].label) : const Color(0xFF66636E)",
+    "show": "ref.watch(visibleListingsProvider).length > 2"
+   },
+   "37:483": {
+    "show": "ref.watch(visibleListingsProvider).length > 3"
+   },
+   "37:484": {
+    "text": "ref.watch(visibleListingsProvider).length > 3 ? ref.watch(visibleListingsProvider)[3].title : ''",
+    "show": "ref.watch(visibleListingsProvider).length > 3"
+   },
+   "37:485": {
+    "text": "ref.watch(visibleListingsProvider).length > 3 ? (ref.watch(visibleListingsProvider)[3].published ? '${fcfa(ref.watch(visibleListingsProvider)[3].price)} · ${ref.watch(visibleListingsProvider)[3].stock} en stock' : '${fcfa(ref.watch(visibleListingsProvider)[3].price)} · Brouillon') : ''",
+    "show": "ref.watch(visibleListingsProvider).length > 3"
+   },
+   "37:486": {
+    "fill": "ref.watch(visibleListingsProvider).length > 3 ? listingPillFill(ref.watch(visibleListingsProvider)[3].label) : const Color(0x00000000)",
+    "show": "ref.watch(visibleListingsProvider).length > 3"
+   },
+   "37:487": {
+    "text": "ref.watch(visibleListingsProvider).length > 3 ? ref.watch(visibleListingsProvider)[3].label : ''",
+    "color": "ref.watch(visibleListingsProvider).length > 3 ? listingPillInk(ref.watch(visibleListingsProvider)[3].label) : const Color(0xFF66636E)",
+    "show": "ref.watch(visibleListingsProvider).length > 3"
+   },
+   "37:489": {
+    "show": "ref.watch(visibleListingsProvider).length > 4"
+   },
+   "37:490": {
+    "text": "ref.watch(visibleListingsProvider).length > 4 ? ref.watch(visibleListingsProvider)[4].title : ''",
+    "show": "ref.watch(visibleListingsProvider).length > 4"
+   },
+   "37:491": {
+    "text": "ref.watch(visibleListingsProvider).length > 4 ? (ref.watch(visibleListingsProvider)[4].published ? '${fcfa(ref.watch(visibleListingsProvider)[4].price)} · ${ref.watch(visibleListingsProvider)[4].stock} en stock' : '${fcfa(ref.watch(visibleListingsProvider)[4].price)} · Brouillon') : ''",
+    "show": "ref.watch(visibleListingsProvider).length > 4"
+   },
+   "37:492": {
+    "fill": "ref.watch(visibleListingsProvider).length > 4 ? listingPillFill(ref.watch(visibleListingsProvider)[4].label) : const Color(0x00000000)",
+    "show": "ref.watch(visibleListingsProvider).length > 4"
+   },
+   "37:493": {
+    "text": "ref.watch(visibleListingsProvider).length > 4 ? ref.watch(visibleListingsProvider)[4].label : ''",
+    "color": "ref.watch(visibleListingsProvider).length > 4 ? listingPillInk(ref.watch(visibleListingsProvider)[4].label) : const Color(0xFF66636E)",
+    "show": "ref.watch(visibleListingsProvider).length > 4"
+   }
+  },
+  "links": {
+   "300,66,66,34": "gOpen(context, '58');"
+  }
+ },
+ "62": {
+  "nodes": {
+   "37:537": {
+    "text": "'${ref.watch(listingsProvider).fold<int>(0, (a, l) => a + l.stock)} unités'"
+   },
+   "37:545": {
+    "text": "'${ref.watch(listingsProvider).where((l) => l.published && l.stock > 0 && l.stock <= Listing.lowStock).length} articles'"
+   },
+   "37:553": {
+    "text": "'${ref.watch(listingsProvider).where((l) => l.published && l.stock == 0).length} articles'"
+   },
+   "37:571": {
+    "text": "(ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock))).length > 0 ? (ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock)))[0].title : ''",
+    "show": "(ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock))).length > 0"
+   },
+   "37:572": {
+    "text": "(ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock))).length > 0 ? 'Seuil : ${Listing.lowStock} · Restant : ${(ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock)))[0].stock}' : ''",
+    "show": "(ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock))).length > 0",
+    "right": false
+   },
+   "37:574": {
+    "text": "(ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock))).length > 0 ? '${(ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock)))[0].stock}' : ''",
+    "show": "(ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock))).length > 0",
+    "right": true
+   },
+   "37:577": {
+    "text": "(ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock))).length > 1 ? (ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock)))[1].title : ''",
+    "show": "(ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock))).length > 1"
+   },
+   "37:578": {
+    "text": "(ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock))).length > 1 ? 'Seuil : ${Listing.lowStock} · Restant : ${(ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock)))[1].stock}' : ''",
+    "show": "(ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock))).length > 1",
+    "right": false
+   },
+   "37:580": {
+    "text": "(ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock))).length > 1 ? '${(ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock)))[1].stock}' : ''",
+    "show": "(ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock))).length > 1",
+    "right": true
+   },
+   "37:583": {
+    "text": "(ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock))).length > 2 ? (ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock)))[2].title : ''",
+    "show": "(ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock))).length > 2"
+   },
+   "37:584": {
+    "text": "(ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock))).length > 2 ? 'Seuil : ${Listing.lowStock} · Restant : ${(ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock)))[2].stock}' : ''",
+    "show": "(ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock))).length > 2",
+    "right": false
+   },
+   "37:586": {
+    "text": "(ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock))).length > 2 ? '${(ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock)))[2].stock}' : ''",
+    "show": "(ref.watch(listingsProvider).where((l) => l.published).toList()..sort((a, b) => a.stock.compareTo(b.stock))).length > 2",
+    "right": true
+   }
+  },
+  "links": {
+   "24,372,342,64": "final l = (ref.read(listingsProvider).where((x) => x.published).toList()..sort((a, b) => a.stock.compareTo(b.stock))); if (l.length > 0) { ref.read(listingsProvider.notifier).setStock(l[0].title, l[0].stock + 10); gToast(context, 'Réassort : +10 « ${l[0].title} »'); }",
+   "24,438,342,64": "final l = (ref.read(listingsProvider).where((x) => x.published).toList()..sort((a, b) => a.stock.compareTo(b.stock))); if (l.length > 1) { ref.read(listingsProvider.notifier).setStock(l[1].title, l[1].stock + 10); gToast(context, 'Réassort : +10 « ${l[1].title} »'); }",
+   "24,504,342,64": "final l = (ref.read(listingsProvider).where((x) => x.published).toList()..sort((a, b) => a.stock.compareTo(b.stock))); if (l.length > 2) { ref.read(listingsProvider.notifier).setStock(l[2].title, l[2].stock + 10); gToast(context, 'Réassort : +10 « ${l[2].title} »'); }"
+  }
+ },
+ "63": {
+  "nodes": {
+   "37:643": {
+    "onChanged": "ref.read(sellerOrderTabProvider.notifier).set(i);",
+    "labels": [
+     "'À préparer (${ref.watch(sellerOrdersProvider).where((o) => statusOf(ref.watch(sellerStatusProvider), o.id) <= 1).length})'",
+     "'En cours'",
+     "'Prêtes'",
+     "'Livrées'"
+    ]
+   },
+   "37:653": {
+    "text": "ref.watch(visibleSellerOrdersProvider).length > 0 ? ref.watch(visibleSellerOrdersProvider)[0].id : ''",
+    "show": "ref.watch(visibleSellerOrdersProvider).length > 0"
+   },
+   "37:654": {
+    "text": "ref.watch(visibleSellerOrdersProvider).length > 0 ? '${ref.watch(visibleSellerOrdersProvider)[0].title} · ${ref.watch(visibleSellerOrdersProvider)[0].client}' : ''",
+    "show": "ref.watch(visibleSellerOrdersProvider).length > 0"
+   },
+   "37:655": {
+    "fill": "ref.watch(visibleSellerOrdersProvider).length > 0 ? sellerPillFill(sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), ref.watch(visibleSellerOrdersProvider)[0].id))) : const Color(0x00000000)",
+    "show": "ref.watch(visibleSellerOrdersProvider).length > 0"
+   },
+   "37:656": {
+    "text": "ref.watch(visibleSellerOrdersProvider).length > 0 ? sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), ref.watch(visibleSellerOrdersProvider)[0].id)) : ''",
+    "color": "ref.watch(visibleSellerOrdersProvider).length > 0 ? sellerPillInk(sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), ref.watch(visibleSellerOrdersProvider)[0].id))) : const Color(0xFF5A3FE0)",
+    "show": "ref.watch(visibleSellerOrdersProvider).length > 0"
+   },
+   "37:659": {
+    "text": "ref.watch(visibleSellerOrdersProvider).length > 1 ? ref.watch(visibleSellerOrdersProvider)[1].id : ''",
+    "show": "ref.watch(visibleSellerOrdersProvider).length > 1"
+   },
+   "37:660": {
+    "text": "ref.watch(visibleSellerOrdersProvider).length > 1 ? '${ref.watch(visibleSellerOrdersProvider)[1].title} · ${ref.watch(visibleSellerOrdersProvider)[1].client}' : ''",
+    "show": "ref.watch(visibleSellerOrdersProvider).length > 1"
+   },
+   "37:661": {
+    "fill": "ref.watch(visibleSellerOrdersProvider).length > 1 ? sellerPillFill(sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), ref.watch(visibleSellerOrdersProvider)[1].id))) : const Color(0x00000000)",
+    "show": "ref.watch(visibleSellerOrdersProvider).length > 1"
+   },
+   "37:662": {
+    "text": "ref.watch(visibleSellerOrdersProvider).length > 1 ? sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), ref.watch(visibleSellerOrdersProvider)[1].id)) : ''",
+    "color": "ref.watch(visibleSellerOrdersProvider).length > 1 ? sellerPillInk(sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), ref.watch(visibleSellerOrdersProvider)[1].id))) : const Color(0xFF5A3FE0)",
+    "show": "ref.watch(visibleSellerOrdersProvider).length > 1"
+   },
+   "37:665": {
+    "text": "ref.watch(visibleSellerOrdersProvider).length > 2 ? ref.watch(visibleSellerOrdersProvider)[2].id : ''",
+    "show": "ref.watch(visibleSellerOrdersProvider).length > 2"
+   },
+   "37:666": {
+    "text": "ref.watch(visibleSellerOrdersProvider).length > 2 ? '${ref.watch(visibleSellerOrdersProvider)[2].title} · ${ref.watch(visibleSellerOrdersProvider)[2].client}' : ''",
+    "show": "ref.watch(visibleSellerOrdersProvider).length > 2"
+   },
+   "37:667": {
+    "fill": "ref.watch(visibleSellerOrdersProvider).length > 2 ? sellerPillFill(sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), ref.watch(visibleSellerOrdersProvider)[2].id))) : const Color(0x00000000)",
+    "show": "ref.watch(visibleSellerOrdersProvider).length > 2"
+   },
+   "37:668": {
+    "text": "ref.watch(visibleSellerOrdersProvider).length > 2 ? sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), ref.watch(visibleSellerOrdersProvider)[2].id)) : ''",
+    "color": "ref.watch(visibleSellerOrdersProvider).length > 2 ? sellerPillInk(sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), ref.watch(visibleSellerOrdersProvider)[2].id))) : const Color(0xFF5A3FE0)",
+    "show": "ref.watch(visibleSellerOrdersProvider).length > 2"
+   },
+   "37:671": {
+    "text": "ref.watch(visibleSellerOrdersProvider).length > 3 ? ref.watch(visibleSellerOrdersProvider)[3].id : ''",
+    "show": "ref.watch(visibleSellerOrdersProvider).length > 3"
+   },
+   "37:672": {
+    "text": "ref.watch(visibleSellerOrdersProvider).length > 3 ? '${ref.watch(visibleSellerOrdersProvider)[3].title} · ${ref.watch(visibleSellerOrdersProvider)[3].client}' : ''",
+    "show": "ref.watch(visibleSellerOrdersProvider).length > 3"
+   },
+   "37:673": {
+    "fill": "ref.watch(visibleSellerOrdersProvider).length > 3 ? sellerPillFill(sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), ref.watch(visibleSellerOrdersProvider)[3].id))) : const Color(0x00000000)",
+    "show": "ref.watch(visibleSellerOrdersProvider).length > 3"
+   },
+   "37:674": {
+    "text": "ref.watch(visibleSellerOrdersProvider).length > 3 ? sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), ref.watch(visibleSellerOrdersProvider)[3].id)) : ''",
+    "color": "ref.watch(visibleSellerOrdersProvider).length > 3 ? sellerPillInk(sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), ref.watch(visibleSellerOrdersProvider)[3].id))) : const Color(0xFF5A3FE0)",
+    "show": "ref.watch(visibleSellerOrdersProvider).length > 3"
+   },
+   "37:675": {
+    "text": "'${ref.watch(sellerOrdersProvider).where((o) => statusOf(ref.watch(sellerStatusProvider), o.id) <= 1).length} commande(s) à préparer avant la remise.'"
+   },
+   "37:652": {
+    "show": "ref.watch(visibleSellerOrdersProvider).length > 0"
+   },
+   "37:658": {
+    "show": "ref.watch(visibleSellerOrdersProvider).length > 1"
+   },
+   "37:664": {
+    "show": "ref.watch(visibleSellerOrdersProvider).length > 2"
+   },
+   "37:670": {
+    "show": "ref.watch(visibleSellerOrdersProvider).length > 3"
+   }
+  },
+  "links": {
+   "24,168,342,66": "final l = ref.read(visibleSellerOrdersProvider); if (l.length > 0) { ref.read(selectedSellerOrderProvider.notifier).set(l[0].id); gOpen(context, '64'); }",
+   "24,234,342,66": "final l = ref.read(visibleSellerOrdersProvider); if (l.length > 1) { ref.read(selectedSellerOrderProvider.notifier).set(l[1].id); gOpen(context, '64'); }",
+   "24,300,342,66": "final l = ref.read(visibleSellerOrdersProvider); if (l.length > 2) { ref.read(selectedSellerOrderProvider.notifier).set(l[2].id); gOpen(context, '64'); }",
+   "24,366,342,66": "final l = ref.read(visibleSellerOrdersProvider); if (l.length > 3) { ref.read(selectedSellerOrderProvider.notifier).set(l[3].id); gOpen(context, '64'); }"
+  }
+ },
+ "64": {
+  "nodes": {
+   "54:1156": {
+    "text": "'Préparer ${ref.watch(currentSellerOrderProvider).id}'"
+   },
+   "54:1172": {
+    "text": "ref.watch(currentSellerOrderProvider).title"
+   },
+   "54:1173": {
+    "text": "'Qté : ${ref.watch(currentSellerOrderProvider).qty} · ${fcfa(ref.watch(currentSellerOrderProvider).total)}'"
+   }
+  },
+  "links": {
+   "203,760,163,54": "markOrderReady(ref, context);",
+   "24,760,163,54": "gToast(context, 'Signalement envoyé au département');"
+  }
  }
 }

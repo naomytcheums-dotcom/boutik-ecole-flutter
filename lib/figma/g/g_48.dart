@@ -9,6 +9,7 @@ import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
 import '../live/auth.dart';
+import '../live/seller.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_48 extends ConsumerWidget {
@@ -51,7 +52,7 @@ class G_48 extends ConsumerWidget {
       gP(54, 347, 315, 18, gText('Demande de remboursement', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
       gP(24, 382, 133, 16, gText('Détails de la demande', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 402, 342, 96, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
-      gP(40, 416, 313, 20, gText('Décrivez le problème rencontré…', 13.5, Color(0xFF66636E), weight: 500, lh: 20, wrap: true)),
+      gP(24, 402, 342, 96, GField(hint: 'Décrivez le problème rencontré…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, multiline: true, padT: 14)),
       gP(24, 512, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 525, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(44.667, 535.333, 22.667, 19.333, gImg('assets/figma/v/b357168830edbf.svg')),

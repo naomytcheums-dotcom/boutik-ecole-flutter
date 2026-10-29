@@ -9,6 +9,7 @@ import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
 import '../live/auth.dart';
+import '../live/seller.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_224 extends ConsumerWidget {
@@ -52,7 +53,7 @@ class G_224 extends ConsumerWidget {
       gP(324.4, 348, 16, 14, gText('Lié', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
       gP(24, 402, 117, 16, gText('Matériel nécessaire', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 422, 342, 96, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
-      gP(40, 436, 313, 20, gText('Téléphone, trépied, bonne lumière', 13.5, Color(0xFF66636E), weight: 500, lh: 20, wrap: true)),
+      gP(24, 422, 342, 96, GField(hint: 'Téléphone, trépied, bonne lumière', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, multiline: true, padT: 14)),
       gP(24, 532, 342, 62, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
       gP(36, 547, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(43.333, 552.943, 17.333, 20.173, gImg('assets/figma/v/b35e336eb0a1dc.svg')),

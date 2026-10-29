@@ -9,6 +9,7 @@ import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
 import '../live/auth.dart';
+import '../live/seller.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_58 extends ConsumerWidget {
@@ -53,12 +54,14 @@ class G_58 extends ConsumerWidget {
       gP(336.75, 213.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
       gP(24, 268, 92, 16, gText('Titre du produit', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 288, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
-      gP(24, 288, 342, 48, GField(hint: 'Ex. Lampe en bois recyclé', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 48)),
+      gP(24, 288, 342, 48, GField(hint: 'Ex. Lampe en bois recyclé', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('np_title', v); })),
+      errorText('np_title', 28, 338),
       gP(37.5, 301.5, 20.996, 20.996, gImg('assets/figma/v/5cb3a366ba37dc.svg')),
       gP(40.875, 304.875, 7.5, 7.5, gImg('assets/figma/v/af3b58bd7187b4.svg')),
       gP(24, 350, 61, 16, gText('Catégorie', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 370, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
-      gP(24, 370, 342, 48, GField(hint: '', initial: 'Maison et déco', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
+      gP(24, 370, 342, 48, GField(hint: '', initial: 'Maison et déco', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('np_cat', v); })),
+      errorText('np_cat', 28, 420),
       gP(38.25, 384.25, 11.25, 11.25, gImg('assets/figma/v/4aa41d01b63de8.svg')),
       gP(46.5, 384.25, 11.25, 11.25, gImg('assets/figma/v/4aa41d01b63de8.svg')),
       gP(46.5, 392.5, 11.25, 11.25, gImg('assets/figma/v/4aa41d01b63de8.svg')),
@@ -66,16 +69,18 @@ class G_58 extends ConsumerWidget {
       gP(334.5, 388.75, 15, 10.5, gImg('assets/figma/v/7abbf201b36418.svg')),
       gP(24, 432, 66, 16, gText('Prix (FCFA)', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 452, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
+      errorText('np_price', 28, 502),
       gP(72, 467, 49, 17, gText('25 000', 13.5, Color(0xFF111015), weight: 500)),
       gP(24, 514, 108, 16, gText('Quantité en stock', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 534, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
-      gP(24, 534, 342, 48, GField(hint: '', initial: '15', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
+      gP(24, 534, 342, 48, GField(hint: '', initial: '15', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('np_stock', v); })),
+      errorText('np_stock', 28, 584),
       gP(38.25, 548.25, 19.5, 18.75, gImg('assets/figma/v/959bd6157e02d7.svg')),
       gP(38.25, 552, 19.5, 6, gImg('assets/figma/v/40b22babe144e0.svg')),
       gP(45, 554.25, 6, 9.75, gImg('assets/figma/v/0fc23fb9b18d78.svg')),
       gP(24, 596, 71, 16, gText('Description', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 616, 342, 96, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
-      gP(40, 630, 313, 20, gText('Matériaux, dimensions, particularités…', 13.5, Color(0xFF66636E), weight: 500, lh: 20, wrap: true)),
+      gP(24, 616, 342, 96, GField(hint: 'Matériaux, dimensions, particularités…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, onChanged: (v) { ref.read(formProvider.notifier).put('np_desc', v); }, multiline: true, padT: 14)),
       gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
       gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Brouillon')),
       gP(74.5, 778, 62, 18, gText('Brouillon', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
@@ -86,6 +91,8 @@ class G_58 extends ConsumerWidget {
       gP(43.125, 471.125, 9.75, 9.75, gImg('assets/figma/v/b916ebbd5954b5.svg')),
       gP(40.5, 473, 15.007, 6, gImg('assets/figma/v/bc5c9bd2e55ecc.svg')),
       gP(316, 468, 34, 16, gText('FCFA', 13, Color(0xFF5A3FE0), weight: 600)),
+      gTap(24, 760, 163, 54, () { submitListing(ref, context, publish: false); }),
+      gTap(203, 760, 163, 54, () { submitListing(ref, context, publish: true); }),
     ]);
   }
 }

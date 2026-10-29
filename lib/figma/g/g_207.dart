@@ -9,6 +9,7 @@ import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
 import '../live/auth.dart';
+import '../live/seller.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_207 extends ConsumerWidget {
@@ -24,10 +25,10 @@ class G_207 extends ConsumerWidget {
       Positioned.fill(child: GChoiceGroup(chips: [GChip(520, 50, 68, 48, 'FR', 20, 600), GChip(596, 50, 68, 48, 'EN', 20, 600)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 24)),
       gP(596, 50, 68, 48, gBox(color: Color(0xFFFFFFFF), radii: [24, 24, 24, 24])),
       gP(48, 140, 624, 84, gBox(color: Color(0x99FFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 8), blurRadius: 24, spreadRadius: 0)], backBlur: 28, radii: [42, 42, 42, 42])),
+      gP(48, 140, 624, 84, GField(hint: 'Que cherchez-vous ?', size: 26, hintColor: Color(0xFF66636E), weight: 400, padL: 88, multiline: true, padT: 24)),
       gP(84, 166, 32, 32, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(85, 167, 27.333, 27.333, gImg('assets/figma/v/6942bfb3846595.svg')),
       gP(103.267, 185.267, 11.733, 11.733, gImg('assets/figma/v/e1a28e5ccaba89.svg')),
-      gP(136, 164, 261, 33, gText('Que cherchez-vous ?', 26, Color(0xFF66636E))),
       gP(598, 152, 60, 60, GMic(child: gBox(color: Color(0xFF111015), oval: true))),
       gP(48, 248, 116, 64, gBox(color: Color(0xFF111015), radii: [32, 32, 32, 32]), tap: () => gToast(context, 'Démonstration : Tout')),
       gP(82.5, 264, 47, 28, gText('Tout', 22, Color(0xFFFFFFFF), weight: 600)),

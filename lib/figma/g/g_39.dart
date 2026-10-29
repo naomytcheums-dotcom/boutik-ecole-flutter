@@ -9,6 +9,7 @@ import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
 import '../live/auth.dart';
+import '../live/seller.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_39 extends ConsumerWidget {
@@ -40,7 +41,7 @@ class G_39 extends ConsumerWidget {
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 200, 122.2, 34, 'Disponibilité', 12.5, 600), GChip(154.2, 200, 63, 34, 'Délai', 12.5, 500), GChip(225.2, 200, 144.4, 34, 'Personnalisation', 12.5, 500), GChip(377.6, 200, 92.6, 34, 'Livraison', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
       gP(24, 248, 89, 16, gText('Votre question', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 268, 342, 96, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
-      gP(40, 282, 313, 40, gText('Bonjour, la lampe est-elle disponible en bambou ?', 13.5, Color(0xFF66636E), weight: 500, lh: 20, wrap: true)),
+      gP(24, 268, 342, 96, GField(hint: 'Bonjour, la lampe est-elle disponible en bambou ?', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, multiline: true, padT: 14)),
       gP(24, 378, 165, 16, gText('Votre téléphone (facultatif)', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 398, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 398, 342, 48, GField(hint: '', initial: '+237 6 XX XX XX XX', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),

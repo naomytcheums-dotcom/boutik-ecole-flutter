@@ -262,7 +262,7 @@ def analyze(doc, nid):
     # champs de saisie
     for r in rects:
         n = r['n']
-        if n['id'] in ROLE or linked(r) or not (34 <= r['h'] <= 72 and r['w'] >= 110):
+        if n['id'] in ROLE or linked(r) or not (34 <= r['h'] <= 130 and r['w'] >= 110):
             continue
         named = re.search('champ|recherche|search|input|saisie', n['name'], re.I)
         if rad(n) < 10 and not named:
@@ -283,7 +283,9 @@ def analyze(doc, nid):
         left = t['x'] - r['x']
         if not (8 <= left <= 120):
             continue
-        if t['h'] > 1.7 * tn['style'].get('fontSize', 12):
+        if t['h'] > 1.7 * tn['style'].get('fontSize', 12) and r['h'] <= 72:
+            continue
+        if r['h'] > 72 and not named:
             continue
         col = solid_fill(tn)
         grey = col and abs(col['color']['r'] - col['color']['g']) < 0.08 and 0.3 < lum(col['color']) < 0.8
@@ -294,7 +296,7 @@ def analyze(doc, nid):
             continue
         if left > 48 and len(ts) == 1 and not named:
             continue
-        ROLE[n['id']] = ('input', dict(t=tn, left=left, multi=False))
+        ROLE[n['id']] = ('input', dict(t=tn, left=left, multi=r['h'] > 72, top=t['y'] - r['y']))
         SKIP.add(tn['id'])
     # groupes de pastilles / onglets à choix unique
     cands = []
@@ -451,7 +453,9 @@ def _emit_node_inner(ctx, n, PM, ox, oy, out, root=False):
         chips = []
         for (r_, t_, sf_) in d['row']:
             tn = t_['n']
-            chips.append("GChip(%s, %s, %s, %s, %s, %s, %d)" % (num(r_['x'] - ox), num(r_['y'] - oy), num(r_['w']), num(r_['h']), dq(tn['characters']), num(tn['style'].get('fontSize', 12)), int(tn['style'].get('fontWeight', 400))))
+            labs_ = BINDINGS.get(ctx.sid, {}).get('nodes', {}).get(n['id'], {}).get('labels')
+            lab_ = labs_[len(chips)] if labs_ and len(chips) < len(labs_) else dq(tn['characters'])
+            chips.append("GChip(%s, %s, %s, %s, %s, %s, %d)" % (num(r_['x'] - ox), num(r_['y'] - oy), num(r_['w']), num(r_['h']), lab_, num(tn['style'].get('fontSize', 12)), int(tn['style'].get('fontWeight', 400))))
 
         def tcol(c_):
             f_ = solid_fill(c_[1]['n'])
@@ -544,7 +548,7 @@ def _emit_node_inner(ctx, n, PM, ox, oy, out, root=False):
                 txt = txt.split(', initial')[0] + ', initial: ' + bi_['initial'] if 'initial' in txt else txt + ', initial: ' + bi_['initial']
             out.append("gP(%s, GField(%s, size: %s, hintColor: %s, weight: %d, padL: %s%s%s%s))" % (
                 geo, txt, num(st_.get('fontSize', 14)), hc, int(st_.get('fontWeight', 400)), num(role[1]['left']),
-                ', inter: true' if 'inter' in st_.get('fontFamily', '').lower() else '', obs, cb_))
+                ', inter: true' if 'inter' in st_.get('fontFamily', '').lower() else '', obs, cb_ + ((', multiline: true, padT: %s' % num(role[1]['top'])) if role[1].get('multi') else '')))
     elif tap and t in ('RECTANGLE', 'ELLIPSE', 'FRAME', 'GROUP', 'INSTANCE', 'COMPONENT'):
         out.append("gP(%s, const SizedBox.expand()%s, tap: %s)" % (geo, extra, tap))
     if t in ('FRAME', 'GROUP', 'INSTANCE', 'COMPONENT', 'SECTION'):
@@ -736,6 +740,7 @@ import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
 import '../live/auth.dart';
+import '../live/seller.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class %s extends ConsumerWidget {

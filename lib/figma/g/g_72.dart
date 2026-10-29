@@ -9,6 +9,7 @@ import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
 import '../live/auth.dart';
+import '../live/seller.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_72 extends ConsumerWidget {
@@ -59,7 +60,7 @@ class G_72 extends ConsumerWidget {
       gP(38.25, 377.5, 19.5, 6, gImg('assets/figma/v/40b22babe144e0.svg')),
       gP(24, 420, 71, 16, gText('Description', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 440, 342, 96, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
-      gP(40, 454, 313, 20, gText('Contexte, rôle, résultats obtenus…', 13.5, Color(0xFF66636E), weight: 500, lh: 20, wrap: true)),
+      gP(24, 440, 342, 96, GField(hint: 'Contexte, rôle, résultats obtenus…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, multiline: true, padT: 14)),
       gP(24, 550, 342, 66, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 563, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(45.5, 572.5, 21, 21, gImg('assets/figma/v/ffe808ced2c9ec.svg')),

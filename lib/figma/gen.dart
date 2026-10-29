@@ -254,7 +254,9 @@ class GField extends StatefulWidget {
     this.onSubmitted,
     this.numeric = false,
     this.maxLength,
+    this.padT = 0,
   });
+  final double padT;
   final bool numeric;
   final int? maxLength;
   final ValueChanged<String>? onChanged, onSubmitted;
@@ -291,7 +293,7 @@ class _GFieldState extends State<GField> {
       behavior: HitTestBehavior.opaque,
       onTap: f.requestFocus,
       child: Padding(
-        padding: EdgeInsets.only(left: widget.padL, right: 14),
+        padding: EdgeInsets.only(left: widget.padL, right: 14, top: widget.multiline ? widget.padT : 0),
         child: Align(
           alignment: widget.multiline ? Alignment.topLeft : Alignment.centerLeft,
           child: TextField(

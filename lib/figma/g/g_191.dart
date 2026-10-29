@@ -9,6 +9,7 @@ import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
 import '../live/auth.dart';
+import '../live/seller.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_191 extends ConsumerWidget {
@@ -73,7 +74,7 @@ class G_191 extends ConsumerWidget {
       gP(214, 534, 80, 13, gText('Marché, finance', 10.5, Color(0xCCFFFFFF), weight: 500)),
       gP(24, 572, 130, 16, gText('Décrivez votre besoin', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 592, 342, 96, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
-      gP(40, 606, 313, 40, gText('Ex. identité visuelle complète pour ma marque de parfums…', 13.5, Color(0xFF66636E), weight: 500, lh: 20, wrap: true)),
+      gP(24, 592, 342, 96, GField(hint: 'Ex. identité visuelle complète pour ma marque de parfums…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, multiline: true, padT: 14)),
       gP(24, 702, 89, 16, gText('Budget estimé', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 722, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 722, 342, 48, GField(hint: '', initial: '150 000 – 300 000 FCFA', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),

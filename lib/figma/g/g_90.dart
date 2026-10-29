@@ -9,6 +9,7 @@ import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
 import '../live/auth.dart';
+import '../live/seller.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_90 extends ConsumerWidget {
@@ -58,7 +59,7 @@ class G_90 extends ConsumerWidget {
       gP(334.5, 308.75, 15, 10.5, gImg('assets/figma/v/7abbf201b36418.svg')),
       gP(24, 352, 71, 16, gText('Description', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 372, 342, 96, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
-      gP(40, 386, 313, 20, gText('Contexte, objectifs, contraintes…', 13.5, Color(0xFF66636E), weight: 500, lh: 20, wrap: true)),
+      gP(24, 372, 342, 96, GField(hint: 'Contexte, objectifs, contraintes…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, multiline: true, padT: 14)),
       gP(24, 482, 89, 16, gText('Budget estimé', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 502, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
       gP(24, 502, 342, 48, GField(hint: '', initial: '300 000 – 500 000 FCFA', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),

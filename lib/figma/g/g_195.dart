@@ -9,6 +9,7 @@ import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
 import '../live/auth.dart';
+import '../live/seller.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_195 extends ConsumerWidget {
@@ -61,7 +62,7 @@ class G_195 extends ConsumerWidget {
       gP(336.75, 435.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
       gP(24, 490, 112, 16, gText('Ce qui a été réalisé', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 510, 342, 96, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
-      gP(40, 524, 313, 40, gText('Trois pistes de logo, déclinées en couleur et noir et blanc.', 13.5, Color(0xFF111015), weight: 500, lh: 20, wrap: true)),
+      gP(24, 510, 342, 96, GField(hint: '', initial: 'Trois pistes de logo, déclinées en couleur et noir et blanc.', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 16, multiline: true, padT: 14)),
       gP(24, 620, 342, 62, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
       gP(36, 635, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(42.625, 640.917, 18.75, 16.625, gImg('assets/figma/v/b2ae09d0fd46bb.svg')),

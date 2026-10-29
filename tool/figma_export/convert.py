@@ -506,7 +506,10 @@ def emit_node(ctx, n, PM, ox, oy, out, root=False):
         if role and role[0] == 'button' and not tap:
             tap = "() => gToast(context, %s)" % dq('Démonstration : ' + role[1].strip())
         tp = (', tap: ' + tap) if (tap and t in ('RECTANGLE', 'ELLIPSE') ) else ''
-        out.append("gP(%s, gBox(%s)%s%s)" % (geo, ', '.join(args), extra, tp))
+        if n['name'] == 'Micro':
+            out.append("gP(%s, GMic(child: gBox(%s))%s)" % (geo, ', '.join(args), extra))
+        else:
+            out.append("gP(%s, gBox(%s)%s%s)" % (geo, ', '.join(args), extra, tp))
         if role and role[0] == 'input':
             tn = role[1]['t']
             st_ = tn['style']

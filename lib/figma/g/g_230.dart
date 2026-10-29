@@ -43,7 +43,7 @@ class G_230 extends StatelessWidget {
       gP(228, 655, 4, 10, gBox(color: Color(0xFF8E7BFF), radii: [2, 2, 2, 2]), fx: 'wave'),
       gP(50, 724, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
       gP(66, 738, 12, 15, gText('IA', 12, Color(0xFF111015), weight: 700, align: TextAlign.center)),
-      gP(153, 704, 84, 84, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x4D000000), offset: Offset(0, 12), blurRadius: 26, spreadRadius: 0)], oval: true)),
+      gP(153, 704, 84, 84, GMic(child: gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x4D000000), offset: Offset(0, 12), blurRadius: 26, spreadRadius: 0)], oval: true))),
       gP(188.25, 730.5, 13.5, 21, gImg('assets/figma/v/2d0fe55c8faa41.svg')),
       gP(183.25, 740.5, 23.5, 16, gImg('assets/figma/v/e0998b9bdd25ce.svg')),
       gP(192, 750.5, 6, 11, gImg('assets/figma/v/170c9f72b8a8fd.svg')),

@@ -65,7 +65,7 @@ class G_232 extends StatelessWidget {
       gP(41.167, 716, 17.667, 6, gImg('assets/figma/v/a601ae14f144f2.svg')),
       gP(47, 710.167, 6, 17.667, gImg('assets/figma/v/148ccb346e3d02.svg')),
       gP(74, 709, 130, 16, gText('Écris ou parle à Kéla…', 13, Color(0xFF66636E))),
-      gP(314, 697, 44, 44, gBox(color: Color(0xFF111015), oval: true)),
+      gP(314, 697, 44, 44, GMic(child: gBox(color: Color(0xFF111015), oval: true))),
       gP(327, 710, 18, 18, const SizedBox.expand(), tap: () => gOpen(context, '230')),
       gP(330.75, 708.5, 10.5, 15, gImg('assets/figma/v/47bc9d3a14157f.svg')),
       gP(327.75, 714.5, 16.5, 12, gImg('assets/figma/v/0e220d66ee2ccc.svg')),

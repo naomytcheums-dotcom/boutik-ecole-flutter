@@ -21,7 +21,7 @@ class G_207 extends StatelessWidget {
       gP(85, 167, 27.333, 27.333, gImg('assets/figma/v/6942bfb3846595.svg')),
       gP(103.267, 185.267, 11.733, 11.733, gImg('assets/figma/v/e1a28e5ccaba89.svg')),
       gP(136, 164, 261, 33, gText('Que cherchez-vous ?', 26, Color(0xFF66636E))),
-      gP(598, 152, 60, 60, gBox(color: Color(0xFF111015), oval: true)),
+      gP(598, 152, 60, 60, GMic(child: gBox(color: Color(0xFF111015), oval: true))),
       gP(48, 248, 116, 64, gBox(color: Color(0xFF111015), radii: [32, 32, 32, 32]), tap: () => gToast(context, 'Démonstration : Tout')),
       gP(82.5, 264, 47, 28, gText('Tout', 22, Color(0xFFFFFFFF), weight: 600)),
       gP(178, 248, 176, 64, gBox(color: Color(0xFFFFFFFF), radii: [32, 32, 32, 32]), tap: () => gToast(context, 'Démonstration : Produits')),

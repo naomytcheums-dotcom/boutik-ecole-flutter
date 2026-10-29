@@ -1,3 +1,4 @@
+import 'package:boutik_ecole/figma/live/auth.dart';
 import 'package:boutik_ecole/figma/gsound.dart';
 import 'dart:io';
 
@@ -38,7 +39,11 @@ Future<void> pumpScreen(WidgetTester tester, String id, {Size size = const Size(
   tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
-  await tester.pumpWidget(ProviderScope(child: BoutikEcoleApp(initialLocation: '/s/$id')));
+  // Les rendus de référence sont pris avec le compte administrateur (tous les écrans sont accessibles).
+  await tester.pumpWidget(ProviderScope(
+    overrides: [initialAccountProvider.overrideWithValue(seedAccounts.last)],
+    child: BoutikEcoleApp(initialLocation: '/s/$id'),
+  ));
   await tester.pumpAndSettle();
   await precacheVisibleImages(tester);
 }

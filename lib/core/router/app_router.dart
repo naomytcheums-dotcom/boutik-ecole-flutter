@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/screens.dart';
+import '../../figma/live/access.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_theme.dart';
 import '../widgets/app_card.dart';
@@ -21,7 +22,8 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
       path: '/s/:id',
       pageBuilder: (context, state) {
         final entry = screensById[state.pathParameters['id']];
-        final child = entry == null ? MissingScreen(id: state.pathParameters['id'] ?? '?') : entry.builder(context);
+        final sid = state.pathParameters['id'] ?? '?';
+        final child = entry == null ? MissingScreen(id: sid) : AccessGuard(id: sid, child: entry.builder(context));
         return CustomTransitionPage<void>(
           key: state.pageKey,
           child: child,

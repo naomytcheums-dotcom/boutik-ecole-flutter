@@ -6,7 +6,7 @@ import 'audit.dart';
 import 'auth.dart';
 
 /// Administration des comptes (écran 128) : liste, rôles, suspension.
-const staffRoles = ['Client', 'Étudiant-vendeur', 'Entreprise', 'Autre rôle', 'Resp. département', 'Finance', 'Support', 'Admin global'];
+const staffRoles = ['Client', 'Étudiant-vendeur', 'Entreprise', 'Autre rôle', 'Resp. département', 'Direction', 'Finance', 'Support', 'Admin global'];
 
 /// Comptes affichés : les inscriptions récentes d'abord, puis les comptes de démonstration.
 final adminUsersProvider = Provider<List<Account>>((ref) {

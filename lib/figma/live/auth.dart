@@ -57,7 +57,13 @@ const seedAccounts = <Account>[
   Account(name: 'Orange Cameroun', phone: '677000002', email: 'contact@orange.cm', password: 'Boutik2026', role: 2, institution: '—'),
   Account(name: 'Support 01', phone: '677000003', email: 'support@boutik-ecole.cm', password: 'Boutik2026', role: 3, staff: 'Support', institution: 'Plateforme'),
   Account(name: 'Carine Mbarga', phone: '677000004', email: 'carine@iut-douala.cm', password: 'Boutik2026', suspended: true),
+  Account(name: 'Direction IUT', phone: '677000005', email: 'direction@iut-douala.cm', password: 'Boutik2026', role: 3, staff: 'Direction'),
+  Account(name: 'Finance IUT', phone: '677000006', email: 'finance@iut-douala.cm', password: 'Boutik2026', role: 3, staff: 'Finance', institution: 'IUT de Douala'),
+  Account(name: 'Super admin', phone: '677000007', email: 'admin@boutik-ecole.cm', password: 'Boutik2026', role: 3, staff: 'Admin global', institution: 'Plateforme'),
 ];
+
+/// Compte connecté au démarrage (la démonstration commence avec l'étudiante) ; remplaçable dans les tests.
+final initialAccountProvider = Provider<Account?>((_) => demoAccount);
 
 class AuthState {
   const AuthState({this.accounts = seedAccounts, this.current, this.pending});
@@ -72,7 +78,7 @@ class AuthState {
 
 class AuthNotifier extends Notifier<AuthState> {
   @override
-  AuthState build() => const AuthState(current: demoAccount);
+  AuthState build() => AuthState(current: ref.read(initialAccountProvider));
 
   void login(Account a) => state = state.copy(current: a);
   void logout() => state = state.copy(clearCurrent: true);

@@ -1,5 +1,6 @@
 import 'package:boutik_ecole/app.dart';
 import 'package:boutik_ecole/figma/gsound.dart';
+import 'package:boutik_ecole/figma/live/auth.dart';
 import 'package:boutik_ecole/figma/registry.dart' show gWidths;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,7 +30,11 @@ void main() {
 
     addTearDown(tester.view.reset);
     size(sizeOf(path.first));
-    await tester.pumpWidget(const ProviderScope(child: BoutikEcoleApp(initialLocation: '/s/03')));
+    // Le parcours passe par des écrans réservés (département, administration) : on joue avec le compte administrateur.
+    await tester.pumpWidget(ProviderScope(
+      overrides: [initialAccountProvider.overrideWithValue(seedAccounts.last)],
+      child: const BoutikEcoleApp(initialLocation: '/s/03'),
+    ));
     await tester.pumpAndSettle();
     GoRouter router() => GoRouter.of(tester.element(find.byType(Scaffold).last));
     expect(router().state.uri.path, '/s/03');

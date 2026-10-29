@@ -804,7 +804,8 @@
    }
   },
   "links": {
-   "31,542,329,49": "gOpen(context, '21');"
+   "31,542,329,49": "gOpen(context, '21');",
+   "20,625,75,95": "ref.read(searchQueryProvider.notifier).set(''); ref.read(categoryProvider.notifier).set(0); gOpen(context, '22');"
   }
  }
 }

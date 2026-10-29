@@ -43,12 +43,13 @@ class G_44 extends StatelessWidget {
       gP(76, 590, 277, 34, gText('Vous serez notifié dès que votre commande sera prête à être retirée.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
       gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
       gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27])),
-      gP(79.5, 778, 52, 18, gText('Accueil', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
+      gP(79.5, 778, 52, 18, gText('Accueil', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center), tap: () => gOpen(context, '03')),
       gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27])),
       gP(209, 778, 151, 18, gText('Suivre ma commande', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(157.433, 148.266, 88.334, 96.667, gImg('assets/figma/r/178_34.png')),
       gP(157.433, 164.933, 88.334, 46.667, gImg('assets/figma/r/178_35.png')),
+      gTap(203, 760, 163, 54, () => gOpen(context, '09')),
     ]);
   }
 }

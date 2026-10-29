@@ -59,6 +59,7 @@ class G_33 extends StatelessWidget {
       gP(24, 969, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27])),
       gP(120.5, 987, 149, 18, gText('Contacter le créateur', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 1039, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      gTap(24, 426, 342, 70, () => gOpen(context, '10')),
     ]);
   }
 }

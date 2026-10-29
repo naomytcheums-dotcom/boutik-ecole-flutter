@@ -51,6 +51,7 @@ class G_258 extends StatelessWidget {
       gP(24, 760, 342, 52, const SizedBox.expand(), tap: () => gOpen(context, '257')),
       gP(153.833, 180.167, 82.333, 99.667, gImg('assets/figma/r/195_26.png')),
       gP(188.5, 206.167, 13.043, 47.667, gImg('assets/figma/r/195_27.png')),
+      gTap(24, 760, 342, 52, () => gOpen(context, '257')),
     ]);
   }
 }

@@ -80,6 +80,7 @@ class G_255 extends StatelessWidget {
       gP(24, 880, 342, 48, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x38403366), offset: Offset(0, 8), blurRadius: 18, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(40, 896, 310, 16, gText('Voir les contrôles automatiques et réglementaires', 13, Color(0xFFFFFFFF), weight: 600)),
       gP(24, 880, 342, 48, const SizedBox.expand(), tap: () => gOpen(context, '256')),
+      gTap(24, 880, 342, 48, () => gOpen(context, '256')),
     ]);
   }
 }

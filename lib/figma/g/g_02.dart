@@ -42,6 +42,7 @@ class G_02 extends StatelessWidget {
       gP(331.5, 19.5, 28, 17, gImg('assets/figma/v/6a818f3296df50.svg')),
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
+      gTap(59, 716, 278, 47, () => gOpen(context, '03')),
     ]);
   }
 }

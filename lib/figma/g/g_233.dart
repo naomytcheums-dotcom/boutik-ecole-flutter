@@ -29,6 +29,7 @@ class G_233 extends StatelessWidget {
       gP(58, 66, 32, 32, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(106, 66, 98, 19, gText('Boutik-École', 15, Color(0xFFFFFFFF), weight: 700)),
       gP(106, 87, 165, 14, gText('Compte professionnel · en ligne', 11, Color(0xBFFFFFFF))),
+      gP(340, 72, 20, 20, const SizedBox.expand(), tap: () => gOpen(context, '53')),
       gP(338.667, 71.493, 21.84, 21.84, gImg('assets/figma/v/7a51bb41235e6d.svg')),
       gP(150, 130, 90, 22, gBox(color: Color(0xCCFFFFFF), radii: [11, 11, 11, 11])),
       gP(165, 134, 60, 14, gText('Aujourd’hui', 11, Color(0xFF6B6B6B), weight: 500, align: TextAlign.center)),

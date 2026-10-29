@@ -31,6 +31,7 @@ class G_206 extends StatelessWidget {
       gP(250, 1196, 12, 12, gBox(color: Color(0xFF1F9D6B), oval: true)),
       gP(274, 1190, 181, 20, gText('Borne prête · réseau OK', 16, Color(0xFF126B49), weight: 500)),
       gP(110, 930, 500, 110, const SizedBox.expand(), tap: () => gOpen(context, '207')),
+      gTap(110, 930, 500, 110, () => gOpen(context, '207')),
     ]);
   }
 }

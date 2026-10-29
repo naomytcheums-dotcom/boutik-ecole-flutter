@@ -29,9 +29,9 @@ class GScreen extends StatelessWidget {
         ),
       ),
     );
-    return ColoredBox(
-      color: const Color(0xFFE9E6EE),
-      child: LayoutBuilder(builder: (context, c) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFE9E6EE),
+      body: LayoutBuilder(builder: (context, c) {
         if (h > 1000 && w < 700) {
           // Écran long : on adapte la largeur et on fait défiler.
           final s = math.min(1.0, c.maxWidth / w);

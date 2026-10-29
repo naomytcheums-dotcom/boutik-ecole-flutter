@@ -30,6 +30,22 @@ def read_registry():
 REG = read_registry()
 NODE2ID = {v: k for k, v in REG.items()}
 SIZES = {}
+LINKS = {}
+CUR = {'root': ''}
+for _l in open(os.path.join(HERE, 'links.txt'), encoding='utf-8'):
+    _l = _l.strip()
+    if not _l:
+        continue
+    _f, _rest = _l.split('>', 1)
+    for _item in _rest.split(';'):
+        _parts = _item.split('>')
+        if len(_parts) == 2:
+            LINKS.setdefault(_f, []).append((_parts[0], _parts[1]))
+        else:  # première entrée : "x,y,w,h>dest"
+            pass
+CERCLE = {'152:17', '152:125', '152:191', '153:16', '153:124', '153:205', '154:96', '156:16', '156:130', '157:16', '157:124'}
+NAV_DEST = {'icon/search': '152:17', 'icon/chat': '36:709', 'icon/mic': '106:89', 'icon/user': '15:96', 'icon/home': '3:3', 'Accueil': '3:3'}
+NAV_DEST_CERCLE = {'icon/search': '154:96', 'icon/chat': '36:709', 'icon/mic': '106:89', 'icon/user': '153:16', 'icon/home': '152:17', 'Accueil': '152:17'}
 
 # ---------- utilitaires ----------
 def num(v):
@@ -160,6 +176,8 @@ def vector_svg(n):
             parts.append('<path d="%s" fill="%s" fill-opacity="%s" fill-rule="%s"/>' % (
                 g['path'], hexcol(c), num(op), 'evenodd' if g.get('windingRule') == 'EVENODD' else 'nonzero'))
     st = vis(n.get('strokes'))
+    if st and st[-1]['type'].startswith('GRADIENT'):
+        st = [{'type': 'SOLID', 'color': st[-1]['gradientStops'][0]['color'], 'opacity': st[-1].get('opacity', 1)}]
     if st and st[-1]['type'] == 'SOLID':
         c = st[-1]['color']
         op = st[-1].get('opacity', 1) * c.get('a', 1)
@@ -190,6 +208,9 @@ def tap_expr(n):
                 return "() => gOpen(context, %s)" % dq(NODE2ID[d])
             if a.get('type') == 'BACK':
                 return "() => gBack(context)"
+    tbl = NAV_DEST_CERCLE if CUR['root'] in CERCLE else NAV_DEST
+    if n['name'] in tbl and tbl[n['name']] in NODE2ID and tbl[n['name']] != CUR['root']:
+        return "() => gOpen(context, %s)" % dq(NODE2ID[tbl[n['name']]])
     if n['name'] in ('Bouton rond', 'icon/back'):
         return "() => gBack(context)"
     return None
@@ -224,7 +245,7 @@ def emit_node(ctx, n, PM, ox, oy, out, root=False):
             'Carte du Cameroun' in n['name']):
         raster()
         return
-    if t == 'BOOLEAN_OPERATION' or (t in VECTORS and (paint_types(n) - {'SOLID'})):
+    if t == 'BOOLEAN_OPERATION' or (t in VECTORS and (paint_types(n) - {'SOLID'}) and w > 0 and h > 0):
         raster()
         return
 
@@ -359,12 +380,17 @@ def convert(sid):
         return None
     doc = json.load(open(fn, encoding='utf-8'))['document']
     ctx = Ctx(sid)
+    CUR['root'] = nid
     w, h = doc['size']['x'], doc['size']['y']
     SIZES[sid] = (w, h)
     out = []
     ident = [[1, 0, 0], [0, 1, 0]]
     for c in doc.get('children', []):
         emit_node(ctx, c, ident, 0, 0, out)
+    for box, dest in LINKS.get(nid, []):
+        if dest in NODE2ID and dest != nid:
+            bx = [float(v) for v in box.split(',')]
+            out.append("gTap(%s, %s, %s, %s, () => gOpen(context, %s))" % (num(bx[0]), num(bx[1]), num(bx[2]), num(bx[3]), dq(NODE2ID[dest])))
     root_args = ['w: %s' % num(w), 'h: %s' % num(h)]
     rr = doc.get('cornerRadius', 0)
     if rr:

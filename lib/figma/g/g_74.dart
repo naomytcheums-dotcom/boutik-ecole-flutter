@@ -57,6 +57,7 @@ class G_74 extends StatelessWidget {
       gP(44, 606, 306, 15, gText('2 recommandations d’entreprises · Orange Cameroun', 12, Color(0xFF66636E))),
       gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26])),
       gP(73, 788, 244, 19, gText('Partager mon passport (QR / PDF)', 15, Color(0xFFFFFFFF), weight: 600)),
+      gTap(30, 70, 44, 44, () => gOpen(context, '10')),
     ]);
   }
 }

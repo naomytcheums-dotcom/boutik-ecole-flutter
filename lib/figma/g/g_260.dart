@@ -61,6 +61,7 @@ class G_260 extends StatelessWidget {
       gP(44, 690, 305, 13, gText('Répartition indicative selon la règle validée par l’établissement.', 10, Color(0xFF66636E), wrap: true)),
       gP(24, 790, 342, 52, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x38403366), offset: Offset(0, 8), blurRadius: 18, spreadRadius: 0)], radii: [26, 26, 26, 26])),
       gP(108.5, 808, 173, 16, gText('Télécharger la facture (PDF)', 13, Color(0xFFFFFFFF), weight: 600)),
+      gTap(24, 790, 342, 52, () => gOpen(context, '44')),
     ]);
   }
 }

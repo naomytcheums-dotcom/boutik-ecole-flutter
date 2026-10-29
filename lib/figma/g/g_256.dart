@@ -83,6 +83,7 @@ class G_256 extends StatelessWidget {
       gP(24, 820, 342, 48, gBox(color: Color(0xBFFFFFFF), border: Color(0xFFFFFFFF), bw: 1, radii: [24, 24, 24, 24])),
       gP(150, 836, 90, 16, gText('Retour au suivi', 13, Color(0xFF111015), weight: 600)),
       gP(24, 820, 342, 48, const SizedBox.expand(), tap: () => gOpen(context, '255')),
+      gTap(24, 820, 342, 48, () => gOpen(context, '255')),
     ]);
   }
 }

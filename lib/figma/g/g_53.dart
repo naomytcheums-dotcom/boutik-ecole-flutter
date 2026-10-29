@@ -51,6 +51,7 @@ class G_53 extends StatelessWidget {
       gP(286.667, 766.333, 22.667, 19.333, gImg('assets/figma/v/b357168830edbf.svg')),
       gP(292.5, 771.333, 11, 11, gImg('assets/figma/v/3bae74da037db6.svg')),
       gP(318, 756, 40, 40, gBox(color: Color(0xFF111015), oval: true)),
+      gP(328.5, 766.5, 19, 19, const SizedBox.expand(), tap: () => gOpen(context, '230')),
       gP(332.625, 765.083, 10.75, 15.5, gImg('assets/figma/v/ad77f88d6a6e8f.svg')),
       gP(329.458, 771.417, 17.083, 12.333, gImg('assets/figma/v/590a1cb98d88e9.svg')),
       gP(335, 777.75, 6, 9.167, gImg('assets/figma/v/6c8704a6160690.svg')),

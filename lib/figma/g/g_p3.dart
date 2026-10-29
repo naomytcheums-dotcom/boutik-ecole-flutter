@@ -140,6 +140,7 @@ class G_P3 extends StatelessWidget {
       gP(331.667, 80.667, 12.667, 9.333, gImg('assets/figma/v/bb8ad3c4792df6.svg')),
       gP(335, 80.667, 6, 16.833, gImg('assets/figma/v/5bb53be308dfb1.svg')),
       gP(22, 38, 34, 32, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
+      gTap(24, 1072, 342, 56, () => gOpen(context, 'P5')),
     ]);
   }
 }

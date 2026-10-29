@@ -108,6 +108,7 @@ class G_69 extends StatelessWidget {
       gP(154, 180, 199, 17, gText('3 justificatifs sur 4 validés', 12, Color(0xFF66636E), lh: 17, wrap: true)),
       gP(24, 254, 342, 264, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 267, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
+      gP(46, 277, 20, 20, const SizedBox.expand(), tap: () => gOpen(context, '10')),
       gP(48.833, 276.5, 14.333, 14.333, gImg('assets/figma/v/89c36cb8c670bc.svg')),
       gP(46.333, 284.833, 19.333, 12.667, gImg('assets/figma/v/4e3ce9c030e64b.svg')),
       gP(88, 266, 52, 17, gText('Identité', 13.5, Color(0xFF111015), weight: 600)),

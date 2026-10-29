@@ -29,6 +29,7 @@ class G_12 extends StatelessWidget {
       gP(24, 129, 286, 18, gText('Rejoignez la marketplace de l’IUT de Douala', 14, Color(0xFF66636E))),
       gP(24, 168, 86, 16, gText('Nom complet', 13, Color(0xFF111015), weight: 600)),
       gP(24, 192, 342, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
+      gP(40.5, 208.5, 19, 19, const SizedBox.expand(), tap: () => gOpen(context, '10')),
       gP(43.042, 207.875, 13.917, 13.917, gImg('assets/figma/v/15e6e73e8eaf8c.svg')),
       gP(40.667, 215.792, 18.667, 12.333, gImg('assets/figma/v/179cc05e604d6c.svg')),
       gP(76, 209, 128, 18, gText('Ex. Mariam Essono', 14.5, Color(0xFF66636E), weight: 500)),

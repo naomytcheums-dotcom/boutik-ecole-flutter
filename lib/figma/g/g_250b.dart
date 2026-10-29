@@ -105,6 +105,7 @@ class G_250b extends StatelessWidget {
       gP(55, 581, 14, 19, gText('M', 15, Color(0xFF111015), weight: 700)),
       gP(92, 575, 113, 18, gText('@mbarga.carine', 14, Color(0xFF111015), weight: 600)),
       gP(92, 593, 137, 14, gText('Carine Mbarga · Génie civil', 11, Color(0xFF6B6877))),
+      gTap(301, 78, 65, 27, () => gOpen(context, '244')),
     ]);
   }
 }

@@ -1,5 +1,4 @@
 import '../../core/router/screen_entry.dart';
-import '../../figma/s257.dart';
 import 's074_talent_passport/talent_passport_screen.dart';
 import 's250b_nouvelle_publication/nouvelle_publication_screen.dart';
 import 's255_suivi_publication/suivi_publication_screen.dart';
@@ -43,7 +42,7 @@ const _web = ScreenFormat.web;
 final nouveauxScreens = <ScreenEntry>[
   ScreenEntry('255', 'Suivi de publication', (_) => const SuiviPublicationScreen(), section: _s, node: '184:16'),
   ScreenEntry('256', 'Contrôles de la fiche', (_) => const ControlesFicheScreen(), section: _s, node: '184:90'),
-  ScreenEntry('257', 'Paiement en attente de confirmation', (_) => const F257(), section: _s, node: '184:174'),
+  ScreenEntry('257', 'Paiement en attente de confirmation', (_) => throw UnimplementedError('remplacé par lib/figma/g'), section: _s, node: '184:174'),
   ScreenEntry('258', 'Paiement échoué', (_) => const PaiementEchoueScreen(), section: _s, node: '184:210'),
   ScreenEntry('259', 'Reçu', (_) => const RecuScreen(), section: _s, node: '184:253'),
   ScreenEntry('260', 'Facture', (_) => const FactureScreen(), section: _s, node: '184:290'),

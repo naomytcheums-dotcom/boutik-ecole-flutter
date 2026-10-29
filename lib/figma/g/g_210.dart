@@ -91,6 +91,7 @@ class G_210 extends StatelessWidget {
       gP(255, 1214, 210, 21, gText('Retour à l’accueil dans 15 s', 17, Color(0xFF66636E))),
       gP(288.75, 190.75, 142.5, 142.5, gImg('assets/figma/r/178_50.png')),
       gP(326.25, 237.625, 67.5, 55, gImg('assets/figma/r/178_51.png')),
+      gTap(446, 1100, 144, 92, () => gOpen(context, '237')),
     ]);
   }
 }

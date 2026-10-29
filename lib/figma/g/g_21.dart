@@ -36,6 +36,7 @@ class G_21 extends StatelessWidget {
       gP(345.333, 77.167, 6, 9.667, gImg('assets/figma/v/c267f7a32a398f.svg')),
       gP(352.667, 84.5, 6, 9.667, gImg('assets/figma/v/c267f7a32a398f.svg')),
       gP(24, 120, 342, 48, gBox(color: Color(0xFFF2EFF6), radii: [24, 24, 24, 24])),
+      gP(40.5, 134.5, 19, 19, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(39.875, 133.875, 18.667, 18.667, gImg('assets/figma/v/50f467eb8a9b46.svg')),
       gP(50.721, 144.721, 9.404, 9.404, gImg('assets/figma/v/18d279137d73d9.svg')),
       gP(70, 135, 186, 17, gText('Mot-clé, nom, compétence…', 13.5, Color(0xFF66636E))),

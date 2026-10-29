@@ -98,9 +98,12 @@ class G_247 extends StatelessWidget {
       gP(158, 744, 21, 11, gText('1,2 M', 8.5, Color(0xFFFFFFFF), weight: 600)),
       gP(256, 666, 110, 98, gBox(image: 'assets/figma/img/da09067eb69ddc3887afe8e05918616892a12b70.png', fit: BoxFit.cover, radii: [20, 20, 20, 20])),
       gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
+      gP(47.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '251')),
       gP(47.125, 777.125, 20, 20, gImg('assets/figma/v/96285515fb0e14.svg')),
       gP(59.113, 789.113, 9.762, 9.762, gImg('assets/figma/v/524f40fa464a05.svg')),
+      gP(113.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '53')),
       gP(112.25, 777.118, 22.632, 22.632, gImg('assets/figma/v/5610544a74c77c.svg')),
+      gP(255.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '230')),
       gP(260.375, 776.25, 11.25, 16.5, gImg('assets/figma/v/3adad339ddf7e4.svg')),
       gP(256.875, 783.25, 18.25, 13, gImg('assets/figma/v/9c6e9349b8c3b4.svg')),
       gP(263, 790.25, 6, 9.5, gImg('assets/figma/v/c403dd00a5d407.svg')),
@@ -109,6 +112,10 @@ class G_247 extends StatelessWidget {
       gP(169, 762, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gOpen(context, '244')),
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
+      gTap(212, 200, 57, 26, () => gOpen(context, '53')),
+      gTap(280, 200, 76, 26, () => gOpen(context, '248')),
+      gTap(228, 412, 20, 20, () => gOpen(context, '248')),
+      gTap(313, 412, 20, 20, () => gOpen(context, '252')),
     ]);
   }
 }

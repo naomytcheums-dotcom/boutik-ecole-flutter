@@ -77,6 +77,9 @@ class G_05 extends StatelessWidget {
       gP(343.448, 937.947, 9.943, 13.886, gImg('assets/figma/v/f302394cd6b33f.svg')),
       gP(23.658, 967.831, 346.268, 0.717, gBox(color: Color(0xFFF2EFF6))),
       gP(131.195, 988.621, 129.044, 3.585, gBox(color: Color(0xFF111015), radii: [2.151, 2.151, 2.151, 2.151])),
+      gTap(29, 79, 20, 20, () => gOpen(context, '04')),
+      gTap(24, 760, 345, 46, () => gOpen(context, '06')),
+      gTap(20, 832, 350, 36, () => gOpen(context, '33')),
     ]);
   }
 }

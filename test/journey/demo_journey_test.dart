@@ -1,14 +1,59 @@
+import 'package:boutik_ecole/app.dart';
+import 'package:boutik_ecole/figma/registry.dart' show gWidths;
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
-import '../helpers/render.dart';
-import 'demo_journey.dart';
+/// Parcours de démonstration de la soutenance, suivi avec les liens du prototype Figma :
+/// chaque écran doit contenir une zone cliquable qui mène à l'écran suivant.
+const path = [
+  '03', '19', '22', '05', '33', '10', '40', '06', '07', '08', '257', '259', '260', '44', '09',
+  '111', '213', '212', '206', '207', '208', '209', '210', '237',
+];
 
-/// Parcours de soutenance exécuté sans appareil (`flutter test`), à chaque intégration.
-/// La même fonction est lancée sur appareil par integration_test/demo_journey_test.dart.
 void main() {
-  testWidgets('Parcours de démonstration de bout en bout', (tester) async {
-    await loadAppFonts();
-    final visited = await runDemoJourney(tester);
-    expect(visited, demoJourney);
+  testWidgets('Parcours de démonstration de bout en bout (liens Figma)', (tester) async {
+    Size sizeOf(String id) {
+      final w = gWidths[id] ?? 390;
+      if (w == 720) return const Size(720, 1280);
+      return w >= 1000 ? const Size(1280, 900) : const Size(390, 900);
+    }
+
+    void size(Size s) {
+      tester.view.physicalSize = s;
+      tester.view.devicePixelRatio = 1;
+    }
+
+    addTearDown(tester.view.reset);
+    size(sizeOf(path.first));
+    await tester.pumpWidget(const ProviderScope(child: BoutikEcoleApp(initialLocation: '/s/03')));
+    await tester.pumpAndSettle();
+    GoRouter router() => GoRouter.of(tester.element(find.byType(Scaffold).last));
+    expect(router().state.uri.path, '/s/03');
+
+    final missing = <String>[];
+    for (var i = 0; i < path.length - 1; i++) {
+      final from = path[i], to = path[i + 1];
+      size(sizeOf(from));
+      router().go('/s/$from');
+      await tester.pumpAndSettle();
+      var ok = false;
+      final taps = find.descendant(of: find.byType(Scaffold).last, matching: find.byType(GestureDetector));
+      for (var k = 0; k < taps.evaluate().length && !ok; k++) {
+        final g = tester.widget<GestureDetector>(taps.at(k));
+        if (g.onTap == null) continue;
+        await tester.tapAt(tester.getCenter(taps.at(k)));
+        await tester.pumpAndSettle();
+        if (router().state.uri.path == '/s/$to') {
+          ok = true;
+        } else {
+          router().go('/s/$from');
+          await tester.pumpAndSettle();
+        }
+      }
+      if (!ok) missing.add('$from → $to');
+    }
+    expect(missing, isEmpty, reason: 'liens manquants dans le parcours : $missing');
   });
 }

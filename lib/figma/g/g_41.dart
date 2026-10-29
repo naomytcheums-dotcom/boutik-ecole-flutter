@@ -40,6 +40,7 @@ class G_41 extends StatelessWidget {
       gP(311, 158, 70, 14, gText('Confirmation', 11, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
       gP(24, 188, 122, 16, gText('Nom du destinataire', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 208, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
+      gP(39, 223, 18, 18, const SizedBox.expand(), tap: () => gOpen(context, '10')),
       gP(41.25, 222.25, 13.5, 13.5, gImg('assets/figma/v/c741934f1ce95f.svg')),
       gP(39, 229.75, 18, 12, gImg('assets/figma/v/f07df42423af95.svg')),
       gP(72, 223, 98, 17, gText('Mariam Essono', 13.5, Color(0xFF111015), weight: 500)),

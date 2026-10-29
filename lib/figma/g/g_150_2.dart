@@ -28,6 +28,7 @@ class G_150_2 extends StatelessWidget {
       gP(24, 488, 154, 19, gText('Autres états système', 15, Color(0xFF111015), weight: 700)),
       gP(24, 526, 342, 132, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D122640), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0)], radii: [28, 28, 28, 28])),
       gP(36, 539, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
+      gP(46, 549, 20, 20, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(45.5, 548.5, 19.333, 19.333, gImg('assets/figma/v/94aebfd05b72e8.svg')),
       gP(56.917, 559.917, 9.583, 9.583, gImg('assets/figma/v/8e33baf2fbbc49.svg')),
       gP(88, 538, 110, 17, gText('Page introuvable', 13.5, Color(0xFF111015), weight: 600)),

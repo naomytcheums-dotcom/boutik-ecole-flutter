@@ -11,6 +11,7 @@ class G_119 extends StatelessWidget {
   Widget build(BuildContext context) {
     return GScreen(w: 1280, h: 890, radius: 16, color: Color(0xFFF7F6F4), children: [
       gP(268, 134, 727.5, 48, gBox(color: Color(0xFFF2EFF6), radii: [24, 24, 24, 24])),
+      gP(284.5, 148.5, 19, 19, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(283.875, 147.875, 18.667, 18.667, gImg('assets/figma/v/50f467eb8a9b46.svg')),
       gP(294.721, 158.721, 9.404, 9.404, gImg('assets/figma/v/18d279137d73d9.svg')),
       gP(314, 149, 261, 16, gText('Rechercher un département, une filière…', 13.5, Color(0xFF66636E), inter: true)),
@@ -72,6 +73,7 @@ class G_119 extends StatelessWidget {
       gP(20, 10, 36, 34, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(62, 17, 107, 21, gText('Boutik-École', 17, Color(0xFF18181B), weight: 700, inter: true)),
       gP(240, 12, 330, 34, gBox(color: Color(0xFFF4F3F1), border: Color(0xFFE6E3DE), bw: 1, radii: [17, 17, 17, 17])),
+      gP(252.5, 21.5, 15, 15, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(251.375, 20.375, 16, 16, gImg('assets/figma/v/3a82c8c513bd84.svg')),
       gP(259.938, 28.938, 8.687, 8.687, gImg('assets/figma/v/ee5ed5a7003f46.svg')),
       gP(276, 21, 226, 14, gText('Rechercher données, rapports, produits…', 11.5, Color(0xFF66636E), inter: true)),

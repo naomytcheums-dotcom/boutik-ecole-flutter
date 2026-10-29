@@ -60,16 +60,22 @@ class G_261 extends StatelessWidget {
       gP(301, 744, 53, 25, gBox(color: Color(0xFF111015), radii: [100, 100, 100, 100])),
       gP(313, 750, 29, 13, gText('Noter', 10.5, Color(0xFFFFFFFF), weight: 600)),
       gP(22, 812, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
+      gP(47.5, 833.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(47.125, 833.125, 20, 20, gImg('assets/figma/v/e5210bb60df49f.svg')),
       gP(59.113, 845.113, 9.762, 9.762, gImg('assets/figma/v/83a6239e1dfd4c.svg')),
+      gP(113.5, 833.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '53')),
       gP(112.25, 833.118, 22.632, 22.632, gImg('assets/figma/v/3ab5d8934a12b4.svg')),
+      gP(255.5, 833.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '230')),
       gP(260.375, 832.25, 11.25, 16.5, gImg('assets/figma/v/9bd69de833ad92.svg')),
       gP(256.875, 839.25, 18.25, 13, gImg('assets/figma/v/ced0119d5c616c.svg')),
       gP(263, 846.25, 6, 9.5, gImg('assets/figma/v/41c4de9afecb0e.svg')),
+      gP(321.5, 833.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '10')),
       gP(324.625, 833.125, 14.75, 14.75, gImg('assets/figma/v/2e9ae9c74a1517.svg')),
       gP(322, 841.875, 20, 13, gImg('assets/figma/v/12e378ac34408f.svg')),
-      gP(169, 818, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, oval: true)),
+      gP(169, 818, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, oval: true), tap: () => gOpen(context, '03')),
+      gP(184, 833, 22, 22, const SizedBox.expand(), tap: () => gOpen(context, '03')),
       gP(183.75, 831.852, 22.5, 23.398, gImg('assets/figma/v/f18e2be5aba56b.svg')),
+      gTap(44, 226, 170, 28, () => gOpen(context, '09')),
     ]);
   }
 }

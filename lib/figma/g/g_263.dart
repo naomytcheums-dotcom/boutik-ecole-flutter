@@ -14,6 +14,7 @@ class G_263 extends StatelessWidget {
       gP(20, 10, 36, 34, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(62, 17, 107, 21, gText('Boutik-École', 17, Color(0xFF18181B), weight: 700, inter: true)),
       gP(240, 12, 330, 34, gBox(color: Color(0xFFF4F3F1), border: Color(0xFFE6E3DE), bw: 1, radii: [17, 17, 17, 17])),
+      gP(252.5, 21.5, 15, 15, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(254.375, 23.375, 10, 10, gImg('assets/figma/r/190_155.png')),
       gP(262.938, 31.938, 2.687, 2.687, gImg('assets/figma/r/190_156.png')),
       gP(276, 21, 226, 14, gText('Rechercher données, rapports, produits…', 11.5, Color(0xFF66636E), inter: true)),

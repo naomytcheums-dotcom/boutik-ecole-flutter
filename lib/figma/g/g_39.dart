@@ -48,6 +48,7 @@ class G_39 extends StatelessWidget {
       gP(72, 413, 119, 17, gText('+237 6 XX XX XX XX', 13.5, Color(0xFF111015), weight: 500)),
       gP(24, 460, 342, 62, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
       gP(36, 475, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
+      gP(43.5, 482.5, 17, 17, const SizedBox.expand(), tap: () => gOpen(context, '53')),
       gP(41.917, 481.619, 19.464, 19.464, gImg('assets/figma/v/f5885e2a055a40.svg')),
       gP(76, 474, 277, 34, gText('Le vendeur répond généralement sous 24 h dans la messagerie.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
       gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),

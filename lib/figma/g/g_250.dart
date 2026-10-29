@@ -91,6 +91,7 @@ class G_250 extends StatelessWidget {
       gP(304, 390, 13, 18, gText('#', 14, Color(0xFF5A3FE0), weight: 700)),
       gP(326, 386, 26, 26, gBox(color: Color(0xFFEDE7FF), oval: true)),
       gP(332, 390, 13, 18, gText('@', 14, Color(0xFF5A3FE0), weight: 700)),
+      gTap(301, 78, 65, 27, () => gOpen(context, '244')),
     ]);
   }
 }

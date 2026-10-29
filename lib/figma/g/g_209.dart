@@ -358,6 +358,7 @@ class G_209 extends StatelessWidget {
       gP(230, 1130, 260, 84, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x14403366), offset: Offset(0, 6), blurRadius: 16, spreadRadius: 0)], radii: [42, 42, 42, 42])),
       gP(315.5, 1152, 89, 30, gText('Annuler', 24, Color(0xFF111015), weight: 600)),
       gP(130, 290, 460, 460, const SizedBox.expand(), tap: () => gOpen(context, '210')),
+      gTap(130, 290, 460, 460, () => gOpen(context, '210')),
     ]);
   }
 }

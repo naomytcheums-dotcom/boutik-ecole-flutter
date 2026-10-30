@@ -36,3 +36,15 @@ Limites : parcours non rejoués dans un navigateur après déploiement (outil in
 | Migrations appliquées sur la base de production | `20261030f` (liste des conversations), `20261030g_messagerie_commande_pieces_jointes`, `20261030h_commandes_vendeur` | fonctions et buckets vérifiés par les tests REST |
 | MCP Notch Pay | URL publique **toujours 401** (« Verify JWT » actif sur `notchpay-mcp`) | `curl` |
 | Webhook Notch Pay | aucun nouvel événement dans les journaux | tableau de bord |
+
+## Déploiement du 30/10/2026 (soir, reprise)
+| Élément | Valeur | Preuve |
+|---|---|---|
+| Déploiement interrompu de Claude | **abouti** : build de `34efe61` servi, empreinte `448b9af1…` identique au build local | `curl` + SHA-256 |
+| Code déployé | commit `980f163` (reprise : engagements réversibles, préférences, liens) | `git log` |
+| Tests avant build | `flutter test` : 394 réussis | sortie |
+| Build | `flutter build web --release` réussi | sortie |
+| Version servie = build testé | SHA-256 de `main.dart.js` : `3c40979c3f16d3fed0fd176a4c97566a5ee5aa6761dbdb8983bdc4e9975c3cf9` des deux côtés | `Get-FileHash` |
+| Vérification après déploiement | Playwright sur `https://boutik-ecole.vercel.app` : parcours 5/5, engagements 5/5, visiteur 12/12 | rapports |
+| Migrations | aucune nouvelle | |
+| MCP / webhook Notch Pay | inchangés : MCP 401 (Verify JWT), webhook 401 sans signature valide, aucun événement authentique | `curl` |

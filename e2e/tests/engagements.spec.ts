@@ -145,6 +145,6 @@ test.describe('Engagements réversibles et préférences (comptes réels)', () =
     await page.waitForTimeout(500);
     await page.mouse.click(195, 787);
     // Le produit affiché par défaut est vendu par la plateforme : le serveur le dit, rien n'est simulé.
-    await expect.poll(() => texte(page), { timeout: 20_000 }).toMatch(/Produit de la plateforme|Annonce introuvable|Message/);
+    await expect.poll(() => texte(page), { timeout: 20_000 }).toMatch(/Produit de la plateforme|Annonce introuvable|Message non envoyé/);
   });
 });

@@ -73,3 +73,18 @@ Particularité : l'approbation d'une annonce par un valideur et le passage « pa
 
 ### Liens et parcours
 `tool/audit/nav_graph.py` : 315 écrans ; **225 atteignables par liens explicites** (95 au début du lot 5) ; 90 listés dans `RESTE_A_FAIRE.md`. Les liens ajoutés sont des zones tactiles posées sur des libellés existants (aucune mise en page modifiée) ; l'outil `tool/audit/apply_journeys.py` est idempotent. **Ces liens n'ont pas été tous parcourus un à un dans un navigateur** : seuls ceux des tests ci-dessus l'ont été.
+
+## Reprise du 30/10/2026 (soir) — tests réellement exécutés
+| Domaine | Commande | Résultat |
+|---|---|---|
+| Flutter | `flutter test` | **394 réussis** (382 constatés à la reprise + 12 nouveaux : liens et routeur, menu du compte par rôle, engagements, préférences) ; 315 goldens inchangés |
+| Navigateur réel — parcours par rôle (spec de Claude) | `tests/parcours.spec.ts` | 5/5 avant le déploiement, 5/5 après |
+| Navigateur réel — engagements réversibles et préférences | `tests/engagements.spec.ts` | **5/5** : inscription puis désinscription (statut `cancelled` lu sur le serveur, libellé du bouton mis à jour) ; candidature 153 → 159 → 76 → retrait (`cancelled`) ; canaux enregistrés (`channel_prefs.email = true`) et relus après rechargement ; « Paramètres » du menu s'ouvre ; question au vendeur exigée puis traitée par le serveur |
+| Navigateur réel — visiteur | `tests/visiteur.spec.ts` | 12/12 |
+| Navigateur réel — devis | `tests/devis.spec.ts` | **non exécuté** : comptes de l'état précédent supprimés ; une série neuve exige l'approbation d'un service par le propriétaire de la base |
+| REST | — | aucune migration ajoutée, aucun nouveau test REST |
+
+### Défauts trouvés pendant la reprise et corrigés
+1. **Liens « Écran introuvable »** : une vingtaine d'appels utilisaient `p3`/`a3` (identifiants réels `P3`/`A3`) ou `148_1`/`147_2`/`146_1` (identifiants réels `148-1`…), dont l'entrée « Paramètres » du menu du compte. Le routeur résout désormais ces formes ; un test parcourt chaque lien de chaque écran.
+2. `nav_graph.py` ignorait les identifiants à lettre (`L1`, `P3`…) : 12 écrans étaient comptés orphelins à tort.
+3. Écrans 180/181 (gestion des rôles) ouverts à tout visiteur : réservés à l'administration.

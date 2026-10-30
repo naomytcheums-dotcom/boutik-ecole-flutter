@@ -65,3 +65,14 @@ Statuts : TERMINÉ ET TESTÉ · IMPLÉMENTÉ MAIS NON TESTÉ · PARTIELLEMENT TE
 - **Commandes du compte** lues sur le serveur (état de préparation du vendeur reflété côté acheteur).
 - **Engagements réels** : inscription à un événement (101), candidature (153), précommande (217), vote (220), proposition de stage et demande de contact (229), alerte de disponibilité (35), suivi d'entreprise (89), consentement aux conditions (17, 274), demande d'export (273) et de suppression de compte (273, avec confirmation), partage WhatsApp réel (241).
 - **Parcours** : menu du compte par rôle (profil, ⋮), menus latéraux des consoles département / direction / administration / finance, chips « Produits / Services / Projets » du profil, 172 liens contextuels, notifications → ressource concernée.
+
+## Reprise du 30/10/2026 (soir)
+| Fonctionnalité | Statut | Preuve |
+|---|---|---|
+| Inscription à un événement : état affiché, désinscription | TERMINÉ ET TESTÉ (navigateur) | `engagements.spec.ts` ; serveur `engage`/`cancel_engagement` |
+| Candidature : postuler, « Candidature envoyée », « Mes candidatures », retrait | TERMINÉ ET TESTÉ (navigateur) | `engagements.spec.ts` |
+| Précommande (217), suivi d'entreprise (89), alerte de stock (35) : état et annulation | IMPLÉMENTÉ MAIS NON TESTÉ en navigateur | même mécanisme que l'inscription, testé en widget |
+| Préférences d'alertes (156) et canaux (236) | 236 TERMINÉ ET TESTÉ (navigateur, relu après rechargement) ; 156 IMPLÉMENTÉ, testé en widget | `alert_prefs` / `channel_prefs` |
+| Portfolio (72), écrire à un mentor (77) | IMPLÉMENTÉ MAIS NON TESTÉ en navigateur | `portfolio_item` / `contact_request` |
+| Question au vendeur (39) | TERMINÉ ET TESTÉ (navigateur, contrôle de saisie et réponse serveur) | conversation réelle si l'annonce a un vendeur |
+| Navigation contextuelle | 302 écrans sur 315 atteignables depuis l'accueil par des liens métier ou le menu du compte filtré par rôle | `nav_graph.py`, `links_test.dart` |

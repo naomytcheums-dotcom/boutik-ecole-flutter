@@ -325,6 +325,10 @@ gP(-13, 165.451, 296, 34.583, gImg('assets/figma/v/5ffec176ca9577.svg'))
       gP(894, 620, 336, 34, GField(hint: 'Quels enseignements cherches-tu ?', size: 11, hintColor: Color(0xFF66636E), weight: 400, padL: 16, inter: true)),
       gP(894, 664, 336, 76, gBox(color: Color(0xFFFFFFFF), radii: [16, 16, 16, 16])),
       gP(908, 672, 313, 30, gText('Meilleur profil : Mariam E. (96 %). 2 dossiers sont incomplets : veux-tu les relancer ?', 10.5, Color(0xFF4A4944), inter: true, lh: 15, wrap: true)),
+      gTap(44, 179, 137, 32, () { gOpen(context, '188'); }), // parcours 187 -> 188
+      gTap(44, 251, 87, 32, () { gOpen(context, '189'); }), // parcours 187 -> 189
+      gTap(44, 291, 48, 32, () { gOpen(context, '95'); }), // parcours 187 -> 95
+      gTap(44, 445, 89, 32, () { gOpen(context, '97'); }), // parcours 187 -> 97
     ]);
   }
 }

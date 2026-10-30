@@ -330,6 +330,14 @@ gP(-13, 165.451, 296, 34.583, gImg('assets/figma/v/5ffec176ca9577.svg'))
       gTap(270, 589, 620, 50, () { final l = ref.read(flowRowsProvider); if (l.length > 2) { final r = l[2]; if (r.orderId != null && r.status == 'À vérifier') { ref.read(ordersProvider.notifier).markPaid(r.orderId!); ref.read(auditProvider.notifier).log('Finance', 'Paiement vérifié', r.ref, 'Finances'); gToast(context, 'Paiement ${r.ref} vérifié'); } else { gToast(context, 'Flux ${l[2].ref} : ${l[2].status}'); } } }),
       gTap(270, 641, 620, 50, () { final l = ref.read(flowRowsProvider); if (l.length > 3) { final r = l[3]; if (r.orderId != null && r.status == 'À vérifier') { ref.read(ordersProvider.notifier).markPaid(r.orderId!); ref.read(auditProvider.notifier).log('Finance', 'Paiement vérifié', r.ref, 'Finances'); gToast(context, 'Paiement ${r.ref} vérifié'); } else { gToast(context, 'Flux ${l[3].ref} : ${l[3].status}'); } } }),
       gTap(270, 693, 620, 50, () { final l = ref.read(flowRowsProvider); if (l.length > 4) { final r = l[4]; if (r.orderId != null && r.status == 'À vérifier') { ref.read(ordersProvider.notifier).markPaid(r.orderId!); ref.read(auditProvider.notifier).log('Finance', 'Paiement vérifié', r.ref, 'Finances'); gToast(context, 'Paiement ${r.ref} vérifié'); } else { gToast(context, 'Flux ${l[4].ref} : ${l[4].status}'); } } }),
+      gTap(40, 137, 232, 36, () { gOpen(context, '140'); }), // parcours 139 -> 140
+      gTap(40, 177, 232, 36, () { gOpen(context, '141'); }), // parcours 139 -> 141
+      gTap(40, 249, 232, 36, () { gOpen(context, '142'); }), // parcours 139 -> 142
+      gTap(40, 289, 232, 36, () { gOpen(context, '145'); }), // parcours 139 -> 145
+      gTap(40, 329, 232, 36, () { gOpen(context, '147_2'); }), // parcours 139 -> 147_2
+      gTap(40, 403, 232, 36, () { gOpen(context, '147_1'); }), // parcours 139 -> 147_1
+      gTap(40, 443, 232, 36, () { gOpen(context, '147_3'); }), // parcours 139 -> 147_3
+      gTap(40, 517, 232, 36, () { gOpen(context, '148_1'); }), // parcours 139 -> 148_1
     ]);
   }
 }

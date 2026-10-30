@@ -111,6 +111,8 @@ class G_227 extends ConsumerWidget {
       gP(341.667, 79, 20.667, 15.167, gImg('assets/figma/v/38cc299702e092.svg')),
       gP(345.333, 69.833, 13.333, 9.667, gImg('assets/figma/v/d83f01d420bc41.svg')),
       gP(349, 69.833, 6, 17.917, gImg('assets/figma/v/7c9d8fa2b191bd.svg')),
+      gTap(16, 520, 193, 35, () { gOpen(context, '203'); }), // parcours 227 -> 203
+      gTap(90, 124, 114, 33, () { gOpen(context, '229'); }), // parcours 227 -> 229
     ]);
   }
 }

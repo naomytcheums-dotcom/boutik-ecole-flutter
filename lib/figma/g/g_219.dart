@@ -91,6 +91,7 @@ class G_219 extends ConsumerWidget {
       gP(24, 807, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Lancer le duel')),
       gP(147, 825, 96, 18, gText('Lancer le duel', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 877, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      gTap(124.2, 150, 44, 32, () { gOpen(context, '220'); }), // parcours 219 -> 220
     ]);
   }
 }

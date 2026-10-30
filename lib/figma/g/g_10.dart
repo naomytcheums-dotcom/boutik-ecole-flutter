@@ -22,6 +22,8 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/account_menu.dart';
+import '../live/access.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_10 extends ConsumerWidget {
@@ -43,7 +45,7 @@ class G_10 extends ConsumerWidget {
       gP(42.5, 82.5, 19, 19, const SizedBox.expand(), tap: () => gBack(context)),
       gP(43.458, 83.458, 11.542, 17.083, gImg('assets/figma/v/cbab01bfe4421a.svg')),
       gP(43.458, 89, 17.083, 6, gImg('assets/figma/v/47e4d365400cc9.svg')),
-      gP(316, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gEspace(context)),
+      gP(316, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () { accountMenu(context, ref); }),
       gP(334.05, 82.508, 7.9, 7.9, gImg('assets/figma/v/cb3b5db29da178.svg')),
       gP(334.05, 88.05, 7.9, 7.9, gImg('assets/figma/v/fd509ee195da6b.svg')),
       gP(334.05, 93.592, 7.9, 7.9, gImg('assets/figma/v/c2a19bebfb5925.svg')),
@@ -108,6 +110,9 @@ class G_10 extends ConsumerWidget {
       gP(344, 598, 6, 19, gText('›', 15, Color(0xFF5A3FE0), weight: 700)),
       gTap(326, 556, 26, 26, () => gOpen(context, '271')), gTap(89, 553, 32, 32, () => openUrl(context, 'https://www.instagram.com/')), gTap(123, 553, 32, 32, () => openUrl(context, 'https://www.linkedin.com/')), gTap(160, 556, 26, 26, () => openUrl(context, 'https://www.tiktok.com/')), gTap(194, 556, 26, 26, () => openUrl(context, 'https://github.com/')), gTap(232, 556, 82, 26, () => openUrl(context, 'https://boutik-ecole.vercel.app/#/s/10')),
       gTap(24, 596, 342, 92, () => gOpen(context, '40')),
+      gTap(35, 513, 100, 28, () { gOpen(context, canOpen(ref.read(authProvider).current, '58') ? '58' : '22'); }),
+      gTap(143, 513, 100, 28, () { gOpen(context, '22b'); }),
+      gTap(252, 513, 104, 28, () { gOpen(context, '78'); }),
       gTap(24, 592, 342, 30, () => gOpen(context, '74')),
     ]);
   }

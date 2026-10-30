@@ -98,6 +98,8 @@ class G_89 extends ConsumerWidget {
       gP(197.333, 568.667, 10.667, 7.707, gImg('assets/figma/v/4b0531a4484979.svg')),
       gP(232, 556, 82, 26, gBox(color: Color(0xCCFFFFFF), border: Color(0xFFFFFFFF), bw: 1, radii: [100, 100, 100, 100])),
       gP(245, 562, 56, 14, gText('Portfolio ↗', 11, Color(0xFF120F14), weight: 600)),
+      gTap(143.5, 511, 103, 32, () { gOpen(context, '94'); }), // parcours 89 -> 94
+      gTap(250.5, 511, 107, 32, () { gOpen(context, '98'); }), // parcours 89 -> 98
     ]);
   }
 }

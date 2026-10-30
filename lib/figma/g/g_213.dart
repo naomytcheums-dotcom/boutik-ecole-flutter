@@ -161,6 +161,7 @@ class G_213 extends ConsumerWidget {
       gP(1118, 87, 111, 14, gText('Personnaliser la vue', 11.5, Color(0xFF111015), weight: 500, inter: true)),
       gP(1030, 60, 220, 40, const SizedBox.expand(), tap: () => gOpen(context, '212')),
       gTap(1030, 60, 220, 40, () => gOpen(context, '212')),
+      gTap(44, 139, 83, 32, () { gOpen(context, '198'); }), // parcours 213 -> 198
     ]);
   }
 }

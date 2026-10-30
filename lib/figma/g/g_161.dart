@@ -89,6 +89,7 @@ class G_161 extends ConsumerWidget {
       gP(349, 69.833, 6, 17.917, gImg('assets/figma/v/7c9d8fa2b191bd.svg')),
       gTap(203, 797, 163, 54, () { if (ref.read(registrationsProvider).containsKey(ref.read(currentEventProvider).id)) { gToast(context, 'Votre équipe est déjà inscrite.'); gOpen(context, '164'); } else { gOpen(context, '162'); } }),
       gTap(24, 797, 163, 54, () { gToast(context, 'Lien du concours copié'); }),
+      gTap(284.8, 406, 77, 32, () { gOpen(context, '166'); }), // parcours 161 -> 166
     ]);
   }
 }

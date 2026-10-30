@@ -108,6 +108,7 @@ class G_75 extends ConsumerWidget {
       gTap(24, 272, 342, 62, () { final l = ref.read(visibleOpportunities75); if (l.length > 1) { applyDialog(context, ref, l[1]); } }),
       gTap(24, 338, 342, 62, () { final l = ref.read(visibleOpportunities75); if (l.length > 2) { applyDialog(context, ref, l[2]); } }),
       gTap(24, 404, 342, 62, () { final l = ref.read(visibleOpportunities75); if (l.length > 3) { applyDialog(context, ref, l[3]); } }),
+      gTap(34, 492, 190, 36, () { gOpen(context, '72'); }), // parcours 75 -> 72
     ]);
   }
 }

@@ -64,6 +64,7 @@ class G_286 extends ConsumerWidget {
       gP(44, 644, 46, 14, gText('Déposer', 11, Color(0xFF66636E))),
       gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => gToast(context, 'Démonstration : Inviter un membre')),
       gP(130, 788, 130, 19, gText('Inviter un membre', 15, Color(0xFFFFFFFF), weight: 600)),
+      gTap(136, 94, 118, 32, () { gOpen(context, '287'); }), // parcours 286 -> 287
     ]);
   }
 }

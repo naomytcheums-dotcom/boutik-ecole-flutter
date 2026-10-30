@@ -113,6 +113,7 @@ class G_160 extends ConsumerWidget {
       gTap(24, 528, 342, 62, () { final l = ref.read(visibleHackathonsProvider); if (l.length > 2) { ref.read(selectedEventProvider.notifier).set(l[2].id); gOpen(context, '161'); } }),
       gTap(24, 168, 342, 170, () { ref.read(selectedEventProvider.notifier).set('orange'); gOpen(context, '161'); }),
       gTap(24, 694, 160, 28, () { gOpen(context, '163'); }),
+      gTap(16, 344, 160, 35, () { gOpen(context, '168'); }), // parcours 160 -> 168
     ]);
   }
 }

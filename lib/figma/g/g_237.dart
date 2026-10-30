@@ -167,6 +167,8 @@ class G_237 extends ConsumerWidget {
       gP(1052, 730, 168, 34, gBox(color: Color(0xFF111015), radii: [17, 17, 17, 17])),
       gP(1100, 738, 72, 14, gText('Voir la région', 11.5, Color(0xFFFFFFFF), weight: 600)),
       gP(290, 784, 130, 13, gText('Données de démonstration', 10, Color(0xFF66636E))),
+      gTap(86, 123, 232, 36, () { gOpen(context, '238'); }), // parcours 237 -> 238
+      gTap(306, 188, 54, 32, () { gOpen(context, '107'); }), // parcours 237 -> 107
     ]);
   }
 }

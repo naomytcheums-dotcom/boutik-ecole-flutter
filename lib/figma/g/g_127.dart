@@ -325,6 +325,14 @@ gP(-13, 165.451, 296, 34.583, gImg('assets/figma/v/5ffec176ca9577.svg'))
       gP(894, 620, 336, 34, GField(hint: 'Quels enseignements cherches-tu ?', size: 11, hintColor: Color(0xFF66636E), weight: 400, padL: 16, inter: true)),
       gP(894, 664, 336, 76, gBox(color: Color(0xFFFFFFFF), radii: [16, 16, 16, 16])),
       gP(908, 672, 313, 30, gText('Le réseau compte 3 établissements actifs. 2 sont en cours d’intégration : veux-tu relancer leurs responsables ?', 10.5, Color(0xFF4A4944), inter: true, lh: 15, wrap: true)),
+      gTap(40, 137, 232, 36, () { gOpen(context, '129'); }), // parcours 127 -> 129
+      gTap(40, 177, 232, 36, () { gOpen(context, '128'); }), // parcours 127 -> 128
+      gTap(40, 249, 232, 36, () { gOpen(context, '130'); }), // parcours 127 -> 130
+      gTap(40, 289, 232, 36, () { gOpen(context, '122'); }), // parcours 127 -> 122
+      gTap(40, 329, 232, 36, () { gOpen(context, '139'); }), // parcours 127 -> 139
+      gTap(40, 403, 232, 36, () { gOpen(context, '145'); }), // parcours 127 -> 145
+      gTap(40, 443, 232, 36, () { gOpen(context, '136'); }), // parcours 127 -> 136
+      gTap(40, 517, 232, 36, () { gOpen(context, '138'); }), // parcours 127 -> 138
     ]);
   }
 }

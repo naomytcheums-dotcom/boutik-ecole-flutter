@@ -181,6 +181,7 @@ class G_109 extends ConsumerWidget {
       gTap(12, 368, 216, 36, () => gOpen(context, '114')),
       gTap(12, 408, 216, 36, () => gOpen(context, '115')),
       gTap(12, 448, 216, 36, () => gOpen(context, '116')),
+      gTap(276, 380, 96, 32, () { gOpen(context, 'p3'); }), // parcours 109 -> p3
     ]);
   }
 }

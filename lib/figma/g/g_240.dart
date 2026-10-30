@@ -120,6 +120,8 @@ class G_240 extends ConsumerWidget {
       gP(328.817, 89.15, 18.667, 13.917, gImg('assets/figma/v/e486edd57af1c1.svg')),
       gP(331.983, 81.233, 12.333, 9.167, gImg('assets/figma/v/838f21166f81b6.svg')),
       gP(335.15, 81.233, 6, 16.292, gImg('assets/figma/v/d9aa0c7d61ed0e.svg')),
+      gTap(16, 430, 97, 34, () { gOpen(context, '173'); }), // parcours 240 -> 173
+      gTap(58, 266, 142, 32, () { gOpen(context, '243'); }), // parcours 240 -> 243
     ]);
   }
 }

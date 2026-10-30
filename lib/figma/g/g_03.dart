@@ -150,6 +150,7 @@ class G_03 extends ConsumerWidget {
       
       gTap(24, 180, 342, 48, () => gOpen(context, '19')),
       gTap(198, 559, 178, 229, () { ref.read(selectedProductProvider.notifier).select('Drone éducatif'); gOpen(context, '05'); }),
+      gTap(10.1, 107.1, 133, 44, () { gOpen(context, '177'); }), // parcours 03 -> 177
     ]);
   }
 }

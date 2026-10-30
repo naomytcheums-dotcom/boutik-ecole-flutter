@@ -91,6 +91,7 @@ class G_12 extends ConsumerWidget {
       gTap(24, 622, 34, 34, () { ref.read(termsProvider.notifier).toggle(); }),
       gTap(24, 684, 342, 54, () { submitSignup(ref, context); }),
       gTap(236, 764, 88, 17, () { gOpen(context, '11'); }),
+      gTap(50, 614, 259, 52, () { gOpen(context, '17'); }), // parcours 12 -> 17
     ]);
   }
 }

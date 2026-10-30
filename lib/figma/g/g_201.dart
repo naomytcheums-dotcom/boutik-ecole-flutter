@@ -92,6 +92,7 @@ class G_201 extends ConsumerWidget {
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       gTap(24, 264, 342, 60, () { gOpen(context, '195'); }),
+      gTap(287.6, 408, 64, 32, () { gOpen(context, '219'); }), // parcours 201 -> 219
     ]);
   }
 }

@@ -69,6 +69,7 @@ class G_159 extends ConsumerWidget {
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(159.433, 154.433, 84.333, 84.333, gImg('assets/figma/r/173_23.png')),
       gP(181.733, 183.058, 39.733, 31.3, gImg('assets/figma/v/b4c3db822589b8.svg')),
+      gTap(14.5, 262, 361, 40, () { gOpen(context, '76'); }), // parcours 159 -> 76
     ]);
   }
 }

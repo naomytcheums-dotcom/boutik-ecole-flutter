@@ -88,6 +88,7 @@ class G_29 extends ConsumerWidget {
       gP(212.594, 731.467, 163.722, 64.411, gBox(color: Color(0xFF111015), radii: [21.504, 21.504, 21.504, 21.504]), tap: () { downloadDocument(context, ref, invoice: false); }),
       gP(261.199, 756.042, 67, 16, gText('Voir le reçu', 12.707, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(149.549, 820.309, 105.564, 3.702, gBox(color: Color(0xFF111015), radii: [1.466, 1.466, 1.466, 1.466])),
+      gTap(18.4, 604.4, 139, 32, () { gOpen(context, '46'); }), // parcours 29 -> 46
     ]);
   }
 }

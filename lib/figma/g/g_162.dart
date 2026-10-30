@@ -108,6 +108,8 @@ class G_162 extends ConsumerWidget {
       gTap(24, 760, 163, 54, () { gBack(context); }),
       gTap(24, 392, 342, 62, () { final l = ref.read(teamMembersProvider); if (l.length > 0 && !l[0].confirmed) { ref.read(teamMembersProvider.notifier).confirm(l[0].name); gToast(context, '${l[0].name} a accepté l’invitation'); } }),
       gTap(24, 458, 342, 62, () { final l = ref.read(teamMembersProvider); if (l.length > 1 && !l[1].confirmed) { ref.read(teamMembersProvider.notifier).confirm(l[1].name); gToast(context, '${l[1].name} a accepté l’invitation'); } }),
+      gTap(117.7, 150, 54, 32, () { gOpen(context, '286'); }), // parcours 162 -> 286
+      gTap(22, 150, 44, 32, () { gOpen(context, '89'); }), // parcours 162 -> 89
     ]);
   }
 }

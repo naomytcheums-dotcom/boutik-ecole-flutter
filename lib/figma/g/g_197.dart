@@ -79,6 +79,7 @@ class G_197 extends ConsumerWidget {
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gTap(203, 760, 163, 54, () { releaseMilestone(ref, context); }),
       gTap(24, 760, 163, 54, () { askCorrection(ref, context); }),
+      gTap(32, 398, 173, 34, () { gOpen(context, '193'); }), // parcours 197 -> 193
     ]);
   }
 }

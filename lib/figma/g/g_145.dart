@@ -139,6 +139,14 @@ class G_145 extends ConsumerWidget {
       gP(1074, 204, 140, 14, gText('4 kiosques · IUT de Douala', 11.5, Color(0xFF66636E))),
       gP(1074, 246, 55, 15, gText('3 en ligne', 12, Color(0xFF0F7A52), weight: 600)),
       gP(1074, 268, 63, 15, gText('1 hors ligne', 12, Color(0xFFE5474D), weight: 600)),
+      gTap(40, 97, 232, 36, () { gOpen(context, '139'); }), // parcours 145 -> 139
+      gTap(40, 137, 232, 36, () { gOpen(context, '140'); }), // parcours 145 -> 140
+      gTap(40, 177, 232, 36, () { gOpen(context, '141'); }), // parcours 145 -> 141
+      gTap(40, 217, 232, 36, () { gOpen(context, '142'); }), // parcours 145 -> 142
+      gTap(40, 329, 232, 36, () { gOpen(context, '147_2'); }), // parcours 145 -> 147_2
+      gTap(40, 369, 232, 36, () { gOpen(context, '147_1'); }), // parcours 145 -> 147_1
+      gTap(40, 409, 232, 36, () { gOpen(context, '147_3'); }), // parcours 145 -> 147_3
+      gTap(276, 180, 104, 32, () { gOpen(context, '146_1'); }), // parcours 145 -> 146_1
     ]);
   }
 }

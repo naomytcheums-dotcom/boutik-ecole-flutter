@@ -102,6 +102,7 @@ class G_07 extends ConsumerWidget {
       gTap(20, 790, 350, 50, () => gOpen(context, '08')),
       gTap(25, 166, 346, 104, () { ref.read(homeDeliveryProvider.notifier).set(false); gToast(context, 'Retrait sur campus · gratuit'); }),
       gTap(25, 279, 346, 105, () { ref.read(homeDeliveryProvider.notifier).set(true); gToast(context, 'Livraison à domicile · 5 000 FCFA'); }),
+      gTap(18.2, 410.2, 163, 35, () { gOpen(context, '41'); }), // parcours 07 -> 41
     ]);
   }
 }

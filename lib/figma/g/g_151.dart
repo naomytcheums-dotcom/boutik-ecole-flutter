@@ -122,6 +122,9 @@ class G_151 extends ConsumerWidget {
       gTap(24, 370, 342, 62, () { final l = ref.read(visibleOpportunities151); if (l.length > 0) { applyDialog(context, ref, l[0]); } }),
       gTap(24, 436, 342, 62, () { final l = ref.read(visibleOpportunities151); if (l.length > 1) { applyDialog(context, ref, l[1]); } }),
       gTap(24, 502, 342, 62, () { final l = ref.read(visibleOpportunities151); if (l.length > 2) { applyDialog(context, ref, l[2]); } }),
+      gTap(293, 320, 65, 32, () { gOpen(context, '152'); }), // parcours 151 -> 152
+      gTap(62, 220, 299, 32, () { gOpen(context, '154'); }), // parcours 151 -> 154
+      gTap(76, 129, 285, 34, () { gOpen(context, '157'); }), // parcours 151 -> 157
     ]);
   }
 }

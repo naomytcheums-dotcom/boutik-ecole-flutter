@@ -334,6 +334,7 @@ gP(-13, 165.451, 296, 34.583, gImg('assets/figma/v/5ffec176ca9577.svg'))
       gTap(12, 442, 216, 36, () => gOpen(context, '124')),
       gTap(12, 516, 216, 36, () => gOpen(context, '125')),
       gTap(12, 556, 216, 36, () => gOpen(context, '126')),
+      gTap(298, 489, 123, 32, () { gOpen(context, '215'); }), // parcours 117 -> 215
     ]);
   }
 }

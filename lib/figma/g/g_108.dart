@@ -330,6 +330,14 @@ gP(-13, 165.451, 296, 34.583, gImg('assets/figma/v/5ffec176ca9577.svg'))
       gTap(270, 589, 620, 50, () { final l = ref.read(pendingReviewsProvider); if (l.length > 2) { reviewDialog(context, ref, l[2]); } }),
       gTap(270, 641, 620, 50, () { final l = ref.read(pendingReviewsProvider); if (l.length > 3) { reviewDialog(context, ref, l[3]); } }),
       gTap(270, 693, 620, 50, () { final l = ref.read(pendingReviewsProvider); if (l.length > 4) { reviewDialog(context, ref, l[4]); } }),
+      gTap(40, 137, 232, 36, () { gOpen(context, '109'); }), // parcours 108 -> 109
+      gTap(40, 177, 232, 36, () { gOpen(context, '110'); }), // parcours 108 -> 110
+      gTap(40, 249, 232, 36, () { gOpen(context, '111'); }), // parcours 108 -> 111
+      gTap(40, 289, 232, 36, () { gOpen(context, '112'); }), // parcours 108 -> 112
+      gTap(40, 329, 232, 36, () { gOpen(context, '113'); }), // parcours 108 -> 113
+      gTap(40, 403, 232, 36, () { gOpen(context, '114'); }), // parcours 108 -> 114
+      gTap(40, 443, 232, 36, () { gOpen(context, '115'); }), // parcours 108 -> 115
+      gTap(40, 517, 232, 36, () { gOpen(context, '116'); }), // parcours 108 -> 116
     ]);
   }
 }

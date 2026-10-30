@@ -74,6 +74,7 @@ class G_149 extends ConsumerWidget {
       gP(24, 620, 100, 19, gText('Taille du texte', 15, Color(0xFF111015), weight: 700)),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 658, 63, 34, 'Petit', 12.5, 500), GChip(95, 658, 70.4, 34, 'Normal', 12.5, 600), GChip(173.4, 658, 63, 34, 'Grand', 12.5, 500)], selected: 1, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      gTap(16, 296, 110, 35, () { gOpen(context, '186'); }), // parcours 149 -> 186
     ]);
   }
 }

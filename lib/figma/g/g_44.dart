@@ -69,6 +69,7 @@ class G_44 extends ConsumerWidget {
       gP(157.433, 148.266, 88.334, 96.667, gImg('assets/figma/r/178_34.png')),
       gP(157.433, 164.933, 88.334, 46.667, gImg('assets/figma/r/178_35.png')),
       gTap(203, 760, 163, 54, () => gOpen(context, '09')),
+      gTap(32, 380, 104, 34, () { gOpen(context, '42'); }), // parcours 44 -> 42
     ]);
   }
 }

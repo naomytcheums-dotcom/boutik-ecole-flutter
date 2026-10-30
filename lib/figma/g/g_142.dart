@@ -137,6 +137,13 @@ class G_142 extends ConsumerWidget {
       gP(1095.833, 90.917, 8.167, 8.167, gImg('assets/figma/v/aa6a66611de441.svg')),
       gP(1100.167, 94.167, 8.167, 8.167, gImg('assets/figma/v/aa6a66611de441.svg')),
       gP(1118, 87, 111, 14, gText('Personnaliser la vue', 11.5, Color(0xFF111015), weight: 500, inter: true)),
+      gTap(40, 97, 232, 36, () { gOpen(context, '139'); }), // parcours 142 -> 139
+      gTap(40, 137, 232, 36, () { gOpen(context, '140'); }), // parcours 142 -> 140
+      gTap(40, 177, 232, 36, () { gOpen(context, '141'); }), // parcours 142 -> 141
+      gTap(40, 289, 232, 36, () { gOpen(context, '145'); }), // parcours 142 -> 145
+      gTap(40, 329, 232, 36, () { gOpen(context, '147_2'); }), // parcours 142 -> 147_2
+      gTap(40, 369, 232, 36, () { gOpen(context, '147_1'); }), // parcours 142 -> 147_1
+      gTap(40, 409, 232, 36, () { gOpen(context, '147_3'); }), // parcours 142 -> 147_3
     ]);
   }
 }

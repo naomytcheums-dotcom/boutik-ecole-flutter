@@ -93,6 +93,10 @@ class G_261 extends ConsumerWidget {
       gP(184, 833, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 831.852, 22.5, 23.398, gImg('assets/figma/v/f18e2be5aba56b.svg')),
       gTap(44, 226, 170, 28, () => gOpen(context, '09')),
+      gTap(311, 402, 63, 32, () { gOpen(context, '45'); }), // parcours 261 -> 45
+      gTap(16, 600, 213, 35, () { gOpen(context, '192'); }), // parcours 261 -> 192
+      gTap(64, 740, 219, 48, () { gOpen(context, '30'); }), // parcours 261 -> 30
+      gTap(92, 444, 156, 32, () { gOpen(context, '252'); }), // parcours 261 -> 252
     ]);
   }
 }

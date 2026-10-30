@@ -89,6 +89,7 @@ class G_79 extends ConsumerWidget {
       gP(345.333, 69.833, 13.333, 9.667, gImg('assets/figma/v/d83f01d420bc41.svg')),
       gP(349, 69.833, 6, 17.917, gImg('assets/figma/v/7c9d8fa2b191bd.svg')),
       gTap(24, 831, 342, 54, () { supportDialog(context, ref); }),
+      gTap(284, 350, 50, 32, () { gOpen(context, '85'); }), // parcours 79 -> 85
     ]);
   }
 }

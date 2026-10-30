@@ -90,6 +90,7 @@ class G_81 extends ConsumerWidget {
       gP(45.458, 618.917, 13.083, 12.375, gImg('assets/figma/v/cbd17bba51f32b.svg')),
       gP(76, 612, 277, 34, gText('Chaque membre peut modifier uniquement les étapes qui lui sont attribuées.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      gTap(277.7, 270, 71, 32, () { gOpen(context, '266'); }), // parcours 81 -> 266
     ]);
   }
 }

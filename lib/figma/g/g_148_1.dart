@@ -109,6 +109,12 @@ class G_148_1 extends ConsumerWidget {
       gP(169, 762, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gTab(context, '03')),
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
+      gTap(80, 449, 100, 33, () { gOpen(context, '56'); }), // parcours 148_1 -> 56
+      gTap(80, 293, 186, 33, () { gOpen(context, '273'); }), // parcours 148_1 -> 273
+      gTap(80, 345, 77, 33, () { gOpen(context, '27'); }), // parcours 148_1 -> 27
+      gTap(80, 501, 145, 33, () { gOpen(context, '149'); }), // parcours 148_1 -> 149
+      gTap(80, 553, 117, 33, () { gOpen(context, '49'); }), // parcours 148_1 -> 49
+      gTap(80, 397, 152, 33, () { gOpen(context, '144'); }), // parcours 148_1 -> 144
     ]);
   }
 }

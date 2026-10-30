@@ -94,6 +94,7 @@ class G_192 extends ConsumerWidget {
       gP(125, 888, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gTap(203, 818, 163, 54, () { acceptQuote(ref, context); }),
       gTap(24, 818, 163, 54, () { gToast(context, 'Question envoyée à l’administrateur'); }),
+      gTap(32, 506, 54, 34, () { gOpen(context, '190'); }), // parcours 192 -> 190
     ]);
   }
 }

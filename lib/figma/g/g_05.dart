@@ -104,6 +104,7 @@ class G_05 extends ConsumerWidget {
       gTap(286, 394, 88, 28, () { gOpen(context, '170'); }),
       gTap(24, 760, 345, 46, () { ref.read(cartProvider.notifier).add(ref.read(selectedProductProvider).toLine()); gToast(context, 'Ajouté au panier'); gOpen(context, '06'); }),
       gTap(20, 832, 350, 36, () => gOpen(context, '33')),
+      gTap(98.8, 660.3, 71, 32, () { gOpen(context, '172'); }), // parcours 05 -> 172
     ]);
   }
 }

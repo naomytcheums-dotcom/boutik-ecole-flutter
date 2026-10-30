@@ -131,6 +131,8 @@ class G_168 extends ConsumerWidget {
       gP(1095.833, 90.917, 8.167, 8.167, gImg('assets/figma/v/aa6a66611de441.svg')),
       gP(1100.167, 94.167, 8.167, 8.167, gImg('assets/figma/v/aa6a66611de441.svg')),
       gP(1118, 87, 111, 14, gText('Personnaliser la vue', 11.5, Color(0xFF111015), weight: 500, inter: true)),
+      gTap(44, 139, 98, 32, () { gOpen(context, '169'); }), // parcours 168 -> 169
+      gTap(44, 291, 69, 32, () { gOpen(context, '86'); }), // parcours 168 -> 86
     ]);
   }
 }

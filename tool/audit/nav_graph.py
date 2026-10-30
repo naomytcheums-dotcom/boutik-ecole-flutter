@@ -52,6 +52,9 @@ for f in glob.glob(os.path.join(ROOT, 'lib', 'figma', 'live', '*.dart')):
         t = {x for x in nav_targets(s[m.end():i]) if x in screens}
         if t:
             func_targets.setdefault(m.group(1), set()).update(t)
+# menu du compte : ses entrées déclarent leur écran par « screen: 'id' » (le menu filtre ensuite par rôle)
+_menu = open(os.path.join(ROOT, 'lib', 'figma', 'live', 'account_menu.dart'), encoding='utf-8').read()
+func_targets.setdefault('accountMenu', set()).update(t for t in re.findall(r"screen:\s*'([0-9]+[a-z_0-9]*)'", _menu) if t in screens)
 for sid, s in src.items():
     for name, t in func_targets.items():
         if re.search(r"\b" + re.escape(name) + r"\s*\(", s):

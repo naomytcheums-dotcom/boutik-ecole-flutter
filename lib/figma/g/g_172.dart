@@ -91,6 +91,7 @@ class G_172 extends ConsumerWidget {
       gP(49, 665.667, 6.007, 6, gImg('assets/figma/v/c499ab72bb5251.svg')),
       gP(76, 646, 277, 51, gText('Un badge est retiré automatiquement si le compte est signalé ou si les documents expirent.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      gTap(80, 424, 122, 33, () { gOpen(context, '175'); }), // parcours 172 -> 175
     ]);
   }
 }

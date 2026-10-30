@@ -125,6 +125,7 @@ class G_253 extends ConsumerWidget {
       gP(310.15, 699.917, 25.5, 17.917, gImg('assets/figma/v/4ff26848f1fd07.svg')),
       gP(314.483, 690.167, 16.833, 15.75, gImg('assets/figma/v/fa389fd66db971.svg')),
       gTap(272, 336, 80, 26, () => gOpen(context, '253b')),
+      gTap(16, 648, 105, 35, () { gOpen(context, '253b'); }), // parcours 253 -> 253b
     ]);
   }
 }

@@ -92,6 +92,9 @@ class G_80 extends ConsumerWidget {
       gP(160, 778, 70, 18, gText('Continuer', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gTap(24, 760, 342, 54, () { submitProject(ref, context); }),
+      gTap(117.7, 150, 54, 32, () { gOpen(context, '81'); }), // parcours 80 -> 81
+      gTap(16, 180, 100, 32, () { gOpen(context, '82'); }), // parcours 80 -> 82
+      gTap(217.8, 150, 55, 32, () { gOpen(context, '83'); }), // parcours 80 -> 83
     ]);
   }
 }

@@ -161,6 +161,45 @@ class FlagOff extends Flag {
 
 final termsProvider = NotifierProvider<FlagOff, bool>(FlagOff.new);
 
+/// Vrai quand l'écran de connexion a été ouvert depuis une action réservée : après connexion on revient où l'on était.
+final returnAfterAuthProvider = NotifierProvider<FlagOff, bool>(FlagOff.new);
+
+void _afterLogin(WidgetRef ref, BuildContext context) {
+  if (ref.read(returnAfterAuthProvider)) {
+    ref.read(returnAfterAuthProvider.notifier).set(false);
+    gBack(context);
+  } else {
+    gOpen(context, '03');
+  }
+}
+
+/// Action réservée aux comptes. L'utilisateur explore librement : on ne lui demande de se connecter qu'au moment où l'action l'exige,
+/// avec la possibilité de renoncer. Retourne true si un compte est connecté (ou si l'application est hors connexion serveur).
+Future<bool> requireLogin(BuildContext context, WidgetRef ref, String pour) async {
+  if (!Backend.ready || ref.read(authProvider).current != null) return true;
+  const st = TextStyle(inherit: false, fontFamily: 'PlusJakartaSans', fontSize: 14, height: 1.45, color: Color(0xFF4A4854), textBaseline: TextBaseline.alphabetic);
+  final choix = await gDialog<String>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+      title: Text('Un compte est nécessaire', style: st.copyWith(fontSize: 17, fontWeight: FontWeight.w700, color: const Color(0xFF111015))),
+      content: Text('Pour $pour, connectez-vous ou créez un compte gratuit.\n\nVous pouvez continuer à explorer sans compte.', style: st),
+      actionsOverflowAlignment: OverflowBarAlignment.end,
+      actions: [
+        TextButton(onPressed: () => Navigator.of(ctx).pop('later'), child: Text('Plus tard', style: st)),
+        TextButton(onPressed: () => Navigator.of(ctx).pop('signup'), child: Text('Créer un compte', style: st.copyWith(fontWeight: FontWeight.w600, color: const Color(0xFF111015)))),
+        TextButton(onPressed: () => Navigator.of(ctx).pop('login'), child: Text('Se connecter', style: st.copyWith(fontWeight: FontWeight.w700, color: const Color(0xFF5A3FE0)))),
+      ],
+    ),
+  );
+  if (choix == 'login' || choix == 'signup') {
+    ref.read(returnAfterAuthProvider.notifier).set(true);
+    if (context.mounted) gOpen(context, choix == 'login' ? '11' : '12');
+  }
+  return false;
+}
+
 class IntState extends Notifier<int> {
   @override
   int build() => 1;
@@ -292,7 +331,7 @@ void submitLogin(WidgetRef ref, BuildContext context) {
   saveRemembered(ref.read(rememberProvider) ? hit.first.email : null);
   ref.read(auditProvider.notifier).log(hit.first.name, 'Connexion réussie', 'Application', 'Connexions');
   gToast(context, 'Bienvenue, ${hit.first.firstName} !');
-  gOpen(context, '03');
+  _afterLogin(ref, context);
 }
 
 Future<void> _serverLogin(WidgetRef ref, BuildContext context, String id, String pw, bool isMail) async {
@@ -310,7 +349,7 @@ Future<void> _serverLogin(WidgetRef ref, BuildContext context, String id, String
   ref.read(auditProvider.notifier).log(a.name, 'Connexion réussie', 'Application', 'Connexions');
   if (!context.mounted) return;
   gToast(context, a.name.isEmpty ? 'Bienvenue !' : 'Bienvenue, ${a.firstName} !');
-  gOpen(context, '03');
+  _afterLogin(ref, context);
 }
 
 Future<void> _serverSignup(WidgetRef ref, BuildContext context, Account created) async {
@@ -583,3 +622,54 @@ Widget profilePassport(double x, double y) => gP(
         return gText(a.certified ? 'Talent Passport · Certifié' : 'Talent Passport · Non certifié', 12, const Color(0xFF111015), weight: 600);
       }),
     );
+
+
+/// « Modifier mon profil » : description, compétences et ville du titulaire. Enregistré sur le serveur ; jamais le rôle ni la certification.
+Future<void> editProfileDialog(BuildContext context, WidgetRef ref) async {
+  if (!await requireLogin(context, ref, 'modifier votre profil')) return;
+  final a = ref.read(authProvider).current;
+  if (a == null || !context.mounted) return;
+  final bio = TextEditingController(text: a.bio);
+  final skills = TextEditingController(text: a.skills);
+  final city = TextEditingController(text: a.city);
+  const st = TextStyle(inherit: false, fontFamily: 'PlusJakartaSans', fontSize: 13.5, color: Color(0xFF111015), textBaseline: TextBaseline.alphabetic);
+  InputDecoration deco(String h) => InputDecoration(hintText: h, hintStyle: st.copyWith(color: const Color(0xFF9A98A3)), isDense: true, border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)));
+  final saved = await gDialog<bool>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+      title: Text('Modifier mon profil', style: st.copyWith(fontSize: 17, fontWeight: FontWeight.w700)),
+      content: SingleChildScrollView(
+        child: SizedBox(
+          width: 340,
+          child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('Description', style: st.copyWith(fontWeight: FontWeight.w600)),
+            const SizedBox(height: 6),
+            TextField(controller: bio, style: st, maxLines: 4, maxLength: 300, decoration: deco('Présentez-vous en quelques lignes')),
+            const SizedBox(height: 8),
+            Text('Compétences (séparées par des virgules)', style: st.copyWith(fontWeight: FontWeight.w600)),
+            const SizedBox(height: 6),
+            TextField(controller: skills, style: st, decoration: deco('Python, React, Design')),
+            const SizedBox(height: 14),
+            Text('Ville', style: st.copyWith(fontWeight: FontWeight.w600)),
+            const SizedBox(height: 6),
+            TextField(controller: city, style: st, decoration: deco('Douala')),
+          ]),
+        ),
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text('Annuler', style: st)),
+        TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text('Enregistrer', style: st.copyWith(fontWeight: FontWeight.w700, color: const Color(0xFF5A3FE0)))),
+      ],
+    ),
+  );
+  if (saved != true) return;
+  final updated = a.copyWith(bio: bio.text.trim(), skills: skills.text.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).join(', '), city: city.text.trim().isEmpty ? a.city : city.text.trim());
+  if (Backend.ready && !await Backend.saveProfile(updated)) {
+    if (context.mounted) await gAlert(context, 'Profil non enregistré', 'Vos modifications n’ont pas pu être enregistrées. Réessayez.');
+    return;
+  }
+  ref.read(authProvider.notifier).update(updated);
+  if (context.mounted) gToast(context, 'Profil enregistré');
+}

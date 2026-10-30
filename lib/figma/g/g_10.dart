@@ -75,7 +75,7 @@ class G_10 extends ConsumerWidget {
       gP(24, 624, 110, 70, gBox(image: 'assets/figma/img/768cf16e6d8103ad4296d6cc0fdf1af309f03817.png', fit: BoxFit.cover, radii: [22, 22, 22, 22]), show: demoContent),
       gP(140, 624, 110, 70, gBox(image: 'assets/figma/img/d5a96228e65dc2920e40cfac9b1205c2faee3caf.png', fit: BoxFit.cover, radii: [22, 22, 22, 22]), show: demoContent),
       gP(256, 624, 110, 70, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [22, 22, 22, 22]), show: demoContent),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 700, 200, 44, 'Modifier mon profil', 12.5, 600), GChip(199, 700, 200, 44, 'Partager', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 22)),
+      Positioned.fill(child: GChoiceGroup(onChanged: (i) { if (i == 0) editProfileDialog(context, ref); }, chips: [GChip(24, 700, 200, 44, 'Modifier mon profil', 12.5, 600), GChip(199, 700, 200, 44, 'Partager', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 22)),
       gP(232, 700, 134, 44, gBox(color: Color(0xB2FFFFFF), border: Color(0xFFFFFFFF), bw: 1, radii: [22, 22, 22, 22]), tap: () => shareText(context, 'Découvrez Boutik-École, la marketplace de l’IUT de Douala : ' + siteUrl)),
       gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
       gP(47.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '19')),

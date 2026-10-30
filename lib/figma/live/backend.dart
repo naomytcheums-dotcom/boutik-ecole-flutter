@@ -189,7 +189,7 @@ class Backend {
 
   static String _msg(Object e) {
     final m = e is PostgrestException ? e.message : e.toString();
-    if (m.contains('listings_titre_unique') || m.contains('duplicate key')) return 'Une annonce porte déjà ce titre.';
+    if (m.contains('listings_titre_unique') || m.contains('duplicate key')) return 'Une annonce porte déjà ce titre. Choisissez un titre plus précis (marque, couleur, taille…).';
     if (m.contains('listings_price_min')) return 'Le prix doit être d’au moins 500 FCFA.';
     if (m.contains('listings_title_len')) return 'Le titre doit comporter de 3 à 80 caractères.';
     if (m.contains('listings_stock_check')) return 'Le stock doit être compris entre 0 et 100 000.';
@@ -314,6 +314,74 @@ class Backend {
       return (notifications: (r['notifications'] as num?)?.toInt() ?? 0, messages: (r['messages'] as num?)?.toInt() ?? 0);
     } catch (_) {
       return (notifications: 0, messages: 0);
+    }
+  }
+
+  // ---------------------------------------------------------------- conversations (RLS : seuls les participants lisent et écrivent)
+
+  static String? get currentUserId => _c?.auth.currentUser?.id;
+
+  static Future<List<Map<String, dynamic>>> conversations() async {
+    final c = _c;
+    if (c == null || c.auth.currentUser == null) return const [];
+    try {
+      final rows = await c.rpc('my_conversations') as List;
+      return [for (final r in rows) Map<String, dynamic>.from(r as Map)];
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> messages(String conversationId) async {
+    final c = _c;
+    if (c == null || c.auth.currentUser == null || conversationId.isEmpty) return const [];
+    try {
+      final rows = await c.from('messages').select('id,sender_id,body,created_at').eq('conversation_id', conversationId).order('id').limit(500);
+      return [for (final r in rows) Map<String, dynamic>.from(r)];
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  static Future<String?> sendMessage(String conversationId, String body) async {
+    final c = _c;
+    final uid = c?.auth.currentUser?.id;
+    if (c == null || uid == null) return 'Connexion requise.';
+    try {
+      await c.from('messages').insert({'conversation_id': conversationId, 'sender_id': uid, 'body': body});
+      return null;
+    } catch (e) {
+      return _msg(e);
+    }
+  }
+
+  static Future<void> markConversationRead(String conversationId) async {
+    try {
+      await _c?.rpc('mark_conversation_read', params: {'cid': conversationId});
+    } catch (_) {}
+  }
+
+  static Future<({String? id, String? error})> startConversation(String listingId, String body) async {
+    final c = _c;
+    if (c == null || c.auth.currentUser == null) return (id: null, error: 'Connexion requise.');
+    try {
+      final id = await c.rpc('start_conversation', params: {'p_listing': listingId, 'p_body': body});
+      return (id: id.toString(), error: null);
+    } catch (e) {
+      return (id: null, error: _msg(e));
+    }
+  }
+
+  static Future<({String listingId, bool hasSeller})?> listingContact(String title) async {
+    final c = _c;
+    if (c == null || title.isEmpty) return null;
+    try {
+      final rows = await c.rpc('listing_contact', params: {'p_title': title}) as List;
+      if (rows.isEmpty) return null;
+      final r = rows.first as Map;
+      return (listingId: r['listing_id'].toString(), hasSeller: r['has_seller'] == true);
+    } catch (_) {
+      return null;
     }
   }
 

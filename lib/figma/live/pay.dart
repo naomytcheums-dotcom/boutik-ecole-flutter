@@ -102,10 +102,12 @@ Future<void> startPayment(WidgetRef ref, BuildContext context) async {
     return;
   }
   final who = ref.read(profileAccountProvider);
-  if (!Backend.ready || Supabase.instance.client.auth.currentUser == null) {
-    gToast(context, 'Connectez-vous pour payer avec Mobile Money.');
+  if (!Backend.ready) {
+    gToast(context, 'Paiement indisponible hors connexion au serveur.');
     return;
   }
+  if (!await requireLogin(context, ref, 'payer votre commande')) return;
+  if (Supabase.instance.client.auth.currentUser == null) return;
   var phone = ref.read(payPhoneProvider).replaceAll(RegExp(r'\D'), '');
   if (phone.startsWith('237')) phone = phone.substring(3);
   if (!RegExp(r'^[62]\d{8}$').hasMatch(phone)) {

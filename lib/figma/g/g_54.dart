@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/messages.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_54 extends ConsumerWidget {
@@ -52,7 +53,7 @@ class G_54 extends ConsumerWidget {
       gP(98, 154, 160, 14, gText('Prête au retrait · 25 000 FCFA', 11.5, Color(0xFF66636E))),
       gP(306.4, 142, 45.6, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
       gP(318.7, 146, 21, 14, gText('Voir', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)),
-      chatPanel('Commande #BE-2026-0142', const [ChatMsg('Votre commande est prête, vous pouvez la retirer au Bloc A.', false, '10:12'), ChatMsg('Merci ! Je passe cet après-midi.', true, '10:14')]),
+      chatPanelAuto('Commande #BE-2026-0142', const [ChatMsg('Votre commande est prête, vous pouvez la retirer au Bloc A.', false, '10:12'), ChatMsg('Merci ! Je passe cet après-midi.', true, '10:14')], order: true),
       
       
       

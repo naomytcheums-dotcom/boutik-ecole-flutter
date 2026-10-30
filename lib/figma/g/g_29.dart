@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/messages.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_29 extends ConsumerWidget {
@@ -82,7 +83,7 @@ class G_29 extends ConsumerWidget {
       gP(34.509, 658.373, 10.154, 10.154, gImg('assets/figma/v/5c78743d895a79.svg')),
       gP(60.113, 651.912, 160, 14, gText('IUT de Douala, Quartier Ndokoti', 10.752, Color(0xFF4A4854))),
       gP(60.113, 680.046, 95, 14, gText('Douala, Cameroun', 10.752, Color(0xFF4A4854))),
-      gP(18.571, 731.467, 182.293, 64.411, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28]), tap: () => gToast(context, 'Démonstration : Contacter le vendeur')),
+      gP(18.571, 731.467, 182.293, 64.411, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28]), tap: () => contactSeller(ref, context, viewedOrderProductTitle(ref))),
       gP(41.474, 755.542, 136, 17, gText('Contacter le vendeur', 13.195, Color(0xFF111015), weight: 700, align: TextAlign.center)),
       gP(212.594, 731.467, 163.722, 64.411, gBox(color: Color(0xFF111015), radii: [21.504, 21.504, 21.504, 21.504]), tap: () => gToast(context, 'Démonstration : Voir le reçu')),
       gP(261.199, 756.042, 67, 16, gText('Voir le reçu', 12.707, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),

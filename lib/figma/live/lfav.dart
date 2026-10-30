@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gsound.dart';
+import 'auth.dart';
 import 'store.dart';
 
 /// Cœur « favori » lié à la liste de favoris partagée.
@@ -15,8 +16,10 @@ class GHeartLive extends ConsumerWidget {
     final on = title.isNotEmpty && ref.watch(favoritesProvider).contains(title);
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () {
+      onTap: () async {
         if (title.isEmpty) return;
+        if (!await requireLogin(context, ref, 'enregistrer vos favoris')) return;
+        if (!context.mounted) return;
         ref.read(favoritesProvider.notifier).toggle(title);
         GSound.play(on ? 'tick' : 'pop');
         HapticFeedback.lightImpact();

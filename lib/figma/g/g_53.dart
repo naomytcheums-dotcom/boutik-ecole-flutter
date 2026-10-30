@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/messages.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_53 extends ConsumerWidget {
@@ -30,7 +31,7 @@ class G_53 extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo', show: demoContent),
       gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
@@ -45,15 +46,15 @@ class G_53 extends ConsumerWidget {
       gP(31, 71, 22, 22, const SizedBox.expand(), tap: () => gBack(context)),
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
-      gP(76, 70, 179, 26, gText('Mouanga Yannick', 21, Color(0xFF111015), weight: 700)),
+      chatHeaderName('Mouanga Yannick'),
       gP(342.583, 69.833, 18.833, 24.333, gImg('assets/figma/v/1b7254365713bc.svg')),
       gP(349, 84.5, 6.01, 6, gImg('assets/figma/v/bebdac7c60f441.svg')),
-      gP(76, 96, 44, 15, gText('En ligne', 12, Color(0xFF66636E))),
-      gP(36, 128, 50, 50, gBox(image: 'assets/figma/img/a76e4a9cacb04ffda33cfd8133809ed5cc5c402c.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
-      gP(98, 132, 145, 17, gText('Lampe en bois recyclé', 13.5, Color(0xFF111015), weight: 600)),
-      gP(98, 154, 73, 14, gText('25 000 FCFA', 11.5, Color(0xFF66636E))),
-      gP(324, 144, 26, 17, gText('Voir', 13.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),
-      chatPanel('Mouanga Yannick', const [ChatMsg('Bonjour ! Votre lampe est prête, vous pouvez venir la retirer demain.', false, '10:12'), ChatMsg('Parfait, merci. Je passe à 14 h au Bloc A.', true, '10:14'), ChatMsg('Très bien, je l’emballe avec soin. À demain !', false, '10:15')]),
+      chatHeaderSub(),
+      gP(36, 128, 50, 50, gBox(image: 'assets/figma/img/a76e4a9cacb04ffda33cfd8133809ed5cc5c402c.png', fit: BoxFit.cover, radii: [12, 12, 12, 12]), show: demoContent),
+      gP(98, 132, 145, 17, gText('Lampe en bois recyclé', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(98, 154, 73, 14, gText('25 000 FCFA', 11.5, Color(0xFF66636E)), show: demoContent),
+      gP(324, 144, 26, 17, gText('Voir', 13.5, Color(0xFF111015), weight: 700, align: TextAlign.right), show: demoContent),
+      chatPanelAuto('Mouanga Yannick', const [ChatMsg('Bonjour ! Votre lampe est prête, vous pouvez venir la retirer demain.', false, '10:12'), ChatMsg('Parfait, merci. Je passe à 14 h au Bloc A.', true, '10:14'), ChatMsg('Très bien, je l’emballe avec soin. À demain !', false, '10:15')]),
       
       
       

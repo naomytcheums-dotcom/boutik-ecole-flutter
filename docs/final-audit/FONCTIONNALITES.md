@@ -76,3 +76,16 @@ Statuts : TERMINÉ ET TESTÉ · IMPLÉMENTÉ MAIS NON TESTÉ · PARTIELLEMENT TE
 | Portfolio (72), écrire à un mentor (77) | IMPLÉMENTÉ MAIS NON TESTÉ en navigateur | `portfolio_item` / `contact_request` |
 | Question au vendeur (39) | TERMINÉ ET TESTÉ (navigateur, contrôle de saisie et réponse serveur) | conversation réelle si l'annonce a un vendeur |
 | Navigation contextuelle | 302 écrans sur 315 atteignables depuis l'accueil par des liens métier ou le menu du compte filtré par rôle | `nav_graph.py`, `links_test.dart` |
+
+## 2ᵉ reprise (30/10/2026, nuit)
+| Fonctionnalité | Statut | Preuve |
+|---|---|---|
+| Demandes de devis (bout en bout) | TERMINÉ ET TESTÉ (base isolée : REST 30/30, navigateur 5/5) ; production : rejouable après approbation d'un service | `devis.spec.ts` |
+| Besoins, propositions, attribution, jalons (missions) | IMPLÉMENTÉ ET TESTÉ sur base isolée ; **migration à appliquer** | REST, `lots.spec.ts` |
+| Vœux (création, validation, planification, suppression) | IMPLÉMENTÉ ET TESTÉ sur base isolée ; migration à appliquer | idem |
+| Campagnes (création, validation) ; projets (dépôt, journal, liens) ; lives programmés ; liens du profil | IMPLÉMENTÉ ET TESTÉ (REST) sur base isolée ; migration à appliquer | `lots_rest.py` |
+| Certificats (émission, révocation, vérification publique) | IMPLÉMENTÉ ET TESTÉ sur base isolée ; migration à appliquer | REST, navigateur |
+| Bornes : état réseau, filtres, catalogue hors ligne, incidents, événements | filtres et état : TERMINÉ ; incidents/événements : testés sur base isolée, migration à appliquer | |
+| Exports CSV (registre financier, catalogue) | IMPLÉMENTÉ, testé en unitaire ; données selon le rôle (RLS) | `lots_test.dart` |
+| États système (hors ligne, retour réseau, session expirée) | TERMINÉ ET TESTÉ (navigateur) | `lots.spec.ts` |
+| Annulation avec motif (47) | TERMINÉ ET TESTÉ (navigateur, base isolée) ; en production : annulation réelle, motif enregistré après migration | |

@@ -48,3 +48,13 @@ Limites : parcours non rejoués dans un navigateur après déploiement (outil in
 | Vérification après déploiement | Playwright sur `https://boutik-ecole.vercel.app` : parcours 5/5, engagements 5/5, visiteur 12/12 | rapports |
 | Migrations | aucune nouvelle | |
 | MCP / webhook Notch Pay | inchangés : MCP 401 (Verify JWT), webhook 401 sans signature valide, aucun événement authentique | `curl` |
+
+## Déploiement du 30/10/2026 (nuit, 2ᵉ reprise)
+| Élément | Valeur | Preuve |
+|---|---|---|
+| Code déployé | commits `b488df6` → `60266f5` (application, tests, audit) | `git log` |
+| Tests avant build | 401 Flutter ; 34/34 navigateur sur base isolée | sorties |
+| Version servie = build testé | SHA-256 `main.dart.js` : `ae88a0f2987042e7bd5061668a9ba7087380055c40b8b602785823bd54a5d4dc` des deux côtés ; aucune adresse locale dans le bundle | `Get-FileHash`, recherche dans le bundle |
+| Vérification après déploiement | Playwright production : 24/24 exécutés | rapport |
+| Migration `20261031a` | **non appliquée** (pas d'accès) : les 28 actions qui en dépendent l'annoncent clairement | `production.spec.ts` |
+| Fonction `notchpay-mcp` | code corrigé **non déployé** (pas d'accès) | `INTERVENTIONS_PROPRIETAIRE.md` §3 |

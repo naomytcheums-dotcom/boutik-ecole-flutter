@@ -1,4 +1,105 @@
-# État de reprise (30/10/2026, soir — reprise par l'agent Copilot après l'interruption de Claude)
+# État de reprise et bilan final (30/10/2026, nuit — 2ᵉ reprise par l'agent Copilot)
+
+> Point de départ de cette reprise : commit `841b6e0` (poussé), arbre propre. Dernier commit de cette reprise : voir §9.
+> Accès disponibles : dépôt Git, Vercel (CLI authentifiée), Docker. **Aucun accès administrateur à la base de production** ni au tableau de bord
+> Notch Pay : les actions correspondantes sont préparées dans `INTERVENTIONS_PROPRIETAIRE.md`, avec leurs vérifications.
+
+## 1. Environnement de test isolé (nouveau)
+Une pile Supabase **locale** (Docker, `%USERPROFILE%\boutik_local`, hors du dépôt) reçoit `schema.sql` + les 15 migrations, dont la nouvelle `20261031a`.
+Les rôles de personnel et les approbations y sont faits par SQL en tant que propriétaire **local** ; aucune donnée de production n'est touchée.
+L'application se construit vers cette base par `--dart-define=BE_URL=… --dart-define=BE_KEY=…` (production par défaut) ; les scripts REST et les specs
+Playwright lisent `BE_URL` / `BE_KEY` (production par défaut). `lots_rest.py` et `lots.spec.ts` refusent de s'exécuter hors base locale.
+
+## 2. Demandes de devis
+- Code, table, RLS, fonctions (`request_quote`, `answer_quote`, `decide_quote`, `cancel_quote`) relus.
+- REST sur base isolée : **30/30** (visiteur refusé, auto-devis refusé, besoin incomplet, service inexistant, doublon, tiers sans accès, notifications, décisions, annulations, aucune écriture directe).
+- Navigateur (`devis.spec.ts`) sur base isolée : **5/5**, dont « le demandeur envoie une demande de devis » vu réussi de bout en bout pour la première fois
+  (client → service → demande → réception par le prestataire → réponse → acceptation, persistance vérifiée en REST).
+- En production : rejouable après approbation d'un service de test par le propriétaire (INTERVENTIONS §6).
+
+## 3. Comptes de test
+La requête proposée précédemment (`delete from auth.users …`) **échouerait** : 8 tables référencent les profils sans cascade (annonces, commandes,
+missions, certificats, journaux de bornes, auteurs de décision). Procédure contrôlée : `supabase/maintenance/cleanup_test_accounts.sql`
+(inventaire, garde-fous, transaction terminée par ROLLBACK, totaux avant/après). **Validée sur la base isolée** (22 comptes et leurs données supprimés,
+données hors test intactes ; garde-fou déclenché par une commande d'un compte non-test sur une annonce de test). Non exécutée en production (pas d'accès).
+
+## 4. Notch Pay
+- **MCP (401)** : la passerelle « Verify JWT » est incompatible avec un client MCP (pas de JWT ; les clés publishable ne sont pas des JWT). La fonction
+  protège déjà ses outils par `MCP_ACCESS_KEY` (temps constant). Corrigé : la clé n'est plus acceptée **dans l'URL** (elle apparaîtrait dans les journaux),
+  seulement en en-tête (`x-mcp-access-key`, `Authorization: Bearer`). Test de conformité : **27/27** (dont « clé dans l'URL refusée »).
+  **Code modifié non déployé** : le déploiement de fonctions exige l'accès Supabase (commande exacte et désactivation de Verify JWT pour cette seule fonction : INTERVENTIONS §3).
+  Production actuelle : toujours 401 (`curl`).
+- **Webhook** : algorithme vérifié (HMAC-SHA256 du corps brut, `x-notch-signature`, temps constant, anti-rejeu, relecture fournisseur, sous-paiement,
+  devise, référence) — **19/19** sur le vrai code avec fournisseur simulé. Production : sans signature 401, signature fausse 401, GET 405.
+  **Aucun événement authentique reçu** : il faut renouveler les clés (exposées) puis déclencher un paiement sandbox (INTERVENTIONS §4–5).
+
+## 5. Les 76 actions « Démonstration »
+| Traitement | Nombre | Détail |
+|---|---|---|
+| Action serveur réelle, **nouvelle fonction** (migration `20261031a`) | 28 | besoins 90 (brouillon, publier), propositions 93b (accepter, refuser), attribution 199, pack 202 (commander), jalons 234 (valider, correction) et 285, vœux 218 (brouillon, publier), campagnes 84 (brouillon, continuer), projets 205 (brouillon, envoyer), journal 82, liens de projet 278, lives 224 (brouillon, planifier), liens du profil 271 (ajouter, enregistrer) et P5, certificats 213/283 (émettre), 166 (mes certificats), 211 (vérification publique), bornes 277 (journal d'incidents), 282 (événement) |
+| Action réelle sur un backend **existant** | 9 | service 59 (brouillon, publier → annonce « Services »), export CSV 284 (commandes) et 288 (catalogue), état réseau 206, invitation WhatsApp 241, filtres de la borne 207 (tout, produits, services) |
+| Ouverture du bon parcours fonctionnel | 8 | 202 personnaliser → 90, 276 → catalogue hors ligne 207, 287/288 « nouvelle fiche » → 58, 231/A2 « commencer » → assistante A1, 171 « continuer en sécurité » → paiement 08, 207 « missions » → 191 |
+| Dépendance externe expliquée (rien de simulé) | 4 | 219 duel (séquestre), 250 et 250b « propulser » (option payante), L1 « lancer le live » (pas de service de diffusion) |
+| Pas une action (zone tactile retirée) | 11 | bulles de conversation 196 (3), 55 (2), 95 (2), textes d'information 18c (2), titre L1, entrée de menu courante 237 |
+| **Restant** | **16** | voir §8 |
+
+Fonctionnelles **immédiatement en production** : les 9 + 8 + 4 + 11 ci-dessus, et l'annulation avec motif (repli sur `cancel_order`).
+Les 28 actions « nouvelle fonction » affichent en production « fonction pas encore activée » jusqu'à l'application de la migration (vérifié par `production.spec.ts`) ;
+elles sont **vérifiées sur base isolée** (REST 77/77, navigateur 7/7).
+
+## 6. Tables et migration
+`20261031a_missions_voeux_campagnes_certificats_bornes.sql` — **écrite, testée sur base isolée, NON appliquée en production** :
+`missions` (étendue ; ancienne règle permettant à tout étudiant de modifier toute mission supprimée), `mission_proposals`, `mission_milestones`, `wishes`,
+`campaigns`, `certificates` (code unique, empreinte SHA-256, révocation, vérification publique limitée), `kiosks`, `kiosk_incidents`, `kiosk_events`
+(créneaux sans chevauchement), `projects`, `project_steps`, `scheduled_lives`, `profiles.links` (https uniquement), `order_cancellations`,
+synchronisation `orders.cancelled` / `cancelled_at`. RLS sur chaque table, aucune écriture directe, 23 fonctions serveur, idempotente, retour arrière en fin de fichier.
+Défauts trouvés et corrigés par les tests : expression régulière invalide (répétition > 255), envoi d'un projet ignorant la présentation déjà enregistrée,
+politique non idempotente, et **défaut existant** : `cancel_order` renseignait `cancelled_at` sans `cancelled` → une commande annulée réapparaissait comme
+active dans l'application (corrigé côté application immédiatement, et côté serveur par la migration).
+
+## 7. États contextuels et écran 47
+- Coupure réseau → 150-3 ; « Réessayer » ne quitte l'état que si le réseau est revenu ; retour du réseau → écran précédent + « Connexion rétablie » ;
+  « Mes commandes » hors ligne → 183 ; session perdue sans déconnexion demandée → 150-2 (état remis à zéro). Vérifié en navigateur (coupure simulée).
+- Écran 47 : relié au détail de commande (29) pour une commande réelle non payée ; données de la commande affichées ; motif sélectionnable et enregistré ;
+  vérifié en navigateur sur base isolée (commande annulée, motif `too_slow` lu en REST).
+- Écrans sans lien, apparaissant par état ou variantes de maquette (12) : S1 (démarrage animé, variante de 01), A2 (variante de 231), P4 et 250B (variantes de 250),
+  176 (variante d'accueil), 182 (atteint depuis 150-3), 183 (hors ligne), 150-1 (synchronisation : non affiché, aucune donnée de synchronisation réelle),
+  150-2 (session expirée), 150-3 (coupure), 150-4 (état vide, rendu par la liste réelle de 45), 275 (formulaire en erreur, variante de 58).
+- Navigation : **303/315** écrans atteignables par des liens métier (302 → 303 avec 47) ; aucun outil de liens relancé.
+
+## 8. Restant (16 actions) et cause
+118 identité de l'établissement, 265 modèles de notifications, 264 aperçu des pages, 280 clés d'intégration, 286 invitation d'équipe (administration : tables
+et règles à définir) · 263, 83, 279, 196 « ajouter un fichier » (téléversements : compartiment de stockage dédié et analyse antivirus à prévoir) · 196 « envoyer »
+(messagerie de dossier de mission) · 272 vérification en 2 étapes (MFA TOTP de Supabase à activer et à intégrer) · 228 régénérer le lien du CV (jeton de partage)
+· 46 code de retrait (absent du modèle de commande) · 158 comparer des candidatures · 23 filtre « Innovations » · 275 « continuer » (variante d'erreur).
+
+## 9. Tests, commits, déploiement
+| Domaine | Résultat |
+|---|---|
+| Flutter | **401 réussis** (394 + 7 nouveaux), 315 goldens inchangés (une différence de 704 px sur 47 détectée et corrigée, pas de régénération) |
+| REST base isolée | lots 77/77 · devis 30/30 · engagements 18/18 · favoris 9/9 |
+| MCP / webhook (vraies fonctions, dépendances simulées) | 27/27 · 19/19 |
+| Navigateur base isolée | 34/34 : lots 7, devis 5, engagements 5, parcours 5, visiteur 12 |
+| Navigateur production | 24/24 exécutés : engagements 5, parcours 5, visiteur 12, production (avant migration) 2 ; 21 ignorés par conception (base isolée ou état préparé requis) |
+| Commits | `b488df6` serveur et tests, `5862ab2` application, `63ba0ab` e2e et audit, `60266f5` écrans protégés, puis documentation |
+| Déploiement | Vercel production, `main.dart.js` SHA-256 **`ae88a0f2987042e7bd5061668a9ba7087380055c40b8b602785823bd54a5d4dc`** = build local |
+
+## 10. Reprendre
+```powershell
+cd C:\Users\NITROV15\Downloads\boutik_ecole_flutter
+$env:Path = "C:\Users\NITROV15\dev\flutter\bin;C:\Program Files\Git\cmd;C:\nvm4w\nodejs;C:\Program Files\Docker\Docker\resources\bin;" + $env:Path
+cd $env:USERPROFILE\boutik_local; npx supabase@2.122.0 start -x studio,imgproxy,vector,logflare,supavisor,edge-runtime,mailpit; cd -
+# base isolée vierge : appliquer schema.sql puis supabase/migrations/*.sql (dans l'ordre) avec : Get-Content <f> -Raw | docker exec -i supabase_db_boutik_local psql -U postgres -v ON_ERROR_STOP=1
+$env:BE_URL="http://127.0.0.1:54321"; $env:BE_KEY="<clé publishable affichée par « supabase start »>"
+python supabase\tests\lots_rest.py                       # 77/77 attendu
+flutter test                                             # 401 attendus
+flutter build web --release --dart-define=BE_URL=$env:BE_URL --dart-define=BE_KEY=$env:BE_KEY -o build/web_local
+# servir build/web_local sur 127.0.0.1:8099 puis : cd e2e; $env:BASE_URL="http://127.0.0.1:8099"; npx playwright test --workers=1
+```
+
+---
+# Historique — 1ʳᵉ reprise
+
 
 ## 1. Audit de reprise (constaté, pas supposé)
 | Élément annoncé par Claude | Constat | Preuve |

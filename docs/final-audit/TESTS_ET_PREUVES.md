@@ -88,3 +88,16 @@ Particularité : l'approbation d'une annonce par un valideur et le passage « pa
 1. **Liens « Écran introuvable »** : une vingtaine d'appels utilisaient `p3`/`a3` (identifiants réels `P3`/`A3`) ou `148_1`/`147_2`/`146_1` (identifiants réels `148-1`…), dont l'entrée « Paramètres » du menu du compte. Le routeur résout désormais ces formes ; un test parcourt chaque lien de chaque écran.
 2. `nav_graph.py` ignorait les identifiants à lettre (`L1`, `P3`…) : 12 écrans étaient comptés orphelins à tort.
 3. Écrans 180/181 (gestion des rôles) ouverts à tout visiteur : réservés à l'administration.
+
+## 2ᵉ reprise (30/10/2026, nuit) — tests réellement exécutés
+| Domaine | Commande | Résultat |
+|---|---|---|
+| Flutter | `flutter test` | **401 réussis**, 315 goldens inchangés |
+| REST, base isolée (Docker) | `lots_rest.py` · `quotes_rest.py 1/2` · `engagements_rest.py` · `favorites_rest.py` | 77/77 · 30/30 · 18/18 · 9/9 |
+| MCP / webhook (vraies fonctions, dépendances simulées) | `mcp_e2e.py` · `webhook_e2e.py` | 27/27 · 19/19 |
+| Nettoyage des comptes de test (base isolée) | `maintenance/cleanup_test_accounts.sql` | dry-run correct (22 comptes) ; garde-fou déclenché comme prévu |
+| Navigateur, base isolée (build `--dart-define`) | `lots`, `devis`, `engagements`, `parcours`, `visiteur` | **34/34** |
+| Navigateur, production | toutes les specs | **24/24** exécutés ; 21 ignorés (base isolée ou état préparé requis) |
+
+Défauts réels trouvés par ces tests et corrigés : texte des lignes de dialogue absent de l'arbre d'accessibilité (`ListView`), retour du réseau qui laissait
+l'écran 150-3 affiché (pile de navigation mal lue), écran 47 décalé de 704 px (golden), annulation serveur non reflétée (`cancelled_at`), 3 défauts SQL de la nouvelle migration.

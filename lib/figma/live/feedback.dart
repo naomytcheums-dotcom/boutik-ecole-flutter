@@ -16,6 +16,48 @@ const claimReasonLabels = ['Article non reçu', 'Article endommagé ou non confo
 /// Motifs de signalement d'annonce (écran 170).
 const reportReasonCodes = ['fraud', 'copied', 'price', 'other'];
 
+/// Notes publiques par titre d'annonce ; chargées au premier affichage, rechargées après un avis.
+class Ratings extends Notifier<Map<String, ({double average, int total})>> {
+  @override
+  Map<String, ({double average, int total})> build() {
+    if (Backend.ready) refresh();
+    return const {};
+  }
+
+  Future<void> refresh() async {
+    final r = await Backend.allRatings();
+    if (ref.mounted) state = r;
+  }
+}
+
+final ratingsProvider = NotifierProvider<Ratings, Map<String, ({double average, int total})>>(Ratings.new);
+
+String ratingLabel(({double average, int total}) r) => '${r.average.toStringAsFixed(1)} (${r.total})';
+
+/// Étoile + note moyenne d'une annonce (catalogue) ; rien tant qu'aucun avis n'a été publié.
+Widget ratingChip(String title) => Consumer(
+      builder: (context, ref, _) {
+        final r = ref.watch(ratingsProvider.select((m) => m[title]));
+        if (r == null) return const SizedBox.shrink();
+        return Row(children: [
+          const Icon(Icons.star_rounded, size: 13, color: Color(0xFFF5A524)),
+          const SizedBox(width: 2),
+          Text(ratingLabel(r), style: _st.copyWith(fontSize: 10.5, fontWeight: FontWeight.w600)),
+        ]);
+      },
+    );
+
+/// Fiche produit : note moyenne et nombre d'avis, ou « Aucun avis » ; maquette inchangée hors connexion serveur.
+Widget ratingAverageText(String title, {required bool count}) => Consumer(
+      builder: (context, ref, _) {
+        const ink = Color(0xFF111015), grey = Color(0xFF66636E);
+        if (!Backend.ready) return gText(count ? '(24 avis)' : '4.8', count ? 12.904 : 13.621, count ? grey : ink, weight: count ? 400 : 700);
+        final r = ref.watch(ratingsProvider.select((m) => m[title]));
+        if (count) return gText(r == null ? 'Aucun avis pour le moment' : '(${r.total} avis)', 12.904, grey);
+        return gText(r == null ? '' : r.average.toStringAsFixed(1), 13.621, ink, weight: 700);
+      },
+    );
+
 final claimReasonProvider = NotifierProvider<IntV, int>(IntV.new);
 
 /// Case ronde d'un motif : pleine et cochée quand le motif est choisi (remplace la case figée de la maquette).
@@ -43,10 +85,16 @@ Future<bool> _allowed(BuildContext context, WidgetRef ref, String pour) async {
   return true;
 }
 
+/// Commande consultée, relue sur le serveur (la liste peut ne pas être encore chargée à l'ouverture de l'écran).
+Future<Order> _viewedOrder(WidgetRef ref) async {
+  if (Backend.ready) await ref.read(ordersProvider.notifier).refresh();
+  return ref.read(viewedOrderProvider);
+}
+
 /// Écran 30 : l'acheteur note l'article de sa commande (avis vérifié par le serveur).
 Future<void> reviewOrderDialog(BuildContext context, WidgetRef ref) async {
   if (!await _allowed(context, ref, 'publier un avis')) return;
-  final o = ref.read(viewedOrderProvider);
+  final o = await _viewedOrder(ref);
   if (o.lines.isEmpty) return gToast(context, 'Aucun article à évaluer.');
   var line = 0, stars = 5, busy = false;
   final comment = TextEditingController();
@@ -95,6 +143,7 @@ Future<void> reviewOrderDialog(BuildContext context, WidgetRef ref) async {
                     if (err != null) {
                       await gAlert(context, 'Avis non enregistré', err);
                     } else {
+                      ref.read(ratingsProvider.notifier).refresh();
                       gToast(context, 'Merci ! Votre avis a été publié.');
                     }
                   },
@@ -110,7 +159,7 @@ Future<void> reviewOrderDialog(BuildContext context, WidgetRef ref) async {
 /// Écran 48 : envoi de la réclamation pour la commande consultée.
 Future<void> submitClaimForm(BuildContext context, WidgetRef ref) async {
   if (!await _allowed(context, ref, 'déposer une réclamation')) return;
-  final o = ref.read(viewedOrderProvider);
+  final o = await _viewedOrder(ref);
   final details = ref.read(formProvider)['claim_details'] ?? '';
   if (details.trim().length < 10) return gAlert(context, 'Détails manquants', 'Décrivez le problème en 10 caractères minimum pour que l’équipe puisse vous répondre.');
   final err = await Backend.submitClaim(o.id, claimReasons[ref.read(claimReasonProvider).clamp(0, 3)], details);

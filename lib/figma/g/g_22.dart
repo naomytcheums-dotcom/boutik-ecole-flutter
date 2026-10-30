@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/feedback.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_22 extends ConsumerWidget {
@@ -60,6 +61,7 @@ class G_22 extends ConsumerWidget {
       gP(150, 215, 30, 30, GHeartLive(title: ref.watch(filteredProductsProvider).length > 0 ? ref.watch(filteredProductsProvider)[0].title : ''), show: (ref.watch(filteredProductsProvider).length > 0)),
       gP(36, 333.5, 136, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(filteredProductsProvider).length > 0 ? ref.watch(filteredProductsProvider)[0].title : '', 12.5, Color(0xFF111015), weight: 700)), show: (ref.watch(filteredProductsProvider).length > 0)),
       gP(36, 351.5, 76, 15, Consumer(builder: (context, ref, _) => gText(ref.watch(filteredProductsProvider).length > 0 ? fcfa(ref.watch(filteredProductsProvider)[0].price) : '', 12, Color(0xFF111015), weight: 600)), show: (ref.watch(filteredProductsProvider).length > 0)),
+      gP(116, 351.5, 56, 15, Consumer(builder: (context, ref, _) { final l = ref.watch(filteredProductsProvider); return l.length > 0 ? ratingChip(l[0].title) : const SizedBox.shrink(); }), show: (ref.watch(filteredProductsProvider).length > 0)),
       gP(36, 368.5, 51, 13, Consumer(builder: (context, ref, _) => gText(ref.watch(filteredProductsProvider).length > 0 ? ref.watch(filteredProductsProvider)[0].department : '', 10.5, Color(0xFF5A3FE0))), show: (ref.watch(filteredProductsProvider).length > 0)),
       gP(205, 210, 157, 115.5, gBox(image: (ref.watch(filteredProductsProvider).length > 1 ? ref.watch(filteredProductsProvider)[1].image : ''), fit: BoxFit.cover, radii: [22, 22, 22, 22]), show: (ref.watch(filteredProductsProvider).length > 1)),
       gP(329, 217, 26, 26, gBox(color: Color(0xFFFFFFFF), oval: true), show: (ref.watch(filteredProductsProvider).length > 1)),
@@ -67,6 +69,7 @@ class G_22 extends ConsumerWidget {
       gP(327, 215, 30, 30, GHeartLive(title: ref.watch(filteredProductsProvider).length > 1 ? ref.watch(filteredProductsProvider)[1].title : ''), show: (ref.watch(filteredProductsProvider).length > 1)),
       gP(213, 333.5, 91, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(filteredProductsProvider).length > 1 ? ref.watch(filteredProductsProvider)[1].title : '', 12.5, Color(0xFF111015), weight: 700)), show: (ref.watch(filteredProductsProvider).length > 1)),
       gP(213, 351.5, 82, 15, Consumer(builder: (context, ref, _) => gText(ref.watch(filteredProductsProvider).length > 1 ? fcfa(ref.watch(filteredProductsProvider)[1].price) : '', 12, Color(0xFF111015), weight: 600)), show: (ref.watch(filteredProductsProvider).length > 1)),
+      gP(299, 351.5, 56, 15, Consumer(builder: (context, ref, _) { final l = ref.watch(filteredProductsProvider); return l.length > 1 ? ratingChip(l[1].title) : const SizedBox.shrink(); }), show: (ref.watch(filteredProductsProvider).length > 1)),
       gP(213, 368.5, 83, 13, Consumer(builder: (context, ref, _) => gText(ref.watch(filteredProductsProvider).length > 1 ? ref.watch(filteredProductsProvider)[1].department : '', 10.5, Color(0xFF5A3FE0))), show: (ref.watch(filteredProductsProvider).length > 1)),
       gP(28, 407.5, 157, 115.5, gBox(image: (ref.watch(filteredProductsProvider).length > 2 ? ref.watch(filteredProductsProvider)[2].image : ''), fit: BoxFit.cover, radii: [22, 22, 22, 22]), show: (ref.watch(filteredProductsProvider).length > 2)),
       gP(152, 414.5, 26, 26, gBox(color: Color(0xFFFFFFFF), oval: true), show: (ref.watch(filteredProductsProvider).length > 2)),
@@ -74,6 +77,7 @@ class G_22 extends ConsumerWidget {
       gP(150, 412.5, 30, 30, GHeartLive(title: ref.watch(filteredProductsProvider).length > 2 ? ref.watch(filteredProductsProvider)[2].title : ''), show: (ref.watch(filteredProductsProvider).length > 2)),
       gP(36, 531, 101, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(filteredProductsProvider).length > 2 ? ref.watch(filteredProductsProvider)[2].title : '', 12.5, Color(0xFF111015), weight: 700)), show: (ref.watch(filteredProductsProvider).length > 2)),
       gP(36, 549, 76, 15, Consumer(builder: (context, ref, _) => gText(ref.watch(filteredProductsProvider).length > 2 ? fcfa(ref.watch(filteredProductsProvider)[2].price) : '', 12, Color(0xFF111015), weight: 600)), show: (ref.watch(filteredProductsProvider).length > 2)),
+      gP(116, 549, 56, 15, Consumer(builder: (context, ref, _) { final l = ref.watch(filteredProductsProvider); return l.length > 2 ? ratingChip(l[2].title) : const SizedBox.shrink(); }), show: (ref.watch(filteredProductsProvider).length > 2)),
       gP(36, 566, 65, 13, Consumer(builder: (context, ref, _) => gText(ref.watch(filteredProductsProvider).length > 2 ? ref.watch(filteredProductsProvider)[2].department : '', 10.5, Color(0xFF5A3FE0))), show: (ref.watch(filteredProductsProvider).length > 2)),
       gP(205, 407.5, 157, 115.5, gBox(image: (ref.watch(filteredProductsProvider).length > 3 ? ref.watch(filteredProductsProvider)[3].image : ''), fit: BoxFit.cover, radii: [22, 22, 22, 22]), show: (ref.watch(filteredProductsProvider).length > 3)),
       gP(329, 414.5, 26, 26, gBox(color: Color(0xFFFFFFFF), oval: true), show: (ref.watch(filteredProductsProvider).length > 3)),
@@ -81,6 +85,7 @@ class G_22 extends ConsumerWidget {
       gP(327, 412.5, 30, 30, GHeartLive(title: ref.watch(filteredProductsProvider).length > 3 ? ref.watch(filteredProductsProvider)[3].title : ''), show: (ref.watch(filteredProductsProvider).length > 3)),
       gP(213, 531, 95, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(filteredProductsProvider).length > 3 ? ref.watch(filteredProductsProvider)[3].title : '', 12.5, Color(0xFF111015), weight: 700)), show: (ref.watch(filteredProductsProvider).length > 3)),
       gP(213, 549, 73, 15, Consumer(builder: (context, ref, _) => gText(ref.watch(filteredProductsProvider).length > 3 ? fcfa(ref.watch(filteredProductsProvider)[3].price) : '', 12, Color(0xFF111015), weight: 600)), show: (ref.watch(filteredProductsProvider).length > 3)),
+      gP(290, 549, 56, 15, Consumer(builder: (context, ref, _) { final l = ref.watch(filteredProductsProvider); return l.length > 3 ? ratingChip(l[3].title) : const SizedBox.shrink(); }), show: (ref.watch(filteredProductsProvider).length > 3)),
       gP(213, 566, 56, 13, Consumer(builder: (context, ref, _) => gText(ref.watch(filteredProductsProvider).length > 3 ? ref.watch(filteredProductsProvider)[3].department : '', 10.5, Color(0xFF5A3FE0))), show: (ref.watch(filteredProductsProvider).length > 3)),
       gP(28, 605, 157, 115.5, gBox(image: (ref.watch(filteredProductsProvider).length > 4 ? ref.watch(filteredProductsProvider)[4].image : ''), fit: BoxFit.cover, radii: [22, 22, 22, 22]), show: (ref.watch(filteredProductsProvider).length > 4)),
       gP(152, 612, 26, 26, gBox(color: Color(0xFFFFFFFF), oval: true), show: (ref.watch(filteredProductsProvider).length > 4)),
@@ -88,6 +93,7 @@ class G_22 extends ConsumerWidget {
       gP(150, 610, 30, 30, GHeartLive(title: ref.watch(filteredProductsProvider).length > 4 ? ref.watch(filteredProductsProvider)[4].title : ''), show: (ref.watch(filteredProductsProvider).length > 4)),
       gP(36, 728.5, 116, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(filteredProductsProvider).length > 4 ? ref.watch(filteredProductsProvider)[4].title : '', 12.5, Color(0xFF111015), weight: 700)), show: (ref.watch(filteredProductsProvider).length > 4)),
       gP(36, 746.5, 69, 15, Consumer(builder: (context, ref, _) => gText(ref.watch(filteredProductsProvider).length > 4 ? fcfa(ref.watch(filteredProductsProvider)[4].price) : '', 12, Color(0xFF111015), weight: 600)), show: (ref.watch(filteredProductsProvider).length > 4)),
+      gP(109, 746.5, 56, 15, Consumer(builder: (context, ref, _) { final l = ref.watch(filteredProductsProvider); return l.length > 4 ? ratingChip(l[4].title) : const SizedBox.shrink(); }), show: (ref.watch(filteredProductsProvider).length > 4)),
       gP(36, 763.5, 78, 13, Consumer(builder: (context, ref, _) => gText(ref.watch(filteredProductsProvider).length > 4 ? ref.watch(filteredProductsProvider)[4].department : '', 10.5, Color(0xFF5A3FE0))), show: (ref.watch(filteredProductsProvider).length > 4)),
       gP(205, 605, 157, 115.5, gBox(image: (ref.watch(filteredProductsProvider).length > 5 ? ref.watch(filteredProductsProvider)[5].image : ''), fit: BoxFit.cover, radii: [22, 22, 22, 22]), show: (ref.watch(filteredProductsProvider).length > 5)),
       gP(329, 612, 26, 26, gBox(color: Color(0xFFFFFFFF), oval: true), show: (ref.watch(filteredProductsProvider).length > 5)),
@@ -95,6 +101,7 @@ class G_22 extends ConsumerWidget {
       gP(327, 610, 30, 30, GHeartLive(title: ref.watch(filteredProductsProvider).length > 5 ? ref.watch(filteredProductsProvider)[5].title : ''), show: (ref.watch(filteredProductsProvider).length > 5)),
       gP(213, 728.5, 107, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(filteredProductsProvider).length > 5 ? ref.watch(filteredProductsProvider)[5].title : '', 12.5, Color(0xFF111015), weight: 700)), show: (ref.watch(filteredProductsProvider).length > 5)),
       gP(213, 746.5, 74, 15, Consumer(builder: (context, ref, _) => gText(ref.watch(filteredProductsProvider).length > 5 ? fcfa(ref.watch(filteredProductsProvider)[5].price) : '', 12, Color(0xFF111015), weight: 600)), show: (ref.watch(filteredProductsProvider).length > 5)),
+      gP(291, 746.5, 56, 15, Consumer(builder: (context, ref, _) { final l = ref.watch(filteredProductsProvider); return l.length > 5 ? ratingChip(l[5].title) : const SizedBox.shrink(); }), show: (ref.watch(filteredProductsProvider).length > 5)),
       gP(213, 763.5, 81, 13, Consumer(builder: (context, ref, _) => gText(ref.watch(filteredProductsProvider).length > 5 ? ref.watch(filteredProductsProvider)[5].department : '', 10.5, Color(0xFF5A3FE0))), show: (ref.watch(filteredProductsProvider).length > 5)),
       gP(125, 898.5, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(22, 822.5, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),

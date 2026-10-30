@@ -3,7 +3,8 @@ import 'dart:ui' show Color;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/demo/section_a_demo.dart';
-import 'auth.dart' show authProvider;
+import 'dart:async' show Timer;
+import 'auth.dart' show authProvider, demoContent;
 import 'backend.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -124,7 +125,53 @@ const _mois = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août
 class Orders extends Notifier<List<Order>> {
   int _n = 143;
   @override
-  List<Order> build() => const [];
+  List<Order> build() {
+    if (Backend.ready) {
+      final uid = ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
+      if (uid.isNotEmpty) {
+        Future.microtask(refresh);
+        final t = Timer.periodic(const Duration(seconds: 30), (_) => refresh());
+        ref.onDispose(t.cancel);
+      }
+    }
+    return const [];
+  }
+
+  /// Relit les commandes du compte connecté sur le serveur (état de préparation, paiement, annulation).
+  Future<void> refresh() async {
+    final rows = await Backend.myOrders();
+    if (!ref.mounted) return;
+    final server = [for (final r in rows) _fromServer(r)];
+    final ids = {for (final o in server) o.id};
+    state = [for (final o in state) if (!ids.contains(o.id) && !o.paid && !o.cancelled) o, ...server];
+  }
+
+  static Order _fromServer(Map<String, dynamic> r) {
+    final lines = [
+      for (final l in (r['order_lines'] as List? ?? const []))
+        () {
+          final t = (l as Map)['title'] as String;
+          final p = productByTitle(t);
+          return CartLine(t, 'Département : ${p.department}', (l['unit_price'] as num).toInt(), p.image, qty: (l['qty'] as num).toInt());
+        }(),
+    ];
+    final f = [for (final l in (r['order_lines'] as List? ?? const [])) ((l as Map)['fulfillment'] as num?)?.toInt() ?? 0];
+    final step = f.isEmpty ? 0 : f.reduce((a, b) => a < b ? a : b);
+    final d = DateTime.tryParse(r['created_at'] as String? ?? '')?.toLocal() ?? DateTime.now();
+    return Order(
+      id: r['number'] as String,
+      date: '${d.day} ${_mois[d.month - 1]} ${d.year}',
+      lines: lines,
+      subtotal: (r['subtotal'] as num).toInt(),
+      fee: (r['fee'] as num).toInt(),
+      method: (r['method'] as String?) ?? '',
+      reference: (r['reference'] as String?) ?? '',
+      // préparation côté vendeur : 0 en attente · 1-2 en préparation · 3 prête · 4 livrée
+      status: step <= 0 ? 0 : (step <= 2 ? 1 : (step == 3 ? 2 : 3)),
+      paid: r['paid'] == true,
+      cancelled: r['cancelled'] == true,
+    );
+  }
 
   /// Crée la commande à partir du panier courant (en attente de paiement).
   Order place() {
@@ -177,7 +224,7 @@ CartLine liveLine(String title, int price) {
   return CartLine(p.title, 'Département : ${p.department}', price, p.image);
 }
 
-final ordersAllProvider = Provider<List<Order>>((ref) => [...ref.watch(ordersProvider), ..._history]);
+final ordersAllProvider = Provider<List<Order>>((ref) => demoContent ? [...ref.watch(ordersProvider), ..._history] : ref.watch(ordersProvider));
 
 /// Commande ouverte depuis l'historique (sinon : la dernière).
 class SelectedOrderId extends Notifier<String?> {

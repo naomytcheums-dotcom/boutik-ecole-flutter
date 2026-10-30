@@ -223,7 +223,7 @@ final allProductsProvider = Provider<List<LiveProduct>>((ref) {
   final seen = <String>{};
   final extra = [
     for (final l in mine)
-      if (l.published && l.stock > 0 && !base.any((p) => p.title == l.title) && seen.add(l.title))
+      if (l.published && l.stock > 0 && l.category != 'Services' && !base.any((p) => p.title == l.title) && seen.add(l.title))
         LiveProduct(l.title, 'Étudiant-vendeur', l.price, (l.id.isNotEmpty && ownIds.contains(l.id)) || (l.id.isEmpty && own.contains(l)) ? ref.watch(profileAccountProvider).name : 'Étudiant-vendeur',
             l.description.isEmpty ? 'Annonce publiée par un étudiant de l’IUT de Douala.' : l.description, _photoOf(l), category: liveCategories.contains(l.category) ? l.category : 'Maison'),
   ];
@@ -325,6 +325,12 @@ final sellerOrdersProvider = Provider<List<SellerOrder>>((ref) {
     ..._seedOrders,
   ];
 });
+
+/// Identifiant de la commande vendeur n° i, ou vide s'il n'y en a pas (évite une erreur d'index sur un compte sans commande).
+String orderIdAt(WidgetRef ref, int i) {
+  final l = ref.watch(sellerOrdersProvider);
+  return i < l.length ? l[i].id : '';
+}
 
 int statusOf(Map<String, int> m, String id) => m[id] ?? (Backend.ready ? 0 : 1);
 

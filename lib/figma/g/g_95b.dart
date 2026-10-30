@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/services.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_95b extends ConsumerWidget {
@@ -47,31 +48,31 @@ class G_95b extends ConsumerWidget {
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 189, 26, gText('Demande de devis', 21, Color(0xFF111015), weight: 700)),
       gP(36, 128, 50, 50, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
-      gP(98, 132, 126, 17, gText('Équipe Team Innov’', 13.5, Color(0xFF111015), weight: 600)),
-      gP(98, 154, 160, 14, gText('Génie électrique · 4 membres', 11.5, Color(0xFF66636E))),
+      gP(98, 132, 126, 17, Consumer(builder: (context, ref, _) => gText(currentService(ref)?.title ?? 'Service', 13.5, Color(0xFF111015), weight: 600))),
+      gP(98, 154, 160, 14, gText('Prestataire : étudiant de l’IUT de Douala', 11.5, Color(0xFF66636E))),
       gP(24, 200, 36, 16, gText('Objet', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 220, 342, 48, GField(hint: '', initial: 'Prototype de borne de recharge sol…', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
+      gP(24, 220, 342, 48, GField(hint: 'Ex. Site vitrine pour mon association', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('q_obj', v); })),
       gP(37.5, 233.5, 20.996, 20.996, gImg('assets/figma/v/5cb3a366ba37dc.svg')),
       gP(40.875, 236.875, 7.5, 7.5, gImg('assets/figma/v/af3b58bd7187b4.svg')),
       gP(24, 282, 132, 16, gText('Description du besoin', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 302, 342, 96, GField(hint: 'Spécifications, quantité, contraintes…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, multiline: true, padT: 14)),
+      gP(24, 302, 342, 96, GField(hint: 'Spécifications, quantité, contraintes…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, multiline: true, padT: 14, onChanged: (v) { ref.read(formProvider.notifier).put('q_desc', v); })),
       gP(24, 412, 54, 16, gText('Quantité', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 432, 342, 48, GField(hint: '', initial: '5 unités', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
+      gP(24, 432, 342, 48, GField(hint: 'Ex. 1 site, 5 unités…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('q_qty', v); })),
       gP(38.25, 446.25, 19.5, 18.75, gImg('assets/figma/v/959bd6157e02d7.svg')),
       gP(38.25, 450, 19.5, 6, gImg('assets/figma/v/40b22babe144e0.svg')),
       gP(45, 452.25, 6, 9.75, gImg('assets/figma/v/0fc23fb9b18d78.svg')),
       gP(24, 494, 98, 16, gText('Budget maximal', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 514, 342, 48, GField(hint: '', initial: '500 000 FCFA', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
+      gP(24, 514, 342, 48, GField(hint: 'Ex. 80 000', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 48, numeric: true, onChanged: (v) { ref.read(formProvider.notifier).put('q_budget', v); })),
       gP(38.25, 528.25, 20.25, 15.75, gImg('assets/figma/v/a842b4c78dabfc.svg')),
       gP(38.25, 529.75, 19.5, 18, gImg('assets/figma/v/fbc7a9ade9c600.svg')),
       gP(24, 576, 100, 16, gText('Date de livraison', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 596, 342, 48, GField(hint: '', initial: '15 déc. 2026', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
+      gP(24, 596, 342, 48, GField(hint: 'Ex. 15 déc. 2026', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('q_date', v); })),
       gP(38.25, 611, 19.5, 19.5, gImg('assets/figma/v/99b18d1a251e8c.svg')),
       gP(48, 609.5, 6, 9, gImg('assets/figma/v/4d0c4aa2d5e373.svg')),
       gP(42, 609.5, 6, 9, gImg('assets/figma/v/4d0c4aa2d5e373.svg')),
       gP(38.25, 615.5, 19.5, 6, gImg('assets/figma/v/40b22babe144e0.svg')),
       gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
-      gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Envoyer la demande')),
+      gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () { submitQuoteRequest(context, ref); }),
       gP(124.5, 778, 141, 18, gText('Envoyer la demande', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
     ]);

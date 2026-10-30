@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/feedback.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_05 extends ConsumerWidget {
@@ -60,10 +61,11 @@ class G_05 extends ConsumerWidget {
       gP(35.182, 365.678, 8.497, 8.497, gImg('assets/figma/v/51abe2cfdb0d9e.svg')),
       gP(53.051, 362.426, 44, 15, gText('Produit', 12.188, Color(0xFF111015), weight: 500)),
       gP(23.658, 393.423, 248, 29, Consumer(builder: (context, ref, _) => gText(ref.watch(selectedProductProvider).title, 22.941, Color(0xFF111015), weight: 700))),
+      gP(296, 400, 70, 16, gText('Signaler', 11.5, Color(0xFFE5484D), weight: 600, align: TextAlign.right)),
       gP(23.658, 434.419, 118, 23, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(selectedProductProvider).price), 18.64, Color(0xFF111015), weight: 700))),
       gP(22.689, 467.892, 19.143, 18.499, gImg('assets/figma/v/89c75ee41a3d6e.svg')),
-      gP(47.316, 468.963, 23, 17, gText('4.8', 13.621, Color(0xFF111015), weight: 700)),
-      gP(70.974, 469.463, 49, 16, gText('(24 avis)', 12.904, Color(0xFF66636E))),
+      gP(47.316, 468.963, 23, 17, ratingAverageText(ref.watch(selectedProductProvider).title, count: false)),
+      gP(70.974, 469.463, 200, 16, ratingAverageText(ref.watch(selectedProductProvider).title, count: true)),
       gP(23.658, 501.346, 355, 44, Consumer(builder: (context, ref, _) => gText(ref.watch(selectedProductProvider).description, 13.621, Color(0xFF4A4854), lh: 21.507))),
       gP(23.658, 561.342, 119.724, 66.673, gBox(color: Color(0xFFF1F4F8), radii: [17.206, 17.206, 17.206, 17.206])),
       gP(72.853, 573.875, 22.27, 23.206, gImg('assets/figma/v/b2a76abe64993b.svg')),
@@ -99,6 +101,7 @@ class G_05 extends ConsumerWidget {
       gP(23.658, 967.831, 346.268, 0.717, gBox(color: Color(0xFFF2EFF6))),
       gP(131.195, 988.621, 129.044, 3.585, gBox(color: Color(0xFF111015), radii: [2.151, 2.151, 2.151, 2.151])),
       gTap(29, 79, 20, 20, () => gOpen(context, '04')),
+      gTap(286, 394, 88, 28, () { gOpen(context, '170'); }),
       gTap(24, 760, 345, 46, () { ref.read(cartProvider.notifier).add(ref.read(selectedProductProvider).toLine()); gToast(context, 'Ajouté au panier'); gOpen(context, '06'); }),
       gTap(20, 832, 350, 36, () => gOpen(context, '33')),
     ]);

@@ -22,6 +22,8 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/services.dart';
+import '../live/feedback.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_57 extends ConsumerWidget {
@@ -95,16 +97,16 @@ class G_57 extends ConsumerWidget {
       gP(352.5, 559, 13, 6, gImg('assets/figma/v/4159f10924eea0.svg')),
       gP(356, 555.5, 9.5, 13, gImg('assets/figma/v/a365eb17b7a19f.svg')),
       gP(36, 598, 50, 50, gBox(image: 'assets/figma/img/9803b1792923bb371cffd2d64272ebebf74ea2d4.png', fit: BoxFit.cover, radii: [12, 12, 12, 12]), show: (ref.watch(sellerOrdersProvider).length > 0)),
-      gP(98, 602, 183, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(sellerOrdersProvider).length > 0 ? '${ref.watch(sellerOrdersProvider)[0].id} · ${ref.watch(sellerOrdersProvider)[0].title}' : '', 13.5, Color(0xFF111015), weight: 600)), show: (ref.watch(sellerOrdersProvider).length > 0)),
+      gP(98, 602, 183, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(sellerOrdersProvider).length > 0 ? '${orderIdAt(ref, 0)} · ${ref.watch(sellerOrdersProvider)[0].title}' : '', 13.5, Color(0xFF111015), weight: 600)), show: (ref.watch(sellerOrdersProvider).length > 0)),
       gP(98, 624, 159, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(sellerOrdersProvider).length > 0 ? '${ref.watch(sellerOrdersProvider)[0].client} · ${fcfa(ref.watch(sellerOrdersProvider)[0].total)}' : '', 11.5, Color(0xFF66636E))), show: (ref.watch(sellerOrdersProvider).length > 0)),
-      gP(268, 612, 84, 22, gBox(color: (sellerPillFill(sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), ref.watch(sellerOrdersProvider)[0].id)))), radii: [11, 11, 11, 11]), show: (ref.watch(sellerOrdersProvider).length > 0)),
-      gP(281.5, 616, 57, 14, Consumer(builder: (context, ref, _) => gText(sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), ref.watch(sellerOrdersProvider)[0].id)), 11, (sellerPillInk(sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), ref.watch(sellerOrdersProvider)[0].id)))), weight: 600, align: TextAlign.center)), show: (ref.watch(sellerOrdersProvider).length > 0)),
+      gP(268, 612, 84, 22, gBox(color: (sellerPillFill(sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), orderIdAt(ref, 0))))), radii: [11, 11, 11, 11]), show: (ref.watch(sellerOrdersProvider).length > 0)),
+      gP(281.5, 616, 57, 14, Consumer(builder: (context, ref, _) => gText(sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), orderIdAt(ref, 0))), 11, (sellerPillInk(sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), orderIdAt(ref, 0))))), weight: 600, align: TextAlign.center)), show: (ref.watch(sellerOrdersProvider).length > 0)),
       gP(98, 656, 256, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(36, 664, 50, 50, gBox(image: 'assets/figma/img/84a49a20614dc5f12ab62f18400caa2290c40ec0.png', fit: BoxFit.cover, radii: [12, 12, 12, 12]), show: (ref.watch(sellerOrdersProvider).length > 1)),
-      gP(98, 668, 190, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(sellerOrdersProvider).length > 1 ? '${ref.watch(sellerOrdersProvider)[1].id} · ${ref.watch(sellerOrdersProvider)[1].title}' : '', 13.5, Color(0xFF111015), weight: 600)), show: (ref.watch(sellerOrdersProvider).length > 1)),
+      gP(98, 668, 190, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(sellerOrdersProvider).length > 1 ? '${orderIdAt(ref, 1)} · ${ref.watch(sellerOrdersProvider)[1].title}' : '', 13.5, Color(0xFF111015), weight: 600)), show: (ref.watch(sellerOrdersProvider).length > 1)),
       gP(98, 690, 128, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(sellerOrdersProvider).length > 1 ? '${ref.watch(sellerOrdersProvider)[1].client} · ${fcfa(ref.watch(sellerOrdersProvider)[1].total)}' : '', 11.5, Color(0xFF66636E))), show: (ref.watch(sellerOrdersProvider).length > 1)),
-      gP(280.8, 678, 71.2, 22, gBox(color: (sellerPillFill(sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), ref.watch(sellerOrdersProvider)[1].id)))), radii: [11, 11, 11, 11]), show: (ref.watch(sellerOrdersProvider).length > 1)),
-      gP(292.9, 682, 47, 14, Consumer(builder: (context, ref, _) => gText(sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), ref.watch(sellerOrdersProvider)[1].id)), 11, (sellerPillInk(sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), ref.watch(sellerOrdersProvider)[1].id)))), weight: 600, align: TextAlign.center)), show: (ref.watch(sellerOrdersProvider).length > 1)),
+      gP(280.8, 678, 71.2, 22, gBox(color: (sellerPillFill(sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), orderIdAt(ref, 1))))), radii: [11, 11, 11, 11]), show: (ref.watch(sellerOrdersProvider).length > 1)),
+      gP(292.9, 682, 47, 14, Consumer(builder: (context, ref, _) => gText(sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), orderIdAt(ref, 1))), 11, (sellerPillInk(sellerStatusLabel(statusOf(ref.watch(sellerStatusProvider), orderIdAt(ref, 1))))), weight: 600, align: TextAlign.center)), show: (ref.watch(sellerOrdersProvider).length > 1)),
       gP(125, 834, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(22, 758, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
       gP(47.5, 779.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '19')),
@@ -122,6 +124,12 @@ class G_57 extends ConsumerWidget {
       gP(169, 764, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gTab(context, '03')),
       gP(184, 779, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 777.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
+      gP(24, 722, 166, 30, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [15, 15, 15, 15])),
+      gP(36, 729, 140, 16, gText('Réclamations ›', 12, Color(0xFF111015), weight: 600)),
+      gTap(24, 722, 166, 30, () { claimsDialog(context, ref); }),
+      gP(200, 722, 166, 30, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [15, 15, 15, 15])),
+      gP(212, 729, 140, 16, gText('Demandes de devis ›', 12, Color(0xFF111015), weight: 600)),
+      gTap(200, 722, 166, 30, () { quotesDialog(context, ref); }),
       gTap(301, 552, 49, 15, () { gOpen(context, '63'); }),
       gTap(24, 590, 342, 132, () { gOpen(context, '63'); }),
     ]);

@@ -352,6 +352,40 @@ class Backend {
     }
   }
 
+  static Future<String?> requestQuote(String service, String brief, int? budget, String deadline) =>
+      _call('request_quote', {'p_service': service, 'p_brief': brief, 'p_budget': budget, 'p_deadline': deadline});
+
+  static Future<String?> answerQuote(String id, int amount, int days, String message) =>
+      _call('answer_quote', {'p_id': id, 'p_amount': amount, 'p_delay_days': days, 'p_message': message});
+
+  static Future<String?> decideQuote(String id, bool accept) => _call('decide_quote', {'p_id': id, 'p_accept': accept});
+
+  static Future<String?> cancelQuote(String id) => _call('cancel_quote', {'p_id': id});
+
+  /// Demandes de devis de la personne connectée (envoyées ou reçues).
+  static Future<List<Map<String, dynamic>>> myQuotes() async {
+    final c = _c;
+    if (c == null || c.auth.currentUser == null) return const [];
+    try {
+      final r = await c.from('quote_requests').select('id,requester_id,provider_id,brief,budget,deadline,status,quote_amount,quote_delay_days,quote_message,created_at,listings(title)').order('created_at', ascending: false);
+      return [for (final x in r) Map<String, dynamic>.from(x as Map)];
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  /// Commandes de la personne connectée, avec leurs articles (isolées par le serveur).
+  static Future<List<Map<String, dynamic>>> myOrders() async {
+    final c = _c;
+    if (c == null || c.auth.currentUser == null) return const [];
+    try {
+      final rows = await c.from('orders').select('number,subtotal,fee,method,reference,status,paid,cancelled,created_at,order_lines(title,qty,unit_price,fulfillment)').order('created_at', ascending: false);
+      return [for (final r in rows) Map<String, dynamic>.from(r as Map)];
+    } catch (_) {
+      return const [];
+    }
+  }
+
   /// Fait avancer la préparation d'une commande (1 acceptée · 2 en préparation · 3 prête · 4 livrée) ; l'acheteur est notifié par le serveur.
   static Future<String?> setSellerOrderStatus(String orderNumber, int status) async {
     final c = _c;
@@ -584,6 +618,25 @@ class Backend {
       return [for (final x in r) Map<String, dynamic>.from(x as Map)];
     } catch (_) {
       return const [];
+    }
+  }
+
+  /// Notes de toutes les annonces : titre -> (moyenne, nombre d'avis). Les avis sont publics.
+  static Future<Map<String, ({double average, int total})>> allRatings() async {
+    final c = _c;
+    if (c == null) return const {};
+    try {
+      final r = await c.from('reviews').select('rating,listings(title)');
+      final sum = <String, int>{}, n = <String, int>{};
+      for (final x in r) {
+        final t = (x['listings'] as Map?)?['title'] as String?;
+        if (t == null) continue;
+        sum[t] = (sum[t] ?? 0) + (x['rating'] as int);
+        n[t] = (n[t] ?? 0) + 1;
+      }
+      return {for (final t in n.keys) t: (average: (sum[t]! / n[t]!), total: n[t]!)};
+    } catch (_) {
+      return const {};
     }
   }
 

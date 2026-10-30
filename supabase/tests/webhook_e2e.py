@@ -174,7 +174,7 @@ def main():
         try: urllib.request.urlopen(req, timeout=10)
         except urllib.error.HTTPError as e: check("GET -> 405", e.code == 405)
     finally:
-        proc.terminate()
+        subprocess.run(['taskkill', '/F', '/T', '/PID', str(proc.pid)], capture_output=True) if os.name == 'nt' else proc.terminate()
         srv.shutdown()
     ko = [r for r in results if not r[1]]
     print(f"\n{len(results) - len(ko)}/{len(results)} contrôles réussis")

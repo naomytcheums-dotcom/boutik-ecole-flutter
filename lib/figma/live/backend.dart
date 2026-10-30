@@ -287,6 +287,36 @@ class Backend {
     }
   }
 
+  // ---------------------------------------------------------------- notifications et messagerie (RLS : chacun ne lit que les siennes)
+
+  static Future<List<Map<String, dynamic>>> notifications() async {
+    final c = _c;
+    if (c == null || c.auth.currentUser == null) return const [];
+    try {
+      final rows = await c.from('notifications').select().order('created_at', ascending: false).limit(100);
+      return [for (final r in rows) Map<String, dynamic>.from(r)];
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  static Future<void> markNotificationsRead() async {
+    try {
+      await _c?.rpc('mark_notifications_read');
+    } catch (_) {}
+  }
+
+  static Future<({int notifications, int messages})> unreadCounts() async {
+    final c = _c;
+    if (c == null || c.auth.currentUser == null) return (notifications: 0, messages: 0);
+    try {
+      final r = await c.rpc('unread_counts') as Map;
+      return (notifications: (r['notifications'] as num?)?.toInt() ?? 0, messages: (r['messages'] as num?)?.toInt() ?? 0);
+    } catch (_) {
+      return (notifications: 0, messages: 0);
+    }
+  }
+
   /// Annule une commande impayée : le stock réservé est restitué par le serveur.
   static Future<String?> cancelOrder(String number) async {
     final c = _c;

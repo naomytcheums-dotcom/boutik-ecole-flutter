@@ -26,3 +26,13 @@
 | Données de test | supprimées après chaque série (comptes, annonces, commandes, conversations, favoris, images) | requêtes de nettoyage |
 
 Limites : parcours non rejoués dans un navigateur après déploiement (outil inadapté au canvas Flutter) ; journaux Vercel non inspectés ; une seule base pour démonstration et production.
+
+## Déploiement du 31/10/2026 — messagerie complète, vendeur, acheteur
+| Élément | Valeur | Preuve |
+|---|---|---|
+| Code déployé | commit `b8cfa04` (la documentation `7f36c50` n'a pas d'effet sur le build) | `git log` |
+| Tests avant build | `flutter test` : 372 réussis | sortie |
+| Version servie = build testé | empreinte SHA-256 de `main.dart.js` identique (`998171a7…`) ; contient `start_order_conversation`, `seller_orders`, `chat-files` | `sha256sum` |
+| Migrations appliquées sur la base de production | `20261030f` (liste des conversations), `20261030g_messagerie_commande_pieces_jointes`, `20261030h_commandes_vendeur` | fonctions et buckets vérifiés par les tests REST |
+| MCP Notch Pay | URL publique **toujours 401** (« Verify JWT » actif sur `notchpay-mcp`) | `curl` |
+| Webhook Notch Pay | aucun nouvel événement dans les journaux | tableau de bord |

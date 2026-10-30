@@ -3,8 +3,8 @@ Phase 1 : crée A (vendeur, nom « Alice Vendeuse »), B (acheteur, « Bruno Ach
 Phase 2 : démarre la conversation et contrôle les listes."""
 import json, os, sys, urllib.request, urllib.error, uuid
 
-U = "https://zxqcnmgwhtbxkdpjqtlr.supabase.co"
-K = "sb_publishable_yYEzuivRZlBnVOkuMCiSow_syCjss01"
+U = os.environ.get("BE_URL", "https://zxqcnmgwhtbxkdpjqtlr.supabase.co")
+K = os.environ.get("BE_KEY", "sb_publishable_yYEzuivRZlBnVOkuMCiSow_syCjss01")
 STATE = os.environ.get("STATE", "conv_state.json")
 res = []
 

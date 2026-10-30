@@ -4,8 +4,8 @@ Phase 2 : B commande -> la commande est marquée payée (SQL, simule le webhook)
 Phase 3 : avis, réclamations, signalements et permissions."""
 import json, os, sys, urllib.request, urllib.error, uuid
 
-U = "https://zxqcnmgwhtbxkdpjqtlr.supabase.co"
-K = "sb_publishable_yYEzuivRZlBnVOkuMCiSow_syCjss01"
+U = os.environ.get("BE_URL", "https://zxqcnmgwhtbxkdpjqtlr.supabase.co")
+K = os.environ.get("BE_KEY", "sb_publishable_yYEzuivRZlBnVOkuMCiSow_syCjss01")
 STATE = os.environ.get("STATE", "fb_state.json")
 res = []
 

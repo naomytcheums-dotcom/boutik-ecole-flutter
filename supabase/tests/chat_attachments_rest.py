@@ -3,8 +3,8 @@ Phase 1 : A (vendeur), B (acheteur), C (tiers), annonce de A -> un valideur appr
 Phase 2 : commande de B, conversation de commande, pièces jointes, permissions."""
 import json, os, sys, urllib.request, urllib.error, uuid
 
-U = "https://zxqcnmgwhtbxkdpjqtlr.supabase.co"
-K = "sb_publishable_yYEzuivRZlBnVOkuMCiSow_syCjss01"
+U = os.environ.get("BE_URL", "https://zxqcnmgwhtbxkdpjqtlr.supabase.co")
+K = os.environ.get("BE_KEY", "sb_publishable_yYEzuivRZlBnVOkuMCiSow_syCjss01")
 STATE = os.environ.get("STATE", "chat_state.json")
 res = []
 PNG = bytes.fromhex("89504e470d0a1a0a0000000d49484452000000010000000108060000001f15c4890000000d49444154789c6360000002000001e221bc330000000049454e44ae426082")

@@ -41,11 +41,12 @@ class Mock(BaseHTTPRequestHandler):
     do_PATCH = do_DELETE = do_POST
 
 
-def rpc(method, params=None, id=1, key=None, path="/mcp", raw=None, http="POST", bearer=None):
+def rpc(method, params=None, id=1, key=None, path="/mcp", raw=None, http="POST", bearer=None, urlkey=None):
     body = raw if raw is not None else json.dumps({"jsonrpc": "2.0", "id": id, "method": method, **({"params": params} if params is not None else {})}).encode()
     h = {"Content-Type": "application/json", "Accept": "application/json, text/event-stream"}
     if bearer: h["Authorization"] = "Bearer " + bearer
-    url = f"http://127.0.0.1:{FN}{path}" + (f"?key={key}" if key else "")
+    if key: h["x-mcp-access-key"] = key
+    url = f"http://127.0.0.1:{FN}{path}" + (f"?key={urlkey}" if urlkey else "")
     req = urllib.request.Request(url, data=body if http == "POST" else None, headers=h, method=http)
     try:
         with urllib.request.urlopen(req, timeout=30) as r:
@@ -97,6 +98,9 @@ def main():
         s, d = rpc("tools/call", {"name": "notchpay_list_payments", "arguments": {"limit": 5}}, key=KEY)
         t = d["result"]["content"][0]["text"]
         check("tools/call avec clé : paiements listés, téléphone et e-mail masqués", not d["result"]["isError"] and "trx.A" in t and "+237670000123" not in t and "alice@example.com" not in t and "***123" in t, t.replace("\n", " "))
+        n1 = len(calls)
+        s, d = rpc("tools/call", {"name": "notchpay_list_payments", "arguments": {}}, urlkey=KEY)
+        check("clé dans l'URL refusée (elle apparaîtrait dans les journaux)", d["result"]["isError"] and len(calls) == n1, d["result"]["content"][0]["text"])
         s, d = rpc("tools/call", {"name": "notchpay_list_payments", "arguments": {}}, bearer=KEY)
         check("clé acceptée aussi en Authorization: Bearer", not d["result"]["isError"], d["result"]["isError"])
         s, d = rpc("tools/call", {"name": "notchpay_get_payment", "arguments": {"reference": "trx.A"}}, key=KEY)

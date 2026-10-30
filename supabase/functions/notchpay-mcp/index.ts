@@ -1,7 +1,8 @@
 // Serveur MCP « Notch Pay / Boutik-École » (transport Streamable HTTP, JSON-RPC 2.0, sans état).
 // LECTURE SEULE : aucun outil ne crée de paiement, de transfert ni de remboursement.
 // Secrets : NOTCHPAY_KEY (clé API, déjà présente), MCP_ACCESS_KEY (clé d'accès aux outils, à définir par le propriétaire).
-// initialize / tools/list sont publics (découverte du protocole) ; tools/call exige la clé d'accès (?key=… ou Authorization: Bearer …).
+// initialize / tools/list sont publics (découverte du protocole) ; tools/call exige la clé d'accès, transmise en en-tête uniquement
+// (x-mcp-access-key, ou Authorization: Bearer quand « Verify JWT » est désactivé), jamais dans l'URL (journalisée).
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const NOTCH = Deno.env.get("NOTCHPAY_API") ?? "https://api.notchpay.co";
@@ -135,8 +136,9 @@ async function handle(req: Request, msg: any): Promise<any | null> {
       return { jsonrpc: "2.0", id, result: { prompts: [] } };
     case "tools/call": {
       const expected = Deno.env.get("MCP_ACCESS_KEY") ?? "";
-      const url = new URL(req.url);
-      const given = url.searchParams.get("key") ?? (req.headers.get("authorization") ?? "").replace(/^Bearer\s+/i, "");
+      // La clé n'est acceptée qu'en en-tête (jamais dans l'URL, qui apparaît dans les journaux de la plateforme) :
+      // « x-mcp-access-key: <clé> » (compatible avec « Verify JWT ») ou « Authorization: Bearer <clé> » (fonction sans Verify JWT).
+      const given = (req.headers.get("x-mcp-access-key") ?? (req.headers.get("authorization") ?? "").replace(/^Bearer\s+/i, "")).trim();
       if (!expected) return { jsonrpc: "2.0", id, result: text("Les outils ne sont pas encore activés : le propriétaire doit définir le secret MCP_ACCESS_KEY.", true) };
       if (!given || !safeEqual(given, expected)) return { jsonrpc: "2.0", id, result: text("Accès refusé : clé d'accès manquante ou invalide.", true) };
       const r = await callTool(String(msg.params?.name ?? ""), (msg.params?.arguments ?? {}) as Record<string, unknown>);

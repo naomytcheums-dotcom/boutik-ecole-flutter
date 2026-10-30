@@ -6,8 +6,8 @@ Phase 3 : notifications de paiement.
 """
 import json, os, sys, urllib.request, urllib.error, uuid
 
-U = "https://zxqcnmgwhtbxkdpjqtlr.supabase.co"
-K = "sb_publishable_yYEzuivRZlBnVOkuMCiSow_syCjss01"
+U = os.environ.get("BE_URL", "https://zxqcnmgwhtbxkdpjqtlr.supabase.co")
+K = os.environ.get("BE_KEY", "sb_publishable_yYEzuivRZlBnVOkuMCiSow_syCjss01")
 STATE = os.environ.get("STATE", "messaging_state.json")
 res = []
 

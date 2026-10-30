@@ -5,6 +5,8 @@ import '../gen.dart';
 import '../nav.dart';
 import 'audit.dart';
 import 'auth.dart';
+import 'backend.dart';
+import 'feedback.dart';
 import 'seller.dart';
 import 'store.dart';
 import 'talents.dart';
@@ -84,12 +86,21 @@ Color reportInk(String s) => switch (s) {
 final reportReasonProvider = NotifierProvider<IntV, int>(IntV.new);
 const reportReasons = [('Fraude', 'Annonce frauduleuse ou arnaque'), ('Propriété', 'Photos ou description copiées'), ('Prix', 'Prix anormal ou demande suspecte'), ('Contenu', 'Contenu inapproprié')];
 
-void submitReport(WidgetRef ref, BuildContext context) {
+Future<void> submitReport(WidgetRef ref, BuildContext context) async {
   final p = ref.read(selectedProductProvider);
-  final reason = reportReasons[ref.read(reportReasonProvider).clamp(0, 3)];
+  final i = ref.read(reportReasonProvider).clamp(0, 3);
+  final reason = reportReasons[i];
+  if (Backend.ready) {
+    if (!await requireLogin(context, ref, 'signaler une annonce')) return;
+    final err = await Backend.reportListing(p.title, reportReasonCodes[i], ref.read(formProvider)['report_details'] ?? '');
+    if (!context.mounted) return;
+    if (err != null) return gAlert(context, 'Signalement non envoyé', err);
+    ref.read(formProvider.notifier).clear(const ['report_details']);
+  }
   final me = ref.read(profileAccountProvider).name;
   ref.read(reportsProvider.notifier).add(Report('Annonce « ${p.title} »', reason.$1, 'À l’instant', 'Non assigné', 'Ouvert', listing: p.title));
   ref.read(auditProvider.notifier).log(me, 'Signalement envoyé', p.title, 'Modération', level: 'Sensible');
+  if (!context.mounted) return;
   gToast(context, 'Signalement envoyé : ${reason.$2}');
   gOpen(context, '49');
 }

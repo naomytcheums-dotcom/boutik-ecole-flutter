@@ -552,6 +552,54 @@ class Backend {
     }
   }
 
+  /// Avis vérifié : seul l'acheteur d'une commande payée, une fois l'article prêt, un avis par article.
+  static Future<String?> submitReview(String order, String title, int rating, String comment) => _call(
+      'submit_review', {'p_order': order, 'p_title': title, 'p_rating': rating, 'p_comment': comment});
+
+  static Future<String?> submitClaim(String order, String reason, String details) =>
+      _call('submit_claim', {'p_order': order, 'p_reason': reason, 'p_details': details});
+
+  static Future<String?> reportListing(String title, String reason, String details) =>
+      _call('report_listing', {'p_title': title, 'p_reason': reason, 'p_details': details});
+
+  static Future<String?> answerClaim(String claimId, String message) => _call('answer_claim', {'p_claim': claimId, 'p_message': message});
+
+  static Future<String?> _call(String fn, Map<String, dynamic> params) async {
+    final c = _c;
+    if (c == null) return 'Connexion requise.';
+    try {
+      await c.rpc(fn, params: params);
+      return null;
+    } catch (e) {
+      return _msg(e);
+    }
+  }
+
+  /// Réclamations visibles par la personne connectée (les siennes, ou celles qui concernent ses ventes).
+  static Future<List<Map<String, dynamic>>> claims() async {
+    final c = _c;
+    if (c == null) return const [];
+    try {
+      final r = await c.from('claims').select('id,order_id,reason,details,status,answer,created_at,claimant_id').order('created_at', ascending: false);
+      return [for (final x in r) Map<String, dynamic>.from(x as Map)];
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  /// Note moyenne publique d'une annonce.
+  static Future<({double average, int total})?> listingRating(String title) async {
+    final c = _c;
+    if (c == null) return null;
+    try {
+      final r = await c.rpc('listing_rating', params: {'p_title': title}) as List;
+      if (r.isEmpty || r.first['total'] == 0) return null;
+      return (average: (r.first['average'] as num).toDouble(), total: r.first['total'] as int);
+    } catch (_) {
+      return null;
+    }
+  }
+
   /// Dépose une demande de certification (état « en attente ») ; la décision appartient au département.
   static Future<String?> requestCertification() async {
     final c = _c;

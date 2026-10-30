@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/feedback.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_48 extends ConsumerWidget {
@@ -47,22 +48,21 @@ class G_48 extends ConsumerWidget {
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 128, 26, gText('Réclamation', 21, Color(0xFF111015), weight: 700)),
       gP(36, 128, 50, 50, gBox(image: 'assets/figma/img/55fe764cd9b0e1fc03c630662e027fb0f9f7ade4.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
-      gP(98, 132, 191, 17, gText('Commande #BE-2026-0138', 13.5, Color(0xFF111015), weight: 600)),
-      gP(98, 154, 143, 14, gText('18 oct. 2026 · 17 000 FCFA', 11.5, Color(0xFF66636E))),
+      gP(98, 132, 191, 17, Consumer(builder: (context, ref, _) => gText('Commande ' + ref.watch(viewedOrderProvider).id, 13.5, Color(0xFF111015), weight: 600))),
+      gP(98, 154, 143, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(viewedOrderProvider).date + ' · ' + fcfa(ref.watch(viewedOrderProvider).total), 11.5, Color(0xFF66636E)))),
       gP(280.8, 142, 71.2, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
       gP(293.9, 146, 45, 14, gText('En cours', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)),
       gP(24, 200, 149, 19, gText('Motif de la demande', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 238, 20, 20, gBox(color: Color(0xFF111015), radii: [6, 6, 6, 6])),
-      gP(26.667, 241.75, 14.667, 11.958, gImg('assets/figma/v/w_check.svg')),
+      gP(24, 238, 20, 20, reasonBox(claimReasonProvider, 0)),
       gP(54, 239, 315, 18, gText('Article non reçu', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
-      gP(24, 274, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFDAD5E4), bw: 1.5, radii: [6, 6, 6, 6])),
+      gP(24, 274, 20, 20, reasonBox(claimReasonProvider, 1)),
       gP(54, 275, 315, 18, gText('Article endommagé ou non conforme', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
-      gP(24, 310, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFDAD5E4), bw: 1.5, radii: [6, 6, 6, 6])),
+      gP(24, 310, 20, 20, reasonBox(claimReasonProvider, 2)),
       gP(54, 311, 315, 18, gText('Annulation avant préparation', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
-      gP(24, 346, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFDAD5E4), bw: 1.5, radii: [6, 6, 6, 6])),
+      gP(24, 346, 20, 20, reasonBox(claimReasonProvider, 3)),
       gP(54, 347, 315, 18, gText('Demande de remboursement', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
       gP(24, 382, 133, 16, gText('Détails de la demande', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 402, 342, 96, GField(hint: 'Décrivez le problème rencontré…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, multiline: true, padT: 14)),
+      gP(24, 402, 342, 96, GField(hint: 'Décrivez le problème rencontré…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, multiline: true, padT: 14, onChanged: (v) { ref.read(formProvider.notifier).put('claim_details', v); })),
       gP(36, 525, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(44.667, 535.333, 22.667, 19.333, gImg('assets/figma/v/b357168830edbf.svg')),
       gP(50.5, 540.333, 11, 11, gImg('assets/figma/v/3bae74da037db6.svg')),
@@ -75,9 +75,13 @@ class G_48 extends ConsumerWidget {
       gP(49, 610.75, 8.833, 11.667, gImg('assets/figma/v/3a93fa78124c31.svg')),
       gP(76, 609.5, 277, 17, gText('Notre équipe vous répond sous 48 h ouvrées.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
       gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
-      gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Envoyer la demande')),
+      gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () { submitClaimForm(context, ref); }),
       gP(124.5, 778, 141, 18, gText('Envoyer la demande', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      gTap(24, 232, 342, 34, () { ref.read(claimReasonProvider.notifier).set(0); }),
+      gTap(24, 268, 342, 34, () { ref.read(claimReasonProvider.notifier).set(1); }),
+      gTap(24, 304, 342, 34, () { ref.read(claimReasonProvider.notifier).set(2); }),
+      gTap(24, 340, 342, 34, () { ref.read(claimReasonProvider.notifier).set(3); }),
     ]);
   }
 }

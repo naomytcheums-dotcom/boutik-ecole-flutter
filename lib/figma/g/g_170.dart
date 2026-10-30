@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/feedback.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_170 extends ConsumerWidget {
@@ -50,17 +51,16 @@ class G_170 extends ConsumerWidget {
       gP(98, 132, 145, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(selectedProductProvider).title, 13.5, Color(0xFF111015), weight: 600))),
       gP(98, 154, 196, 14, gText('25 000 FCFA · Vendeur : Y. Mouanga', 11.5, Color(0xFF66636E))),
       gP(24, 200, 154, 19, gText('Motif du signalement', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 238, 20, 20, gBox(color: Color(0xFF111015), radii: [6, 6, 6, 6])),
-      gP(26.667, 241.75, 14.667, 11.958, gImg('assets/figma/v/w_check.svg')),
+      gP(24, 238, 20, 20, reasonBox(reportReasonProvider, 0)),
       gP(54, 239, 315, 18, gText('Annonce frauduleuse ou trompeuse', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
-      gP(24, 274, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFDAD5E4), bw: 1.5, radii: [6, 6, 6, 6])),
+      gP(24, 274, 20, 20, reasonBox(reportReasonProvider, 1)),
       gP(54, 275, 315, 18, gText('Photos ou description non conformes', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
-      gP(24, 310, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFDAD5E4), bw: 1.5, radii: [6, 6, 6, 6])),
+      gP(24, 310, 20, 20, reasonBox(reportReasonProvider, 2)),
       gP(54, 311, 315, 36, gText('Prix anormal ou demande de paiement hors plateforme', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
-      gP(24, 360, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFDAD5E4), bw: 1.5, radii: [6, 6, 6, 6])),
+      gP(24, 360, 20, 20, reasonBox(reportReasonProvider, 3)),
       gP(54, 361, 315, 18, gText('Contenu inapproprié', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
       gP(24, 396, 130, 16, gText('Précisions (facultatif)', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 416, 342, 96, GField(hint: 'Expliquez ce qui pose problème…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, multiline: true, padT: 14)),
+      gP(24, 416, 342, 96, GField(hint: 'Expliquez ce qui pose problème…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, multiline: true, padT: 14, onChanged: (v) { ref.read(formProvider.notifier).put('report_details', v); })),
       gP(36, 549.5, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(43.333, 555.416, 17.333, 20.169, gImg('assets/figma/v/d9a3b6dd8cdae8.svg')),
       gP(46.875, 561.083, 10.25, 8.833, gImg('assets/figma/v/2bdcafa88f7a43.svg')),

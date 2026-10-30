@@ -82,7 +82,7 @@ class G_03 extends ConsumerWidget {
       gP(194.106, 251.358, 12.62, 20.896, gImg('assets/figma/v/1a1eeaec24f790.svg')),
       gP(178.917, 287.806, 43, 13, gText('Services', 10.382, Color(0xFF111015), weight: 500, align: TextAlign.center)),
       gP(248.264, 238.333, 57.778, 46.944, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1, radii: [16.25, 16.25, 16.25, 16.25])),
-      gP(267.222, 251.875, 19.861, 19.861, const SizedBox.expand(), tap: () => gTab(context, '10')),
+      
       gP(270.015, 251.358, 14.275, 14.275, gImg('assets/figma/v/fa6123b26c6cdd.svg')),
       gP(267.532, 259.633, 19.241, 12.62, gImg('assets/figma/v/b5c59f8332fa97.svg')),
       gP(259.153, 287.806, 36, 13, gText('Talents', 10.382, Color(0xFF111015), weight: 500, align: TextAlign.center)),
@@ -91,6 +91,7 @@ class G_03 extends ConsumerWidget {
       gP(347.503, 263.771, 10.965, 6, gImg('assets/figma/v/c94e1e4a8135f4.svg')),
       gP(348.331, 267.081, 9.31, 6, gImg('assets/figma/v/188f8a4ee0e095.svg')),
       gP(334.986, 287.806, 36, 13, gText('Projets', 10.382, Color(0xFF111015), weight: 500, align: TextAlign.center)),
+      gTap(18.056, 238.333, 57.778, 62.0, () => gOpen(context, '04')), gTap(94.792, 238.333, 57.778, 62.0, () => gOpen(context, '22')), gTap(171.528, 238.333, 57.778, 62.0, () => gOpen(context, '22b')), gTap(248.264, 238.333, 57.778, 62.0, () => gOpen(context, '70')), gTap(324.097, 238.333, 57.778, 62.0, () => gOpen(context, '78')),
       gP(14.444, 322.292, 372.847, 185.069, gBox(image: 'assets/figma/img/6baf8125049f662c1c5c4c23c6b514db2881910c.png', fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 6), blurRadius: 16, spreadRadius: 0)], radii: [18.056, 18.056, 18.056, 18.056])),
       gP(37.917, 346.667, 54.167, 18.056, gBox(color: Color(0xFF111015), radii: [9.028, 9.028, 9.028, 9.028])),
       gP(47.5, 349.694, 35, 12, gText('À la une', 9.479, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),

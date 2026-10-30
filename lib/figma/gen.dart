@@ -37,8 +37,8 @@ class GScreen extends StatelessWidget {
       backgroundColor: const Color(0xFFE9E6EE),
       resizeToAvoidBottomInset: false,
       body: LayoutBuilder(builder: (context, c) {
-        if (h > 1000 && w < 700) {
-          // Écran long : on adapte la largeur et on fait défiler.
+        if (h > 860 && w < 700) {
+          // Écran plus haut qu'un téléphone : on adapte la largeur et on fait défiler (jamais de contenu réduit ou inaccessible).
           final s = math.min(1.0, c.maxWidth / w);
           return SingleChildScrollView(
             child: Center(child: SizedBox(width: w * s, height: h * s, child: FittedBox(fit: BoxFit.fill, child: canvas))),
@@ -210,6 +210,21 @@ Future<T?> gDialog<T>({required BuildContext context, required WidgetBuilder bui
       barrierColor: const Color(0x40111015),
       builder: (ctx) => Center(child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 380), child: builder(ctx))),
     );
+
+/// Fenêtre d'information (titre, message, un bouton) : pour les erreurs importantes qui ne doivent pas se réduire à une ligne de texte.
+Future<void> gAlert(BuildContext context, String title, String message, {String button = 'Compris'}) {
+  const st = TextStyle(inherit: false, fontFamily: 'PlusJakartaSans', fontSize: 14, height: 1.45, color: Color(0xFF4A4854), textBaseline: TextBaseline.alphabetic);
+  return gDialog<void>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+      title: Text(title, style: st.copyWith(fontSize: 17, fontWeight: FontWeight.w700, color: const Color(0xFF111015))),
+      content: Text(message, style: st),
+      actions: [TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text(button, style: st.copyWith(fontWeight: FontWeight.w700, color: const Color(0xFF111015))))],
+    ),
+  );
+}
 
 /// Interrupteur animé (cliquable).
 class GToggle extends StatefulWidget {

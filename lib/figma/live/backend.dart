@@ -25,58 +25,160 @@ class Backend {
   /// Identifiant de connexion côté serveur : l'e-mail, ou un e-mail dérivé du téléphone.
   static String loginOf(Account a) => a.email.isNotEmpty ? a.email : '${a.phone}@phone.boutik-ecole.cm';
 
-  static Future<void> signIn(Account a, String password) async {
-    final c = _c;
-    if (c == null) return;
-    try {
-      final r = await c.auth.signInWithPassword(email: loginOf(a), password: password);
-      await _ensureProfile(a, r.user?.id);
-    } on AuthException {
-      // Compte local pas encore créé côté serveur : on l'inscrit puis on le connecte.
-      await signUp(a, password);
-    } catch (_) {}
+  static const _roles = ['client', 'student', 'company', 'other'];
+  static const _staff = {'dept': 'Resp. département', 'direction': 'Direction', 'finance': 'Finance', 'support': 'Support', 'admin': 'Admin global'};
+
+  /// Compte construit uniquement à partir de la ligne de profil du titulaire (aucune valeur empruntée à un autre compte).
+  static Account _fromRow(Map<String, dynamic> r, String email) {
+    final role = (r['role'] ?? 'client').toString();
+    final idx = _roles.indexOf(role);
+    return Account(
+      name: (r['name'] ?? '').toString(),
+      phone: (r['phone'] ?? '').toString(),
+      email: (r['email'] ?? email).toString(),
+      password: '',
+      role: idx < 0 ? 3 : idx,
+      staff: _staff[role] ?? '',
+      verified: true,
+      city: (r['city'] ?? '').toString(),
+      institution: (r['institution'] ?? '').toString(),
+      department: (r['department'] ?? '').toString(),
+      birth: (r['birth'] ?? '').toString(),
+      suspended: r['suspended'] == true,
+      bio: (r['bio'] ?? '').toString(),
+      skills: (r['skills'] ?? '').toString(),
+      avatarUrl: (r['avatar_url'] ?? '').toString(),
+      certification: (r['certification'] ?? 'none').toString(),
+      serverId: (r['id'] ?? '').toString(),
+    );
   }
 
-  /// Retourne true si une session est ouverte, false si une confirmation d'e-mail est requise, null si le serveur est indisponible.
-  static Future<bool?> signUp(Account a, String password) async {
+  /// Connexion réelle : le profil est chargé exclusivement avec l'identifiant de la session ouverte.
+  static Future<({Account? account, String? error})> login(String email, String password) async {
     final c = _c;
-    if (c == null) return null;
+    if (c == null) return (account: null, error: 'Connexion au serveur impossible.');
     try {
-      final r = await c.auth.signUp(email: loginOf(a), password: password);
-      final id = r.user?.id;
-      if (id == null || r.session == null) return r.user == null ? null : false;
-      await c.from('profiles').upsert({
-        'id': id,
-        'name': a.name,
-        'phone': a.phone,
-        'email': a.email.isEmpty ? null : a.email,
-        'role': const ['client', 'student', 'company', 'other'][a.role.clamp(0, 3)],
-        'city': a.city,
-        'institution': a.institution,
-        'department': a.department,
-      });
-      return true;
+      final r = await c.auth.signInWithPassword(email: email, password: password);
+      final user = r.user;
+      if (user == null) return (account: null, error: 'Identifiant ou mot de passe incorrect.');
+      var row = await c.from('profiles').select().eq('id', user.id).maybeSingle();
+      if (row == null) {
+        // Profil absent (inscription interrompue) : on l'initialise vierge, pour CET utilisateur uniquement.
+        final meta = user.userMetadata ?? const {};
+        final name = (meta['name'] ?? '').toString().trim();
+        await _insertProfile(c, user.id, name.isEmpty ? email.split('@').first : name, (meta['phone'] ?? '').toString(), email, 'client');
+        row = await c.from('profiles').select().eq('id', user.id).maybeSingle();
+      }
+      if (row == null) {
+        await c.auth.signOut();
+        return (account: null, error: 'Profil introuvable. Contactez le support.');
+      }
+      final a = _fromRow(row, email);
+      if (a.suspended) {
+        await c.auth.signOut();
+        return (account: null, error: 'Compte suspendu. Contactez l’administration.');
+      }
+      return (account: a, error: null);
+    } on AuthException catch (e) {
+      final m = e.message.toLowerCase();
+      if (m.contains('not confirmed')) return (account: null, error: 'Confirmez d’abord votre adresse e-mail (lien reçu par e-mail).');
+      if (m.contains('banned')) return (account: null, error: 'Ce compte est désactivé.');
+      return (account: null, error: 'Identifiant ou mot de passe incorrect.');
     } catch (_) {
-      return null;
+      return (account: null, error: 'Connexion au serveur impossible. Réessayez.');
     }
   }
 
-  /// Crée le profil au premier passage connecté (cas de la confirmation d'e-mail, où l'inscription n'ouvre pas de session).
-  static Future<void> _ensureProfile(Account a, String? id) async {
-    final c = _c;
-    if (c == null || id == null) return;
+  static Future<void> _insertProfile(SupabaseClient c, String id, String name, String phone, String email, String role) async {
+    final base = {
+      'id': id,
+      'name': name,
+      'email': email.isEmpty ? null : email,
+      'role': role,
+    };
     try {
-      await c.from('profiles').upsert({
-        'id': id,
+      await c.from('profiles').insert({...base, 'phone': phone.isEmpty ? null : phone});
+    } on PostgrestException catch (e) {
+      if (e.code == '23505') {
+        // numéro déjà rattaché à un autre compte : on ne touche pas à ce compte, le profil est créé sans numéro
+        await c.from('profiles').insert(base);
+      } else {
+        rethrow;
+      }
+    }
+  }
+
+  /// Inscription réelle. exists : adresse déjà utilisée · needsConfirm : confirmation d'e-mail requise · error : échec technique.
+  static Future<({bool exists, bool needsConfirm, String? error})> register(Account a, String password) async {
+    final c = _c;
+    if (c == null) return (exists: false, needsConfirm: false, error: 'Connexion au serveur impossible.');
+    try {
+      final r = await c.auth.signUp(email: loginOf(a), password: password, data: {'name': a.name, 'phone': a.phone});
+      final user = r.user;
+      if (user == null) return (exists: false, needsConfirm: false, error: 'Inscription impossible. Réessayez.');
+      if (user.identities != null && user.identities!.isEmpty) return (exists: true, needsConfirm: false, error: null);
+      if (r.session == null) return (exists: false, needsConfirm: true, error: null);
+      await _insertProfile(c, user.id, a.name, a.phone, a.email, _roles[a.role.clamp(0, 3)]);
+      return (exists: false, needsConfirm: false, error: null);
+    } on AuthException catch (e) {
+      final m = e.message.toLowerCase();
+      if (m.contains('already') || e.code == 'user_already_exists') return (exists: true, needsConfirm: false, error: null);
+      return (exists: false, needsConfirm: false, error: e.message);
+    } catch (_) {
+      return (exists: false, needsConfirm: false, error: 'Connexion au serveur impossible. Réessayez.');
+    }
+  }
+
+  /// Enregistre les champs que le titulaire a le droit de modifier (jamais le rôle, jamais la certification).
+  static Future<bool> saveProfile(Account a) async {
+    final c = _c;
+    final uid = c?.auth.currentUser?.id;
+    if (c == null || uid == null) return false;
+    try {
+      await c.from('profiles').update({
         'name': a.name,
-        'phone': a.phone,
-        'email': a.email.isEmpty ? null : a.email,
-        'role': const ['client', 'student', 'company', 'other'][a.role.clamp(0, 3)],
         'city': a.city,
         'institution': a.institution,
         'department': a.department,
-      }, ignoreDuplicates: true);
-    } catch (_) {}
+        'bio': a.bio,
+        'skills': a.skills,
+      }).eq('id', uid);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Dépose une demande de certification (état « en attente ») ; la décision appartient au département.
+  static Future<String?> requestCertification() async {
+    final c = _c;
+    if (c == null) return 'Connexion au serveur impossible.';
+    try {
+      await c.rpc('request_certification');
+      return null;
+    } on PostgrestException catch (e) {
+      return e.message;
+    } catch (_) {
+      return 'Connexion au serveur impossible.';
+    }
+  }
+
+  /// Adresse de la session ouverte (le client Supabase conserve la session dans le navigateur).
+  static String? get sessionEmail => _c?.auth.currentUser?.email;
+
+  /// Recharge le profil du titulaire de la session ouverte, rien d'autre.
+  static Future<Account?> restore() async {
+    final c = _c;
+    final u = c?.auth.currentUser;
+    if (c == null || u == null) return null;
+    try {
+      final row = await c.from('profiles').select().eq('id', u.id).maybeSingle();
+      if (row == null) return null;
+      final a = _fromRow(row, u.email ?? '');
+      return a.suspended ? null : a;
+    } catch (_) {
+      return null;
+    }
   }
 
   static Future<void> signOut() async {

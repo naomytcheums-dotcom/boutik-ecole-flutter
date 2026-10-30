@@ -22,8 +22,17 @@ class Account {
     this.birth = '',
     this.suspended = false,
     this.staff = '',
+    this.bio = '',
+    this.skills = '',
+    this.avatarUrl = '',
+    this.certification = 'none',
+    this.serverId = '',
   });
   final String name, phone, email, password, city, institution, department, birth;
+  /// Description, compétences (séparées par des virgules), photo, état de certification (none · pending · review · approved · rejected · revoked) et identifiant Supabase.
+  final String bio, skills, avatarUrl, certification, serverId;
+  /// Le badge bleu n'existe que pour une certification réellement approuvée côté serveur.
+  bool get certified => certification == 'approved';
   final int role; // 0 client · 1 étudiant vendeur · 2 entreprise · 3 autre
   final bool verified, suspended;
   final String staff; // rôle interne (Resp. département, Finance, Admin global…)
@@ -33,7 +42,7 @@ class Account {
   String get firstName => name.split(' ').first;
   String get lastName => name.split(' ').length > 1 ? name.split(' ').skip(1).join(' ') : '';
 
-  Account copyWith({String? name, String? password, int? role, bool? verified, String? city, String? institution, String? department, String? birth, bool? suspended, String? staff}) => Account(
+  Account copyWith({String? name, String? password, int? role, bool? verified, String? city, String? institution, String? department, String? birth, bool? suspended, String? staff, String? bio, String? skills, String? avatarUrl}) => Account(
         name: name ?? this.name,
         phone: phone,
         email: email,
@@ -46,10 +55,15 @@ class Account {
         birth: birth ?? this.birth,
         suspended: suspended ?? this.suspended,
         staff: staff ?? this.staff,
+        bio: bio ?? this.bio,
+        skills: skills ?? this.skills,
+        avatarUrl: avatarUrl ?? this.avatarUrl,
+        certification: certification,
+        serverId: serverId,
       );
 }
 
-const demoAccount = Account(name: 'Mariam Essono', phone: '690112233', email: 'mariam@iut-douala.cm', password: 'Boutik2026');
+const demoAccount = Account(name: 'Mariam Essono', phone: '690112233', email: 'mariam@iut-douala.cm', password: 'Boutik2026', bio: 'Étudiante en informatique, je crée des applications web et mobiles pour des clients locaux.', skills: 'Python, React, Mobile', certification: 'approved');
 const demoCode = '482917';
 
 /// Comptes internes de démonstration (écran 128).
@@ -66,6 +80,9 @@ const seedAccounts = <Account>[
 
 /// Compte connecté au démarrage (la démonstration commence avec l'étudiante) ; remplaçable dans les tests.
 final initialAccountProvider = Provider<Account?>((_) => null);
+
+/// Réinitialise tout l'état de l'application (branché par main.dart) : appelé à la déconnexion.
+void Function()? appReset;
 
 class AuthState {
   const AuthState({this.accounts = seedAccounts, this.current, this.pending});
@@ -87,6 +104,7 @@ class AuthNotifier extends Notifier<AuthState> {
     saveRemembered(null);
     Backend.signOut();
     state = state.copy(clearCurrent: true);
+    appReset?.call(); // aucun état du compte précédent ne survit (formulaires, annonces, panier, commandes…)
   }
   void register(Account a) => state = state.copy(accounts: [...state.accounts, a], pending: a);
 
@@ -101,10 +119,11 @@ class AuthNotifier extends Notifier<AuthState> {
 
 final authProvider = NotifierProvider<AuthNotifier, AuthState>(AuthNotifier.new);
 
-/// Compte affiché sur le profil : connecté, sinon en cours d'inscription, sinon la démo.
+/// Compte affiché sur le profil : connecté, sinon en cours d'inscription. Le compte de démonstration ne sert que hors connexion au serveur (tests, aperçu).
+const _blankAccount = Account(name: '', phone: '', email: '', password: '', verified: false, institution: '', department: '', city: '');
 final profileAccountProvider = Provider<Account>((ref) {
   final s = ref.watch(authProvider);
-  return s.current ?? s.pending ?? demoAccount;
+  return s.current ?? s.pending ?? (Backend.ready ? _blankAccount : demoAccount);
 });
 
 /// Valeurs saisies dans les formulaires (clé → texte) et messages d'erreur (clé → message).
@@ -134,7 +153,13 @@ class Flag extends Notifier<bool> {
   void toggle() => state = !state;
 }
 
-final termsProvider = NotifierProvider<Flag, bool>(Flag.new);
+/// Interrupteur éteint au départ : le consentement aux conditions doit être donné explicitement.
+class FlagOff extends Flag {
+  @override
+  bool build() => false;
+}
+
+final termsProvider = NotifierProvider<FlagOff, bool>(FlagOff.new);
 
 class IntState extends Notifier<int> {
   @override
@@ -196,6 +221,16 @@ Future<Account?> loadRemembered() async {
   try {
     final p = await SharedPreferences.getInstance();
     final e = p.getString(_rememberKey);
+    if (Backend.ready) {
+      // Avec le serveur : on ne reprend que la session réelle du titulaire qui a coché « Se souvenir de moi », sinon on la ferme.
+      final live = Backend.sessionEmail;
+      if (live == null) return null;
+      if (e == null || e.toLowerCase() != live.toLowerCase()) {
+        await Backend.signOut();
+        return null;
+      }
+      return await Backend.restore();
+    }
     if (e == null) return null;
     for (final a in seedAccounts) {
       if (a.email == e && !a.suspended) return a;
@@ -236,6 +271,10 @@ void submitLogin(WidgetRef ref, BuildContext context) {
     'li_pw': pw.isEmpty ? 'Saisissez votre mot de passe.' : null,
   };
   if (errs.values.any((e) => e != null)) return _errors(ref, errs);
+  if (Backend.ready) {
+    _serverLogin(ref, context, id, pw, isMail);
+    return;
+  }
   final accounts = ref.read(authProvider).accounts;
   final hit = accounts.where((a) => (isMail ? a.email.toLowerCase() == id.toLowerCase() : a.phone == normPhone(id)) && a.password == pw).toList();
   if (hit.isEmpty) {
@@ -251,10 +290,50 @@ void submitLogin(WidgetRef ref, BuildContext context) {
   ref.read(errorsProvider.notifier).clear();
   ref.read(authProvider.notifier).login(hit.first);
   saveRemembered(ref.read(rememberProvider) ? hit.first.email : null);
-  Backend.signIn(hit.first, pw);
   ref.read(auditProvider.notifier).log(hit.first.name, 'Connexion réussie', 'Application', 'Connexions');
   gToast(context, 'Bienvenue, ${hit.first.firstName} !');
   gOpen(context, '03');
+}
+
+Future<void> _serverLogin(WidgetRef ref, BuildContext context, String id, String pw, bool isMail) async {
+  if (!isMail) return _errors(ref, {'li_id': 'Connectez-vous avec votre adresse e-mail.'});
+  final r = await Backend.login(id, pw);
+  final a = r.account;
+  if (a == null) {
+    _errors(ref, {'li_pw': r.error ?? 'Identifiant ou mot de passe incorrect.'});
+    ref.read(auditProvider.notifier).log('Visiteur', 'Échec de connexion', id, 'Connexions', level: 'Sensible');
+    return;
+  }
+  ref.read(errorsProvider.notifier).clear();
+  ref.read(authProvider.notifier).login(a);
+  saveRemembered(ref.read(rememberProvider) ? a.email : null);
+  ref.read(auditProvider.notifier).log(a.name, 'Connexion réussie', 'Application', 'Connexions');
+  if (!context.mounted) return;
+  gToast(context, a.name.isEmpty ? 'Bienvenue !' : 'Bienvenue, ${a.firstName} !');
+  gOpen(context, '03');
+}
+
+Future<void> _serverSignup(WidgetRef ref, BuildContext context, Account created) async {
+  final r = await Backend.register(created, created.password);
+  if (!context.mounted) return;
+  if (r.exists) {
+    await gAlert(context, 'Compte déjà existant', 'Un compte existe déjà avec l’adresse ${created.email}.\n\nConnectez-vous, ou utilisez « Mot de passe oublié » si vous ne vous en souvenez plus.', button: 'Compris');
+    return;
+  }
+  if (r.error != null) {
+    await gAlert(context, 'Inscription impossible', r.error!);
+    return;
+  }
+  ref.read(errorsProvider.notifier).clear();
+  ref.read(auditProvider.notifier).log(created.name, 'Compte créé', created.email, 'Comptes');
+  if (r.needsConfirm) {
+    await gAlert(context, 'Vérifiez votre boîte e-mail', 'Un lien de confirmation a été envoyé à ${created.email}. Cliquez dessus, puis connectez-vous.', button: 'Aller à la connexion');
+    if (context.mounted) gOpen(context, '11');
+    return;
+  }
+  final a = await Backend.restore() ?? created;
+  ref.read(authProvider.notifier).login(a);
+  if (context.mounted) gOpen(context, '13');
 }
 
 void submitSignup(WidgetRef ref, BuildContext context) {
@@ -271,11 +350,6 @@ void submitSignup(WidgetRef ref, BuildContext context) {
     gToast(context, 'Acceptez les conditions d’utilisation pour continuer.');
     return;
   }
-  final accounts = ref.read(authProvider).accounts;
-  if (accounts.any((a) => a.email.toLowerCase() == (f['su_email'] ?? '').trim().toLowerCase())) {
-    return _errors(ref, {'su_email': 'Un compte existe déjà avec cette adresse.'});
-  }
-  ref.read(errorsProvider.notifier).clear();
   final created = Account(
     name: f['su_name']!.trim(),
     phone: normPhone(f['su_phone']!),
@@ -283,10 +357,17 @@ void submitSignup(WidgetRef ref, BuildContext context) {
     password: f['su_pw']!,
     verified: false,
   );
+  if (Backend.ready) {
+    _serverSignup(ref, context, created);
+    return;
+  }
+  final accounts = ref.read(authProvider).accounts;
+  if (accounts.any((a) => a.email.toLowerCase() == created.email.toLowerCase())) {
+    gAlert(context, 'Compte déjà existant', 'Un compte existe déjà avec l’adresse ${created.email}.\n\nConnectez-vous, ou utilisez « Mot de passe oublié ».');
+    return;
+  }
+  ref.read(errorsProvider.notifier).clear();
   ref.read(authProvider.notifier).register(created);
-  Backend.signUp(created, created.password).then((hasSession) {
-    if (hasSession == false && context.mounted) gToast(context, 'Un e-mail de confirmation vous a été envoyé : cliquez sur le lien, puis connectez-vous.');
-  });
   ref.read(formProvider.notifier).put('otp', '');
   ref.read(auditProvider.notifier).log(f['su_name']!.trim(), 'Compte créé', f['su_email']!.trim(), 'Comptes');
   gToast(context, 'Code envoyé par SMS (démonstration : $demoCode)');
@@ -376,4 +457,129 @@ void submitReset(WidgetRef ref, BuildContext context) {
 Widget errorText(String key, double x, double y) => gP(
       x, y, 320, 13,
       Consumer(builder: (context, ref, _) => gText(ref.watch(errorsProvider)[key] ?? '', 10.5, const Color(0xFFD92D20), weight: 500)),
+    );
+
+// ------------------------------------------------------------------ profil (identité réelle)
+
+/// Vrai tant qu'aucun serveur n'est joint (tests, aperçu) : seuls ces modes affichent le contenu d'exemple de la maquette.
+bool get demoContent => !Backend.ready;
+
+TextStyle _pt(double size, Color c, FontWeight w) => TextStyle(inherit: false, fontFamily: 'PlusJakartaSans', fontSize: size, fontWeight: w, color: c, textBaseline: TextBaseline.alphabetic);
+
+String _initials(String name) {
+  final p = name.trim().split(RegExp(r'\s+')).where((e) => e.isNotEmpty).toList();
+  if (p.isEmpty) return '?';
+  return (p.first[0] + (p.length > 1 ? p.last[0] : '')).toUpperCase();
+}
+
+/// Photo du titulaire, sinon avatar neutre avec ses initiales (jamais la photo d'un autre compte).
+Widget profileAvatar(double x, double y, double size) => gP(
+      x, y, size, size,
+      Consumer(builder: (context, ref, _) {
+        final a = ref.watch(profileAccountProvider);
+        Widget initials() => Container(
+              decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFFEDE9F6)),
+              alignment: Alignment.center,
+              child: Text(_initials(a.name), style: _pt(size * .34, const Color(0xFF4A4854), FontWeight.w600)),
+            );
+        if (demoContent && a.email == demoAccount.email) return ClipOval(child: Image.asset('assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, width: size, height: size));
+        if (a.avatarUrl.isEmpty) return initials();
+        return ClipOval(child: Image.network(a.avatarUrl, fit: BoxFit.cover, width: size, height: size, errorBuilder: (_, __, ___) => initials()));
+      }),
+    );
+
+/// Nom centré, suivi du badge bleu uniquement si la certification a été approuvée côté serveur.
+Widget profileNameBadge(double y) => gP(
+      0, y, 390, 29,
+      Consumer(builder: (context, ref, _) {
+        final a = ref.watch(profileAccountProvider);
+        final empty = a.name.trim().isEmpty;
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Flexible(
+              child: Text(empty ? 'Nom à compléter' : a.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: _pt(23, empty ? const Color(0xFF9A98A3) : const Color(0xFF111015), FontWeight.w500)),
+            ),
+            if (a.certified) ...[
+              const SizedBox(width: 8),
+              Container(
+                width: 18,
+                height: 18,
+                decoration: const BoxDecoration(color: Color(0xFF2F7DF6), shape: BoxShape.circle),
+                alignment: Alignment.center,
+                child: SizedBox(width: 13, height: 10.6, child: gImg('assets/figma/v/w_check.svg')),
+              ),
+            ],
+          ]),
+        );
+      }),
+    );
+
+/// Ligne sous le profil : compétences, sinon état de certification (avec la possibilité d'en faire la demande).
+Widget profileSkillsOrCert(double y) => gP(
+      0, y, 390, 15,
+      Consumer(builder: (context, ref, _) {
+        final a = ref.watch(profileAccountProvider);
+        final skills = a.skills.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).map((e) => '#$e').join('   ');
+        if (skills.isNotEmpty) return Center(child: Text(skills, style: _pt(12, const Color(0xFF66636E), FontWeight.w400)));
+        const labels = {
+          'pending': 'Certification en attente',
+          'review': 'Certification en cours d’examen',
+          'rejected': 'Certification refusée · refaire une demande',
+          'revoked': 'Certification révoquée',
+          'none': 'Demander la certification',
+        };
+        final label = labels[a.certification];
+        if (label == null) return const SizedBox.shrink();
+        final canAsk = a.certification == 'none' || a.certification == 'rejected';
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: canAsk ? () => requestCertificationFlow(ref, context) : null,
+          child: Center(child: Text(label, style: _pt(12, canAsk ? const Color(0xFF5A3FE0) : const Color(0xFF66636E), canAsk ? FontWeight.w600 : FontWeight.w500))),
+        );
+      }),
+    );
+
+Future<void> requestCertificationFlow(WidgetRef ref, BuildContext context) async {
+  if (!Backend.ready) return gAlert(context, 'Certification', 'La demande de certification nécessite la connexion au serveur.');
+  final err = await Backend.requestCertification();
+  if (!context.mounted) return;
+  if (err != null) return gAlert(context, 'Demande impossible', err);
+  final fresh = await Backend.restore();
+  if (fresh != null) ref.read(authProvider.notifier).login(fresh);
+  if (context.mounted) {
+    await gAlert(context, 'Demande envoyée', 'Votre demande de certification est en attente. Le badge bleu n’apparaîtra qu’après examen et approbation par l’IUT.');
+  }
+}
+
+Widget profileBio(double y) => gP(
+      28.5, y, 333, 34,
+      Consumer(builder: (context, ref, _) {
+        final a = ref.watch(profileAccountProvider);
+        final empty = a.bio.trim().isEmpty;
+        return gText(empty ? 'Aucune description pour le moment.' : a.bio.trim(), 11.5, empty ? const Color(0xFF9A98A3) : const Color(0xFF6F6D77), lh: 17, align: TextAlign.center, wrap: true);
+      }),
+    );
+
+Widget profileStat(double x, String label, int Function(WidgetRef ref) count) => gP(
+      x, 519, 104, 14,
+      Consumer(builder: (context, ref, _) => Center(child: Text('${count(ref)} $label', style: _pt(11.5, const Color(0xFF111015), FontWeight.w500)))),
+    );
+
+/// Département · établissement du titulaire (rien si non renseignés).
+Widget profileSubline(double y) => gP(
+      0, y, 390, 14,
+      Consumer(builder: (context, ref, _) {
+        final a = ref.watch(profileAccountProvider);
+        final t = [a.department, a.institution].where((e) => e.trim().isNotEmpty && e != '—').join(' · ');
+        return Center(child: Text(t, style: _pt(11.5, const Color(0xFF66636E), FontWeight.w400)));
+      }),
+    );
+
+Widget profilePassport(double x, double y) => gP(
+      x, y, 270, 15,
+      Consumer(builder: (context, ref, _) {
+        final a = ref.watch(profileAccountProvider);
+        return gText(a.certified ? 'Talent Passport · Certifié' : 'Talent Passport · Non certifié', 12, const Color(0xFF111015), weight: 600);
+      }),
     );

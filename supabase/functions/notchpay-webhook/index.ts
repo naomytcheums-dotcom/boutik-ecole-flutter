@@ -37,10 +37,25 @@ Deno.serve(async (req) => {
 
   // 1. Signature : HMAC-SHA256 du corps brut, comparée en temps constant. Sans signature valide, rien n'est lu ni écrit.
   const raw = await req.text();
-  const received = (req.headers.get("x-notch-signature") ?? "").trim().toLowerCase();
+  // Le fournisseur peut préfixer la signature par « sha256= » : seul le préfixe est toléré, le HMAC reste obligatoire.
+  const received = (req.headers.get("x-notch-signature") ?? "").trim().toLowerCase().replace(/^sha256=/, "");
   const expected = await hmacHex(hash, raw);
   if (!received || !safeEqual(received, expected)) {
-    console.error("webhook refusé : signature invalide");
+    // Diagnostic sans aucune valeur sensible : noms d'en-têtes, longueurs et indicateurs booléens uniquement.
+    let reserialized = false, withApiKey = false;
+    try { reserialized = safeEqual(received, await hmacHex(hash, JSON.stringify(JSON.parse(raw)))); } catch { /* corps non JSON */ }
+    try { withApiKey = safeEqual(received, await hmacHex(key, raw)); } catch { /* ignore */ }
+    console.error("webhook refusé : signature invalide", JSON.stringify({
+      headers: [...req.headers.keys()].filter((h) => !["authorization", "apikey", "cookie"].includes(h)),
+      signature_header_present: received.length > 0,
+      signature_length: received.length,
+      signature_is_hex: /^[0-9a-f]+$/.test(received),
+      expected_length: expected.length,
+      body_length: raw.length,
+      content_type: req.headers.get("content-type"),
+      matches_if_body_reserialized: reserialized,
+      matches_if_signed_with_api_key: withApiKey,
+    }));
     return reply(401, { error: "invalid_signature" });
   }
 

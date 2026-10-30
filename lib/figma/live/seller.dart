@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import 'audit.dart';
+import 'backend.dart';
 import 'auth.dart';
 import 'store.dart';
 
@@ -34,7 +35,9 @@ class Listing {
 
 class Listings extends Notifier<List<Listing>> {
   @override
-  List<Listing> build() => const [
+  List<Listing> build() => Backend.ready ? const [] : _demoListings; // connecté au serveur : aucune annonce d'exemple, le vendeur démarre vierge
+
+  static const _demoListings = [
         Listing(title: 'Lampe en bois recyclé', category: 'Maison', price: 25000, stock: 12),
         Listing(title: 'Sac à dos design', category: 'Mode', price: 25000, stock: 8),
         Listing(title: 'Support téléphone', category: 'Tech', price: 8000, stock: 3),

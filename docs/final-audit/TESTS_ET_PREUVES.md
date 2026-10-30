@@ -33,3 +33,11 @@ Aucune capture de parcours utilisateur archivée (limite ci-dessus).
 | Tests Flutter | `flutter test` | 355 réussis |
 
 Particularité : l'approbation d'une annonce par un valideur et le passage « payé » d'une commande ont été effectués **en SQL par le propriétaire de la base** (étapes de mise en place des scénarios), car aucun compte valideur ou service ne doit être créé en production. Les comptes, annonces, commandes et conversations de test ont été supprimés après chaque série.
+
+## Complément du 30/10/2026 (nuit)
+| Domaine | Résultat |
+|---|---|
+| `flutter test` | 364 réussis (dont mode invité, messagerie, édition du profil) |
+| `conversations_list_rest.py` (base réelle) | 8/8 : nom de l'interlocuteur visible des seuls participants, non-lus, anonyme refusé, `listing_contact` |
+| Site déployé | empreinte identique au build (`f1a46344…`) ; contient `my_conversations` et la fenêtre « Un compte est nécessaire » |
+| URL MCP publique | **401** `Missing authorization header` : « Verify JWT » encore actif sur `notchpay-mcp` |

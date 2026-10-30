@@ -32,3 +32,12 @@ Statuts : TERMINÉ ET TESTÉ · IMPLÉMENTÉ MAIS NON TESTÉ · PARTIELLEMENT TE
 | Missions, hackathons, borne | PARTIELLEMENT TERMINÉ | en mémoire |
 | Accès à tous les écrans par rôle (`/espace`) | TERMINÉ ET TESTÉ (unitaire) | non testé en navigateur |
 | Serveur MCP Notch Pay (lecture seule) | TERMINÉ ET TESTÉ (déployé, client MCP officiel) ; **BLOQUÉ pour Claude** tant que « Verify JWT » n'est pas désactivé et `MCP_ACCESS_KEY` défini | voir `MCP_NOTCHPAY.md` |
+
+## Mise à jour du 30/10/2026 (nuit)
+| Fonctionnalité | Statut | Preuve |
+|---|---|---|
+| **Mode invité** : « Commencer » ouvre l'accueil ; connexion demandée seulement au moment d'une action qui l'exige (favoris, paiement, contacter un vendeur, modifier son profil), avec « Plus tard » ; retour à l'écran d'origine après connexion ; déconnexion → accueil | IMPLÉMENTÉ ET TESTÉ (widget) ; non testé en navigateur | `test/account/guest_mode_test.dart` (3) |
+| **Messagerie, interface** : liste des conversations (52), conversation (53) avec le nom de l'interlocuteur, envoi et lecture de messages texte, non-lus, « Contacter le vendeur » (29, 46, 51) | IMPLÉMENTÉ ET TESTÉ (serveur + unitaire) ; non testé en navigateur | `conversations_list_rest.py` 8/8 ; `messages_test.dart` ; pièces jointes et vocal **non disponibles** en conversation enregistrée (non persistés) ; écran 54 (conversation de commande) : message d'orientation, pas de fil dédié |
+| **Édition du profil** : description, compétences, ville (dialogue « Modifier mon profil ») | IMPLÉMENTÉ ET TESTÉ (widget) ; enregistrement serveur non testé en navigateur | `test/account/profile_edit_test.dart` (2) ; la certification n'est pas modifiable |
+| Titre d'annonce : règle tranchée — un titre est unique sur la plateforme (le panier commande par titre) ; message d'erreur explicite | TERMINÉ | `listings_titre_unique` |
+| Choix du rôle à l'inscription (client / étudiant / entreprise / autre) synchronisé avec le serveur | **BLOQUÉ — décision de sécurité du propriétaire** | `20261030g_choix_du_role.sql` écrite mais **non appliquée** : elle assouplit une protection (seul l'administrateur change un rôle). À appliquer par le propriétaire s'il l'approuve |

@@ -3,8 +3,8 @@ import { randomUUID } from 'crypto';
 
 // Reprise du 30/10/2026 : engagements réversibles, préférences persistantes, liens réparés.
 // Comptes jetables zz-test-eng-* créés par l'API d'authentification (à supprimer ensuite par le propriétaire de la base).
-const U = 'https://zxqcnmgwhtbxkdpjqtlr.supabase.co';
-const K = 'sb_publishable_yYEzuivRZlBnVOkuMCiSow_syCjss01';
+const U = process.env.BE_URL ?? 'https://zxqcnmgwhtbxkdpjqtlr.supabase.co';
+const K = process.env.BE_KEY ?? 'sb_publishable_yYEzuivRZlBnVOkuMCiSow_syCjss01';
 
 type Compte = { email: string; password: string; id: string };
 

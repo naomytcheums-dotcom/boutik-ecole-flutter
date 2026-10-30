@@ -6,8 +6,8 @@ import fs from 'fs';
 // de la base, puis `STATE=<fichier> npx playwright test avis`. Sans STATE, ces tests sont ignorés.
 const STATE = process.env.STATE;
 const S = STATE && fs.existsSync(STATE) ? JSON.parse(fs.readFileSync(STATE, 'utf8')) : null;
-const U = 'https://zxqcnmgwhtbxkdpjqtlr.supabase.co';
-const K = 'sb_publishable_yYEzuivRZlBnVOkuMCiSow_syCjss01';
+const U = process.env.BE_URL ?? 'https://zxqcnmgwhtbxkdpjqtlr.supabase.co';
+const K = process.env.BE_KEY ?? 'sb_publishable_yYEzuivRZlBnVOkuMCiSow_syCjss01';
 
 type Compte = { email: string; password: string };
 

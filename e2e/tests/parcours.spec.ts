@@ -3,8 +3,8 @@ import { randomUUID } from 'crypto';
 
 // Parcours réels : accès réservé au visiteur, action enregistrée sur le serveur (inscription à un événement), menu du compte par rôle.
 // Les comptes jetables sont créés par l'API d'authentification ; les supprimer ensuite (voir docs/final-audit/TESTS_ET_PREUVES.md).
-const U = 'https://zxqcnmgwhtbxkdpjqtlr.supabase.co';
-const K = 'sb_publishable_yYEzuivRZlBnVOkuMCiSow_syCjss01';
+const U = process.env.BE_URL ?? 'https://zxqcnmgwhtbxkdpjqtlr.supabase.co';
+const K = process.env.BE_KEY ?? 'sb_publishable_yYEzuivRZlBnVOkuMCiSow_syCjss01';
 
 type Compte = { email: string; password: string; id: string; role: string };
 

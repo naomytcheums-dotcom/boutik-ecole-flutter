@@ -119,7 +119,7 @@ class Backend {
       if (user == null) return (exists: false, needsConfirm: false, error: 'Inscription impossible. Réessayez.');
       if (user.identities != null && user.identities!.isEmpty) return (exists: true, needsConfirm: false, error: null);
       if (r.session == null) return (exists: false, needsConfirm: true, error: null);
-      await _insertProfile(c, user.id, a.name, a.phone, a.email, _roles[a.role.clamp(0, 3)]);
+      // le profil est créé plus tard, au choix du rôle (écran 13) : le rôle est ainsi fixé à la création
       return (exists: false, needsConfirm: false, error: null);
     } on AuthException catch (e) {
       final m = e.message.toLowerCase();
@@ -127,6 +127,21 @@ class Backend {
       return (exists: false, needsConfirm: false, error: e.message);
     } catch (_) {
       return (exists: false, needsConfirm: false, error: 'Connexion au serveur impossible. Réessayez.');
+    }
+  }
+
+  /// Crée le profil du compte connecté avec le rôle choisi (une seule fois : s'il existe déjà, rien n'est modifié).
+  static Future<String?> createProfile(Account a) async {
+    final c = _c;
+    final uid = c?.auth.currentUser?.id;
+    if (c == null || uid == null) return 'Connexion requise.';
+    try {
+      final exist = await c.from('profiles').select('id').eq('id', uid).maybeSingle();
+      if (exist != null) return null;
+      await _insertProfile(c, uid, a.name.isEmpty ? (a.email.split('@').first) : a.name, a.phone, a.email, _roles[a.role.clamp(0, 3)]);
+      return null;
+    } catch (e) {
+      return _msg(e);
     }
   }
 

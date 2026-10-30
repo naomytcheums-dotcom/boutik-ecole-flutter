@@ -42,7 +42,7 @@ class Account {
   String get firstName => name.split(' ').first;
   String get lastName => name.split(' ').length > 1 ? name.split(' ').skip(1).join(' ') : '';
 
-  Account copyWith({String? name, String? password, int? role, bool? verified, String? city, String? institution, String? department, String? birth, bool? suspended, String? staff, String? bio, String? skills, String? avatarUrl}) => Account(
+  Account copyWith({String? name, String? password, int? role, bool? verified, String? city, String? institution, String? department, String? birth, bool? suspended, String? staff, String? bio, String? skills, String? avatarUrl, String? serverId}) => Account(
         name: name ?? this.name,
         phone: phone,
         email: email,
@@ -59,7 +59,7 @@ class Account {
         skills: skills ?? this.skills,
         avatarUrl: avatarUrl ?? this.avatarUrl,
         certification: certification,
-        serverId: serverId,
+        serverId: serverId ?? this.serverId,
       );
 }
 
@@ -370,7 +370,7 @@ Future<void> _serverSignup(WidgetRef ref, BuildContext context, Account created)
     if (context.mounted) gOpen(context, '11');
     return;
   }
-  final a = await Backend.restore() ?? created;
+  final a = await Backend.restore() ?? created.copyWith(serverId: Backend.currentUserId ?? '');
   ref.read(authProvider.notifier).login(a);
   if (context.mounted) gOpen(context, '13');
 }
@@ -433,13 +433,24 @@ void submitOtp(WidgetRef ref, BuildContext context) {
   gOpen(context, '13');
 }
 
-void submitRole(WidgetRef ref, BuildContext context) {
+/// Choix du rôle : c'est à cet instant que le profil serveur est créé, avec ce rôle. Ensuite seul l'administrateur peut le modifier.
+Future<void> submitRole(WidgetRef ref, BuildContext context) async {
   final a = ref.read(authProvider).current;
-  if (a != null) ref.read(authProvider.notifier).update(a.copyWith(role: ref.read(signupRoleProvider)));
-  gOpen(context, '18b');
+  if (a != null) {
+    final choisi = a.copyWith(role: ref.read(signupRoleProvider));
+    if (Backend.ready) {
+      final err = await Backend.createProfile(choisi);
+      if (err != null) {
+        if (context.mounted) await gAlert(context, 'Profil non créé', err);
+        return;
+      }
+    }
+    ref.read(authProvider.notifier).update(choisi);
+  }
+  if (context.mounted) gOpen(context, '18b');
 }
 
-void submitProfile(WidgetRef ref, BuildContext context) {
+Future<void> submitProfile(WidgetRef ref, BuildContext context) async {
   final f = ref.read(formProvider);
   final a = ref.read(authProvider).current;
   final first = (f['pf_first'] ?? a?.firstName ?? '').trim();
@@ -450,14 +461,23 @@ void submitProfile(WidgetRef ref, BuildContext context) {
   }
   ref.read(errorsProvider.notifier).clear();
   if (a != null) {
-    ref.read(authProvider.notifier).update(a.copyWith(
-          name: '$first $last',
-          city: (f['pf_city'] ?? a.city).trim(),
-          institution: (f['pf_inst'] ?? a.institution).trim(),
-          department: (f['pf_dept'] ?? a.department).trim(),
-          birth: f['pf_birth'] ?? a.birth,
-        ));
+    final maj = a.copyWith(
+      name: '$first $last',
+      city: (f['pf_city'] ?? a.city).trim(),
+      institution: (f['pf_inst'] ?? a.institution).trim(),
+      department: (f['pf_dept'] ?? a.department).trim(),
+      birth: f['pf_birth'] ?? a.birth,
+    );
+    if (Backend.ready) {
+      await Backend.createProfile(maj); // idempotent : crée le profil si le choix du rôle a été sauté
+      if (!await Backend.saveProfile(maj)) {
+        if (context.mounted) await gAlert(context, 'Profil non enregistré', 'Vos informations n’ont pas pu être enregistrées. Réessayez.');
+        return;
+      }
+    }
+    ref.read(authProvider.notifier).update(maj);
   }
+  if (!context.mounted) return;
   gToast(context, 'Profil enregistré');
   gOpen(context, '18c');
 }

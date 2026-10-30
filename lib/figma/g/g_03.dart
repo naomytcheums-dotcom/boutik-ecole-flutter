@@ -91,6 +91,7 @@ class G_03 extends ConsumerWidget {
       gP(347.503, 263.771, 10.965, 6, gImg('assets/figma/v/c94e1e4a8135f4.svg')),
       gP(348.331, 267.081, 9.31, 6, gImg('assets/figma/v/188f8a4ee0e095.svg')),
       gP(334.986, 287.806, 36, 13, gText('Projets', 10.382, Color(0xFF111015), weight: 500, align: TextAlign.center)),
+      gTap(338, 184, 38, 32, () => gEspace(context)),
       gTap(18.056, 238.333, 57.778, 62.0, () => gOpen(context, '04')), gTap(94.792, 238.333, 57.778, 62.0, () => gOpen(context, '22')), gTap(171.528, 238.333, 57.778, 62.0, () => gOpen(context, '22b')), gTap(248.264, 238.333, 57.778, 62.0, () => gOpen(context, '70')), gTap(324.097, 238.333, 57.778, 62.0, () => gOpen(context, '78')),
       gP(14.444, 322.292, 372.847, 185.069, gBox(image: 'assets/figma/img/6baf8125049f662c1c5c4c23c6b514db2881910c.png', fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 6), blurRadius: 16, spreadRadius: 0)], radii: [18.056, 18.056, 18.056, 18.056])),
       gP(37.917, 346.667, 54.167, 18.056, gBox(color: Color(0xFF111015), radii: [9.028, 9.028, 9.028, 9.028])),

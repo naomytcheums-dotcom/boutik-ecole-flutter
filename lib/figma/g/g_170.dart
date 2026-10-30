@@ -66,7 +66,7 @@ class G_170 extends ConsumerWidget {
       gP(46.875, 561.083, 10.25, 8.833, gImg('assets/figma/v/2bdcafa88f7a43.svg')),
       gP(76, 540, 277, 51, gText('Votre signalement est anonyme pour le vendeur et examiné par l’équipe de modération sous 24 h.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
       gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
-      gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Annuler')),
+      gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gBack(context)),
       gP(78.5, 778, 54, 18, gText('Annuler', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
       gP(203, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE5484D), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Envoyer le signalement')),
       gP(204, 778, 161, 18, gText('Envoyer le signalement', 14.5, Color(0xFFE5484D), weight: 600, align: TextAlign.center)),

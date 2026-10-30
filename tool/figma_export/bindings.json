@@ -2887,6 +2887,9 @@
    "24,760,163,54": "gBack(context);",
    "24,392,342,62": "final l = ref.read(teamMembersProvider); if (l.length > 0 && !l[0].confirmed) { ref.read(teamMembersProvider.notifier).confirm(l[0].name); gToast(context, '${l[0].name} a accepté l’invitation'); }",
    "24,458,342,62": "final l = ref.read(teamMembersProvider); if (l.length > 1 && !l[1].confirmed) { ref.read(teamMembersProvider.notifier).confirm(l[1].name); gToast(context, '${l[1].name} a accepté l’invitation'); }"
+  },
+  "replace": {
+   "gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Retour')),": "gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gBack(context)),"
   }
  },
  "163": {
@@ -3249,6 +3252,9 @@
    "24,354,342,34": "ref.read(reportReasonProvider.notifier).set(3); gToast(context, 'Motif : ${reportReasons[3].$2}');",
    "24,760,163,54": "gBack(context);",
    "203,760,163,54": "submitReport(ref, context);"
+  },
+  "replace": {
+   "gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Annuler')),": "gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gBack(context)),"
   }
  },
  "135": {
@@ -3926,6 +3932,85 @@
   "replace": {
    "gP(24, 580, 22, 22, gBox(color: Color(0xFF111015), radii: [7, 7, 7, 7])),": "gP(24, 580, 22, 22, GCheck(on: false, onColor: Color(0xFF111015), offColor: Color(0xFFFFFFFF), border: Color(0xFFCFCBD6), radius: 7)),",
    "gP(24, 614, 22, 22, gBox(color: Color(0xFF111015), radii: [7, 7, 7, 7])),": "gP(24, 614, 22, 22, GCheck(on: false, onColor: Color(0xFF111015), offColor: Color(0xFFFFFFFF), border: Color(0xFFCFCBD6), radius: 7)),"
+  }
+ },
+ "_frozen": [
+  "03",
+  "10",
+  "12",
+  "150_2",
+  "150_3",
+  "150_4",
+  "162",
+  "170",
+  "171",
+  "173",
+  "175",
+  "176",
+  "177",
+  "178",
+  "18",
+  "21",
+  "272",
+  "274"
+ ],
+ "173": {
+  "replace": {
+   "gP(24, 592, 342, 50, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [25, 25, 25, 25]), tap: () => gToast(context, 'Démonstration : Fermer')),": "gP(24, 592, 342, 50, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [25, 25, 25, 25]), tap: () => gBack(context)),"
+  }
+ },
+ "171": {
+  "replace": {
+   "gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Annuler le paiement')),": "gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gBack(context)),"
+  }
+ },
+ "175": {
+  "replace": {
+   "gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Passer')),": "gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gTab(context, '03')),",
+   "gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Continuer')),": "gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gTab(context, '57')),"
+  }
+ },
+ "176": {
+  "replace": {
+   "gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Passer')),": "gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gTab(context, '03')),",
+   "gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Continuer')),": "gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gTab(context, '03')),"
+  }
+ },
+ "177": {
+  "replace": {
+   "gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Passer')),": "gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gTab(context, '03')),",
+   "gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Continuer')),": "gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gTab(context, '88')),"
+  }
+ },
+ "178": {
+  "replace": {
+   "gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Passer')),": "gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gTab(context, '03')),",
+   "gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Commencer')),": "gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gTab(context, '160')),"
+  }
+ },
+ "18": {
+  "replace": {
+   "gP(24, 750, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x29122640), offset: Offset(0, 5), blurRadius: 12, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Retour à l’accueil')),": "gP(24, 750, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x29122640), offset: Offset(0, 5), blurRadius: 12, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gTab(context, '03')),"
+  }
+ },
+ "150_4": {
+  "replace": {
+   "gP(54, 472, 282, 50, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [25, 25, 25, 25]), tap: () => gToast(context, 'Démonstration : Découvrir la boutique')),": "gP(54, 472, 282, 50, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [25, 25, 25, 25]), tap: () => gTab(context, '03')),"
+  }
+ },
+ "150_2": {
+  "replace": {
+   "gP(54, 414, 282, 50, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [25, 25, 25, 25]), tap: () => gToast(context, 'Démonstration : Se reconnecter')),": "gP(54, 414, 282, 50, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [25, 25, 25, 25]), tap: () => gTab(context, '11')),"
+  }
+ },
+ "150_3": {
+  "replace": {
+   "gP(54, 464, 282, 50, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [25, 25, 25, 25]), tap: () => gToast(context, 'Démonstration : Réessayer')),": "gP(54, 464, 282, 50, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [25, 25, 25, 25]), tap: () => gBack(context)),"
+  }
+ },
+ "21": {
+  "replace": {
+   "gP(203, 862, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Rechercher')),": "gP(203, 862, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gOpen(context, '22')),"
   }
  }
 }

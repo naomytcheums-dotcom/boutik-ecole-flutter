@@ -80,7 +80,7 @@ class G_173 extends ConsumerWidget {
       gP(47.583, 536.964, 14.46, 15.165, gImg('assets/figma/v/7dbce401aced7e.svg')),
       gP(41.957, 541.871, 14.46, 15.165, gImg('assets/figma/v/bc79adfef6d5f1.svg')),
       gP(76, 530, 277, 34, gText('Le lien partagé ouvre directement l’annonce, même sans compte.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
-      gP(24, 592, 342, 50, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [25, 25, 25, 25]), tap: () => gToast(context, 'Démonstration : Fermer')),
+      gP(24, 592, 342, 50, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [25, 25, 25, 25]), tap: () => gBack(context)),
       gP(170, 608, 50, 18, gText('Fermer', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
     ]);

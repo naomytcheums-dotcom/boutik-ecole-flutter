@@ -18,3 +18,6 @@ void gBack(BuildContext context) {
     r.go(screenPath('03'));
   }
 }
+
+/// Ouvre « Mes rubriques » : toutes les sections de l'application ouvertes au rôle connecté.
+void gEspace(BuildContext context) => GoRouter.of(context).push('/espace');

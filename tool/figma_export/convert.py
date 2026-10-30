@@ -860,7 +860,10 @@ class %s extends ConsumerWidget {
         code = chr(10).join(_out)
     for a_, b_ in BINDINGS.get(sid, {}).get('replace', {}).items():
         code = code.replace(a_, b_)
-    open(os.path.join(OUT, cls.lower() + '.dart'), 'w', encoding='utf-8').write(code)
+    if sid in BINDINGS.get('_frozen', []):
+        print('écran figé (modifié à la main), non régénéré :', sid)
+    else:
+        open(os.path.join(OUT, cls.lower() + '.dart'), 'w', encoding='utf-8').write(code)
     return ctx
 
 # ---------- téléchargements ----------

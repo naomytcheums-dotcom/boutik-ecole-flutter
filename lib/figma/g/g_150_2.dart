@@ -43,7 +43,7 @@ class G_150_2 extends ConsumerWidget {
       gP(24, 70, 161, 26, gText('Session expirée', 21, Color(0xFF111015), weight: 700)),
       gP(22.5, 314, 345, 24, gText('Votre session a expiré', 19, Color(0xFF111015), weight: 800, align: TextAlign.center, wrap: true)),
       gP(42.5, 346, 305, 38, gText('Pour votre sécurité, veuillez vous reconnecter pour continuer.', 13, Color(0xFF66636E), lh: 19, align: TextAlign.center, wrap: true)),
-      gP(54, 414, 282, 50, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [25, 25, 25, 25]), tap: () => gToast(context, 'Démonstration : Se reconnecter')),
+      gP(54, 414, 282, 50, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [25, 25, 25, 25]), tap: () => gTab(context, '11')),
       gP(141, 430, 108, 18, gText('Se reconnecter', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(24, 488, 154, 19, gText('Autres états système', 15, Color(0xFF111015), weight: 700)),
       gP(36, 539, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),

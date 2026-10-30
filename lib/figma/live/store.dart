@@ -3,6 +3,8 @@ import 'dart:ui' show Color;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/demo/section_a_demo.dart';
+import 'auth.dart' show authProvider;
+import 'backend.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 /// État partagé du parcours d'achat : fiche produit → panier → livraison → paiement → commande → suivi.
@@ -237,14 +239,33 @@ String normText(String s) => s
     .replaceAll('î', 'i')
     .replaceAll('ç', 'c');
 
-/// Favoris partagés (titres des produits), le plus récent en premier.
+/// Favoris de l'utilisateur connecté (titres des produits), le plus récent en premier.
+/// Avec le serveur : lus et écrits dans la table `favorites` (isolée par utilisateur) ; sans serveur (tests, aperçu) : liste d'exemple locale.
 class Favorites extends Notifier<List<String>> {
   @override
-  List<String> build() => const ['Sac à dos design', 'Logo et identité visuelle', 'Cours de soutien en maths', 'Drone éducatif'];
+  List<String> build() {
+    if (!Backend.ready) return const ['Sac à dos design', 'Logo et identité visuelle', 'Cours de soutien en maths', 'Drone éducatif'];
+    final uid = ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
+    if (uid.isNotEmpty) Future.microtask(_load);
+    return const [];
+  }
+
+  Future<void> _load() async {
+    final l = await Backend.loadFavorites();
+    if (ref.mounted) state = l;
+  }
 
   bool has(String title) => state.contains(title);
 
-  void toggle(String title) => state = state.contains(title) ? [for (final f in state) if (f != title) f] : [title, ...state];
+  void toggle(String title) {
+    final on = !state.contains(title);
+    final before = state;
+    state = on ? [title, ...state] : [for (final f in state) if (f != title) f];
+    if (!Backend.ready) return;
+    Backend.setFavorite(title, on).then((ok) {
+      if (!ok && ref.mounted) state = before; // l'écriture a échoué : l'interface ne ment pas
+    });
+  }
 }
 
 final favoritesProvider = NotifierProvider<Favorites, List<String>>(Favorites.new);

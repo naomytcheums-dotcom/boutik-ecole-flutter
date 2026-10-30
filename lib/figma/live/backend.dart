@@ -149,6 +149,41 @@ class Backend {
     }
   }
 
+  /// Favoris de l'utilisateur connecté : titres des annonces (la politique RLS ne renvoie que ses propres lignes).
+  static Future<List<String>> loadFavorites() async {
+    final c = _c;
+    final uid = c?.auth.currentUser?.id;
+    if (c == null || uid == null) return const [];
+    try {
+      final rows = await c.from('favorites').select('listing_id, listings(title)').eq('user_id', uid);
+      return [
+        for (final r in rows)
+          if (((r['listings'] as Map?)?['title'] ?? '').toString().isNotEmpty) (r['listings'] as Map)['title'].toString(),
+      ];
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  /// Ajoute ou retire un favori ; retourne false si l'écriture a échoué.
+  static Future<bool> setFavorite(String title, bool on) async {
+    final c = _c;
+    final uid = c?.auth.currentUser?.id;
+    if (c == null || uid == null) return false;
+    try {
+      final l = await c.from('listings').select('id').eq('title', title).isFilter('seller_id', null).maybeSingle();
+      if (l == null) return false;
+      if (on) {
+        await c.from('favorites').upsert({'user_id': uid, 'listing_id': l['id']});
+      } else {
+        await c.from('favorites').delete().eq('user_id', uid).eq('listing_id', l['id']);
+      }
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
   /// Dépose une demande de certification (état « en attente ») ; la décision appartient au département.
   static Future<String?> requestCertification() async {
     final c = _c;

@@ -43,7 +43,7 @@ class G_10 extends ConsumerWidget {
       gP(42.5, 82.5, 19, 19, const SizedBox.expand(), tap: () => gBack(context)),
       gP(43.458, 83.458, 11.542, 17.083, gImg('assets/figma/v/cbab01bfe4421a.svg')),
       gP(43.458, 89, 17.083, 6, gImg('assets/figma/v/47e4d365400cc9.svg')),
-      gP(316, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
+      gP(316, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gEspace(context)),
       gP(334.05, 82.508, 7.9, 7.9, gImg('assets/figma/v/cb3b5db29da178.svg')),
       gP(334.05, 88.05, 7.9, 7.9, gImg('assets/figma/v/fd509ee195da6b.svg')),
       gP(334.05, 93.592, 7.9, 7.9, gImg('assets/figma/v/c2a19bebfb5925.svg')),

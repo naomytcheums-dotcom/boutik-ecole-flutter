@@ -44,7 +44,7 @@ class G_150_4 extends ConsumerWidget {
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 70.4, 34, 'Toutes', 12.5, 600), GChip(102.4, 120, 85.2, 34, 'En cours', 12.5, 500), GChip(195.6, 120, 77.8, 34, 'Livrées', 12.5, 500), GChip(281.4, 120, 85.2, 34, 'Annulées', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
       gP(22.5, 372, 345, 24, gText('Aucune commande pour le moment', 19, Color(0xFF111015), weight: 800, align: TextAlign.center, wrap: true)),
       gP(42.5, 404, 305, 38, gText('Vos commandes apparaîtront ici dès votre premier achat sur Boutik-École.', 13, Color(0xFF66636E), lh: 19, align: TextAlign.center, wrap: true)),
-      gP(54, 472, 282, 50, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [25, 25, 25, 25]), tap: () => gToast(context, 'Démonstration : Découvrir la boutique')),
+      gP(54, 472, 282, 50, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [25, 25, 25, 25]), tap: () => gTab(context, '03')),
       gP(120, 488, 150, 18, gText('Découvrir la boutique', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 832, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),

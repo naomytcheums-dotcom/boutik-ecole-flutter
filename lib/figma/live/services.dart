@@ -209,6 +209,10 @@ Future<void> _answer(BuildContext context, String id, int? current) async {
               await gAlert(ctx, 'Devis incomplet', 'Indiquez un montant et un délai en jours.');
               return;
             }
+            if (a > 100000000 || d > 365 || d < 1 || a < 1) {
+              await gAlert(ctx, 'Devis invalide', 'Le montant doit être compris entre 1 et 100 000 000 FCFA et le délai entre 1 et 365 jours.');
+              return;
+            }
             final err = await Backend.answerQuote(id, a, d, msg.text);
             if (!ctx.mounted) return;
             Navigator.pop(ctx);

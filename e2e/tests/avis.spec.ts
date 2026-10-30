@@ -104,9 +104,9 @@ test.describe('Avis, réclamations et signalements (comptes réels)', () => {
   test('le vendeur trouve la réclamation depuis son tableau de bord et répond', async ({ page }) => {
     await connecter(page, S.A);
     await aller(page, 's/57');
-    expect(await texte(page)).toContain('Réclamations de mes acheteurs');
-    await page.mouse.click(198, 737);
-    await expect.poll(() => texte(page), { timeout: 15_000 }).toContain('Article endommagé');
+    expect(await texte(page)).toContain('Réclamations ›');
+    await page.mouse.click(107, 737);
+    await expect.poll(() => texte(page), { timeout: 15_000 }).toContain('Répondre');
     await page.getByRole('button', { name: 'Répondre' }).click();
     await page.locator('flt-semantics-host textarea, flt-semantics-host input').first().fill('Nous vous remboursons ou échangeons l\'article.');
     await page.getByRole('button', { name: 'Envoyer' }).click();
@@ -133,8 +133,8 @@ test.describe('Avis, réclamations et signalements (comptes réels)', () => {
     await expect.poll(() => texte(page), { timeout: 10_000 }).toContain('(1 avis)');
   });
 
-  test('un tiers signale l\'annonce depuis la fiche produit, une seule fois', async ({ page }) => {
-    await connecter(page, S.C);
+  test('un acheteur signale l\'annonce depuis la fiche produit, une seule fois', async ({ page }) => {
+    await connecter(page, S.B);
     await aller(page, 's/22');
     await page.mouse.click(90, 300);
     await expect.poll(() => texte(page), { timeout: 10_000 }).toContain(S.title);
@@ -143,7 +143,7 @@ test.describe('Avis, réclamations et signalements (comptes réels)', () => {
     await page.mouse.click(200, 285); // « Photos ou description non conformes »
     await page.mouse.click(284, 787); // « Envoyer le signalement »
     await expect.poll(() => texte(page), { timeout: 15_000 }).toContain('Signalement envoyé');
-    const r = await lire(S.C, 'listing_reports?select=reason');
+    const r = await lire(S.B, 'listing_reports?select=reason');
     expect(r.length).toBe(1);
     expect(r[0].reason).toBe('copied');
   });

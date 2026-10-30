@@ -20,6 +20,10 @@ void main() {
     for (final id in ['03', '05', '06', '11', '22', '25', '206', '212', '237']) {
       expect(canOpen(null, id), isTrue, reason: 'écran $id');
     }
+    // demande de devis : réservée aux comptes connectés, mais pas seulement aux entreprises
+    expect(canOpen(null, '95b'), isFalse);
+    expect(canOpen(student, '95b'), isTrue);
+    expect(canOpen(student, '95'), isFalse);
     // espace vendeur
     expect(canOpen(student, '58'), isTrue);
     expect(canOpen(null, '58'), isFalse);

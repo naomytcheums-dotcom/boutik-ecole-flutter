@@ -89,14 +89,9 @@ ecran,action
 287,+ Nouvelle fiche
 288,Exporter
 288,+ Nouvelle fiche
-30,Évaluer la commande
-30,Contacter le support
 35,Me prévenir
-36,Demander un devis
-36,Commander
 39,Envoyer la question
 46,Voir le code de retrait
-48,Envoyer la demande
 55,"Bonjour, voici mon portfolio et deux références."
 55,"Parfait, nous planifions un entretien jeudi."
 59,Brouillon
@@ -121,7 +116,6 @@ ecran,action
 94,Choisir une proposition
 95,Pouvez-vous livrer sous 10 jours pour 420 000 FCFA ?
 95,"Oui, à condition de démarrer lundi."
-95b,Envoyer la demande
 a2,Commencer
 l1,Atelier : fabrication de la lampe en bois recyclé
 l1,Lancer le live

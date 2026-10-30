@@ -199,7 +199,8 @@ void gToast(BuildContext context, String message) {
     duration: const Duration(milliseconds: 1800),
     behavior: SnackBarBehavior.floating,
     backgroundColor: const Color(0xFF111015),
-    width: w,
+    // Au-dessus de la barre d'actions du bas : le message ne doit jamais recouvrir (et bloquer) un bouton.
+    margin: EdgeInsets.fromLTRB((MediaQuery.sizeOf(context).width - w) / 2, 0, (MediaQuery.sizeOf(context).width - w) / 2, 112),
     padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 13),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
     elevation: 6,

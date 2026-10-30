@@ -37,7 +37,7 @@ def mk(tag, name, role):
     s, d = call("/auth/v1/signup", {"email": email, "password": uuid.uuid4().hex + "Aa1!"})
     uid, tok = d["user"]["id"], d["access_token"]
     call("/rest/v1/profiles", {"id": uid, "name": name, "email": email, "role": role}, tok)
-    return {"id": uid, "tok": tok}
+    return {"id": uid, "tok": tok, "email": email, "session": d}
 
 
 def phase1():

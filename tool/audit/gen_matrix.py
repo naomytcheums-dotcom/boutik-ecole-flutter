@@ -77,7 +77,9 @@ def roles(i):
     return 'tous'
 
 
-SERVEUR = ('authProvider', 'profileAccountProvider', 'favoritesProvider', 'profileAvatar', 'profileNameBadge', 'submitLogin', 'submitSignup', 'startPayment')
+SERVEUR = ('authProvider', 'profileAccountProvider', 'favoritesProvider', 'profileAvatar', 'profileNameBadge', 'submitLogin', 'submitSignup', 'startPayment',
+           'listingsProvider', 'visibleListingsProvider', 'allProductsProvider', 'filteredProductsProvider', 'publicListingsProvider', 'submitListing',
+           'reviewQueueProvider', 'allReviewsProvider', 'pendingReviewsProvider', 'visibleReviewsProvider', 'notificationsPanel', 'notifsProvider')
 LOCAL = ('listingsProvider', 'ordersProvider', 'ordersAllProvider', 'cartProvider', 'teamMembersProvider', 'missionsProvider', 'auditProvider', 'adminProvider',
          'formProvider', 'chatProvider', 'notificationsProvider', 'ref.watch(', 'ref.read(')
 

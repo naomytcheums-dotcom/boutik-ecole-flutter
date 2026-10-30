@@ -8,10 +8,10 @@ Générée par `tool/audit/gen_matrix.py` à partir du code (analyse statique). 
 
 | Statut | Écrans |
 |---|---|
-| NAVIGATION SEULE | 145 |
+| NAVIGATION SEULE | 144 |
 | PARTIEL | 122 |
-| IMPLÉMENTÉ MAIS NON PERSISTÉ | 42 |
-| IMPLÉMENTÉ | 5 |
+| IMPLÉMENTÉ MAIS NON PERSISTÉ | 36 |
+| IMPLÉMENTÉ | 12 |
 | STATIQUE | 1 |
 
 | Id | Titre | Route | Rôles autorisés | Rubrique | Éléments interactifs | Démos restantes | Lien contextuel | Données | Tests | Statut |
@@ -39,7 +39,7 @@ Générée par `tool/audit/gen_matrix.py` à partir du code (analyse statique). 
 | 19 | Découvrir | `/s/19` | tous | C | 9 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 20 | Résultats de recherche | `/s/20` | tous | C | 10 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 21 | Recherche avancée | `/s/21` | tous | C | 10 | 1 | oui | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
-| 22 | Catalogue de produits | `/s/22` | tous | C | 21 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
+| 22 | Catalogue de produits | `/s/22` | tous | C | 21 | 0 | oui | serveur (Supabase) | golden (rendu) | IMPLÉMENTÉ — serveur ; comportement non vérifié en navigateur |
 | 22b | Services et prestations | `/s/22b` | tous | C | 9 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 22c | Tendances et nouveautés | `/s/22c` | tous | C | 9 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 22d | Pour vous | `/s/22d` | tous | C | 7 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
@@ -70,19 +70,19 @@ Générée par `tool/audit/gen_matrix.py` à partir du code (analyse statique). 
 | 47 | Annuler la commande | `/s/47` | tous | E | 3 | 2 | non | statique | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
 | 48 | Réclamation | `/s/48` | tous | E | 3 | 1 | non | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
 | 49 | Aide et support | `/s/49` | tous | E | 10 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
-| 50 | Notifications | `/s/50` | tous | F | 9 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
+| 50 | Notifications | `/s/50` | tous | F | 10 | 0 | non | serveur (Supabase) | golden (rendu) | IMPLÉMENTÉ — serveur ; comportement non vérifié en navigateur |
 | 51 | Détail d’une notification | `/s/51` | tous | F | 3 | 2 | non | statique | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
 | 52 | Messages | `/s/52` | tous | F | 9 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 53 | Conversation | `/s/53` | tous | F | 2 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 54 | Conversation commande | `/s/54` | tous | F | 2 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 55 | Conversation entreprise | `/s/55` | tous | F | 5 | 2 | non | statique | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
 | 56 | Notifications et confidentialité | `/s/56` | tous | F | 8 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
-| 57 | Tableau de bord vendeur | `/s/57` | étudiant, dépt, admin | G | 8 | 0 | non | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
-| 58 | Nouveau produit | `/s/58` | étudiant, dépt, admin | G | 9 | 2 | non | mémoire locale (non persistée) | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
+| 57 | Tableau de bord vendeur | `/s/57` | étudiant, dépt, admin | G | 8 | 0 | non | serveur (Supabase) | golden (rendu) | IMPLÉMENTÉ — serveur ; comportement non vérifié en navigateur |
+| 58 | Nouveau produit | `/s/58` | étudiant, dépt, admin | G | 9 | 2 | non | serveur (Supabase) | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
 | 59 | Nouveau service | `/s/59` | étudiant, dépt, admin | G | 9 | 2 | non | statique | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
 | 60 | Modifier l’annonce | `/s/60` | étudiant, dépt, admin | G | 3 | 2 | non | statique | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
-| 61 | Mon catalogue | `/s/61` | étudiant, dépt, admin | G | 10 | 0 | non | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
-| 62 | Stocks | `/s/62` | étudiant, dépt, admin | G | 13 | 0 | non | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
+| 61 | Mon catalogue | `/s/61` | étudiant, dépt, admin | G | 10 | 0 | non | serveur (Supabase) | golden (rendu) | IMPLÉMENTÉ — serveur ; comportement non vérifié en navigateur |
+| 62 | Stocks | `/s/62` | étudiant, dépt, admin | G | 13 | 0 | non | serveur (Supabase) | golden (rendu) | IMPLÉMENTÉ — serveur ; comportement non vérifié en navigateur |
 | 63 | Commandes reçues | `/s/63` | étudiant, dépt, admin | G | 11 | 0 | non | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 64 | Préparer une commande | `/s/64` | étudiant, dépt, admin | G | 5 | 2 | non | mémoire locale (non persistée) | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
 | 65 | Détail d’une vente | `/s/65` | étudiant, dépt, admin | G | 2 | 1 | non | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
@@ -128,9 +128,9 @@ Générée par `tool/audit/gen_matrix.py` à partir du code (analyse statique). 
 | 105 | Inter-établissements | `/s/105` | tous | K | 9 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 106 | Économie circulaire | `/s/106` | tous | K | 9 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 107 | Mon impact | `/s/107` | tous | K | 8 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
-| 108 | Tableau de bord du département | `/s/108` | dépt, direction, admin | L | 12 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
+| 108 | Tableau de bord du département | `/s/108` | dépt, direction, admin | L | 12 | 0 | oui | serveur (Supabase) | golden (rendu) | IMPLÉMENTÉ — serveur ; comportement non vérifié en navigateur |
 | 109 | Étudiants et vendeurs | `/s/109` | dépt, direction, admin | L | 14 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
-| 110 | Validation des annonces | `/s/110` | dépt, direction, admin | L | 19 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
+| 110 | Validation des annonces | `/s/110` | dépt, direction, admin | L | 19 | 0 | oui | serveur (Supabase) | golden (rendu) | IMPLÉMENTÉ — serveur ; comportement non vérifié en navigateur |
 | 111 | Validation des projets | `/s/111` | dépt, direction, admin | L | 16 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 112 | Statistiques du département | `/s/112` | dépt, direction, admin | L | 12 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 113 | Suivi des productions | `/s/113` | dépt, direction, admin | L | 11 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |

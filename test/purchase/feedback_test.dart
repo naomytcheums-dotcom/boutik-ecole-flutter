@@ -31,4 +31,9 @@ void main() {
     expect(await Backend.claims(), isEmpty);
     expect(await Backend.listingRating('T'), isNull);
   });
+
+  test("engagements hors connexion : aucun enregistrement fictif", () async {
+    expect(await Backend.engage('vote', 'duel:220', {'choice': 'lampe'}), 'Connexion requise.');
+    expect(await Backend.cancelEngagement('vote', 'duel:220'), 'Connexion requise.');
+  });
 }

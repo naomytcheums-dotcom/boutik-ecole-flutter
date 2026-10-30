@@ -374,6 +374,12 @@ class Backend {
     }
   }
 
+  /// Enregistre une action de l'utilisateur sur le serveur (inscription, candidature, vote, alerte, suivi, demande…).
+  static Future<String?> engage(String kind, String ref, Map<String, dynamic> data) =>
+      _call('engage', {'p_kind': kind, 'p_ref': ref, 'p_data': data});
+
+  static Future<String?> cancelEngagement(String kind, String ref) => _call('cancel_engagement', {'p_kind': kind, 'p_ref': ref});
+
   /// Commandes de la personne connectée, avec leurs articles (isolées par le serveur).
   static Future<List<Map<String, dynamic>>> myOrders() async {
     final c = _c;

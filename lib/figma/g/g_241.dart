@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/engage.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_241 extends ConsumerWidget {
@@ -87,7 +88,7 @@ class G_241 extends ConsumerWidget {
       gP(44, 654, 89, 14, gText('Message envoyé', 11, Color(0xFF66636E), weight: 500)),
       gP(44, 674, 302, 52, gBox(color: Color(0xFFE7F6D9), radii: [16, 16, 16, 16]), tap: () => gToast(context, 'Démonstration : Salut ! Rejoins Boutik-École, la marketplace des talents de l’IUT de Douala : boutik-ecole.cm/r/mariam24')),
       gP(54, 680, 287, 28, gText('Salut ! Rejoins Boutik-École, la marketplace des talents de l’IUT de Douala : boutik-ecole.cm/r/mariam24', 10.5, Color(0xFF111015), lh: 14, wrap: true)),
-      gP(24, 748, 342, 52, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x40403366), offset: Offset(0, 10), blurRadius: 22, spreadRadius: 0)], radii: [26, 26, 26, 26]), tap: () => gToast(context, 'Démonstration : Envoyer via WhatsApp (3)')),
+      gP(24, 748, 342, 52, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x40403366), offset: Offset(0, 10), blurRadius: 22, spreadRadius: 0)], radii: [26, 26, 26, 26]), tap: () => shareViaWhatsApp(context, ref)),
       gP(109, 763, 172, 18, gText('Envoyer via WhatsApp (3)', 14, Color(0xFFFFFFFF), weight: 600)),
       gP(91, 810, 208, 13, gText('Ou copier le lien et le partager moi-même', 10.5, Color(0xFF66636E), weight: 500)),
     ]);

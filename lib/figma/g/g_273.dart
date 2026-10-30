@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/engage.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_273 extends ConsumerWidget {
@@ -49,11 +50,11 @@ class G_273 extends ConsumerWidget {
       gP(44, 338, 163, 19, gText('Exporter mes données', 15, Color(0xFF111015), weight: 600)),
       gP(44, 362, 286, 15, gText('Profil, projets, commandes, messages · ZIP + JSON', 12, Color(0xFF6B6877))),
       gP(44, 382, 209, 15, gText('Prêt sous 24 h · lien envoyé par e-mail', 12, Color(0xFF6B6877))),
-      gP(44, 412, 160, 40, gBox(color: Color(0xFF111015), radii: [20, 20, 20, 20]), tap: () => gToast(context, 'Démonstration : Demander l’export')),
+      gP(44, 412, 160, 40, gBox(color: Color(0xFF111015), radii: [20, 20, 20, 20]), tap: () => engageAction(context, ref, 'data_export_request', 'me', success: 'Demande d’export envoyée. Vous recevrez vos données par e-mail.', need: 'demander l’export de vos données', already: 'Une demande d’export est déjà en cours.')),
       gP(60, 424, 118, 16, gText('Demander l’export', 13, Color(0xFFFFFFFF), weight: 600)),
       gP(44, 508, 172, 19, gText('Supprimer mon compte', 15, Color(0xFFC2410C), weight: 600)),
       gP(44, 532, 302, 20, gText('Délai de rétractation de 30 jours. Les certificats émis et les factures sont conservés (obligation légale).', 12, Color(0xFF6B6877))),
-      gP(44, 598, 170, 40, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFC2410C), bw: 1.5, radii: [20, 20, 20, 20]), tap: () => gToast(context, 'Démonstration : Supprimer le compte')),
+      gP(44, 598, 170, 40, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFC2410C), bw: 1.5, radii: [20, 20, 20, 20]), tap: () => requestAccountDeletion(context, ref)),
       gP(58, 610, 132, 16, gText('Supprimer le compte', 13, Color(0xFFC2410C), weight: 600)),
       gP(24, 690, 212, 15, gText('Dernier export : 12 mars 2026 · 4,2 Mo', 12, Color(0xFF6B6877), weight: 500)),
     ]);

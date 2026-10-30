@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/engage.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_274 extends ConsumerWidget {
@@ -53,7 +54,7 @@ class G_274 extends ConsumerWidget {
       gP(56, 582, 162, 16, gText('J’ai lu et j’accepte les CGU', 13, Color(0xFF111015), weight: 500)),
       gP(24, 614, 22, 22, GCheck(on: false, onColor: Color(0xFF111015), offColor: Color(0xFFFFFFFF), border: Color(0xFFCFCBD6), radius: 7)),
       gP(56, 616, 162, 16, gText('J’ai lu et j’accepte les CGV', 13, Color(0xFF111015), weight: 500)),
-      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => gToast(context, 'Démonstration : Accepter et continuer')),
+      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => acceptTerms(context, ref)),
       gP(115.5, 788, 159, 19, gText('Accepter et continuer', 15, Color(0xFFFFFFFF), weight: 600)),
       gP(30, 581.5, 13, 19, gText('✓', 15, Color(0xFFFFFFFF), weight: 700)),
       gP(30, 615.5, 13, 19, gText('✓', 15, Color(0xFFFFFFFF), weight: 700)),

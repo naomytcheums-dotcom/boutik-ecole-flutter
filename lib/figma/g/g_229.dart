@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/engage.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_229 extends ConsumerWidget {
@@ -74,9 +75,9 @@ class G_229 extends ConsumerWidget {
       gP(242.4, 616, 114.4, 26, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1, radii: [13, 13, 13, 13])),
       gP(258.6, 622, 82, 14, gText('UI/UX · Google', 11.5, Color(0xFF4A4854), weight: 500, align: TextAlign.center)),
       gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
-      gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Proposer un stage')),
+      gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => engageAction(context, ref, 'internship_offer', 'profile:229', success: 'Proposition de stage enregistrée.', need: 'proposer un stage', already: 'Vous avez déjà adressé une proposition à ce talent.')),
       gP(42, 778, 127, 18, gText('Proposer un stage', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
-      gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Contacter')),
+      gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => engageAction(context, ref, 'contact_request', 'profile:229', success: 'Demande de contact enregistrée.', need: 'contacter ce talent', already: 'Vous avez déjà demandé à contacter ce talent.')),
       gP(248.5, 778, 72, 18, gText('Contacter', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(341.667, 79, 20.667, 15.167, gImg('assets/figma/v/38cc299702e092.svg')),

@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/engage.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_243 extends ConsumerWidget {
@@ -55,7 +56,7 @@ class G_243 extends ConsumerWidget {
       gP(100, 232, 8, 30, gBox(color: Color(0xFFD9D2F2), radii: [4, 4, 4, 4])),
       gP(114, 218, 8, 44, gBox(color: Color(0xFFD9D2F2), radii: [4, 4, 4, 4])),
       gP(128, 210, 8, 52, gBox(color: Color(0xFF6A4DFF), radii: [4, 4, 4, 4])),
-      gP(186, 222, 160, 46, gBox(color: Color(0xFF111015), radii: [23, 23, 23, 23]), tap: () => gToast(context, 'Démonstration : Retirer vers Orange Money')),
+      gP(186, 222, 160, 46, gBox(color: Color(0xFF111015), radii: [23, 23, 23, 23]), tap: () => unavailableAction(context, 'Retrait indisponible', 'Le retrait vers Orange Money sera activé avec les paiements en production. Vos gains restent enregistrés.')),
       gP(199, 238, 134, 13, gText('Retirer vers Orange Money', 10.5, Color(0xFFFFFFFF), weight: 600)),
       gP(24, 308, 110, 70, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 6), blurRadius: 16, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(40, 320, 13, 28, gText('7', 22, Color(0xFF111015), weight: 700)),

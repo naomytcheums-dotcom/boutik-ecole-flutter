@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/engage.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_220 extends ConsumerWidget {
@@ -61,9 +62,9 @@ class G_220 extends ConsumerWidget {
       gP(24, 546, 342, 16, gBox(color: Color(0xFFECE8F6), radii: [8, 8, 8, 8])),
       gP(24, 546, 198.36, 16, gBox(color: Color(0xFF111015), radii: [8, 8, 8, 8])),
       gP(225.36, 546, 140.64, 16, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xFFFFB36B), Color(0xFFFF7A1A)], stops: [0, 1]), radii: [8, 8, 8, 8])),
-      gP(24, 580, 166, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => gToast(context, 'Démonstration : Voter pour la lampe')),
+      gP(24, 580, 166, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => engageAction(context, ref, 'vote', 'duel:220', data: {'choice': 'lampe'}, success: 'Votre vote pour la lampe est enregistré.', need: 'voter', already: 'Vous avez déjà voté pour ce duel.')),
       gP(51, 596, 112, 15, gText('Voter pour la lampe', 12, Color(0xFFFFFFFF), weight: 600)),
-      gP(200, 580, 166, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFFFFFFF), bw: 1, shadows: [BoxShadow(color: Color(0x14403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [26, 26, 26, 26]), tap: () => gToast(context, 'Démonstration : Voter pour le jus')),
+      gP(200, 580, 166, 52, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFFFFFFF), bw: 1, shadows: [BoxShadow(color: Color(0x14403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [26, 26, 26, 26]), tap: () => engageAction(context, ref, 'vote', 'duel:220', data: {'choice': 'jus'}, success: 'Votre vote pour le jus est enregistré.', need: 'voter', already: 'Vous avez déjà voté pour ce duel.')),
       gP(237, 596, 92, 15, gText('Voter pour le jus', 12, Color(0xFF111015), weight: 600)),
       gP(24, 652, 175, 18, gText('Classement de la semaine', 14, Color(0xFF111015), weight: 600)),
       gP(24, 678, 110, 68, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [24, 24, 24, 24])),

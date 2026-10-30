@@ -90,13 +90,13 @@ Widget gBox({
   double backBlur = 0,
 }) {
   final deco = BoxDecoration(
-    color: color,
+    color: color ?? (image == 'placeholder' ? const Color(0xFFEDE9F6) : null),
     gradient: gradient,
     shape: oval ? BoxShape.circle : BoxShape.rectangle,
     borderRadius: oval ? null : _br(radii),
     border: border == null ? null : Border.all(color: border, width: bw),
     boxShadow: shadows,
-    image: image == null ? null : DecorationImage(image: AssetImage(image), fit: fit, filterQuality: FilterQuality.high),
+    image: image == null || image == 'placeholder' ? null : DecorationImage(image: image.startsWith('http') ? NetworkImage(image) as ImageProvider : AssetImage(image), fit: fit, filterQuality: FilterQuality.high, onError: (_, _) {}),
   );
   Widget w = DecoratedBox(decoration: deco, child: const SizedBox.expand());
   if (backBlur > 0) {
@@ -170,7 +170,9 @@ Widget gRich(List<(String, double, int, Color)> runs,
 Widget gImg(String asset, {BoxFit fit = BoxFit.fill}) => IgnorePointer(
       child: asset.endsWith('.svg')
           ? SvgPicture.asset(asset, fit: fit)
-          : Image.asset(asset, fit: fit, filterQuality: FilterQuality.high, gaplessPlayback: true),
+          : (asset.startsWith('http')
+              ? Image.network(asset, fit: fit, filterQuality: FilterQuality.high, gaplessPlayback: true, errorBuilder: (_, _, _) => const ColoredBox(color: Color(0xFFEDE9F6)))
+              : Image.asset(asset, fit: fit, filterQuality: FilterQuality.high, gaplessPlayback: true)),
     );
 
 /// Cadre qui rogne son contenu (photos qui débordent). Les enfants sont en coordonnées locales.

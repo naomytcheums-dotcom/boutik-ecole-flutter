@@ -14,6 +14,7 @@ class _Fake extends ServerSellerOrders {
 
 void main() {
   tearDown(() => Backend.ready = false);
+  libelles();
 
   test('avec le serveur : les commandes reçues et leurs statuts viennent du serveur, jamais des exemples', () {
     Backend.ready = true;
@@ -46,5 +47,11 @@ void main() {
     expect(c.read(sellerOrdersProvider), isNotEmpty);
     expect(await c.read(sellerStatusProvider.notifier).advance('#BE-2026-0141', 3), isNull);
     expect(statusOf(c.read(sellerStatusProvider), '#BE-2026-0141'), 3);
+  });
+}
+
+void libelles() {
+  test('le bouton principal suit l\'état de la commande : accepter, préparer, prête, livrée', () {
+    expect([for (var i = 0; i <= 4; i++) orderActionLabel(i)], ['Accepter', 'Préparer', 'Marquer prête', 'Marquer livrée', 'Livrée']);
   });
 }

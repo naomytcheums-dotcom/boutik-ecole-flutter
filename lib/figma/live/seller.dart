@@ -208,15 +208,24 @@ final visibleListingsProvider = Provider<List<Listing>>((ref) {
 });
 
 /// Produits du catalogue acheteur : catalogue de base + annonces publiées par le vendeur.
+/// Photo principale d'une annonce : URL publique du stockage, sinon cadre neutre (jamais la photo d'un autre produit).
+String _photoOf(Listing l) {
+  if (l.images.isEmpty) return 'placeholder';
+  final u = Backend.listingImageUrl(l.images.first);
+  return u.isEmpty ? 'placeholder' : u;
+}
+
 final allProductsProvider = Provider<List<LiveProduct>>((ref) {
-  final mine = [...ref.watch(listingsProvider), ...ref.watch(publicListingsProvider)];
+  final own = ref.watch(listingsProvider);
+  final ownIds = {for (final l in own) l.id};
+  final mine = [...own, ...ref.watch(publicListingsProvider)];
   final base = liveCatalog;
   final seen = <String>{};
   final extra = [
     for (final l in mine)
       if (l.published && l.stock > 0 && !base.any((p) => p.title == l.title) && seen.add(l.title))
-        LiveProduct(l.title, 'Étudiant-vendeur', l.price, ref.watch(profileAccountProvider).name,
-            l.description.isEmpty ? 'Annonce publiée par un étudiant de l’IUT de Douala.' : l.description, base[3].image, category: liveCategories.contains(l.category) ? l.category : 'Maison'),
+        LiveProduct(l.title, 'Étudiant-vendeur', l.price, (l.id.isNotEmpty && ownIds.contains(l.id)) || (l.id.isEmpty && own.contains(l)) ? ref.watch(profileAccountProvider).name : 'Étudiant-vendeur',
+            l.description.isEmpty ? 'Annonce publiée par un étudiant de l’IUT de Douala.' : l.description, _photoOf(l), category: liveCategories.contains(l.category) ? l.category : 'Maison'),
   ];
   extraProducts = extra;
   return [...extra, ...base];
@@ -419,6 +428,43 @@ Future<void> submitListing(WidgetRef ref, BuildContext context, {required bool p
   gToast(context, publish ? 'Annonce envoyée en validation au département' : 'Brouillon enregistré');
   gOpen(context, '61');
 }
+
+/// Libellé du bouton principal selon l'état de préparation : accepter → préparer → prête → livrée.
+String orderActionLabel(int status) => switch (status) {
+      0 => 'Accepter',
+      1 => 'Préparer',
+      2 => 'Marquer prête',
+      3 => 'Marquer livrée',
+      _ => 'Livrée',
+    };
+
+/// Étape suivante de la commande ouverte (le serveur impose l'ordre et notifie l'acheteur).
+Future<void> advanceCurrentOrder(WidgetRef ref, BuildContext context) async {
+  final o = ref.read(currentSellerOrderProvider);
+  final st = statusOf(ref.read(sellerStatusProvider), o.id);
+  if (st >= 4) return gToast(context, 'Cette commande est déjà livrée.');
+  final next = st + 1;
+  final err = await ref.read(sellerStatusProvider.notifier).advance(o.id, next);
+  if (!context.mounted) return;
+  if (err != null) return gAlert(context, 'Statut non enregistré', err);
+  gToast(context, switch (next) {
+    1 => 'Commande ${o.id} acceptée : le client est averti',
+    2 => 'Préparation de ${o.id} démarrée : le client est averti',
+    3 => 'Commande ${o.id} prête : le client est averti',
+    _ => 'Commande ${o.id} livrée : le client est averti',
+  });
+  if (next >= 3) gOpen(context, '63');
+}
+
+/// Texte du bouton principal, mis à jour avec l'état réel de la commande ouverte (écrans 64 et 65).
+Widget orderActionText(double x, double y, double w) => gP(
+      x, y, w, 18,
+      Consumer(builder: (context, ref, _) {
+        final o = ref.watch(currentSellerOrderProvider);
+        final st = statusOf(ref.watch(sellerStatusProvider), o.id);
+        return Center(child: Text(orderActionLabel(st), maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(inherit: false, fontFamily: 'PlusJakartaSans', fontSize: 14.5, fontWeight: FontWeight.w600, color: Color(0xFFFFFFFF), textBaseline: TextBaseline.alphabetic)));
+      }),
+    );
 
 /// Marque la commande ouverte comme prête et revient à la liste.
 Future<void> markOrderReady(WidgetRef ref, BuildContext context) async {

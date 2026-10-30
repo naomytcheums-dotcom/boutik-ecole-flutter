@@ -87,9 +87,9 @@ class G_64 extends ConsumerWidget {
       gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27])),
       gP(47, 778, 117, 18, gText('Signaler un souci', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
       gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27])),
-      gP(234.5, 778, 100, 18, gText('Marquer prête', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
+      orderActionText(203, 778, 163),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
-      gTap(203, 760, 163, 54, () { markOrderReady(ref, context); }),
+      gTap(203, 760, 163, 54, () { advanceCurrentOrder(ref, context); }),
       gTap(24, 760, 163, 54, () { gToast(context, 'Signalement envoyé au département'); }),
     ]);
   }

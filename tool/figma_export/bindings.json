@@ -3916,5 +3916,16 @@
   "replace": {
    "gP(85, 804, 0, 4, gBox(color: Color(0xFFFFFFFF), radii: [2, 2, 2, 2])),": "gP(85, 804, 220, 4, GSplashBar(onDone: () => gOpen(context, '02'))),"
   }
+ },
+ "272": {
+  "replace": {
+   "gP(24, 590, 22, 22, gBox(color: Color(0xFF111015), radii: [7, 7, 7, 7])),": "gP(24, 590, 22, 22, GCheck(on: false, onColor: Color(0xFF111015), offColor: Color(0xFFFFFFFF), border: Color(0xFFCFCBD6), radius: 7)),"
+  }
+ },
+ "274": {
+  "replace": {
+   "gP(24, 580, 22, 22, gBox(color: Color(0xFF111015), radii: [7, 7, 7, 7])),": "gP(24, 580, 22, 22, GCheck(on: false, onColor: Color(0xFF111015), offColor: Color(0xFFFFFFFF), border: Color(0xFFCFCBD6), radius: 7)),",
+   "gP(24, 614, 22, 22, gBox(color: Color(0xFF111015), radii: [7, 7, 7, 7])),": "gP(24, 614, 22, 22, GCheck(on: false, onColor: Color(0xFF111015), offColor: Color(0xFFFFFFFF), border: Color(0xFFCFCBD6), radius: 7)),"
+  }
  }
 }

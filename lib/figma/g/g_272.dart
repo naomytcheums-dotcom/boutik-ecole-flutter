@@ -59,7 +59,7 @@ class G_272 extends ConsumerWidget {
       gP(44, 486, 108, 16, gText('Autres méthodes', 13, Color(0xFF111015), weight: 600)),
       gP(44, 512, 194, 16, gText('Application d’authentification  ›', 13, Color(0xFF6B6877), weight: 500)),
       gP(44, 536, 147, 16, gText('Codes de secours (10)  ›', 13, Color(0xFF6B6877), weight: 500)),
-      gP(24, 590, 22, 22, gBox(color: Color(0xFF111015), radii: [7, 7, 7, 7])),
+      gP(24, 590, 22, 22, GCheck(on: false, onColor: Color(0xFF111015), offColor: Color(0xFFFFFFFF), border: Color(0xFFCFCBD6), radius: 7)),
       gP(56, 592, 289, 16, gText('Faire confiance à cet appareil pendant 30 jours', 13, Color(0xFF111015), weight: 500)),
       gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => gToast(context, 'Démonstration : Vérifier')),
       gP(169, 788, 52, 19, gText('Vérifier', 15, Color(0xFFFFFFFF), weight: 600)),

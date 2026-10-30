@@ -50,3 +50,4 @@ app.*.map.json
 # Jeton Figma (ne jamais commiter)
 tool/figma_export/.figma_token
 tool/figma_export/cache/
+supabase/.temp/

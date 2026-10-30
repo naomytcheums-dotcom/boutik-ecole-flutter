@@ -15,5 +15,19 @@ Fonction : `supabase/functions/notchpay-webhook/index.ts` — table de rejeu : `
 - Notch Pay > Paramètres > Webhooks : URL `https://zxqcnmgwhtbxkdpjqtlr.supabase.co/functions/v1/notchpay-webhook`, événements `payment.*`.
 - Test : bouton « Test » du tableau de bord Notch Pay ; vérifier la table `payment_events` (colonne `outcome`).
 
-## État de vérification
-Implémenté et déployé. **Non vérifié de bout en bout** tant que `NOTCHPAY_HASH`, le réglage JWT et l'URL côté Notch Pay ne sont pas en place. Format exact de la charge utile à confirmer avec un événement de test réel (la documentation ne détaille pas les champs).
+## Tests
+**Local, simulé (19/19 réussis, 30/10/2026)** — `python supabase/tests/webhook_e2e.py` : la vraie fonction tourne dans Deno ; Supabase et l'API Notch Pay sont simulés ; les événements sont signés avec un Hash Key de test. Couvre : absence de signature, signature fausse, corps altéré, `payment.complete` valide, rejeu, événement sur commande déjà payée, sous-paiement, devise incorrecte, référence du fournisseur différente, statut « pending », fournisseur injoignable puis retentative, référence inconnue, `payment.failed`/`canceled`, événement non paiement, corps non JSON, méthode GET.
+
+**Avec le vrai fournisseur : NON FAIT.** Aucun événement réel signé par Notch Pay n'a été reçu.
+
+## État de vérification (30/10/2026)
+| Élément | État | Preuve |
+|---|---|---|
+| Migration `payment_events` | Appliquée | table présente, accès anonyme refusé (42501) |
+| Fonction `notchpay-webhook` | Déployée (dernière version = dépôt) | tableau de bord : « Last deployed » |
+| Secret `NOTCHPAY_KEY` | Présent | liste des secrets (nom + empreinte, valeur jamais lue) |
+| Secret `NOTCHPAY_HASH` | **Absent** | liste des secrets |
+| « Verify JWT » désactivé | **Non** (à faire par le propriétaire) | un appel sans en-tête renvoie `UNAUTHORIZED_NO_AUTH_HEADER` |
+| Webhook déclaré chez Notch Pay | **Non vérifiable** (action propriétaire) | — |
+
+Tant que ces trois derniers points ne sont pas réglés, le webhook ne confirme aucun paiement ; la confirmation passe par l'interrogation de `pay` (action `status`), qui applique les mêmes contrôles de montant, devise et référence.

@@ -3,7 +3,7 @@
 // À déployer SANS vérification JWT (Notch Pay n'envoie pas de jeton Supabase) : l'authenticité vient de la signature HMAC.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const NOTCH = "https://api.notchpay.co";
+const NOTCH = Deno.env.get("NOTCHPAY_API") ?? "https://api.notchpay.co"; // surchargeable uniquement pour les tests locaux
 const enc = new TextEncoder();
 
 const toHex = (b: ArrayBuffer) => [...new Uint8Array(b)].map((x) => x.toString(16).padStart(2, "0")).join("");

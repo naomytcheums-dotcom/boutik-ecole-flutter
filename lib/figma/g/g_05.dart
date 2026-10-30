@@ -105,6 +105,10 @@ class G_05 extends ConsumerWidget {
       gTap(24, 760, 345, 46, () { ref.read(cartProvider.notifier).add(ref.read(selectedProductProvider).toLine()); gToast(context, 'Ajouté au panier'); gOpen(context, '06'); }),
       gTap(20, 832, 350, 36, () => gOpen(context, '33')),
       gTap(98.8, 660.3, 71, 32, () { gOpen(context, '172'); }), // parcours 05 -> 172
+      gTap(276.7, 598, 89, 32, () { gOpen(context, '32'); }), // lien métier 05 -> 32
+      gTap(176.3, 598, 64, 32, () { gOpen(context, '211'); }), // lien métier 05 -> 211
+      gTap(25.5, 598, 116, 32, () { gOpen(context, '106'); }), // lien métier 05 -> 106
+      gTap(17.8, 881.3, 140, 34, () { gOpen(context, '35'); }), // lien métier 05 -> 35
     ]);
   }
 }

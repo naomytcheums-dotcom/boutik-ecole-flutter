@@ -75,7 +75,7 @@ class G_189 extends ConsumerWidget {
       gP(910, 266, 329, 15, gText('Dossier complet', 12, Color(0xFFFFFFFF), weight: 500, inter: true, wrap: true)),
       gP(886.667, 291.75, 14.667, 11.958, gImg('assets/figma/v/ac006383c9ee5c.svg')),
       gP(910, 290, 329, 15, gText('Portfolio vérifié', 12, Color(0xFFFFFFFF), weight: 500, inter: true, wrap: true)),
-      gP(268, 412, 210, 50, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [25, 25, 25, 25]), tap: () => gToast(context, 'Démonstration : Comparer la sélection')),
+      gP(268, 412, 210, 50, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [25, 25, 25, 25]), tap: () => gOpen(context, '94')),
       gP(296, 428, 154, 18, gText('Comparer la sélection', 14.5, Color(0xFFFFFFFF), weight: 600, inter: true, align: TextAlign.center)),
       gP(0, 0, 1280, 56, gBox(color: Color(0xFFFFFFFF))),
       gP(20, 10, 36, 34, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),

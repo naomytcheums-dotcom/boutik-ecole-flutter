@@ -175,6 +175,9 @@ class G_138 extends ConsumerWidget {
       gTap(12, 488, 216, 36, () => gOpen(context, '136')),
       gTap(12, 528, 216, 36, () => gOpen(context, '137')),
       gTap(276, 138, 177, 32, () { gOpen(context, '84b'); }), // parcours 138 -> 84b
+      gTap(823, 358, 128, 32, () { gOpen(context, '104'); }), // lien métier 138 -> 104
+      gTap(276, 358, 81, 32, () { gOpen(context, '262'); }), // lien métier 138 -> 262
+      gTap(823, 204, 155, 32, () { gOpen(context, '265'); }), // lien métier 138 -> 265
     ]);
   }
 }

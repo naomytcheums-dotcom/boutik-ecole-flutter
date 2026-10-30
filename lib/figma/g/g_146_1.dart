@@ -109,6 +109,7 @@ class G_146_1 extends ConsumerWidget {
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       gTap(90, 370, 128, 33, () { gOpen(context, '29'); }), // parcours 146_1 -> 29
+      gTap(206, 124, 75, 32, () { gOpen(context, '146_2'); }), // lien métier 146_1 -> 146_2
     ]);
   }
 }

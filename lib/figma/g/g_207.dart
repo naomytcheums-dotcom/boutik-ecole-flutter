@@ -114,6 +114,7 @@ class G_207 extends ConsumerWidget {
       gTap(368, 340, 304, 360, () { final l = ref.read(kioskProductsProvider); if (l.length > 1) { ref.read(kioskProductProvider.notifier).set(l[1].title); gOpen(context, '208'); } }),
       gTap(48, 720, 304, 360, () { final l = ref.read(kioskProductsProvider); if (l.length > 2) { ref.read(kioskProductProvider.notifier).set(l[2].title); gOpen(context, '208'); } }),
       gTap(368, 720, 304, 360, () { final l = ref.read(kioskProductsProvider); if (l.length > 3) { ref.read(kioskProductProvider.notifier).set(l[3].title); gOpen(context, '208'); } }),
+      gTap(397.5, 1182, 81, 37, () { gOpen(context, '282'); }), // lien métier 207 -> 282
     ]);
   }
 }

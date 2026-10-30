@@ -164,10 +164,10 @@ class G_153 extends ConsumerWidget {
       gP(287.2, 666, 64.8, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11])),
       gP(299.6, 670, 40, 14, gText('Conseil', 11, Color(0xFF8F5400), weight: 600, align: TextAlign.center)),
       gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
-      gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Ignorer')),
+      gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () { gToast(context, 'Offre ignorée : elle ne vous sera plus proposée en priorité.'); gBack(context); }),
       gP(80, 778, 51, 18, gText('Ignorer', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
-      gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => engageAction(context, ref, 'application', 'offer:153', success: 'Candidature enregistrée.', need: 'postuler', already: 'Vous avez déjà postulé à cette offre.')),
-      gP(255, 778, 59, 18, gText('Postuler', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
+      gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => engageOrManage(context, ref, 'application', 'offer:153', data: {'title': 'Stage développeur web', 'company': 'Orange Cameroun'}, success: 'Candidature enregistrée.', need: 'postuler', activeTitle: 'Vous avez déjà postulé', activeBody: 'Votre candidature « Stage développeur web » est en cours d’examen.', keepLabel: 'La garder', cancelLabel: 'Retirer ma candidature', cancelled: 'Candidature retirée.', onCreated: () => gOpen(context, '159'))),
+      if (isEngaged(ref, 'application|offer:153')) gP(203, 778, 163, 18, gText('Candidature ✓', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)) else gP(255, 778, 59, 18, gText('Postuler', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
     ]);
   }

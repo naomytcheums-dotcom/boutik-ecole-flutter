@@ -231,16 +231,23 @@ Future<void> gAlert(BuildContext context, String title, String message, {String 
 
 /// Interrupteur animé (cliquable).
 class GToggle extends StatefulWidget {
-  const GToggle({super.key, required this.on, required this.onColor, required this.offColor, required this.knob, this.knobColor = Colors.white});
+  const GToggle({super.key, required this.on, required this.onColor, required this.offColor, required this.knob, this.knobColor = Colors.white, this.onChanged});
   final bool on;
   final Color onColor, offColor, knobColor;
   final double knob;
+  final ValueChanged<bool>? onChanged;
   @override
   State<GToggle> createState() => _GToggleState();
 }
 
 class _GToggleState extends State<GToggle> {
   late bool on = widget.on;
+  @override
+  void didUpdateWidget(GToggle old) {
+    super.didUpdateWidget(old);
+    if (old.on != widget.on) on = widget.on;
+  }
+
   @override
   Widget build(BuildContext context) => LayoutBuilder(builder: (context, c) {
         final pad = (c.maxHeight - widget.knob) / 2;
@@ -249,6 +256,7 @@ class _GToggleState extends State<GToggle> {
           onTap: () {
             GSound.play('pop');
             setState(() => on = !on);
+            widget.onChanged?.call(on);
           },
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 180),

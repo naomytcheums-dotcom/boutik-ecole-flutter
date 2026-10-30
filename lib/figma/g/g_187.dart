@@ -329,6 +329,8 @@ gP(-13, 165.451, 296, 34.583, gImg('assets/figma/v/5ffec176ca9577.svg'))
       gTap(44, 251, 87, 32, () { gOpen(context, '189'); }), // parcours 187 -> 189
       gTap(44, 291, 48, 32, () { gOpen(context, '95'); }), // parcours 187 -> 95
       gTap(44, 445, 89, 32, () { gOpen(context, '97'); }), // parcours 187 -> 97
+      gTap(44, 405, 130, 32, () { gOpen(context, '96'); }), // lien métier 187 -> 96
+      gTap(44, 139, 105, 32, () { gOpen(context, '99'); }), // lien métier 187 -> 99
     ]);
   }
 }

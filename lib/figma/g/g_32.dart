@@ -84,6 +84,8 @@ class G_32 extends ConsumerWidget {
       gP(24, 932, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () { ref.read(cartProvider.notifier).add(ref.read(selectedProductProvider).toLine()); gToast(context, 'Ajouté au panier'); gOpen(context, '06'); }),
       gP(136, 950, 118, 18, gText('Ajouter au panier', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 1002, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      gTap(32, 698, 86, 32, () { gOpen(context, '225'); }), // lien métier 32 -> 225
+      gTap(90, 830, 130, 33, () { gOpen(context, '38'); }), // lien métier 32 -> 38
     ]);
   }
 }

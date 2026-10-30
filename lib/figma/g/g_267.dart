@@ -114,6 +114,7 @@ class G_267 extends ConsumerWidget {
       gP(1149.75, 484, 15, 27, gText('6', 22, Color(0xFF18181B), weight: 700, inter: true)),
       gP(1149.75, 514, 17, 13, gText('+ 2', 10.5, Color(0xFF126B49), weight: 500, inter: true)),
       gP(731, 560, 524, 17, gText('Chaque établissement choisit les contenus qu’il partage dans le catalogue national.', 11.5, Color(0xFF66636E), inter: true, lh: 17, wrap: true)),
+      gTap(44, 179, 123, 32, () { gOpen(context, '270'); }), // lien métier 267 -> 270
     ]);
   }
 }

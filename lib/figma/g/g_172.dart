@@ -92,6 +92,8 @@ class G_172 extends ConsumerWidget {
       gP(76, 646, 277, 51, gText('Un badge est retiré automatiquement si le compte est signalé ou si les documents expirent.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gTap(80, 424, 122, 33, () { gOpen(context, '175'); }), // parcours 172 -> 175
+      gTap(80, 556, 95, 33, () { gOpen(context, '38'); }), // lien métier 172 -> 38
+      gTap(14.5, 210, 361, 37, () { gOpen(context, '24'); }), // lien métier 172 -> 24
     ]);
   }
 }

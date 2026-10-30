@@ -175,6 +175,8 @@ class G_128 extends ConsumerWidget {
       gTap(12, 488, 216, 36, () => gOpen(context, '136')),
       gTap(12, 528, 216, 36, () => gOpen(context, '137')),
       gTap(12, 568, 216, 36, () => gOpen(context, '138')),
+      gTap(44, 139, 115, 32, () { gOpen(context, '180'); }), // lien métier 128 -> 180
+      gTap(260, 68, 364, 45, () { gOpen(context, '181'); }), // lien métier 128 -> 181
     ]);
   }
 }

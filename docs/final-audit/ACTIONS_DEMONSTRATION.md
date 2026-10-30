@@ -4,57 +4,33 @@ Chaque ligne est un bouton qui n'affiche qu'un message « Démonstration : … �
 
 | Écran | Titre | Action |
 |---|---|---|
-| 18 | État de validation | Contacter le support |
 | 18c | Vérification étudiant | Ces informations permettent de confirmer\nvotre statut d’étudiant de l’IUT de Douala. |
 | 18c | Vérification étudiant | Vos documents sont chiffrés et ne sont\nconsultés que par l’équipe de validation. |
 | 23 | Filtres | Innovations |
-| 26 | Comparer des offres | Voir les détails |
-| 39 | Demande de renseignements | Envoyer la question |
 | 46 | Suivi de livraison | Voir le code de retrait |
 | 55 | Conversation entreprise | Bonjour, voici mon portfolio et deux références. |
 | 55 | Conversation entreprise | Parfait, nous planifions un entretien jeudi. |
 | 59 | Nouveau service | Brouillon |
 | 59 | Nouveau service | Publier |
-| 69 | Validations | Compléter mon dossier |
-| 72 | Ajouter à mon profil | Ajouter à mon portfolio |
-| 76 | Ma candidature | Retirer |
-| 76 | Ma candidature | Contacter |
-| 77 | Profil de mentor | Écrire |
 | 82 | Journal du projet | Ajouter une étape |
 | 83 | Médias et preuves | Téléverser |
 | 84 | Nouvelle campagne | Brouillon |
 | 84 | Nouvelle campagne | Continuer |
-| 87 | Registre des innovations | Déclarer une innovation |
 | 90 | Publier un besoin | Brouillon |
 | 90 | Publier un besoin | Publier |
-| 93 | Propositions reçues | Comparer la sélection |
 | 93b | Proposition | Refuser |
 | 93b | Proposition | Accepter |
-| 94 | Comparer les propositions | Choisir une proposition |
 | 95 | Devis et négociations | Pouvez-vous livrer sous 10 jours pour 420 000 FCFA ? |
 | 95 | Devis et négociations | Oui, à condition de démarrer lundi. |
-| 102 | Vitrine | Voir la collection |
 | 118 | Établissement et identité visuelle | Enregistrer les modifications |
-| 153 | Pourquoi cette offre ? | Ignorer |
-| 154 | Mon dossier | Compléter mon dossier |
-| 156 | Préférences d’alertes | Enregistrer les préférences |
 | 158 | Candidatures classées | Comparer la sélection |
-| 159 | Candidature envoyée | Mes candidatures |
-| 159 | Candidature envoyée | Autres offres |
 | 166 | Résultats | Voir le certificat |
 | 171 | Paiement sécurisé | Continuer en sécurité |
-| 189 | Propositions reçues | Comparer la sélection |
-| 194 | Ma mission | Écrire à l’équipe |
-| 194 | Ma mission | Voir le dossier |
 | 196 | Dossier | Bonjour, voici les trois pistes de logo. Qu’en pensez-vous ? |
 | 196 | Dossier | La piste 2 me plaît. Pouvez-vous essayer une version plus sobre ? |
 | 196 | Dossier | Bien sûr, nouvelle version sous 48 h. |
 | 196 | Dossier | Ajouter un fichier |
 | 196 | Dossier | Envoyer |
-| 198 | Briefs reçus | Qualifier |
-| 198 | Briefs reçus | Qualifier |
-| 198 | Briefs reçus | Qualifier |
-| 198 | Briefs reçus | Qualifier |
 | 199 | Attribuer | Attribuer à cette équipe |
 | 202 | Pack Lancement de marque | Personnaliser |
 | 202 | Pack Lancement de marque | Commander le pack |
@@ -67,20 +43,15 @@ Chaque ligne est un bouton qui n'affiche qu'un message « Démonstration : … �
 | 207 | Borne · Explorer | Missions |
 | 211 | Passeport du produit | Voir le certificat |
 | 213 | Registre des certificats | Émettre un certificat |
-| 215 | Fiche département | Déposer un brief au département |
 | 218 | Publier un vœu | Brouillon |
 | 218 | Publier un vœu | Publier |
 | 219 | Nouveau duel | Lancer le duel |
-| 221 | Résultat du duel | Voir le dossier du gagnant |
 | 224 | Validation des vœux | Brouillon |
 | 224 | Validation des vœux | Planifier |
 | 228 | Partager mon CV | Régénérer le lien |
 | 231 | Accueil Kéla | Commencer |
-| 233 | WhatsApp · suivi de mission | Voir les propositions |
-| 233 | WhatsApp · suivi de mission | Écrire à l’équipe |
 | 234 | WhatsApp · validation de jalon | ✓  Valider et libérer |
 | 234 | WhatsApp · validation de jalon | Demander une correction |
-| 236 | Canaux et notifications | Enregistrer |
 | 237 | Impact par territoire | Impact territorial |
 | 241 | Mes contacts | Salut ! Rejoins Boutik-École, la marketplace des talents de l’IUT de Douala : boutik-ecole.cm/r/mariam24 |
 | 250 | Nouvelle publication | Propulser |

@@ -104,6 +104,7 @@ class G_248 extends ConsumerWidget {
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       gTap(24, 176, 342, 52, () => gOpen(context, '249')),
+      gTap(144, 94, 102, 32, () { gOpen(context, 'd1'); }), // lien métier 248 -> d1
     ]);
   }
 }

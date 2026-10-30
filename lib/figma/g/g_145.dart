@@ -147,6 +147,9 @@ class G_145 extends ConsumerWidget {
       gTap(40, 369, 232, 36, () { gOpen(context, '147_1'); }), // parcours 145 -> 147_1
       gTap(40, 409, 232, 36, () { gOpen(context, '147_3'); }), // parcours 145 -> 147_3
       gTap(276, 180, 104, 32, () { gOpen(context, '146_1'); }), // parcours 145 -> 146_1
+      gTap(730.5, 269, 70, 32, () { gOpen(context, '276'); }), // lien métier 145 -> 276
+      gTap(276, 268, 140, 32, () { gOpen(context, '277'); }), // lien métier 145 -> 277
+      gTap(606, 139, 98, 32, () { gOpen(context, '268'); }), // lien métier 145 -> 268
     ]);
   }
 }

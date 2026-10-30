@@ -158,6 +158,7 @@ class G_114 extends ConsumerWidget {
       gTap(12, 328, 216, 36, () => gOpen(context, '113')),
       gTap(12, 408, 216, 36, () => gOpen(context, '115')),
       gTap(12, 448, 216, 36, () => gOpen(context, '116')),
+      gTap(276, 244, 111, 32, () { gOpen(context, '77'); }), // lien métier 114 -> 77
     ]);
   }
 }

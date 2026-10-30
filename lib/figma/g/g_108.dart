@@ -338,6 +338,7 @@ gP(-13, 165.451, 296, 34.583, gImg('assets/figma/v/5ffec176ca9577.svg'))
       gTap(40, 403, 232, 36, () { gOpen(context, '114'); }), // parcours 108 -> 114
       gTap(40, 443, 232, 36, () { gOpen(context, '115'); }), // parcours 108 -> 115
       gTap(40, 517, 232, 36, () { gOpen(context, '116'); }), // parcours 108 -> 116
+      gTap(930, 566, 110, 32, () { gOpen(context, 'a1'); }), // lien métier 108 -> a1
     ]);
   }
 }

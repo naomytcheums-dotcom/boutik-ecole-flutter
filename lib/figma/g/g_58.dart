@@ -100,6 +100,7 @@ class G_58 extends ConsumerWidget {
       gP(316, 468, 34, 16, gText('FCFA', 13, Color(0xFF5A3FE0), weight: 600)),
       gTap(24, 760, 163, 54, () { submitListing(ref, context, publish: false); }),
       gTap(203, 760, 163, 54, () { submitListing(ref, context, publish: true); }),
+      gTap(80, 214, 166, 32, () { gOpen(context, '279'); }), // lien métier 58 -> 279
     ]);
   }
 }

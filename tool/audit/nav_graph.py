@@ -11,7 +11,8 @@ OUT = os.path.join(ROOT, 'tool', 'audit', 'out')
 os.makedirs(OUT, exist_ok=True)
 
 NAVCALL = re.compile(r"\b(?:gOpen|gTab)\s*\(")
-TOK = re.compile(r"""['"]([0-9]+[a-z_0-9]*)['"]""")
+# identifiants numériques (« 146_1 ») et du studio créateur (« L1 », « p3 » : la casse est ignorée par le routeur)
+TOK = re.compile(r"""['"]([0-9]+[a-z_0-9]*|[A-Za-z][0-9])['"]""")
 DEMO = re.compile(r"""gToast\(\s*context\s*,\s*['"]D[ée]monstration\s*:\s*([^'"]*)['"]""")
 FUNC = re.compile(r"^(?:[A-Za-z_<>?,\s]+?)\s+(\w+)\s*\([^;{]*\)\s*(?:async\s*)?\{", re.M)
 
@@ -27,7 +28,7 @@ def nav_targets(text):
             if depth == 0:
                 end = i
                 break
-        out.update(t.group(1) for t in TOK.finditer(seg[:end]))
+        out.update(t.group(1).lower() for t in TOK.finditer(seg[:end]))
     return out
 
 
@@ -54,7 +55,7 @@ for f in glob.glob(os.path.join(ROOT, 'lib', 'figma', 'live', '*.dart')):
             func_targets.setdefault(m.group(1), set()).update(t)
 # menu du compte : ses entrées déclarent leur écran par « screen: 'id' » (le menu filtre ensuite par rôle)
 _menu = open(os.path.join(ROOT, 'lib', 'figma', 'live', 'account_menu.dart'), encoding='utf-8').read()
-func_targets.setdefault('accountMenu', set()).update(t for t in re.findall(r"screen:\s*'([0-9]+[a-z_0-9]*)'", _menu) if t in screens)
+func_targets.setdefault('accountMenu', set()).update(t for t in (x.lower() for x in re.findall(r"screen:\s*'([0-9]+[a-z_0-9]*|[A-Za-z][0-9])'", _menu)) if t in screens)
 for sid, s in src.items():
     for name, t in func_targets.items():
         if re.search(r"\b" + re.escape(name) + r"\s*\(", s):

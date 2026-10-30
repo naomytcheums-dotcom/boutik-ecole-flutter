@@ -129,6 +129,7 @@ class G_288 extends ConsumerWidget {
       gP(880, 710, 82, 16, gText('En validation', 13, Color(0xFF8F5400), weight: 700, inter: true)),
       gP(1010, 710, 70, 16, gText('12/10/2026', 13, Color(0xFF66636E), inter: true)),
       gP(1130, 710, 114, 16, gText('Modifier  ·  Publier', 13, Color(0xFF5A3FE0), weight: 600, inter: true)),
+      gTap(20, 342, 98, 32, () { gOpen(context, '263'); }), // lien métier 288 -> 263
     ]);
   }
 }

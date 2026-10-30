@@ -14,6 +14,17 @@ import 'screen_entry.dart';
 
 final Map<String, ScreenEntry> screensById = {for (final s in allScreens) s.id: s};
 
+/// Écran du manifeste pour un identifiant, sans tenir compte de la casse (`p3` et `P3` désignent le même écran du studio)
+/// ni du séparateur des variantes (`148_1`, nom des fichiers générés, et `148-1`, identifiant du manifeste).
+ScreenEntry? screenById(String? id) {
+  if (id == null) return null;
+  for (final k in {id, id.toUpperCase(), id.toLowerCase(), id.replaceAll('_', '-')}) {
+    final e = screensById[k];
+    if (e != null) return e;
+  }
+  return null;
+}
+
 GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
   initialLocation: initial,
   routes: [
@@ -23,8 +34,8 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(
       path: '/s/:id',
       pageBuilder: (context, state) {
-        final entry = screensById[state.pathParameters['id']];
-        final sid = state.pathParameters['id'] ?? '?';
+        final entry = screenById(state.pathParameters['id']);
+        final sid = entry?.id ?? state.pathParameters['id'] ?? '?';
         final child = entry == null ? MissingScreen(id: sid) : AccessGuard(id: sid, child: entry.builder(context));
         return CustomTransitionPage<void>(
           key: state.pageKey,

@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/engage.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_39 extends ConsumerWidget {
@@ -47,13 +48,13 @@ class G_39 extends ConsumerWidget {
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 300, 26, gText('Demande de renseignements', 21, Color(0xFF111015), weight: 700)),
       gP(36, 128, 50, 50, gBox(image: 'assets/figma/img/3d6379dbe0e12637d54ca9d283be8cb419701599.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
-      gP(98, 132, 145, 17, gText('Lampe en bois recyclé', 13.5, Color(0xFF111015), weight: 600)),
-      gP(98, 154, 137, 14, gText('25 000 FCFA · Yannick M.', 11.5, Color(0xFF66636E))),
+      gP(98, 132, 145, 17, gText(ref.watch(selectedProductProvider).title, 13.5, Color(0xFF111015), weight: 600)),
+      gP(98, 154, 137, 14, gText(productPriceAndSeller(ref.watch(selectedProductProvider)), 11.5, Color(0xFF66636E))),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 200, 122.2, 34, 'Disponibilité', 12.5, 600), GChip(154.2, 200, 63, 34, 'Délai', 12.5, 500), GChip(225.2, 200, 144.4, 34, 'Personnalisation', 12.5, 500), GChip(377.6, 200, 92.6, 34, 'Livraison', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
       gP(24, 248, 89, 16, gText('Votre question', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 268, 342, 96, GField(hint: 'Bonjour, la lampe est-elle disponible en bambou ?', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, multiline: true, padT: 14)),
+      gP(24, 268, 342, 96, GField(onChanged: (v) => ref.read(formProvider.notifier).put('question', v), hint: 'Bonjour, la lampe est-elle disponible en bambou ?', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, multiline: true, padT: 14)),
       gP(24, 378, 165, 16, gText('Votre téléphone (facultatif)', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 398, 342, 48, GField(hint: '', initial: '+237 6 XX XX XX XX', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
+      gP(24, 398, 342, 48, GField(onChanged: (v) => ref.read(formProvider.notifier).put('question_phone', v), hint: '', initial: '+237 6 XX XX XX XX', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(39.75, 411.5, 16.5, 21, gImg('assets/figma/v/f88bf1acb4da04.svg')),
       gP(45, 423.5, 6.008, 6, gImg('assets/figma/v/f943396fb20219.svg')),
       gP(24, 460, 342, 62, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
@@ -62,7 +63,7 @@ class G_39 extends ConsumerWidget {
       gP(41.917, 481.619, 19.464, 19.464, gImg('assets/figma/v/f5885e2a055a40.svg')),
       gP(76, 474, 277, 34, gText('Le vendeur répond généralement sous 24 h dans la messagerie.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
       gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
-      gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Envoyer la question')),
+      gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => sendProductQuestion(context, ref)),
       gP(127, 778, 136, 18, gText('Envoyer la question', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
     ]);

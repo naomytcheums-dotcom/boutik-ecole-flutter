@@ -380,6 +380,32 @@ class Backend {
 
   static Future<String?> cancelEngagement(String kind, String ref) => _call('cancel_engagement', {'p_kind': kind, 'p_ref': ref});
 
+  /// Engagements de la personne connectée (isolés par le serveur), éventuellement filtrés par type ; les plus récents d'abord.
+  static Future<List<Map<String, dynamic>>> myEngagements({String? kind}) async {
+    final c = _c;
+    if (c == null || c.auth.currentUser == null) return const [];
+    try {
+      var q = c.from('engagements').select('kind,ref,data,status,created_at,updated_at');
+      if (kind != null) q = q.eq('kind', kind);
+      final r = await q.order('updated_at', ascending: false);
+      return [for (final x in r) Map<String, dynamic>.from(x as Map)];
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  /// Engagement précis (inscription, candidature…) de la personne connectée, ou null.
+  static Future<Map<String, dynamic>?> myEngagement(String kind, String ref) async {
+    final c = _c;
+    if (c == null || c.auth.currentUser == null) return null;
+    try {
+      final r = await c.from('engagements').select('kind,ref,data,status,created_at,updated_at').eq('kind', kind).eq('ref', ref).maybeSingle();
+      return r == null ? null : Map<String, dynamic>.from(r);
+    } catch (_) {
+      return null;
+    }
+  }
+
   /// Commandes de la personne connectée, avec leurs articles (isolées par le serveur).
   static Future<List<Map<String, dynamic>>> myOrders() async {
     final c = _c;

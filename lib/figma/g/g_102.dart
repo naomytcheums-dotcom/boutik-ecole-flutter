@@ -88,7 +88,7 @@ class G_102 extends ConsumerWidget {
       gP(213, 805, 73, 15, gText('15 000 FCFA', 12, Color(0xFF111015), weight: 600)),
       gP(213, 822, 56, 13, gText('Agronomie', 10.5, Color(0xFF5A3FE0))),
       gP(0, 869, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
-      gP(24, 885, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Voir la collection')),
+      gP(24, 885, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gOpen(context, '22c')),
       gP(137.5, 903, 115, 18, gText('Voir la collection', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 955, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(341.667, 79, 20.667, 15.167, gImg('assets/figma/v/38cc299702e092.svg')),

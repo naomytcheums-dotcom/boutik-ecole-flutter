@@ -1,29 +1,15 @@
 ecran,action
-102,Voir la collection
 118,Enregistrer les modifications
-153,Ignorer
-154,Compléter mon dossier
-156,Enregistrer les préférences
 158,Comparer la sélection
-159,Mes candidatures
-159,Autres offres
 166,Voir le certificat
 171,Continuer en sécurité
-18,Contacter le support
-189,Comparer la sélection
 18c,Ces informations permettent de confirmer\nvotre statut d’étudiant de l’IUT de Douala.
 18c,Vos documents sont chiffrés et ne sont\nconsultés que par l’équipe de validation.
-194,Écrire à l’équipe
-194,Voir le dossier
 196,"Bonjour, voici les trois pistes de logo. Qu’en pensez-vous ?"
 196,La piste 2 me plaît. Pouvez-vous essayer une version plus sobre ?
 196,"Bien sûr, nouvelle version sous 48 h."
 196,Ajouter un fichier
 196,Envoyer
-198,Qualifier
-198,Qualifier
-198,Qualifier
-198,Qualifier
 199,Attribuer à cette équipe
 202,Personnaliser
 202,Commander le pack
@@ -36,26 +22,20 @@ ecran,action
 207,Missions
 211,Voir le certificat
 213,Émettre un certificat
-215,Déposer un brief au département
 218,Brouillon
 218,Publier
 219,Lancer le duel
-221,Voir le dossier du gagnant
 224,Brouillon
 224,Planifier
 228,Régénérer le lien
 23,Innovations
 231,Commencer
-233,Voir les propositions
-233,Écrire à l’équipe
 234,✓  Valider et libérer
 234,Demander une correction
-236,Enregistrer
 237,Impact territorial
 241,"Salut ! Rejoins Boutik-École, la marketplace des talents de l’IUT de Douala : boutik-ecole.cm/r/mariam24"
 250,Propulser
 250b,Propulser
-26,Voir les détails
 263,Téléverser un média
 264,Aperçu
 265,Modifier le modèle
@@ -76,28 +56,19 @@ ecran,action
 287,+ Nouvelle fiche
 288,Exporter
 288,+ Nouvelle fiche
-39,Envoyer la question
 46,Voir le code de retrait
 55,"Bonjour, voici mon portfolio et deux références."
 55,"Parfait, nous planifions un entretien jeudi."
 59,Brouillon
 59,Publier
-69,Compléter mon dossier
-72,Ajouter à mon portfolio
-76,Retirer
-76,Contacter
-77,Écrire
 82,Ajouter une étape
 83,Téléverser
 84,Brouillon
 84,Continuer
-87,Déclarer une innovation
 90,Brouillon
 90,Publier
-93,Comparer la sélection
 93b,Refuser
 93b,Accepter
-94,Choisir une proposition
 95,Pouvez-vous livrer sous 10 jours pour 420 000 FCFA ?
 95,"Oui, à condition de démarrer lundi."
 a2,Commencer

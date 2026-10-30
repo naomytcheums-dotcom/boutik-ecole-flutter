@@ -82,7 +82,7 @@ class G_26 extends ConsumerWidget {
       gP(193.85, 527.49, 17.257, 17.257, gBox(color: Color(0xFFE5533D), oval: true)),
       gP(264.027, 527.49, 17.257, 17.257, gBox(color: Color(0xFFB03AA8), oval: true)),
       gP(288.186, 527.49, 17.257, 17.257, gBox(color: Color(0xFF2F7BE5), oval: true)),
-      gP(28.186, 726.315, 334.779, 51.115, gBox(color: Color(0xFF111015), radii: [25.31, 25.31, 25.31, 25.31]), tap: () => gToast(context, 'Démonstration : Voir les détails')),
+      gP(28.186, 726.315, 334.779, 51.115, gBox(color: Color(0xFF111015), radii: [25.31, 25.31, 25.31, 25.31]), tap: () => gOpen(context, '05')),
       gP(140.075, 741.873, 111, 20, gText('Voir les détails', 16.106, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(128.85, 832.113, 135.752, 2.972, gBox(color: Color(0xFF111015), radii: [1.726, 1.726, 1.726, 1.726])),
     ]);

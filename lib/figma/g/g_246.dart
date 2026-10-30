@@ -105,6 +105,8 @@ class G_246 extends ConsumerWidget {
       gTap(329, 83, 19, 19, () => gOpen(context, '254')),
       gTap(24, 158, 342, 200, () => gOpen(context, '222')),
       gTap(292, 376, 74, 26, () => gOpen(context, '222')),
+      gTap(16, 422, 123, 35, () { gOpen(context, '224'); }), // lien métier 246 -> 224
+      gTap(16, 124, 165, 35, () { gOpen(context, 'v1'); }), // lien métier 246 -> v1
     ]);
   }
 }

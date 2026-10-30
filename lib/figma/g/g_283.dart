@@ -63,6 +63,7 @@ class G_283 extends ConsumerWidget {
       gP(44, 626, 302, 20, gText('Chaque émission, remplacement ou révocation enregistre l’auteur, la date et le motif.', 11, Color(0xFF66636E))),
       gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => gToast(context, 'Démonstration : Émettre un certificat')),
       gP(120.5, 788, 149, 19, gText('Émettre un certificat', 15, Color(0xFFFFFFFF), weight: 600)),
+      gTap(36, 220, 237, 32, () { gOpen(context, '211'); }), // lien métier 283 -> 211
     ]);
   }
 }

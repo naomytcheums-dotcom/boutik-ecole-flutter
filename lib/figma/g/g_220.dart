@@ -101,6 +101,7 @@ class G_220 extends ConsumerWidget {
       gP(328.333, 89, 19.333, 14.333, gImg('assets/figma/v/9c92298f9fd6b2.svg')),
       gP(331.667, 80.667, 12.667, 9.333, gImg('assets/figma/v/bb8ad3c4792df6.svg')),
       gP(335, 80.667, 6, 16.833, gImg('assets/figma/v/5bb53be308dfb1.svg')),
+      gTap(16, 644, 191, 34, () { gOpen(context, '221'); }), // lien métier 220 -> 221
     ]);
   }
 }

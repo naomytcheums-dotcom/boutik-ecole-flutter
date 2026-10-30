@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/engage.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_72 extends ConsumerWidget {
@@ -52,23 +53,23 @@ class G_72 extends ConsumerWidget {
       gP(274, 130, 70, 16, gText('Réalisation', 13, Color(0xFF111015), weight: 700, align: TextAlign.center)),
       gP(269.1, 154, 79.8, 3, gBox(color: Color(0xFF6A4DFF), radii: [2, 2, 2, 2])),
       gP(24, 174, 123, 16, gText('Titre de la réalisation', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 194, 342, 48, GField(hint: '', initial: 'Application mobile Boutik', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
+      gP(24, 194, 342, 48, GField(onChanged: (v) => ref.read(formProvider.notifier).put('pf_title', v), hint: '', initial: 'Application mobile Boutik', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(37.5, 207.493, 21.024, 21.007, gImg('assets/figma/v/b644eb09a59fd6.svg')),
       gP(24, 256, 61, 16, gText('Catégorie', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 276, 342, 48, GField(hint: '', initial: 'Développement', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
+      gP(24, 276, 342, 48, GField(onChanged: (v) => ref.read(formProvider.notifier).put('pf_cat', v), hint: '', initial: 'Développement', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(38.25, 290.25, 11.25, 11.25, gImg('assets/figma/v/4aa41d01b63de8.svg')),
       gP(46.5, 290.25, 11.25, 11.25, gImg('assets/figma/v/4aa41d01b63de8.svg')),
       gP(46.5, 298.5, 11.25, 11.25, gImg('assets/figma/v/4aa41d01b63de8.svg')),
       gP(38.25, 298.5, 11.25, 11.25, gImg('assets/figma/v/4aa41d01b63de8.svg')),
       gP(334.5, 294.75, 15, 10.5, gImg('assets/figma/v/7abbf201b36418.svg')),
       gP(24, 338, 29, 16, gText('Date', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 358, 342, 48, GField(hint: '', initial: 'Octobre 2026', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
+      gP(24, 358, 342, 48, GField(onChanged: (v) => ref.read(formProvider.notifier).put('pf_date', v), hint: '', initial: 'Octobre 2026', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(38.25, 373, 19.5, 19.5, gImg('assets/figma/v/99b18d1a251e8c.svg')),
       gP(48, 371.5, 6, 9, gImg('assets/figma/v/4d0c4aa2d5e373.svg')),
       gP(42, 371.5, 6, 9, gImg('assets/figma/v/4d0c4aa2d5e373.svg')),
       gP(38.25, 377.5, 19.5, 6, gImg('assets/figma/v/40b22babe144e0.svg')),
       gP(24, 420, 71, 16, gText('Description', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 440, 342, 96, GField(hint: 'Contexte, rôle, résultats obtenus…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, multiline: true, padT: 14)),
+      gP(24, 440, 342, 96, GField(onChanged: (v) => ref.read(formProvider.notifier).put('pf_desc', v), hint: 'Contexte, rôle, résultats obtenus…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, multiline: true, padT: 14)),
       gP(36, 563, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(45.5, 572.5, 21, 21, gImg('assets/figma/v/ffe808ced2c9ec.svg')),
       gP(48.833, 575.833, 9.333, 9.333, gImg('assets/figma/v/87052a066968e5.svg')),
@@ -77,7 +78,7 @@ class G_72 extends ConsumerWidget {
       gP(88, 584, 170, 14, gText('Photos, captures, vidéo (5 max)', 11.5, Color(0xFF66636E))),
       gP(336.75, 575.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
       gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
-      gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Ajouter à mon portfolio')),
+      gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => addPortfolioItem(context, ref)),
       gP(114.5, 778, 161, 18, gText('Ajouter à mon portfolio', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
     ]);

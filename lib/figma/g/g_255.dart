@@ -99,6 +99,7 @@ class G_255 extends ConsumerWidget {
       gP(40, 896, 310, 16, gText('Voir les contrôles automatiques et réglementaires', 13, Color(0xFFFFFFFF), weight: 600)),
       gP(24, 880, 342, 48, const SizedBox.expand(), tap: () => gOpen(context, '256')),
       gTap(24, 880, 342, 48, () => gOpen(context, '256')),
+      gTap(68, 299, 169, 32, () { gOpen(context, '256'); }), // lien métier 255 -> 256
     ]);
   }
 }

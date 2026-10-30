@@ -70,19 +70,42 @@ final _groups = <_Group>[
     _Entry('Conformité du compte', screen: '69', roles: {'student', 'dept', 'admin'}),
     _Entry('Opportunités', screen: '75', roles: {'student', 'dept', 'admin'}),
     _Entry('Mon CV vivant', screen: '227', roles: {'student', 'dept', 'admin'}),
+    _Entry('Tableau de bord du studio', screen: 'D1', roles: {'student', 'dept', 'admin'}),
+    _Entry('Connecter mes outils', screen: 'P5', roles: {'student', 'dept', 'admin'}),
+    _Entry('Aller en direct', screen: 'L1', roles: {'student', 'dept', 'admin'}),
+    _Entry('Programmer un live', screen: '224', roles: {'student', 'dept', 'admin'}),
+    _Entry('Lancer une campagne de financement', screen: '84', roles: {'student', 'dept', 'admin'}),
+    _Entry('Publier un vœu', screen: '218', roles: {'student', 'dept', 'admin'}),
+    _Entry('Registre des innovations', screen: '87', roles: {'student', 'dept', 'admin'}),
+    _Entry('Kit à partager', screen: '242', roles: {'student', 'dept', 'admin'}),
   ]),
   const _Group('Espace entreprise', [
     _Entry('Tableau de bord entreprise', screen: '187', roles: {'company', 'admin'}),
     _Entry('Publier un besoin', screen: '90', roles: {'company', 'admin'}),
+    _Entry('Historique des besoins', screen: '99', roles: {'company', 'admin'}),
     _Entry('Propositions reçues', screen: '93', roles: {'company', 'admin'}),
     _Entry('Rechercher des talents', screen: '91', roles: {'company', 'admin'}),
+    _Entry('Défis d’innovation', screen: '96', roles: {'company', 'admin'}),
+    _Entry('Espace projet', screen: '285', roles: {'company', 'admin'}),
+    _Entry('Accueil B2B', screen: '262', roles: {'company', 'admin'}),
   ]),
   const _Group('Administration', [
     _Entry('Console du département', screen: '108', roles: {'dept', 'admin'}),
+    _Entry('Registre des certificats', screen: '283', roles: {'dept', 'admin'}),
+    _Entry('Catalogue du département', screen: '288', roles: {'dept', 'admin'}),
+    _Entry('Espace jury', screen: '178', roles: {'dept', 'admin'}),
+    _Entry('Rapport sponsors', screen: '239', roles: {'direction', 'dept', 'admin'}),
     _Entry('Administration institutionnelle', screen: '117', roles: {'direction', 'admin'}),
     _Entry('Administration globale', screen: '127', roles: {'admin'}),
+    _Entry('Rôles et permissions', screen: '180', roles: {'admin'}),
+    _Entry('Rôles et périmètres', screen: '281', roles: {'admin'}),
+    _Entry('Intégrations', screen: '280', roles: {'admin'}),
+    _Entry('Pages éditoriales', screen: '264', roles: {'admin'}),
+    _Entry('Innovation Radar', screen: '269', roles: {'admin'}),
     _Entry('Finance', screen: '139', roles: {'finance', 'direction', 'admin'}),
+    _Entry('Registre financier', screen: '284', roles: {'finance', 'direction', 'admin'}),
     _Entry('Kiosques et support', screen: '145', roles: {'support', 'admin'}),
+    _Entry('Supervision des bornes', screen: '277', roles: {'support', 'admin'}),
   ]),
   const _Group('Mon compte', [
     _Entry('Paramètres', screen: '148_1'),
@@ -90,12 +113,22 @@ final _groups = <_Group>[
     _Entry('Aide et support', screen: '49'),
     _Entry('Guide d’utilisation', screen: '179'),
     _Entry('Canaux et notifications', screen: '236'),
+    _Entry('Préférences d’alertes', screen: '156'),
     _Entry('Mon espace client', screen: '261'),
     _Entry('Mes données et confidentialité', screen: '273'),
     _Entry('Vérification en 2 étapes', screen: '272'),
+    _Entry('Centre de sécurité', screen: '148_2'),
+    _Entry('Économie de données', screen: '184'),
     _Entry('Conditions générales', screen: '274'),
   ]),
 ];
+
+/// Entrées du menu visibles pour un rôle : (libellé, écran ou null pour une action).
+List<(String, String?)> accountMenuEntries(String role) => [
+      for (final g in _groups)
+        for (final e in g.entries)
+          if (e.roles == null || e.roles!.contains(role)) (e.label, e.screen),
+    ];
 
 /// Menu du compte (écran 10) : les accès réels de la personne, selon son rôle ; rien n'est affiché si le rôle n'y a pas droit.
 Future<void> accountMenu(BuildContext context, WidgetRef ref) {

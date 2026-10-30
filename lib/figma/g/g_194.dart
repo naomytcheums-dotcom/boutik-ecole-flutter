@@ -164,14 +164,15 @@ class G_194 extends ConsumerWidget {
       gP(40, 956, 86, 16, gText('Prochain point', 12.5, Color(0xFF66636E))),
       gP(294, 956, 56, 16, gText('Jeudi 14 h', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
       gP(0, 1018, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
-      gP(24, 1034, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Écrire à l’équipe')),
+      gP(24, 1034, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gOpen(context, '196')),
       gP(49.5, 1052, 112, 18, gText('Écrire à l’équipe', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
-      gP(203, 1034, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Voir le dossier')),
+      gP(203, 1034, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gOpen(context, '196')),
       gP(236, 1052, 97, 18, gText('Voir le dossier', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 1104, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gTap(250, 560, 60, 30, () { gOpen(context, '197'); }),
       gTap(250, 644, 60, 30, () { gOpen(context, '197'); }),
       gTap(24, 910, 342, 84, () { gToast(context, 'Message envoyé à l’équipe'); }),
+      gTap(144, 356, 217, 50, () { gOpen(context, '233'); }), // lien métier 194 -> 233
     ]);
   }
 }

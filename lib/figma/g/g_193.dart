@@ -90,6 +90,8 @@ class G_193 extends ConsumerWidget {
       gP(128, 847, 134, 18, Consumer(builder: (context, ref, _) => gText(ref.watch(missionProvider).funded >= 3 ? 'Tout est financé' : 'Payer ${fcfa(ref.watch(missionProvider).amountOf(ref.watch(missionProvider).funded))}', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center))),
       gP(125, 899, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gTap(24, 829, 342, 54, () { payNextMilestone(ref, context); }),
+      gTap(48, 380, 191, 33, () { gOpen(context, '234'); }), // lien métier 193 -> 234
+      gTap(48, 318, 191, 33, () { gOpen(context, '235'); }), // lien métier 193 -> 235
     ]);
   }
 }

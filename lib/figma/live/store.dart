@@ -58,6 +58,14 @@ List<LiveProduct> extraProducts = const [];
 
 LiveProduct productByTitle(String t) => [...extraProducts, ...liveCatalog].firstWhere((p) => p.title == t, orElse: () => liveCatalog.first);
 
+/// « 25 000 FCFA · Yannick M. » : prix et vendeur abrégé (nom enregistré « Nom Prénom »).
+String productPriceAndSeller(LiveProduct p) {
+  final parts = p.seller.trim().split(RegExp(r'\s+'));
+  final who = parts.length >= 2 ? '${parts.last} ${parts.first[0]}.' : p.seller.trim();
+  final price = fcfa(p.price).replaceAll('\u202f', ' '); // espace simple, comme sur la maquette
+  return who.isEmpty ? price : '$price · $who';
+}
+
 class SelectedProduct extends Notifier<LiveProduct> {
   @override
   LiveProduct build() => liveCatalog.first;

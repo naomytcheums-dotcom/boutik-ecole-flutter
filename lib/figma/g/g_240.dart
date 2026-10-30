@@ -122,6 +122,7 @@ class G_240 extends ConsumerWidget {
       gP(335.15, 81.233, 6, 16.292, gImg('assets/figma/v/d9aa0c7d61ed0e.svg')),
       gTap(16, 430, 97, 34, () { gOpen(context, '173'); }), // parcours 240 -> 173
       gTap(58, 266, 142, 32, () { gOpen(context, '243'); }), // parcours 240 -> 243
+      gTap(309.5, 506, 59, 32, () { gOpen(context, '241'); }), // lien métier 240 -> 241
     ]);
   }
 }

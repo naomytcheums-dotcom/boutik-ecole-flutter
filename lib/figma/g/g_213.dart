@@ -162,6 +162,7 @@ class G_213 extends ConsumerWidget {
       gP(1030, 60, 220, 40, const SizedBox.expand(), tap: () => gOpen(context, '212')),
       gTap(1030, 60, 220, 40, () => gOpen(context, '212')),
       gTap(44, 139, 83, 32, () { gOpen(context, '198'); }), // parcours 213 -> 198
+      gTap(260, 68, 282, 45, () { gOpen(context, '283'); }), // lien métier 213 -> 283
     ]);
   }
 }

@@ -196,7 +196,7 @@ Widget chatHeaderSub() => gP(
     );
 
 /// « Contacter le vendeur » : ouvre (ou retrouve) la conversation avec le vendeur du produit. Un compte est demandé à ce moment seulement.
-Future<void> contactSeller(WidgetRef ref, BuildContext context, String productTitle) async {
+Future<void> contactSeller(WidgetRef ref, BuildContext context, String productTitle, {String? message}) async {
   if (!Backend.ready) {
     gToast(context, 'La messagerie nécessite la connexion au serveur.');
     return;
@@ -209,7 +209,8 @@ Future<void> contactSeller(WidgetRef ref, BuildContext context, String productTi
   if (!info.hasSeller) {
     return gAlert(context, 'Produit de la plateforme', 'Ce produit est vendu directement par Boutik-École : il n’a pas de vendeur étudiant à qui écrire.');
   }
-  final r = await Backend.startConversation(info.listingId, 'Bonjour, je vous contacte au sujet de « $productTitle ».');
+  final body = (message ?? '').trim().isEmpty ? 'Bonjour, je vous contacte au sujet de « $productTitle ».' : 'À propos de « $productTitle » : ${message!.trim()}';
+  final r = await Backend.startConversation(info.listingId, body);
   if (!context.mounted) return;
   if (r.error != null) return gAlert(context, 'Message non envoyé', r.error!);
   ref.read(selectedConversationProvider.notifier).set(r.id!);

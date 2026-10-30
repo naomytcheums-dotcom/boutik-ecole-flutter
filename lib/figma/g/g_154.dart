@@ -171,7 +171,7 @@ class G_154 extends ConsumerWidget {
       gP(84, 653, 269, 18, gText('Conseil de l’IA', 14, Color(0xFFFFFFFF), weight: 700, wrap: true)),
       gP(84, 676, 269, 32, gText('Ajoutez 2 réalisations récentes pour augmenter vos chances de 30 %.', 11.5, Color(0xFFE9E4F5), lh: 16, wrap: true)),
       gP(0, 756, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
-      gP(24, 772, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Compléter mon dossier')),
+      gP(24, 772, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gOpen(context, '18c')),
       gP(112.5, 790, 165, 18, gText('Compléter mon dossier', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 842, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
     ]);

@@ -109,6 +109,7 @@ class G_19 extends ConsumerWidget {
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       gTap(31, 542, 329, 49, () { gOpen(context, '21'); }),
       gTap(20, 625, 75, 95, () { ref.read(searchQueryProvider.notifier).set(''); ref.read(categoryProvider.notifier).set(0); gOpen(context, '22'); }),
+      gTap(18.9, 362.8, 237, 85, () { gOpen(context, '20'); }), // lien métier 19 -> 20
     ]);
   }
 }

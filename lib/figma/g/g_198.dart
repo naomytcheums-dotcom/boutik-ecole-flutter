@@ -55,7 +55,7 @@ class G_198 extends ConsumerWidget {
       gP(442, 366, 317, 15, gText('Budget 150–300 k FCFA · filières suggérées : MMI · TCO', 12, Color(0xFF66636E), inter: true)),
       gP(1171.2, 312, 64.8, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
       gP(1179.6, 316, 48, 13, gText('Nouveau', 11, Color(0xFF5A3FE0), weight: 600, inter: true, align: TextAlign.center)),
-      gP(990, 362, 110, 36, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [18, 18, 18, 18]), tap: () => gToast(context, 'Démonstration : Qualifier')),
+      gP(990, 362, 110, 36, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [18, 18, 18, 18]), tap: () => gOpen(context, '199')),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(983.5, 362, 124, 36, 'Qualifier', 12, 700), GChip(1112, 362, 124, 36, 'Attribuer', 12, 700)], selected: 1, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 18, inter: true)),
       gP(268, 424, 984, 116, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
       gP(282, 436, 140, 92, gBox(image: 'assets/figma/img/4ca68f79023605aecb4f83724629d508e921e885.png', fit: BoxFit.cover, radii: [20, 20, 20, 20])),
@@ -64,7 +64,7 @@ class G_198 extends ConsumerWidget {
       gP(442, 494, 316, 15, gText('Budget 200–260 k FCFA · filières suggérées : BTA · TCO', 12, Color(0xFF66636E), inter: true)),
       gP(1171.2, 440, 64.8, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
       gP(1179.6, 444, 48, 13, gText('Nouveau', 11, Color(0xFF5A3FE0), weight: 600, inter: true, align: TextAlign.center)),
-      gP(990, 490, 110, 36, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [18, 18, 18, 18]), tap: () => gToast(context, 'Démonstration : Qualifier')),
+      gP(990, 490, 110, 36, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [18, 18, 18, 18]), tap: () => gOpen(context, '199')),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(983.5, 490, 124, 36, 'Qualifier', 12, 700), GChip(1112, 490, 124, 36, 'Attribuer', 12, 700)], selected: 1, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 18, inter: true)),
       gP(268, 552, 984, 116, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
       gP(282, 564, 140, 92, gBox(image: 'assets/figma/img/768cf16e6d8103ad4296d6cc0fdf1af309f03817.png', fit: BoxFit.cover, radii: [20, 20, 20, 20])),
@@ -73,7 +73,7 @@ class G_198 extends ConsumerWidget {
       gP(442, 622, 306, 15, gText('Budget 400–500 k FCFA · filières suggérées : GI · GRT', 12, Color(0xFF66636E), inter: true)),
       gP(1145.6, 568, 90.4, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11])),
       gP(1163.3, 572, 55, 13, gText('À qualifier', 11, Color(0xFF8F5400), weight: 600, inter: true, align: TextAlign.center)),
-      gP(990, 618, 110, 36, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [18, 18, 18, 18]), tap: () => gToast(context, 'Démonstration : Qualifier')),
+      gP(990, 618, 110, 36, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [18, 18, 18, 18]), tap: () => gOpen(context, '199')),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(983.5, 618, 124, 36, 'Qualifier', 12, 700), GChip(1112, 618, 124, 36, 'Attribuer', 12, 700)], selected: 1, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 18, inter: true)),
       gP(268, 680, 984, 116, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
       gP(282, 692, 140, 92, gBox(image: 'assets/figma/img/e3a1b5107e8b2a5b3a542598c9ff80a2e1376935.png', fit: BoxFit.cover, radii: [20, 20, 20, 20])),
@@ -82,7 +82,7 @@ class G_198 extends ConsumerWidget {
       gP(442, 750, 308, 15, gText('Budget 90–110 k FCFA · filières suggérées : GMP · GIM', 12, Color(0xFF66636E), inter: true)),
       gP(1171.2, 696, 64.8, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
       gP(1179.6, 700, 48, 13, gText('Nouveau', 11, Color(0xFF5A3FE0), weight: 600, inter: true, align: TextAlign.center)),
-      gP(990, 746, 110, 36, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [18, 18, 18, 18]), tap: () => gToast(context, 'Démonstration : Qualifier')),
+      gP(990, 746, 110, 36, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [18, 18, 18, 18]), tap: () => gOpen(context, '199')),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(983.5, 746, 124, 36, 'Qualifier', 12, 700), GChip(1112, 746, 124, 36, 'Attribuer', 12, 700)], selected: 1, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 18, inter: true)),
       gP(0, 0, 1280, 56, gBox(color: Color(0xFFFFFFFF))),
       gP(20, 10, 36, 34, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
@@ -148,6 +148,7 @@ class G_198 extends ConsumerWidget {
       gP(1100.167, 94.167, 8.167, 8.167, gImg('assets/figma/v/aa6a66611de441.svg')),
       gP(1118, 87, 111, 14, gText('Personnaliser la vue', 11.5, Color(0xFF111015), weight: 500, inter: true)),
       gTap(44, 219, 66, 32, () { gOpen(context, '200'); }), // parcours 198 -> 200
+      gTap(434, 306, 139, 35, () { gOpen(context, '199'); }), // lien métier 198 -> 199
     ]);
   }
 }

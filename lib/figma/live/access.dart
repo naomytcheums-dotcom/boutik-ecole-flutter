@@ -78,6 +78,8 @@ Set<String>? allowedRoles(String id) {
     case 269:
     case 280:
     case 281:
+    case 180:
+    case 181:
       return {admin};
     case 268:
     case 277:

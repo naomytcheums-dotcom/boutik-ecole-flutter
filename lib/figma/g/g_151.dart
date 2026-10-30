@@ -125,6 +125,7 @@ class G_151 extends ConsumerWidget {
       gTap(293, 320, 65, 32, () { gOpen(context, '152'); }), // parcours 151 -> 152
       gTap(62, 220, 299, 32, () { gOpen(context, '154'); }), // parcours 151 -> 154
       gTap(76, 129, 285, 34, () { gOpen(context, '157'); }), // parcours 151 -> 157
+      gTap(16, 318, 88, 35, () { gOpen(context, '22d'); }), // lien métier 151 -> 22d
     ]);
   }
 }

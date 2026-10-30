@@ -93,6 +93,7 @@ class G_P1 extends ConsumerWidget {
       gP(22, 38, 34, 32, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gTap(138, 273, 114, 114, () => gOpen(context, 'P2')),
       gTap(232, 538, 138, 34, () => gOpen(context, 'P3')),
+      gTap(37.5, 495, 97, 32, () { gOpen(context, 'p2'); }), // lien métier p1 -> p2
     ]);
   }
 }

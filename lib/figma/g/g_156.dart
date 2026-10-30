@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/engage.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_156 extends ConsumerWidget {
@@ -29,6 +30,7 @@ class G_156 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final prefs = ref.watch(alertPrefsProvider);
     return GScreen(w: 390, h: 1020, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 186.6, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 727.2, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
@@ -49,35 +51,35 @@ class G_156 extends ConsumerWidget {
       gP(24, 120, 56, 19, gText('Canaux', 15, Color(0xFF111015), weight: 700)),
       gP(40, 170, 202, 17, gText('Notifications dans l’application', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 192, 87, 14, gText('Toujours actives', 11.5, Color(0xFF66636E))),
-      gP(308, 179, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
+      gP(308, 179, 42, 24, GToggle(on: prefs['app']!, onChanged: (v) => ref.read(alertPrefsProvider.notifier).set('app', v), onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
       gP(40, 224, 314, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 236, 30, 17, gText('SMS', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 258, 175, 14, gText('Alertes importantes uniquement', 11.5, Color(0xFF66636E))),
-      gP(308, 245, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
+      gP(308, 245, 42, 24, GToggle(on: prefs['sms']!, onChanged: (v) => ref.read(alertPrefsProvider.notifier).set('sms', v), onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
       gP(40, 290, 314, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 302, 70, 17, gText('WhatsApp', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 324, 159, 14, gText('Opportunités et dates limites', 11.5, Color(0xFF66636E))),
-      gP(308, 311, 42, 24, GToggle(on: false, onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18)),
+      gP(308, 311, 42, 24, GToggle(on: prefs['whatsapp']!, onChanged: (v) => ref.read(alertPrefsProvider.notifier).set('whatsapp', v), onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18)),
       gP(40, 356, 314, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 368, 43, 17, gText('E-mail', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 390, 128, 14, gText('Résumé hebdomadaire', 11.5, Color(0xFF66636E))),
-      gP(308, 377, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
+      gP(308, 377, 42, 24, GToggle(on: prefs['email']!, onChanged: (v) => ref.read(alertPrefsProvider.notifier).set('email', v), onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
       gP(24, 436, 112, 19, gText('Types d’alertes', 15, Color(0xFF111015), weight: 700)),
       gP(40, 486, 119, 17, gText('Dossier incomplet', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 508, 187, 14, gText('Documents manquants ou refusés', 11.5, Color(0xFF66636E))),
-      gP(308, 495, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
+      gP(308, 495, 42, 24, GToggle(on: prefs['dossier']!, onChanged: (v) => ref.read(alertPrefsProvider.notifier).set('dossier', v), onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
       gP(40, 540, 314, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 552, 128, 17, gText('Offres compatibles', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 574, 88, 14, gText('Selon mon profil', 11.5, Color(0xFF66636E))),
-      gP(308, 561, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
+      gP(308, 561, 42, 24, GToggle(on: prefs['offres']!, onChanged: (v) => ref.read(alertPrefsProvider.notifier).set('offres', v), onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
       gP(40, 606, 314, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 618, 84, 17, gText('Dates limites', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 640, 107, 14, gText('48 h avant la clôture', 11.5, Color(0xFF66636E))),
-      gP(308, 627, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
+      gP(308, 627, 42, 24, GToggle(on: prefs['echeances']!, onChanged: (v) => ref.read(alertPrefsProvider.notifier).set('echeances', v), onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
       gP(40, 672, 314, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 684, 162, 17, gText('Résultats de candidature', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 706, 174, 14, gText('À chaque changement de statut', 11.5, Color(0xFF66636E))),
-      gP(308, 693, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
+      gP(308, 693, 42, 24, GToggle(on: prefs['resultats']!, onChanged: (v) => ref.read(alertPrefsProvider.notifier).set('resultats', v), onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
       gP(24, 752, 66, 16, gText('Fréquence', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 772, 342, 48, GField(hint: '', initial: 'Quotidienne', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(37.5, 785.5, 21, 21, gImg('assets/figma/v/8283e962773df2.svg')),
@@ -89,7 +91,7 @@ class G_156 extends ConsumerWidget {
       gP(46.875, 860.583, 10.25, 8.833, gImg('assets/figma/v/2bdcafa88f7a43.svg')),
       gP(76, 848, 277, 34, gText('L’IA n’envoie jamais d’alerte sans votre accord et vous pouvez tout désactiver.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
       gP(0, 920, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
-      gP(24, 936, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Enregistrer les préférences')),
+      gP(24, 936, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => savePrefs(context, ref, alertPrefsProvider)),
       gP(100.5, 954, 189, 18, gText('Enregistrer les préférences', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 1006, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
     ]);

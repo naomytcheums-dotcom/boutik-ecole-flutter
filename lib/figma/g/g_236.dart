@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/engage.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_236 extends ConsumerWidget {
@@ -29,6 +30,7 @@ class G_236 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final ch = ref.watch(channelPrefsProvider);
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
@@ -51,30 +53,54 @@ class G_236 extends ConsumerWidget {
       gP(44.667, 180.493, 21.84, 21.84, gImg('assets/figma/v/c011934b9b1395.svg')),
       gP(88, 170, 70, 17, gText('WhatsApp', 13.5, Color(0xFF111015), weight: 600)),
       gP(88, 192, 186, 14, gText('Suivi, validation de jalon, paiement', 11.5, Color(0xFF66636E))),
-      gP(293.6, 180, 58.4, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
-      gP(305.8, 184, 34, 14, gText('Activé', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
+      if (ch['whatsapp']!) ...[
+        gP(293.6, 180, 58.4, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
+        gP(305.8, 184, 34, 14, gText('Activé', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
+      ] else ...[
+        gP(274.4, 180, 77.6, 22, gBox(color: Color(0xFFF2EFF6), radii: [11, 11, 11, 11])),
+        gP(286.2, 184, 54, 14, gText('Désactivé', 11, Color(0xFF66636E), weight: 600, align: TextAlign.center)),
+      ],
+      gTap(270, 174, 90, 34, () => ref.read(channelPrefsProvider.notifier).set('whatsapp', !ch['whatsapp']!)),
       gP(88, 224, 266, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(36, 237, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(88, 236, 30, 17, gText('SMS', 13.5, Color(0xFF111015), weight: 600)),
       gP(88, 258, 108, 14, gText('Alertes importantes', 11.5, Color(0xFF66636E))),
-      gP(293.6, 246, 58.4, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
-      gP(305.8, 250, 34, 14, gText('Activé', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
+      if (ch['sms']!) ...[
+        gP(293.6, 246, 58.4, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
+        gP(305.8, 250, 34, 14, gText('Activé', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
+      ] else ...[
+        gP(274.4, 246, 77.6, 22, gBox(color: Color(0xFFF2EFF6), radii: [11, 11, 11, 11])),
+        gP(286.2, 250, 54, 14, gText('Désactivé', 11, Color(0xFF66636E), weight: 600, align: TextAlign.center)),
+      ],
+      gTap(270, 240, 90, 34, () => ref.read(channelPrefsProvider.notifier).set('sms', !ch['sms']!)),
       gP(88, 290, 266, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(36, 303, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(45.5, 311.667, 21, 18.5, gImg('assets/figma/v/e2c8fe85d4329b.svg')),
       gP(51.583, 327.5, 8.833, 6.838, gImg('assets/figma/v/165eb123ea9a50.svg')),
       gP(88, 302, 187, 17, gText('Notifications dans l’applica…', 13.5, Color(0xFF111015), weight: 600)),
       gP(88, 324, 87, 14, gText('Toujours actives', 11.5, Color(0xFF66636E))),
-      gP(293.6, 312, 58.4, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
-      gP(305.8, 316, 34, 14, gText('Activé', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
+      if (ch['app']!) ...[
+        gP(293.6, 312, 58.4, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
+        gP(305.8, 316, 34, 14, gText('Activé', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
+      ] else ...[
+        gP(274.4, 312, 77.6, 22, gBox(color: Color(0xFFF2EFF6), radii: [11, 11, 11, 11])),
+        gP(286.2, 316, 54, 14, gText('Désactivé', 11, Color(0xFF66636E), weight: 600, align: TextAlign.center)),
+      ],
+      gTap(270, 306, 90, 34, () => ref.read(channelPrefsProvider.notifier).set('app', !ch['app']!)),
       gP(88, 356, 266, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(36, 369, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(46.333, 377.667, 19.333, 22.667, gImg('assets/figma/v/8a418070bfb100.svg')),
       gP(54.667, 377.667, 11, 11, gImg('assets/figma/v/2e28e879cb0de7.svg')),
       gP(88, 368, 43, 17, gText('E-mail', 13.5, Color(0xFF111015), weight: 600)),
       gP(88, 390, 96, 14, gText('Reçus et résumés', 11.5, Color(0xFF66636E))),
-      gP(274.4, 378, 77.6, 22, gBox(color: Color(0xFFF2EFF6), radii: [11, 11, 11, 11])),
-      gP(286.2, 382, 54, 14, gText('Désactivé', 11, Color(0xFF66636E), weight: 600, align: TextAlign.center)),
+      if (ch['email']!) ...[
+        gP(293.6, 378, 58.4, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
+        gP(305.8, 382, 34, 14, gText('Activé', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
+      ] else ...[
+        gP(274.4, 378, 77.6, 22, gBox(color: Color(0xFFF2EFF6), radii: [11, 11, 11, 11])),
+        gP(286.2, 382, 54, 14, gText('Désactivé', 11, Color(0xFF66636E), weight: 600, align: TextAlign.center)),
+      ],
+      gTap(270, 372, 90, 34, () => ref.read(channelPrefsProvider.notifier).set('email', !ch['email']!)),
       gP(24, 436, 115, 16, gText('Numéro WhatsApp', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 456, 342, 48, GField(hint: '', initial: '+237 6 XX XX XX XX', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
       gP(39, 471, 18, 18, const SizedBox.expand(), tap: () => gTab(context, '53')),
@@ -84,7 +110,7 @@ class G_236 extends ConsumerWidget {
       gP(46.875, 553.083, 10.25, 8.833, gImg('assets/figma/v/2bdcafa88f7a43.svg')),
       gP(76, 532, 277, 51, gText('Aucune donnée bancaire n’est demandée dans WhatsApp : le paiement passe par votre application Mobile Money.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
       gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
-      gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Enregistrer')),
+      gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => savePrefs(context, ref, channelPrefsProvider)),
       gP(156, 778, 78, 18, gText('Enregistrer', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(44.667, 245.667, 22.667, 22.667, gImg('assets/figma/v/37684f95055729.svg')),

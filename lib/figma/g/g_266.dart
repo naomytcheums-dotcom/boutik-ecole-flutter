@@ -125,6 +125,7 @@ class G_266 extends ConsumerWidget {
       gP(920, 302, 313, 34, gText('Choisir un point de restauration, vérifier puis confirmer. L’action est journalisée.', 11.5, Color(0xFF66636E), inter: true, lh: 17, wrap: true)),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(681, 380, 170, 38, 'Réussi', 11.5, 400), GChip(920, 380, 170, 38, 'Lancer la restauration', 11, 600)], selected: 1, selFill: Color(0xFF0B0B0D), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF3D3B37), radius: 19, inter: true)),
       gP(268, 560, 238, 14, gText('Version v1.8.2 · dernière migration le 24 oct.', 11.5, Color(0xFF66636E), inter: true)),
+      gTap(276, 142, 44, 32, () { gOpen(context, '280'); }), // lien métier 266 -> 280
     ]);
   }
 }

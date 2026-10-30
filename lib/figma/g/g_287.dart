@@ -72,6 +72,7 @@ class G_287 extends ConsumerWidget {
       gP(508, 882, 74, 15, gText('En validation', 12, Color(0xFF8F5400), weight: 700)),
       gP(508, 910, 116, 15, gText('Modifier  ·  Dupliquer', 12, Color(0xFF66636E), weight: 500)),
       gP(40, 970, 401, 15, gText('Mise en page adaptée : 3 colonnes (mobile : 1 colonne, bureau : tableau)', 12, Color(0xFF66636E))),
+      gTap(32, 42, 449, 51, () { gOpen(context, '288'); }), // lien métier 287 -> 288
     ]);
   }
 }

@@ -54,10 +54,10 @@ void main() {
     expect(titles.where((t) => t == 'Casque d\'un autre vendeur').length, 1);
   });
 
-  test('annonce sans photo : cadre neutre, jamais la photo d'un autre produit ; annonce avec photo : sa propre photo', () {
+  test("annonce sans photo : cadre neutre, jamais la photo d'un autre produit ; annonce avec photo : sa propre photo", () {
     final c = ProviderContainer(overrides: [publicListingsProvider.overrideWith(_FakePublic.new)]);
     addTearDown(c.dispose);
-    final p = c.read(allProductsProvider).firstWhere((p) => p.title == 'Casque d'un autre vendeur');
+    final p = c.read(allProductsProvider).firstWhere((p) => p.title == "Casque d'un autre vendeur");
     expect(p.image, 'placeholder');
     expect(p.seller, 'Étudiant-vendeur'); // pas le nom de la personne qui consulte
   });

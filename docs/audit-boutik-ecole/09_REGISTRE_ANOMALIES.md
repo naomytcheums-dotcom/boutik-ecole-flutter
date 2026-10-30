@@ -52,7 +52,8 @@ Audit réalisé le 29 octobre 2026, en lecture seule (aucun déploiement, aucun 
 - **Statut** : VÉRIFIÉ par le code. `supabase/schema.sql:132` — `for update using (seller_id = auth.uid() or …)` sans `WITH CHECK` : un vendeur peut passer `status` à `approved`.
 - **Impact** : la validation par le département peut être contournée. **Correction** : séparer les colonnes (le vendeur ne modifie pas `status`) ; transition contrôlée côté serveur. **Test** : mise à jour de `status` par un étudiant → refus.
 
-### AN-005 · Paiement : rejeu de référence et montant non vérifié — CORRIGÉE MAIS NON VÉRIFIÉE (blocage : clé Notch Pay absente)
+### AN-005 · Paiement : rejeu de référence et montant non vérifié — CORRIGÉE ET VÉRIFIÉE EN SANDBOX (30/10/2026) ; reste ouvert : webhook signé
+- **Vérification 30/10/2026 (sandbox, compte jetable)** : modification directe de `orders.paid`/`reference` par l'acheteur → 0 ligne modifiée, commande restée non payée ; commande d'un autre utilisateur → 404 ; relance sur commande déjà payée → 409 `already_paid` ; numéro non camerounais → 400. Le contrôle montant/devise n'a pas été exercé avec un cas de sous-paiement (le sandbox ne permet pas de le provoquer).
 - **Déploiement confirmé** : la fonction `pay` en ligne applique le nouveau CORS (origine `https://boutik-ecole.vercel.app` renvoyée même pour une origine étrangère). Les contrôles référence/montant/devise sont dans le code déployé mais n'ont pas pu être exercés sans clé Notch Pay.
 - **Effet du correctif AN-003** : `orders.reference` n'est plus écrivable par le client (seule la fonction `pay` la renseigne) et le montant prélevé vient d'une commande calculée par le serveur. **Reste ouvert** : comparaison du montant/devise renvoyés par Notch Pay et webhook signé.
 - **Statut** : VÉRIFIÉ par le code. `pay/index.ts:57-66` : l'action `status` lit `order.reference` (colonne écrite par le client à la création) puis marque la commande payée si Notch Pay renvoie `complete`. Rien ne contrôle que la référence appartient à cette commande ni que le montant payé correspond.
@@ -93,7 +94,8 @@ Audit réalisé le 29 octobre 2026, en lecture seule (aucun déploiement, aucun 
 - **Impact** : aucune garantie réelle tant que les données restent locales ; une fois branchées sur la base, il faudra que chaque requête soit protégée par RLS. **Correction** : voir plan (phase backend).
 
 ### AN-014 · Paiement Mobile Money non vérifié de bout en bout
-- **Statut** : NON VÉRIFIABLE. La clé Notch Pay n'était pas configurée côté serveur pendant l'audit (la fonction répond `not_configured`, mesuré). Les points d'accès de la documentation du fournisseur sont partiellement contradictoires (`/payment` vs `/payments`).
+- **Mise à jour 30/10/2026** : clé configurée ; sandbox MTN `+237670000000` : création → prélèvement → statut `complete` (commandes #BE-2026-0146/0147/0150 testées) ; `+237670000004` → `failed`. Le numéro `+237670000001` a été validé `complete` (et non « solde insuffisant » comme la documentation le laissait attendre) : comportement du sandbox à reconfirmer. Orange Money et production non testés ; le webhook signé reste à faire.
+- **Statut initial** : NON VÉRIFIABLE. La clé Notch Pay n'était pas configurée côté serveur pendant l'audit (la fonction répond `not_configured`, mesuré). Les points d'accès de la documentation du fournisseur sont partiellement contradictoires (`/payment` vs `/payments`).
 - **Impact** : parcours de paiement principal non prouvé. **Test à réussir** : paiement de test (numéro `+237 670 00 00 00`) → commande payée ; échec `…000001` ; annulation `…000004`.
 
 ---

@@ -8,7 +8,7 @@ Exigence = élément fonctionnel issu des sections de la maquette Figma (A à Y,
 | B Authentification (11–20) | 11–18c | `auth.dart`, `backend.dart` | Supabase Auth, `profiles` | `account_test` | Partiel : OTP simulé (AN-011) |
 | C Découverte et achats (21–31) | 19, 22, 25, 06 | `store.dart`, `l06.dart`, `lfav.dart` | (catalogue local) | `purchase_flow_test`, `search_favorites_test` | Partiel : données locales (AN-007) |
 | D Fiches produits (32–39) | 05, 33… | `store.dart` | — | golden | Partiel |
-| E Commandes, livraison (41–49) | 07, 08, 09, 45 | `store.dart`, `l09.dart`, `pay.dart` | `orders`, `order_lines`, fonction `pay` | `purchase_flow_test` | Partiel ; paiement non vérifié (AN-014) |
+| E Commandes, livraison (41–49) | 07, 08, 09, 45 | `store.dart`, `l09.dart`, `pay.dart` | `orders`, `order_lines`, fonction `pay` | `purchase_flow_test` | Partiel ; paiement MTN vérifié en sandbox (AN-014 partiel) |
 | F Communication (50–56) | 50–56 | `chat.dart` | — | golden | Messagerie texte locale ; reste simulé |
 | G Espace étudiant/vendeur (57–69) | 57–69 | `seller.dart`, `review.dart` | — (`listings` non utilisée) | `seller_test` | En mémoire (AN-007, AN-008) |
 | H Talents (70–77) | 70–77 | `talents.dart` | — | `talents_test` | En mémoire |

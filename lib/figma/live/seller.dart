@@ -17,7 +17,7 @@ class Listing {
   final int price, stock;
   final bool published, inReview;
 
-  static const lowStock = 5;
+  static const lowStock = 30;
 
   /// Libellé d'état : Brouillon, Rupture, Stock bas ou Publié.
   String get label => !published ? (inReview ? 'En validation' : 'Brouillon') : (stock == 0 ? 'Rupture' : (stock <= lowStock ? 'Stock bas' : 'Publié'));
@@ -188,7 +188,7 @@ void submitListing(WidgetRef ref, BuildContext context, {required bool publish})
   final errs = <String, String?>{
     'np_title': title.length < 3 ? 'Le titre est obligatoire (3 à 80 caractères).' : (title.length > 80 ? 'Titre trop long (80 caractères maximum).' : null),
     'np_price': _intError(f['np_price'] ?? '25 000', 'Prix', min: 500),
-    'np_stock': _intError(f['np_stock'] ?? '15', 'Stock'),
+    'np_stock': _intError(f['np_stock'] ?? '30', 'Stock'),
   };
   if (cat.isEmpty) errs['np_cat'] = 'Choisissez une catégorie.';
   final bad = {for (final e in errs.entries) if (e.value != null) e.key: e.value!};
@@ -206,7 +206,7 @@ void submitListing(WidgetRef ref, BuildContext context, {required bool publish})
         title: title,
         category: catShort,
         price: int.parse((f['np_price'] ?? '25 000').replaceAll(RegExp(r'[\s ]'), '')),
-        stock: int.parse(f['np_stock'] ?? '15'),
+        stock: int.parse(f['np_stock'] ?? '30'),
         published: false,
         inReview: publish,
         description: f['np_desc'] ?? '',

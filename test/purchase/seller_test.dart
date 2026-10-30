@@ -31,7 +31,7 @@ void main() {
     expect(c.read(filteredProductsProvider), isEmpty);
 
     // réassort
-    c.read(listingsProvider.notifier).setStock('Tableau décoratif', 10);
+    c.read(listingsProvider.notifier).setStock('Tableau décoratif', 40);
     expect(c.read(listingsProvider).firstWhere((x) => x.title == 'Tableau décoratif').label, 'Publié');
   });
 

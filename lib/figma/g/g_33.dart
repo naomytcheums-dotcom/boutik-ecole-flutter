@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/messages.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_33 extends ConsumerWidget {
@@ -76,7 +77,7 @@ class G_33 extends ConsumerWidget {
       gP(56, 867, 305, 17, gText('Finition et test', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
       gP(56, 887, 305, 14, gText('Contrôle électrique', 11.5, Color(0xFF66636E), wrap: true)),
       gP(0, 953, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
-      gP(24, 969, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Contacter le créateur')),
+      gP(24, 969, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () { contactSeller(ref, context, ref.read(selectedProductProvider).title); }),
       gP(120.5, 987, 149, 18, gText('Contacter le créateur', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 1039, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gTap(24, 426, 342, 70, () => gOpen(context, '10')),

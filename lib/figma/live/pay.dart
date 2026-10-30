@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -148,4 +149,37 @@ Future<void> startPayment(WidgetRef ref, BuildContext context) async {
   if (!context.mounted) return;
   pay.startPolling(context, o);
   gOpen(context, '257');
+}
+
+
+/// « Annuler la commande » : seule une commande impayée peut l'être ; le serveur restitue le stock réservé.
+Future<void> cancelViewedOrder(WidgetRef ref, BuildContext context) async {
+  final o = ref.read(viewedOrderProvider);
+  if (o.cancelled) return gToast(context, 'Cette commande est déjà annulée.');
+  if (o.paid) return gAlert(context, 'Annulation impossible', 'Cette commande est déjà payée. Contactez le vendeur depuis le suivi de commande pour toute demande.');
+  if (Backend.ready) {
+    final err = await Backend.cancelOrder(o.id);
+    if (err != null) {
+      if (context.mounted) await gAlert(context, 'Annulation impossible', err);
+      return;
+    }
+  }
+  ref.read(ordersProvider.notifier).cancel(o.id);
+  if (!context.mounted) return;
+  gToast(context, 'Commande annulée');
+  gTab(context, '03');
+}
+
+/// Copie la référence de la commande dans le presse-papiers.
+Future<void> copyOrderRef(WidgetRef ref, BuildContext context) async {
+  final o = ref.read(viewedOrderProvider);
+  await Clipboard.setData(ClipboardData(text: o.id));
+  if (context.mounted) gToast(context, 'Référence ${o.id} copiée');
+}
+
+/// « J'ai payé » : interroge le serveur de paiement ; la commande n'est confirmée que si le paiement l'est réellement.
+Future<void> checkPaymentNow(WidgetRef ref, BuildContext context) async {
+  final o = ref.read(viewedOrderProvider);
+  final r = await ref.read(payProvider.notifier).check(context, o);
+  if (r == PayPhase.failed && context.mounted) gToast(context, 'Paiement non confirmé. Réessayez.');
 }

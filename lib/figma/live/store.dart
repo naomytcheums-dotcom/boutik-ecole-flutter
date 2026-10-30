@@ -113,9 +113,9 @@ class Order {
         status: status, paid: paid, cancelled: cancelled,
       );
 
-  Order copyWith({int? status, bool? paid}) => Order(
+  Order copyWith({int? status, bool? paid, bool? cancelled}) => Order(
         id: id, date: date, lines: lines, subtotal: subtotal, fee: fee, method: method, reference: reference,
-        status: status ?? this.status, paid: paid ?? this.paid, cancelled: cancelled,
+        status: status ?? this.status, paid: paid ?? this.paid, cancelled: cancelled ?? this.cancelled,
       );
 }
 
@@ -146,6 +146,7 @@ class Orders extends Notifier<List<Order>> {
 
   void adopt(String oldId, String id, int subtotal, int fee) => state = [for (final o in state) o.id == oldId ? o.withServer(id, subtotal, fee) : o];
   void discard(String id) => state = [for (final o in state) if (o.id != id) o];
+  void cancel(String id) => state = [for (final o in state) o.id == id ? o.copyWith(cancelled: true) : o];
   void markPaid(String id) => state = [for (final o in state) o.id == id ? o.copyWith(paid: true) : o];
   void advance(String id) => state = [for (final o in state) o.id == id ? o.copyWith(status: (o.status + 1).clamp(0, 3)) : o];
 }

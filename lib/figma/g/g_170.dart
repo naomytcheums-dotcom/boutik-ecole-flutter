@@ -68,7 +68,7 @@ class G_170 extends ConsumerWidget {
       gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
       gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gBack(context)),
       gP(78.5, 778, 54, 18, gText('Annuler', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
-      gP(203, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE5484D), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Envoyer le signalement')),
+      gP(203, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE5484D), bw: 1.5, radii: [27, 27, 27, 27])),
       gP(204, 778, 161, 18, gText('Envoyer le signalement', 14.5, Color(0xFFE5484D), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gTap(24, 232, 342, 34, () { ref.read(reportReasonProvider.notifier).set(0); gToast(context, 'Motif : ${reportReasons[0].$2}'); }),

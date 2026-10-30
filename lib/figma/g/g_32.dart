@@ -81,7 +81,7 @@ class G_32 extends ConsumerWidget {
       gP(306.4, 848, 45.6, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
       gP(318.7, 852, 21, 14, gText('Voir', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)),
       gP(0, 916, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
-      gP(24, 932, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Ajouter au panier')),
+      gP(24, 932, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () { ref.read(cartProvider.notifier).add(ref.read(selectedProductProvider).toLine()); gToast(context, 'Ajouté au panier'); gOpen(context, '06'); }),
       gP(136, 950, 118, 18, gText('Ajouter au panier', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 1002, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
     ]);

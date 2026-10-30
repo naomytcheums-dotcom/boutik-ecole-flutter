@@ -82,7 +82,7 @@ class G_79 extends ConsumerWidget {
       gP(98, 759, 66, 14, gText('Conception', 11.5, Color(0xFF66636E))),
       gP(336.75, 750.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
       gP(0, 815, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
-      gP(24, 831, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Soutenir le projet')),
+      gP(24, 831, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27])),
       gP(135, 849, 120, 18, gText('Soutenir le projet', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 901, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(341.667, 79, 20.667, 15.167, gImg('assets/figma/v/38cc299702e092.svg')),

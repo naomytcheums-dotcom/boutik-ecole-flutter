@@ -70,7 +70,7 @@ class G_11 extends ConsumerWidget {
       gP(24, 650, 142, 1, gBox(color: Color(0xFFECE8F2))),
       gP(186.5, 642, 17, 16, gText('ou', 13, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
       gP(224, 650, 142, 1, gBox(color: Color(0xFFECE8F2))),
-      gP(24, 678, 342, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Créer un compte')),
+      gP(24, 678, 342, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27])),
       gP(134, 695.5, 122, 19, gText('Créer un compte', 15, Color(0xFF111015), weight: 600, align: TextAlign.center)),
       gP(40.5, 773, 309, 34, gText('En continuant, vous acceptez nos Conditions d’utilisation\net notre Politique de confidentialité.', 11.5, Color(0xFF66636E), lh: 17, align: TextAlign.center)),
       gP(125, 884, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),

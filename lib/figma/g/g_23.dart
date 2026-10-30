@@ -74,9 +74,9 @@ class G_23 extends ConsumerWidget {
       gP(38.077, 668.077, 152, 19, gText('Toutes les catégories', 15, Color(0xFF111015), weight: 500)),
       gP(339.692, 671.964, 14.077, 10.038, gImg('assets/figma/v/7a385ca7740320.svg')),
       gP(5.769, 739.986, 384.231, 1.189, gBox(color: Color(0xFFF2EFF6))),
-      gP(21.346, 760.789, 151.731, 52.304, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.365, radii: [25.385, 25.385, 25.385, 25.385]), tap: () => gToast(context, 'Démonstration : Réinitialiser')),
+      gP(21.346, 760.789, 151.731, 52.304, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.365, radii: [25.385, 25.385, 25.385, 25.385]), tap: () { ref.read(searchQueryProvider.notifier).set(''); ref.read(categoryProvider.notifier).set(0); gToast(context, 'Filtres réinitialisés'); }),
       gP(51.423, 776.941, 91, 20, gText('Réinitialiser', 16.154, Color(0xFF111015), weight: 700, align: TextAlign.center)),
-      gP(186.923, 760.789, 182.308, 52.304, gBox(color: Color(0xFF111015), radii: [25.385, 25.385, 25.385, 25.385]), tap: () => gToast(context, 'Démonstration : Appliquer')),
+      gP(186.923, 760.789, 182.308, 52.304, gBox(color: Color(0xFF111015), radii: [25.385, 25.385, 25.385, 25.385]), tap: () => gBack(context)),
       gP(237.577, 776.441, 81, 21, gText('Appliquer', 16.731, Color(0xFFFFFFFF), weight: 700, align: TextAlign.center)),
       gP(152.308, 830.924, 88.846, 2.972, gBox(color: Color(0xFF111015), radii: [1.731, 1.731, 1.731, 1.731])),
     ]);

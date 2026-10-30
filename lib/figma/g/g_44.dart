@@ -61,7 +61,7 @@ class G_44 extends ConsumerWidget {
       gP(47.796, 610.375, 8.408, 6.712, gImg('assets/figma/v/f59da0513c0b4c.svg')),
       gP(76, 590, 277, 34, gText('Vous serez notifié dès que votre commande sera prête à être retirée.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
       gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
-      gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Accueil')),
+      gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gTab(context, '03')),
       gP(79.5, 778, 52, 18, gText('Accueil', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center), tap: () => gTab(context, '03')),
       gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27])),
       gP(209, 778, 151, 18, gText('Suivre ma commande', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),

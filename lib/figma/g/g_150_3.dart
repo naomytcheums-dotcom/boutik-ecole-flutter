@@ -45,7 +45,7 @@ class G_150_3 extends ConsumerWidget {
       gP(42.5, 396, 305, 38, gText('Vérifiez votre connexion Internet puis réessayez. Vos données sont conservées.', 13, Color(0xFF66636E), lh: 19, align: TextAlign.center, wrap: true)),
       gP(54, 464, 282, 50, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [25, 25, 25, 25]), tap: () => gBack(context)),
       gP(158.5, 480, 73, 18, gText('Réessayer', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
-      gP(24, 538, 342, 50, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [25, 25, 25, 25]), tap: () => gToast(context, 'Démonstration : Voir le mode hors ligne')),
+      gP(24, 538, 342, 50, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [25, 25, 25, 25]), tap: () => gOpen(context, '182')),
       gP(116.5, 554, 157, 18, gText('Voir le mode hors ligne', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
       gP(125, 832, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),

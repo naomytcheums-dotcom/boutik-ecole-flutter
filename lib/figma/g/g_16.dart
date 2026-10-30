@@ -79,7 +79,7 @@ class G_16 extends ConsumerWidget {
       gP(43.042, 657.083, 13.917, 13.125, gImg('assets/figma/v/1fb86fed903268.svg')),
       gP(327.083, 659.458, 21.833, 17.083, gImg('assets/figma/v/abcfc4162eb13b.svg')),
       gP(332.625, 662.625, 10.75, 10.75, gImg('assets/figma/v/e4edba8fd4f28c.svg')),
-      gP(24, 724, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x29122640), offset: Offset(0, 5), blurRadius: 12, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Réinitialiser le mot de passe')),
+      gP(24, 724, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x29122640), offset: Offset(0, 5), blurRadius: 12, spreadRadius: 0)], radii: [27, 27, 27, 27])),
       gP(89, 741, 212, 20, gText('Réinitialiser le mot de passe', 16, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 884, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(166.5, 172.167, 69, 42.167, gImg('assets/figma/r/173_46.png')),

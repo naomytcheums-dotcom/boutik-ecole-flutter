@@ -693,3 +693,10 @@ Future<void> editProfileDialog(BuildContext context, WidgetRef ref) async {
   ref.read(authProvider.notifier).update(updated);
   if (context.mounted) gToast(context, 'Profil enregistré');
 }
+
+
+/// « Se déconnecter de tous les appareils » : sessions révoquées côté serveur, puis retour à l'accueil.
+Future<void> logoutEverywhere(WidgetRef ref, BuildContext context) async {
+  await Backend.signOutAll();
+  ref.read(authProvider.notifier).logout();
+}

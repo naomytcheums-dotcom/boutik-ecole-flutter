@@ -99,7 +99,7 @@ class G_42 extends ConsumerWidget {
       gP(26.667, 681.75, 14.667, 11.958, gImg('assets/figma/v/w_check.svg')),
       gP(54, 679, 315, 36, gText('J’accepte les conditions de vente et la politique de retour.', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
       gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
-      gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Confirmer la commande')),
+      gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gOpen(context, '08')),
       gP(110.5, 778, 169, 18, gText('Confirmer la commande', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
     ]);

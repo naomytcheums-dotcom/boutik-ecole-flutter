@@ -3,21 +3,21 @@
 Générée par `tool/audit/gen_matrix.py` à partir du code (analyse statique). **Aucun écran n'est déclaré « terminé et testé »** : le seul test exécuté sur chaque écran est son rendu (test golden) ; le comportement n'a pas été vérifié écran par écran dans un navigateur.
 
 - Écrans : **315**
-- Atteignables depuis le démarrage par liens contextuels explicites : **60** ; les autres sont atteignables par **« Mes rubriques »** (écran `/espace`, filtré par rôle, ouvert depuis le profil et la page de bienvenue), pas par un lien propre à leur parcours.
-- Actions « Démonstration » restantes : **175** sur **122** écrans.
+- Atteignables depuis le démarrage par liens contextuels explicites : **63** ; les autres sont atteignables par **« Mes rubriques »** (écran `/espace`, filtré par rôle, ouvert depuis le profil et la page de bienvenue), pas par un lien propre à leur parcours.
+- Actions « Démonstration » restantes : **127** sur **91** écrans.
 
 | Statut | Écrans |
 |---|---|
-| NAVIGATION SEULE | 144 |
-| PARTIEL | 122 |
-| IMPLÉMENTÉ MAIS NON PERSISTÉ | 36 |
-| IMPLÉMENTÉ | 12 |
+| NAVIGATION SEULE | 155 |
+| PARTIEL | 91 |
+| IMPLÉMENTÉ MAIS NON PERSISTÉ | 54 |
+| IMPLÉMENTÉ | 14 |
 | STATIQUE | 1 |
 
 | Id | Titre | Route | Rôles autorisés | Rubrique | Éléments interactifs | Démos restantes | Lien contextuel | Données | Tests | Statut |
 |---|---|---|---|---|---|---|---|---|---|---|
 | 01 | Bienvenue | `/s/01` | tous | A | 1 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
-| 02 | Bienvenue (variante) | `/s/02` | tous | A | 2 | 0 | oui | serveur (Supabase) | golden (rendu) | IMPLÉMENTÉ — serveur ; comportement non vérifié en navigateur |
+| 02 | Bienvenue (variante) | `/s/02` | tous | A | 2 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 03 | Accueil | `/s/03` | tous | A | 16 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 04 | Explorer | `/s/04` | tous | A | 11 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 05 | Fiche produit | `/s/05` | tous | A | 5 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
@@ -26,66 +26,66 @@ Générée par `tool/audit/gen_matrix.py` à partir du code (analyse statique). 
 | 08 | Paiement | `/s/08` | tous | A | 13 | 0 | oui | serveur (Supabase) | golden (rendu) | IMPLÉMENTÉ — serveur ; comportement non vérifié en navigateur |
 | 09 | Ma commande | `/s/09` | tous | A | 11 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 10 | Profil étudiant | `/s/10` | tous | A | 18 | 0 | oui | serveur (Supabase) | golden (rendu) | IMPLÉMENTÉ — serveur ; comportement non vérifié en navigateur |
-| 11 | Connexion | `/s/11` | tous | B | 7 | 1 | oui | serveur (Supabase) | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
+| 11 | Connexion | `/s/11` | tous | B | 6 | 0 | oui | serveur (Supabase) | golden (rendu) | IMPLÉMENTÉ — serveur ; comportement non vérifié en navigateur |
 | 12 | Créer un compte | `/s/12` | tous | B | 10 | 0 | oui | serveur (Supabase) | golden (rendu) | IMPLÉMENTÉ — serveur ; comportement non vérifié en navigateur |
 | 13 | Choix du profil | `/s/13` | tous | B | 6 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 14 | Vérification du compte | `/s/14` | tous | B | 5 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 15 | Mot de passe oublié | `/s/15` | tous | B | 4 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
-| 16 | Nouveau mot de passe | `/s/16` | tous | B | 5 | 1 | oui | mémoire locale (non persistée) | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
+| 16 | Nouveau mot de passe | `/s/16` | tous | B | 4 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 17 | Conditions et confidentialité | `/s/17` | tous | B | 5 | 1 | non | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
 | 18 | État de validation | `/s/18` | tous | B | 3 | 1 | non | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
 | 18b | Compléter mon profil | `/s/18b` | tous | B | 11 | 0 | oui | serveur (Supabase) | golden (rendu) | IMPLÉMENTÉ — serveur ; comportement non vérifié en navigateur |
 | 18c | Vérification étudiant | `/s/18c` | tous | B | 6 | 2 | oui | statique | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
 | 19 | Découvrir | `/s/19` | tous | C | 9 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 20 | Résultats de recherche | `/s/20` | tous | C | 10 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
-| 21 | Recherche avancée | `/s/21` | tous | C | 10 | 1 | oui | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
+| 21 | Recherche avancée | `/s/21` | tous | C | 10 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 22 | Catalogue de produits | `/s/22` | tous | C | 21 | 0 | oui | serveur (Supabase) | golden (rendu) | IMPLÉMENTÉ — serveur ; comportement non vérifié en navigateur |
 | 22b | Services et prestations | `/s/22b` | tous | C | 9 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 22c | Tendances et nouveautés | `/s/22c` | tous | C | 9 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 22d | Pour vous | `/s/22d` | tous | C | 7 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
-| 23 | Filtres | `/s/23` | tous | C | 5 | 3 | non | statique | golden (rendu) | PARTIEL (3 action(s) de démonstration) |
+| 23 | Filtres | `/s/23` | tous | C | 5 | 1 | non | mémoire locale (non persistée) | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
 | 24 | Profil vendeur | `/s/24` | tous | C | 8 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 25 | Mes favoris | `/s/25` | tous | C | 13 | 0 | non | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 25b | Mes collections | `/s/25b` | tous | C | 9 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 26 | Comparer des offres | `/s/26` | tous | C | 3 | 1 | non | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
 | 27 | Mes adresses | `/s/27` | tous | C | 8 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 28 | Mes commandes | `/s/28` | tous | C | 11 | 0 | non | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
-| 29 | Détail de la commande | `/s/29` | tous | C | 3 | 2 | non | statique | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
-| 30 | Commande reçue | `/s/30` | tous | C | 4 | 3 | non | statique | golden (rendu) | PARTIEL (3 action(s) de démonstration) |
+| 29 | Détail de la commande | `/s/29` | tous | C | 3 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
+| 30 | Commande reçue | `/s/30` | tous | C | 4 | 2 | non | statique | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
 | 31 | Avis et évaluations | `/s/31` | tous | C | 7 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
-| 32 | Détail du produit | `/s/32` | tous | D | 3 | 1 | non | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
-| 33 | Histoire du produit | `/s/33` | tous | D | 3 | 1 | oui | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
+| 32 | Détail du produit | `/s/32` | tous | D | 3 | 0 | non | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
+| 33 | Histoire du produit | `/s/33` | tous | D | 3 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 34 | Galerie | `/s/34` | tous | D | 1 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
-| 35 | Disponibilité | `/s/35` | tous | D | 3 | 2 | non | statique | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
+| 35 | Disponibilité | `/s/35` | tous | D | 3 | 1 | non | mémoire locale (non persistée) | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
 | 36 | Détail du service | `/s/36` | tous | D | 3 | 2 | non | statique | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
 | 38 | Réputation | `/s/38` | tous | D | 1 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 39 | Demande de renseignements | `/s/39` | tous | D | 6 | 1 | non | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
 | 40 | Demande de devis | `/s/40` | tous | E | 6 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
-| 41 | Adresse de livraison | `/s/41` | tous | E | 8 | 1 | non | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
-| 42 | Récapitulatif | `/s/42` | tous | E | 2 | 1 | non | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
-| 43 | Instructions de paiement | `/s/43` | tous | E | 3 | 2 | non | statique | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
-| 44 | Commande confirmée | `/s/44` | tous | E | 3 | 1 | oui | mémoire locale (non persistée) | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
+| 41 | Adresse de livraison | `/s/41` | tous | E | 8 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
+| 42 | Récapitulatif | `/s/42` | tous | E | 2 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
+| 43 | Instructions de paiement | `/s/43` | tous | E | 3 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
+| 44 | Commande confirmée | `/s/44` | tous | E | 3 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 45 | Mes commandes | `/s/45` | tous | E | 14 | 0 | non | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
-| 46 | Suivi de livraison | `/s/46` | tous | E | 3 | 2 | non | statique | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
-| 47 | Annuler la commande | `/s/47` | tous | E | 3 | 2 | non | statique | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
+| 46 | Suivi de livraison | `/s/46` | tous | E | 3 | 1 | non | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
+| 47 | Annuler la commande | `/s/47` | tous | E | 3 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 48 | Réclamation | `/s/48` | tous | E | 3 | 1 | non | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
 | 49 | Aide et support | `/s/49` | tous | E | 10 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 50 | Notifications | `/s/50` | tous | F | 10 | 0 | non | serveur (Supabase) | golden (rendu) | IMPLÉMENTÉ — serveur ; comportement non vérifié en navigateur |
-| 51 | Détail d’une notification | `/s/51` | tous | F | 3 | 2 | non | statique | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
+| 51 | Détail d’une notification | `/s/51` | tous | F | 3 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 52 | Messages | `/s/52` | tous | F | 9 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 53 | Conversation | `/s/53` | tous | F | 2 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 54 | Conversation commande | `/s/54` | tous | F | 2 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 55 | Conversation entreprise | `/s/55` | tous | F | 5 | 2 | non | statique | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
 | 56 | Notifications et confidentialité | `/s/56` | tous | F | 8 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 57 | Tableau de bord vendeur | `/s/57` | étudiant, dépt, admin | G | 8 | 0 | non | serveur (Supabase) | golden (rendu) | IMPLÉMENTÉ — serveur ; comportement non vérifié en navigateur |
-| 58 | Nouveau produit | `/s/58` | étudiant, dépt, admin | G | 9 | 2 | non | serveur (Supabase) | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
+| 58 | Nouveau produit | `/s/58` | étudiant, dépt, admin | G | 7 | 0 | oui | serveur (Supabase) | golden (rendu) | IMPLÉMENTÉ — serveur ; comportement non vérifié en navigateur |
 | 59 | Nouveau service | `/s/59` | étudiant, dépt, admin | G | 9 | 2 | non | statique | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
-| 60 | Modifier l’annonce | `/s/60` | étudiant, dépt, admin | G | 3 | 2 | non | statique | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
-| 61 | Mon catalogue | `/s/61` | étudiant, dépt, admin | G | 10 | 0 | non | serveur (Supabase) | golden (rendu) | IMPLÉMENTÉ — serveur ; comportement non vérifié en navigateur |
+| 60 | Modifier l’annonce | `/s/60` | étudiant, dépt, admin | G | 3 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
+| 61 | Mon catalogue | `/s/61` | étudiant, dépt, admin | G | 15 | 0 | oui | serveur (Supabase) | golden (rendu) | IMPLÉMENTÉ — serveur ; comportement non vérifié en navigateur |
 | 62 | Stocks | `/s/62` | étudiant, dépt, admin | G | 13 | 0 | non | serveur (Supabase) | golden (rendu) | IMPLÉMENTÉ — serveur ; comportement non vérifié en navigateur |
 | 63 | Commandes reçues | `/s/63` | étudiant, dépt, admin | G | 11 | 0 | non | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
-| 64 | Préparer une commande | `/s/64` | étudiant, dépt, admin | G | 5 | 2 | non | mémoire locale (non persistée) | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
-| 65 | Détail d’une vente | `/s/65` | étudiant, dépt, admin | G | 2 | 1 | non | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
+| 64 | Préparer une commande | `/s/64` | étudiant, dépt, admin | G | 3 | 0 | non | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
+| 65 | Détail d’une vente | `/s/65` | étudiant, dépt, admin | G | 2 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 66 | Revenus | `/s/66` | étudiant, dépt, admin | G | 6 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 67 | Statistiques | `/s/67` | étudiant, dépt, admin | G | 7 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 69 | Validations | `/s/69` | étudiant, dépt, admin | G | 3 | 1 | non | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
@@ -97,8 +97,8 @@ Générée par `tool/audit/gen_matrix.py` à partir du code (analyse statique). 
 | 76 | Ma candidature | `/s/76` | tous | H | 3 | 2 | non | statique | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
 | 77 | Profil de mentor | `/s/77` | tous | H | 11 | 1 | non | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
 | 78 | Projets innovants | `/s/78` | tous | I | 14 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
-| 79 | Projet | `/s/79` | tous | I | 3 | 1 | oui | mémoire locale (non persistée) | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
-| 80 | Soumettre un projet | `/s/80` | tous | I | 7 | 1 | oui | mémoire locale (non persistée) | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
+| 79 | Projet | `/s/79` | tous | I | 2 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
+| 80 | Soumettre un projet | `/s/80` | tous | I | 6 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 81 | Équipe du projet | `/s/81` | tous | I | 1 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 82 | Journal du projet | `/s/82` | tous | I | 2 | 1 | non | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
 | 83 | Médias et preuves | `/s/83` | tous | I | 2 | 1 | non | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
@@ -172,11 +172,11 @@ Générée par `tool/audit/gen_matrix.py` à partir du code (analyse statique). 
 | 147_2 | — | `/s/147_2` | support, admin | P | 3 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 147_3 | — | `/s/147_3` | support, admin | P | 3 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 148_1 | — | `/s/148_1` | tous | Q | 8 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
-| 148_2 | — | `/s/148_2` | tous | Q | 9 | 1 | non | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
+| 148_2 | — | `/s/148_2` | tous | Q | 9 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 149 | Langue et affichage | `/s/149` | tous | Q | 6 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 150_1 | — | `/s/150_1` | tous | Q | 3 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 150_2 | — | `/s/150_2` | tous | Q | 2 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
-| 150_3 | — | `/s/150_3` | tous | Q | 8 | 1 | non | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
+| 150_3 | — | `/s/150_3` | tous | Q | 8 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 150_4 | — | `/s/150_4` | tous | Q | 8 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 151 | Opportunités | `/s/151` | tous | S | 10 | 0 | non | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 152 | Kéla te recommande | `/s/152` | tous | S | 8 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
@@ -188,16 +188,16 @@ Générée par `tool/audit/gen_matrix.py` à partir du code (analyse statique). 
 | 158 | Candidatures classées | `/s/158` | tous | S | 3 | 1 | non | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
 | 159 | Candidature envoyée | `/s/159` | tous | S | 2 | 2 | non | statique | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
 | 160 | Hackathons et concours | `/s/160` | tous | T | 14 | 0 | non | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
-| 161 | Hackathon | `/s/161` | tous | T | 5 | 1 | non | mémoire locale (non persistée) | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
-| 162 | Inscription | `/s/162` | tous | T | 10 | 1 | non | serveur (Supabase) | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
+| 161 | Hackathon | `/s/161` | tous | T | 4 | 0 | non | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
+| 162 | Inscription | `/s/162` | tous | T | 9 | 0 | non | serveur (Supabase) | golden (rendu) | IMPLÉMENTÉ — serveur ; comportement non vérifié en navigateur |
 | 163 | Trouver des coéquipiers | `/s/163` | tous | T | 8 | 0 | non | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
-| 164 | Espace d’équipe | `/s/164` | tous | T | 6 | 2 | oui | mémoire locale (non persistée) | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
-| 165 | Dépôt du projet | `/s/165` | tous | T | 8 | 2 | oui | mémoire locale (non persistée) | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
+| 164 | Espace d’équipe | `/s/164` | tous | T | 4 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
+| 165 | Dépôt du projet | `/s/165` | tous | T | 6 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 166 | Résultats | `/s/166` | tous | T | 2 | 1 | non | mémoire locale (non persistée) | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
-| 167 | Noter un projet | `/s/167` | dépt, admin | T | 10 | 2 | non | mémoire locale (non persistée) | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
+| 167 | Noter un projet | `/s/167` | dépt, admin | T | 8 | 0 | non | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 168 | Publier un concours | `/s/168` | dépt, admin | T | 8 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 169 | Modération des concours | `/s/169` | dépt, admin | T | 3 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
-| 170 | Signaler une annonce | `/s/170` | tous | U | 10 | 1 | non | mémoire locale (non persistée) | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
+| 170 | Signaler une annonce | `/s/170` | tous | U | 9 | 0 | non | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 171 | Paiement sécurisé | `/s/171` | tous | U | 3 | 1 | non | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
 | 172 | Confiance du vendeur | `/s/172` | tous | U | 1 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 173 | Partager | `/s/173` | tous | U | 3 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
@@ -218,13 +218,13 @@ Générée par `tool/audit/gen_matrix.py` à partir du code (analyse statique). 
 | 188 | Recherche de talents et d’équipes | `/s/188` | entreprise, admin | X | 8 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 189 | Propositions reçues | `/s/189` | entreprise, admin | X | 6 | 1 | non | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
 | 190 | Devis et négociations | `/s/190` | entreprise, admin | X | 4 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
-| 191 | Votre besoin | `/s/191` | tous | Y | 12 | 1 | non | mémoire locale (non persistée) | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
-| 192 | Votre devis | `/s/192` | tous | Y | 5 | 2 | non | mémoire locale (non persistée) | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
-| 193 | Paiement sécurisé | `/s/193` | tous | Y | 3 | 1 | non | mémoire locale (non persistée) | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
+| 191 | Votre besoin | `/s/191` | tous | Y | 11 | 0 | non | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
+| 192 | Votre devis | `/s/192` | tous | Y | 3 | 0 | non | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
+| 193 | Paiement sécurisé | `/s/193` | tous | Y | 2 | 0 | non | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 194 | Ma mission | `/s/194` | tous | Y | 7 | 2 | oui | mémoire locale (non persistée) | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
-| 195 | Ajouter une preuve | `/s/195` | tous | Y | 6 | 2 | non | mémoire locale (non persistée) | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
+| 195 | Ajouter une preuve | `/s/195` | tous | Y | 4 | 0 | non | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 196 | Dossier | `/s/196` | tous | Y | 7 | 5 | non | statique | golden (rendu) | PARTIEL (5 action(s) de démonstration) |
-| 197 | Valider le jalon | `/s/197` | tous | Y | 4 | 1 | oui | mémoire locale (non persistée) | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
+| 197 | Valider le jalon | `/s/197` | tous | Y | 3 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 198 | Briefs reçus | `/s/198` | dépt, admin | Y | 12 | 4 | non | statique | golden (rendu) | PARTIEL (4 action(s) de démonstration) |
 | 199 | Attribuer | `/s/199` | dépt, admin | Y | 4 | 1 | non | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
 | 200 | Missions et encaissement | `/s/200` | dépt, admin | Y | 3 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |

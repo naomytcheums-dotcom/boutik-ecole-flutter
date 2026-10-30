@@ -92,7 +92,7 @@ class G_148_2 extends ConsumerWidget {
       gP(90, 574.5, 127, 17, gText('Chrome • Windows', 13.5, Color(0xFF111015), weight: 600)),
       gP(90, 595, 181, 14, gText('Yaoundé, Cameroun • Il y a 2 jours', 11.5, Color(0xFF66636E))),
       gP(276, 585, 74, 14, gText('Déconnecter', 11.5, Color(0xFFE5484D), weight: 600, align: TextAlign.right)),
-      gP(24, 644, 342, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE5484D), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Se déconnecter de tous les appareils')),
+      gP(24, 644, 342, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE5484D), bw: 1.5, radii: [27, 27, 27, 27]), tap: () { logoutEverywhere(ref, context); }),
       gP(62, 661.5, 266, 19, gText('Se déconnecter de tous les appareils', 15, Color(0xFFE5484D), weight: 600, align: TextAlign.center)),
       gP(125, 889, 140, 4, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(22, 812, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),

@@ -85,7 +85,7 @@ class G_29 extends ConsumerWidget {
       gP(60.113, 680.046, 95, 14, gText('Douala, Cameroun', 10.752, Color(0xFF4A4854))),
       gP(18.571, 731.467, 182.293, 64.411, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28]), tap: () => contactOrderSeller(ref, context)),
       gP(41.474, 755.542, 136, 17, gText('Contacter le vendeur', 13.195, Color(0xFF111015), weight: 700, align: TextAlign.center)),
-      gP(212.594, 731.467, 163.722, 64.411, gBox(color: Color(0xFF111015), radii: [21.504, 21.504, 21.504, 21.504]), tap: () => gToast(context, 'Démonstration : Voir le reçu')),
+      gP(212.594, 731.467, 163.722, 64.411, gBox(color: Color(0xFF111015), radii: [21.504, 21.504, 21.504, 21.504]), tap: () { downloadDocument(context, ref, invoice: false); }),
       gP(261.199, 756.042, 67, 16, gText('Voir le reçu', 12.707, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(149.549, 820.309, 105.564, 3.702, gBox(color: Color(0xFF111015), radii: [1.466, 1.466, 1.466, 1.466])),
     ]);

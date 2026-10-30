@@ -1,10 +1,7 @@
 ecran,action
 101,S’inscrire
 102,Voir la collection
-11,Créer un compte
 118,Enregistrer les modifications
-148_2,Se déconnecter de tous les appareils
-150_3,Voir le mode hors ligne
 153,Ignorer
 153,Postuler
 154,Compléter mon dossier
@@ -12,37 +9,20 @@ ecran,action
 158,Comparer la sélection
 159,Mes candidatures
 159,Autres offres
-16,Réinitialiser le mot de passe
-161,S’inscrire
-162,Valider l’inscription
-164,Discussion d’équipe
-164,Déposer le projet
-165,Enregistrer
-165,Soumettre
 166,Voir le certificat
-167,Enregistrer
-167,Valider la note
 17,Accepter et continuer
-170,Envoyer le signalement
 171,Continuer en sécurité
 18,Contacter le support
 189,Comparer la sélection
 18c,Ces informations permettent de confirmer\nvotre statut d’étudiant de l’IUT de Douala.
 18c,Vos documents sont chiffrés et ne sont\nconsultés que par l’équipe de validation.
-191,Envoyer mon besoin
-192,Poser une question
-192,Accepter le devis
-193,Payer 54 000 FCFA
 194,Écrire à l’équipe
 194,Voir le dossier
-195,Brouillon
-195,Envoyer pour validation
 196,"Bonjour, voici les trois pistes de logo. Qu’en pensez-vous ?"
 196,La piste 2 me plaît. Pouvez-vous essayer une version plus sobre ?
 196,"Bien sûr, nouvelle version sous 48 h."
 196,Ajouter un fichier
 196,Envoyer
-197,Valider et libérer
 198,Qualifier
 198,Qualifier
 198,Qualifier
@@ -57,7 +37,6 @@ ecran,action
 207,Produits
 207,Services
 207,Missions
-21,Réinitialiser
 211,Voir le certificat
 213,Émettre un certificat
 215,Déposer un brief au département
@@ -74,8 +53,6 @@ ecran,action
 229,Proposer un stage
 229,Contacter
 23,Innovations
-23,Réinitialiser
-23,Appliquer
 231,Commencer
 233,Voir les propositions
 233,Écrire à l’équipe
@@ -112,48 +89,23 @@ ecran,action
 287,+ Nouvelle fiche
 288,Exporter
 288,+ Nouvelle fiche
-29,Contacter le vendeur
-29,Voir le reçu
 30,Évaluer la commande
-30,Voir le détail
 30,Contacter le support
-32,Ajouter au panier
-33,Contacter le créateur
 35,Me prévenir
-35,Ajouter au panier
 36,Demander un devis
 36,Commander
 39,Envoyer la question
-41,Continuer
-42,Confirmer la commande
-43,Copier la référence
-43,J’ai payé
-44,Accueil
-46,Contacter le vendeur
 46,Voir le code de retrait
-47,Garder
-47,Annuler la commande
 48,Envoyer la demande
-51,Contacter le vendeur
-51,Suivre ma commande
 55,"Bonjour, voici mon portfolio et deux références."
 55,"Parfait, nous planifions un entretien jeudi."
-58,Brouillon
-58,Publier
 59,Brouillon
 59,Publier
-60,Modifier
-60,Publier
-64,Signaler un souci
-64,Marquer prête
-65,Marquer comme prête
 69,Compléter mon dossier
 72,Ajouter à mon portfolio
 76,Retirer
 76,Contacter
 77,Écrire
-79,Soutenir le projet
-80,Continuer
 82,Ajouter une étape
 83,Téléverser
 84,Brouillon

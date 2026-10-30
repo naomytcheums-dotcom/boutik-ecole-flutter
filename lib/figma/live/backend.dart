@@ -584,6 +584,13 @@ class Backend {
     }
   }
 
+  /// Ferme les sessions de ce compte sur TOUS les appareils.
+  static Future<void> signOutAll() async {
+    try {
+      await _c?.auth.signOut(scope: SignOutScope.global);
+    } catch (_) {}
+  }
+
   static Future<void> signOut() async {
     try {
       await _c?.auth.signOut();

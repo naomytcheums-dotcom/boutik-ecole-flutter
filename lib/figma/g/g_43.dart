@@ -76,9 +76,9 @@ class G_43 extends ConsumerWidget {
       gP(49, 545.75, 8.833, 11.667, gImg('assets/figma/v/3a93fa78124c31.svg')),
       gP(76, 536, 277, 34, gText('Après le paiement, déclarez-le ici. Il est vérifié sous 24 h et votre commande est confirmée.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
       gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
-      gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Copier la référence')),
+      gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () { copyOrderRef(ref, context); }),
       gP(38.5, 778, 134, 18, gText('Copier la référence', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
-      gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : J’ai payé')),
+      gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () { checkPaymentNow(ref, context); }),
       gP(254.5, 778, 60, 18, gText('J’ai payé', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
     ]);

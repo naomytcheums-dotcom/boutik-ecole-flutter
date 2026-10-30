@@ -31,3 +31,9 @@ Fonction : `supabase/functions/notchpay-webhook/index.ts` — table de rejeu : `
 | Webhook déclaré chez Notch Pay | **Non vérifiable** (action propriétaire) | — |
 
 Tant que ces trois derniers points ne sont pas réglés, le webhook ne confirme aucun paiement ; la confirmation passe par l'interrogation de `pay` (action `status`), qui applique les mêmes contrôles de montant, devise et référence.
+
+## Mise à jour 30/10/2026 (soir)
+- « Verify JWT » est désactivé (confirmé : un POST sans signature atteint la fonction et reçoit `invalid_signature` 401 ; un GET reçoit 405).
+- `NOTCHPAY_HASH` existe (créé le 30/10 06:10 UTC). Une requête signée par Notch a été reçue à 07:14 locale et rejetée (« signature invalide »).
+- Cause **non encore établie** (secret erroné, mode test/production différent, ou format de signature différent de la documentation). La fonction journalise désormais, à chaque rejet, uniquement des indicateurs sans valeur sensible : noms d'en-têtes, longueur de la signature, hexadécimal oui/non, corps ré-sérialisé oui/non, signature calculée avec la clé API oui/non.
+- Prochaine étape : déclencher un événement depuis Notch Pay, lire ces indicateurs dans les journaux de la fonction, corriger.

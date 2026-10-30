@@ -121,3 +121,20 @@ Audit réalisé le 29 octobre 2026, en lecture seule (aucun déploiement, aucun 
 - **AN-028 · Pas de Content-Security-Policy** (VÉRIFIÉ, en-têtes de `https://boutik-ecole.vercel.app/`) : présents : HSTS, nosniff, X-Frame-Options, Referrer-Policy.
 - **AN-029 · Liens de réseaux sociaux génériques** (VÉRIFIÉ) : `g_10.dart` ouvre les pages d'accueil de Instagram, LinkedIn, TikTok, GitHub, pas les comptes de l'étudiant.
 - **AN-030 · Fonction `pay` : CORS `*` et vérification JWT du fournisseur désactivée** (VÉRIFIÉ, `index.ts:7`, paramètres de la fonction) : acceptable car le code contrôle l'utilisateur lui-même, mais à documenter et à restreindre au domaine de production.
+
+
+---
+
+## Incident du 30/10/2026 — profil hérité et badge bleu automatique
+
+### AN-031 · Un nouveau compte affichait le profil d'un autre et un badge bleu — CORRIGÉE ET VÉRIFIÉE (serveur) ; vérification navigateur partielle
+- **Cause exacte** : l'écran Profil (écran 10) était la maquette Figma : seuls le nom et le département étaient liés au compte ; la photo, la description, les mots-clés, les compteurs (« 12 Produits… »), les images de réalisations et le badge bleu étaient des éléments fixes dessinés dans l'écran. De plus `profileAccountProvider` retombait sur le compte de démonstration (« Mariam Essono ») lorsqu'aucun compte n'était ouvert, et le catalogue vendeur (`Listings`) était pré-rempli avec les annonces de démonstration. Aucune donnée d'un autre utilisateur n'était lue en base : **l'inventaire de la base n'a trouvé ni photo, ni badge, ni doublon de téléphone** (8 profils de démonstration neutralisés, 1 compte réel).
+- **Aggravants corrigés** : la connexion locale pouvait « inscrire » un compte inconnu côté serveur (repli `signIn → signUp`) ; l'état de l'application survivait à la déconnexion.
+- **Correctifs** : migration `20261030b_profils_identite.sql` (colonnes `bio`, `skills`, `avatar_url`, `certification` + états, déclencheur de protection, `request_certification`, `decide_certification`) ; connexion/inscription réelles (`Backend.login`, `Backend.register`), profil chargé uniquement avec l'identifiant de la session ; profil vierge (initiales, « Aucune description »), badge bleu calculé sur `certification = 'approved'` ; déconnexion = réinitialisation de tout l'état (`AppRoot`).
+- **Preuves** : 18 tests REST sur la base réelle (comptes jetables supprimés ensuite) — profils indépendants, auto-attribution de la certification refusée, rôle admin refusé, décision par un non-valideur refusée ; transaction annulée prouvant approbation/révocation par un valideur, retours arrière et auto-certification refusés, journalisation ; 5 tests unitaires Flutter (`test/account/identity_test.dart`).
+- **Reste** : la procédure de certification complète (justificatifs, tests de conformité) n'a pas d'écrans reliés à `request_certification` autres que le lien « Demander la certification » du profil ; la photo de profil n'a pas encore de téléversement (bucket de stockage à créer) ; les autres écrans (vendeur public, favoris, messagerie…) affichent encore du contenu d'exemple de la maquette.
+
+### AN-032 · Case « J'accepte les conditions » cochée par défaut et coche invisible — CORRIGÉE (golden), non vérifiée en navigateur réel
+### AN-033 · Pastilles « Produits / Services / Talents / Projets » de la page de bienvenue sans action — CORRIGÉE (liens vers 22, 22b, 70, 78 ; « Tous » vers 04)
+### AN-034 · Écrans de hauteur > 860 px réduits au lieu de défiler — CORRIGÉE (défilement vertical)
+### AN-035 · Code de vérification de l'inscription simulé (« démonstration : 482917 ») — PARTIELLEMENT CORRIGÉE : avec le serveur, l'étape simulée est sautée ; l'envoi réel d'un code par e-mail ou SMS n'est pas implémenté (nécessite « Confirm email » + modèle d'e-mail avec jeton, ou un fournisseur SMS).

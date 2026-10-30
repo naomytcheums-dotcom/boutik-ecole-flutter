@@ -11,8 +11,8 @@ import 'store.dart';
 
 /// Messagerie réelle : conversations et messages enregistrés sur le serveur, visibles des seuls participants (RLS).
 class ConversationItem {
-  const ConversationItem({required this.id, required this.listingTitle, required this.otherName, required this.lastBody, required this.lastAt, required this.unread});
-  final String id, listingTitle, otherName, lastBody;
+  const ConversationItem({required this.id, required this.listingTitle, required this.otherName, required this.lastBody, required this.lastAt, required this.unread, this.orderNumber = ''});
+  final String id, listingTitle, otherName, lastBody, orderNumber;
   final DateTime? lastAt;
   final int unread;
 
@@ -23,6 +23,7 @@ class ConversationItem {
         lastBody: (r['last_body'] ?? '').toString(),
         lastAt: DateTime.tryParse((r['last_at'] ?? '').toString())?.toLocal(),
         unread: (r['unread'] as num?)?.toInt() ?? 0,
+        orderNumber: (r['order_number'] ?? '').toString(),
       );
 }
 
@@ -58,6 +59,42 @@ final selectedConversationItemProvider = Provider<ConversationItem?>((ref) {
   }
   return null;
 });
+
+/// Écran 54 : titre « Commande #… » et interlocuteur réels (conservés tels quels hors connexion).
+Widget chatHeaderOrder(String demo) => gP(
+      76, 70, 299, 26,
+      Consumer(builder: (context, ref, _) {
+        final c = ref.watch(selectedConversationItemProvider);
+        final t = demoContent ? demo : (c == null ? 'Conversation' : (c.orderNumber.isEmpty ? c.otherName : 'Commande ${c.orderNumber}'));
+        return Text(t, maxLines: 1, overflow: TextOverflow.ellipsis, style: _t(21, FontWeight.w700, const Color(0xFF111015)));
+      }),
+    );
+
+Widget chatHeaderOrderSub(String demo) => gP(
+      76, 96, 240, 15,
+      Consumer(builder: (context, ref, _) {
+        final c = ref.watch(selectedConversationItemProvider);
+        final t = demoContent ? demo : (c?.otherName ?? '');
+        return Text(t, maxLines: 1, overflow: TextOverflow.ellipsis, style: _t(12, FontWeight.w400, const Color(0xFF66636E)));
+      }),
+    );
+
+/// « Contacter le vendeur » depuis une commande : ouvre la conversation liée à cette commande (écran 54).
+Future<void> contactOrderSeller(WidgetRef ref, BuildContext context) async {
+  if (!Backend.ready) {
+    gToast(context, 'La messagerie nécessite la connexion au serveur.');
+    return;
+  }
+  if (!await requireLogin(context, ref, 'écrire au vendeur')) return;
+  if (!context.mounted) return;
+  final o = ref.read(viewedOrderProvider);
+  final r = await Backend.startOrderConversation(o.id, 'Bonjour, je vous écris au sujet de la commande ${o.id}.');
+  if (!context.mounted) return;
+  if (r.error != null) return gAlert(context, 'Message non envoyé', r.error!);
+  ref.read(selectedConversationProvider.notifier).set(r.id!);
+  await ref.read(conversationsProvider.notifier).refresh();
+  if (context.mounted) gOpen(context, '54');
+}
 
 String _ago(DateTime? d) {
   if (d == null) return '';
@@ -116,7 +153,7 @@ Widget conversationsPanel() => gP(
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text(c.otherName, maxLines: 1, overflow: TextOverflow.ellipsis, style: _t(13.5, FontWeight.w600, const Color(0xFF111015))),
                       const SizedBox(height: 3),
-                      Text(c.lastBody, maxLines: 1, overflow: TextOverflow.ellipsis, style: _t(11.5, c.unread > 0 ? FontWeight.w600 : FontWeight.w400, const Color(0xFF66636E))),
+                      Text(c.orderNumber.isEmpty ? c.lastBody : 'Commande ${c.orderNumber} · ${c.lastBody}', maxLines: 1, overflow: TextOverflow.ellipsis, style: _t(11.5, c.unread > 0 ? FontWeight.w600 : FontWeight.w400, const Color(0xFF66636E))),
                     ]),
                   ),
                   const SizedBox(width: 8),

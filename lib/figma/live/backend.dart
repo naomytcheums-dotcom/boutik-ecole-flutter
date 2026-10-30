@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'auth.dart';
@@ -351,7 +353,7 @@ class Backend {
     final c = _c;
     if (c == null || c.auth.currentUser == null || conversationId.isEmpty) return const [];
     try {
-      final rows = await c.from('messages').select('id,sender_id,body,created_at').eq('conversation_id', conversationId).order('id').limit(500);
+      final rows = await c.from('messages').select('id,sender_id,body,created_at,kind,attachment_path,attachment_name,attachment_size').eq('conversation_id', conversationId).order('id').limit(500);
       return [for (final r in rows) Map<String, dynamic>.from(r)];
     } catch (_) {
       return const [];
@@ -367,6 +369,61 @@ class Backend {
       return null;
     } catch (e) {
       return _msg(e);
+    }
+  }
+
+  /// Envoie une pièce jointe (photo, fichier, vocal) : dépôt dans le stockage privé de la conversation, puis message.
+  static Future<String?> sendAttachment(String conversationId, String kind, Uint8List bytes, String name, String mime, String label) async {
+    final c = _c;
+    final uid = c?.auth.currentUser?.id;
+    if (c == null || uid == null) return 'Connexion requise.';
+    final safe = name.replaceAll(RegExp(r'[^A-Za-z0-9._-]'), '_');
+    final path = '$conversationId/${DateTime.now().microsecondsSinceEpoch}-$safe';
+    try {
+      await c.storage.from('chat-files').uploadBinary(path, bytes, fileOptions: FileOptions(contentType: mime));
+    } catch (e) {
+      final m = e.toString();
+      if (m.contains('mime') || m.contains('415')) return 'Ce type de fichier n’est pas accepté.';
+      if (m.contains('413') || m.contains('too large')) return 'Fichier trop volumineux (10 Mo maximum).';
+      return 'Envoi du fichier impossible.';
+    }
+    try {
+      await c.from('messages').insert({
+        'conversation_id': conversationId,
+        'sender_id': uid,
+        'body': label,
+        'kind': kind,
+        'attachment_path': path,
+        'attachment_name': name,
+        'attachment_size': bytes.length,
+      });
+      return null;
+    } catch (e) {
+      try {
+        await c.storage.from('chat-files').remove([path]);
+      } catch (_) {}
+      return _msg(e);
+    }
+  }
+
+  /// Lien temporaire (1 h) vers une pièce jointe : n'est délivré qu'aux participants de la conversation.
+  static Future<String?> chatFileUrl(String path) async {
+    try {
+      return await _c?.storage.from('chat-files').createSignedUrl(path, 3600);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Conversation liée à une commande (acheteur → vendeur, ou vendeur → acheteur).
+  static Future<({String? id, String? error})> startOrderConversation(String orderNumber, String body) async {
+    final c = _c;
+    if (c == null || c.auth.currentUser == null) return (id: null, error: 'Connexion requise.');
+    try {
+      final id = await c.rpc('start_order_conversation', params: {'p_order': orderNumber, 'p_body': body});
+      return (id: id.toString(), error: null);
+    } catch (e) {
+      return (id: null, error: _msg(e));
     }
   }
 

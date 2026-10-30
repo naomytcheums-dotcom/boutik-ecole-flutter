@@ -67,6 +67,7 @@ class PayNotifier extends Notifier<PayState> {
     if (st == 'failed') {
       state = const PayState(PayPhase.failed, 'Paiement refusé ou annulé.');
       _poll?.cancel();
+      Backend.cancelOrder(o.id); // la commande n'aboutira pas : le stock réservé est restitué
       if (context.mounted) gToast(context, 'Paiement refusé ou annulé. Réessayez.');
       return PayPhase.failed;
     }
@@ -116,7 +117,8 @@ Future<void> startPayment(WidgetRef ref, BuildContext context) async {
   final created = await Backend.createOrder(o.lines, ref.read(homeDeliveryProvider), o.method);
   if (created['error'] != null) {
     ref.read(ordersProvider.notifier).discard(o.id);
-    final msg = created['error'] as String;
+    final raw = created['error'] as String;
+    final msg = raw.startsWith('Stock insuffisant') ? 'Stock insuffisant pour « ${raw.split(': ').last} ». Réduisez la quantité.' : raw;
     pay.set(PayState(PayPhase.failed, msg));
     if (context.mounted) gToast(context, msg);
     return;
@@ -133,6 +135,7 @@ Future<void> startPayment(WidgetRef ref, BuildContext context) async {
     'email': who.email,
   });
   if (res == null || res['error'] != null) {
+    await Backend.cancelOrder(o.id); // le prélèvement n'a pas démarré : on libère le stock réservé
     final msg = (res?['message'] ?? 'Paiement indisponible pour le moment.') as String;
     pay.set(PayState(PayPhase.failed, msg));
     if (context.mounted) gToast(context, msg);

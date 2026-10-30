@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,17 +15,42 @@ import 'store.dart';
 // ------------------------------------------------------------------ annonces
 
 class Listing {
-  const Listing({required this.title, required this.category, required this.price, required this.stock, this.published = true, this.inReview = false, this.description = ''});
+  const Listing({required this.title, required this.category, required this.price, required this.stock, this.published = true, this.inReview = false, this.description = '', this.id = '', this.status = '', this.note = ''});
   final String title, category, description;
   final int price, stock;
   final bool published, inReview;
 
+  /// Identifiant serveur (vide hors connexion), statut serveur (draft · pending · approved · rejected) et motif de refus.
+  final String id, status, note;
+
+  bool get rejected => status == 'rejected';
+
+  /// Construit l'annonce à partir d'une ligne de la table `listings`.
+  factory Listing.fromRow(Map<String, dynamic> r) {
+    final st = (r['status'] ?? 'draft').toString();
+    return Listing(
+      id: (r['id'] ?? '').toString(),
+      title: (r['title'] ?? '').toString(),
+      category: (r['category'] ?? 'Maison').toString(),
+      price: (r['price'] as num?)?.toInt() ?? 0,
+      stock: (r['stock'] as num?)?.toInt() ?? 0,
+      description: (r['description'] ?? '').toString(),
+      status: st,
+      note: (r['review_note'] ?? '').toString(),
+      published: st == 'approved',
+      inReview: st == 'pending',
+    );
+  }
+
   static const lowStock = 30;
 
   /// Libellé d'état : Brouillon, Rupture, Stock bas ou Publié.
-  String get label => !published ? (inReview ? 'En validation' : 'Brouillon') : (stock == 0 ? 'Rupture' : (stock <= lowStock ? 'Stock bas' : 'Publié'));
+  String get label => !published ? (inReview ? 'En validation' : (rejected ? 'Refusée' : 'Brouillon')) : (stock == 0 ? 'Rupture' : (stock <= lowStock ? 'Stock bas' : 'Publié'));
 
-  Listing copyWith({int? stock, bool? published, bool? inReview}) => Listing(
+  Listing copyWith({int? stock, bool? published, bool? inReview, String? status}) => Listing(
+        id: id,
+        status: status ?? this.status,
+        note: note,
         title: title,
         category: category,
         price: price,
@@ -35,7 +62,30 @@ class Listing {
 
 class Listings extends Notifier<List<Listing>> {
   @override
-  List<Listing> build() => Backend.ready ? const [] : _demoListings; // connecté au serveur : aucune annonce d'exemple, le vendeur démarre vierge
+  List<Listing> build() {
+    if (!Backend.ready) return _demoListings;
+    // connecté au serveur : le vendeur retrouve ses propres annonces (RLS), jamais celles d'un autre ni des exemples
+    final uid = ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
+    if (uid.isNotEmpty) {
+      Future.microtask(refresh);
+      final t = Timer.periodic(const Duration(seconds: 30), (_) => refresh()); // décisions du département, ventes
+      ref.onDispose(t.cancel);
+    }
+    return const [];
+  }
+
+  Future<void> refresh() async {
+    final l = await Backend.myListings();
+    if (ref.mounted) state = l;
+  }
+
+  /// Création réelle : retourne un message d'erreur, ou null si l'annonce est enregistrée.
+  Future<String?> create(Listing l, {required bool submit}) async {
+    final r = await Backend.createListing(l, submit: submit);
+    if (r.error != null) return r.error;
+    if (ref.mounted) state = [r.listing!, ...state];
+    return null;
+  }
 
   static const _demoListings = [
         Listing(title: 'Lampe en bois recyclé', category: 'Maison', price: 25000, stock: 12),
@@ -46,7 +96,28 @@ class Listings extends Notifier<List<Listing>> {
       ];
 
   void add(Listing l) => state = [l, ...state];
-  void setStock(String title, int stock) => state = [for (final l in state) l.title == title ? l.copyWith(stock: stock < 0 ? 0 : stock) : l];
+  void setStock(String title, int stock) {
+    final before = state;
+    final s = stock < 0 ? 0 : stock;
+    state = [for (final l in state) l.title == title ? l.copyWith(stock: s) : l];
+    if (!Backend.ready) return;
+    final id = before.firstWhere((l) => l.title == title, orElse: () => const Listing(title: '', category: '', price: 0, stock: 0)).id;
+    if (id.isEmpty) return;
+    Backend.updateListingStock(id, s).then((err) {
+      if (err != null && ref.mounted) state = before; // l'écriture a échoué : on n'affiche pas un stock faux
+    });
+  }
+
+  /// Suppression (archivage) par le vendeur.
+  Future<String?> remove(String title) async {
+    final l = state.firstWhere((x) => x.title == title, orElse: () => const Listing(title: '', category: '', price: 0, stock: 0));
+    if (Backend.ready && l.id.isNotEmpty) {
+      final err = await Backend.setListingStatus(l.id, 'removed');
+      if (err != null) return err;
+    }
+    if (ref.mounted) state = [for (final x in state) if (x.title != title) x];
+    return null;
+  }
   /// Décision du valideur : publie l'annonce (approve) ou la renvoie en brouillon.
   void review(String title, bool approve) =>
       state = [for (final l in state) l.title == title ? l.copyWith(published: approve, inReview: false) : l];
@@ -55,6 +126,25 @@ class Listings extends Notifier<List<Listing>> {
 
 final listingsProvider = NotifierProvider<Listings, List<Listing>>(Listings.new);
 
+
+/// Annonces approuvées des vendeurs (visibles de tous les acheteurs), lues sur le serveur.
+class PublicListings extends Notifier<List<Listing>> {
+  @override
+  List<Listing> build() {
+    if (!Backend.ready) return const [];
+    Future.microtask(refresh);
+    final t = Timer.periodic(const Duration(seconds: 60), (_) => refresh());
+    ref.onDispose(t.cancel);
+    return const [];
+  }
+
+  Future<void> refresh() async {
+    final l = await Backend.publicListings();
+    if (ref.mounted) state = l;
+  }
+}
+
+final publicListingsProvider = NotifierProvider<PublicListings, List<Listing>>(PublicListings.new);
 
 final sellerFilterProvider = NotifierProvider<IntV, int>(IntV.new);
 final sellerQueryProvider = NotifierProvider<StrV, String>(StrV.new);
@@ -72,11 +162,12 @@ final visibleListingsProvider = Provider<List<Listing>>((ref) {
 
 /// Produits du catalogue acheteur : catalogue de base + annonces publiées par le vendeur.
 final allProductsProvider = Provider<List<LiveProduct>>((ref) {
-  final mine = ref.watch(listingsProvider);
+  final mine = [...ref.watch(listingsProvider), ...ref.watch(publicListingsProvider)];
   final base = liveCatalog;
+  final seen = <String>{};
   final extra = [
     for (final l in mine)
-      if (l.published && l.stock > 0 && !base.any((p) => p.title == l.title))
+      if (l.published && l.stock > 0 && !base.any((p) => p.title == l.title) && seen.add(l.title))
         LiveProduct(l.title, 'Étudiant-vendeur', l.price, ref.watch(profileAccountProvider).name,
             l.description.isEmpty ? 'Annonce publiée par un étudiant de l’IUT de Douala.' : l.description, base[3].image, category: liveCategories.contains(l.category) ? l.category : 'Maison'),
   ];
@@ -184,7 +275,7 @@ String? _intError(String v, String what, {int min = 0}) {
   return null;
 }
 
-void submitListing(WidgetRef ref, BuildContext context, {required bool publish}) {
+Future<void> submitListing(WidgetRef ref, BuildContext context, {required bool publish}) async {
   final f = ref.read(formProvider);
   final title = (f['np_title'] ?? '').trim();
   final cat = (f['np_cat'] ?? 'Maison et déco').trim();
@@ -205,17 +296,27 @@ void submitListing(WidgetRef ref, BuildContext context, {required bool publish})
   }
   ref.read(errorsProvider.notifier).clear();
   final catShort = cat.toLowerCase().contains('maison') ? 'Maison' : (cat.toLowerCase().contains('mode') ? 'Mode' : (cat.toLowerCase().contains('tech') ? 'Tech' : (cat.toLowerCase().contains('art') ? 'Art' : (cat.toLowerCase().contains('alim') ? 'Alimentation' : cat))));
-  ref.read(listingsProvider.notifier).add(Listing(
-        title: title,
-        category: catShort,
-        price: int.parse((f['np_price'] ?? '25 000').replaceAll(RegExp(r'[\s ]'), '')),
-        stock: int.parse(f['np_stock'] ?? '30'),
-        published: false,
-        inReview: publish,
-        description: f['np_desc'] ?? '',
-      ));
+  final nouvelle = Listing(
+    title: title,
+    category: catShort,
+    price: int.parse((f['np_price'] ?? '25 000').replaceAll(RegExp(r'[\s ]'), '')),
+    stock: int.parse(f['np_stock'] ?? '30'),
+    published: false,
+    inReview: publish,
+    description: f['np_desc'] ?? '',
+  );
+  if (Backend.ready) {
+    final err = await ref.read(listingsProvider.notifier).create(nouvelle, submit: publish);
+    if (err != null) {
+      if (context.mounted) await gAlert(context, 'Annonce non enregistrée', err);
+      return;
+    }
+  } else {
+    ref.read(listingsProvider.notifier).add(nouvelle);
+  }
   ref.read(sellerFilterProvider.notifier).set(0);
   ref.read(auditProvider.notifier).log(ref.read(profileAccountProvider).name, publish ? 'Annonce soumise' : 'Brouillon créé', title, 'Validations');
+  if (!context.mounted) return;
   gToast(context, publish ? 'Annonce envoyée en validation au département' : 'Brouillon enregistré');
   gOpen(context, '61');
 }

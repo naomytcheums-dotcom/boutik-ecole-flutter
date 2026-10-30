@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'dart:async';
+
 import '../gen.dart';
 import 'audit.dart';
+import 'auth.dart';
+import 'backend.dart';
 import 'seller.dart';
 import 'store.dart';
 
 /// Tableaux de bord web : validation des annonces (département) et flux financiers.
 
 class ReviewItem {
-  const ReviewItem(this.title, this.seller, this.category, this.price, this.submitted, {this.seed = true});
+  const ReviewItem(this.title, this.seller, this.category, this.price, this.submitted, {this.seed = true, this.id = '', this.status = 'pending', this.note = ''});
   final String title, seller, category, submitted;
   final int price;
   final bool seed;
+
+  /// Identifiant serveur, statut (pending · approved · rejected) et motif de refus : renseignés quand les données viennent de Supabase.
+  final String id, status, note;
 
   String get code => '${title.replaceAll(RegExp('[^A-Za-zÀ-ÿ]'), '').toUpperCase().padRight(3, 'X').substring(0, 3)}-${(price % 97 + 1).toString().padLeft(3, '0')}';
 }
@@ -25,10 +32,64 @@ const _seedReviews = [
   ReviewItem('Logo et identité', 'Aminata Bello', 'Service', 15000, 'Il y a 3 j'),
 ];
 
+/// File de validation réelle (département / administrateur) : annonces soumises par tous les vendeurs.
+/// Les autres rôles n'y reçoivent rien : la politique RLS ne leur renvoie aucune ligne.
+class ReviewQueue extends Notifier<List<ReviewItem>> {
+  @override
+  List<ReviewItem> build() {
+    if (!Backend.ready) return const [];
+    final uid = ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
+    if (uid.isNotEmpty) {
+      Future.microtask(refresh);
+      final t = Timer.periodic(const Duration(seconds: 30), (_) => refresh());
+      ref.onDispose(t.cancel);
+    }
+    return const [];
+  }
+
+  Future<void> refresh() async {
+    final rows = await Backend.reviewQueue();
+    if (!ref.mounted) return;
+    state = [
+      for (final r in rows)
+        ReviewItem(
+          (r['title'] ?? '').toString(),
+          'Étudiant-vendeur',
+          (r['category'] ?? '').toString(),
+          (r['price'] as num?)?.toInt() ?? 0,
+          _ago((r['updated_at'] ?? r['created_at'] ?? '').toString()),
+          seed: false,
+          id: (r['id'] ?? '').toString(),
+          status: (r['status'] ?? 'pending').toString(),
+          note: (r['review_note'] ?? '').toString(),
+        ),
+    ];
+  }
+}
+
+String _ago(String iso) {
+  final d = DateTime.tryParse(iso);
+  if (d == null) return '';
+  final m = DateTime.now().difference(d.toLocal()).inMinutes;
+  if (m < 1) return 'À l’instant';
+  if (m < 60) return 'Il y a $m min';
+  if (m < 1440) return 'Il y a ${m ~/ 60} h';
+  return 'Il y a ${m ~/ 1440} j';
+}
+
+final reviewQueueProvider = NotifierProvider<ReviewQueue, List<ReviewItem>>(ReviewQueue.new);
+
 /// Décisions du valideur : titre → 1 validée, 2 refusée (avec motif).
+/// Avec le serveur, elles sont déduites du statut enregistré de chaque annonce.
 class ReviewDecisions extends Notifier<Map<String, (int, String)>> {
   @override
-  Map<String, (int, String)> build() => const {};
+  Map<String, (int, String)> build() {
+    if (Backend.ready) {
+      return {for (final r in ref.watch(reviewQueueProvider)) if (r.status != 'pending') r.title: (r.status == 'approved' ? 1 : 2, r.note)};
+    }
+    return const {};
+  }
+
   void decide(String title, int d, String note) => state = {...state, title: (d, note)};
 }
 
@@ -38,6 +99,7 @@ final reviewTabProvider = NotifierProvider<IntV, int>(IntV.new);
 
 /// Toutes les annonces soumises : celles des vendeurs (dans cette appli) d'abord, puis les exemples.
 final allReviewsProvider = Provider<List<ReviewItem>>((ref) {
+  if (Backend.ready) return ref.watch(reviewQueueProvider);
   final mine = ref.watch(listingsProvider);
   final decided = ref.watch(reviewDecisionsProvider);
   final who = 'Mariam Essono';
@@ -97,27 +159,38 @@ Future<void> reviewDialog(BuildContext context, WidgetRef ref, ReviewItem r) {
               gToast(ctx, 'Indiquez un motif de refus (5 caractères minimum).');
               return;
             }
-            ref.read(reviewDecisionsProvider.notifier).decide(r.title, 2, note.text.trim());
-            ref.read(auditProvider.notifier).log('Dr Mbarga', 'Annonce refusée', r.title, 'Validations', level: 'Sensible');
-            if (!r.seed) ref.read(listingsProvider.notifier).review(r.title, false);
-            Navigator.of(ctx).pop();
-            gToast(context, 'Annonce refusée : le vendeur est averti');
+            _decide(context, ctx, ref, r, false, note.text.trim());
           },
           child: Text('Refuser', style: st.copyWith(color: const Color(0xFFE5484D), fontWeight: FontWeight.w600)),
         ),
         TextButton(
           onPressed: () {
-            ref.read(reviewDecisionsProvider.notifier).decide(r.title, 1, note.text.trim());
-            ref.read(auditProvider.notifier).log('Dr Mbarga', 'Annonce validée', r.title, 'Validations');
-            if (!r.seed) ref.read(listingsProvider.notifier).review(r.title, true);
-            Navigator.of(ctx).pop();
-            gToast(context, 'Annonce validée et publiée');
+            _decide(context, ctx, ref, r, true, note.text.trim());
           },
           child: Text('Valider', style: st.copyWith(color: const Color(0xFF0F7A52), fontWeight: FontWeight.w700)),
         ),
       ],
     ),
   );
+}
+
+/// Décision du valideur : enregistrée sur le serveur (statut, auteur, motif) avant d'être affichée comme prise.
+Future<void> _decide(BuildContext context, BuildContext ctx, WidgetRef ref, ReviewItem r, bool approve, String note) async {
+  if (Backend.ready && r.id.isNotEmpty) {
+    final err = await Backend.decideListing(r.id, approve, note);
+    if (err != null) {
+      if (context.mounted) await gAlert(context, 'Décision non enregistrée', err);
+      return;
+    }
+    await ref.read(reviewQueueProvider.notifier).refresh();
+  } else {
+    ref.read(reviewDecisionsProvider.notifier).decide(r.title, approve ? 1 : 2, note);
+    if (!r.seed) ref.read(listingsProvider.notifier).review(r.title, approve);
+  }
+  final who = ref.read(profileAccountProvider).name;
+  ref.read(auditProvider.notifier).log(who.isEmpty ? 'Valideur' : who, approve ? 'Annonce validée' : 'Annonce refusée', r.title, 'Validations', level: approve ? 'Normal' : 'Sensible');
+  if (ctx.mounted) Navigator.of(ctx).pop();
+  if (context.mounted) gToast(context, approve ? 'Annonce validée et publiée' : 'Annonce refusée : le vendeur est averti');
 }
 
 // ------------------------------------------------------------------ flux financiers

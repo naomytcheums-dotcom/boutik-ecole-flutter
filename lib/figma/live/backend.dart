@@ -1,6 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'auth.dart';
+import 'seller.dart' show Listing;
 import '../../data/demo/section_a_demo.dart' show CartLine;
 
 /// Connexion à la base Supabase (projet « boutik-ecole »).
@@ -181,6 +182,120 @@ class Backend {
       return true;
     } catch (_) {
       return false;
+    }
+  }
+
+  // ---------------------------------------------------------------- annonces et stock (RLS : chaque vendeur ne voit que les siennes)
+
+  static String _msg(Object e) {
+    final m = e is PostgrestException ? e.message : e.toString();
+    if (m.contains('listings_titre_unique') || m.contains('duplicate key')) return 'Une annonce porte déjà ce titre.';
+    if (m.contains('listings_price_min')) return 'Le prix doit être d’au moins 500 FCFA.';
+    if (m.contains('listings_title_len')) return 'Le titre doit comporter de 3 à 80 caractères.';
+    if (m.contains('listings_stock_check')) return 'Le stock doit être compris entre 0 et 100 000.';
+    if (m.contains('row-level security')) return 'Votre compte n’est pas autorisé à publier des annonces (rôle étudiant-vendeur requis).';
+    return m;
+  }
+
+  static Future<List<Listing>> myListings() async {
+    final c = _c;
+    final uid = c?.auth.currentUser?.id;
+    if (c == null || uid == null) return const [];
+    try {
+      final rows = await c.from('listings').select().eq('seller_id', uid).neq('status', 'removed').order('created_at', ascending: false);
+      return [for (final r in rows) Listing.fromRow(r)];
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  static Future<List<Listing>> publicListings() async {
+    final c = _c;
+    if (c == null) return const [];
+    try {
+      final rows = await c.from('listings').select().eq('status', 'approved').not('seller_id', 'is', null).order('created_at', ascending: false).limit(200);
+      return [for (final r in rows) Listing.fromRow(r)];
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  static Future<({Listing? listing, String? error})> createListing(Listing l, {required bool submit}) async {
+    final c = _c;
+    final uid = c?.auth.currentUser?.id;
+    if (c == null || uid == null) return (listing: null, error: 'Connexion requise pour enregistrer une annonce.');
+    try {
+      final dept = (await restore())?.department ?? '';
+      final row = await c.from('listings').insert({
+        'seller_id': uid,
+        'title': l.title.trim(),
+        'department': dept.isNotEmpty ? dept : 'IUT de Douala',
+        'category': l.category,
+        'price': l.price,
+        'stock': l.stock,
+        'description': l.description.trim().isEmpty ? null : l.description.trim(),
+        'status': submit ? 'pending' : 'draft',
+      }).select().single();
+      return (listing: Listing.fromRow(row), error: null);
+    } catch (e) {
+      return (listing: null, error: _msg(e));
+    }
+  }
+
+  static Future<String?> updateListingStock(String id, int stock) async {
+    final c = _c;
+    if (c == null) return 'Connexion requise.';
+    try {
+      final r = await c.from('listings').update({'stock': stock}).eq('id', id).select('id');
+      return r.isEmpty ? 'Annonce introuvable ou non autorisée.' : null;
+    } catch (e) {
+      return _msg(e);
+    }
+  }
+
+  static Future<String?> setListingStatus(String id, String status) async {
+    final c = _c;
+    if (c == null) return 'Connexion requise.';
+    try {
+      final r = await c.from('listings').update({'status': status}).eq('id', id).select('id');
+      return r.isEmpty ? 'Annonce introuvable ou non autorisée.' : null;
+    } catch (e) {
+      return _msg(e);
+    }
+  }
+
+  /// File de validation (département / administrateur : la RLS ne renvoie rien aux autres rôles).
+  static Future<List<Map<String, dynamic>>> reviewQueue() async {
+    final c = _c;
+    if (c == null || c.auth.currentUser == null) return const [];
+    try {
+      final rows = await c.from('listings').select('id,title,category,price,seller_id,status,review_note,created_at,updated_at').not('seller_id', 'is', null).inFilter('status', ['pending', 'approved', 'rejected']).order('updated_at', ascending: false).limit(200);
+      return [for (final r in rows) Map<String, dynamic>.from(r)];
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  static Future<String?> decideListing(String id, bool approve, String note) async {
+    final c = _c;
+    if (c == null) return 'Connexion requise.';
+    try {
+      final r = await c.from('listings').update({'status': approve ? 'approved' : 'rejected', 'review_note': note.isEmpty ? null : note}).eq('id', id).select('id');
+      return r.isEmpty ? 'Décision non autorisée pour votre rôle.' : null;
+    } catch (e) {
+      return _msg(e);
+    }
+  }
+
+  /// Annule une commande impayée : le stock réservé est restitué par le serveur.
+  static Future<String?> cancelOrder(String number) async {
+    final c = _c;
+    if (c == null) return 'Connexion requise.';
+    try {
+      await c.rpc('cancel_order', params: {'p_number': number});
+      return null;
+    } catch (e) {
+      return _msg(e);
     }
   }
 

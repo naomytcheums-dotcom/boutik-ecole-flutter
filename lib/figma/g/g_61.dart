@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/seller_edit.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_61 extends ConsumerWidget {
@@ -106,6 +107,11 @@ class G_61 extends ConsumerWidget {
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       gTap(300, 66, 66, 34, () { gOpen(context, '58'); }),
+      gTap(24, 228, 342, 62, () => openListingRow(ref, context, 0)),
+      gTap(24, 294, 342, 62, () => openListingRow(ref, context, 1)),
+      gTap(24, 360, 342, 62, () => openListingRow(ref, context, 2)),
+      gTap(24, 426, 342, 62, () => openListingRow(ref, context, 3)),
+      gTap(24, 492, 342, 62, () => openListingRow(ref, context, 4)),
     ]);
   }
 }

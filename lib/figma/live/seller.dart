@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
@@ -15,13 +16,16 @@ import 'store.dart';
 // ------------------------------------------------------------------ annonces
 
 class Listing {
-  const Listing({required this.title, required this.category, required this.price, required this.stock, this.published = true, this.inReview = false, this.description = '', this.id = '', this.status = '', this.note = ''});
+  const Listing({required this.title, required this.category, required this.price, required this.stock, this.published = true, this.inReview = false, this.description = '', this.id = '', this.status = '', this.note = '', this.images = const []});
   final String title, category, description;
   final int price, stock;
   final bool published, inReview;
 
   /// Identifiant serveur (vide hors connexion), statut serveur (draft · pending · approved · rejected) et motif de refus.
   final String id, status, note;
+
+  /// Chemins des photos dans le stockage public `listing-images` (<vendeur>/<annonce>/<fichier>).
+  final List<String> images;
 
   bool get rejected => status == 'rejected';
 
@@ -39,6 +43,7 @@ class Listing {
       note: (r['review_note'] ?? '').toString(),
       published: st == 'approved',
       inReview: st == 'pending',
+      images: [for (final i in (r['images'] as List? ?? const [])) i.toString()],
     );
   }
 
@@ -49,6 +54,7 @@ class Listing {
 
   Listing copyWith({int? stock, bool? published, bool? inReview, String? status}) => Listing(
         id: id,
+        images: images,
         status: status ?? this.status,
         note: note,
         title: title,
@@ -106,6 +112,47 @@ class Listings extends Notifier<List<Listing>> {
     Backend.updateListingStock(id, s).then((err) {
       if (err != null && ref.mounted) state = before; // l'écriture a échoué : on n'affiche pas un stock faux
     });
+  }
+
+  Listing? _find(String title) {
+    for (final l in state) {
+      if (l.title == title) return l;
+    }
+    return null;
+  }
+
+  /// Soumission au département (brouillon ou refusée → en validation).
+  Future<String?> submit(String title) async {
+    final l = _find(title);
+    if (l == null || l.id.isEmpty) return 'Annonce introuvable.';
+    final err = await Backend.setListingStatus(l.id, 'pending');
+    if (err == null) await refresh();
+    return err;
+  }
+
+  /// Modification des champs (titre, prix, stock, description) ; le serveur valide et historise.
+  Future<String?> edit(String title, {required String title2, required int price, required int stock, required String description}) async {
+    final l = _find(title);
+    if (l == null || l.id.isEmpty) return 'Annonce introuvable.';
+    final err = await Backend.updateListing(l.id, {'title': title2, 'price': price, 'stock': stock, 'description': description.isEmpty ? null : description});
+    if (err == null) await refresh();
+    return err;
+  }
+
+  Future<({String? error, List<String> images})> addImage(String title, Uint8List bytes, String name, String mime) async {
+    final l = _find(title);
+    if (l == null || l.id.isEmpty) return (error: 'Annonce introuvable.', images: const <String>[]);
+    final r = await Backend.addListingImage(l.id, l.images, bytes, name, mime);
+    if (r.error == null) await refresh();
+    return r;
+  }
+
+  Future<({String? error, List<String> images})> removeImage(String title, String path) async {
+    final l = _find(title);
+    if (l == null || l.id.isEmpty) return (error: 'Annonce introuvable.', images: const <String>[]);
+    final r = await Backend.removeListingImage(l.id, l.images, path);
+    if (r.error == null) await refresh();
+    return r;
   }
 
   /// Suppression (archivage) par le vendeur.
@@ -188,10 +235,46 @@ final filteredProductsProvider = Provider<List<LiveProduct>>((ref) {
 // ------------------------------------------------------------------ commandes reçues
 
 class SellerOrder {
-  const SellerOrder(this.id, this.title, this.client, this.total, this.qty);
+  const SellerOrder(this.id, this.title, this.client, this.total, this.qty, {this.status = 1});
   final String id, title, client;
   final int total, qty;
+
+  /// État de préparation côté serveur : 0 nouvelle · 1 acceptée · 2 en préparation · 3 prête · 4 livrée.
+  final int status;
 }
+
+/// Commandes payées contenant les annonces du vendeur connecté (serveur, isolées par RLS), actualisées toutes les 20 s.
+class ServerSellerOrders extends Notifier<List<SellerOrder>> {
+  @override
+  List<SellerOrder> build() {
+    if (!Backend.ready) return const [];
+    final uid = ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
+    if (uid.isNotEmpty) {
+      Future.microtask(refresh);
+      final t = Timer.periodic(const Duration(seconds: 20), (_) => refresh());
+      ref.onDispose(t.cancel);
+    }
+    return const [];
+  }
+
+  Future<void> refresh() async {
+    final rows = await Backend.sellerOrders();
+    if (!ref.mounted) return;
+    state = [
+      for (final r in rows)
+        SellerOrder(
+          (r['number'] ?? '').toString(),
+          (r['title'] ?? 'Commande').toString() + ((r['nlines'] as num? ?? 1) > 1 ? ' + ${(r['nlines'] as num) - 1}' : ''),
+          (r['buyer_name'] ?? 'Client').toString(),
+          (r['total'] as num?)?.toInt() ?? 0,
+          (r['qty'] as num?)?.toInt() ?? 0,
+          status: (r['status'] as num?)?.toInt() ?? 0,
+        ),
+    ];
+  }
+}
+
+final serverSellerOrdersProvider = NotifierProvider<ServerSellerOrders, List<SellerOrder>>(ServerSellerOrders.new);
 
 const _seedOrders = [
   SellerOrder('#BE-2026-0142', 'Lampe en bois recyclé', 'Yannick M.', 25000, 1),
@@ -203,14 +286,30 @@ const _seedOrders = [
 /// État de chaque commande reçue : 0 Nouvelle · 1 À préparer · 2 En cours · 3 Prête · 4 Livrée.
 class SellerStatus extends Notifier<Map<String, int>> {
   @override
-  Map<String, int> build() => const {'#BE-2026-0142': 1, '#BE-2026-0141': 0, '#BE-2026-0139': 1, '#BE-2026-0137': 2};
+  Map<String, int> build() {
+    if (Backend.ready) return {for (final o in ref.watch(serverSellerOrdersProvider)) o.id: o.status};
+    return const {'#BE-2026-0142': 1, '#BE-2026-0141': 0, '#BE-2026-0139': 1, '#BE-2026-0137': 2};
+  }
+
   void set(String id, int s) => state = {...state, id: s};
+
+  /// Avec le serveur : le statut n'est affiché qu'une fois enregistré ; sinon l'erreur est renvoyée.
+  Future<String?> advance(String id, int s) async {
+    if (!Backend.ready) {
+      set(id, s);
+      return null;
+    }
+    final err = await Backend.setSellerOrderStatus(id, s);
+    if (err == null) await ref.read(serverSellerOrdersProvider.notifier).refresh();
+    return err;
+  }
 }
 
 final sellerStatusProvider = NotifierProvider<SellerStatus, Map<String, int>>(SellerStatus.new);
 
 /// Commandes passées par les acheteurs (dans cette appli) + commandes de démonstration.
 final sellerOrdersProvider = Provider<List<SellerOrder>>((ref) {
+  if (Backend.ready) return ref.watch(serverSellerOrdersProvider);
   final real = ref.watch(ordersProvider);
   return [
     for (final o in real) SellerOrder(o.id, o.lines.isEmpty ? 'Commande' : o.lines.first.title, 'Mariam E.', o.total, o.lines.fold(0, (a, l) => a + l.qty)),
@@ -218,7 +317,7 @@ final sellerOrdersProvider = Provider<List<SellerOrder>>((ref) {
   ];
 });
 
-int statusOf(Map<String, int> m, String id) => m[id] ?? 1;
+int statusOf(Map<String, int> m, String id) => m[id] ?? (Backend.ready ? 0 : 1);
 
 String sellerStatusLabel(int s) => const ['Nouvelle', 'À préparer', 'En cours', 'Prête', 'Livrée'][s.clamp(0, 4)];
 
@@ -322,9 +421,11 @@ Future<void> submitListing(WidgetRef ref, BuildContext context, {required bool p
 }
 
 /// Marque la commande ouverte comme prête et revient à la liste.
-void markOrderReady(WidgetRef ref, BuildContext context) {
+Future<void> markOrderReady(WidgetRef ref, BuildContext context) async {
   final o = ref.read(currentSellerOrderProvider);
-  ref.read(sellerStatusProvider.notifier).set(o.id, 3);
+  final err = await ref.read(sellerStatusProvider.notifier).advance(o.id, 3);
+  if (!context.mounted) return;
+  if (err != null) return gAlert(context, 'Statut non enregistré', err);
   gToast(context, 'Commande ${o.id} prête : le client est averti');
   gOpen(context, '63');
 }

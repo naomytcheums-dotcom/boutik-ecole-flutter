@@ -281,6 +281,89 @@ class Backend {
     }
   }
 
+  static Future<String?> updateListing(String id, Map<String, dynamic> fields) async {
+    final c = _c;
+    if (c == null) return 'Connexion requise.';
+    try {
+      final r = await c.from('listings').update(fields).eq('id', id).select('id');
+      return r.isEmpty ? 'Annonce introuvable ou non autorisée.' : null;
+    } catch (e) {
+      return _msg(e);
+    }
+  }
+
+  /// URL publique d'une photo d'annonce (le stockage `listing-images` est en lecture publique, écriture réservée au propriétaire).
+  static String listingImageUrl(String path) {
+    try {
+      return _c?.storage.from('listing-images').getPublicUrl(path) ?? '';
+    } catch (_) {
+      return '';
+    }
+  }
+
+  static Future<({String? error, List<String> images})> addListingImage(String listingId, List<String> current, Uint8List bytes, String name, String mime) async {
+    final c = _c;
+    final uid = c?.auth.currentUser?.id;
+    if (c == null || uid == null) return (error: 'Connexion requise.', images: current);
+    if (current.length >= 8) return (error: '8 photos maximum.', images: current);
+    final safe = name.replaceAll(RegExp(r'[^A-Za-z0-9._-]'), '_');
+    final path = '$uid/$listingId/${DateTime.now().microsecondsSinceEpoch}-$safe';
+    try {
+      await c.storage.from('listing-images').uploadBinary(path, bytes, fileOptions: FileOptions(contentType: mime));
+    } catch (e) {
+      final m = e.toString();
+      if (m.contains('mime') || m.contains('415')) return (error: 'Format accepté : JPEG, PNG ou WebP.', images: current);
+      if (m.contains('413') || m.contains('too large')) return (error: 'Photo trop lourde (5 Mo maximum).', images: current);
+      return (error: 'Envoi de la photo impossible.', images: current);
+    }
+    final next = [...current, path];
+    final err = await updateListing(listingId, {'images': next});
+    if (err != null) {
+      try {
+        await c.storage.from('listing-images').remove([path]);
+      } catch (_) {}
+      return (error: err, images: current);
+    }
+    return (error: null, images: next);
+  }
+
+  static Future<({String? error, List<String> images})> removeListingImage(String listingId, List<String> current, String path) async {
+    final c = _c;
+    if (c == null) return (error: 'Connexion requise.', images: current);
+    final next = [for (final p in current) if (p != path) p];
+    final err = await updateListing(listingId, {'images': next});
+    if (err != null) return (error: err, images: current);
+    try {
+      await c.storage.from('listing-images').remove([path]);
+    } catch (_) {}
+    return (error: null, images: next);
+  }
+
+  // ---------------------------------------------------------------- commandes reçues par le vendeur
+
+  static Future<List<Map<String, dynamic>>> sellerOrders() async {
+    final c = _c;
+    if (c == null || c.auth.currentUser == null) return const [];
+    try {
+      final rows = await c.rpc('seller_orders') as List;
+      return [for (final r in rows) Map<String, dynamic>.from(r as Map)];
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  /// Fait avancer la préparation d'une commande (1 acceptée · 2 en préparation · 3 prête · 4 livrée) ; l'acheteur est notifié par le serveur.
+  static Future<String?> setSellerOrderStatus(String orderNumber, int status) async {
+    final c = _c;
+    if (c == null) return 'Connexion requise.';
+    try {
+      await c.rpc('set_seller_order_status', params: {'p_order': orderNumber, 'p_status': status});
+      return null;
+    } catch (e) {
+      return _msg(e);
+    }
+  }
+
   /// File de validation (département / administrateur : la RLS ne renvoie rien aux autres rôles).
   static Future<List<Map<String, dynamic>>> reviewQueue() async {
     final c = _c;

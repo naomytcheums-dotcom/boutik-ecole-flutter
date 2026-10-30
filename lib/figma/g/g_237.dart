@@ -40,7 +40,7 @@ class G_237 extends ConsumerWidget {
       gP(72.417, 140.417, 10.958, 10.958, gImg('assets/figma/v/d7d4b08b8877d1.svg')),
       gP(64.625, 140.417, 10.958, 10.958, gImg('assets/figma/v/d7d4b08b8877d1.svg')),
       gP(98, 133, 100, 16, gText('Tableau de bord', 13, Color(0xFF111015))),
-      gP(52, 170, 196, 40, gBox(color: Color(0xFFFFFFFF), radii: [14, 14, 14, 14]), tap: () => gToast(context, 'Démonstration : Impact territorial')),
+      gP(52, 170, 196, 40, gBox(color: Color(0xFFFFFFFF), radii: [14, 14, 14, 14])),
       gP(65.333, 179.917, 17.333, 20.167, gImg('assets/figma/v/86e85c94581eff.svg')),
       gP(68.875, 183.458, 10.25, 10.25, gImg('assets/figma/v/7a056701264e03.svg')),
       gP(98, 181, 106, 16, gText('Impact territorial', 13, Color(0xFF111015), weight: 600)),

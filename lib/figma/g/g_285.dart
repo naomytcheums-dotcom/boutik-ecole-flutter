@@ -22,6 +22,8 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/engage.dart';
+import '../live/lots.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_285 extends ConsumerWidget {
@@ -67,7 +69,7 @@ class G_285 extends ConsumerWidget {
       gP(306, 588, 40, 15, gText('À venir', 12, Color(0xFF66636E), weight: 700)),
       gP(44, 676, 278, 16, gText('Messagerie du projet · 3 nouveaux messages', 13, Color(0xFF111015), weight: 600)),
       gP(44, 696, 210, 14, gText('Historique des échanges et des versions', 11, Color(0xFF66636E))),
-      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => gToast(context, 'Démonstration : Valider le jalon 3')),
+      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => myNeedsDialog(context, ref)),
       gP(137.5, 788, 115, 19, gText('Valider le jalon 3', 15, Color(0xFFFFFFFF), weight: 600)),
     ]);
   }

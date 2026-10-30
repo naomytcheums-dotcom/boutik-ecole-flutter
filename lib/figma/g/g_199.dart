@@ -22,6 +22,8 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/engage.dart';
+import '../live/lots.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_199 extends ConsumerWidget {
@@ -49,7 +51,7 @@ class G_199 extends ConsumerWidget {
       gP(303.333, 552.333, 17.333, 17, gImg('assets/figma/v/2dc34563c8be33.svg')),
       gP(332, 554, 70, 15, gText('Suggestion', 12.5, Color(0xFF111015), weight: 700, inter: true)),
       gP(304, 584, 303, 32, gText('Équipe de 3 étudiants avec un score moyen de 91 et une disponibilité immédiate.', 11.5, Color(0xFF4A4854), inter: true, lh: 16, wrap: true)),
-      gP(288, 756, 328, 50, gBox(color: Color(0xFF111015), radii: [25, 25, 25, 25]), tap: () => gToast(context, 'Démonstration : Attribuer à cette équipe')),
+      gP(288, 756, 328, 50, gBox(color: Color(0xFF111015), radii: [25, 25, 25, 25]), tap: () => assignNeedDialog(context, ref)),
       gP(371, 772, 163, 17, gText('Attribuer à cette équipe', 14, Color(0xFFFFFFFF), weight: 700, inter: true, align: TextAlign.center)),
       gP(652, 150, 146, 19, gText('Étudiants qualifiés', 16, Color(0xFF111015), weight: 700, inter: true)),
       gP(652, 186, 600, 116, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),

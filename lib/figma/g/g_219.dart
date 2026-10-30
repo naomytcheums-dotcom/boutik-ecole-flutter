@@ -22,6 +22,8 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/engage.dart';
+import '../live/lots.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_219 extends ConsumerWidget {
@@ -88,7 +90,7 @@ class G_219 extends ConsumerWidget {
       gP(46.875, 723.083, 10.25, 8.833, gImg('assets/figma/v/2bdcafa88f7a43.svg')),
       gP(76, 702, 277, 51, gText('Le duel est modéré par l’administrateur ; seuls des étudiants qualifiés de la filière peuvent participer.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
       gP(0, 791, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
-      gP(24, 807, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Lancer le duel')),
+      gP(24, 807, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => unavailableAction(context, 'Paiement requis', 'Le prix et les primes du duel sont bloqués en séquestre avant le lancement : cette étape sera ouverte avec l’activation des paiements Mobile Money (Notch Pay).')),
       gP(147, 825, 96, 18, gText('Lancer le duel', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 877, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gTap(124.2, 150, 44, 32, () { gOpen(context, '220'); }), // parcours 219 -> 220

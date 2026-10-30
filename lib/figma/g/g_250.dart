@@ -22,6 +22,8 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/engage.dart';
+import '../live/lots.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_250 extends ConsumerWidget {
@@ -92,7 +94,7 @@ class G_250 extends ConsumerWidget {
       gP(40.333, 800.333, 19.333, 19.333, gImg('assets/figma/v/94aebfd05b72e8.svg')),
       gP(47, 803, 8.667, 11.333, gImg('assets/figma/v/92fb5f1c9637a7.svg')),
       gP(68, 802, 48, 16, gText('Planifier', 12.5, Color(0xFF111015), weight: 500)),
-      gP(200, 790, 166, 40, gBox(color: Color(0xFFEEE9FF), radii: [20, 20, 20, 20]), tap: () => gToast(context, 'Démonstration : Propulser')),
+      gP(200, 790, 166, 40, gBox(color: Color(0xFFEEE9FF), radii: [20, 20, 20, 20]), tap: () => unavailableAction(context, 'Option payante', 'La mise en avant d’une publication est payante : elle sera proposée avec l’activation des paiements Mobile Money.')),
       gP(217.75, 801.167, 16.5, 17.667, gImg('assets/figma/v/0a4ae151139fec.svg')),
       gP(246, 802, 59, 16, gText('Propulser', 12.5, Color(0xFF5A3FE0), weight: 600)),
       gP(296, 386, 26, 26, gBox(color: Color(0xFFEDE7FF), oval: true)),

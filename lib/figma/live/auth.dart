@@ -84,6 +84,9 @@ final initialAccountProvider = Provider<Account?>((_) => null);
 /// Réinitialise tout l'état de l'application (branché par main.dart) : appelé à la déconnexion.
 void Function()? appReset;
 
+/// Session perdue sans déconnexion demandée : l'état est remis à zéro puis l'écran 150-2 « Session expirée » s'affiche.
+void Function()? appSessionExpired;
+
 class AuthState {
   const AuthState({this.accounts = seedAccounts, this.current, this.pending});
   final List<Account> accounts;

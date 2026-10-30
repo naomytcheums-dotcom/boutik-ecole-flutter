@@ -22,6 +22,8 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/engage.dart';
+import '../live/lots.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_277 extends ConsumerWidget {
@@ -62,7 +64,7 @@ class G_277 extends ConsumerWidget {
       gP(289, 524, 61, 15, gText('Mise à jour', 12, Color(0xFFB54708), weight: 700)),
       gP(62, 548, 146, 15, gText('Version 1.8.2 → 1.8.3 (72 %)', 12, Color(0xFF6B6877))),
       gP(62, 570, 217, 14, gText('Redémarrer  ·  Journal  ·  Activer le secours', 11, Color(0xFF5A3FE0), weight: 600)),
-      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => gToast(context, 'Démonstration : Voir les journaux d’incidents')),
+      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => kioskIncidentsDialog(context, ref)),
       gP(94.5, 788, 201, 19, gText('Voir les journaux d’incidents', 15, Color(0xFFFFFFFF), weight: 600)),
     ]);
   }

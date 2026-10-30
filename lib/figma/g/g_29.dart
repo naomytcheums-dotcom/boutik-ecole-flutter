@@ -89,6 +89,9 @@ class G_29 extends ConsumerWidget {
       gP(261.199, 756.042, 67, 16, gText('Voir le reçu', 12.707, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(149.549, 820.309, 105.564, 3.702, gBox(color: Color(0xFF111015), radii: [1.466, 1.466, 1.466, 1.466])),
       gTap(18.4, 604.4, 139, 32, () { gOpen(context, '46'); }), // parcours 29 -> 46
+      // annulation avec motif (écran 47) : seulement pour une commande réelle, ni payée ni déjà annulée
+      gP(236, 652, 131, 30, Center(child: gText('Annuler la commande', 11.729, Color(0xFFE5484D), weight: 600, align: TextAlign.center)),
+          tap: () => gOpen(context, '47'), show: canCancelViewedOrder(ref)),
     ]);
   }
 }

@@ -22,6 +22,8 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/engage.dart';
+import '../live/lots.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_206 extends ConsumerWidget {
@@ -45,7 +47,7 @@ class G_206 extends ConsumerWidget {
       gP(510, 957, 56, 56, gBox(color: Color(0xFFFFFFFF), oval: true)),
       gP(526.833, 982, 22.333, 6, gImg('assets/figma/v/1b840c982cf97c.svg')),
       gP(536.167, 975, 13, 20, gImg('assets/figma/v/838c5e4b892970.svg')),
-      gP(230, 1180, 260, 44, gBox(color: Color(0x1F1F9D6B), radii: [22, 22, 22, 22]), tap: () => gToast(context, 'Démonstration : Borne prête · réseau OK')),
+      gP(230, 1180, 260, 44, gBox(color: Color(0x1F1F9D6B), radii: [22, 22, 22, 22]), tap: () => kioskNetworkCheck(context)),
       gP(250, 1196, 12, 12, gBox(color: Color(0xFF1F9D6B), oval: true)),
       gP(274, 1190, 181, 20, gText('Borne prête · réseau OK', 16, Color(0xFF126B49), weight: 500)),
       gP(110, 930, 500, 110, const SizedBox.expand(), tap: () => gOpen(context, '207')),

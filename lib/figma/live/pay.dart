@@ -152,13 +152,31 @@ Future<void> startPayment(WidgetRef ref, BuildContext context) async {
 }
 
 
+/// Une commande réelle (enregistrée sur le serveur), non payée et non annulée peut être annulée avec un motif (écran 47).
+bool canCancelViewedOrder(WidgetRef ref) {
+  if (!Backend.ready || demoContent) return false;
+  final o = ref.watch(viewedOrderProvider);
+  return !o.paid && !o.cancelled && ref.watch(ordersProvider).any((x) => x.id == o.id);
+}
+
+/// Motif choisi sur l'écran 47 (valeurs acceptées par le serveur).
+const cancelReasons = ['wrong_product', 'too_slow', 'better_offer', 'other'];
+
+class CancelReason extends Notifier<int> {
+  @override
+  int build() => 0;
+  void set(int v) => state = v.clamp(0, cancelReasons.length - 1);
+}
+
+final cancelReasonProvider = NotifierProvider<CancelReason, int>(CancelReason.new);
+
 /// « Annuler la commande » : seule une commande impayée peut l'être ; le serveur restitue le stock réservé.
 Future<void> cancelViewedOrder(WidgetRef ref, BuildContext context) async {
   final o = ref.read(viewedOrderProvider);
   if (o.cancelled) return gToast(context, 'Cette commande est déjà annulée.');
   if (o.paid) return gAlert(context, 'Annulation impossible', 'Cette commande est déjà payée. Contactez le vendeur depuis le suivi de commande pour toute demande.');
   if (Backend.ready) {
-    final err = await Backend.cancelOrder(o.id);
+    final err = await Backend.cancelOrderWithReason(o.id, cancelReasons[ref.read(cancelReasonProvider)]);
     if (err != null) {
       if (context.mounted) await gAlert(context, 'Annulation impossible', err);
       return;

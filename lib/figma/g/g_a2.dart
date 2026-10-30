@@ -22,6 +22,8 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/engage.dart';
+import '../live/lots.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_A2 extends ConsumerWidget {
@@ -57,7 +59,7 @@ class G_A2 extends ConsumerWidget {
       gP(216, 146, 56, 56, gBox(image: 'assets/figma/img/75d62324f07569a15dcd7cd5ce6357a2177c94cd.png', fit: BoxFit.contain)),
       gP(218, 214, 87, 20, gText('Parle à Kéla', 16, Color(0xFF111015), weight: 600)),
       gP(218, 238, 117, 14, gText('Essaie dès maintenant', 11, Color(0xFF66636E))),
-      gP(218, 288, 134, 40, gBox(color: Color(0xFF111015), radii: [20, 20, 20, 20]), tap: () => gToast(context, 'Démonstration : Commencer')),
+      gP(218, 288, 134, 40, gBox(color: Color(0xFF111015), radii: [20, 20, 20, 20]), tap: () => gOpen(context, 'A1')),
       gP(247, 299, 76, 16, gText('Commencer', 12.5, Color(0xFFFFFFFF), weight: 500, align: TextAlign.center)),
       gP(24, 362, 57, 19, gText('Thèmes', 15, Color(0xFF111015), weight: 600)),
       gP(318, 364, 48, 15, gText('Tout voir', 12, Color(0xFF66636E), align: TextAlign.right)),

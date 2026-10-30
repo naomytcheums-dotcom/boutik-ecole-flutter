@@ -22,6 +22,8 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/engage.dart';
+import '../live/lots.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_234 extends ConsumerWidget {
@@ -56,9 +58,9 @@ class G_234 extends ConsumerWidget {
       gP(24, 216, 294, 84, gBox(image: 'assets/figma/img/1574e42a325d3a4ac509841e7a5eb5a285a3d991.png', fit: BoxFit.cover, radii: [10, 10, 10, 10])),
       gP(30, 308, 134, 16, gText('Jalon 2 · 72 000 FCFA', 13, Color(0xFF111015), weight: 800)),
       gP(30, 330, 167, 14, gText('Paiement bloqué en séquestre', 11.5, Color(0xFF66636E))),
-      gP(16, 372, 310, 40, gBox(color: Color(0xFFFFFFFF), radii: [20, 20, 20, 20]), tap: () => gToast(context, 'Démonstration : ✓  Valider et libérer')),
+      gP(16, 372, 310, 40, gBox(color: Color(0xFFFFFFFF), radii: [20, 20, 20, 20]), tap: () => myNeedsDialog(context, ref)),
       gP(111.5, 383, 119, 16, gText('✓  Valider et libérer', 13, Color(0xFF128C7E), weight: 700, align: TextAlign.center)),
-      gP(16, 418, 310, 40, gBox(color: Color(0xFFFFFFFF), radii: [20, 20, 20, 20]), tap: () => gToast(context, 'Démonstration : Demander une correction')),
+      gP(16, 418, 310, 40, gBox(color: Color(0xFFFFFFFF), radii: [20, 20, 20, 20]), tap: () => myNeedsDialog(context, ref)),
       gP(90, 429, 162, 16, gText('Demander une correction', 13, Color(0xFF111015), weight: 700, align: TextAlign.center)),
       gP(74, 476, 300, 49, gBox(color: Color(0xFFD9FDD3), shadows: [BoxShadow(color: Color(0x1A122640), offset: Offset(0, 1), blurRadius: 2, spreadRadius: 0)], radii: [14, 14, 14, 14])),
       gP(86, 486, 279, 19, gText('✓ Valider et libérer', 13, Color(0xFF111111), lh: 19, wrap: true)),

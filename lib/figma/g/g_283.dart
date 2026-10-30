@@ -22,6 +22,8 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/engage.dart';
+import '../live/lots.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_283 extends ConsumerWidget {
@@ -61,7 +63,7 @@ class G_283 extends ConsumerWidget {
       gP(44, 550, 201, 14, gText('Journalisé · empreinte SHA-256 ancrée', 11, Color(0xFF66636E))),
       gP(44, 604, 126, 16, gText('Émission journalisée', 13, Color(0xFF111015), weight: 600)),
       gP(44, 626, 302, 20, gText('Chaque émission, remplacement ou révocation enregistre l’auteur, la date et le motif.', 11, Color(0xFF66636E))),
-      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => gToast(context, 'Démonstration : Émettre un certificat')),
+      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => issueCertificateDialog(context, ref)),
       gP(120.5, 788, 149, 19, gText('Émettre un certificat', 15, Color(0xFFFFFFFF), weight: 600)),
       gTap(36, 220, 237, 32, () { gOpen(context, '211'); }), // lien métier 283 -> 211
     ]);

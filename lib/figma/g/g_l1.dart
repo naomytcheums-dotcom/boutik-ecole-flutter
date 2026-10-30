@@ -22,6 +22,8 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/engage.dart';
+import '../live/lots.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_L1 extends ConsumerWidget {
@@ -57,7 +59,7 @@ class G_L1 extends ConsumerWidget {
       gP(186.458, 415.417, 17.083, 12.333, gImg('assets/figma/v/590a1cb98d88e9.svg')),
       gP(192, 421.75, 6, 9.167, gImg('assets/figma/v/6c8704a6160690.svg')),
       gP(246.271, 409.083, 19.458, 19.062, gImg('assets/figma/v/0397ee56e7c9a4.svg')),
-      gP(24, 470, 342, 50, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [24, 24, 24, 24]), tap: () => gToast(context, 'Démonstration : Atelier : fabrication de la lampe en bois recyclé')),
+      gP(24, 470, 342, 50, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [24, 24, 24, 24])),
       gP(40, 486, 315, 16, gText('Atelier : fabrication de la lampe en bois recyclé', 12.5, Color(0xFF111015), weight: 500, wrap: true)),
       gP(44, 548, 146, 18, gText('Tu peux lancer ce live', 14.5, Color(0xFF111015), weight: 600)),
       gP(299, 544, 47, 26, gBox(color: Color(0xFFE8F7EE), radii: [100, 100, 100, 100])),
@@ -89,7 +91,7 @@ class G_L1 extends ConsumerWidget {
       gP(248, 746, 54, 12, gText('Non éligible', 9.5, Color(0xFFB26A00))),
       gP(332.875, 742.542, 14.25, 11.042, gImg('assets/figma/v/2af36c9e23ec90.svg')),
       gP(334.708, 738.417, 10.583, 10.125, gImg('assets/figma/v/ba7c6cc74be2bd.svg')),
-      gP(24, 792, 342, 44, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x40403366), offset: Offset(0, 8), blurRadius: 18, spreadRadius: 0)], radii: [22, 22, 22, 22]), tap: () => gToast(context, 'Démonstration : Lancer le live')),
+      gP(24, 792, 342, 44, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x40403366), offset: Offset(0, 8), blurRadius: 18, spreadRadius: 0)], radii: [22, 22, 22, 22]), tap: () => unavailableAction(context, 'Diffusion indisponible', 'La diffusion vidéo en direct nécessite un service de streaming qui n’est pas encore raccordé. Programmez votre live depuis « Programmer un live ».')),
       gP(153.5, 804, 83, 17, gText('Lancer le live', 13.5, Color(0xFFFFFFFF), weight: 600)),
     ]);
   }

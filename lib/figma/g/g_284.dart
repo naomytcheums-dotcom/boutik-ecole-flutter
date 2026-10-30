@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/lots.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_284 extends ConsumerWidget {
@@ -61,7 +62,7 @@ class G_284 extends ConsumerWidget {
       gP(262, 470, 84, 16, gText('190 239 FCFA', 13, Color(0xFF111015), weight: 600)),
       gP(44, 546, 153, 16, gText('Répartition configurable', 13, Color(0xFF111015), weight: 600)),
       gP(44, 568, 302, 20, gText('70 / 20 / 10 par défaut · modifiable par l’administrateur global, avec historique.', 11, Color(0xFF66636E))),
-      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => gToast(context, 'Démonstration : Exporter le registre (CSV)')),
+      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => exportFinancialRegister(context, ref)),
       gP(103.5, 788, 183, 19, gText('Exporter le registre (CSV)', 15, Color(0xFFFFFFFF), weight: 600)),
     ]);
   }

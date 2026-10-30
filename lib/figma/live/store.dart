@@ -177,7 +177,8 @@ class Orders extends Notifier<List<Order>> {
       // préparation côté vendeur : 0 en attente · 1-2 en préparation · 3 prête · 4 livrée
       status: step <= 0 ? 0 : (step <= 2 ? 1 : (step == 3 ? 2 : 3)),
       paid: r['paid'] == true,
-      cancelled: r['cancelled'] == true,
+      // l'annulation serveur (cancel_order) renseigne cancelled_at ; le booléen n'est synchronisé qu'à partir de 20261031a
+      cancelled: r['cancelled'] == true || r['cancelled_at'] != null,
     );
   }
 

@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'core/router/app_router.dart';
 import 'core/state/app_settings.dart';
 import 'core/theme/app_theme.dart';
+import 'figma/live/auth.dart' show appSessionExpired;
+import 'figma/live/system_states.dart';
 import 'l10n/gen/app_localizations.dart';
 
 class BoutikEcoleApp extends ConsumerStatefulWidget {
@@ -44,14 +46,18 @@ class _BoutikEcoleAppState extends ConsumerState<BoutikEcoleApp> {
       routerConfig: _router,
       builder: (context, child) {
         final mq = MediaQuery.of(context);
-        return MediaQuery(
-          data: mq.copyWith(
-            textScaler: TextScaler.linear(mq.textScaler.scale(1) * settings.textScale),
-            boldText: mq.boldText || settings.boldText,
-            highContrast: mq.highContrast || settings.highContrast,
-            disableAnimations: mq.disableAnimations || settings.reduceMotion,
+        return SystemStates(
+          router: _router,
+          onSessionExpired: appSessionExpired,
+          child: MediaQuery(
+            data: mq.copyWith(
+              textScaler: TextScaler.linear(mq.textScaler.scale(1) * settings.textScale),
+              boldText: mq.boldText || settings.boldText,
+              highContrast: mq.highContrast || settings.highContrast,
+              disableAnimations: mq.disableAnimations || settings.reduceMotion,
+            ),
+            child: child!,
           ),
-          child: child!,
         );
       },
     );

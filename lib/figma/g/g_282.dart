@@ -22,6 +22,8 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/engage.dart';
+import '../live/lots.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_282 extends ConsumerWidget {
@@ -59,7 +61,7 @@ class G_282 extends ConsumerWidget {
       gP(241, 632, 105, 15, gText('12/11/2026 · 18:00', 12, Color(0xFF111015), weight: 600)),
       gP(44, 658, 121, 15, gText('Contenu mis en avant', 12, Color(0xFF66636E))),
       gP(226, 658, 120, 15, gText('Drops et projets MMI', 12, Color(0xFF111015), weight: 600)),
-      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => gToast(context, 'Démonstration : Programmer l’événement')),
+      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => scheduleKioskEvent(context, ref)),
       gP(102.5, 788, 185, 19, gText('Programmer l’événement', 15, Color(0xFFFFFFFF), weight: 600)),
     ]);
   }

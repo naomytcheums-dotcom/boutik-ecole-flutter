@@ -25,6 +25,7 @@ class AppRoot extends StatefulWidget {
 class _AppRootState extends State<AppRoot> {
   int _generation = 0;
   bool _loggedOut = false;
+  bool _expired = false;
 
   @override
   void initState() {
@@ -34,6 +35,15 @@ class _AppRootState extends State<AppRoot> {
       setState(() {
         _generation++;
         _loggedOut = true;
+        _expired = false;
+      });
+    };
+    appSessionExpired = () {
+      if (!mounted) return;
+      setState(() {
+        _generation++;
+        _loggedOut = true;
+        _expired = true;
       });
     };
   }
@@ -41,6 +51,7 @@ class _AppRootState extends State<AppRoot> {
   @override
   void dispose() {
     appReset = null;
+    appSessionExpired = null;
     super.dispose();
   }
 
@@ -48,6 +59,6 @@ class _AppRootState extends State<AppRoot> {
   Widget build(BuildContext context) => ProviderScope(
         key: ValueKey(_generation),
         overrides: [if (!_loggedOut && widget.remembered != null) initialAccountProvider.overrideWithValue(widget.remembered!)],
-        child: BoutikEcoleApp(initialLocation: _loggedOut ? '/s/03' : '/s/01'),
+        child: BoutikEcoleApp(initialLocation: _expired ? '/s/150-2' : (_loggedOut ? '/s/03' : '/s/01')),
       );
 }

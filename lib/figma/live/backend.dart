@@ -10,8 +10,10 @@ import '../../data/demo/section_a_demo.dart' show CartLine;
 /// La clé « publishable » est publique par conception : la sécurité repose sur les règles RLS de la base.
 /// Sans connexion (tests, hors ligne) toutes les méthodes sont sans effet et l'application reste fonctionnelle.
 class Backend {
-  static const url = 'https://zxqcnmgwhtbxkdpjqtlr.supabase.co';
-  static const key = 'sb_publishable_yYEzuivRZlBnVOkuMCiSow_syCjss01';
+  /// Production par défaut ; un environnement de test isolé se choisit au build :
+  /// `flutter build web --dart-define=BE_URL=http://127.0.0.1:54321 --dart-define=BE_KEY=<clé publishable locale>`.
+  static const url = String.fromEnvironment('BE_URL', defaultValue: 'https://zxqcnmgwhtbxkdpjqtlr.supabase.co');
+  static const key = String.fromEnvironment('BE_KEY', defaultValue: 'sb_publishable_yYEzuivRZlBnVOkuMCiSow_syCjss01');
   static bool ready = false;
 
   static Future<void> init() async {
@@ -73,11 +75,13 @@ class Backend {
         row = await c.from('profiles').select().eq('id', user.id).maybeSingle();
       }
       if (row == null) {
+        signingOut = true;
         await c.auth.signOut();
         return (account: null, error: 'Profil introuvable. Contactez le support.');
       }
       final a = _fromRow(row, email);
       if (a.suspended) {
+        signingOut = true;
         await c.auth.signOut();
         return (account: null, error: 'Compte suspendu. Contactez l’administration.');
       }
@@ -206,6 +210,10 @@ class Backend {
 
   static String _msg(Object e) {
     final m = e is PostgrestException ? e.message : e.toString();
+    final code = e is PostgrestException ? e.code : null;
+    if (code == 'PGRST202' || code == 'PGRST205' || m.contains('Could not find the function') || m.contains('Could not find the table')) {
+      return 'Cette fonction n’est pas encore activée sur le serveur (migration 20261031a à appliquer par l’administrateur de la base).';
+    }
     if (m.contains('listings_titre_unique') || m.contains('duplicate key')) return 'Une annonce porte déjà ce titre. Choisissez un titre plus précis (marque, couleur, taille…).';
     if (m.contains('listings_price_min')) return 'Le prix doit être d’au moins 500 FCFA.';
     if (m.contains('listings_title_len')) return 'Le titre doit comporter de 3 à 80 caractères.';
@@ -411,7 +419,7 @@ class Backend {
     final c = _c;
     if (c == null || c.auth.currentUser == null) return const [];
     try {
-      final rows = await c.from('orders').select('number,subtotal,fee,method,reference,status,paid,cancelled,created_at,order_lines(title,qty,unit_price,fulfillment)').order('created_at', ascending: false);
+      final rows = await c.from('orders').select('number,subtotal,fee,method,reference,status,paid,cancelled,cancelled_at,created_at,order_lines(title,qty,unit_price,fulfillment)').order('created_at', ascending: false);
       return [for (final r in rows) Map<String, dynamic>.from(r as Map)];
     } catch (_) {
       return const [];
@@ -618,6 +626,21 @@ class Backend {
     }
   }
 
+  /// Annulation avec motif (écran 47) ; tant que la migration 20261031a n'est pas appliquée, l'annulation simple est utilisée.
+  static Future<String?> cancelOrderWithReason(String number, String reason) async {
+    final c = _c;
+    if (c == null) return 'Connexion requise.';
+    try {
+      await c.rpc('cancel_order_with_reason', params: {'p_number': number, 'p_reason': reason});
+      return null;
+    } on PostgrestException catch (e) {
+      if (e.code == 'PGRST202') return cancelOrder(number);
+      return _msg(e);
+    } catch (e) {
+      return _msg(e);
+    }
+  }
+
   /// Avis vérifié : seul l'acheteur d'une commande payée, une fois l'article prêt, un avis par article.
   static Future<String?> submitReview(String order, String title, int rating, String comment) => _call(
       'submit_review', {'p_order': order, 'p_title': title, 'p_rating': rating, 'p_comment': comment});
@@ -638,6 +661,35 @@ class Backend {
       return null;
     } catch (e) {
       return _msg(e);
+    }
+  }
+
+  /// Fonction serveur qui renvoie une valeur (identifiant, code, objet) : (data, error) ; error null si succès.
+  static Future<({Object? data, String? error})> rpc(String fn, Map<String, dynamic> params) async {
+    final c = _c;
+    if (c == null) return (data: null, error: 'Connexion requise.');
+    try {
+      return (data: await c.rpc(fn, params: params) as Object?, error: null);
+    } catch (e) {
+      return (data: null, error: _msg(e));
+    }
+  }
+
+  /// Lecture d'une table protégée par RLS (le serveur ne renvoie que ce que le compte peut voir).
+  static Future<({List<Map<String, dynamic>> rows, String? error})> rows(String table, String select,
+      {Map<String, Object> eq = const {}, String? order, bool ascending = false, int limit = 50}) async {
+    final c = _c;
+    if (c == null) return (rows: const <Map<String, dynamic>>[], error: 'Connexion requise.');
+    try {
+      dynamic q = c.from(table).select(select);
+      for (final e in eq.entries) {
+        q = q.eq(e.key, e.value);
+      }
+      if (order != null) q = q.order(order, ascending: ascending);
+      final r = await q.limit(limit);
+      return (rows: [for (final x in r as List) Map<String, dynamic>.from(x as Map)], error: null);
+    } catch (e) {
+      return (rows: const <Map<String, dynamic>>[], error: _msg(e));
     }
   }
 
@@ -717,14 +769,19 @@ class Backend {
     }
   }
 
+  /// Vrai pendant une déconnexion demandée par l'utilisateur (sinon, une perte de session est une expiration : écran 150-2).
+  static bool signingOut = false;
+
   /// Ferme les sessions de ce compte sur TOUS les appareils.
   static Future<void> signOutAll() async {
+    signingOut = true;
     try {
       await _c?.auth.signOut(scope: SignOutScope.global);
     } catch (_) {}
   }
 
   static Future<void> signOut() async {
+    signingOut = true;
     try {
       await _c?.auth.signOut();
     } catch (_) {}

@@ -22,6 +22,8 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/engage.dart';
+import '../live/lots.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_271 extends ConsumerWidget {
@@ -84,9 +86,9 @@ class G_271 extends ConsumerWidget {
       gP(82, 557, 72, 18, gText('WhatsApp', 14, Color(0xFF111015), weight: 600)),
       gP(82, 576, 91, 14, gText('+237 6 •• •• •• 42', 11, Color(0xFF6B6877))),
       gP(308, 561, 46, 26, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
-      gP(24, 608, 342, 46, gBox(border: Color(0xFF6A4DFF), bw: 1.5, radii: [23, 23, 23, 23]), tap: () => gToast(context, 'Démonstration : +  Ajouter un autre lien (portfolio, site, Drive…)')),
+      gP(24, 608, 342, 46, gBox(border: Color(0xFF6A4DFF), bw: 1.5, radii: [23, 23, 23, 23]), tap: () => addProfileLink(context, ref)),
       gP(54, 622, 282, 16, gText('+  Ajouter un autre lien (portfolio, site, Drive…)', 13, Color(0xFF5A3FE0), weight: 600)),
-      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => gToast(context, 'Démonstration : Enregistrer')),
+      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => saveProfileLinks(context, ref)),
       gP(155, 788, 80, 19, gText('Enregistrer', 15, Color(0xFFFFFFFF), weight: 600)),
       gP(24, 668, 260, 14, gText('Aperçu sur mon profil : 5 icônes visibles + Portfolio', 11, Color(0xFF6B6877), weight: 500)),
       gP(31, 373, 42, 42, gImg('assets/figma/v/fe7fb6b4c01b7c.svg')),

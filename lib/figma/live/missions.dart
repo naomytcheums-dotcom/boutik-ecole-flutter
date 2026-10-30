@@ -56,9 +56,22 @@ final kioskSessionProvider = NotifierProvider<KioskSession, QrSession?>(KioskSes
 final kioskProductProvider = NotifierProvider<StrV, String>(StrV.new);
 final kioskQueryProvider = NotifierProvider<StrV, String>(StrV.new);
 
+/// Filtre de la borne (207) : 0 tout, 1 produits, 2 services.
+class KioskKind extends Notifier<int> {
+  @override
+  int build() => 0;
+  void set(int v) => state = v;
+}
+
+final kioskKindProvider = NotifierProvider<KioskKind, int>(KioskKind.new);
+
 final kioskProductsProvider = Provider<List<LiveProduct>>((ref) {
   final q = normText(ref.watch(kioskQueryProvider).trim());
-  return [for (final p in ref.watch(allProductsProvider)) if (q.isEmpty || normText('${p.title} ${p.department}').contains(q)) p];
+  final k = ref.watch(kioskKindProvider);
+  return [
+    for (final p in ref.watch(allProductsProvider))
+      if ((q.isEmpty || normText('${p.title} ${p.department}').contains(q)) && (k == 0 || (k == 2) == (p.category == 'Services'))) p,
+  ];
 });
 
 final kioskCurrentProvider = Provider<LiveProduct>((ref) {

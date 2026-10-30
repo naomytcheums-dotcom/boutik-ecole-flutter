@@ -22,6 +22,8 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/engage.dart';
+import '../live/lots.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_P5 extends ConsumerWidget {
@@ -174,7 +176,7 @@ class G_P5 extends ConsumerWidget {
       gP(55, 1640.625, 6, 14.75, gImg('assets/figma/v/4c74d775e86184.svg')),
       gP(84, 1632, 124, 16, gText('Ajouter un autre lien', 13, Color(0xFF5A3FE0), weight: 600)),
       gP(84, 1652, 253, 13, gText('Site web, portfolio, boutique, WhatsApp Business…', 10.5, Color(0xFF66636E))),
-      gP(24, 1700, 342, 52, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x40403366), offset: Offset(0, 10), blurRadius: 22, spreadRadius: 0)], radii: [26, 26, 26, 26]), tap: () => gToast(context, 'Démonstration : Enregistrer mes outils')),
+      gP(24, 1700, 342, 52, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x40403366), offset: Offset(0, 10), blurRadius: 22, spreadRadius: 0)], radii: [26, 26, 26, 26]), tap: () => saveProfileLinks(context, ref)),
       gP(122, 1715, 146, 18, gText('Enregistrer mes outils', 14, Color(0xFFFFFFFF), weight: 600)),
     ]);
   }

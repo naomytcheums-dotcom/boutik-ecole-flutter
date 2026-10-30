@@ -22,6 +22,8 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/engage.dart';
+import '../live/lots.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_287 extends ConsumerWidget {
@@ -34,7 +36,7 @@ class G_287 extends ConsumerWidget {
       gP(40, 92, 327, 18, gText('18 fiches · 12 publiées · 4 en validation · 2 brouillons', 14, Color(0xFF66636E))),
       gP(40, 132, 688, 48, gBox(color: Color(0xFFFFFFFF), radii: [24, 24, 24, 24])),
       gP(64, 147, 149, 18, gText('Rechercher une fiche…', 14, Color(0xFF66636E))),
-      gP(560, 138, 160, 36, gBox(color: Color(0xFF111015), radii: [18, 18, 18, 18]), tap: () => gToast(context, 'Démonstration : + Nouvelle fiche')),
+      gP(560, 138, 160, 36, gBox(color: Color(0xFF111015), radii: [18, 18, 18, 18]), tap: () => gOpen(context, '58')),
       gP(582, 147, 100, 16, gText('+ Nouvelle fiche', 13, Color(0xFFFFFFFF), weight: 600)),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(40, 198, 72, 34, 'Toutes', 13, 600), GChip(156, 198, 72, 34, 'Produits', 13, 600), GChip(266, 198, 72, 34, 'Services', 13, 600)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 17)),
       gP(150, 198, 84, 34, gBox(color: Color(0xFFFFFFFF), radii: [17, 17, 17, 17])),

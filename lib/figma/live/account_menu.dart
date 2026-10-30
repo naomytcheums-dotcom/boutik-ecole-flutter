@@ -7,6 +7,7 @@ import 'access.dart';
 import 'auth.dart';
 import 'espace.dart';
 import 'feedback.dart';
+import 'lots.dart';
 import 'services.dart';
 
 const _st = TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 14, color: Color(0xFF111015));
@@ -28,6 +29,7 @@ class _Group {
 
 Future<void> _devis(BuildContext c, WidgetRef r) => quotesDialog(c, r);
 Future<void> _reclamations(BuildContext c, WidgetRef r) => claimsDialog(c, r);
+Future<void> _assign(BuildContext c, WidgetRef r) => assignNeedDialog(c, r);
 
 final _groups = <_Group>[
   const _Group('Mes achats', [
@@ -78,6 +80,11 @@ final _groups = <_Group>[
     _Entry('Publier un vœu', screen: '218', roles: {'student', 'dept', 'admin'}),
     _Entry('Registre des innovations', screen: '87', roles: {'student', 'dept', 'admin'}),
     _Entry('Kit à partager', screen: '242', roles: {'student', 'dept', 'admin'}),
+    _Entry('Besoins à pourvoir', action: openNeedsDialog, roles: {'student', 'dept', 'admin'}),
+    _Entry('Mes missions et jalons', action: myMissionsDialog, roles: {'student', 'dept', 'admin'}),
+    _Entry('Mes vœux', action: myWishesDialog, roles: {'student', 'dept', 'admin'}),
+    _Entry('Soumettre mon projet', screen: '205', roles: {'student', 'dept', 'admin'}),
+    _Entry('Journal du projet', screen: '82', roles: {'student', 'dept', 'admin'}),
   ]),
   const _Group('Espace entreprise', [
     _Entry('Tableau de bord entreprise', screen: '187', roles: {'company', 'admin'}),
@@ -94,6 +101,12 @@ final _groups = <_Group>[
     _Entry('Registre des certificats', screen: '283', roles: {'dept', 'admin'}),
     _Entry('Catalogue du département', screen: '288', roles: {'dept', 'admin'}),
     _Entry('Espace jury', screen: '178', roles: {'dept', 'admin'}),
+    _Entry('Vœux à valider', action: reviewWishesDialog, roles: {'dept', 'admin'}),
+    _Entry('Campagnes à valider', action: reviewCampaignsDialog, roles: {'dept', 'admin'}),
+    _Entry('Projets à examiner', action: reviewProjectsDialog, roles: {'dept', 'admin'}),
+    _Entry('Attribuer un besoin', action: _assign, roles: {'dept', 'admin'}),
+    _Entry('Émettre un certificat', action: issueCertificateDialog, roles: {'dept', 'admin'}),
+    _Entry('Journal des incidents des bornes', action: kioskIncidentsDialog, roles: {'support', 'admin'}),
     _Entry('Rapport sponsors', screen: '239', roles: {'direction', 'dept', 'admin'}),
     _Entry('Administration institutionnelle', screen: '117', roles: {'direction', 'admin'}),
     _Entry('Administration globale', screen: '127', roles: {'admin'}),
@@ -114,6 +127,8 @@ final _groups = <_Group>[
     _Entry('Guide d’utilisation', screen: '179'),
     _Entry('Canaux et notifications', screen: '236'),
     _Entry('Préférences d’alertes', screen: '156'),
+    _Entry('Mes besoins publiés', action: myNeedsDialog),
+    _Entry('Mes certificats', action: myCertificatesDialog),
     _Entry('Mon espace client', screen: '261'),
     _Entry('Mes données et confidentialité', screen: '273'),
     _Entry('Vérification en 2 étapes', screen: '272'),

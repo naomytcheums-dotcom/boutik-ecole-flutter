@@ -47,23 +47,34 @@ class G_47 extends ConsumerWidget {
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 221, 26, gText('Annuler la commande', 21, Color(0xFF111015), weight: 700)),
       gP(36, 128, 50, 50, gBox(image: 'assets/figma/img/9803b1792923bb371cffd2d64272ebebf74ea2d4.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
-      gP(98, 132, 109, 17, gText('#BE-2026-0141', 13.5, Color(0xFF111015), weight: 600)),
-      gP(98, 154, 140, 14, gText('Sac à dos design · 25 00…', 11.5, Color(0xFF66636E))),
+      gP(98, 132, 109, 17, gText(demoContent ? '#BE-2026-0141' : ref.watch(viewedOrderProvider).id, 13.5, Color(0xFF111015), weight: 600)),
+      gP(98, 154, 140, 14, gText(demoContent || ref.watch(viewedOrderProvider).lines.isEmpty ? 'Sac à dos design · 25 00…' : '${ref.watch(viewedOrderProvider).lines.first.title} · ${fcfa(ref.watch(viewedOrderProvider).total)}', 11.5, Color(0xFF66636E))),
       gP(242.4, 142, 109.6, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11])),
       gP(258.2, 146, 78, 14, gText('En préparation', 11, Color(0xFF8F5400), weight: 600, align: TextAlign.center)),
       gP(24, 200, 150, 19, gText('Motif de l’annulation', 15, Color(0xFF111015), weight: 700)),
-      gP(24, 238, 20, 20, gBox(color: Color(0xFF111015), radii: [6, 6, 6, 6])),
-      gP(26.667, 241.75, 14.667, 11.958, gImg('assets/figma/v/w_check.svg')),
+      if (ref.watch(cancelReasonProvider) == 0) ...[
+        gP(24, 238, 20, 20, gBox(color: Color(0xFF111015), radii: [6, 6, 6, 6])),
+        gP(26.667, 241.75, 14.667, 11.958, gImg('assets/figma/v/w_check.svg')),
+      ] else gP(24, 238, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFDAD5E4), bw: 1.5, radii: [6, 6, 6, 6])),
       gP(54, 239, 315, 18, gText('Je me suis trompé de produit', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
-      gP(24, 274, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFDAD5E4), bw: 1.5, radii: [6, 6, 6, 6])),
+      if (ref.watch(cancelReasonProvider) == 1) ...[
+        gP(24, 274, 20, 20, gBox(color: Color(0xFF111015), radii: [6, 6, 6, 6])),
+        gP(26.667, 277.75, 14.667, 11.958, gImg('assets/figma/v/w_check.svg')),
+      ] else gP(24, 274, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFDAD5E4), bw: 1.5, radii: [6, 6, 6, 6])),
       gP(54, 275, 315, 18, gText('Délai de livraison trop long', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
-      gP(24, 310, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFDAD5E4), bw: 1.5, radii: [6, 6, 6, 6])),
+      if (ref.watch(cancelReasonProvider) == 2) ...[
+        gP(24, 310, 20, 20, gBox(color: Color(0xFF111015), radii: [6, 6, 6, 6])),
+        gP(26.667, 313.75, 14.667, 11.958, gImg('assets/figma/v/w_check.svg')),
+      ] else gP(24, 310, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFDAD5E4), bw: 1.5, radii: [6, 6, 6, 6])),
       gP(54, 311, 315, 18, gText('J’ai trouvé une meilleure offre', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
-      gP(24, 346, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFDAD5E4), bw: 1.5, radii: [6, 6, 6, 6])),
+      if (ref.watch(cancelReasonProvider) == 3) ...[
+        gP(24, 346, 20, 20, gBox(color: Color(0xFF111015), radii: [6, 6, 6, 6])),
+        gP(26.667, 349.75, 14.667, 11.958, gImg('assets/figma/v/w_check.svg')),
+      ] else gP(24, 346, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFDAD5E4), bw: 1.5, radii: [6, 6, 6, 6])),
       gP(54, 347, 315, 18, gText('Autre raison', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
       gP(40, 396, 114, 18, gText('Remboursement', 14, Color(0xFF111015), weight: 700)),
       gP(40, 430, 118, 16, gText('Montant remboursé', 12.5, Color(0xFF66636E))),
-      gP(271, 430, 79, 16, gText('25 000 FCFA', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),
+      gP(271, 430, 79, 16, gText(demoContent ? '25 000 FCFA' : (ref.watch(viewedOrderProvider).paid ? fcfa(ref.watch(viewedOrderProvider).total) : '0 FCFA'), 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),
       gP(40, 455, 310, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 464, 30, 16, gText('Délai', 12.5, Color(0xFF66636E))),
       gP(248, 464, 102, 16, gText('3 à 5 jours ouvrés', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
@@ -82,6 +93,10 @@ class G_47 extends ConsumerWidget {
       gP(203, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE5484D), bw: 1.5, radii: [27, 27, 27, 27]), tap: () { cancelViewedOrder(ref, context); }),
       gP(209, 778, 151, 18, gText('Annuler la commande', 14.5, Color(0xFFE5484D), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      gTap(20, 232, 350, 32, () => ref.read(cancelReasonProvider.notifier).set(0)), // motif d'annulation
+      gTap(20, 268, 350, 32, () => ref.read(cancelReasonProvider.notifier).set(1)), // motif d'annulation
+      gTap(20, 304, 350, 32, () => ref.read(cancelReasonProvider.notifier).set(2)), // motif d'annulation
+      gTap(20, 340, 350, 32, () => ref.read(cancelReasonProvider.notifier).set(3)), // motif d'annulation
     ]);
   }
 }

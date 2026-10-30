@@ -22,6 +22,8 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/engage.dart';
+import '../live/lots.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_213 extends ConsumerWidget {
@@ -94,7 +96,7 @@ class G_213 extends ConsumerWidget {
       gP(1172, 576, 64.8, 22, gBox(color: Color(0xFFFDE6E7), radii: [11, 11, 11, 11])),
       gP(1181.4, 580, 47, 13, gText('Révoqué', 11, Color(0xFFE5484D), weight: 600, inter: true, align: TextAlign.center)),
       gP(284, 612, 960, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(1040, 786, 196, 40, gBox(color: Color(0xFF111015), radii: [20, 20, 20, 20]), tap: () => gToast(context, 'Démonstration : Émettre un certificat')),
+      gP(1040, 786, 196, 40, gBox(color: Color(0xFF111015), radii: [20, 20, 20, 20]), tap: () => issueCertificateDialog(context, ref)),
       gP(1075, 796, 127, 15, gText('Émettre un certificat', 12.5, Color(0xFFFFFFFF), weight: 700, inter: true, align: TextAlign.center)),
       gP(0, 0, 1280, 56, gBox(color: Color(0xFFFFFFFF))),
       gP(20, 10, 36, 34, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),

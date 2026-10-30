@@ -22,6 +22,8 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/engage.dart';
+import '../live/lots.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_288 extends ConsumerWidget {
@@ -44,11 +46,11 @@ class G_288 extends ConsumerWidget {
       gP(28, 390, 56, 16, gText('Finances', 13, Color(0xFF111015), weight: 500, inter: true)),
       gP(240, 0, 1040, 64, gBox(color: Color(0xFFFFFFFF))),
       gP(264, 14, 360, 36, GField(hint: 'Rechercher une fiche…', size: 13, hintColor: Color(0xFF66636E), weight: 400, padL: 18, inter: true)),
-      gP(1140, 14, 110, 36, gBox(color: Color(0xFF111015), radii: [18, 18, 18, 18]), tap: () => gToast(context, 'Démonstration : Exporter')),
+      gP(1140, 14, 110, 36, gBox(color: Color(0xFF111015), radii: [18, 18, 18, 18]), tap: () => exportCatalog(context, ref)),
       gP(1170, 23, 55, 16, gText('Exporter', 13, Color(0xFFFFFFFF), weight: 600, inter: true)),
       gP(264, 88, 372, 29, gText('Catalogue du département MMI', 24, Color(0xFF111015), weight: 700, inter: true)),
       gP(264, 122, 204, 16, gText('18 fiches · filtrer, modifier, publier', 13, Color(0xFF66636E), inter: true)),
-      gP(1086, 88, 164, 40, gBox(color: Color(0xFF111015), radii: [20, 20, 20, 20]), tap: () => gToast(context, 'Démonstration : + Nouvelle fiche')),
+      gP(1086, 88, 164, 40, gBox(color: Color(0xFF111015), radii: [20, 20, 20, 20]), tap: () => gOpen(context, '58')),
       gP(1110, 99, 102, 16, gText('+ Nouvelle fiche', 13, Color(0xFFFFFFFF), weight: 600, inter: true)),
       gP(264, 160, 986, 600, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [20, 20, 20, 20])),
       gP(296, 180, 32, 15, gText('Fiche', 12, Color(0xFF66636E), weight: 600, inter: true)),

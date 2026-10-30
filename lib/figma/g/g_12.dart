@@ -78,7 +78,7 @@ class G_12 extends ConsumerWidget {
       gP(327.083, 569.458, 21.833, 17.083, gImg('assets/figma/v/abcfc4162eb13b.svg')),
       gP(332.625, 572.625, 10.75, 10.75, gImg('assets/figma/v/e4edba8fd4f28c.svg')),
       gP(24, 628, 22, 22, gBox(color: Color(0xFF111015), radii: [7, 7, 7, 7]), show: (ref.watch(termsProvider))),
-      gP(27.333, 632.5, 15.333, 12.417, gImg('assets/figma/v/3ba50c08806376.svg'), show: (ref.watch(termsProvider))),
+      gP(27.333, 632.5, 15.333, 12.417, gImg('assets/figma/v/w_check.svg'), show: (ref.watch(termsProvider))),
       gP(24, 628, 22, 22, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFCFCBD6), bw: 1.5, radii: [7.0, 7.0, 7.0, 7.0]), show: !ref.watch(termsProvider)),
       gP(58, 622, 243, 36, gText('J’accepte les Conditions d’utilisation et la\nPolitique de confidentialité.', 12.5, Color(0xFF4A4854), lh: 18)),
       gP(24, 684, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x29122640), offset: Offset(0, 5), blurRadius: 12, spreadRadius: 0)], radii: [27, 27, 27, 27])),

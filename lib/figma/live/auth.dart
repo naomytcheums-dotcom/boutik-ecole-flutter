@@ -217,7 +217,7 @@ Widget rememberBox(double x, double y) => gP(
               width: 16,
               height: 16,
               decoration: BoxDecoration(color: on ? const Color(0xFF111015) : Colors.transparent, borderRadius: BorderRadius.circular(5), border: on ? null : Border.all(color: const Color(0xFF66636E), width: 1.4)),
-              child: on ? const Icon(Icons.check_rounded, color: Colors.white, size: 12) : null,
+              child: on ? OverflowBox(maxWidth: 16, maxHeight: 16, child: Center(child: SizedBox(width: 14.667, height: 11.958, child: gImg('assets/figma/v/w_check.svg')))) : null,
             ),
             const SizedBox(width: 8),
             const Text('Se souvenir de moi', style: TextStyle(inherit: false, fontFamily: 'PlusJakartaSans', fontSize: 11.5, fontWeight: FontWeight.w500, color: Color(0xFF111015), textBaseline: TextBaseline.alphabetic)),

@@ -439,7 +439,7 @@ class _GCheckState extends State<GCheck> {
             borderRadius: BorderRadius.circular(widget.radius),
             border: widget.border == null || on ? null : Border.all(color: widget.border!, width: 1.5),
           ),
-          child: on ? const FittedBox(child: Icon(Icons.check_rounded, color: Colors.white, size: 40)) : null,
+          child: on ? Padding(padding: const EdgeInsets.all(1), child: FittedBox(child: SizedBox(width: 14.667, height: 11.958, child: gImg('assets/figma/v/w_check.svg')))) : null,
         ),
       );
 }

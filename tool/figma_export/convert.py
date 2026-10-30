@@ -818,8 +818,10 @@ class %s extends ConsumerWidget {
 """ % (sid, nid, cls, cls, ', '.join(root_args), body)
     _ls = code.split(chr(10))
     for _i in range(1, len(_ls)):
-        if 'ac006383c9ee5c.svg' in _ls[_i] and 'gBox(color: Color(0xFF111015)' in _ls[_i - 1]:
-            _ls[_i] = _ls[_i].replace('ac006383c9ee5c.svg', 'w_check.svg')
+        if 'gBox(color: Color(0xFF111015)' in _ls[_i - 1]:
+            for _dark in ('ac006383c9ee5c.svg', '3ba50c08806376.svg'):
+                if _dark in _ls[_i]:
+                    _ls[_i] = _ls[_i].replace(_dark, 'w_check.svg')
     code = chr(10).join(_ls)
     for _a, _b in [
         ("Ces règles financières ne sont pas figées : elles restent configurables et doivent être confirmées avec l’IUT avant toute mise en production.", "Ces règles financières ont été validées par l’IUT de Douala ; l’administrateur peut les ajuster."),

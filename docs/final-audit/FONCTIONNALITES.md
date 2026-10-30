@@ -41,3 +41,18 @@ Statuts : TERMINÉ ET TESTÉ · IMPLÉMENTÉ MAIS NON TESTÉ · PARTIELLEMENT TE
 | **Édition du profil** : description, compétences, ville (dialogue « Modifier mon profil ») | IMPLÉMENTÉ ET TESTÉ (widget) ; enregistrement serveur non testé en navigateur | `test/account/profile_edit_test.dart` (2) ; la certification n'est pas modifiable |
 | Titre d'annonce : règle tranchée — un titre est unique sur la plateforme (le panier commande par titre) ; message d'erreur explicite | TERMINÉ | `listings_titre_unique` |
 | Choix du rôle à l'inscription (client / étudiant / entreprise / autre) synchronisé avec le serveur | **BLOQUÉ — décision de sécurité du propriétaire** | `20261030g_choix_du_role.sql` écrite mais **non appliquée** : elle assouplit une protection (seul l'administrateur change un rôle). À appliquer par le propriétaire s'il l'approuve |
+
+## Mise à jour du 31/10/2026 (messagerie complète, vendeur, acheteur)
+| Fonctionnalité | Statut | Preuve |
+|---|---|---|
+| Rôle fixé à la création du profil (créé au choix du rôle, écran 13) ; seul l'administrateur peut ensuite le modifier | TERMINÉ ET TESTÉ (serveur) | 6 contrôles REST ; migration `20261030g_choix_du_role` **supprimée** (inutile) |
+| **Messagerie liée à une commande** (écran 54) : l'acheteur écrit au vendeur de sa commande, le vendeur à l'acheteur ; une seule conversation par commande | TERMINÉ ET TESTÉ (serveur) ; interface non testée en navigateur | `chat_attachments_rest.py` |
+| **Pièces jointes, photos, fichiers et messages vocaux** (stockage privé `chat-files`, 10 Mo, images/PDF/Word/Excel/texte/audio, liens signés de 1 h réservés aux participants, suppression de ses propres fichiers) | TERMINÉ ET TESTÉ (serveur : 29/29) ; l'enregistrement vocal et l'ouverture des fichiers n'ont pas été essayés dans un navigateur | permissions, isolation, taille, type, persistance |
+| États d'envoi (« Envoi… », « Échec · Réessayer »), chargement, non-lus, actualisation toutes les 4 s | IMPLÉMENTÉ ET TESTÉ (unitaire/widget partiel) ; non testé en navigateur | `chat_server_test.dart` |
+| **Modifier une annonce** (titre, prix, stock, description) | TERMINÉ ET TESTÉ (serveur) ; dialogue non testé en navigateur | écran 60 relié à « Mon catalogue » (61) |
+| **Photos d'annonce** (ajout, suppression, 8 max, 5 Mo, JPEG/PNG/WebP, dossier du vendeur) | TERMINÉ ET TESTÉ (serveur : 8/8) ; non testé en navigateur ; **les photos ne s'affichent pas encore dans le catalogue acheteur** | |
+| Suppression d'une annonce (archivage), soumission au département, motif de refus visible du vendeur | TERMINÉ ET TESTÉ (serveur) | |
+| **Commandes reçues par le vendeur** (liste des commandes payées, acheteur abrégé, statut de préparation, notification à l'acheteur) | TERMINÉ ET TESTÉ (serveur : 15/15) ; écrans 63-65 branchés, non testés en navigateur | migration `20261030h` |
+| Statuts « en préparation » (2) et « livrée » (4) | PARTIELLEMENT TERMINÉ | gérés par le serveur ; aucun bouton correspondant dans les maquettes 63-65 (décision de conception) |
+| **Parcours acheteur** : ajouter au panier (fiches 32, 35), contacter le créateur (33), annuler une commande impayée avec restitution du stock (47), copier la référence et vérifier le paiement (43), reçu (29), détail (30), suivi (51), filtres, déconnexion de tous les appareils | IMPLÉMENTÉ ET TESTÉ (unitaire) ; serveur : `cancel_order` testé en REST | `order_actions_test.dart` |
+| Actions « Démonstration » : **127 restantes sur 91 écrans** (175 au début de la journée) | PARTIELLEMENT TERMINÉ | `tool/audit/out/demos_triage.txt` |

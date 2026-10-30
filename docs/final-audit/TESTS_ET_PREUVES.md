@@ -41,3 +41,13 @@ Particularité : l'approbation d'une annonce par un valideur et le passage « pa
 | `conversations_list_rest.py` (base réelle) | 8/8 : nom de l'interlocuteur visible des seuls participants, non-lus, anonyme refusé, `listing_contact` |
 | Site déployé | empreinte identique au build (`f1a46344…`) ; contient `my_conversations` et la fenêtre « Un compte est nécessaire » |
 | URL MCP publique | **401** `Missing authorization header` : « Verify JWT » encore actif sur `notchpay-mcp` |
+
+## Complément du 31/10/2026
+| Domaine | Résultat |
+|---|---|
+| `flutter test` | 372 réussis |
+| Rôle fixé à la création (REST) | 6/6 |
+| Pièces jointes, vocaux, conversation de commande (REST, base réelle) | 29/29 |
+| Photos et modification d'annonce (REST) | 8/8 |
+| Commandes reçues par le vendeur (REST) | 15/15 — le contrôle « mise à jour directe de order_lines refusée » est faible (erreur serveur sans filtre WHERE) |
+| Nettoyage | comptes, annonces, commandes, conversations et fichiers de test supprimés après chaque série |

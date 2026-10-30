@@ -8,12 +8,11 @@
 
 ## À développer
 - Messagerie : pièces jointes et messages vocaux en conversation enregistrée ; fil dédié à une commande (écran 54) ; "Contacter le vendeur" depuis une fiche produit (seules les 3 occurrences liées aux commandes sont branchées).
-- **175 actions « Démonstration » sur 122 écrans** (liste dans `ACTIONS_DEMONSTRATION.md`), dont aucune n'a été traitée dans ce lot au-delà des 17 de navigation : chacune demande son comportement métier.
-- **Liens contextuels** : 255 écrans ne sont atteints que par « Mes rubriques ».
-- Modification d'une annonce (écran), téléversement de photos (annonce et profil), édition du profil, procédure de certification complète (justificatifs, écran de décision).
-- Commandes reçues par le vendeur (lecture des `order_lines` de ses annonces, statuts de préparation), tableaux de bord calculés par vues SQL.
-- Règle d'unicité du titre : le panier commande par titre ; deux vendeurs ne peuvent donc pas avoir le même titre d'annonce (décision métier à confirmer).
-- Rôle choisi à l'inscription : la migration `20261030g` est prête mais volontairement non appliquée (assouplissement de sécurité) : à appliquer par le propriétaire si approuvé.
+- **127 actions « Démonstration » sur 91 écrans** (liste dans `ACTIONS_DEMONSTRATION.md`) : événements, hackathons, missions sur mesure, borne, certificats, WhatsApp, cercle, administration… chacune demande son comportement métier et sa persistance.
+- **Liens contextuels** : 252 écrans ne sont atteints que par « Mes rubriques ».
+- Photos d'annonce dans le catalogue acheteur ; photo de profil ; procédure de certification complète (justificatifs, écran de décision) ; boutons « en préparation » et « livrée » (2 et 4) dans les écrans vendeur.
+- Tableaux de bord et statistiques vendeur calculés par vues SQL (écrans 57, 62, 66, 67) ; suivi de statut côté acheteur (écran 46) alimenté par la préparation du vendeur.
+- Règle tranchée : le titre d'une annonce est unique sur la plateforme (le panier commande par titre).
 - Tests Playwright / E2E navigateur (connexion, annonces, commande, validation, notifications, rôles, responsive), accessibilité, performance (bundle 9 Mo), builds Android et iOS.
 - Webhook Notch Pay : identifier la cause du rejet de signature puis test sandbox de bout en bout avec un événement authentique ; Orange Money, sous-paiement et remboursements.
 - Séparation des environnements : une seule base Supabase pour démonstration et production.

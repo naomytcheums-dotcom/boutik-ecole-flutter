@@ -4,20 +4,13 @@ Chaque ligne est un bouton qui n'affiche qu'un message « Démonstration : … �
 
 | Écran | Titre | Action |
 |---|---|---|
-| 17 | Conditions et confidentialité | Accepter et continuer |
 | 18 | État de validation | Contacter le support |
 | 18c | Vérification étudiant | Ces informations permettent de confirmer\nvotre statut d’étudiant de l’IUT de Douala. |
 | 18c | Vérification étudiant | Vos documents sont chiffrés et ne sont\nconsultés que par l’équipe de validation. |
 | 23 | Filtres | Innovations |
 | 26 | Comparer des offres | Voir les détails |
-| 30 | Commande reçue | Évaluer la commande |
-| 30 | Commande reçue | Contacter le support |
-| 35 | Disponibilité | Me prévenir |
-| 36 | Détail du service | Demander un devis |
-| 36 | Détail du service | Commander |
 | 39 | Demande de renseignements | Envoyer la question |
 | 46 | Suivi de livraison | Voir le code de retrait |
-| 48 | Réclamation | Envoyer la demande |
 | 55 | Conversation entreprise | Bonjour, voici mon portfolio et deux références. |
 | 55 | Conversation entreprise | Parfait, nous planifions un entretien jeudi. |
 | 59 | Nouveau service | Brouillon |
@@ -31,9 +24,7 @@ Chaque ligne est un bouton qui n'affiche qu'un message « Démonstration : … �
 | 83 | Médias et preuves | Téléverser |
 | 84 | Nouvelle campagne | Brouillon |
 | 84 | Nouvelle campagne | Continuer |
-| 84b | Financement | Contribuer |
 | 87 | Registre des innovations | Déclarer une innovation |
-| 89 | Profil de l’entreprise | Suivre |
 | 90 | Publier un besoin | Brouillon |
 | 90 | Publier un besoin | Publier |
 | 93 | Propositions reçues | Comparer la sélection |
@@ -42,12 +33,9 @@ Chaque ligne est un bouton qui n'affiche qu'un message « Démonstration : … �
 | 94 | Comparer les propositions | Choisir une proposition |
 | 95 | Devis et négociations | Pouvez-vous livrer sous 10 jours pour 420 000 FCFA ? |
 | 95 | Devis et négociations | Oui, à condition de démarrer lundi. |
-| 95b | Demande de devis | Envoyer la demande |
-| 101 | Événement | S’inscrire |
 | 102 | Vitrine | Voir la collection |
 | 118 | Établissement et identité visuelle | Enregistrer les modifications |
 | 153 | Pourquoi cette offre ? | Ignorer |
-| 153 | Pourquoi cette offre ? | Postuler |
 | 154 | Mon dossier | Compléter mon dossier |
 | 156 | Préférences d’alertes | Enregistrer les préférences |
 | 158 | Candidatures classées | Comparer la sélection |
@@ -80,18 +68,13 @@ Chaque ligne est un bouton qui n'affiche qu'un message « Démonstration : … �
 | 211 | Passeport du produit | Voir le certificat |
 | 213 | Registre des certificats | Émettre un certificat |
 | 215 | Fiche département | Déposer un brief au département |
-| 217 | Fiche d’un vœu | Précommander · 25 000 FCFA |
 | 218 | Publier un vœu | Brouillon |
 | 218 | Publier un vœu | Publier |
 | 219 | Nouveau duel | Lancer le duel |
-| 220 | Duel de talents | Voter pour la lampe |
-| 220 | Duel de talents | Voter pour le jus |
 | 221 | Résultat du duel | Voir le dossier du gagnant |
 | 224 | Validation des vœux | Brouillon |
 | 224 | Validation des vœux | Planifier |
 | 228 | Partager mon CV | Régénérer le lien |
-| 229 | CV vivant | Proposer un stage |
-| 229 | CV vivant | Contacter |
 | 231 | Accueil Kéla | Commencer |
 | 233 | WhatsApp · suivi de mission | Voir les propositions |
 | 233 | WhatsApp · suivi de mission | Écrire à l’équipe |
@@ -100,8 +83,6 @@ Chaque ligne est un bouton qui n'affiche qu'un message « Démonstration : … �
 | 236 | Canaux et notifications | Enregistrer |
 | 237 | Impact par territoire | Impact territorial |
 | 241 | Mes contacts | Salut ! Rejoins Boutik-École, la marketplace des talents de l’IUT de Douala : boutik-ecole.cm/r/mariam24 |
-| 241 | Mes contacts | Envoyer via WhatsApp (3) |
-| 243 | Mes gains | Retirer vers Orange Money |
 | 250 | Nouvelle publication | Propulser |
 | 250b | Nouvelle publication | Propulser |
 | 263 | Médiathèque | Téléverser un média |
@@ -110,9 +91,6 @@ Chaque ligne est un bouton qui n'affiche qu'un message « Démonstration : … �
 | 271 | Mes liens et réseaux | +  Ajouter un autre lien (portfolio, site, Drive…) |
 | 271 | Mes liens et réseaux | Enregistrer |
 | 272 | Vérification en 2 étapes | Vérifier |
-| 273 | Mes données | Demander l’export |
-| 273 | Mes données | Supprimer le compte |
-| 274 | Conditions générales | Accepter et continuer |
 | 275 | Déposer un produit (erreurs) | Continuer |
 | 276 | Borne hors ligne | Parcourir le catalogue hors ligne |
 | 277 | Supervision des bornes | Voir les journaux d’incidents |

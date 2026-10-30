@@ -1,16 +1,13 @@
 ecran,action
-101,S’inscrire
 102,Voir la collection
 118,Enregistrer les modifications
 153,Ignorer
-153,Postuler
 154,Compléter mon dossier
 156,Enregistrer les préférences
 158,Comparer la sélection
 159,Mes candidatures
 159,Autres offres
 166,Voir le certificat
-17,Accepter et continuer
 171,Continuer en sécurité
 18,Contacter le support
 189,Comparer la sélection
@@ -40,18 +37,13 @@ ecran,action
 211,Voir le certificat
 213,Émettre un certificat
 215,Déposer un brief au département
-217,Précommander · 25 000 FCFA
 218,Brouillon
 218,Publier
 219,Lancer le duel
-220,Voter pour la lampe
-220,Voter pour le jus
 221,Voir le dossier du gagnant
 224,Brouillon
 224,Planifier
 228,Régénérer le lien
-229,Proposer un stage
-229,Contacter
 23,Innovations
 231,Commencer
 233,Voir les propositions
@@ -61,8 +53,6 @@ ecran,action
 236,Enregistrer
 237,Impact territorial
 241,"Salut ! Rejoins Boutik-École, la marketplace des talents de l’IUT de Douala : boutik-ecole.cm/r/mariam24"
-241,Envoyer via WhatsApp (3)
-243,Retirer vers Orange Money
 250,Propulser
 250b,Propulser
 26,Voir les détails
@@ -72,9 +62,6 @@ ecran,action
 271,"+  Ajouter un autre lien (portfolio, site, Drive…)"
 271,Enregistrer
 272,Vérifier
-273,Demander l’export
-273,Supprimer le compte
-274,Accepter et continuer
 275,Continuer
 276,Parcourir le catalogue hors ligne
 277,Voir les journaux d’incidents
@@ -89,7 +76,6 @@ ecran,action
 287,+ Nouvelle fiche
 288,Exporter
 288,+ Nouvelle fiche
-35,Me prévenir
 39,Envoyer la question
 46,Voir le code de retrait
 55,"Bonjour, voici mon portfolio et deux références."
@@ -105,9 +91,7 @@ ecran,action
 83,Téléverser
 84,Brouillon
 84,Continuer
-84b,Contribuer
 87,Déclarer une innovation
-89,Suivre
 90,Brouillon
 90,Publier
 93,Comparer la sélection

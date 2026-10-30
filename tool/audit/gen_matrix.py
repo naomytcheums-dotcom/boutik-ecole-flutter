@@ -112,7 +112,7 @@ for i in ids:
 md = ['# Matrice des écrans (315)', '',
       'Générée par `tool/audit/gen_matrix.py` à partir du code (analyse statique). **Aucun écran n\'est déclaré « terminé et testé »** : le seul test exécuté sur chaque écran est son rendu (test golden) ; le comportement n\'a pas été vérifié écran par écran dans un navigateur.', '',
       f'- Écrans : **{len(rows)}**',
-      f'- Atteignables depuis le démarrage par liens contextuels explicites : **{sum(1 for r in rows if r[7] == "oui")}** ; les autres sont atteignables par **« Mes rubriques »** (écran `/espace`, filtré par rôle, ouvert depuis le profil et la page de bienvenue), pas par un lien propre à leur parcours.',
+      f'- Atteignables depuis le démarrage par liens explicites (liens contextuels, menus latéraux des consoles, menu du compte par rôle) : **{sum(1 for r in rows if r[7] == "oui")}** ; les autres sont listés dans `RESTE_A_FAIRE.md` et ne sont atteignables que par « Toutes les rubriques » (secondaire).',
       f'- Actions « Démonstration » restantes : **{sum(r[6] for r in rows)}** sur **{sum(1 for r in rows if r[6])}** écrans.', '',
       '| Statut | Écrans |', '|---|---|'] + [f'| {k} | {v} |' for k, v in sorted(stats.items(), key=lambda kv: -kv[1])] + ['',
       '| Id | Titre | Route | Rôles autorisés | Rubrique | Éléments interactifs | Démos restantes | Lien contextuel | Données | Tests | Statut |',

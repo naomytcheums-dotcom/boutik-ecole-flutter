@@ -56,3 +56,12 @@ Statuts : TERMINÉ ET TESTÉ · IMPLÉMENTÉ MAIS NON TESTÉ · PARTIELLEMENT TE
 | Statuts « en préparation » (2) et « livrée » (4) | PARTIELLEMENT TERMINÉ | gérés par le serveur ; aucun bouton correspondant dans les maquettes 63-65 (décision de conception) |
 | **Parcours acheteur** : ajouter au panier (fiches 32, 35), contacter le créateur (33), annuler une commande impayée avec restitution du stock (47), copier la référence et vérifier le paiement (43), reçu (29), détail (30), suivi (51), filtres, déconnexion de tous les appareils | IMPLÉMENTÉ ET TESTÉ (unitaire) ; serveur : `cancel_order` testé en REST | `order_actions_test.dart` |
 | Actions « Démonstration » : **127 restantes sur 91 écrans** (175 au début de la journée) | PARTIELLEMENT TERMINÉ | `tool/audit/out/demos_triage.txt` |
+
+## Complément du 30/10/2026 (lots 2 à 5)
+- **Avis vérifiés** (écran 30) : seul l'acheteur d'une commande payée, une fois l'article préparé, un avis par article ; note moyenne publique affichée dans le catalogue (22) et sur la fiche produit (05).
+- **Réclamations** (écran 48) : motif, description (10 caractères minimum), une réclamation ouverte par commande ; le vendeur concerné (tableau de bord, « Réclamations ›») et la modération répondent ; l'acheteur est notifié.
+- **Signalements d'annonces** (fiche produit → écran 170) : un par personne et par annonce, jamais sur sa propre annonce ; visibles de la seule modération.
+- **Services et devis** : un service est une annonce validée de catégorie « Services » (liste 22b, fiche 36) ; demande de devis (95b), réponse du prestataire (montant, délai, message), acceptation, refus ou annulation par le demandeur, notifications à chaque étape. Le paiement du devis accepté n'est pas implémenté (dépend des paiements réels).
+- **Commandes du compte** lues sur le serveur (état de préparation du vendeur reflété côté acheteur).
+- **Engagements réels** : inscription à un événement (101), candidature (153), précommande (217), vote (220), proposition de stage et demande de contact (229), alerte de disponibilité (35), suivi d'entreprise (89), consentement aux conditions (17, 274), demande d'export (273) et de suppression de compte (273, avec confirmation), partage WhatsApp réel (241).
+- **Parcours** : menu du compte par rôle (profil, ⋮), menus latéraux des consoles département / direction / administration / finance, chips « Produits / Services / Projets » du profil, 172 liens contextuels, notifications → ressource concernée.

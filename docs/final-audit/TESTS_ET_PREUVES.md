@@ -51,3 +51,25 @@ Particularité : l'approbation d'une annonce par un valideur et le passage « pa
 | Photos et modification d'annonce (REST) | 8/8 |
 | Commandes reçues par le vendeur (REST) | 15/15 — le contrôle « mise à jour directe de order_lines refusée » est faible (erreur serveur sans filtre WHERE) |
 | Nettoyage | comptes, annonces, commandes, conversations et fichiers de test supprimés après chaque série |
+
+## Complément du 30/10/2026 (lots 2 à 5) — tests réellement exécutés
+| Domaine | Commande | Résultat |
+|---|---|---|
+| Avis, réclamations, signalements (REST, base réelle) | `supabase/tests/feedback_rest.py 1/2/3` | 30/30 (le seul échec initial était un défaut du test : méthode HTTP) |
+| Services et devis (REST, base réelle) | `supabase/tests/quotes_rest.py 1/2` | 30/30 (le contrôle « le public ne voit aucune demande » est satisfait par un refus d'accès 401, test ajusté) |
+| Engagements (REST, base réelle) | `python supabase/tests/engagements_rest.py` | 18/18 |
+| Flutter | `flutter test` | 380 réussis (dont tableau de bord vendeur sans commande, accès à la demande de devis, notes, engagements hors connexion) |
+| Navigateur réel (Chromium, site déployé) — visiteur | `e2e/tests/visiteur.spec.ts` | 12/12 (lot 1) |
+| Navigateur réel — avis, réclamation, réponse du vendeur, notification, note moyenne, signalement | `e2e/tests/avis.spec.ts` avec trois comptes jetables connectés par le vrai écran de connexion | 9/9 au total, **en plusieurs exécutions** : l'état des comptes se consomme (un avis ou une réclamation ne se redépose pas) ; une série fraîche exige de relancer la préparation (`feedback_rest.py 1`, approbation et paiement en SQL, `2`). Les derniers tests rejoués sur le dernier déploiement ont tous réussi. |
+| Navigateur réel — services, demande de devis, réponse du prestataire, acceptation | `e2e/tests/devis.spec.ts` | **4/5 constatés** : liste des services, fiche, réponse du prestataire et acceptation ont réussi ; le test « envoi de la demande » n'a jamais été vu réussi de bout en bout (la demande a bien été créée côté serveur, mais un échec réseau (DNS) a interrompu le test, et la reprise a confirmé que le doublon est refusé avec un message clair). Une série fraîche reste à rejouer. |
+
+### Défauts réels trouvés par ces tests navigateur et corrigés
+1. **Tableau de bord vendeur (écran 57) : écran gris pour tout compte vendeur sans commande** (erreur d'index évaluée même quand l'élément est masqué). Corrigé (`orderIdAt`), test unitaire ajouté. Jamais vu avant car les tests précédents ne passaient pas par le navigateur avec un vrai compte vendeur.
+2. **« Mes commandes » d'un compte réel affichait l'historique fictif** de la maquette et ignorait les commandes du serveur : les commandes du compte sont maintenant lues sur le serveur (état de préparation, paiement, annulation), l'historique fictif n'est plus mêlé aux comptes réels.
+3. **Le message de confirmation (toast) recouvrait le bouton du bas pendant 1,8 s** et absorbait le clic (signalement impossible juste après le choix d'un motif). Les messages sont maintenant posés au-dessus de la barre d'actions.
+4. **Montant de devis saisi en double (« 7000070000 »)** : le serveur répondait par une erreur technique de dépassement d'entier ; la saisie est maintenant bornée avec un message clair.
+5. La demande de devis (95b) renvoyait « Page introuvable » aux comptes non-entreprise : accès ouvert à tout compte connecté (décision métier documentée, test ajouté).
+6. La fiche produit n'offrait aucun moyen de signaler l'annonce (écran 170 sans entrée) : lien « Signaler » ajouté ; l'écran affiche le prix et le vendeur de l'annonce signalée.
+
+### Liens et parcours
+`tool/audit/nav_graph.py` : 315 écrans ; **225 atteignables par liens explicites** (95 au début du lot 5) ; 90 listés dans `RESTE_A_FAIRE.md`. Les liens ajoutés sont des zones tactiles posées sur des libellés existants (aucune mise en page modifiée) ; l'outil `tool/audit/apply_journeys.py` est idempotent. **Ces liens n'ont pas été tous parcourus un à un dans un navigateur** : seuls ceux des tests ci-dessus l'ont été.

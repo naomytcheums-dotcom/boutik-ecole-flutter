@@ -41,7 +41,10 @@ Retour arrière : `migration repair --status reverted <versions>` (ne touche que
 ## 2. Migrations 31a → 31b → 31c (autorisation requise pour chacune)
 
 - **31a : ✅ appliquée le 31/10 (~14 h 45)**, contrôles conformes — rapport d'audit §8 ter.
-- 31b puis 31c : en attente d'autorisation. Les trois fichiers sont renommés ; `db push --linked` appliquerait **31b et 31c ensemble** → pour une seule :
+- **31b : ✅ appliquée le 31/10 (~15 h 20)** par répertoire de travail limité, contrôles conformes — rapport d'audit §8 quater.
+- 31c : en attente d'autorisation ; seule migration restante, `db push --linked` ne sélectionnerait qu'elle (à confirmer par `--dry-run`).
+- **Répétition locale** : une réplique réinitialisée n'a pas d'historique → avant tout `db push --db-url <local>`, aligner l'historique local sur la production (`migration repair --db-url <local> --status applied <versions de production>`), sinon la CLI rejoue tout depuis `p0`.
+- Méthode « une seule migration » (utilisée pour 31b) :
   ```powershell
   $W="$env:TEMP\push_31b"; New-Item -ItemType Directory -Force "$W\supabase\migrations" | Out-Null
   Copy-Item -Recurse supabase\.temp "$W\supabase\.temp"

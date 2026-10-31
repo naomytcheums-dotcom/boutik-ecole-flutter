@@ -296,6 +296,20 @@ Sauvegarde et preuves : `%USERPROFILE%\boutik_backups\regularisation_20261031_14
 - **Exposition résiduelle connue jusqu'à 31c [F]** (`security_31_rest` 13/24 sur réplique + 31a) : les anciennes politiques ASCII de `missions` subsistent (lecture : client/`dept`/`admin` — n'élargit rien ; insertion : sans effet, droit `INSERT` absent) ; une mission attribuée reste visible des connectés ; `save_project` (projet approuvé modifiable), codes de certificat à 32 bits, contrôles `auth.uid()` implicites, `EXECUTE` de `sync_order_cancelled` pour `anon` (fonction de déclencheur, non appelable en RPC). Les défauts liés au personnel sont sans objet tant qu'aucun compte `dept`/`admin`/`support` n'existe (0 en production).
 - Étape suivante préparée : réplique reconstruite depuis la production avec 31a, puis 31b + 31c en local → REST **386/386**. Pour n'appliquer que 31b : `db push --linked --workdir <copie limitée à 31b>` (dry-run vérifié : 31b seule).
 
+### 8 quater. Application de 31b — 31/10, ~15 h 20 (autorisée : 31b uniquement)
+
+- Relecture intégrale de 31b : 7 tables, 13 fonctions, compartiment privé `project-files` + 3 politiques `storage.objects`, 2 colonnes nullables sans défaut sur `orders`, données de référence (1 établissement, 4 modèles) en `on conflict do nothing`, retour arrière commenté, aucun appel `pgcrypto` hors fonction.
+- Sélection exclusive : répertoire de travail limité (`%TEMP%\push_31b`, 15 fichiers jusqu'à `20261031000100`, 31c absent, 31b identique à la sauvegarde) ; `migration list --linked` : 31a appliquée, 31b et 31c locales seules ; `db push --linked --dry-run --workdir` → **31b seule**, garde automatique avant application (arrêt si la sélection n'est pas exactement 31b).
+- Répétition sur la réplique fraîche : un premier essai local a tenté les 15 fichiers car la réplique réinitialisée n'avait **pas d'historique** → échec sur `p0` (`gen_salt`, instruction 16, même erreur que l'incident — confirmation de la cause), transaction annulée, réplique intacte (0 écart) ; **production non concernée** (cible `127.0.0.1`, historique distant contrôlé : 14). Historique local aligné par `migration repair --db-url <local>` puis répétition : 31b seule, sortie 0 ; `lots_rest` 77/77 ; `lots2_rest` 54/59 (5 échecs = défaut connu du code de retrait corrigé par 31c).
+- Production : `db push --linked --yes --workdir %TEMP%\push_31b` → sortie 0, une migration appliquée.
+- Contrôles après **[F]** :
+  - `migration list --linked` : 15 versions appliquées ; `20261031000200` (31c) locale seule.
+  - Catalogue production = réplique après 31b : **0 écart**. Delta : **ajouts uniquement** (+7 tables, +53 colonnes, +13 fonctions, +10 politiques dont 3 de stockage, +42 contraintes, +11 index, +1 compartiment, +7 droits de table, +5 droits de colonne) ; 0 modification, 0 retrait.
+  - Données existantes inchangées : profils, annonces, engagements, bornes, journal d'audit, `auth.users` (dont les 8 comptes), séquence ; 0 commande, 0 notification, 0 objet de stockage.
+  - Fonctionnel : `project-files` privé (50 Mo, 6 types) ; `orders.pickup_code` (contrainte 6 chiffres) et `picked_up_at` ; RLS sur les 7 tables ; `api_keys.key_hash` illisible pour `authenticated` ; 12 fonctions réservées à `authenticated`, `shared_cv` ouverte à `anon`.
+  - REST anonyme réel : établissement 200 ; modèles, clés, fichiers, liens CV, dossier de mission, invitations 401 ; `shared_cv` jeton inconnu → `null` ; 7 RPC d'écriture 401 `permission denied` ; liste du compartiment privé `[]`, lecture publique refusée.
+- Exposition résiduelle jusqu'à 31c [F] : code de retrait par `random()`, essais erronés non journalisés et non limités ; le personnel peut écrire dans un dossier de mission ; fichier d'un tiers référençable par `send_mission_message`. Exploitables seulement avec des comptes `support`/`admin`/`dept` ou une mission attribuée (0 compte du personnel, 0 mission en production).
+
 ## 9. Procédure d'application future (31a → 31b → 31c)
 
 Prérequis communs :

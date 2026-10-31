@@ -48,6 +48,19 @@ Total navigateur sur la réplique : **51/51**. Total REST : **386/386**.
 | Playwright `visiteur` en production | **12/12** |
 | Réplique reconstruite depuis la production (avec 31a) + 31b + 31c en local : `run_all_local.py` | **386/386** (après ajout des bornes de référence à la graine de la réplique) |
 
+## Application de 31b en production (31/10, ~15 h 20)
+
+| Contrôle | Résultat |
+|---|---|
+| `db push --linked --dry-run --workdir <limité>` | 31b seule (garde automatique) |
+| Répétition sur réplique (historique aligné, `search_path=public`) | sortie 0 ; `lots_rest` 77/77 ; `lots2_rest` 54/59 (défaut connu du code de retrait, corrigé par 31c) |
+| `db push --linked --workdir <limité>` | sortie 0 |
+| Catalogue production après 31b = réplique après 31b | **0 écart** |
+| Delta production avant → après | ajouts uniquement |
+| Empreintes des données existantes | identiques |
+| REST anonyme en production (18 appels) | conformes |
+| Playwright `visiteur` en production | **12/12** |
+
 ## Échecs rencontrés et traitement
 
 | Test | Symptôme | Cause | Traitement |

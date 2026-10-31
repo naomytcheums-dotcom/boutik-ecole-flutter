@@ -18,15 +18,15 @@ Légende : ✅ vérifié en production · 🟡 vérifié localement (réplique e
 | Vœux, campagnes, projets, lives, liens de profil | 🟡 | **31a en production** ; `lots_rest` 77/77 sur réplique ; parcours authentifiés non rejoués en production (exigent des comptes du personnel) | 31c pour `save_project` |
 | Certificats (émission, vérification QR, révocation) | 🟡 | **31a en production** : `verify_certificate` répond (200 « introuvable ») ; codes 64 bits avec 31c | 31c |
 | Bornes (incidents, événements) | 🟡 | **31a en production** : 4 bornes lisibles publiquement, incidents réservés (401 anonyme) | parcours support à vérifier avec un compte `support` |
-| Paramètres administrateur, modèles de notification, clés API | 🟡 | 31b sur réplique : `lots2_rest` 59/59 | 31b |
-| Fichiers (compartiment privé `project-files`) | 🟡 | 31b + 31c sur réplique | 31b + 31c |
-| Messagerie de mission | 🟡 | 31b + 31c (`is_mission_party`) | 31b + 31c |
-| Liens CV (`/#/cv/<token>`) | 🟡 | 31b sur réplique ; en production `shared_cv` absent (constaté) | 31b |
-| Codes de retrait | 🟡 | 31b + 31c (5 essais, journalisés) ; interface `confirmPickupDialog` corrigée | 31b + 31c + déploiement web |
+| Paramètres administrateur, modèles de notification, clés API | 🟡 | **31b en production** : établissement lisible publiquement, modèles et clés réservés (401 anonyme), `key_hash` illisible ; parcours admin non rejoués (aucun compte du personnel) | comptes du personnel pour la recette |
+| Fichiers (compartiment privé `project-files`) | 🟡 | **31b en production** : compartiment privé, 3 politiques de stockage, `register_file` réservé | 31c (fichier lié à l'expéditeur) |
+| Messagerie de mission | 🟡 | **31b en production** ; durcissement `is_mission_party` dans 31c | 31c |
+| Liens CV (`/#/cv/<token>`) | 🟡 | **31b en production** : `shared_cv` répond (`null` pour un jeton inconnu) | parcours authentifié à rejouer |
+| Codes de retrait | 🟡 | **31b en production** ; limitation à 5 essais et journalisation dans 31c ; interface `confirmPickupDialog` corrigée (non déployée) | 31c + déploiement web |
 | Paiement `pay` | 🟡 | correctif 15/15 ; version déployée 6/15 | déploiement de `pay` |
 | Webhook Notch Pay | 🟡 | correctif 20/20 ; en production : 401 sans signature ; **0 événement réel reçu** | déploiement + paiement sandbox réel |
 | MCP Notch Pay | ⛔ | code du dépôt 27/27 ; déployé = `814db47` (`?key=` accepté) | redéploiement `--no-verify-jwt` |
-| Historique des migrations | ✅ régularisé le 31/10 (14 h 20) ; 31a appliquée par la CLI (~14 h 45) ; `migration list --linked` 14/14 | 31b, 31c (autorisation) |
+| Historique des migrations | ✅ régularisé le 31/10 (14 h 20) ; 31a (~14 h 45) et 31b (~15 h 20) appliquées par la CLI ; `migration list --linked` 15/16 | 31c (autorisation) |
 | Données de test en production | ⛔ | 44 + 2 comptes `zz-test` (2 créés par la régression de ce lot) | nettoyage (autorisation) |
 
 ## Migrations
@@ -35,7 +35,7 @@ Légende : ✅ vérifié en production · 🟡 vérifié localement (réplique e
 |---|---|
 | 1 à 13 (`20261029000000` → `20261030001000`) | ✅ appliquées manuellement, enregistrées dans l'historique (31/10, 14 h 20) |
 | `20261031000000` (31a) | ✅ appliquée le 31/10 (~14 h 45) — §8 ter |
-| `20261031000100` (31b) | absente — autorisation requise |
+| `20261031000100` (31b) | ✅ appliquée le 31/10 (~15 h 20) — §8 quater |
 | `20261031000200` (31c, correctif de cet audit) | absente — à appliquer **après** 31b |
 
 Détails : [AUDIT_REGULARISATION_MIGRATIONS_20261031.md](./AUDIT_REGULARISATION_MIGRATIONS_20261031.md).

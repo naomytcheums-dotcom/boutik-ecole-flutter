@@ -23,7 +23,7 @@
 0. ~~Régularisation de l'historique~~ — **faite le 31/10 à 14 h 20** (après l'incident `db push`, sans conséquence : [INCIDENT_DB_PUSH_20261031.md](./INCIDENT_DB_PUSH_20261031.md)) ; 13 versions enregistrées, aucune rejouée (audit §8 bis).
 
 1. ~~Régularisation de l'historique~~ (voir 0).
-2. ~~31a~~ **appliquée le 31/10 (~14 h 45)**, contrôles conformes (audit §8 ter). Restent 31b puis 31c, chacune sur autorisation (méthode « une seule migration » : `PLAN_PRODUCTION.md` §2).
+2. ~~31a~~ **appliquée le 31/10 (~14 h 45)** ; ~~31b~~ **appliquée le 31/10 (~15 h 20)** — contrôles conformes (audit §8 ter et §8 quater). Reste 31c, sur autorisation.
 3. Déploiement de `pay`, `notchpay-webhook`, `notchpay-mcp` (`--no-verify-jwt` pour ces deux dernières).
 4. Renouvellement de `NOTCHPAY_KEY` / `NOTCHPAY_HASH`, puis un paiement **sandbox** réel pour vérifier le webhook.
 5. Déploiement web (pour `confirmPickupDialog`) puis régression production étendue aux fonctions 31a/31b.

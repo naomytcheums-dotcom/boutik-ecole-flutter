@@ -123,7 +123,18 @@ Deno.serve(async (req) => {
   }
 
   // 5. Transition unique non payé -> payé (idempotente : la condition paid = false protège d'un double passage).
-  const upd = await admin.from("orders").update({ paid: true, status: 1 }).eq("id", order.id).eq("paid", false).select("id");
-  await admin.from("payment_events").update({ outcome: upd.data?.length ? "confirmed" : "already_paid" }).eq("id", eventId);
-  return reply(200, { confirmed: true });
+  // La condition cancelled_at is null couvre une annulation survenue pendant la relecture chez le fournisseur.
+  const upd = await admin.from("orders").update({ paid: true, status: 1 }).eq("id", order.id).eq("paid", false).is("cancelled_at", null).select("id");
+  if (upd.data?.length) {
+    await admin.from("payment_events").update({ outcome: "confirmed" }).eq("id", eventId);
+    return reply(200, { confirmed: true });
+  }
+  const { data: now } = await admin.from("orders").select("paid,cancelled_at").eq("id", order.id).maybeSingle();
+  if (now && !now.paid && now.cancelled_at != null) {
+    console.error("paiement reçu sur une commande annulée pendant sa vérification", { order: order.number });
+    await admin.from("payment_events").update({ outcome: "paid_after_cancellation" }).eq("id", eventId);
+    return reply(200, { confirmed: false, problems: ["order_cancelled"] });
+  }
+  await admin.from("payment_events").update({ outcome: "already_paid" }).eq("id", eventId);
+  return reply(200, { already_paid: true });
 });

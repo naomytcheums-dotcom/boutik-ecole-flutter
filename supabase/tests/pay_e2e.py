@@ -24,11 +24,14 @@ def reset():
         "o3": {"id": "o3", "number": "#BE-P-3", "buyer_id": "uB", "subtotal": 8000, "fee": 0, "paid": True, "status": 1, "reference": "trx.paid", "cancelled": False, "cancelled_at": None},
         "o4": {"id": "o4", "number": "#BE-P-4", "buyer_id": "uB", "subtotal": 30000, "fee": 0, "paid": False, "status": 0, "reference": "trx.noamount", "cancelled": False, "cancelled_at": None},
         "o5": {"id": "o5", "number": "#BE-P-5", "buyer_id": "uB", "subtotal": 30000, "fee": 0, "paid": False, "status": 0, "reference": "trx.cancelled-late", "cancelled": True, "cancelled_at": "2026-10-31T08:00:00Z"},
+        "o6": {"id": "o6", "number": "#BE-P-6", "buyer_id": "uB", "subtotal": 30000, "fee": 0, "paid": False, "status": 0, "reference": "trx.race", "cancelled": False, "cancelled_at": None},
     }
     state["notch"] = {
         "trx.noamount": {"reference": "trx.noamount", "status": "complete", "currency": "XAF"},
         "trx.cancelled-late": {"reference": "trx.cancelled-late", "status": "complete", "amount": 30000, "currency": "XAF"},
+        "trx.race": {"reference": "trx.race", "status": "complete", "amount": 30000, "currency": "XAF"},
     }
+    state["cancel_on_fetch"] = None
     state["seq"] = 0
     calls.clear()
 
@@ -69,6 +72,10 @@ class Mock(BaseHTTPRequestHandler):
             return self.send(201, {"transaction": {"reference": ref}})
         if p.startswith("/payments/"):
             ref = urllib.parse.unquote(p.split("/payments/")[1])
+            # concurrence simulée : l'acheteur annule pendant la relecture chez le fournisseur
+            if method == "GET" and state["cancel_on_fetch"] == ref:
+                for o in state["orders"].values():
+                    if o["reference"] == ref: o.update(cancelled=True, cancelled_at="2026-10-31T09:00:00Z")
             tx = state["notch"].get(ref)
             if method == "POST":
                 return self.send(200, {"transaction": tx}) if tx else self.send(404, {"message": "introuvable"})
@@ -174,6 +181,10 @@ def main():
               b.get("status") == "complete" and state["orders"]["o1"]["paid"] is True and sum(1 for c in calls if c == ("POST", "/payments")) == n_created, b)
         s, b = pay({"action": "inconnue", "order_number": "#BE-P-1"})
         check("action inconnue -> 400", s == 400, b)
+        state["cancel_on_fetch"] = "trx.race"
+        s, b = pay({"action": "status", "order_number": "#BE-P-6"})
+        check("annulation pendant la relecture du fournisseur -> échec signalé, commande non payée",
+              b.get("status") == "failed" and b.get("reason") == "cancelled" and state["orders"]["o6"]["paid"] is False, b)
     finally:
         subprocess.run(["taskkill", "/F", "/T", "/PID", str(proc.pid)], capture_output=True) if os.name == "nt" else proc.terminate()
         srv.shutdown()

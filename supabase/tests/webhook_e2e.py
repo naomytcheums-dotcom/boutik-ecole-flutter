@@ -14,12 +14,13 @@ MOCK_PORT, FN_PORT = 54331, 8000
 HERE = os.path.dirname(os.path.abspath(__file__))
 FN = os.path.join(HERE, "..", "functions", "notchpay-webhook", "index.ts")
 
-state = {"events": {}, "orders": {}, "notch": {}, "notch_down": False}
+state = {"events": {}, "orders": {}, "notch": {}, "notch_down": False, "cancel_on_fetch": None}
 
 
 def reset():
     state["events"].clear()
     state["notch_down"] = False
+    state["cancel_on_fetch"] = None
     state["orders"] = {
         "o1": {"id": "o1", "number": "#BE-T-1", "reference": "trx.A", "subtotal": 25000, "fee": 0, "paid": False, "status": 0},
         "o2": {"id": "o2", "number": "#BE-T-2", "reference": "trx.B", "subtotal": 25000, "fee": 5000, "paid": False, "status": 0},
@@ -62,6 +63,10 @@ class Mock(BaseHTTPRequestHandler):
             if state["notch_down"]:
                 return self.send(503, {"message": "indisponible"})
             ref = urllib.parse.unquote(p.split("/payments/")[1])
+            # concurrence simulée : l'acheteur annule pendant la relecture chez le fournisseur
+            if state["cancel_on_fetch"] == ref:
+                for o in state["orders"].values():
+                    if o["reference"] == ref: o.update(cancelled=True, cancelled_at="2026-10-31T09:00:00Z")
             tx = state["notch"].get(ref)
             return self.send(200, {"transaction": tx}) if tx else self.send(404, {"message": "introuvable"})
         if p == "/rest/v1/payment_events":
@@ -81,10 +86,12 @@ class Mock(BaseHTTPRequestHandler):
         if p == "/rest/v1/orders":
             rows = list(state["orders"].values())
             if eq(q, "reference"): rows = [r for r in rows if r["reference"] == eq(q, "reference")]
+            if eq(q, "id"): rows = [r for r in rows if r["id"] == eq(q, "id")]
+            if q.get("cancelled_at", [None])[0] == "is.null": rows = [r for r in rows if r.get("cancelled_at") is None]
             if method == "GET":
                 return self.send(200, rows)
             if method == "PATCH":
-                rows = [r for r in rows if (eq(q, "id") is None or r["id"] == eq(q, "id")) and (eq(q, "paid") is None or str(r["paid"]).lower() == eq(q, "paid"))]
+                rows = [r for r in rows if eq(q, "paid") is None or str(r["paid"]).lower() == eq(q, "paid")]
                 b = self.body()
                 for r in rows: r.update(b)
                 return self.send(200, [{"id": r["id"]} for r in rows])
@@ -173,6 +180,11 @@ def main():
         s, b = post({"type": "customer.created", "data": {"id": "c1"}}); check("événement non paiement -> ignoré", s == 200 and b.get("ignored"), b)
         s, b = post(None, raw=b"pas du json"); check("corps non JSON signé -> 400", s == 400, b)
         s, b = post(evt("trx.D")); check("paiement reçu sur une commande annulée -> non confirmé, journalisé", s == 200 and b.get("confirmed") is False and state["orders"]["o4"]["paid"] is False and any(e.get("outcome") == "paid_after_cancellation" for e in state["events"].values()), b)
+        reset()
+        state["cancel_on_fetch"] = "trx.A"
+        s, b = post(evt("trx.A", extra={"n": 7}))
+        check("annulation pendant la relecture du fournisseur -> non confirmé, journalisé", s == 200 and b.get("confirmed") is False and state["orders"]["o1"]["paid"] is False
+              and any(e.get("outcome") == "paid_after_cancellation" for e in state["events"].values()), b)
         req = urllib.request.Request(f"http://127.0.0.1:{FN_PORT}/", method="GET")
         try: urllib.request.urlopen(req, timeout=10)
         except urllib.error.HTTPError as e: check("GET -> 405", e.code == 405)

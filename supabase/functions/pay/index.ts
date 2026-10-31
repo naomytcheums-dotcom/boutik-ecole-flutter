@@ -51,8 +51,15 @@ Deno.serve(async (req) => {
       console.error("paiement incohérent", { order: number, expected, amount, badRef, badCurrency });
       return json({ status: "failed", reason: "mismatch", reference: ref });
     }
-    // transition unique non payé -> payé, jamais sur une commande annulée
-    await admin.from("orders").update({ paid: true, status: 1 }).eq("id", order.id).eq("paid", false).is("cancelled_at", null);
+    // transition unique non payé -> payé, jamais sur une commande annulée (y compris pendant la relecture ci-dessus)
+    const upd = await admin.from("orders").update({ paid: true, status: 1 }).eq("id", order.id).eq("paid", false).is("cancelled_at", null).select("id");
+    if (!upd.data?.length) {
+      const { data: now } = await admin.from("orders").select("paid,cancelled_at").eq("id", order.id).maybeSingle();
+      if (!now?.paid) {
+        console.error("paiement complet sur une commande annulée", { order: number });
+        return json({ status: "failed", reason: "cancelled", reference: ref });
+      }
+    }
     return json({ status: "complete", reference: ref });
   };
 

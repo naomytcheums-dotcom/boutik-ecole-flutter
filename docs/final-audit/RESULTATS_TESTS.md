@@ -61,6 +61,26 @@ Total navigateur sur la réplique : **51/51**. Total REST : **386/386**.
 | REST anonyme en production (18 appels) | conformes |
 | Playwright `visiteur` en production | **12/12** |
 
+## Application de 31c en production (31/10, ~15 h 40)
+
+| Contrôle | Lieu | Résultat |
+|---|---|---|
+| Copie locale reconstruite depuis la production (31a + 31b) | local | **0 écart** (outil complété : droits par colonne) |
+| Répétition CLI dans un répertoire isolé (`search_path=public`) | local | 31c seule, sortie 0 |
+| `run_all_local.py` (13 suites) sur la copie locale + 31c | local | **386/386** |
+| `security_31_rest.py` | local | **24/24** (13/24 avant 31c) |
+| `lots2_rest.py` (code de retrait : essai erroné journalisé, blocage à 5, nouveau code) | local | **59/59** |
+| Catalogue production = copie locale, juste avant application | production | 0 écart |
+| `db push --linked --dry-run --workdir <isolé>` | production | `20261031000200` seule |
+| `db push --linked --workdir <isolé>` | production | sortie 0 |
+| `migration list --linked` | production | 16/16 |
+| Catalogue production après 31c = copie locale après 31c | production | **0 écart** |
+| Empreintes des données (34) | production | identiques ; historique 15 → 16 |
+| Contrôles de sécurité sur le catalogue + REST anonyme | production | **41/41** |
+| Playwright `visiteur` | production | **12/12** |
+
+Non réalisable en production (interdiction de créer des comptes du personnel ou de modifier des données métier) : code de retrait erroné réel, blocage à 5, message de dossier de mission, refus d'un fichier tiers, revalidation d'un projet approuvé. Ces comportements sont prouvés en local uniquement.
+
 ## Échecs rencontrés et traitement
 
 | Test | Symptôme | Cause | Traitement |

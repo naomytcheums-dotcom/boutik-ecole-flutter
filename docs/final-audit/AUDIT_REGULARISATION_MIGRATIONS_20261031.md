@@ -310,6 +310,26 @@ Sauvegarde et preuves : `%USERPROFILE%\boutik_backups\regularisation_20261031_14
   - REST anonyme réel : établissement 200 ; modèles, clés, fichiers, liens CV, dossier de mission, invitations 401 ; `shared_cv` jeton inconnu → `null` ; 7 RPC d'écriture 401 `permission denied` ; liste du compartiment privé `[]`, lecture publique refusée.
 - Exposition résiduelle jusqu'à 31c [F] : code de retrait par `random()`, essais erronés non journalisés et non limités ; le personnel peut écrire dans un dossier de mission ; fichier d'un tiers référençable par `send_mission_message`. Exploitables seulement avec des comptes `support`/`admin`/`dept` ou une mission attribuée (0 compte du personnel, 0 mission en production).
 
+### 8 quinquies. Application de 31c — 31/10, ~15 h 40 (autorisée : 31c uniquement)
+
+**Avant [F]**
+- Historique de production : 15 versions (31a et 31b comprises) ; 31c seule en attente.
+- Fichier `20261031000200_correctifs_securite_audit.sql` identique à la sauvegarde (SHA-256 `5E01C7BF…7EE6`) et à son commit d'origine `057af8a` (objet Git `8f3fc424…`).
+- Relecture intégrale : correctifs de fonctions (`create or replace`), politiques `missions`, contrainte de certificat, colonne `orders.pickup_attempts`, révocation EXECUTE des fonctions de déclencheur ; aucune écriture de données métier. Points à risque vérifiés en production : `certificates`, `orders`, `missions`, `projects`, `files`, `mission_messages` vides (remplacement de contrainte et ajout de colonne sans effet sur des lignes) ; 8 fonctions de déclencheur visées, aucune appelée directement par une autre fonction ; expression `pgcrypto` du code de retrait évaluable.
+- Copie locale reconstruite depuis la production (outil complété : droits par colonne de `api_keys` ; graine : données de référence de 31b) : **0 écart** ; historique local aligné (15 versions) ; répétition CLI `search_path=public` dans un répertoire isolé (`%TEMP%\push_31c`, 16 fichiers) → 31c seule, sortie 0 ; **REST 386/386, `security_31_rest` 24/24** (local).
+- Empreintes de production enregistrées (`avant_31c.json`) ; catalogue production = copie locale avant 31c : 0 écart (contrôle de non-dérive juste avant l'application).
+
+**Application** : `db push --linked --dry-run --workdir %TEMP%\push_31c` → `20261031000200` seule (garde automatique) ; `db push --linked --yes --workdir %TEMP%\push_31c` → sortie 0, une migration.
+
+**Après [F]**
+- `migration list --linked` : 16/16 local = distant.
+- Catalogue production après 31c = copie locale après 31c : **0 écart**.
+- Différences avant → après (exactement le périmètre de 31c) : +1 colonne (`orders.pickup_attempts`) ; +1 fonction (`is_mission_party`) ; 10 fonctions redéfinies (`assign_mission`, `submit_milestone`, `decide_milestone`, `send_mission_message`, `register_file`, `save_project`, `issue_certificate`, `my_pickup_code`, `confirm_pickup`, `sync_order_cancelled`) ; droits EXECUTE modifiés sur 9 fonctions (8 de déclencheur révoquées, `is_mission_participant` ouverte à `anon`) ; politiques `missions` : 3 retirées, 1 ajoutée ; contrainte de certificat remplacée.
+- Données : 34 empreintes identiques (profils, comptes avec bannissement et présence du mot de passe, 8 comptes de démonstration, sessions, identités, MFA, annonces, commandes, lignes, engagements, audit, notifications, favoris, avis, devis, conversations, messages, paiements, bornes, établissement, modèles, missions, certificats, objets de stockage, compartiments, séquence, déclencheurs) ; seul l'historique change (15 → 16).
+- Contrôles fonctionnels et de sécurité en production : **41/41** (`controles_prod_apres_31c.txt`) — code de retrait par `gen_random_bytes`, essais comptés, journalisés, bloqués à 5 ; dossier de mission réservé aux parties ; fichier joint lié à l'expéditeur et à la mission ; une seule politique `missions` ; aucune fonction de déclencheur exécutable ; 8 déclencheurs actifs ; toutes les fonctions publiques avec `search_path` ; non-régression 31a/31b ; 15 appels REST anonymes conformes.
+- Limite : les comportements authentifiés (code erroné réel, blocage, message de dossier, refus d'un fichier tiers) ne sont prouvés qu'en local (24/24, 59/59) : les rejouer en production exige des comptes du personnel et des commandes payées, interdits.
+- **Effet de bord identifié [F]** : l'interface web déployée (`061029c2…`) ne connaît pas la réponse `'incorrect'` de `confirm_pickup` et afficherait « Remise confirmée » sur un code erroné (la commande, elle, n'est pas remise). Correction déjà dans le dépôt (`lots.dart`, commit `057af8a`) ; **déploiement web à autoriser avant l'ouverture du kiosque** (anomalie C3). Sans effet aujourd'hui (0 compte `support`/`admin`, 0 commande payée).
+
 ## 9. Procédure d'application future (31a → 31b → 31c)
 
 Prérequis communs :

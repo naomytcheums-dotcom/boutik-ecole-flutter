@@ -23,10 +23,10 @@
 0. ~~Régularisation de l'historique~~ — **faite le 31/10 à 14 h 20** (après l'incident `db push`, sans conséquence : [INCIDENT_DB_PUSH_20261031.md](./INCIDENT_DB_PUSH_20261031.md)) ; 13 versions enregistrées, aucune rejouée (audit §8 bis).
 
 1. ~~Régularisation de l'historique~~ (voir 0).
-2. ~~31a~~ **appliquée le 31/10 (~14 h 45)** ; ~~31b~~ **appliquée le 31/10 (~15 h 20)** — contrôles conformes (audit §8 ter et §8 quater). Reste 31c, sur autorisation.
+2. ~~31a~~ **appliquée le 31/10 (~14 h 45)** ; ~~31b~~ **appliquée (~15 h 20)** ; ~~31c~~ **appliquée (~15 h 40)** — contrôles conformes (audit §8 ter, quater, quinquies). Plus aucune migration en attente.
 3. Déploiement de `pay`, `notchpay-webhook`, `notchpay-mcp` (`--no-verify-jwt` pour ces deux dernières).
 4. Renouvellement de `NOTCHPAY_KEY` / `NOTCHPAY_HASH`, puis un paiement **sandbox** réel pour vérifier le webhook.
-5. Déploiement web (pour `confirmPickupDialog`) puis régression production étendue aux fonctions 31a/31b.
+5. Déploiement web — **prioritaire avant l'ouverture du kiosque** (anomalie C3 : `confirmPickupDialog`) — puis régression production étendue aux fonctions 31a/31b/31c.
 6. Nettoyage des comptes `zz-test` (`supabase/maintenance/cleanup_test_accounts.sql`).
 
 ## 3. Reprendre

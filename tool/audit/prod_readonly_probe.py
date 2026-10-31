@@ -37,7 +37,7 @@ def q(sql: str, target: str = "linked"):
                        cwd=os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")) if target == "linked" else os.path.expanduser("~/boutik_local"))
     out = r.stdout[r.stdout.find("{"):] if "{" in r.stdout else ""
     if r.returncode or not out:
-        raise SystemExit(f"Échec de la requête ({r.returncode}) : {r.stderr.strip()[-400:]}")
+        raise SystemExit(f"Échec de la requête ({r.returncode}) : {r.stderr.strip()[-400:]} | {r.stdout.strip()[-600:]}")
     return json.loads(out)["rows"]
 
 

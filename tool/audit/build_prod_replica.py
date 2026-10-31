@@ -64,6 +64,9 @@ def main(work):
             f.write(f'revoke all on table public."{r["t"]}" from anon, authenticated;\n')
         for r in prod["grants"]:
             f.write(f'grant {r["p"].replace(",", ", ")} on table public."{r["t"]}" to {r["g"]};\n')
+        # droits par colonne (ex. api_keys : key_hash jamais lisible), non exportés par le dump de schéma
+        for r in prod.get("column_grants", []):
+            f.write(f'grant {r["p"].lower()} ("{r["c"]}") on table public."{r["t"]}" to {r["g"]};\n')
         for r in prod["fn_exec"]:
             sig = f'public."{r["f"]}"({r["args"]})'
             f.write(f"revoke all on function {sig} from public, anon, authenticated;\n")

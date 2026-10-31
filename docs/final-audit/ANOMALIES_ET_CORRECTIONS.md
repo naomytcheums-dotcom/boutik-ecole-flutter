@@ -9,17 +9,17 @@ Base de test : réplique exacte de la production (0 écart de catalogue), voir
 
 | # | Anomalie | Gravité | Preuve | Correction | Statut |
 |---|---|---|---|---|---|
-| A1 | Historique distant inexistant ; 13/15 noms ignorés par la CLI ; `db push` rejouerait `p0` (écritures sur `auth.users`) | Élevée (opérationnelle) | `migration list --linked`, `db push --dry-run` sur réplique | Stratégie de régularisation (rapport §8) | **En attente d'autorisation** |
+| A1 | Historique distant inexistant ; 13/15 noms ignorés par la CLI ; `db push` rejouerait `p0` (écritures sur `auth.users`) | Élevée (opérationnelle) | `migration list --linked`, `db push --dry-run` sur réplique | Régularisation (rapport §8 bis) | **Corrigé en production** (31/10, 14 h 20) |
 | A2 | `20261030f` non rejouable après `g` (`cannot change return type`) | Moyenne | rejeu sur réplique | Ne jamais rejouer ; marquer « appliquée » | Documenté |
-| A3 | Politiques `missions` ASCII de la production non supprimées par 31a → nouvelle politique sans effet restrictif | Élevée | `security_31_rest.py` sur réplique + 31a | `20261031c` : suppression ASCII + accentuées, politique `missions : visibilité restreinte` | Corrigé localement |
-| A4 | `schema.sql` du dépôt ≠ production (noms accentués ; 2 politiques permissives absentes en prod) → tests antérieurs trop permissifs | Moyenne | comparaison catalogue | 31c supprime les 2 politiques ; tests désormais sur la réplique | Corrigé localement |
-| A5 | `assign_mission`, `submit_milestone`, `decide_milestone` sans contrôle explicite `auth.uid()` | Faible (défense en profondeur) | lecture + test `anon` | contrôle ajouté (31c) | Corrigé localement |
-| A6 | `save_project` : projet approuvé modifiable sans nouvel examen ; projet soumis modifiable pendant l'examen | Moyenne | `security_31_rest.py` | `approved` modifié → `submitted` + notification ; `submitted` verrouillé | Corrigé localement |
-| A7 | Codes de certificat sur 32 bits (`md5(random())`, 8 hexa) → énumérables via `verify_certificate` (anon) | Moyenne | lecture + test | 16 hexa `gen_random_bytes(8)`, contrainte 8 ou 16 | Corrigé localement |
-| A8 | Messagerie de mission : le personnel pouvait écrire ; fichier d'un tiers attachable | Élevée | `security_31_rest.py` | `is_mission_party` ; fichier lié à l'expéditeur et à la mission | Corrigé localement |
-| A9 | Code de retrait : `random()`, essais erronés non journalisés (le `raise` annulait l'audit), pas de limite | Élevée | `lots2_rest.py`, `security_31_rest.py` | `gen_random_bytes`, `pickup_attempts`, réponse `'incorrect'` journalisée, blocage à 5 puis nouveau code | Corrigé localement |
-| A10 | `EXECUTE` à `public/anon` sur les fonctions de déclencheur | Faible | catalogue | révoqué (31c), déclencheurs testés | Corrigé localement |
-| A11 | `sync_order_cancelled` sans `search_path` | Faible | catalogue | `set search_path = public` | Corrigé localement |
+| A3 | Politiques `missions` ASCII de la production non supprimées par 31a → nouvelle politique sans effet restrictif | Élevée | `security_31_rest.py` sur réplique + 31a | `20261031c` : suppression ASCII + accentuées, politique `missions : visibilité restreinte` | **Corrigé en production** (31c, 31/10 ~15 h 40) |
+| A4 | `schema.sql` du dépôt ≠ production (noms accentués ; 2 politiques permissives absentes en prod) → tests antérieurs trop permissifs | Moyenne | comparaison catalogue | 31c supprime les 2 politiques ; tests désormais sur la réplique | **Corrigé en production** (31c, 31/10 ~15 h 40) |
+| A5 | `assign_mission`, `submit_milestone`, `decide_milestone` sans contrôle explicite `auth.uid()` | Faible (défense en profondeur) | lecture + test `anon` | contrôle ajouté (31c) | **Corrigé en production** (31c, 31/10 ~15 h 40) |
+| A6 | `save_project` : projet approuvé modifiable sans nouvel examen ; projet soumis modifiable pendant l'examen | Moyenne | `security_31_rest.py` | `approved` modifié → `submitted` + notification ; `submitted` verrouillé | **Corrigé en production** (31c, 31/10 ~15 h 40) |
+| A7 | Codes de certificat sur 32 bits (`md5(random())`, 8 hexa) → énumérables via `verify_certificate` (anon) | Moyenne | lecture + test | 16 hexa `gen_random_bytes(8)`, contrainte 8 ou 16 | **Corrigé en production** (31c, 31/10 ~15 h 40) |
+| A8 | Messagerie de mission : le personnel pouvait écrire ; fichier d'un tiers attachable | Élevée | `security_31_rest.py` | `is_mission_party` ; fichier lié à l'expéditeur et à la mission | **Corrigé en production** (31c, 31/10 ~15 h 40) |
+| A9 | Code de retrait : `random()`, essais erronés non journalisés (le `raise` annulait l'audit), pas de limite | Élevée | `lots2_rest.py`, `security_31_rest.py` | `gen_random_bytes`, `pickup_attempts`, réponse `'incorrect'` journalisée, blocage à 5 puis nouveau code | **Corrigé en production** (31c, 31/10 ~15 h 40) |
+| A10 | `EXECUTE` à `public/anon` sur les fonctions de déclencheur | Faible | catalogue | révoqué (31c), déclencheurs testés | **Corrigé en production** (31c, 31/10 ~15 h 40) |
+| A11 | `sync_order_cancelled` sans `search_path` | Faible | catalogue | `set search_path = public` | **Corrigé en production** (31c, 31/10 ~15 h 40) |
 | A12 | Droits `missions` déjà retirés en production sans trace d'origine | Information | catalogue | aucune (idempotent) | Origine inconnue |
 
 ## B. Paiements (Edge Functions)
@@ -40,6 +40,7 @@ Base de test : réplique exacte de la production (0 écart de catalogue), voir
 |---|---|---|---|
 | C1 | `confirmPickupDialog` ne gérait pas la réponse `'incorrect'` de `confirm_pickup` (31c) | alerte « Code de retrait incorrect… » ([lots.dart](../../lib/figma/live/lots.dart)) | Corrigé ; 403/403 tests Flutter, goldens inchangés |
 | C2 | Test navigateur `lots.spec.ts` supposait des codes de certificat à 8 caractères | expression `{16}` | Corrigé |
+| C3 | Depuis 31c (production), `confirm_pickup` répond `'incorrect'` sans erreur ; l'interface **déployée** (`061029c2…`, antérieure à `057af8a`) affiche alors « Remise confirmée » — message faux, la commande n'étant pas remise (vérifié dans le code de la fonction : aucune mise à jour sur code erroné) | correction C1 déjà dans le dépôt ; **déploiement web requis** (autorisation) avant d'ouvrir le kiosque. Sans effet aujourd'hui : 0 compte `support`/`admin`, 0 commande payée | **En attente de déploiement** |
 
 ## D. Recommandations non appliquées (décision requise)
 

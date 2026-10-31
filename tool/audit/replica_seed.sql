@@ -22,3 +22,20 @@ do $$ begin
     on conflict (id) do nothing;
   end if;
 end $$;
+
+-- Données de référence de 20261031000100 (31b), absentes du dump de schéma : établissement et modèles de notification.
+do $$ begin
+  if to_regclass('public.institution_settings') is not null then
+    insert into institution_settings (id, name, acronym, address, email, phone, primary_color, accent_color, font)
+    values ('iut-douala', 'IUT de Douala', 'IUT-D', 'Bonabéri, Douala', 'contact@iut-douala.cm', null, '#12253F', '#FBB52B', 'Sans-serif professionnelle')
+    on conflict (id) do nothing;
+  end if;
+  if to_regclass('public.notification_templates') is not null then
+    insert into notification_templates (key, label, channels, subject, body) values
+      ('order_confirmed', 'Commande confirmée', '{email,sms}', 'Votre commande {{numero}} est confirmée', 'Bonjour {{nom}}, votre commande {{numero}} est confirmée. Retrait : {{point_retrait}}.'),
+      ('payment_failed', 'Paiement échoué', '{sms,whatsapp}', null, 'Le paiement de la commande {{numero}} a échoué. Réessayez depuis l''application.'),
+      ('order_ready', 'Commande prête au retrait', '{sms,app}', null, 'Votre commande {{numero}} est prête. Code de retrait : {{code}}.'),
+      ('quote_received', 'Devis reçu', '{email,app}', 'Nouveau devis pour {{service}}', 'Vous avez reçu un devis de {{montant}} FCFA pour « {{service}} ».')
+    on conflict (key) do nothing;
+  end if;
+end $$;

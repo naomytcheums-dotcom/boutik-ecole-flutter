@@ -42,7 +42,8 @@ Retour arrière : `migration repair --status reverted <versions>` (ne touche que
 
 - **31a : ✅ appliquée le 31/10 (~14 h 45)**, contrôles conformes — rapport d'audit §8 ter.
 - **31b : ✅ appliquée le 31/10 (~15 h 20)** par répertoire de travail limité, contrôles conformes — rapport d'audit §8 quater.
-- 31c : en attente d'autorisation ; seule migration restante, `db push --linked` ne sélectionnerait qu'elle (à confirmer par `--dry-run`).
+- **31c : ✅ appliquée le 31/10 (~15 h 40)** par répertoire de travail isolé, contrôles conformes (41/41 en production) — rapport d'audit §8 quinquies. **Aucune migration en attente.**
+- ⚠ Avant d'ouvrir le kiosque : déployer le site (§5) — l'interface en ligne ne gère pas la réponse `'incorrect'` de `confirm_pickup` (anomalie C3).
 - **Répétition locale** : une réplique réinitialisée n'a pas d'historique → avant tout `db push --db-url <local>`, aligner l'historique local sur la production (`migration repair --db-url <local> --status applied <versions de production>`), sinon la CLI rejoue tout depuis `p0`.
 - Méthode « une seule migration » (utilisée pour 31b) :
   ```powershell

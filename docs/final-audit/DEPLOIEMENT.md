@@ -58,3 +58,12 @@ Limites : parcours non rejoués dans un navigateur après déploiement (outil in
 | Vérification après déploiement | Playwright production : 24/24 exécutés | rapport |
 | Migration `20261031a` | **non appliquée** (pas d'accès) : les 28 actions qui en dépendent l'annoncent clairement | `production.spec.ts` |
 | Fonction `notchpay-mcp` | code corrigé **non déployé** (pas d'accès) | `INTERVENTIONS_PROPRIETAIRE.md` §3 |
+
+## Déploiement du 31/10/2026 (matin, 3ᵉ reprise)
+| Élément | Valeur |
+|---|---|
+| Code déployé | `a86d3ff` → `0c18c17` (16 dernières actions, corrections) |
+| Version servie = build testé | SHA-256 `061029c244ac7b21e1bbdae23fc20fd6f8dc9809499925e0d55d62de35ce9d9a` des deux côtés, aucune adresse locale dans le bundle |
+| Vérification | Playwright production 27/27 ; MFA REST production 8/8 |
+| Migrations `20261031a` et `20261031b` | **non appliquées en production** (constaté) |
+| MCP | `MCP_ACCESS_KEY` configurée (constaté) ; appel authentifié à vérifier par le propriétaire |

@@ -30,10 +30,13 @@ test('avant migration : publier un vœu annonce une fonction non activée, sans 
   await fetch(`${U}/rest/v1/profiles`, { method: 'POST', headers: { apikey: K, Authorization: 'Bearer ' + d.access_token, 'Content-Type': 'application/json' }, body: JSON.stringify({ id: d.user.id, name: 'Test Prod', email, role: 'student' }) });
   await demarrer(page, 's/11');
   const champs = page.locator('flt-semantics-host input');
-  await champs.nth(0).fill(email);
-  await page.waitForTimeout(500);
-  await champs.nth(1).fill(password);
-  await page.waitForTimeout(700);
+  for (let i = 0; i < 3; i++) {
+    await champs.nth(0).fill(email);
+    await page.waitForTimeout(500);
+    await champs.nth(1).fill(password);
+    await page.waitForTimeout(700);
+    if ((await champs.nth(1).inputValue()) === password) break;
+  }
   await page.mouse.click(198, 583);
   await expect.poll(() => texte(page), { timeout: 30_000 }).toContain('Bienvenue');
   await page.evaluate(() => (location.hash = '#/s/218'));
@@ -52,4 +55,33 @@ test('avant migration : la vérification publique d’un certificat ne prétend 
   await page.getByRole('button', { name: 'Vérifier' }).click();
   await expect.poll(() => texte(page), { timeout: 15_000 }).toContain('pas encore activée');
   expect(await texte(page)).not.toContain('Certificat authentique');
+});
+
+test('avant migration 20261031b : régénérer le lien de CV annonce une fonction non activée', async ({ page }) => {
+  const r = await fetch(`${U}/rest/v1/rpc/shared_cv`, { method: 'POST', headers: { apikey: K, 'Content-Type': 'application/json' }, body: JSON.stringify({ p_token: '0'.repeat(32) }) });
+  test.skip(r.status !== 404, 'migration 20261031b déjà appliquée');
+  const email = `zz-test-prod-${randomUUID().slice(0, 8)}@example.com`, password = 'Zz-test-' + randomUUID().slice(0, 8) + '!';
+  const d = await (await fetch(`${U}/auth/v1/signup`, { method: 'POST', headers: { apikey: K, 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) })).json();
+  await fetch(`${U}/rest/v1/profiles`, { method: 'POST', headers: { apikey: K, Authorization: 'Bearer ' + d.access_token, 'Content-Type': 'application/json' }, body: JSON.stringify({ id: d.user.id, name: 'Test Prod', email, role: 'student' }) });
+  await demarrer(page, 's/11');
+  const champs = page.locator('flt-semantics-host input');
+  for (let i = 0; i < 3; i++) {
+    await champs.nth(0).fill(email);
+    await page.waitForTimeout(500);
+    await champs.nth(1).fill(password);
+    await page.waitForTimeout(700);
+    if ((await champs.nth(1).inputValue()) === password) break;
+  }
+  await page.mouse.click(198, 583);
+  await expect.poll(() => texte(page), { timeout: 30_000 }).toContain('Bienvenue');
+  await page.evaluate(() => (location.hash = '#/s/228'));
+  await page.waitForTimeout(3000);
+  await page.mouse.click(195, 797); // « Régénérer le lien »
+  await expect.poll(() => texte(page), { timeout: 15_000 }).toContain('pas encore activée');
+  expect(await texte(page)).not.toContain('Nouveau lien de CV');
+});
+
+test('page publique de CV : un lien inconnu est refusé proprement', async ({ page }) => {
+  await demarrer(page, 'cv/' + '0'.repeat(32));
+  await expect.poll(() => texte(page), { timeout: 15_000 }).toContain('Lien de CV invalide');
 });

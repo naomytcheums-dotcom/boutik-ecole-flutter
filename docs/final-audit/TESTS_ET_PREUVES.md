@@ -101,3 +101,13 @@ Particularité : l'approbation d'une annonce par un valideur et le passage « pa
 
 Défauts réels trouvés par ces tests et corrigés : texte des lignes de dialogue absent de l'arbre d'accessibilité (`ListView`), retour du réseau qui laissait
 l'écran 150-3 affiché (pile de navigation mal lue), écran 47 décalé de 704 px (golden), annulation serveur non reflétée (`cancelled_at`), 3 défauts SQL de la nouvelle migration.
+
+## 3ᵉ reprise (31/10/2026, matin) — résultats réels
+| Domaine | Résultat |
+|---|---|
+| Flutter | 403 réussis, 315 goldens inchangés |
+| REST base isolée | lots 77/77, lots2 55/55, devis 30/30, MFA 8/8 |
+| REST production | MFA TOTP 8/8 (seule fonctionnalité nouvelle indépendante des migrations) |
+| Navigateur base isolée | 51/51 (avis 9 en une série, devis 5, engagements 5, lots 7, lots2 7, mfa 1, parcours 5, visiteur 12) |
+| Navigateur production | 27/27 (engagements 5, mfa 1, parcours 5, visiteur 12, production 4) |
+| Migrations 20261031a/b en production | **absentes** (preuves dans REPRISE.md §1) |

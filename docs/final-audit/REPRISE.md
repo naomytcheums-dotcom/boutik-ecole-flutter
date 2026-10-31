@@ -1,4 +1,67 @@
-# État de reprise et bilan final (30/10/2026, nuit — 2ᵉ reprise par l'agent Copilot)
+# État de reprise — 3ᵉ reprise (31/10/2026, matin)
+
+> Départ : `6401966` (poussé). Arrivée : voir §7. Production servie : `main.dart.js` SHA-256 **`061029c244ac7b21e1bbdae23fc20fd6f8dc9809499925e0d55d62de35ce9d9a`**.
+> Règle appliquée : une fonctionnalité n'est dite « vérifiée en production » que si un test l'a exercée sur `https://boutik-ecole.vercel.app` et la base `zxqcnmgwhtbxkdpjqtlr`.
+
+## 1. Interventions annoncées : ce qui est réellement constaté en production
+| Élément | Constat | Preuve |
+|---|---|---|
+| Migration `20261031a` | **NON appliquée** | `missions.status` → PostgreSQL 42703 ; `wishes`, `kiosks`, `certificates`, `order_cancellations` → PGRST205 ; `verify_certificate`, `save_mission`, `cancel_order_with_reason` → PGRST202 (vérifié à 05 h 10 puis de nouveau avant le déploiement) |
+| Migration `20261031b` (nouvelle) | non appliquée (écrite pendant cette reprise) | `shared_cv` → PGRST202 |
+| `MCP_ACCESS_KEY` | **configurée** | `tools/call` → « Accès refusé » au lieu de « outils pas encore activés » ; sans clé, clé fausse (en-tête), clé dans l'URL : refusés |
+| MCP, passerelle | `initialize`/`tools/list` répondent avec l'en-tête public `apikey` (200) ; sans en-tête : 401 | appels JSON-RPC |
+| MCP, appel authentifié | **non vérifiable** sans la clé (jamais demandée) | commande fournie : INTERVENTIONS §9 |
+| Webhook, événement sandbox authentique | **non vérifiable** (journal lisible seulement avec la clé MCP ou le rôle service) | GET 405, POST non signé 401 (inchangé) |
+Conséquence : les 28 actions de `20261031a` et 12 des 16 nouvelles (toutes sauf 23, 264, 272, 275) **ne peuvent pas être vérifiées en production** ; elles y affichent « fonction pas encore activée » (vérifié par `production.spec.ts`). Hypothèse : SQL exécuté sur un autre projet. Marche à suivre : `INTERVENTIONS_PROPRIETAIRE.md` (« Constat du 31/10 », §8, §9).
+
+## 2. Les 16 dernières actions « Démonstration » : 0 restante
+| Écran | Action réelle | Serveur | Vérification |
+|---|---|---|---|
+| 118 | identité de l'établissement (direction, admin) | `institution_settings`, `save_institution` | navigateur (base isolée) |
+| 265 | modification d'un modèle de notification (admin) | `notification_templates` | REST |
+| 264 | aperçu des pages publiques (Accueil, À propos, FAQ, CGU) | — | code, liens testés |
+| 280 | clé d'intégration créée une fois, **empreinte SHA-256 seule conservée**, révocation | `api_keys` | navigateur + SQL (clé absente en clair) |
+| 286 | invitation d'un membre du département (notification si le compte existe) | `department_invitations` | REST |
+| 263, 83, 279 | dépôts de fichiers (médiathèque, projet) : types JPG/PNG/WebP/PDF/MP4/ZIP, 5 Mo par image, 50 Mo sinon, exécutables refusés, compartiment privé | `project-files`, `files`, `register_file` | navigateur (279) + REST (263) |
+| 196 | dossier de mission : messages et fichiers entre le client et le prestataire retenu, notifications | `mission_messages`, `send_mission_message` | navigateur (message, PDF accepté, .exe refusé, tiers sans accès) |
+| 228 | lien de CV régénéré (l'ancien cesse de fonctionner), page publique `/#/cv/<jeton>` sans coordonnées | `cv_links`, `shared_cv` | navigateur |
+| 46 + 146-2 | code de retrait délivré après paiement ; remise au kiosque seulement avec le bon code ; commande livrée | `my_pickup_code`, `confirm_pickup` | navigateur (code faux refusé, bon code accepté) |
+| 272 | double authentification TOTP (QR code, code faux refusé, session AAL2) | Supabase Auth MFA | **production : REST 8/8 et navigateur 1/1** |
+| 158 | comparaison des propositions réellement reçues | `mission_proposals` | code |
+| 23 | « Innovations » ouvre le registre des innovations (87) | — | lien |
+| 275 | « Continuer » reprend le formulaire réel (58) | — | lien |
+Écran 146-2 « Confirmer la remise » n'avait aucune action : reliée à la vérification du code. Écran 46 : en ligne, le numéro de la commande consultée remplace celui de la maquette et le code fictif « 482 915 » est masqué.
+
+## 3. Défauts trouvés pendant cette reprise et corrigés
+1. Copie dans le presse-papiers refusée par le navigateur (permission ou copie après un appel réseau) : l'activation de la double authentification s'interrompait après l'inscription du facteur. Copies rendues non bloquantes, messages exacts.
+2. Le code de retrait était demandé pour la commande d'exemple de la maquette quand la liste des commandes n'était pas encore chargée : liste relue avant l'appel.
+3. La clé TOTP était affichée dans un `SelectableText` absent de l'arbre d'accessibilité : remplacé.
+4. Une tentative TOTP échouée laissait un facteur non vérifié ; un nouvel essai en créait un autre : trois essais sur le même facteur, facteurs abandonnés retirés avant une nouvelle inscription.
+5. `feedback_rest.py` ne conservait pas les mots de passe nécessaires à `avis.spec.ts` : la série avis passe désormais 9/9 en une seule exécution.
+
+## 4. Tests exécutés (résultats réels)
+| Domaine | Base isolée (Docker, 17 migrations) | Production |
+|---|---|---|
+| Flutter (`flutter test`) | **403 réussis** (401 + 2 nouveaux tests unitaires) ; 315 goldens inchangés | — |
+| REST | `lots_rest` 77/77 · `lots2_rest` 55/55 · `quotes_rest` 30/30 · `mfa_rest` 8/8 ; migrations rejouées deux fois (idempotentes) | `mfa_rest` **8/8** |
+| Navigateur | **51/51** : avis 9, devis 5, engagements 5, lots 7, lots2 7, mfa 1, parcours 5, visiteur 12 (2 tests « avant migration » ignorés par conception) | **27/27** : engagements 5, mfa 1, parcours 5, visiteur 12, production 4 (avant migration : vœu, certificat, lien de CV ; page CV publique) |
+| Nettoyage des comptes de test | dry-run revalidé avec `20261031b` (143 comptes, données hors test intactes) | non exécuté (pas d'accès) |
+
+## 5. Écrans et parcours
+303/315 écrans atteignables par un parcours métier ; les 12 autres sont des états réels (150-2, 150-3, 182, 183) ou des variantes de maquette (S1, A2, P4, 250B, 176, 150-1, 150-4, 275). Aucun outil de liens relancé. 0 action « Démonstration » dans le code (`nav_graph.py`).
+
+## 6. Ce qui reste (interventions du propriétaire uniquement)
+1. Appliquer `20261031a` puis `20261031b` **sur le projet `zxqcnmgwhtbxkdpjqtlr`** (§1 et §8), puis relancer `production.spec.ts` et les specs `lots`/`lots2` en production (comptes du personnel à créer : §7).
+2. Vérifier l'appel MCP authentifié et, si besoin, redéployer `notchpay-mcp` (§9).
+3. Renouveler les clés Notch Pay et déclencher un paiement sandbox (§4–5) ; le résultat est lisible par l'outil MCP `boutik_recent_webhook_events`.
+4. Exécuter `supabase/maintenance/cleanup_test_accounts.sql` (ROLLBACK puis COMMIT).
+
+## 7. Commits et déploiement
+`a86d3ff` migration 20261031b et tests · `6ae90f5` application (16 actions) · `4daae97` e2e et audit · `4eb9b8a` écrans protégés · `0c18c17` feedback_rest · puis documentation. Branche `feat/figma-fidele`.
+Déploiement Vercel production vérifié : SHA-256 servi = build local `061029c2…`.
+
+---
+# [2ᵉ reprise] État de reprise et bilan final (30/10/2026, nuit — 2ᵉ reprise par l'agent Copilot)
 
 > Point de départ de cette reprise : commit `841b6e0` (poussé), arbre propre. Dernier commit de cette reprise : voir §9.
 > Accès disponibles : dépôt Git, Vercel (CLI authentifiée), Docker. **Aucun accès administrateur à la base de production** ni au tableau de bord

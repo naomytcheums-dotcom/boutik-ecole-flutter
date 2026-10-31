@@ -76,3 +76,42 @@ ne renvoient aucune donnée. La clé n'est plus acceptée dans l'URL (journalis�
 ## 7. Comptes « dept », « support », « admin » de recette
 Les rôles du personnel ne peuvent pas être pris à l'inscription (règle de sécurité vérifiée). Pour recetter en production les écrans du département
 (vœux, campagnes, projets, certificats, attribution) et du support (bornes) : créer un compte, puis en SQL `update profiles set role = 'dept' where email = '…';`.
+
+---
+
+## Constat du 31/10/2026 (5 h – 7 h) après l'annonce « interventions effectuées »
+Vérifications faites sur le projet utilisé par le site, `zxqcnmgwhtbxkdpjqtlr` :
+| Intervention | Constat | Preuve |
+|---|---|---|
+| §1 migration `20261031a` | **non appliquée** | `select … missions.status` → erreur PostgreSQL 42703 « column missions.status does not exist » ; `wishes`, `kiosks`, `certificates`, `order_cancellations` : PGRST205 ; `verify_certificate` : PGRST202 |
+| §2 nettoyage des comptes de test | non vérifiable sans accès (la procédure reste valide, revalidée avec `20261031b`) | — |
+| §3 `MCP_ACCESS_KEY` | **configurée** : `tools/call` répond « Accès refusé » (et non « outils pas encore activés ») ; sans clé, clé fausse, clé dans l'URL : refusés | appels JSON-RPC |
+| §3 « Verify JWT » | la passerelle exige toujours un en-tête d'authentification : sans en-tête → 401 ; avec l'en-tête public `apikey` (clé publishable) → 200 | `curl` |
+| §3 code corrigé de `notchpay-mcp` | indéterminable sans la clé (un appel authentifié avec la clé en en-tête doit réussir, avec la clé dans l'URL doit échouer) | — |
+| §4–5 clés Notch Pay, événement sandbox | non vérifiables sans accès (le journal `payment_events` n'est lisible qu'avec la clé MCP ou le rôle service) | — |
+
+Hypothèse la plus probable : le SQL a été exécuté sur **un autre projet** Supabase, ou l'exécution s'est arrêtée à une erreur. Le projet du site est `zxqcnmgwhtbxkdpjqtlr` (voir `lib/figma/live/backend.dart`).
+
+## 8. Appliquer la migration `20261031b` (après `20261031a`, dans le même éditeur SQL)
+1. Avant : `select to_regclass('public.mission_proposals') is not null;` → `t` (sinon appliquer d'abord `20261031a`).
+2. Coller `supabase/migrations/20261031b_parametres_fichiers_dossiers_cv_retrait.sql` → **Run** (idempotente).
+3. Après — attendu (vérifié sur base isolée) :
+   ```sql
+   select count(*) from pg_proc where proname in ('save_institution','save_notification_template','create_api_key','revoke_api_key','send_mission_message',
+     'register_file','regenerate_cv_link','shared_cv','my_pickup_code','confirm_pickup','invite_department_member','is_mission_participant','storage_file_allowed'); -- 13
+   select id, public, file_size_limit from storage.buckets where id = 'project-files';   -- project-files | f | 52428800
+   select shared_cv(repeat('0', 32));                                                     -- (vide : lien inconnu)
+   select count(*) from notification_templates;                                           -- 4
+   ```
+4. `notify pgrst, 'reload schema';` puis relancer `npx playwright test production --workers=1` : les tests « avant migration » s'ignorent d'eux-mêmes.
+
+## 9. Vérifier le MCP avec la clé (sur votre poste, la clé ne doit pas apparaître ailleurs)
+```powershell
+$k = Read-Host -AsSecureString "MCP_ACCESS_KEY" | ConvertFrom-SecureString -AsPlainText
+$u = "https://zxqcnmgwhtbxkdpjqtlr.supabase.co/functions/v1/notchpay-mcp/mcp"
+$b = '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"boutik_recent_webhook_events","arguments":{}}}'
+curl.exe -s -X POST $u -H "Content-Type: application/json" -H "apikey: sb_publishable_yYEzuivRZlBnVOkuMCiSow_syCjss01" -H "x-mcp-access-key: $k" -d $b   # attendu : liste (éventuellement vide), isError false
+curl.exe -s -X POST "$u?key=$k" -H "Content-Type: application/json" -H "apikey: sb_publishable_yYEzuivRZlBnVOkuMCiSow_syCjss01" -d $b               # attendu : « Accès refusé » (nouveau code déployé)
+```
+Si le second appel réussit, l'ancien code est encore déployé : `npx supabase@2.122.0 functions deploy notchpay-mcp --project-ref zxqcnmgwhtbxkdpjqtlr`.
+La réponse du premier appel montre aussi les derniers événements de webhook : un événement `payment.complete` avec `outcome = confirmed` prouve le §5.

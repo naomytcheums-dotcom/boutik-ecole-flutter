@@ -1,8 +1,7 @@
 # Plan de mise en production contrôlée
 
-État au 31/10 : **rien de ce lot n'est déployé.** Production servie = build `061029c2…` (commit `0c18c17`),
-migrations 1 à 13 en place, 31a/31b/31c absentes, Edge Functions `pay` et `notchpay-webhook` = version du dépôt avant correctifs,
-`notchpay-mcp` = commit `814db47`.
+État au 31/10 (16 h 20) : migrations 1 à 13 + 31a + 31b + 31c **appliquées** (historique 16/16) ; Edge Functions `pay` v6, `notchpay-webhook` v6,
+`notchpay-mcp` v3 **déployées** (commit `d695001`, §3). Site servi = build `061029c2…` (commit `0c18c17`) : **non redéployé**.
 
 Chaque étape ci-dessous **requiert l'autorisation explicite du propriétaire**. Les étapes sont indépendantes
 sauf mention contraire ; l'ordre recommandé minimise le risque.
@@ -66,7 +65,32 @@ Procédure détaillée et requêtes de contrôle avant/après : rapport d'audit 
 Retour arrière : blocs « RETOUR ARRIÈRE » en fin de 31a et 31b (tables vides au moment de l'application → aucune perte) ;
 pour 31c, réappliquer les définitions de fonctions de 31a/31b concernées.
 
-## 3. Edge Functions (autorisation requise)
+## 3. Edge Functions — ✅ DÉPLOYÉES le 31/10 (~16 h 15)
+
+| Fonction | Avant | Après | Verify JWT | Code déployé |
+|---|---|---|---|---|
+| `pay` | v5 (`e66217e`) | **v6** | actif (inchangé) | SHA-256 `46B9E851…3BD4` = `d695001` |
+| `notchpay-webhook` | v5 (`b3160af`) | **v6** | désactivé (inchangé ; authenticité par HMAC) | SHA-256 `3D7CED0F…89B1` = `d695001` |
+| `notchpay-mcp` | v2 (`814db47`, lisait `?key=`) | **v3** | actif (**inchangé**) | SHA-256 `D8917F1C…2142` = `d695001` |
+
+Commandes exécutées (chaque fonction nommée explicitement, aucune autre fonction touchée) :
+```powershell
+npx supabase@2.122.0 functions deploy pay --project-ref zxqcnmgwhtbxkdpjqtlr --use-api
+npx supabase@2.122.0 functions deploy notchpay-webhook --project-ref zxqcnmgwhtbxkdpjqtlr --no-verify-jwt --use-api
+npx supabase@2.122.0 functions deploy notchpay-mcp --project-ref zxqcnmgwhtbxkdpjqtlr --use-api
+```
+**Verify JWT de `notchpay-mcp` conservé actif** : la passerelle accepte la clé publiable (constaté), un client MCP fonctionne donc avec
+`apikey`/`Authorization: Bearer <clé publiable>` **et** `x-mcp-access-key: <clé MCP>`. La désactivation n'était pas nécessaire ; la validation
+interne de la clé (en-tête seulement, temps constant) reste la protection des outils.
+
+Contrôles après déploiement (production, non financiers) : **21/21** — code déployé = commit (retéléchargé) ; 401 sans jeton / sans session ;
+CORS limité ; webhook 401 sans signature, signature fausse, préfixée ou HMAC deviné, 405 en GET ; MCP : `tools/call` refusé sans clé,
+avec `?key=` et avec une mauvaise clé ; aucun secret dans les 19 réponses ; base inchangée (0 événement, 0 commande).
+
+Retour arrière : code précédent sauvegardé dans `%USERPROFILE%\boutik_backups\fonctions_20261031\deploye_avant\` → redéployer avec
+`--workdir <ce dossier>` et les mêmes options de Verify JWT.
+
+## 3 (historique). Commandes prévues
 
 ```powershell
 npx supabase@2.122.0 functions deploy pay --project-ref zxqcnmgwhtbxkdpjqtlr
@@ -110,4 +134,4 @@ Retour arrière : `vercel rollback` vers le déploiement `061029c2…` (ou « Pr
 | `MCP_ACCESS_KEY` | présent (30/10 08:09) | aucune |
 | `NOTCHPAY_API` (nouveau, facultatif) | absent | laisser absent en production (sert aux tests locaux) |
 | MFA TOTP | 2 facteurs enrôlés en production | aucune |
-| Verify JWT | `pay` : oui ; `notchpay-webhook` : non ; `notchpay-mcp` : oui → **non** au redéploiement | §3 |
+| Verify JWT | `pay` : oui ; `notchpay-webhook` : non ; `notchpay-mcp` : oui (conservé au redéploiement du 31/10) | §3 |

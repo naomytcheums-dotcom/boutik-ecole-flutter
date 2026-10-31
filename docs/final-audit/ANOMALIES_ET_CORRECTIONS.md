@@ -26,13 +26,14 @@ Base de test : réplique exacte de la production (0 écart de catalogue), voir
 
 | # | Anomalie | Gravité | Preuve | Correction | Statut |
 |---|---|---|---|---|---|
-| B1 | `pay` : une commande **annulée** pouvait être envoyée au paiement | Élevée | `pay_e2e.py` contre la version déployée : **6/15** | refus `cancelled_at` | Corrigé localement (15/15) |
-| B2 | `pay` : un second appel créait un **second paiement** Notch Pay pour la même commande | Élevée | `pay_e2e.py` | réutilisation de la référence en attente ; confirmation si le paiement précédent est complet | Corrigé localement |
-| B3 | `pay` : montant absent ou non fini non traité comme insuffisant | Moyenne | `pay_e2e.py` | traité comme insuffisant | Corrigé localement |
-| B4 | `pay` : mise à jour de commande sans garde de concurrence | Moyenne | lecture | `.eq("paid", false).is("cancelled_at", null)` | Corrigé localement |
-| B5 | Webhook : paiement reçu après annulation → commande confirmée payée | Élevée | `webhook_e2e.py` (commande `o4`) | résultat `paid_after_cancellation`, non confirmée, à rembourser | Corrigé localement (20/20) |
-| B6 | `notchpay-mcp` déployé = commit `814db47`, accepte encore la clé en paramètre d'URL `?key=` | Moyenne | code téléchargé (`functions download`) | version du dépôt (en-tête uniquement) — **redéploiement requis** | En attente d'autorisation |
+| B1 | `pay` : une commande **annulée** pouvait être envoyée au paiement | Élevée | `pay_e2e.py` contre la version déployée : **6/15** | refus `cancelled_at` | **Corrigé en production** (`pay`/`notchpay-webhook` v6, 31/10) |
+| B2 | `pay` : un second appel créait un **second paiement** Notch Pay pour la même commande | Élevée | `pay_e2e.py` | réutilisation de la référence en attente ; confirmation si le paiement précédent est complet | **Corrigé en production** (`pay`/`notchpay-webhook` v6, 31/10) |
+| B3 | `pay` : montant absent ou non fini non traité comme insuffisant | Moyenne | `pay_e2e.py` | traité comme insuffisant | **Corrigé en production** (`pay`/`notchpay-webhook` v6, 31/10) |
+| B4 | `pay` : mise à jour de commande sans garde de concurrence | Moyenne | lecture | `.eq("paid", false).is("cancelled_at", null)` | **Corrigé en production** (`pay`/`notchpay-webhook` v6, 31/10) |
+| B5 | Webhook : paiement reçu après annulation → commande confirmée payée | Élevée | `webhook_e2e.py` (commande `o4`) | résultat `paid_after_cancellation`, non confirmée, à rembourser | **Corrigé en production** (`pay`/`notchpay-webhook` v6, 31/10) |
+| B6 | `notchpay-mcp` déployé = commit `814db47`, accepte encore la clé en paramètre d'URL `?key=` | Moyenne | code téléchargé (`functions download`) | version du dépôt (en-tête uniquement) — **redéploiement requis** | **Corrigé en production** (`notchpay-mcp` v3 : `?key=` refusé, vérifié) |
 | B7 | Secrets `NOTCHPAY_KEY` / `NOTCHPAY_HASH` non renouvelés depuis le 30/10 | Moyenne | `secrets list` (dates) | renouvellement par le propriétaire | En attente |
+| B8 | Annulation de la commande **pendant** la relecture du paiement chez Notch Pay : le webhook confirmait la commande annulée (confirmed: true), pay répondait « complete » | Élevée | tests de concurrence ajoutés : webhook 20/21 et pay 15/16 avant correctif | mise à jour conditionnée à cancelled_at is null, relecture puis résultat paid_after_cancellation / échec « cancelled » ; webhook 21/21, pay 16/16 | **Corrigé en production** (v6, commit `d695001`) |
 
 ## C. Flutter
 

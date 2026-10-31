@@ -40,6 +40,11 @@ référencent les profils sans cascade. Utiliser `supabase/maintenance/cleanup_t
 Validé sur la base isolée : 22 comptes de test et leurs données supprimés, données hors test intactes ; garde-fou déclenché par une commande « réelle » portant sur une annonce de test.
 
 ## 3. Serveur MCP Notch Pay (erreur 401)
+
+> **Mise à jour du 31/10 (~16 h 15)** : `notchpay-mcp` v3 déployée (code du dépôt, commit `d695001`) ; la clé dans l'URL est refusée.
+> **Verify JWT est resté actif** : la passerelle accepte la clé publiable (en-tête `apikey` ou `Authorization: Bearer`), il suffit donc que le
+> client MCP envoie aussi `x-mcp-access-key`. Les étapes 3 et suivantes ci-dessous (désactivation) ne sont **plus nécessaires** ; la vérification
+> avec votre clé se fait par le §9.
 Cause : la passerelle Supabase exige un JWT (« Verify JWT » activé) ; les clients MCP n'en ont pas, et les nouvelles clés « publishable » ne sont pas des JWT.
 La fonction protège elle-même ses outils : `tools/call` exige `MCP_ACCESS_KEY` (comparaison en temps constant) ; `initialize`/`tools/list`
 ne renvoient aucune donnée. La clé n'est plus acceptée dans l'URL (journalisée) : uniquement en en-tête (`x-mcp-access-key` ou `Authorization: Bearer`).

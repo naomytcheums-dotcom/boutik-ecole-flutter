@@ -23,9 +23,9 @@ Légende : ✅ vérifié en production · 🟡 vérifié localement (réplique e
 | Messagerie de mission | 🟡 | **31b + 31c en production** : écriture réservée aux parties (`is_mission_party`), fichier joint lié à l'expéditeur | recette authentifiée |
 | Liens CV (`/#/cv/<token>`) | 🟡 | **31b en production** : `shared_cv` répond (`null` pour un jeton inconnu) | parcours authentifié à rejouer |
 | Codes de retrait | 🟡 | **31b + 31c en production** : `gen_random_bytes`, essais comptés et journalisés, blocage à 5 ; interface `confirmPickupDialog` corrigée **non déployée** : l'interface en ligne affiche « Remise confirmée » quand le serveur répond `'incorrect'` (la commande n'est pourtant **pas** remise et l'essai est journalisé) — sans effet aujourd'hui (0 compte `support`/`admin`, 0 commande payée), anomalie C3 | déploiement web **avant** toute ouverture du kiosque |
-| Paiement `pay` | 🟡 | correctif 15/15 ; version déployée 6/15 | déploiement de `pay` |
-| Webhook Notch Pay | 🟡 | correctif 20/20 ; en production : 401 sans signature ; **0 événement réel reçu** | déploiement + paiement sandbox réel |
-| MCP Notch Pay | ⛔ | code du dépôt 27/27 ; déployé = `814db47` (`?key=` accepté) | redéploiement `--no-verify-jwt` |
+| Paiement `pay` | 🟡 | **v6 déployée** (= `d695001`) : commande annulée refusée, pas de double prélèvement, montant/devise/référence vérifiés, annulation pendant la relecture gérée ; local 16/16 ; production : refus non authentifiés vérifiés | parcours authentifié et paiement sandbox (propriétaire) |
+| Webhook Notch Pay | 🟡 | **v6 déployée** (= `d695001`) : HMAC en temps constant, anti-rejeu, paiement après annulation jamais confirmé (y compris pendant la relecture) ; local 21/21 ; production : 401 sur toute signature invalide ; **0 événement réel reçu** | paiement sandbox réel (propriétaire, clés renouvelées) |
+| MCP Notch Pay | 🟡 | **v3 déployée** (= `d695001`) : clé en en-tête seulement, `?key=` refusé en production ; Verify JWT actif conservé ; local 27/27 | appel authentifié avec la vraie clé (propriétaire, INTERVENTIONS §9) |
 | Historique des migrations | ✅ régularisé le 31/10 (14 h 20) ; 31a (~14 h 45), 31b (~15 h 20), 31c (~15 h 40) appliquées par la CLI ; `migration list --linked` 16/16 | aucune migration en attente |
 | Données de test en production | ⛔ | 44 + 2 comptes `zz-test` (2 créés par la régression de ce lot) | nettoyage (autorisation) |
 

@@ -81,6 +81,22 @@ Total navigateur sur la réplique : **51/51**. Total REST : **386/386**.
 
 Non réalisable en production (interdiction de créer des comptes du personnel ou de modifier des données métier) : code de retrait erroné réel, blocage à 5, message de dossier de mission, refus d'un fichier tiers, revalidation d'un projet approuvé. Ces comportements sont prouvés en local uniquement.
 
+## Redéploiement des Edge Functions (31/10, ~16 h 15)
+
+| Contrôle | Lieu | Résultat |
+|---|---|---|
+| Code local = `origin/feat/figma-fidele` (commit `d695001`) | local | identique |
+| Tests de concurrence (annulation pendant la relecture Notch Pay) **avant** correctif | local | webhook 20/21, pay 15/16 → défaut B8 démontré |
+| `pay_e2e.py` / `webhook_e2e.py` / `mcp_e2e.py` après correctif | local (Deno, fournisseur simulé) | **16/16**, **21/21**, **27/27** |
+| `deno check` des 3 fonctions | local | OK |
+| Code déployé retéléchargé = fichiers du commit | production | 3/3 identiques (SHA-256) |
+| Verify JWT après déploiement | production | `pay` actif, `notchpay-webhook` désactivé, `notchpay-mcp` actif — inchangés |
+| Contrôles non financiers (refus, signatures, CORS, `?key=`, fuite de secrets, base inchangée) | production | **21/21** |
+
+Non réalisables par l'agent : appel MCP authentifié avec la vraie clé (valeur secrète inconnue de l'agent, propriétaire : INTERVENTIONS §9) ;
+événement webhook signé (secret `NOTCHPAY_HASH` non lisible ; aucun événement simulé pouvant modifier une commande) ; parcours `pay` authentifié
+(création de comptes interdite) ; lecture des journaux des fonctions (non exposés par la CLI, tableau de bord du propriétaire).
+
 ## Échecs rencontrés et traitement
 
 | Test | Symptôme | Cause | Traitement |

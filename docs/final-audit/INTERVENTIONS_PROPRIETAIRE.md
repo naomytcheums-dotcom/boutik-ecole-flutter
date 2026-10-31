@@ -2,6 +2,9 @@
 
 Aucune de ces actions ne demande de communiquer un secret dans une conversation. Chaque étape indique la vérification attendue.
 
+> **Mise à jour du 31/10 (audit des migrations)** : appliquer **31a puis 31b puis `20261031c_correctifs_securite_audit.sql`** dans la même séance — 31a/31b seules ouvrent 10 défauts de sécurité démontrés (voir [ANOMALIES_ET_CORRECTIONS.md](./ANOMALIES_ET_CORRECTIONS.md)).
+> **Ne pas utiliser `supabase db push`** avant la régularisation de l'historique : il rejouerait `20261029_p0_securite.sql` (écritures sur des comptes). Procédure complète : [AUDIT_REGULARISATION_MIGRATIONS_20261031.md](./AUDIT_REGULARISATION_MIGRATIONS_20261031.md) §8–§9 et [PLAN_PRODUCTION.md](./PLAN_PRODUCTION.md).
+
 ## 1. Appliquer la migration `20261031a` (missions, vœux, campagnes, certificats, bornes, projets, lives, liens, motif d'annulation)
 Pré-requis : migrations jusqu'à `20261030k` appliquées (vérifié : `engage`, `request_quote` répondent en production).
 

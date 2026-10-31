@@ -1,4 +1,51 @@
-# État de reprise — 3ᵉ reprise (31/10/2026, matin)
+# État de reprise — 4ᵉ reprise (31/10/2026) : audit des migrations et mission autonome
+
+> Départ : `77b8eab` (poussé). Aucune écriture en production hors 2 comptes `zz-test` créés par la régression navigateur.
+> Production inchangée : bundle `061029c2…` (vérifié), migrations 31a/31b/31c **non appliquées**, Edge Functions non redéployées.
+
+## 1. Ce qui a été fait
+
+| Lot | Résultat | Document |
+|---|---|---|
+| 1. Migrations | Audit complet des 15 fichiers ; production lue en lecture seule (`begin transaction read only`) ; historique distant **inexistant** ; migrations 1–13 présentes et identiques ; 31a/31b absentes ; `db push` simulé rejouerait `p0` (écritures sur `auth.users`) ; `20261030f` non rejouable | [AUDIT_REGULARISATION_MIGRATIONS_20261031.md](./AUDIT_REGULARISATION_MIGRATIONS_20261031.md) |
+| 1 bis. Réplique | `tool/audit/build_prod_replica.py` : réplique locale exacte de la production (0 écart sur 13 catégories) — tous les tests de ce lot tournent dessus | idem §1 |
+| 2. Sécurité | 10 défauts démontrés dans 31a/31b (politiques `missions` ASCII non retirées, `save_project`, messagerie de mission, codes de retrait, codes de certificat…) ; correctif `20261031c` : 24/24 | [ANOMALIES_ET_CORRECTIONS.md](./ANOMALIES_ET_CORRECTIONS.md) |
+| 3. Backend | 13 suites REST : 386/386 sur réplique + 31a/b/c | [RESULTATS_TESTS.md](./RESULTATS_TESTS.md) |
+| 4. Flutter | `confirmPickupDialog` gère « code incorrect » ; 403/403 ; goldens inchangés ; 0 erreur d'analyse | idem |
+| 5. Paiements | `pay` : commande annulée refusée, pas de double prélèvement (déployé 6/15 → corrigé 15/15) ; webhook : paiement après annulation non confirmé (20/20) ; MCP 27/27 (code du dépôt) | idem |
+| 6. Tests | navigateur 51/51 sur réplique ; **production 16/16** | idem |
+| 7. Déploiement | procédures pas à pas avec contrôles et retour arrière | [PLAN_PRODUCTION.md](./PLAN_PRODUCTION.md) |
+
+État par fonctionnalité : [ETAT_GLOBAL_PROJET.md](./ETAT_GLOBAL_PROJET.md).
+
+## 2. Ce qui attend une autorisation du propriétaire
+
+1. Régularisation de l'historique (renommage local + `migration repair --status applied` des 13 premières).
+2. Application de 31a → 31b → 31c (procédure et contrôles : rapport d'audit §9).
+3. Déploiement de `pay`, `notchpay-webhook`, `notchpay-mcp` (`--no-verify-jwt` pour ces deux dernières).
+4. Renouvellement de `NOTCHPAY_KEY` / `NOTCHPAY_HASH`, puis un paiement **sandbox** réel pour vérifier le webhook.
+5. Déploiement web (pour `confirmPickupDialog`) puis régression production étendue aux fonctions 31a/31b.
+6. Nettoyage des comptes `zz-test` (`supabase/maintenance/cleanup_test_accounts.sql`).
+
+## 3. Reprendre
+
+```powershell
+$env:Path="C:\Users\NITROV15\dev\flutter\bin;C:\Program Files\Git\cmd;C:\nvm4w\nodejs;C:\Program Files\Docker\Docker\resources\bin;"+$env:Path
+cd $env:USERPROFILE\boutik_local; npx supabase start -x studio,imgproxy,vector,logflare,supavisor,edge-runtime,mailpit; cd C:\Users\NITROV15\Downloads\boutik_ecole_flutter
+python tool/audit/build_prod_replica.py --with-pending          # réplique de production + 31a/b/c (lecture seule côté production)
+$env:BE_URL="http://127.0.0.1:54321"; $env:BE_KEY="<clé publiable locale : npx supabase status>"
+python supabase/tests/run_all_local.py                           # 386/386
+python supabase/tests/pay_e2e.py; python supabase/tests/webhook_e2e.py; python supabase/tests/mcp_e2e.py
+flutter test
+flutter build web --release --dart-define=BE_URL=$env:BE_URL --dart-define=BE_KEY=$env:BE_KEY -o build/web_local
+python -m http.server 8099 --directory build/web_local           # dans un autre terminal
+cd e2e; $env:BASE_URL="http://127.0.0.1:8099"; npx playwright test lots lots2 mfa engagements parcours visiteur --workers=1
+# devis / avis : préparation décrite en tête de devis.spec.ts et avis.spec.ts, puis STATE=<fichier> npx playwright test devis|avis
+```
+
+---
+
+# [3ᵉ reprise] État de reprise — 3ᵉ reprise (31/10/2026, matin)
 
 > Départ : `6401966` (poussé). Arrivée : voir §7. Production servie : `main.dart.js` SHA-256 **`061029c244ac7b21e1bbdae23fc20fd6f8dc9809499925e0d55d62de35ce9d9a`**.
 > Règle appliquée : une fonctionnalité n'est dite « vérifiée en production » que si un test l'a exercée sur `https://boutik-ecole.vercel.app` et la base `zxqcnmgwhtbxkdpjqtlr`.

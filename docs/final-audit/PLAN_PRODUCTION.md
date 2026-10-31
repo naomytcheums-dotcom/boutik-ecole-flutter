@@ -25,7 +25,11 @@ npx supabase@2.122.0 db dump --linked --data-only -f backup\prod_data_<date>.sql
 ```
 (et/ou point de restauration PITR dans le tableau de bord si le plan le permet).
 
-## 1. Régularisation de l'historique des migrations (autorisation requise)
+## 1. Régularisation de l'historique des migrations — ✅ FAITE le 31/10 à 14 h 20
+
+13 versions enregistrées comme appliquées sans exécution (preuves : rapport d'audit §8 bis). `migration list --linked` : 13/13 local = distant.
+
+## 1 (historique). Procédure suivie
 
 Voir [AUDIT_REGULARISATION_MIGRATIONS_20261031.md](./AUDIT_REGULARISATION_MIGRATIONS_20261031.md) §8.
 1. Renommer localement en horodatages à 14 chiffres (branche dédiée), contrôler `migration list --local`.
@@ -37,6 +41,8 @@ Retour arrière : `migration repair --status reverted <versions>` (ne touche que
 ## 2. Migrations 31a → 31b → 31c (autorisation requise)
 
 Procédure détaillée et requêtes de contrôle avant/après : rapport d'audit §9.
+- Renommer d'abord (commit dédié) : `20261031a_…` → `20261031000000_…`, `20261031b_…` → `20261031000100_…`, `20261031c_…` → `20261031000200_…`.
+- **Attention [F]** : la session de `db push` ne contient pas le schéma `extensions` dans son `search_path` (incident du 31/10). Les appels `pgcrypto` de 31a/31b/31c sont tous dans des fonctions `set search_path = public, extensions` : non concernés, mais vérifier sur la réplique avec la CLI (`--db-url`) et non avec `psql`.
 - `npx supabase@2.122.0 db push --dry-run` doit lister **exactement** les 3 fichiers en attente ; sinon arrêter.
 - `npx supabase@2.122.0 db push` (ou SQL Editor fichier par fichier puis `migration repair --status applied`).
 - `notify pgrst, 'reload schema';`

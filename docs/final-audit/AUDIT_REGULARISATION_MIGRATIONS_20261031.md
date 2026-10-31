@@ -232,6 +232,52 @@ Risques de cette stratégie :
 
 ---
 
+### 8 bis. Exécution — 31/10, 14 h 20 (autorisée par le propriétaire)
+
+Préalables : incident `db push` du 31/10 diagnostiqué (aucune modification hors création de `supabase_migrations.schema_migrations`, vide) — voir [INCIDENT_DB_PUSH_20261031.md](./INCIDENT_DB_PUSH_20261031.md) ; conservation de cette table validée par le propriétaire.
+
+**Certification préalable [F]** (instantané de production de 14 h 15, `migration_audit.py`) : chacune des 13 migrations est présente, objet par objet ; les seuls écarts sont
+des versions ultérieures légitimes (objet redéfini par une migration suivante, elle-même identique), les 2 politiques supprimées par `p0` (absentes), et
+`create_order` / `protect_listing_status`, **identiques après normalisation** des commentaires et espaces à leur dernière définition (`30c`). Effets de données vérifiés :
+11/11 articles du catalogue de `p0` approuvés ; 8 comptes de démonstration `banned_until = 2999-01-01` (posé par la même instruction `update` que l'invalidation du mot de passe), profils suspendus, 0 session ;
+compartiments `listing-images` (30c) et `chat-files` (30g) conformes.
+
+**Correspondance des noms** (contenus identiques octet pour octet, `git mv`) :
+
+| Ancien nom | Nom définitif (version enregistrée) |
+|---|---|
+| `20261029_p0_securite.sql` | `20261029000000_p0_securite.sql` |
+| `20261029b_p1_securite.sql` | `20261029000100_p1_securite.sql` |
+| `20261030_webhook_paiement.sql` | `20261030000000_webhook_paiement.sql` |
+| `20261030b_profils_identite.sql` | `20261030000100_profils_identite.sql` |
+| `20261030c_annonces_stock.sql` | `20261030000200_annonces_stock.sql` |
+| `20261030d_messagerie_notifications.sql` | `20261030000300_messagerie_notifications.sql` |
+| `20261030e_messagerie_non_lus.sql` | `20261030000400_messagerie_non_lus.sql` |
+| `20261030f_liste_conversations.sql` | `20261030000500_liste_conversations.sql` |
+| `20261030g_messagerie_commande_pieces_jointes.sql` | `20261030000600_messagerie_commande_pieces_jointes.sql` |
+| `20261030h_commandes_vendeur.sql` | `20261030000700_commandes_vendeur.sql` |
+| `20261030i_avis_reclamations_signalements.sql` | `20261030000800_avis_reclamations_signalements.sql` |
+| `20261030j_services_devis.sql` | `20261030000900_services_devis.sql` |
+| `20261030k_engagements.sql` | `20261030001000_engagements.sql` |
+
+`20261031a/b/c` gardent volontairement leur nom (ignoré par la CLI) jusqu'à l'autorisation de leur application : aucun `db push` ne peut les appliquer par erreur.
+Noms prévus : `20261031000000_…`, `20261031000100_…`, `20261031000200_…`.
+
+**Répétition sur la réplique** (dump frais, 0 écart avec la production) : `migration repair --db-url <local> --status applied <13>` → catalogue 0 écart,
+empreintes des fonctions, `xmin` des profils et annonces, politiques, séquence inchangés.
+
+**Commande exécutée en production** (seule écriture) :
+`npx supabase@2.122.0 migration repair --linked --status applied 20261029000000 20261029000100 20261030000000 20261030000100 20261030000200 20261030000300 20261030000400 20261030000500 20261030000600 20261030000700 20261030000800 20261030000900 20261030001000`
+
+**Contrôles après [F]** :
+- `migration list --linked` : 13 versions, local = distant ; 31a/b/c ignorées (« Skipping »).
+- `schema_migrations` : 13 lignes, toutes écrites par **une seule transaction** (xid 2276).
+- Empreintes avant/après identiques : corps des fonctions `public`, `xmin` de tous les profils, de toutes les annonces, de tous les `auth.users`, état des 8 comptes, oid/`xmin` de toutes les politiques et de tous les déclencheurs, séquence `order_seq` (161), nombre de sessions (115).
+- Catalogue complet (13 catégories) : 0 écart.
+- Aucune instruction des migrations n'a été exécutée : un rejeu de `p0` aurait remplacé `create_order` par sa version de `p0` et créé de nouvelles versions des lignes `profiles`.
+
+Sauvegarde et preuves : `%USERPROFILE%\boutik_backups\regularisation_20261031_1420\` (fichiers d'origine, dump du schéma, instantanés de catalogue avant/après, empreintes avant/après, sorties de `migration list` et `repair`).
+
 ## 9. Procédure d'application future (31a → 31b → 31c)
 
 Prérequis communs :

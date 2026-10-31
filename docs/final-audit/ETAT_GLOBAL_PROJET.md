@@ -26,7 +26,7 @@ Légende : ✅ vérifié en production · 🟡 vérifié localement (réplique e
 | Paiement `pay` | 🟡 | correctif 15/15 ; version déployée 6/15 | déploiement de `pay` |
 | Webhook Notch Pay | 🟡 | correctif 20/20 ; en production : 401 sans signature ; **0 événement réel reçu** | déploiement + paiement sandbox réel |
 | MCP Notch Pay | ⛔ | code du dépôt 27/27 ; déployé = `814db47` (`?key=` accepté) | redéploiement `--no-verify-jwt` |
-| Historique des migrations | ⛔ | schéma `supabase_migrations` absent ; 13/15 noms ignorés | régularisation (autorisation) |
+| Historique des migrations | ✅ régularisé le 31/10 (14 h 20) : 13 versions enregistrées sans exécution, `migration list --linked` 13/13 | 31a/b/c à renommer puis appliquer (autorisation) |
 | Données de test en production | ⛔ | 44 + 2 comptes `zz-test` (2 créés par la régression de ce lot) | nettoyage (autorisation) |
 
 ## Migrations

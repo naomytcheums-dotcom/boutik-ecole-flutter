@@ -20,8 +20,10 @@
 
 ## 2. Ce qui attend une autorisation du propriétaire
 
-1. Régularisation de l'historique (renommage local + `migration repair --status applied` des 13 premières).
-2. Application de 31a → 31b → 31c (procédure et contrôles : rapport d'audit §9).
+0. ~~Régularisation de l'historique~~ — **faite le 31/10 à 14 h 20** (après l'incident `db push`, sans conséquence : [INCIDENT_DB_PUSH_20261031.md](./INCIDENT_DB_PUSH_20261031.md)) ; 13 versions enregistrées, aucune rejouée (audit §8 bis).
+
+1. ~~Régularisation de l'historique~~ (voir 0).
+2. Renommage puis application de 31a → 31b → 31c (procédure et contrôles : rapport d'audit §9).
 3. Déploiement de `pay`, `notchpay-webhook`, `notchpay-mcp` (`--no-verify-jwt` pour ces deux dernières).
 4. Renouvellement de `NOTCHPAY_KEY` / `NOTCHPAY_HASH`, puis un paiement **sandbox** réel pour vérifier le webhook.
 5. Déploiement web (pour `confirmPickupDialog`) puis régression production étendue aux fonctions 31a/31b.

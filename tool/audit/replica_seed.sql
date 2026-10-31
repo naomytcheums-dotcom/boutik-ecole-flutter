@@ -1,4 +1,4 @@
--- Graine de la réplique locale pour les tests : catalogue de la plateforme (repris de 20261029_p0_securite.sql).
+-- Graine de la réplique locale pour les tests : catalogue de la plateforme (repris de 20261029000000_p0_securite.sql, anciennement 20261029_p0_securite.sql).
 insert into listings (seller_id, title, department, category, price, stock, description, status) values
  (null,'Lampe en bois recyclé','Génie civil','Maison',25000,100,'Lampe décorative fabriquée à partir de bois de récupération, avec éclairage LED économe.','approved'),
  (null,'Drone éducatif','Génie électrique','Tech',150000,100,'Drone pédagogique programmable, idéal pour l''apprentissage de la robotique.','approved'),

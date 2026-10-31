@@ -93,6 +93,12 @@ Deno.serve(async (req) => {
     await admin.from("payment_events").update({ outcome: "already_paid" }).eq("id", eventId);
     return reply(200, { already_paid: true });
   }
+  // Commande annulée (stock restitué) : un paiement reçu ensuite n'est pas confirmé ; il est journalisé pour remboursement.
+  if (order.cancelled === true || order.cancelled_at != null) {
+    console.error("paiement reçu sur une commande annulée", { order: order.number });
+    await admin.from("payment_events").update({ outcome: "paid_after_cancellation" }).eq("id", eventId);
+    return reply(200, { confirmed: false, problems: ["order_cancelled"] });
+  }
 
   const r = await fetch(`${NOTCH}/payments/${encodeURIComponent(ref)}`, { headers: { Authorization: key, Accept: "application/json" } });
   const d = await r.json().catch(() => ({}));

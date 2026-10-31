@@ -24,11 +24,13 @@ def reset():
         "o1": {"id": "o1", "number": "#BE-T-1", "reference": "trx.A", "subtotal": 25000, "fee": 0, "paid": False, "status": 0},
         "o2": {"id": "o2", "number": "#BE-T-2", "reference": "trx.B", "subtotal": 25000, "fee": 5000, "paid": False, "status": 0},
         "o3": {"id": "o3", "number": "#BE-T-3", "reference": "trx.C", "subtotal": 8000, "fee": 0, "paid": True, "status": 1},
+        "o4": {"id": "o4", "number": "#BE-T-4", "reference": "trx.D", "subtotal": 5000, "fee": 0, "paid": False, "status": 0, "cancelled": True, "cancelled_at": "2026-10-31T08:00:00Z"},
     }
     state["notch"] = {
         "trx.A": {"reference": "trx.A", "status": "complete", "amount": 25000, "currency": "XAF"},
         "trx.B": {"reference": "trx.B", "status": "complete", "amount": 25000, "currency": "XAF"},  # attendu : 30000
         "trx.C": {"reference": "trx.C", "status": "complete", "amount": 8000, "currency": "XAF"},
+        "trx.D": {"reference": "trx.D", "status": "complete", "amount": 5000, "currency": "XAF"},
     }
 
 
@@ -170,6 +172,7 @@ def main():
         s, b = post(evt("trx.A", t="payment.canceled")); check("payment.canceled -> commande non payée", not state["orders"]["o1"]["paid"], b)
         s, b = post({"type": "customer.created", "data": {"id": "c1"}}); check("événement non paiement -> ignoré", s == 200 and b.get("ignored"), b)
         s, b = post(None, raw=b"pas du json"); check("corps non JSON signé -> 400", s == 400, b)
+        s, b = post(evt("trx.D")); check("paiement reçu sur une commande annulée -> non confirmé, journalisé", s == 200 and b.get("confirmed") is False and state["orders"]["o4"]["paid"] is False and any(e.get("outcome") == "paid_after_cancellation" for e in state["events"].values()), b)
         req = urllib.request.Request(f"http://127.0.0.1:{FN_PORT}/", method="GET")
         try: urllib.request.urlopen(req, timeout=10)
         except urllib.error.HTTPError as e: check("GET -> 405", e.code == 405)

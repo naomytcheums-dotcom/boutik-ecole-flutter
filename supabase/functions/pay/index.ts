@@ -2,7 +2,7 @@
 // Secret requis (Supabase > Edge Functions > Secrets) : NOTCHPAY_KEY (clé publique pk_test_… en sandbox, pk_live_… en production).
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const NOTCH = "https://api.notchpay.co";
+const NOTCH = Deno.env.get("NOTCHPAY_API") ?? "https://api.notchpay.co"; // surchargeable uniquement pour les tests locaux
 const ORIGINS = ["https://boutik-ecole.vercel.app", "http://localhost:8766", "http://localhost:8080"];
 
 Deno.serve(async (req) => {
@@ -34,9 +34,39 @@ Deno.serve(async (req) => {
   const expected = order.subtotal + order.fee;
 
   const headers = { Authorization: key, "Content-Type": "application/json", Accept: "application/json" };
+  const cancelled = order.cancelled === true || order.cancelled_at != null;
+
+  // Relecture d'un paiement chez le fournisseur ; un montant absent ou illisible n'est JAMAIS considéré comme suffisant.
+  const readTx = async (ref: string) => {
+    const r = await fetch(`${NOTCH}/payments/${encodeURIComponent(ref)}`, { headers });
+    const d = await r.json().catch(() => ({}));
+    return { ok: r.ok, tx: (d?.transaction ?? d?.payment ?? {}) as Record<string, unknown> };
+  };
+  const confirmIfComplete = async (ref: string, tx: Record<string, unknown>) => {
+    const amount = Number(tx.amount);
+    const badRef = tx.reference && tx.reference !== ref;
+    const badCurrency = tx.currency && String(tx.currency) !== "XAF";
+    const underpaid = !Number.isFinite(amount) || amount < expected;
+    if (badRef || badCurrency || underpaid) {
+      console.error("paiement incohérent", { order: number, expected, amount, badRef, badCurrency });
+      return json({ status: "failed", reason: "mismatch", reference: ref });
+    }
+    // transition unique non payé -> payé, jamais sur une commande annulée
+    await admin.from("orders").update({ paid: true, status: 1 }).eq("id", order.id).eq("paid", false).is("cancelled_at", null);
+    return json({ status: "complete", reference: ref });
+  };
 
   if (body.action === "start") {
     if (order.paid) return json({ error: "already_paid", message: "Cette commande est déjà payée." }, 409);
+    if (cancelled) return json({ error: "order_cancelled", message: "Cette commande est annulée : elle ne peut plus être payée." }, 409);
+    // Un paiement déjà demandé et encore en attente n'est pas doublé (deux prélèvements possibles, et l'événement du
+    // premier ne retrouverait plus la commande) ; s'il a abouti, il est confirmé au lieu d'en créer un autre.
+    if (order.reference) {
+      const prev = await readTx(order.reference);
+      const st = String(prev.tx.status ?? "");
+      if (prev.ok && st === "complete") return await confirmIfComplete(order.reference, prev.tx);
+      if (prev.ok && ["pending", "processing", "incomplete"].includes(st)) return json({ reference: order.reference, status: "pending", reused: true });
+    }
     const phone = String(body.phone ?? "").replace(/\s+/g, "");
     if (!/^\+237[62]\d{8}$/.test(phone)) return json({ error: "invalid_phone", message: "Numéro invalide (format +237 6XX XX XX XX)." }, 400);
     const channel = body.channel === "cm.mtn" ? "cm.mtn" : "cm.orange";
@@ -62,23 +92,10 @@ Deno.serve(async (req) => {
   if (body.action === "status") {
     const ref = order.reference;
     if (!ref) return json({ status: "pending" });
-    const r = await fetch(`${NOTCH}/payments/${ref}`, { headers });
-    const d = await r.json();
-    const tx = d?.transaction ?? d?.payment ?? {};
+    if (cancelled) return json({ status: "failed", reason: "cancelled", reference: ref });
+    const { tx } = await readTx(ref);
     const st = String(tx.status ?? "pending");
-    if (st === "complete") {
-      // Contrôles : la référence et la devise correspondent, le montant payé n'est pas inférieur au montant dû.
-      const amount = Number(tx.amount);
-      const badRef = tx.reference && tx.reference !== ref;
-      const badCurrency = tx.currency && String(tx.currency) !== "XAF";
-      const underpaid = Number.isFinite(amount) && amount < expected;
-      if (badRef || badCurrency || underpaid) {
-        console.error("paiement incohérent", { order: number, expected, amount, badRef, badCurrency });
-        return json({ status: "failed", reason: "mismatch", reference: ref });
-      }
-      await admin.from("orders").update({ paid: true, status: 1 }).eq("id", order.id);
-      return json({ status: "complete", reference: ref });
-    }
+    if (st === "complete") return await confirmIfComplete(ref, tx);
     if (["failed", "canceled", "expired", "rejected"].includes(st)) return json({ status: "failed", reference: ref });
     return json({ status: "pending", reference: ref });
   }

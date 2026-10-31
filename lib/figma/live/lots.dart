@@ -1,6 +1,9 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' show FactorStatus;
 
 import '../gen.dart';
 import '../nav.dart';
@@ -9,6 +12,7 @@ import 'backend.dart';
 import 'download_stub.dart' if (dart.library.js_interop) 'download_web.dart';
 import 'seller.dart';
 import 'share.dart';
+import 'store.dart' show ordersProvider, viewedOrderProvider;
 
 /// Lots « missions, vœux, campagnes, certificats, bornes, projets » (migration 20261031a).
 /// Chaque action lit les champs réellement saisis, appelle une fonction serveur qui vérifie le rôle, l'état et les données,
@@ -50,6 +54,18 @@ Future<({bool ok, Object? data})> _run(BuildContext context, String fn, Map<Stri
     return (ok: false, data: null);
   }
   return (ok: true, data: r.data);
+}
+
+
+/// Copie dans le presse-papiers sans jamais interrompre l'action : le navigateur peut la refuser
+/// (permission, ou copie demandée après un appel réseau, hors du geste de l'utilisateur). Renvoie vrai si la copie a eu lieu.
+Future<bool> copyText(String text) async {
+  try {
+    await Clipboard.setData(ClipboardData(text: text));
+    return true;
+  } catch (_) {
+    return false;
+  }
 }
 
 // ---------------------------------------------------------------- dialogues génériques
@@ -588,8 +604,8 @@ Future<void> myCertificatesDialog(BuildContext context, WidgetRef ref) async {
   if (rows.isEmpty) return verifyCertificateDialog(context, ref);
   await _listDialog(context, 'Mes certificats', rows, (c) => '${c['subject_title']}', sub: (c) => '${c['code']}${c['revoked'] == true ? ' · révoqué' : ''}', actions: (c) => [
         ('Copier le code', (x) async {
-          await Clipboard.setData(ClipboardData(text: '${x['code']}'));
-          if (context.mounted) gToast(context, 'Code copié');
+          final ok = await copyText('${x['code']}');
+          if (context.mounted) gToast(context, ok ? 'Code copié' : 'Copie refusée par le navigateur : ${x['code']}');
           return false;
         }),
         ('Partager', (x) async {
@@ -671,4 +687,362 @@ Future<void> scheduleKioskEvent(BuildContext context, WidgetRef ref) async {
   if (s == null || e == null) return gAlert(context, 'Dates invalides', 'Format attendu : AAAA-MM-JJ HH:MM.');
   final r = await _run(context, 'schedule_kiosk_event', {'p_kiosk': v[0], 'p_title': v[1], 'p_starts': s.toUtc().toIso8601String(), 'p_ends': e.toUtc().toIso8601String()});
   if (r.ok && context.mounted) gToast(context, 'Événement programmé sur ${v[0]}.');
+}
+
+// ---------------------------------------------------------------- 20261031b : établissement (118), modèles (265), pages (264), clés (280), équipe (286)
+
+/// Écran 118 (direction, administration) : identité de l'établissement, préremplie depuis le serveur.
+Future<void> editInstitutionDialog(BuildContext context, WidgetRef ref) async {
+  if (!await _ready(context, ref, 'modifier l’établissement')) return;
+  if (!context.mounted) return;
+  final rows = await _load(context, 'institution_settings', 'name,acronym,address,email,phone,primary_color,accent_color,font', order: 'updated_at');
+  if (rows == null || !context.mounted) return;
+  final c = rows.isEmpty ? const <String, dynamic>{} : rows.first;
+  String v(String k, String d) => '${c[k] ?? d}';
+  final f = await formDialog(context, 'Établissement et identité visuelle', [
+    ('Nom', v('name', 'IUT de Douala')), ('Sigle', v('acronym', 'IUT-D')), ('Adresse', v('address', '')), ('E-mail', v('email', '')), ('Téléphone', v('phone', '')),
+    ('Couleur principale (#RRVVBB)', v('primary_color', '#12253F')), ('Couleur d’accent (#RRVVBB)', v('accent_color', '#FBB52B')), ('Police', v('font', '')),
+  ], submit: 'Enregistrer les modifications');
+  if (f == null || !context.mounted) return;
+  final r = await _run(context, 'save_institution', {
+    'p_name': f[0], 'p_acronym': f[1], 'p_address': f[2], 'p_email': f[3], 'p_phone': f[4], 'p_primary': f[5], 'p_accent': f[6], 'p_font': f[7],
+  }, title: 'Modifications refusées');
+  if (r.ok && context.mounted) gToast(context, 'Identité de l’établissement enregistrée.');
+}
+
+/// Écran 265 (administration) : modification d'un modèle de notification (objet, message, canaux, actif).
+Future<void> editTemplatesDialog(BuildContext context, WidgetRef ref) async {
+  if (!await _ready(context, ref, 'modifier les modèles')) return;
+  if (!context.mounted) return;
+  final rows = await _load(context, 'notification_templates', 'key,label,channels,subject,body,active', order: 'key');
+  if (rows == null || !context.mounted) return;
+  await _listDialog(context, 'Modèles de notifications', rows, (t) => '${t['label']}',
+      sub: (t) => '${(t['channels'] as List?)?.join(' · ') ?? ''} · ${t['active'] == true ? 'Actif' : 'Inactif'}',
+      empty: 'Aucun modèle visible pour votre rôle.',
+      actions: (t) => [
+            ('Modifier le modèle', (x) async {
+              final f = await formDialog(context, '${x['label']}', [
+                ('Objet (e-mail)', '${x['subject'] ?? ''}'), ('Message ({{nom}}, {{numero}}…)', '${x['body']}'),
+                ('Canaux (email, sms, whatsapp, app)', ((x['channels'] as List?) ?? const []).join(', ')), ('Actif (oui / non)', x['active'] == true ? 'oui' : 'non'),
+              ]);
+              if (f == null || !context.mounted) return false;
+              final r = await _run(context, 'save_notification_template', {
+                'p_key': x['key'], 'p_subject': f[0], 'p_body': f[1],
+                'p_channels': [for (final c in f[2].split(',')) if (c.trim().isNotEmpty) c.trim().toLowerCase()], 'p_active': !f[3].toLowerCase().startsWith('n'),
+              }, title: 'Modèle non enregistré');
+              if (r.ok && context.mounted) gToast(context, 'Modèle enregistré.');
+              return r.ok;
+            }),
+          ]);
+}
+
+/// Écran 264 : aperçu d'une page éditoriale, telle que les visiteurs la voient.
+Future<void> previewPagesDialog(BuildContext context) => _listDialog(
+      context,
+      'Aperçu des pages',
+      const [
+        {'t': 'Accueil', 's': '03'}, {'t': 'À propos de Boutik-École', 's': '17'}, {'t': 'FAQ', 's': '49'}, {'t': 'Conditions générales', 's': '274'},
+      ],
+      (p) => '${p['t']}',
+      actions: (p) => [
+        ('Aperçu', (x) async {
+          gOpen(context, '${x['s']}');
+          return true;
+        }),
+      ],
+    );
+
+/// Écran 280 (administration) : création d'une clé d'intégration (affichée une seule fois), liste et révocation.
+Future<void> apiKeysDialog(BuildContext context, WidgetRef ref) async {
+  if (!await _ready(context, ref, 'gérer les clés d’intégration')) return;
+  if (!context.mounted) return;
+  final rows = await _load(context, 'api_keys', 'id,label,prefix,created_at,revoked_at');
+  if (rows == null || !context.mounted) return;
+  await _listDialog(context, 'Clés d’intégration', rows, (k) => '${k['label']}',
+      sub: (k) => '${k['prefix']}•••• · ${k['revoked_at'] == null ? 'active' : 'révoquée'}',
+      empty: 'Aucune clé.',
+      actions: (k) => [
+            if (k['revoked_at'] == null)
+              ('Révoquer', (x) async {
+                final r = await _run(context, 'revoke_api_key', {'p_id': x['id']});
+                if (r.ok && context.mounted) gToast(context, 'Clé révoquée : elle ne fonctionne plus.');
+                return r.ok;
+              }),
+          ],
+      footer: ('Créer une clé', () async {
+        final f = await formDialog(context, 'Nouvelle clé d’intégration', [('Usage (ex. Portail entreprises)', '')], submit: 'Créer');
+        if (f == null || !context.mounted) return false;
+        final r = await _run(context, 'create_api_key', {'p_label': f.first});
+        if (!r.ok || !context.mounted) return false;
+        final copied = await copyText('${r.data}');
+        if (context.mounted) {
+          await gAlert(context, 'Clé créée', '${r.data}\n\n${copied ? 'Elle vient d’être copiée. ' : ''}Notez-la maintenant : elle ne sera plus jamais affichée, seule son empreinte est conservée.');
+        }
+        return true;
+      }));
+}
+
+/// Écran 286 (département) : invitation d'un membre (e-mail et rôle) ; le compte existant est notifié.
+Future<void> inviteMemberDialog(BuildContext context, WidgetRef ref) async {
+  if (!await _ready(context, ref, 'inviter un membre')) return;
+  if (!context.mounted) return;
+  final f = await formDialog(context, 'Inviter un membre', [('E-mail', ''), ('Rôle (validator, moderator, member)', 'member')], submit: 'Inviter');
+  if (f == null || !context.mounted) return;
+  final r = await _run(context, 'invite_department_member', {'p_email': f[0], 'p_role': f[1].trim().toLowerCase()}, title: 'Invitation non envoyée');
+  if (r.ok && context.mounted) gToast(context, r.data == 'notified' ? 'Invitation envoyée : la personne est notifiée.' : 'Invitation enregistrée : elle s’affichera à son inscription.');
+}
+
+// ---------------------------------------------------------------- fichiers (263, 83, 279, 196)
+
+const _fileMimes = {'jpg': 'image/jpeg', 'jpeg': 'image/jpeg', 'png': 'image/png', 'webp': 'image/webp', 'pdf': 'application/pdf', 'mp4': 'video/mp4', 'zip': 'application/zip'};
+
+/// Type accepté d'après l'extension (les autres sont refusés avant tout envoi) ; null si refusé.
+String? acceptedMime(String name) => _fileMimes[name.split('.').last.toLowerCase()];
+
+/// Choix, contrôle (type, taille), dépôt dans le dossier de la personne puis enregistrement serveur.
+Future<String?> pickAndUpload(BuildContext context, WidgetRef ref, String scope, String? refId) async {
+  if (!await _ready(context, ref, 'déposer un fichier')) return null;
+  final picked = await FilePicker.pickFiles();
+  if (picked.isEmpty || !context.mounted) return null;
+  final f = picked.first;
+  final mime = acceptedMime(f.name);
+  if (mime == null) {
+    await gAlert(context, 'Type refusé', '« ${f.name} » : seuls JPG, PNG, WebP, PDF, MP4 et ZIP sont acceptés.');
+    return null;
+  }
+  final bytes = await f.readAsBytes();
+  if (bytes.isEmpty || !context.mounted) return null;
+  final max = mime.startsWith('image/') ? 5 * 1024 * 1024 : 50 * 1024 * 1024;
+  if (bytes.length > max) {
+    if (context.mounted) await gAlert(context, 'Fichier trop lourd', mime.startsWith('image/') ? '5 Mo au maximum pour une image.' : '50 Mo au maximum.');
+    return null;
+  }
+  final up = await Backend.uploadProjectFile(scope, f.name, bytes, mime);
+  if (!context.mounted) return null;
+  if (up.error != null) {
+    await gAlert(context, 'Dépôt impossible', up.error!);
+    return null;
+  }
+  final r = await _run(context, 'register_file', {'p_scope': scope, 'p_ref': refId, 'p_path': up.path, 'p_name': f.name, 'p_mime': mime, 'p_size': bytes.length}, title: 'Fichier refusé');
+  if (!r.ok || !context.mounted) return null;
+  gToast(context, '« ${f.name} » déposé.');
+  return '${r.data}';
+}
+
+/// 263 (département) : médiathèque.
+Future<void> uploadMedia(BuildContext context, WidgetRef ref) => pickAndUpload(context, ref, 'media', null);
+
+/// 83 et 279 : fichiers du projet le plus récent.
+Future<void> uploadProjectFileFor(BuildContext context, WidgetRef ref) async {
+  if (!await _ready(context, ref, 'ajouter des fichiers au projet')) return;
+  if (!context.mounted) return;
+  final p = await _myLatestProject(context);
+  if (p == null || !context.mounted) return;
+  await pickAndUpload(context, ref, 'project', '${p['id']}');
+}
+
+// ---------------------------------------------------------------- dossier de mission (196)
+
+Future<Map<String, dynamic>?> _pickMission(BuildContext context) async {
+  final rows = await _load(context, 'missions', 'id,number,title,status', order: 'updated_at');
+  final open = rows?.where((m) => const ['assigned', 'in_progress', 'delivered'].contains(m['status'])).toList() ?? const [];
+  if (rows == null || !context.mounted) return null;
+  final me = Backend.currentUserId;
+  final props = await _load(context, 'mission_proposals', 'mission_id,status,author_id');
+  final mineIds = {for (final p in props ?? const []) if (p['status'] == 'accepted' && p['author_id'] == me) p['mission_id']};
+  final all = await _load(context, 'missions', 'id,client_id', order: 'updated_at');
+  final asClient = {for (final m in all ?? const []) if (m['client_id'] == me) m['id']};
+  final mine = open.where((m) => mineIds.contains(m['id']) || asClient.contains(m['id'])).toList();
+  if (!context.mounted) return null;
+  if (mine.isEmpty) {
+    await gAlert(context, 'Aucun dossier', 'Le dossier s’ouvre lorsqu’une mission vous est attribuée (ou lorsque vous attribuez votre besoin).');
+    return null;
+  }
+  if (mine.length == 1) return mine.first;
+  Map<String, dynamic>? chosen;
+  await _listDialog(context, 'Choisir le dossier', mine, (m) => '${m['title'] ?? m['number']}', sub: (m) => '${m['number']}', actions: (m) => [
+        ('Ouvrir', (x) async {
+          chosen = x;
+          return true;
+        }),
+      ]);
+  return chosen;
+}
+
+/// 196 « Envoyer » : fil du dossier (messages et fichiers), réponse et pièce jointe, entre le client et le prestataire retenu.
+Future<void> missionDossierDialog(BuildContext context, WidgetRef ref) async {
+  if (!await _ready(context, ref, 'ouvrir le dossier de mission')) return;
+  if (!context.mounted) return;
+  final m = await _pickMission(context);
+  if (m == null || !context.mounted) return;
+  final msgs = await _load(context, 'mission_messages', 'body,sender_id,created_at', eq: {'mission_id': m['id']}, order: 'created_at') ?? const [];
+  final files = await _load(context, 'files', 'name,path,created_at', eq: {'ref': m['id']}) ?? const [];
+  if (!context.mounted) return;
+  final me = Backend.currentUserId;
+  final ctrl = TextEditingController();
+  await gDialog<void>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      backgroundColor: Colors.white,
+      title: Text('Dossier ${m['number']}', style: _st.copyWith(fontSize: 16, fontWeight: FontWeight.w700)),
+      content: SizedBox(
+        width: 340,
+        child: SingleChildScrollView(
+          child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            if (msgs.isEmpty) Text('Aucun message pour le moment.', style: _muted),
+            for (final x in msgs.reversed)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Text('${x['sender_id'] == me ? 'Moi' : 'Autre partie'} · ${x['body']}', style: _st),
+              ),
+            for (final f in files)
+              TextButton(
+                onPressed: () async {
+                  final u = await Backend.projectFileUrl('${f['path']}');
+                  if (u != null && ctx.mounted) await openUrl(ctx, u);
+                },
+                child: Text('📎 ${f['name']}'),
+              ),
+            TextField(controller: ctrl, maxLength: 2000, decoration: const InputDecoration(labelText: 'Votre message', border: OutlineInputBorder(), isDense: true), style: _st),
+          ]),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () async {
+            final fid = await pickAndUpload(ctx, ref, 'mission', '${m['id']}');
+            if (fid != null && ctx.mounted) {
+              await _run(ctx, 'send_mission_message', {'p_mission': m['id'], 'p_body': 'Fichier ajouté au dossier', 'p_file': fid});
+              if (ctx.mounted) Navigator.pop(ctx);
+            }
+          },
+          child: const Text('Ajouter un fichier'),
+        ),
+        TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Fermer')),
+        FilledButton(
+          onPressed: () async {
+            if (ctrl.text.trim().isEmpty) return;
+            final r = await _run(ctx, 'send_mission_message', {'p_mission': m['id'], 'p_body': ctrl.text.trim(), 'p_file': null}, title: 'Message non envoyé');
+            if (r.ok && ctx.mounted) {
+              gToast(ctx, 'Message envoyé.');
+              Navigator.pop(ctx);
+            }
+          },
+          child: const Text('Envoyer'),
+        ),
+      ],
+    ),
+  );
+}
+
+/// 196 « Ajouter un fichier » : dépôt direct dans le dossier choisi.
+Future<void> missionFileUpload(BuildContext context, WidgetRef ref) async {
+  if (!await _ready(context, ref, 'ajouter un fichier au dossier')) return;
+  if (!context.mounted) return;
+  final m = await _pickMission(context);
+  if (m == null || !context.mounted) return;
+  final fid = await pickAndUpload(context, ref, 'mission', '${m['id']}');
+  if (fid != null && context.mounted) await _run(context, 'send_mission_message', {'p_mission': m['id'], 'p_body': 'Fichier ajouté au dossier', 'p_file': fid});
+}
+
+// ---------------------------------------------------------------- CV partagé (228), code de retrait (46, 146-2), double authentification (272)
+
+/// 228 : nouveau lien de CV (l'ancien cesse de fonctionner), copié et prêt à partager.
+Future<void> regenerateCvLink(BuildContext context, WidgetRef ref) async {
+  if (!await _ready(context, ref, 'partager votre CV')) return;
+  if (!context.mounted) return;
+  final r = await _run(context, 'regenerate_cv_link', {});
+  if (!r.ok || !context.mounted) return;
+  final url = '$siteUrl/#/cv/${r.data}';
+  final copied = await copyText(url);
+  if (context.mounted) await gAlert(context, 'Nouveau lien de CV', '$url\n\n${copied ? 'Lien copié. ' : ''}L’ancien lien ne fonctionne plus ; vos coordonnées n’y figurent pas.');
+}
+
+/// 46 : code de retrait de la commande consultée (délivré une fois la commande payée).
+/// La liste des commandes du compte est relue d'abord : sans elle, l'écran montrerait la commande d'exemple de la maquette.
+Future<void> showPickupCode(BuildContext context, WidgetRef ref, [String? number]) async {
+  if (!await _ready(context, ref, 'voir le code de retrait')) return;
+  await ref.read(ordersProvider.notifier).refresh();
+  if (!context.mounted) return;
+  final orderNumber = number ?? ref.read(viewedOrderProvider).id;
+  if (!ref.read(ordersProvider).any((o) => o.id == orderNumber)) {
+    return gAlert(context, 'Aucune commande', 'Le code de retrait apparaît ici dès qu’une de vos commandes est payée.');
+  }
+  final r = await _run(context, 'my_pickup_code', {'p_number': orderNumber}, title: 'Code indisponible');
+  if (!r.ok || !context.mounted) return;
+  final c = '${r.data}';
+  await gAlert(context, 'Code de retrait', '${c.substring(0, 3)} ${c.substring(3)}\n\nCommande $orderNumber — à présenter au kiosque. Ne le communiquez à personne d’autre.');
+}
+
+/// 146-2 (kiosque) : la remise n'est confirmée qu'avec le code présenté par l'acheteur.
+Future<void> confirmPickupDialog(BuildContext context, WidgetRef ref) async {
+  if (!await _ready(context, ref, 'confirmer une remise')) return;
+  if (!context.mounted) return;
+  final f = await formDialog(context, 'Confirmer la remise', [('Numéro de commande', '#BE-'), ('Code de retrait (6 chiffres)', '')], submit: 'Confirmer');
+  if (f == null || !context.mounted) return;
+  final r = await _run(context, 'confirm_pickup', {'p_number': f[0], 'p_code': f[1].replaceAll(' ', '')}, title: 'Remise refusée');
+  if (r.ok && context.mounted) gToast(context, 'Remise confirmée : la commande est livrée.');
+}
+
+/// 272 : double authentification par application (TOTP) — inscription du facteur puis vérification d'un code réel.
+Future<void> twoFactorDialog(BuildContext context, WidgetRef ref) async {
+  if (!await _ready(context, ref, 'activer la vérification en 2 étapes')) return;
+  if (!context.mounted) return;
+  final existing = (await Backend.totpFactors()).where((f) => f.status == FactorStatus.verified).toList();
+  if (!context.mounted) return;
+  String factorId;
+  String intro;
+  if (existing.isNotEmpty) {
+    factorId = existing.first.id;
+    intro = 'Saisissez le code à 6 chiffres affiché par votre application d’authentification.';
+  } else {
+    final e = await Backend.enrollTotp();
+    if (!context.mounted) return;
+    if (e.error != null) return gAlert(context, 'Activation impossible', e.error!);
+    final t = e.enrolled!.totp!;
+    factorId = e.enrolled!.id;
+    final copied = await copyText(t.secret);
+    if (!context.mounted) return;
+    await gDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Colors.white,
+        title: Text('Scannez ce code', style: _st.copyWith(fontSize: 16, fontWeight: FontWeight.w700)),
+        content: Column(mainAxisSize: MainAxisSize.min, children: [
+          SizedBox(width: 180, height: 180, child: SvgPicture.string(t.qrCode)),
+          const SizedBox(height: 8),
+          Text('Clé : ${t.secret}', style: _muted, textAlign: TextAlign.center),
+          Text(copied ? '(copiée — à saisir dans l’application si le scan est impossible)' : '(à saisir dans l’application si le scan est impossible)', style: _muted, textAlign: TextAlign.center),
+        ]),
+        actions: [FilledButton(onPressed: () => Navigator.pop(ctx), child: const Text('J’ai ajouté le compte'))],
+      ),
+    );
+    intro = 'Saisissez le premier code affiché par l’application pour activer la protection.';
+  }
+  if (!context.mounted) return;
+  for (var essai = 0; essai < 3; essai++) {
+    final f = await formDialog(context, 'Vérification en 2 étapes', [('Code à 6 chiffres', '')], intro: intro, submit: 'Vérifier');
+    if (f == null || !context.mounted) return;
+    final err = await Backend.verifyTotp(factorId, f.first.replaceAll(' ', ''));
+    if (!context.mounted) return;
+    if (err == null) return gToast(context, 'Vérification en 2 étapes active sur ce compte.');
+    await gAlert(context, 'Vérification échouée', err);
+    if (!context.mounted) return;
+  }
+}
+
+/// 158 : comparaison des propositions réellement reçues sur vos besoins (montant, délai, message), de la moins chère à la plus chère.
+Future<void> compareProposalsDialog(BuildContext context, WidgetRef ref) async {
+  if (!await _ready(context, ref, 'comparer les candidatures')) return;
+  final me = Backend.currentUserId;
+  if (!context.mounted) return;
+  final missions = await _load(context, 'missions', 'id,title,number,client_id', order: 'updated_at');
+  final ids = {for (final m in missions ?? const []) if (m['client_id'] == me) m['id']};
+  final props = (await _load(context, 'mission_proposals', 'mission_id,amount,delay_days,message,status') ?? const []).where((p) => ids.contains(p['mission_id'])).toList()
+    ..sort((a, b) => ((a['amount'] as num?) ?? 0).compareTo((b['amount'] as num?) ?? 0));
+  if (!context.mounted) return;
+  if (props.isEmpty) return gAlert(context, 'Comparer la sélection', 'Aucune proposition reçue sur vos besoins pour le moment.');
+  final title = {for (final m in missions ?? const []) m['id']: m['title'] ?? m['number']};
+  await _listDialog(context, 'Comparaison des propositions', props, (p) => '${_money(p['amount'])} · ${p['delay_days']} jours',
+      sub: (p) => '${title[p['mission_id']]} · ${_status('${p['status']}')}${p['message'] == null ? '' : ' · ${p['message']}'}');
 }

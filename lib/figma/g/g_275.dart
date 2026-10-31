@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/lots.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_275 extends ConsumerWidget {
@@ -55,7 +56,7 @@ class G_275 extends ConsumerWidget {
       gP(36.817, 579.983, 26.366, 22.866, gImg('assets/figma/r/200_479.png')),
       gP(48.483, 588.15, 3.045, 12.366, gImg('assets/figma/r/200_480.png')),
       gP(72, 576, 274, 20, gText('3 champs à corriger avant de continuer. Votre brouillon est enregistré.', 12, Color(0xFFB42318), weight: 500)),
-      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => gToast(context, 'Démonstration : Continuer')),
+      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => gOpen(context, '58')),
       gP(158.5, 788, 73, 19, gText('Continuer', 15, Color(0xFFFFFFFF), weight: 600)),
     ]);
   }

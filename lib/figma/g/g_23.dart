@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/lots.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_23 extends ConsumerWidget {
@@ -52,7 +53,7 @@ class G_23 extends ConsumerWidget {
       gP(47.192, 215.17, 51, 19, gText('Talents', 15, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
       gP(137.308, 205.056, 99.231, 39.228, gBox(color: Color(0xFFF2EFF6), radii: [19.038, 19.038, 19.038, 19.038])),
       gP(160.923, 215.17, 52, 19, gText('Projets', 15, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
-      gP(252.692, 205.056, 109.615, 39.228, gBox(color: Color(0xFFF2EFF6), radii: [19.038, 19.038, 19.038, 19.038]), tap: () => gToast(context, 'Démonstration : Innovations')),
+      gP(252.692, 205.056, 109.615, 39.228, gBox(color: Color(0xFFF2EFF6), radii: [19.038, 19.038, 19.038, 19.038]), tap: () => gOpen(context, '87')),
       gP(266, 215.17, 83, 19, gText('Innovations', 15, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
       gP(23.654, 277.956, 122, 23, gText('Département', 18.462, Color(0xFF111015), weight: 700)),
       gP(23.077, 313.825, 341.538, 45.172, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.365, radii: [21.923, 21.923, 21.923, 21.923])),

@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/lots.dart';
 import '../live/messages.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -53,7 +54,7 @@ class G_46 extends ConsumerWidget {
       gP(54.667, 146.667, 12.667, 14.333, gImg('assets/figma/v/ffe0117573cb5a.svg')),
       gP(55.5, 153.333, 9.333, 9.333, gImg('assets/figma/v/87052a066968e5.svg')),
       gP(47.167, 153.333, 9.333, 9.333, gImg('assets/figma/v/87052a066968e5.svg')),
-      gP(88, 132, 112, 17, gText('#BE-2026-0142', 13.5, Color(0xFF111015), weight: 600)),
+      gP(88, 132, 112, 17, gText(demoContent ? '#BE-2026-0142' : ref.watch(viewedOrderProvider).id, 13.5, Color(0xFF111015), weight: 600)),
       gP(88, 154, 149, 14, gText('Arrivée prévue demain · 14 h', 11.5, Color(0xFF66636E))),
       gP(280.8, 142, 71.2, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
       gP(294.4, 146, 44, 14, gText('En route', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)),
@@ -78,11 +79,11 @@ class G_46 extends ConsumerWidget {
       gP(228, 658, 122, 16, gText('Kiosque IUT – Bloc A', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
       gP(40, 683, 310, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 692, 90, 16, gText('Code de retrait', 12.5, Color(0xFF66636E))),
-      gP(303, 692, 47, 16, gText('482 915', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),
+      gP(303, 692, 47, 16, gText(demoContent ? '482 915' : '••• •••', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)), // code réel : bouton ci-dessous
       gP(0, 754, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
       gP(24, 770, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => contactOrderSeller(ref, context)),
       gP(31.5, 788, 148, 18, gText('Contacter le vendeur', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
-      gP(203, 770, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gToast(context, 'Démonstration : Voir le code de retrait')),
+      gP(203, 770, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => showPickupCode(context, ref)),
       gP(210, 788, 149, 18, gText('Voir le code de retrait', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 840, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(48, 210, 102, 151, gImg('assets/figma/r/149_16.png')),

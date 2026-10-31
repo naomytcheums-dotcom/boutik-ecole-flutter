@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/lots.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_279 extends ConsumerWidget {
@@ -65,7 +66,7 @@ class G_279 extends ConsumerWidget {
       gP(60, 598, 114, 16, gText('video-demo.mp4', 13, Color(0xFF111015), weight: 600)),
       gP(300, 598, 37, 14, gText('312 Mo', 11, Color(0xFF66636E), weight: 500)),
       gP(60, 622, 146, 15, gText('Refusé : dépasse 200 Mo', 12, Color(0xFFB42318), weight: 600)),
-      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => gToast(context, 'Démonstration : Ajouter un fichier')),
+      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => uploadProjectFileFor(context, ref)),
       gP(134, 788, 122, 19, gText('Ajouter un fichier', 15, Color(0xFFFFFFFF), weight: 600)),
     ]);
   }

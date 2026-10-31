@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/lots.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_263 extends ConsumerWidget {
@@ -77,7 +78,7 @@ class G_263 extends ConsumerWidget {
       gP(1103.167, 97.167, 2.167, 2.167, gImg('assets/figma/r/190_204.png')),
       gP(1118, 87, 111, 14, gText('Personnaliser la vue', 11.5, Color(0xFF111015), weight: 500, inter: true)),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(268, 134, 62, 34, 'Tout', 11.5, 500), GChip(338, 134, 78, 34, 'Images', 11.5, 500), GChip(424, 134, 78, 34, 'Vidéos', 11.5, 500), GChip(510, 134, 102, 34, 'Documents', 11.5, 500), GChip(620, 134, 86, 34, 'Preuves', 11.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFFFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 17, border: Color(0xFFE6E3DE), inter: true)),
-      gP(1082, 134, 170, 36, gBox(color: Color(0xFF0B0B0D), radii: [18, 18, 18, 18]), tap: () => gToast(context, 'Démonstration : Téléverser un média')),
+      gP(1082, 134, 170, 36, gBox(color: Color(0xFF0B0B0D), radii: [18, 18, 18, 18]), tap: () => uploadMedia(context, ref)),
       gP(1110.5, 145, 113, 14, gText('Téléverser un média', 11.5, Color(0xFFFFFFFF), weight: 600, inter: true)),
       gP(268, 190, 231, 170, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
       gP(272, 370, 151, 15, gText('Lampe en bois recyclé.jpg', 12, Color(0xFF18181B), weight: 600, inter: true)),

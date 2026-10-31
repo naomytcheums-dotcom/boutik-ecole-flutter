@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/lots.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_146_2 extends ConsumerWidget {
@@ -283,7 +284,7 @@ class G_146_2 extends ConsumerWidget {
       gP(40, 572, 310, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 581, 50, 16, gText('Montant', 12.5, Color(0xFF66636E))),
       gP(271, 581, 79, 16, gText('25 000 FCFA', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),
-      gP(24, 633, 342, 50, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [25, 25, 25, 25])),
+      gP(24, 633, 342, 50, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [25, 25, 25, 25]), tap: () => confirmPickupDialog(context, ref)),
       gP(139.5, 649, 136, 18, gText('Confirmer la remise', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(114.333, 650.75, 17.333, 13.792, gImg('assets/figma/v/08bd502a016249.svg')),
       gP(125, 832, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),

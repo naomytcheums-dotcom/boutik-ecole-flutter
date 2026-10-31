@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/lots.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_265 extends ConsumerWidget {
@@ -115,7 +116,7 @@ class G_265 extends ConsumerWidget {
       gP(900, 196, 330, 150, gBox(color: Color(0xFFE7F6D9), radii: [20, 20, 20, 20])),
       gP(916, 212, 301, 54, gText('Bonjour {prénom}, votre paiement de {montant} FCFA pour la commande {numéro} a échoué. Vous pouvez réessayer : {lien}', 12, Color(0xFF111015), inter: true, lh: 18, wrap: true)),
       gP(900, 370, 228, 13, gText('Variables : {prénom} {montant} {numéro} {lien}', 10.5, Color(0xFF66636E), inter: true)),
-      gP(900, 420, 150, 36, gBox(color: Color(0xFF0B0B0D), radii: [18, 18, 18, 18]), tap: () => gToast(context, 'Démonstration : Modifier le modèle')),
+      gP(900, 420, 150, 36, gBox(color: Color(0xFF0B0B0D), radii: [18, 18, 18, 18]), tap: () => editTemplatesDialog(context, ref)),
       gP(925.5, 430, 99, 13, gText('Modifier le modèle', 11, Color(0xFFFFFFFF), weight: 600, inter: true)),
     ]);
   }

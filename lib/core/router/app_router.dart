@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/screens.dart';
 import '../../figma/live/access.dart';
 import '../../figma/live/espace.dart';
+import '../../figma/live/shared_cv.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_theme.dart';
 import '../widgets/app_card.dart';
@@ -31,6 +32,7 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/', redirect: (_, _) => screenPath('01')),
     GoRoute(path: '/catalogue', builder: (_, _) => const ScreenCatalogue()),
     GoRoute(path: '/espace', builder: (_, _) => const EspaceScreen()),
+    GoRoute(path: '/cv/:token', builder: (_, state) => SharedCvScreen(token: state.pathParameters['token'] ?? '')),
     GoRoute(
       path: '/s/:id',
       pageBuilder: (context, state) {

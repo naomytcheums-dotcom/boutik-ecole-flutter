@@ -90,4 +90,19 @@ void main() {
     c.read(kioskKindProvider.notifier).set(0);
     expect(c.read(kioskProductsProvider).length, all);
   });
+
+  test('fichiers : seuls JPG, PNG, WebP, PDF, MP4 et ZIP sont acceptés avant tout envoi', () {
+    expect(acceptedMime('plan.PDF'), 'application/pdf');
+    expect(acceptedMime('photo.jpeg'), 'image/jpeg');
+    expect(acceptedMime('demo.mp4'), 'video/mp4');
+    expect(acceptedMime('virus.exe'), isNull);
+    expect(acceptedMime('page.html'), isNull);
+    expect(acceptedMime('script.sh'), isNull);
+    expect(acceptedMime('sans_extension'), isNull);
+  });
+
+  test('copie dans le presse-papiers : jamais bloquante', () async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    expect(await copyText('BE-CERT-00000000'), isA<bool>());
+  });
 }

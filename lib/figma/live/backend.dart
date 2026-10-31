@@ -693,6 +693,72 @@ class Backend {
     }
   }
 
+  /// Dépôt dans le compartiment privé « project-files » (chemin dans le dossier de la personne connectée).
+  static Future<({String? path, String? error})> uploadProjectFile(String scope, String name, Uint8List bytes, String mime) async {
+    final c = _c;
+    final uid = c?.auth.currentUser?.id;
+    if (c == null || uid == null) return (path: null, error: 'Connexion requise.');
+    final safe = name.replaceAll(RegExp(r'[^A-Za-z0-9._-]+'), '_');
+    final path = '$uid/$scope/${DateTime.now().microsecondsSinceEpoch}-$safe';
+    try {
+      await c.storage.from('project-files').uploadBinary(path, bytes, fileOptions: FileOptions(contentType: mime));
+      return (path: path, error: null);
+    } on StorageException catch (e) {
+      final m = e.message.toLowerCase();
+      if (m.contains('mime') || m.contains('type')) return (path: null, error: 'Type de fichier refusé (JPG, PNG, WebP, PDF, MP4, ZIP).');
+      if (m.contains('size') || m.contains('large')) return (path: null, error: 'Fichier trop lourd (50 Mo au maximum).');
+      if (m.contains('bucket')) return (path: null, error: 'Le stockage des fichiers n’est pas encore activé (migration 20261031b).');
+      return (path: null, error: e.message);
+    } catch (e) {
+      return (path: null, error: _msg(e));
+    }
+  }
+
+  /// Lien temporaire (1 h) vers un fichier du compartiment privé, si le compte y a droit.
+  static Future<String?> projectFileUrl(String path) async {
+    try {
+      return await _c?.storage.from('project-files').createSignedUrl(path, 3600);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Double authentification (TOTP) : facteurs du compte connecté.
+  static Future<List<Factor>> totpFactors() async {
+    final c = _c;
+    if (c == null || c.auth.currentUser == null) return const [];
+    try {
+      return (await c.auth.mfa.listFactors()).totp;
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  static Future<({AuthMFAEnrollResponse? enrolled, String? error})> enrollTotp() async {
+    final c = _c;
+    if (c == null || c.auth.currentUser == null) return (enrolled: null, error: 'Connexion requise.');
+    try {
+      // un facteur jamais vérifié (activation abandonnée) est retiré avant d'en créer un nouveau
+      for (final f in (await c.auth.mfa.listFactors()).all) {
+        if (f.status == FactorStatus.unverified) await c.auth.mfa.unenroll(f.id);
+      }
+      return (enrolled: await c.auth.mfa.enroll(factorType: FactorType.totp, issuer: 'Boutik-École', friendlyName: 'Application ${DateTime.now().millisecondsSinceEpoch}'), error: null);
+    } on AuthException catch (e) {
+      return (enrolled: null, error: e.message.toLowerCase().contains('disabled') ? 'La double authentification n’est pas activée sur le serveur.' : e.message);
+    }
+  }
+
+  static Future<String?> verifyTotp(String factorId, String code) async {
+    final c = _c;
+    if (c == null) return 'Connexion requise.';
+    try {
+      await c.auth.mfa.challengeAndVerify(factorId: factorId, code: code);
+      return null;
+    } on AuthException catch (e) {
+      return e.message.toLowerCase().contains('invalid') ? 'Code incorrect ou expiré.' : e.message;
+    }
+  }
+
   /// Réclamations visibles par la personne connectée (les siennes, ou celles qui concernent ses ventes).
   static Future<List<Map<String, dynamic>>> claims() async {
     final c = _c;

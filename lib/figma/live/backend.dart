@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -665,11 +666,16 @@ class Backend {
   }
 
   /// Fonction serveur qui renvoie une valeur (identifiant, code, objet) : (data, error) ; error null si succès.
-  static Future<({Object? data, String? error})> rpc(String fn, Map<String, dynamic> params) async {
+  /// [timeout] : délai au-delà duquel l'appel est considéré comme échoué ([timeoutMessage] est alors renvoyé comme erreur).
+  /// L'état réel côté serveur reste inconnu : le message doit le dire, jamais annoncer un succès.
+  static Future<({Object? data, String? error})> rpc(String fn, Map<String, dynamic> params, {Duration? timeout, String? timeoutMessage}) async {
     final c = _c;
     if (c == null) return (data: null, error: 'Connexion requise.');
     try {
-      return (data: await c.rpc(fn, params: params) as Object?, error: null);
+      final Future<dynamic> f = c.rpc(fn, params: params);
+      return (data: (timeout == null ? await f : await f.timeout(timeout)) as Object?, error: null);
+    } on TimeoutException {
+      return (data: null, error: timeoutMessage ?? 'Le serveur n’a pas répondu à temps. Réessayez.');
     } catch (e) {
       return (data: null, error: _msg(e));
     }

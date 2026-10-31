@@ -47,8 +47,9 @@ Future<bool> _ready(BuildContext context, WidgetRef ref, String need) async {
 }
 
 /// Appelle une fonction serveur et affiche son refus éventuel ; renvoie la valeur en cas de succès.
-Future<({bool ok, Object? data})> _run(BuildContext context, String fn, Map<String, dynamic> params, {String title = 'Action impossible'}) async {
-  final r = await Backend.rpc(fn, params);
+Future<({bool ok, Object? data})> _run(BuildContext context, String fn, Map<String, dynamic> params,
+    {String title = 'Action impossible', Duration? timeout, String? timeoutMessage}) async {
+  final r = await Backend.rpc(fn, params, timeout: timeout, timeoutMessage: timeoutMessage);
   if (r.error != null) {
     if (context.mounted) await gAlert(context, title, r.error!);
     return (ok: false, data: null);
@@ -975,16 +976,40 @@ Future<void> showPickupCode(BuildContext context, WidgetRef ref, [String? number
 }
 
 /// 146-2 (kiosque) : la remise n'est confirmée qu'avec le code présenté par l'acheteur.
+/// Le succès n'est annoncé que sur la réponse « delivered » du serveur ; toute autre issue (code erroné, blocage, erreur HTTP,
+/// réseau, délai dépassé, réponse inattendue) affiche un refus. Une seule confirmation à la fois depuis ce poste ; le serveur
+/// garantit de son côté qu'une commande n'est remise qu'une fois (verrou de ligne, date de retrait).
+bool _pickupInFlight = false;
+
 Future<void> confirmPickupDialog(BuildContext context, WidgetRef ref) async {
   if (!await _ready(context, ref, 'confirmer une remise')) return;
   if (!context.mounted) return;
+  if (_pickupInFlight) {
+    gToast(context, 'Une confirmation de remise est déjà en cours.');
+    return;
+  }
   final f = await formDialog(context, 'Confirmer la remise', [('Numéro de commande', '#BE-'), ('Code de retrait (6 chiffres)', '')], submit: 'Confirmer');
   if (f == null || !context.mounted) return;
-  final r = await _run(context, 'confirm_pickup', {'p_number': f[0], 'p_code': f[1].replaceAll(' ', '')}, title: 'Remise refusée');
-  if (!r.ok || !context.mounted) return;
-  // un code erroné est compté et journalisé par le serveur (5 essais au plus), sans interrompre la transaction
-  if (r.data == 'incorrect') return gAlert(context, 'Remise refusée', 'Code de retrait incorrect. L’essai est journalisé ; après 5 essais, l’acheteur devra afficher un nouveau code.');
-  gToast(context, 'Remise confirmée : la commande est livrée.');
+  _pickupInFlight = true;
+  try {
+    final r = await _run(context, 'confirm_pickup', {'p_number': f[0], 'p_code': f[1].replaceAll(' ', '')},
+        title: 'Remise refusée',
+        timeout: const Duration(seconds: 20),
+        timeoutMessage: 'Le serveur n’a pas répondu à temps : la remise n’est PAS confirmée. Vérifiez l’état de la commande avant de remettre l’article.');
+    if (!r.ok || !context.mounted) return;
+    // un code erroné est compté et journalisé par le serveur (5 essais au plus), sans interrompre la transaction
+    if (r.data == 'incorrect') {
+      await gAlert(context, 'Remise refusée', 'Code de retrait incorrect. L’essai est journalisé ; après 5 essais, l’acheteur devra afficher un nouveau code.');
+      return;
+    }
+    if (r.data != 'delivered') {
+      await gAlert(context, 'Remise non confirmée', 'Réponse inattendue du serveur : la remise n’est pas confirmée. Vérifiez l’état de la commande avant de remettre l’article.');
+      return;
+    }
+    gToast(context, 'Remise confirmée : la commande est livrée.');
+  } finally {
+    _pickupInFlight = false;
+  }
 }
 
 /// 272 : double authentification par application (TOTP) — inscription du facteur puis vérification d'un code réel.

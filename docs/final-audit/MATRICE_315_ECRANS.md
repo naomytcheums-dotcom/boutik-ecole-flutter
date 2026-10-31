@@ -4,13 +4,12 @@ Générée par `tool/audit/gen_matrix.py` à partir du code (analyse statique). 
 
 - Écrans : **315**
 - Atteignables depuis le démarrage par liens explicites (liens contextuels, menus latéraux des consoles, menu du compte par rôle) : **303** ; les autres sont listés dans `RESTE_A_FAIRE.md` et ne sont atteignables que par « Toutes les rubriques » (secondaire).
-- Actions « Démonstration » restantes : **16** sur **15** écrans.
+- Actions « Démonstration » restantes : **0** sur **0** écrans.
 
 | Statut | Écrans |
 |---|---|
-| NAVIGATION SEULE | 212 |
-| IMPLÉMENTÉ MAIS NON PERSISTÉ | 73 |
-| PARTIEL | 15 |
+| NAVIGATION SEULE | 225 |
+| IMPLÉMENTÉ MAIS NON PERSISTÉ | 75 |
 | IMPLÉMENTÉ | 14 |
 | STATIQUE | 1 |
 
@@ -43,7 +42,7 @@ Générée par `tool/audit/gen_matrix.py` à partir du code (analyse statique). 
 | 22b | Services et prestations | `/s/22b` | tous | C | 15 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 22c | Tendances et nouveautés | `/s/22c` | tous | C | 10 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 22d | Pour vous | `/s/22d` | tous | C | 7 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
-| 23 | Filtres | `/s/23` | tous | C | 5 | 1 | oui | mémoire locale (non persistée) | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
+| 23 | Filtres | `/s/23` | tous | C | 5 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 24 | Profil vendeur | `/s/24` | tous | C | 8 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 25 | Mes favoris | `/s/25` | tous | C | 13 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 25b | Mes collections | `/s/25b` | tous | C | 9 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
@@ -66,7 +65,7 @@ Générée par `tool/audit/gen_matrix.py` à partir du code (analyse statique). 
 | 43 | Instructions de paiement | `/s/43` | tous | E | 3 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 44 | Commande confirmée | `/s/44` | tous | E | 4 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 45 | Mes commandes | `/s/45` | tous | E | 14 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
-| 46 | Suivi de livraison | `/s/46` | tous | E | 3 | 1 | oui | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
+| 46 | Suivi de livraison | `/s/46` | tous | E | 3 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 47 | Annuler la commande | `/s/47` | tous | E | 7 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 48 | Réclamation | `/s/48` | tous | E | 7 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 49 | Aide et support | `/s/49` | tous | E | 10 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
@@ -101,7 +100,7 @@ Générée par `tool/audit/gen_matrix.py` à partir du code (analyse statique). 
 | 80 | Soumettre un projet | `/s/80` | tous | I | 9 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 81 | Équipe du projet | `/s/81` | tous | I | 2 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 82 | Journal du projet | `/s/82` | tous | I | 2 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
-| 83 | Médias et preuves | `/s/83` | tous | I | 3 | 1 | oui | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
+| 83 | Médias et preuves | `/s/83` | tous | I | 3 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 84 | Nouvelle campagne | `/s/84` | tous | I | 8 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 84b | Financement | `/s/84b` | tous | I | 2 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 85 | Objectifs et jalons | `/s/85` | tous | I | 1 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
@@ -138,7 +137,7 @@ Générée par `tool/audit/gen_matrix.py` à partir du code (analyse statique). 
 | 115 | Événements et initiatives | `/s/115` | dépt, direction, admin | L | 12 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 116 | Rapports et exports | `/s/116` | dépt, direction, admin | L | 11 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 117 | Tableau de bord institutionnel | `/s/117` | direction, admin | M | 17 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
-| 118 | Établissement et identité visuelle | `/s/118` | direction, admin | M | 13 | 1 | oui | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
+| 118 | Établissement et identité visuelle | `/s/118` | direction, admin | M | 13 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 119 | Départements et filières | `/s/119` | direction, admin | M | 14 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 120 | Utilisateurs et affectations | `/s/120` | direction, admin | M | 15 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 121 | Responsables et encadreurs | `/s/121` | direction, admin | M | 12 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
@@ -167,7 +166,7 @@ Générée par `tool/audit/gen_matrix.py` à partir du code (analyse statique). 
 | 144 | Moyens de paiement et règles | `/s/144` | finance, direction, admin | O | 11 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 145 | Points de retrait et kiosques | `/s/145` | support, admin | P | 14 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 146_1 | — | `/s/146_1` | support, admin | P | 8 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
-| 146_2 | — | `/s/146_2` | support, admin | P | 7 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
+| 146_2 | — | `/s/146_2` | support, admin | P | 8 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 147_1 | — | `/s/147_1` | support, admin | P | 10 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 147_2 | — | `/s/147_2` | support, admin | P | 10 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 147_3 | — | `/s/147_3` | support, admin | P | 10 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
@@ -185,7 +184,7 @@ Générée par `tool/audit/gen_matrix.py` à partir du code (analyse statique). 
 | 155 | Alertes | `/s/155` | tous | S | 11 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 156 | Préférences d’alertes | `/s/156` | tous | S | 11 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 157 | Résumé de Kéla | `/s/157` | tous | S | 6 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
-| 158 | Candidatures classées | `/s/158` | tous | S | 3 | 1 | oui | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
+| 158 | Candidatures classées | `/s/158` | tous | S | 3 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 159 | Candidature envoyée | `/s/159` | tous | S | 3 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 160 | Hackathons et concours | `/s/160` | tous | T | 15 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 161 | Hackathon | `/s/161` | tous | T | 5 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
@@ -223,7 +222,7 @@ Générée par `tool/audit/gen_matrix.py` à partir du code (analyse statique). 
 | 193 | Paiement sécurisé | `/s/193` | tous | Y | 4 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 194 | Ma mission | `/s/194` | tous | Y | 8 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 195 | Ajouter une preuve | `/s/195` | tous | Y | 4 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
-| 196 | Dossier | `/s/196` | tous | Y | 4 | 2 | oui | statique | golden (rendu) | PARTIEL (2 action(s) de démonstration) |
+| 196 | Dossier | `/s/196` | tous | Y | 4 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 197 | Valider le jalon | `/s/197` | tous | Y | 4 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 198 | Briefs reçus | `/s/198` | dépt, admin | Y | 14 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 199 | Attribuer | `/s/199` | dépt, admin | Y | 4 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
@@ -255,7 +254,7 @@ Générée par `tool/audit/gen_matrix.py` à partir du code (analyse statique). 
 | 225 | Jumeau 3D | `/s/225` | tous | AD | 4 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 226 | Modération des duels | `/s/226` | tous | AD | 2 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 227 | Régie des ateliers en direct | `/s/227` | tous | AD | 9 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
-| 228 | Partager mon CV | `/s/228` | tous | AD | 2 | 1 | oui | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
+| 228 | Partager mon CV | `/s/228` | tous | AD | 2 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 229 | CV vivant | `/s/229` | tous | AD | 2 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 230 | Assistante vocale Kéla | `/s/230` | tous | AI | 4 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 231 | Accueil Kéla | `/s/231` | tous | AI | 10 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
@@ -293,30 +292,30 @@ Générée par `tool/audit/gen_matrix.py` à partir du code (analyse statique). 
 | 260 | Facture | `/s/260` | tous | Z | 4 | 0 | oui | mémoire locale (non persistée) | golden (rendu) | IMPLÉMENTÉ MAIS NON PERSISTÉ |
 | 261 | Mon espace client | `/s/261` | tous | Z | 11 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 262 | Accueil B2B | `/s/262` | entreprise, admin | Z | 4 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
-| 263 | Médiathèque | `/s/263` | dépt, admin | Z | 5 | 1 | oui | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
-| 264 | Pages éditoriales | `/s/264` | admin | Z | 8 | 1 | oui | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
-| 265 | Modèles de notifications | `/s/265` | admin | Z | 5 | 1 | oui | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
+| 263 | Médiathèque | `/s/263` | dépt, admin | Z | 5 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
+| 264 | Pages éditoriales | `/s/264` | admin | Z | 8 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
+| 265 | Modèles de notifications | `/s/265` | admin | Z | 5 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 266 | État technique | `/s/266` | admin | Z | 5 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 267 | Boutik-École Network | `/s/267` | admin | Z | 4 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 268 | Analytics de la borne | `/s/268` | support, admin | Z | 3 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 269 | Innovation Radar | `/s/269` | admin | Z | 3 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 270 | Showroom national | `/s/270` | tous | Z | 1 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 271 | Mes liens et réseaux | `/s/271` | tous | Z | 13 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
-| 272 | Vérification en 2 étapes | `/s/272` | tous | Z | 4 | 1 | oui | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
+| 272 | Vérification en 2 étapes | `/s/272` | tous | Z | 4 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 273 | Mes données | `/s/273` | tous | Z | 4 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 274 | Conditions générales | `/s/274` | tous | Z | 5 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
-| 275 | Déposer un produit (erreurs) | `/s/275` | tous | Z | 6 | 1 | non | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
+| 275 | Déposer un produit (erreurs) | `/s/275` | tous | Z | 6 | 0 | non | statique | golden (rendu) | NAVIGATION SEULE |
 | 276 | Borne hors ligne | `/s/276` | tous | Z | 3 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 277 | Supervision des bornes | `/s/277` | support, admin | Z | 3 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 278 | Fiche projet · liens et PI | `/s/278` | tous | Z | 3 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
-| 279 | Ajouter des fichiers | `/s/279` | tous | Z | 3 | 1 | oui | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
-| 280 | Intégrations | `/s/280` | admin | Z | 3 | 1 | oui | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
+| 279 | Ajouter des fichiers | `/s/279` | tous | Z | 3 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
+| 280 | Intégrations | `/s/280` | admin | Z | 3 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 281 | Rôles et périmètres | `/s/281` | admin | Z | 2 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 282 | QR de transfert | `/s/282` | tous | Z | 3 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 283 | Registre des certificats | `/s/283` | dépt, admin | Z | 4 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 284 | Registre financier | `/s/284` | finance, direction, admin | Z | 3 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 285 | Espace projet | `/s/285` | entreprise, admin | Z | 3 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
-| 286 | Soumissions et équipe | `/s/286` | dépt, admin | Z | 7 | 1 | oui | statique | golden (rendu) | PARTIEL (1 action(s) de démonstration) |
+| 286 | Soumissions et équipe | `/s/286` | dépt, admin | Z | 7 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 287 | Catalogue département (tablette) | `/s/287` | dépt, admin | Z | 3 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | 288 | Catalogue département (web) | `/s/288` | dépt, admin | Z | 4 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |
 | a1 | — | `/s/a1` | tous | S+ | 7 | 0 | oui | statique | golden (rendu) | NAVIGATION SEULE |

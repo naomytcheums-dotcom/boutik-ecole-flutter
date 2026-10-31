@@ -180,7 +180,7 @@ test.describe('Missions, vœux, certificats, états système, annulation (base i
     await remplir(page, 4, 'GI');
     await page.getByRole('button', { name: 'Émettre' }).click();
     await expect.poll(() => texte(page), { timeout: 15_000 }).toContain('Certificat émis');
-    const code = (await texte(page)).match(/BE-CERT-[0-9A-F]{8}/)![0];
+    const code = (await texte(page)).match(/BE-CERT-[0-9A-F]{16}/)![0];
 
     const visiteur = await (await browser.newContext({ viewport: { width: 390, height: 960 } })).newPage();
     await demarrer(visiteur, 's/211');

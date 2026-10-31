@@ -981,7 +981,10 @@ Future<void> confirmPickupDialog(BuildContext context, WidgetRef ref) async {
   final f = await formDialog(context, 'Confirmer la remise', [('Numéro de commande', '#BE-'), ('Code de retrait (6 chiffres)', '')], submit: 'Confirmer');
   if (f == null || !context.mounted) return;
   final r = await _run(context, 'confirm_pickup', {'p_number': f[0], 'p_code': f[1].replaceAll(' ', '')}, title: 'Remise refusée');
-  if (r.ok && context.mounted) gToast(context, 'Remise confirmée : la commande est livrée.');
+  if (!r.ok || !context.mounted) return;
+  // un code erroné est compté et journalisé par le serveur (5 essais au plus), sans interrompre la transaction
+  if (r.data == 'incorrect') return gAlert(context, 'Remise refusée', 'Code de retrait incorrect. L’essai est journalisé ; après 5 essais, l’acheteur devra afficher un nouveau code.');
+  gToast(context, 'Remise confirmée : la commande est livrée.');
 }
 
 /// 272 : double authentification par application (TOTP) — inscription du facteur puis vérification d'un code réel.

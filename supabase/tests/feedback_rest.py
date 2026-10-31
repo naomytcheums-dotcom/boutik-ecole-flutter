@@ -34,10 +34,11 @@ def check(name, cond, detail=""):
 
 def mk(tag, name, role):
     email = f"zz-test-{tag}-{uuid.uuid4().hex[:8]}@example.com"
-    s, d = call("/auth/v1/signup", {"email": email, "password": uuid.uuid4().hex + "Aa1!"})
+    pw = uuid.uuid4().hex + "Aa1!"  # conservé dans l'état : la spec navigateur avis.spec.ts se connecte avec
+    s, d = call("/auth/v1/signup", {"email": email, "password": pw})
     uid, tok = d["user"]["id"], d["access_token"]
     call("/rest/v1/profiles", {"id": uid, "name": name, "email": email, "role": role}, tok)
-    return {"id": uid, "tok": tok, "email": email, "session": d}
+    return {"id": uid, "tok": tok, "email": email, "password": pw, "session": d}
 
 
 def phase1():

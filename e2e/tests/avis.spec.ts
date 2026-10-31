@@ -2,8 +2,10 @@ import { expect, Page, test } from '@playwright/test';
 import fs from 'fs';
 
 // Parcours réel avis → réclamation → réponse → signalement, avec trois comptes jetables (vendeur A, acheteur B, tiers C).
-// Préparation (hors navigateur) : `python supabase/tests/feedback_rest.py 1`, approbation et paiement simulés par le propriétaire
-// de la base, puis `STATE=<fichier> npx playwright test avis`. Sans STATE, ces tests sont ignorés.
+// Préparation (hors navigateur) : `python supabase/tests/feedback_rest.py 1`, approbation par le propriétaire de la base,
+// `feedback_rest.py 2` (commande), paiement simulé, puis le vendeur A marque la commande préparée
+// (rpc `set_seller_order_status`, p_status 3 : un avis n'est possible qu'une fois l'article préparé),
+// enfin `STATE=<fichier> npx playwright test avis`. Sans STATE, ces tests sont ignorés.
 const STATE = process.env.STATE;
 const S = STATE && fs.existsSync(STATE) ? JSON.parse(fs.readFileSync(STATE, 'utf8')) : null;
 const U = process.env.BE_URL ?? 'https://zxqcnmgwhtbxkdpjqtlr.supabase.co';
@@ -68,7 +70,8 @@ test.describe('Avis, réclamations et signalements (comptes réels)', () => {
     expect(await texte(page)).toContain(S.title);
     await page.getByRole('button', { name: 'Publier mon avis' }).click();
     await expect.poll(() => texte(page), { timeout: 15_000 }).toContain('Votre avis a été publié');
-    const avis = await lire(S.B, 'reviews?select=rating,comment');
+    // les avis sont publics : on ne lit que ceux de l'acheteur de ce jeu de test
+    const avis = await lire(S.B, `reviews?select=rating,comment&reviewer_id=eq.${S.B.id}`);
     expect(avis.length).toBe(1);
     expect(avis[0].rating).toBe(5);
   });
@@ -108,7 +111,11 @@ test.describe('Avis, réclamations et signalements (comptes réels)', () => {
     await page.mouse.click(107, 737);
     await expect.poll(() => texte(page), { timeout: 15_000 }).toContain('Répondre');
     await page.getByRole('button', { name: 'Répondre' }).click();
-    await page.locator('flt-semantics-host textarea, flt-semantics-host input').first().fill('Nous vous remboursons ou échangeons l\'article.');
+    const champ = page.locator('flt-semantics-host textarea, flt-semantics-host input').first();
+    await expect(champ).toBeVisible();
+    await champ.fill('Nous vous remboursons ou échangeons l\'article.');
+    await expect(champ).toHaveValue(/remboursons/);
+    await page.waitForTimeout(400);
     await page.getByRole('button', { name: 'Envoyer' }).click();
     await expect.poll(() => texte(page), { timeout: 15_000 }).toContain('Réponse envoyée');
     const r = await lire(S.A, 'claims?select=status,answer');

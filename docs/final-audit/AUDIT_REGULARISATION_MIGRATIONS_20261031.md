@@ -278,6 +278,24 @@ empreintes des fonctions, `xmin` des profils et annonces, politiques, séquence 
 
 Sauvegarde et preuves : `%USERPROFILE%\boutik_backups\regularisation_20261031_1420\` (fichiers d'origine, dump du schéma, instantanés de catalogue avant/après, empreintes avant/après, sorties de `migration list` et `repair`).
 
+### 8 ter. Application de 31a — 31/10, ~14 h 45 (autorisée : 31a uniquement)
+
+- Renommage (`git mv`, empreintes identiques à la sauvegarde) : `20261031a_…` → `20261031000000_…`, puis, **après** l'application, `20261031b_…` → `20261031000100_…`, `20261031c_…` → `20261031000200_…`.
+- Répétition sur la réplique (0 écart avec la production), **avec la CLI** et `search_path=public` (condition de la production) : `db push --db-url … --dry-run` → 31a seule ; `db push` → sortie 0 ; `lots_rest` 77/77.
+- Contrôles avant (§9) : `mission_proposals` absente ; 2 politiques ASCII sur `missions` ; aucun `INSERT/UPDATE/DELETE` pour `anon`/`authenticated`.
+- `npx supabase@2.122.0 db push --linked --dry-run` → **une seule** migration (31a) ; puis `db push --linked --yes` → sortie 0.
+- Contrôles après **[F]** :
+  - `migration list --linked` : 14 versions, local = distant.
+  - Catalogue production = réplique après 31a : **0 écart** (13 catégories).
+  - Delta production avant → après : **uniquement des ajouts** (+12 tables, +111 colonnes, +23 fonctions, +13 politiques, +1 déclencheur, +87 contraintes, +19 index, +17 droits) ; **0 objet existant modifié ou retiré**.
+  - §9 : 12 tables (RLS actif sur les 12), 11 fonctions clés, 4 bornes de référence, 0 commande à synchroniser ; colonnes ajoutées : `missions` (8), `profiles.links`.
+  - Données existantes inchangées (empreintes `xmin` identiques) : profils (54), annonces (11), engagements (18), journal d'audit, `auth.users` (55) dont les 8 comptes de démonstration, séquence `order_seq` (161), commandes 0, missions 0.
+  - Droits : aucune écriture directe pour `anon`/`authenticated` sur les 12 tables ni sur `missions` ; lecture `anon` limitée à `kiosks`, `kiosk_events`, `wishes`, `campaigns`, `scheduled_lives`, `missions` (filtrées par RLS) ; 21 fonctions `SECURITY DEFINER` exécutables par `authenticated` seulement ; `verify_certificate` par `anon` (prévu).
+  - REST anonyme réel : bornes 200 (4) ; certificats, propositions, incidents, projets 401 (`42501`) ; missions 200 `[]` ; `verify_certificate` 200 « introuvable » ; `save_mission`, `assign_mission` 401 `permission denied`.
+  - Régression navigateur `visiteur` en production : 12/12.
+- **Exposition résiduelle connue jusqu'à 31c [F]** (`security_31_rest` 13/24 sur réplique + 31a) : les anciennes politiques ASCII de `missions` subsistent (lecture : client/`dept`/`admin` — n'élargit rien ; insertion : sans effet, droit `INSERT` absent) ; une mission attribuée reste visible des connectés ; `save_project` (projet approuvé modifiable), codes de certificat à 32 bits, contrôles `auth.uid()` implicites, `EXECUTE` de `sync_order_cancelled` pour `anon` (fonction de déclencheur, non appelable en RPC). Les défauts liés au personnel sont sans objet tant qu'aucun compte `dept`/`admin`/`support` n'existe (0 en production).
+- Étape suivante préparée : réplique reconstruite depuis la production avec 31a, puis 31b + 31c en local → REST **386/386**. Pour n'appliquer que 31b : `db push --linked --workdir <copie limitée à 31b>` (dry-run vérifié : 31b seule).
+
 ## 9. Procédure d'application future (31a → 31b → 31c)
 
 Prérequis communs :

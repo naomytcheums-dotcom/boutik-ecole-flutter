@@ -12,3 +12,13 @@ insert into listings (seller_id, title, department, category, price, stock, desc
  (null,'Confiture artisanale','Agronomie','Alimentation',3000,100,'Confiture de fruits locaux préparée au laboratoire de transformation.','approved'),
  (null,'Jus de bissap','Agronomie','Alimentation',1500,100,'Jus de bissap frais, sans conservateur.','approved')
 on conflict (title) where seller_id is null do nothing;
+
+-- Bornes de référence (reprises de 20261031000000_missions_…sql) : le dump de schéma ne contient pas les données.
+-- Sans effet tant que la table n'existe pas encore sur la réplique (31a non appliquée en production).
+do $$ begin
+  if to_regclass('public.kiosks') is not null then
+    insert into kiosks (id, name, location) values
+      ('borne-1', 'Borne 1', 'Hall principal'), ('borne-2', 'Borne 2', 'Bibliothèque'), ('borne-3', 'Borne 3', 'Département MMI'), ('borne-4', 'Borne 4', 'Cafétéria')
+    on conflict (id) do nothing;
+  end if;
+end $$;

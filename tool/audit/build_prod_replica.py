@@ -82,9 +82,10 @@ def main(work):
     json.dump(prod, open(os.path.join(work, "snap_prod.json"), "w", encoding="utf-8"), ensure_ascii=False, default=str)
     print("écarts réplique / production :", total)
     if total == 0 and "--with-pending" in sys.argv:
-        # état futur : graine de test puis migrations en attente, dans l'ordre
-        pending = ["20261031a_missions_voeux_campagnes_certificats_bornes.sql", "20261031b_parametres_fichiers_dossiers_cv_retrait.sql",
-                   "20261031c_correctifs_securite_audit.sql"]
+        # état futur : graine de test puis migrations absentes de l'historique de production, dans l'ordre
+        applied = {r["version"] for r in q("select version from supabase_migrations.schema_migrations", "linked")}
+        pending = sorted(f for f in os.listdir(os.path.join(ROOT, "supabase", "migrations"))
+                         if f.endswith(".sql") and f.split("_", 1)[0].isdigit() and f.split("_", 1)[0] not in applied)
         psql(os.path.join(ROOT, "tool", "audit", "replica_seed.sql"))
         for m in pending:
             psql(os.path.join(ROOT, "supabase", "migrations", m))

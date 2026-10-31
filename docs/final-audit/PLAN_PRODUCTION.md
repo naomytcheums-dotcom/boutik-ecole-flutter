@@ -38,10 +38,21 @@ Voir [AUDIT_REGULARISATION_MIGRATIONS_20261031.md](./AUDIT_REGULARISATION_MIGRAT
 
 Retour arrière : `migration repair --status reverted <versions>` (ne touche que la table d'historique).
 
-## 2. Migrations 31a → 31b → 31c (autorisation requise)
+## 2. Migrations 31a → 31b → 31c (autorisation requise pour chacune)
+
+- **31a : ✅ appliquée le 31/10 (~14 h 45)**, contrôles conformes — rapport d'audit §8 ter.
+- 31b puis 31c : en attente d'autorisation. Les trois fichiers sont renommés ; `db push --linked` appliquerait **31b et 31c ensemble** → pour une seule :
+  ```powershell
+  $W="$env:TEMP\push_31b"; New-Item -ItemType Directory -Force "$W\supabase\migrations" | Out-Null
+  Copy-Item -Recurse supabase\.temp "$W\supabase\.temp"
+  Get-ChildItem supabase\migrations\*.sql | ? { $_.Name -le "20261031000100_z" } | Copy-Item -Destination "$W\supabase\migrations\"
+  npx supabase@2.122.0 db push --linked --dry-run --workdir $W   # doit lister 20261031000100 seule
+  ```
+
+### Procédure générale
 
 Procédure détaillée et requêtes de contrôle avant/après : rapport d'audit §9.
-- Renommer d'abord (commit dédié) : `20261031a_…` → `20261031000000_…`, `20261031b_…` → `20261031000100_…`, `20261031c_…` → `20261031000200_…`.
+- Renommage fait (31a, 31b, 31c au format `<timestamp>_name`).
 - **Attention [F]** : la session de `db push` ne contient pas le schéma `extensions` dans son `search_path` (incident du 31/10). Les appels `pgcrypto` de 31a/31b/31c sont tous dans des fonctions `set search_path = public, extensions` : non concernés, mais vérifier sur la réplique avec la CLI (`--db-url`) et non avec `psql`.
 - `npx supabase@2.122.0 db push --dry-run` doit lister **exactement** les 3 fichiers en attente ; sinon arrêter.
 - `npx supabase@2.122.0 db push` (ou SQL Editor fichier par fichier puis `migration repair --status applied`).

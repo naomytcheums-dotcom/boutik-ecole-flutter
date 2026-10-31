@@ -14,10 +14,10 @@ Légende : ✅ vérifié en production · 🟡 vérifié localement (réplique e
 | Avis, réclamations, signalements | ✅ | 30i en production ; `avis` 9/9 navigateur sur réplique | — |
 | Services et devis | ✅ | 30j en production ; `devis` 5/5 sur réplique | — |
 | Engagements | ✅ | 30k en production ; `engagements` navigateur | — |
-| Missions, propositions, affectations, jalons | 🟡 | 31a + 31c sur réplique : `lots`, `security_31` 24/24 | application de 31a + 31c |
-| Vœux, campagnes, projets, lives, liens de profil | 🟡 | 31a sur réplique : `lots_rest`, `lots.spec` | 31a (+ 31c pour `save_project`) |
-| Certificats (émission, vérification QR, révocation) | 🟡 | 31a + 31c (codes 64 bits) sur réplique ; en production `verify_certificate` absent (le test production le constate) | 31a + 31c |
-| Bornes (incidents, événements) | 🟡 | 31a sur réplique | 31a |
+| Missions, propositions, affectations, jalons | 🟡 | **31a en production** (catalogue = réplique, droits et REST anonyme vérifiés) ; parcours authentifiés : `lots_rest` 77/77 sur réplique ; durcissement 31c en attente | 31b + 31c |
+| Vœux, campagnes, projets, lives, liens de profil | 🟡 | **31a en production** ; `lots_rest` 77/77 sur réplique ; parcours authentifiés non rejoués en production (exigent des comptes du personnel) | 31c pour `save_project` |
+| Certificats (émission, vérification QR, révocation) | 🟡 | **31a en production** : `verify_certificate` répond (200 « introuvable ») ; codes 64 bits avec 31c | 31c |
+| Bornes (incidents, événements) | 🟡 | **31a en production** : 4 bornes lisibles publiquement, incidents réservés (401 anonyme) | parcours support à vérifier avec un compte `support` |
 | Paramètres administrateur, modèles de notification, clés API | 🟡 | 31b sur réplique : `lots2_rest` 59/59 | 31b |
 | Fichiers (compartiment privé `project-files`) | 🟡 | 31b + 31c sur réplique | 31b + 31c |
 | Messagerie de mission | 🟡 | 31b + 31c (`is_mission_party`) | 31b + 31c |
@@ -26,17 +26,17 @@ Légende : ✅ vérifié en production · 🟡 vérifié localement (réplique e
 | Paiement `pay` | 🟡 | correctif 15/15 ; version déployée 6/15 | déploiement de `pay` |
 | Webhook Notch Pay | 🟡 | correctif 20/20 ; en production : 401 sans signature ; **0 événement réel reçu** | déploiement + paiement sandbox réel |
 | MCP Notch Pay | ⛔ | code du dépôt 27/27 ; déployé = `814db47` (`?key=` accepté) | redéploiement `--no-verify-jwt` |
-| Historique des migrations | ✅ régularisé le 31/10 (14 h 20) : 13 versions enregistrées sans exécution, `migration list --linked` 13/13 | 31a/b/c à renommer puis appliquer (autorisation) |
+| Historique des migrations | ✅ régularisé le 31/10 (14 h 20) ; 31a appliquée par la CLI (~14 h 45) ; `migration list --linked` 14/14 | 31b, 31c (autorisation) |
 | Données de test en production | ⛔ | 44 + 2 comptes `zz-test` (2 créés par la régression de ce lot) | nettoyage (autorisation) |
 
 ## Migrations
 
 | Migration | Production |
 |---|---|
-| 1 à 13 (`20261029` → `20261030k`) | ✅ appliquées manuellement, définitions identiques |
-| `20261031a` | absente (sauf retrait des droits d'écriture sur `missions`) |
-| `20261031b` | absente |
-| `20261031c` (correctif de cet audit) | absente — à appliquer **après** 31a et 31b |
+| 1 à 13 (`20261029000000` → `20261030001000`) | ✅ appliquées manuellement, enregistrées dans l'historique (31/10, 14 h 20) |
+| `20261031000000` (31a) | ✅ appliquée le 31/10 (~14 h 45) — §8 ter |
+| `20261031000100` (31b) | absente — autorisation requise |
+| `20261031000200` (31c, correctif de cet audit) | absente — à appliquer **après** 31b |
 
 Détails : [AUDIT_REGULARISATION_MIGRATIONS_20261031.md](./AUDIT_REGULARISATION_MIGRATIONS_20261031.md).
 

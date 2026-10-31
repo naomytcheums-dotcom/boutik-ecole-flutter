@@ -33,6 +33,21 @@ Seuls les tests **réellement exécutés** pendant ce lot figurent ici, avec leu
 
 Total navigateur sur la réplique : **51/51**. Total REST : **386/386**.
 
+## Application de 31a en production (31/10, ~14 h 45)
+
+| Contrôle | Résultat |
+|---|---|
+| `db push --dry-run` (réplique puis production) | 31a seule |
+| `db push` réplique (`search_path=public`) puis production | sortie 0 |
+| `lots_rest.py` sur réplique + 31a seule | **77/77** |
+| `security_31_rest.py` sur réplique + 31a seule | 13/24 (exposition résiduelle connue, corrigée par 31c) |
+| Catalogue production après 31a = réplique après 31a | **0 écart** |
+| Delta production avant → après | ajouts uniquement, 0 modification ni retrait |
+| Empreintes des données existantes (profils, annonces, engagements, audit, `auth.users`, séquence) | identiques |
+| REST anonyme en production (12 appels) | conformes (lectures publiques 200, tables réservées 401, RPC réservées 401) |
+| Playwright `visiteur` en production | **12/12** |
+| Réplique reconstruite depuis la production (avec 31a) + 31b + 31c en local : `run_all_local.py` | **386/386** (après ajout des bornes de référence à la graine de la réplique) |
+
 ## Échecs rencontrés et traitement
 
 | Test | Symptôme | Cause | Traitement |

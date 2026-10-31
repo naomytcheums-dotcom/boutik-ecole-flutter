@@ -26,7 +26,7 @@
 2. ~~31a~~ **appliquée le 31/10 (~14 h 45)** ; ~~31b~~ **appliquée (~15 h 20)** ; ~~31c~~ **appliquée (~15 h 40)** — contrôles conformes (audit §8 ter, quater, quinquies). Plus aucune migration en attente.
 3. ~~Déploiement de `pay`, `notchpay-webhook`, `notchpay-mcp`~~ — **fait le 31/10 (~16 h 15)** : v6, v6, v3 = commit `d695001`, Verify JWT inchangé sur les trois (PLAN_PRODUCTION §3).
 4. Renouvellement de `NOTCHPAY_KEY` / `NOTCHPAY_HASH`, puis un paiement **sandbox** réel pour vérifier le webhook.
-5. Déploiement web — **prioritaire avant l'ouverture du kiosque** (anomalie C3 : `confirmPickupDialog`) — puis régression production étendue aux fonctions 31a/31b/31c.
+5. ~~Déploiement web~~ — **fait le 31/10 à 18 h 42** : commit `69753e6`, SHA-256 `0e6f976a…`, C3 et C4 corrigés en ligne (PLAN_PRODUCTION §5).
 6. Nettoyage des comptes `zz-test` (`supabase/maintenance/cleanup_test_accounts.sql`).
 
 ## 3. Reprendre

@@ -67,3 +67,13 @@ Limites : parcours non rejoués dans un navigateur après déploiement (outil in
 | Vérification | Playwright production 27/27 ; MFA REST production 8/8 |
 | Migrations `20261031a` et `20261031b` | **non appliquées en production** (constaté) |
 | MCP | `MCP_ACCESS_KEY` configurée (constaté) ; appel authentifié à vérifier par le propriétaire |
+
+## Déploiement du 31/10/2026 (18 h 42) — écran de retrait (C3, C4)
+| Élément | Valeur |
+|---|---|
+| Code déployé | commit `69753e6` (seule modification de l'application depuis `0c18c17` : `lots.dart`, `backend.dart`) |
+| Tests avant build | `flutter test` 405/405 (goldens inchangés) ; `flutter analyze` 0 erreur ; `retrait.spec` 1/1 et `lots2` « code de retrait » 1/1 sur la copie locale de la production |
+| Version servie = build testé | SHA-256 `main.dart.js` : `0e6f976a1001d9d3cc6642b6e4b644bbdb2a8e82e494ea730a971537c50b7b84` des deux côtés ; aucune adresse locale ; aucun secret |
+| Déploiement Vercel | `dpl_5VXXmTvNUZzvaU9ZaokJ47SqcrJu`, READY, alias `boutik-ecole.vercel.app` ; précédent (retour arrière) : `boutik-ecole-rmhifulr0-…` |
+| Vérification après déploiement | `visiteur` 12/12, `retrait_en_ligne` 1/1, `connexion_en_ligne` 1/1 ; compteurs de production inchangés |
+| Base, fonctions, secrets | inchangés (16 migrations ; `pay` v6, `notchpay-webhook` v6, `notchpay-mcp` v3) |

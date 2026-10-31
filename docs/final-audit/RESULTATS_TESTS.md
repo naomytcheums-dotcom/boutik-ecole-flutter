@@ -97,6 +97,28 @@ Non réalisables par l'agent : appel MCP authentifié avec la vraie clé (valeur
 événement webhook signé (secret `NOTCHPAY_HASH` non lisible ; aucun événement simulé pouvant modifier une commande) ; parcours `pay` authentifié
 (création de comptes interdite) ; lecture des journaux des fonctions (non exposés par la CLI, tableau de bord du propriétaire).
 
+## Déploiement du site (31/10, 18 h 42) — écran de retrait
+
+| Contrôle | Lieu | Résultat |
+|---|---|---|
+| `retrait.spec` (8 exigences) sur l'**ancienne** version (`RETRAIT_SOFT=1`) | local, base réelle | **défauts démontrés** : « Remise confirmée » affiché pour les réponses `null`, `"ok"`, `true` ; aucun message en cas de délai dépassé ; seconde confirmation possible pendant l'attente |
+| `retrait.spec` sur la version corrigée (strict, sans relance) | local, base réelle | **1/1** : code erroné, bon code (« delivered » vérifié), 5 essais, code remplacé, réseau, délai, HTTP 401/403/500, réponses inattendues, soumission répétée (1 seul envoi), actualisation (session fermée, « Commande déjà remise »), 3 confirmations simultanées → 1 seule remise |
+| `form_dialog_test.dart` (double clic) | local | 2/2 (Flutter ignore déjà le second clic ; le test fige ce comportement) |
+| `flutter test` complet | local | **405/405**, goldens inchangés |
+| `flutter analyze` | local | 0 erreur, 3 avertissements préexistants |
+| `lots` + `lots2` | local | 12 réussis + 1 instable ; 1 échec sous charge (« établissement 118 ») → **1/1 rejoué seul** |
+| Bundle de production : URL, clé publiable, 0 adresse locale, 0 secret | local | conforme |
+| SHA-256 servi = construit | production | identique (`0e6f976a…`) |
+| `visiteur` | production | **12/12** |
+| `retrait_en_ligne` (site déployé, trafic Supabase entièrement intercepté) | production (frontend) | **1/1** ; 17 requêtes interceptées, 0 vers la base, 0 erreur JavaScript |
+| `connexion_en_ligne` (identifiants inexistants) | production | **1/1** : refus 400 du serveur, aucune session, 146-2 inaccessible, 0 erreur JavaScript |
+| Compteurs avant/après (comptes, sessions, jetons, journaux, profils, annonces, commandes, paiements) | production | identiques |
+
+Incident d'environnement : `flutter test` bloqué deux fois sans message — **disque C: saturé (0,4 Go libres)**. 2,3 Go de dossiers temporaires
+`flutter_tools.*` supprimés ; deux caches d'installation Visual Studio/.NET de 8,4 Go dans `%TEMP%` (`ahmsz33r`, `swlgp0us`) laissés en place (non créés par cette session).
+
+Non réalisable : remise réelle en production (exige un compte `support` et une commande payée, interdits).
+
 ## Échecs rencontrés et traitement
 
 | Test | Symptôme | Cause | Traitement |

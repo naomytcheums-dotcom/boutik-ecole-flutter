@@ -41,7 +41,8 @@ Base de test : réplique exacte de la production (0 écart de catalogue), voir
 |---|---|---|---|
 | C1 | `confirmPickupDialog` ne gérait pas la réponse `'incorrect'` de `confirm_pickup` (31c) | alerte « Code de retrait incorrect… » ([lots.dart](../../lib/figma/live/lots.dart)) | Corrigé ; 403/403 tests Flutter, goldens inchangés |
 | C2 | Test navigateur `lots.spec.ts` supposait des codes de certificat à 8 caractères | expression `{16}` | Corrigé |
-| C3 | Depuis 31c (production), `confirm_pickup` répond `'incorrect'` sans erreur ; l'interface **déployée** (`061029c2…`, antérieure à `057af8a`) affiche alors « Remise confirmée » — message faux, la commande n'étant pas remise (vérifié dans le code de la fonction : aucune mise à jour sur code erroné) | correction C1 déjà dans le dépôt ; **déploiement web requis** (autorisation) avant d'ouvrir le kiosque. Sans effet aujourd'hui : 0 compte `support`/`admin`, 0 commande payée | **En attente de déploiement** |
+| C3 | Depuis 31c, `confirm_pickup` répond `'incorrect'` sans erreur ; l'interface déployée (`061029c2…`) affichait « Remise confirmée » | correction `057af8a` | **Corrigé en production** (site `69753e6`, 31/10) |
+| C4 | Même avec C3, toute réponse positive autre que `'incorrect'` (`null`, `"ok"`, `true`) affichait « Remise confirmée » ; aucun délai maximal (écran muet si le serveur ne répond pas) ; seconde confirmation possible pendant l'attente | succès **uniquement** sur `'delivered'` ; délai de 20 s avec message « remise NON confirmée, vérifiez l'état » ; une confirmation à la fois. Démontré : `retrait.spec` en mode `RETRAIT_SOFT` sur l'ancienne version (faux succès ×3, pas de message de délai, double envoi) puis 1/1 sur la nouvelle | **Corrigé en production** (site `69753e6`, 31/10) |
 
 ## D. Recommandations non appliquées (décision requise)
 

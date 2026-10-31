@@ -1,7 +1,7 @@
 # Plan de mise en production contrôlée
 
-État au 31/10 (16 h 20) : migrations 1 à 13 + 31a + 31b + 31c **appliquées** (historique 16/16) ; Edge Functions `pay` v6, `notchpay-webhook` v6,
-`notchpay-mcp` v3 **déployées** (commit `d695001`, §3). Site servi = build `061029c2…` (commit `0c18c17`) : **non redéployé**.
+État au 31/10 (19 h) : migrations 1 à 13 + 31a + 31b + 31c **appliquées** (historique 16/16) ; Edge Functions `pay` v6, `notchpay-webhook` v6,
+`notchpay-mcp` v3 **déployées** (commit `d695001`, §3) ; site **déployé** : commit `69753e6`, `main.dart.js` SHA-256 `0e6f976a…` (§5).
 
 Chaque étape ci-dessous **requiert l'autorisation explicite du propriétaire**. Les étapes sont indépendantes
 sauf mention contraire ; l'ordre recommandé minimise le risque.
@@ -110,16 +110,35 @@ Renouveler `NOTCHPAY_KEY` (sandbox) et `NOTCHPAY_HASH` dans le tableau Notch Pay
 `npx supabase@2.122.0 secrets set NOTCHPAY_KEY=… NOTCHPAY_HASH=…` (ne jamais committer ni journaliser les valeurs).
 Ensuite : un paiement **sandbox** depuis l'application → vérifier une ligne `payment_events` et la commande `paid = true`.
 
-## 5. Application web (autorisation requise)
+## 5. Application web — ✅ DÉPLOYÉE le 31/10 à 18 h 42
+
+| Élément | Valeur |
+|---|---|
+| Commit déployé | `69753e6` (C3 `057af8a` + C4 : succès uniquement sur « delivered », délai de 20 s, une confirmation à la fois) |
+| `main.dart.js` | SHA-256 `0e6f976a1001d9d3cc6642b6e4b644bbdb2a8e82e494ea730a971537c50b7b84` — **servi = construit** (vérifié après déploiement) |
+| Déploiement Vercel | `dpl_5VXXmTvNUZzvaU9ZaokJ47SqcrJu` (`boutik-ecole-m2uy9dd13-…`), alias `https://boutik-ecole.vercel.app`, état READY |
+| Retour arrière | déploiement précédent `boutik-ecole-rmhifulr0-naomytcheums-dotcoms-projects.vercel.app` (`061029c2…`) : `npx vercel rollback boutik-ecole-rmhifulr0-naomytcheums-dotcoms-projects.vercel.app` ou « Promote » dans le tableau Vercel |
+
+Audit du bundle avant déploiement : URL Supabase de production, clé **publiable** de production uniquement, 0 adresse locale, clé locale absente,
+aucun secret (les 2 occurrences de `sb_secret_` sont le libellé du contrôle de format de clé de `supabase_flutter`, présentes aussi dans la version
+précédente) ; `vercel.json` : installation et construction désactivées (`echo skip`), dossier statique seul → **aucune migration ni écriture en base**.
+
+Commandes exécutées :
+```powershell
+flutter build web --release                  # sans --dart-define : valeurs de production
+cd build\web; npx vercel deploy --prod --yes # dossier lié au projet (.vercel conservé)
+```
+Vérifications en ligne : `visiteur` 12/12 ; `retrait_en_ligne` 1/1 (écran de retrait du site déployé, tout le trafic Supabase intercepté, 0 requête
+vers la base) ; `connexion_en_ligne` 1/1 (refus réel d'identifiants inexistants, aucune session) ; compteurs de production identiques avant/après
+(comptes, sessions, jetons, journaux, profils, annonces, commandes, paiements).
+
+### Procédure (référence)
 
 ```powershell
 flutter build web --release        # sans --dart-define : pointe la production
 # contrôle : aucune adresse 127.0.0.1 dans build/web/main.dart.js
 vercel deploy --prod build/web     # depuis le dossier lié au projet Vercel
 ```
-Contrôles : SHA-256 de `main.dart.js` servi = build local ; `BASE_URL=https://boutik-ecole.vercel.app npx playwright test production` (27 attendus, à étendre aux actions 31a/31b une fois appliquées).
-
-Retour arrière : `vercel rollback` vers le déploiement `061029c2…` (ou « Promote » de l'ancien déploiement dans le tableau Vercel).
 
 ## 6. Nettoyage (autorisation requise — suppression de données)
 

@@ -6,7 +6,7 @@ Légende : ✅ vérifié en production · 🟡 vérifié localement (réplique e
 
 | Domaine | État | Preuve | Ce qui manque |
 |---|---|---|---|
-| Application web (315 écrans, goldens) | ✅ servie (`061029c2…`) | SHA-256 du bundle ; 403/403 Flutter ; régression production 16/16 | — |
+| Application web (315 écrans, goldens) | ✅ servie : commit **`69753e6`**, `main.dart.js` SHA-256 `0e6f976a…` (déployé le 31/10 à 18 h 42, Vercel `dpl_5VXXmTvNUZzvaU9ZaokJ47SqcrJu`) | servi = build testé (SHA-256) ; 405/405 Flutter ; production : `visiteur` 12/12, `retrait_en_ligne` 1/1, `connexion_en_ligne` 1/1 | — |
 | Navigation, visiteur, rôles côté interface | ✅ | `visiteur` 12/12 en production ; `parcours` sur réplique | — |
 | Authentification + MFA TOTP | ✅ | MFA REST production 8/8 (reprise précédente) ; `mfa` navigateur sur réplique ; 2 facteurs enrôlés en production | — |
 | Marketplace, annonces, stock, commandes vendeur | ✅ | migrations 30c/30h en production (identiques) ; suites REST 386/386 sur réplique | — |
@@ -22,7 +22,7 @@ Légende : ✅ vérifié en production · 🟡 vérifié localement (réplique e
 | Fichiers (compartiment privé `project-files`) | 🟡 | **31b + 31c en production** : compartiment privé, 3 politiques de stockage, `register_file` réservé aux parties pour la portée mission | dépôt réel à recetter |
 | Messagerie de mission | 🟡 | **31b + 31c en production** : écriture réservée aux parties (`is_mission_party`), fichier joint lié à l'expéditeur | recette authentifiée |
 | Liens CV (`/#/cv/<token>`) | 🟡 | **31b en production** : `shared_cv` répond (`null` pour un jeton inconnu) | parcours authentifié à rejouer |
-| Codes de retrait | 🟡 | **31b + 31c en production** : `gen_random_bytes`, essais comptés et journalisés, blocage à 5 ; interface `confirmPickupDialog` corrigée **non déployée** : l'interface en ligne affiche « Remise confirmée » quand le serveur répond `'incorrect'` (la commande n'est pourtant **pas** remise et l'essai est journalisé) — sans effet aujourd'hui (0 compte `support`/`admin`, 0 commande payée), anomalie C3 | déploiement web **avant** toute ouverture du kiosque |
+| Codes de retrait | ✅ | **31b + 31c en production** (code `gen_random_bytes`, essais comptés et journalisés, blocage à 5) ; **interface corrigée en ligne** (`69753e6`) : succès uniquement sur « delivered », délai de 20 s, une confirmation à la fois — `retrait.spec` 1/1 (8 exigences, base locale réelle) et `retrait_en_ligne` 1/1 (site en ligne, serveur simulé) | recette réelle avec un compte `support` et une commande payée (propriétaire) |
 | Paiement `pay` | 🟡 | **v6 déployée** (= `d695001`) : commande annulée refusée, pas de double prélèvement, montant/devise/référence vérifiés, annulation pendant la relecture gérée ; local 16/16 ; production : refus non authentifiés vérifiés | parcours authentifié et paiement sandbox (propriétaire) |
 | Webhook Notch Pay | 🟡 | **v6 déployée** (= `d695001`) : HMAC en temps constant, anti-rejeu, paiement après annulation jamais confirmé (y compris pendant la relecture) ; local 21/21 ; production : 401 sur toute signature invalide ; **0 événement réel reçu** | paiement sandbox réel (propriétaire, clés renouvelées) |
 | MCP Notch Pay | 🟡 | **v3 déployée** (= `d695001`) : clé en en-tête seulement, `?key=` refusé en production ; Verify JWT actif conservé ; local 27/27 | appel authentifié avec la vraie clé (propriétaire, INTERVENTIONS §9) |

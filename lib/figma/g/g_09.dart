@@ -117,7 +117,6 @@ class G_09 extends ConsumerWidget {
       gP(184, 833, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 831.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       gTap(26, 64, 22, 22, () => gOpen(context, '08')),
-      gTap(24, 64, 342, 28, () => gOpen(context, '111')),
       gTap(274, 122, 86, 27, () { final o = ref.read(viewedOrderProvider); ref.read(ordersProvider.notifier).advance(o.id); gToast(context, 'Statut de la commande mis à jour'); }),
     ]);
   }

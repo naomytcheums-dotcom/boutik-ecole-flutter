@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../gen.dart';
 import '../nav.dart';
 import 'access.dart';
 import 'auth.dart';
-import 'espace.dart';
 import 'feedback.dart';
 import 'lots.dart';
 import 'services.dart';
@@ -106,6 +104,8 @@ final _groups = <_Group>[
     _Entry('Projets à examiner', action: reviewProjectsDialog, roles: {'dept', 'admin'}),
     _Entry('Attribuer un besoin', action: _assign, roles: {'dept', 'admin'}),
     _Entry('Émettre un certificat', action: issueCertificateDialog, roles: {'dept', 'admin'}),
+    _Entry('Révoquer un certificat', action: revokeCertificateDialog, roles: {'dept', 'admin'}),
+    _Entry('Demandes de certification (badge)', action: certificationRequestsDialog, roles: {'admin'}),
     _Entry('Journal des incidents des bornes', action: kioskIncidentsDialog, roles: {'support', 'admin'}),
     _Entry('Remettre une commande (code de retrait)', action: confirmPickupDialog, roles: {'support', 'admin'}),
     _Entry('Établissement et identité visuelle', screen: '118', roles: {'direction', 'admin'}),
@@ -129,6 +129,7 @@ final _groups = <_Group>[
     _Entry('Centre de confiance', screen: '174'),
     _Entry('Aide et support', screen: '49'),
     _Entry('Guide d’utilisation', screen: '179'),
+    _Entry('Premiers pas (client)', screen: '176', roles: {'client'}),
     _Entry('Canaux et notifications', screen: '236'),
     _Entry('Préférences d’alertes', screen: '156'),
     _Entry('Mes besoins publiés', action: myNeedsDialog),

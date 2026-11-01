@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import 'audit.dart';
 import 'backend.dart';
+import 'drafts.dart';
 import '../nav.dart';
 
 /// Comptes, connexion, inscription, vérification et profil (écrans 10 à 18c).
@@ -105,6 +106,7 @@ class AuthNotifier extends Notifier<AuthState> {
   void login(Account a) => state = state.copy(current: a);
   void logout() {
     saveRemembered(null);
+    Drafts.clearAll(); // brouillons de cet appareil : jamais visibles par l'utilisateur suivant
     Backend.signOut();
     state = state.copy(clearCurrent: true);
     appReset?.call(); // aucun état du compte précédent ne survit (formulaires, annonces, panier, commandes…)
@@ -132,7 +134,7 @@ final profileAccountProvider = Provider<Account>((ref) {
 /// Valeurs saisies dans les formulaires (clé → texte) et messages d'erreur (clé → message).
 class FormValues extends Notifier<Map<String, String>> {
   @override
-  Map<String, String> build() => const {};
+  Map<String, String> build() => {...Drafts.values};
   void put(String k, String v) => state = {...state, k: v};
   String get(String k) => state[k] ?? '';
   void clear(Iterable<String> keys) => state = {for (final e in state.entries) if (!keys.contains(e.key)) e.key: e.value};
@@ -267,6 +269,8 @@ Future<Account?> loadRemembered() async {
       // Avec le serveur : on ne reprend que la session réelle du titulaire qui a coché « Se souvenir de moi », sinon on la ferme.
       final live = Backend.sessionEmail;
       if (live == null) return null;
+      // Session ouverte par un lien de réinitialisation : conservée (sans connecter le compte) jusqu'au nouveau mot de passe (écran 16).
+      if (Backend.recovery.value) return null;
       if (e == null || e.toLowerCase() != live.toLowerCase()) {
         await Backend.signOut();
         return null;
@@ -416,6 +420,28 @@ void submitSignup(WidgetRef ref, BuildContext context) {
   gOpen(context, '14');
 }
 
+/// Écran 14 « Renvoyer le code ». Avec le serveur, la vérification du compte se fait par un lien e-mail (Supabase Auth) :
+/// on renvoie ce lien, et rien n'est annoncé comme envoyé sans réponse du serveur.
+Future<void> resendSignupCode(WidgetRef ref, BuildContext context) async {
+  if (!Backend.ready) {
+    gToast(context, 'Nouveau code envoyé (démonstration : $demoCode)');
+    return;
+  }
+  final email = (ref.read(authProvider).pending?.email ?? Backend.sessionEmail ?? '').trim();
+  if (email.isEmpty || !email.contains('@')) {
+    await gAlert(context, 'Confirmation par e-mail',
+        'La vérification du compte se fait par le lien envoyé à votre adresse e-mail lors de l’inscription. Inscrivez-vous, puis ouvrez ce lien.');
+    return;
+  }
+  final err = await Backend.resendSignupConfirmation(email);
+  if (!context.mounted) return;
+  if (err != null) {
+    await gAlert(context, 'Envoi impossible', err);
+    return;
+  }
+  gToast(context, 'Lien de confirmation renvoyé à $email');
+}
+
 void submitOtp(WidgetRef ref, BuildContext context) {
   final code = ref.read(formProvider)['otp'] ?? '';
   if (code.length < 6) {
@@ -489,11 +515,35 @@ void submitForgot(WidgetRef ref, BuildContext context) {
   final id = (ref.read(formProvider)['fg_id'] ?? '').trim();
   final err = id.isEmpty ? 'Saisissez votre téléphone ou votre e-mail.' : (id.contains('@') ? validEmail(id) : validPhone(id));
   if (err != null) return _errors(ref, {'fg_id': err});
+  if (Backend.ready) {
+    _serverForgot(ref, context, id);
+    return;
+  }
   final exists = ref.read(authProvider).accounts.any((a) => id.contains('@') ? a.email.toLowerCase() == id.toLowerCase() : a.phone == normPhone(id));
   ref.read(errorsProvider.notifier).clear();
   ref.read(formProvider.notifier).put('fg_target', id);
   gToast(context, exists ? 'Code de réinitialisation envoyé (démonstration : $demoCode)' : 'Si un compte existe, un code a été envoyé.');
   gOpen(context, '16');
+}
+
+/// Avec le serveur : lien de réinitialisation envoyé par Supabase Auth. Rien n'est annoncé comme envoyé sans réponse du serveur ;
+/// la réponse est identique que le compte existe ou non.
+Future<void> _serverForgot(WidgetRef ref, BuildContext context, String id) async {
+  if (!id.contains('@')) {
+    _errors(ref, {'fg_id': 'Saisissez l’adresse e-mail du compte : la réinitialisation par SMS n’est pas disponible.'});
+    return;
+  }
+  ref.read(errorsProvider.notifier).clear();
+  final err = await Backend.resetPassword(id);
+  if (!context.mounted) return;
+  if (err != null) {
+    await gAlert(context, 'Envoi impossible', err);
+    return;
+  }
+  await gAlert(context, 'Vérifiez votre boîte e-mail',
+      'Si un compte existe pour $id, un lien de réinitialisation vient d’être envoyé.\n\nOuvrez-le dans ce navigateur : vous pourrez alors choisir un nouveau mot de passe.',
+      button: 'Retour à la connexion');
+  if (context.mounted) gOpen(context, '11');
 }
 
 void submitReset(WidgetRef ref, BuildContext context) {
@@ -503,6 +553,10 @@ void submitReset(WidgetRef ref, BuildContext context) {
     'rs_pw2': (f['rs_pw'] ?? '') == (f['rs_pw2'] ?? '') && (f['rs_pw2'] ?? '').isNotEmpty ? null : 'Les mots de passe ne correspondent pas.',
   };
   if (errs.values.any((e) => e != null)) return _errors(ref, errs);
+  if (Backend.ready) {
+    _serverReset(ref, context, f['rs_pw']!);
+    return;
+  }
   final id = f['fg_target'] ?? '';
   final accounts = ref.read(authProvider).accounts;
   for (final a in accounts) {
@@ -512,6 +566,21 @@ void submitReset(WidgetRef ref, BuildContext context) {
   }
   ref.read(errorsProvider.notifier).clear();
   gToast(context, 'Mot de passe modifié. Connectez-vous.');
+  gOpen(context, '11');
+}
+
+/// Avec le serveur : le mot de passe n'est annoncé comme modifié qu'après confirmation de Supabase Auth.
+Future<void> _serverReset(WidgetRef ref, BuildContext context, String password) async {
+  final err = await Backend.updatePassword(password);
+  if (!context.mounted) return;
+  if (err != null) {
+    await gAlert(context, 'Mot de passe non modifié', err);
+    if (context.mounted && !Backend.recovery.value) gOpen(context, '15');
+    return;
+  }
+  ref.read(errorsProvider.notifier).clear();
+  ref.read(formProvider.notifier).clear(const ['rs_pw', 'rs_pw2']);
+  gToast(context, 'Mot de passe modifié. Connectez-vous avec le nouveau mot de passe.');
   gOpen(context, '11');
 }
 

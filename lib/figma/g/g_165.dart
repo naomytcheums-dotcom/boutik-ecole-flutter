@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/drafts.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_165 extends ConsumerWidget {
@@ -47,18 +48,18 @@ class G_165 extends ConsumerWidget {
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 162, 26, gText('Dépôt du projet', 21, Color(0xFF111015), weight: 700)),
       gP(24, 120, 84, 16, gText('Titre du projet', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 140, 342, 48, GField(hint: '', initial: 'Paiement mobile hors connexion', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('dp_title', v); })),
+      gP(24, 140, 342, 48, GField(hint: '', initial: draftValue('dp_title', 'Paiement mobile hors connexion'), size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('dp_title', v); })),
       errorText('dp_title', 28, 190),
       gP(40.5, 153.5, 15, 15, gImg('assets/figma/v/a49ecdd3bef596.svg')),
       gP(42.75, 165.5, 10.5, 6, gImg('assets/figma/v/2e2c4a27235860.svg')),
       gP(43.5, 168.5, 9, 6, gImg('assets/figma/v/ab681c73d5c7eb.svg')),
       gP(24, 202, 135, 16, gText('Lien de démonstration', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 222, 342, 48, GField(hint: 'https://…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('dp_link', v); })),
+      gP(24, 222, 342, 48, GField(hint: 'https://…', initial: draftValue('dp_link'), size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('dp_link', v); })),
       errorText('dp_link', 28, 272),
       gP(43.5, 235.55, 14.958, 15.704, gImg('assets/figma/v/7b6505e6afcc56.svg')),
       gP(37.542, 240.746, 14.958, 15.704, gImg('assets/figma/v/bfdb4a351b8df0.svg')),
       gP(24, 284, 71, 16, gText('Description', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 304, 342, 96, GField(hint: 'Problème, solution, impact attendu…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, onChanged: (v) { ref.read(formProvider.notifier).put('dp_desc', v); }, multiline: true, padT: 14)),
+      gP(24, 304, 342, 96, GField(hint: 'Problème, solution, impact attendu…', initial: draftValue('dp_desc'), size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, onChanged: (v) { ref.read(formProvider.notifier).put('dp_desc', v); }, multiline: true, padT: 14)),
       errorText('dp_desc', 28, 402),
       gP(36, 427, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(45.5, 446.5, 21, 11, gImg('assets/figma/v/446cc0970fc579.svg')),
@@ -87,7 +88,7 @@ class G_165 extends ConsumerWidget {
       gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27])),
       gP(246.5, 778, 76, 18, gText('Soumettre', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
-      gTap(24, 760, 163, 54, () { gToast(context, 'Brouillon enregistré'); }),
+      gTap(24, 760, 163, 54, () { saveDraft(context, ref, '165', const ['dp_title', 'dp_link', 'dp_desc']); }),
       gTap(203, 760, 163, 54, () { submitDeposit(ref, context); }),
     ]);
   }

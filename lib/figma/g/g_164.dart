@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/engage.dart' show unavailableAction;
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_164 extends ConsumerWidget {
@@ -98,7 +99,7 @@ class G_164 extends ConsumerWidget {
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gTap(203, 760, 163, 54, () { gOpen(context, '165'); }),
       gTap(24, 760, 163, 54, () { gToast(context, 'Discussion d’équipe : bientôt disponible'); }),
-      gTap(296, 640, 48, 30, () { gToast(context, 'Message envoyé au mentor'); }),
+      gTap(296, 640, 48, 30, () { unavailableAction(context, 'Messagerie des mentors', 'L’échange avec les mentors n’est pas encore ouvert dans l’application : aucun message n’a été envoyé. Contactez votre mentor lors des points de suivi.'); }),
     ]);
   }
 }

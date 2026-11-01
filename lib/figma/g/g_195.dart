@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/drafts.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_195 extends ConsumerWidget {
@@ -71,7 +72,7 @@ class G_195 extends ConsumerWidget {
       gP(88, 444, 107, 14, gText('2 minutes maximum', 11.5, Color(0xFF66636E))),
       gP(336.75, 435.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
       gP(24, 490, 112, 16, gText('Ce qui a été réalisé', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 510, 342, 96, GField(hint: '', initial: 'Trois pistes de logo, déclinées en couleur et noir et blanc.', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 16, onChanged: (v) { ref.read(formProvider.notifier).put('ms_proof', v); }, multiline: true, padT: 14)),
+      gP(24, 510, 342, 96, GField(hint: '', initial: draftValue('ms_proof', 'Trois pistes de logo, déclinées en couleur et noir et blanc.'), size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 16, onChanged: (v) { ref.read(formProvider.notifier).put('ms_proof', v); }, multiline: true, padT: 14)),
       errorText('ms_proof', 28, 608),
       gP(24, 620, 342, 62, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
       gP(36, 635, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
@@ -85,7 +86,7 @@ class G_195 extends ConsumerWidget {
       gP(202.5, 778, 164, 18, gText('Envoyer pour validation', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gTap(203, 760, 163, 54, () { submitProof(ref, context); }),
-      gTap(24, 760, 163, 54, () { gToast(context, 'Brouillon enregistré'); }),
+      gTap(24, 760, 163, 54, () { saveDraft(context, ref, '195', const ['ms_proof']); }),
     ]);
   }
 }

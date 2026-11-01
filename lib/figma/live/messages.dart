@@ -7,6 +7,7 @@ import '../gen.dart';
 import '../nav.dart';
 import 'auth.dart';
 import 'backend.dart';
+import 'seller.dart' show currentSellerOrderProvider;
 import 'store.dart';
 
 /// Messagerie réelle : conversations et messages enregistrés sur le serveur, visibles des seuls participants (RLS).
@@ -89,6 +90,25 @@ Future<void> contactOrderSeller(WidgetRef ref, BuildContext context) async {
   if (!context.mounted) return;
   final o = ref.read(viewedOrderProvider);
   final r = await Backend.startOrderConversation(o.id, 'Bonjour, je vous écris au sujet de la commande ${o.id}.');
+  if (!context.mounted) return;
+  if (r.error != null) return gAlert(context, 'Message non envoyé', r.error!);
+  ref.read(selectedConversationProvider.notifier).set(r.id!);
+  await ref.read(conversationsProvider.notifier).refresh();
+  if (context.mounted) gOpen(context, '54');
+}
+
+/// 64 « Signaler un souci » pendant la préparation : le vendeur écrit à l'acheteur dans la conversation de la commande
+/// (le serveur vérifie qu'il vend bien un article de cette commande). Avant : faux message « Signalement envoyé au département ».
+Future<void> contactOrderBuyer(WidgetRef ref, BuildContext context) async {
+  if (!Backend.ready) {
+    gToast(context, 'La messagerie nécessite la connexion au serveur.');
+    return;
+  }
+  if (!await requireLogin(context, ref, 'écrire à l’acheteur')) return;
+  if (!context.mounted) return;
+  final id = ref.read(currentSellerOrderProvider).id;
+  if (id.isEmpty) return gAlert(context, 'Aucune commande', 'Choisissez d’abord la commande à préparer.');
+  final r = await Backend.startOrderConversation(id, 'Bonjour, je vous écris au sujet de la préparation de la commande $id.');
   if (!context.mounted) return;
   if (r.error != null) return gAlert(context, 'Message non envoyé', r.error!);
   ref.read(selectedConversationProvider.notifier).set(r.id!);

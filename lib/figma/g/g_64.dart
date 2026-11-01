@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/messages.dart' show contactOrderBuyer;
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_64 extends ConsumerWidget {
@@ -90,7 +91,7 @@ class G_64 extends ConsumerWidget {
       orderActionText(203, 778, 163),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gTap(203, 760, 163, 54, () { advanceCurrentOrder(ref, context); }),
-      gTap(24, 760, 163, 54, () { gToast(context, 'Signalement envoyé au département'); }),
+      gTap(24, 760, 163, 54, () { contactOrderBuyer(ref, context); }),
     ]);
   }
 }

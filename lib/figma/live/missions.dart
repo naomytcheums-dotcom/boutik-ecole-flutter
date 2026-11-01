@@ -7,6 +7,10 @@ import '../gen.dart';
 import '../nav.dart';
 import 'audit.dart';
 import 'auth.dart';
+import 'backend.dart';
+import 'drafts.dart';
+import 'engage.dart' show unavailableAction;
+import 'lots.dart' show publishMissionBrief, myNeedsDialog, myMissionsDialog;
 import 'seller.dart';
 import 'store.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
@@ -196,6 +200,10 @@ void submitBrief(WidgetRef ref, BuildContext context) {
   }
   ref.read(errorsProvider.notifier).clear();
   final kind = missionKinds[ref.read(missionKindProvider).clamp(0, 5)];
+  if (Backend.ready) {
+    _serverBrief(context, ref, kind, desc);
+    return;
+  }
   final id = '#BR-${(413 + DateTime.now().second).toString().padLeft(4, '0')}';
   ref.read(missionProvider.notifier).create(Mission(id: id, kind: kind, desc: desc, total: 180000, date: _today()));
   ref.read(auditProvider.notifier).log(ref.read(profileAccountProvider).name, 'Brief envoyé', '$id · $kind', 'Validations');
@@ -203,13 +211,33 @@ void submitBrief(WidgetRef ref, BuildContext context) {
   gOpen(context, '192');
 }
 
+/// Avec le serveur, le parcours de mission (191 à 201) passe par les fonctions serveur (missions, propositions, jalons) :
+/// la mission d'exemple de la maquette n'est jamais modifiée ni présentée comme réelle, et aucun paiement n'est simulé.
+Future<void> _serverBrief(BuildContext context, WidgetRef ref, String kind, String desc) async {
+  if (!await publishMissionBrief(context, ref, kind, desc) || !context.mounted) return;
+  ref.read(formProvider.notifier).clear(const ['ms_desc']);
+  gToast(context, 'Besoin envoyé : le département qualifie les équipes et vous transmet les propositions.');
+  await myNeedsDialog(context, ref);
+}
+
+Future<void> _milestonePaymentUnavailable(BuildContext context) => unavailableAction(context, 'Paiement du jalon indisponible',
+    'Le financement des jalons en séquestre passe par le paiement Mobile Money, qui n’est pas encore activé : aucun montant n’a été prélevé ni bloqué.');
+
 void acceptQuote(WidgetRef ref, BuildContext context) {
+  if (Backend.ready) {
+    myNeedsDialog(context, ref); // propositions réellement reçues : accepter ou refuser
+    return;
+  }
   ref.read(missionProvider.notifier).accept();
   ref.read(auditProvider.notifier).log(ref.read(profileAccountProvider).name, 'Devis accepté', ref.read(missionProvider).id, 'Finances');
   gOpen(context, '193');
 }
 
 void payNextMilestone(WidgetRef ref, BuildContext context) {
+  if (Backend.ready) {
+    _milestonePaymentUnavailable(context);
+    return;
+  }
   final m = ref.read(missionProvider);
   if (m.funded >= 3) {
     gToast(context, 'Tous les jalons sont déjà financés.');
@@ -224,6 +252,10 @@ void payNextMilestone(WidgetRef ref, BuildContext context) {
 }
 
 void submitProof(WidgetRef ref, BuildContext context) {
+  if (Backend.ready) {
+    myMissionsDialog(context, ref); // missions réellement obtenues : livraison du jalon (submit_milestone)
+    return;
+  }
   final f = ref.read(formProvider);
   final txt = (f['ms_proof'] ?? 'Trois pistes de logo, déclinées en couleurs').trim();
   final m = ref.read(missionProvider);
@@ -241,12 +273,17 @@ void submitProof(WidgetRef ref, BuildContext context) {
   }
   ref.read(errorsProvider.notifier).clear();
   ref.read(missionProvider.notifier).sendProof();
+  Drafts.clear('195', const ['ms_proof']);
   ref.read(auditProvider.notifier).log(ref.read(profileAccountProvider).name, 'Preuve envoyée', m.id, 'Validations');
   gToast(context, 'Preuve envoyée : le client est notifié');
   gOpen(context, '201');
 }
 
 void releaseMilestone(WidgetRef ref, BuildContext context) {
+  if (Backend.ready) {
+    myNeedsDialog(context, ref); // jalons réellement livrés : valider (decide_milestone) ou demander une correction
+    return;
+  }
   final m = ref.read(missionProvider);
   if (m.proof <= m.released) {
     gToast(context, 'Aucune preuve à valider pour le moment.');
@@ -260,6 +297,10 @@ void releaseMilestone(WidgetRef ref, BuildContext context) {
 }
 
 void askCorrection(WidgetRef ref, BuildContext context) {
+  if (Backend.ready) {
+    myNeedsDialog(context, ref); // « demander une correction » sur un jalon réellement livré (decide_milestone)
+    return;
+  }
   final m = ref.read(missionProvider);
   if (m.proof <= m.released) {
     gToast(context, 'Aucune preuve à corriger.');

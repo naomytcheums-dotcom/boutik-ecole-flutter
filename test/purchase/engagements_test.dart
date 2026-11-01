@@ -2,7 +2,6 @@ import 'package:boutik_ecole/figma/g/g_101.dart';
 import 'package:boutik_ecole/figma/g/g_156.dart';
 import 'package:boutik_ecole/figma/g/g_236.dart';
 import 'package:boutik_ecole/figma/gen.dart';
-import 'package:boutik_ecole/figma/gsound.dart';
 import 'package:boutik_ecole/figma/live/backend.dart';
 import 'package:boutik_ecole/figma/live/engage.dart';
 import 'package:boutik_ecole/figma/live/store.dart';

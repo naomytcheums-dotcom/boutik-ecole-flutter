@@ -74,7 +74,7 @@ class G_14 extends ConsumerWidget {
       gP(165.166, 157.833, 46.667, 46.667, gImg('assets/figma/r/178_22.png')),
       gP(211, 182.834, 38.333, 30, gImg('assets/figma/r/178_23.png')),
       gTap(24, 598, 342, 54, () { submitOtp(ref, context); }),
-      gTap(103, 530, 184, 30, () { gToast(context, 'Nouveau code envoyé (démonstration : 482917)'); }),
+      gTap(103, 530, 184, 30, () { resendSignupCode(ref, context); }),
       gTap(132, 679, 126, 18, () { gOpen(context, '12'); }),
     ]);
   }

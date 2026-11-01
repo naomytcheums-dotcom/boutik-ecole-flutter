@@ -4,9 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'core/router/app_router.dart';
+import 'core/router/paths.dart';
 import 'core/state/app_settings.dart';
 import 'core/theme/app_theme.dart';
 import 'figma/live/auth.dart' show appSessionExpired;
+import 'figma/live/backend.dart';
 import 'figma/live/system_states.dart';
 import 'l10n/gen/app_localizations.dart';
 
@@ -23,7 +25,20 @@ class _BoutikEcoleAppState extends ConsumerState<BoutikEcoleApp> {
   late final GoRouter _router = buildRouter(initial: widget.initialLocation);
 
   @override
+  void initState() {
+    super.initState();
+    // Lien de réinitialisation ouvert (session de récupération) : écran 16 « Nouveau mot de passe ».
+    Backend.recovery.addListener(_onRecovery);
+    if (Backend.recovery.value) WidgetsBinding.instance.addPostFrameCallback((_) => _onRecovery());
+  }
+
+  void _onRecovery() {
+    if (mounted && Backend.recovery.value) _router.go(screenPath('16'));
+  }
+
+  @override
   void dispose() {
+    Backend.recovery.removeListener(_onRecovery);
     _router.dispose();
     super.dispose();
   }

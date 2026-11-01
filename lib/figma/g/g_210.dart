@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/engage.dart' show unavailableAction;
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_210 extends ConsumerWidget {
@@ -110,7 +111,7 @@ class G_210 extends ConsumerWidget {
       gP(288.75, 190.75, 142.5, 142.5, gImg('assets/figma/r/178_50.png')),
       gP(326.25, 237.625, 67.5, 55, gImg('assets/figma/r/178_51.png')),
       gTap(446, 1100, 144, 92, () => gOpen(context, '237')),
-      gTap(130, 1100, 300, 92, () { gToast(context, 'Ticket envoyé à l’imprimante de la borne'); }),
+      gTap(130, 1100, 300, 92, () { unavailableAction(context, 'Impression indisponible', 'Cette borne n’est pas reliée à une imprimante : aucun ticket n’a été imprimé. Le lien du produit est déjà sur votre téléphone.'); }),
     ]);
   }
 }

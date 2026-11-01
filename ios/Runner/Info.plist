@@ -66,5 +66,13 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Boutik-École utilise le micro pour vos messages vocaux et pour parler à l’assistante Kéla.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Boutik-École transcrit votre voix en texte quand vous dictez une demande à l’assistante Kéla.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Boutik-École utilise l’appareil photo pour photographier vos produits, preuves de mission et pièces jointes.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Boutik-École accède à vos photos pour illustrer vos annonces et joindre des images à vos messages.</string>
 </dict>
 </plist>

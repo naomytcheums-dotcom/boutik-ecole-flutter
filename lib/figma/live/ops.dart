@@ -19,10 +19,58 @@ const _st = TextStyle(inherit: false, fontFamily: 'PlusJakartaSans', fontSize: 1
 // ------------------------------------------------------------------ signalements
 
 class Report {
-  const Report(this.title, this.type, this.received, this.assignee, this.status, {this.listing = ''});
+  const Report(this.title, this.type, this.received, this.assignee, this.status, {this.listing = '', this.id = '', this.listingId = ''});
   final String title, type, received, assignee, status, listing;
-  Report copy({String? assignee, String? status}) => Report(title, type, received, assignee ?? this.assignee, status ?? this.status, listing: listing);
+
+  /// Annonce signalée (listings.id), pour son retrait par la modération.
+  final String listingId;
+
+  /// Identifiant serveur (listing_reports.id) ; vide pour les signalements d'exemple hors connexion.
+  final String id;
+  Report copy({String? assignee, String? status}) => Report(title, type, received, assignee ?? this.assignee, status ?? this.status, listing: listing, id: id, listingId: listingId);
 }
+
+/// Statuts serveur (listing_reports.status) et libellés affichés.
+const _reportStatusLabels = {'open': 'Ouvert', 'reviewing': 'En traitement', 'closed': 'Résolu'};
+const _reportReasonLabels = {'fraud': 'Fraude', 'copied': 'Propriété', 'price': 'Prix', 'other': 'Contenu'};
+
+String _received(String iso) {
+  final d = DateTime.tryParse(iso)?.toLocal();
+  if (d == null) return '';
+  final m = DateTime.now().difference(d).inMinutes;
+  if (m < 60) return 'Il y a ${m < 1 ? 1 : m} min';
+  if (m < 1440) return 'Il y a ${m ~/ 60} h';
+  return 'Il y a ${m ~/ 1440} j';
+}
+
+/// Signalements réels lus par la modération (support, département, administration).
+class ServerReports extends Notifier<List<Report>> {
+  @override
+  List<Report> build() {
+    if (Backend.ready) Future.microtask(refresh);
+    return const [];
+  }
+
+  Future<void> refresh() async {
+    final rows = await Backend.moderationReports();
+    if (rows == null) return;
+    state = [
+      for (final r in rows)
+        Report(
+          'Annonce « ${(r['listings'] is Map ? r['listings']['title'] : null) ?? 'supprimée'} »',
+          _reportReasonLabels[r['reason']] ?? 'Autre',
+          _received('${r['created_at'] ?? ''}'),
+          'Non assigné',
+          _reportStatusLabels[r['status']] ?? 'Ouvert',
+          listing: '${(r['listings'] is Map ? r['listings']['title'] : null) ?? ''}',
+          id: '${r['id'] ?? ''}',
+          listingId: '${r['listing_id'] ?? ''}',
+        ),
+    ];
+  }
+}
+
+final serverReportsProvider = NotifierProvider<ServerReports, List<Report>>(ServerReports.new);
 
 const _seedReports = [
   Report('Annonce frauduleuse', 'Fraude', 'Il y a 1 h', 'Support 01', 'Urgent'),
@@ -49,7 +97,9 @@ class ReportEdits extends Notifier<Map<String, (String, String)>> {
 
 final reportEditsProvider = NotifierProvider<ReportEdits, Map<String, (String, String)>>(ReportEdits.new);
 
+/// Avec le serveur : les signalements réels uniquement. Hors connexion (tests, aperçu) : signalements d'exemple de la maquette.
 final allReportsProvider = Provider<List<Report>>((ref) {
+  if (Backend.ready) return ref.watch(serverReportsProvider);
   final edits = ref.watch(reportEditsProvider);
   return [
     ...ref.watch(reportsProvider),
@@ -59,8 +109,10 @@ final allReportsProvider = Provider<List<Report>>((ref) {
 
 int _count(List<Report> l, String s) => l.where((r) => r.status == s || (s == 'Ouvert' && r.status == 'Urgent')).length;
 
-/// Compteurs de la maquette (27 ouverts, 11 en traitement, 142 résolus) ajustés par les changements.
+/// Compteurs : avec le serveur, décompte exact des signalements réels ; hors connexion, compteurs de la maquette
+/// (27 ouverts, 11 en traitement, 142 résolus) ajustés par les changements.
 ({int open, int work, int done}) reportCounters(List<Report> all) {
+  if (Backend.ready) return (open: _count(all, 'Ouvert'), work: _count(all, 'En traitement'), done: _count(all, 'Résolu'));
   final base = _seedReports;
   return (
     open: 27 + _count(all, 'Ouvert') - _count(base, 'Ouvert'),
@@ -109,7 +161,7 @@ Future<void> reportDialog(BuildContext context, WidgetRef ref, Report r) {
   var status = r.status == 'Urgent' ? 'Ouvert' : r.status;
   var who = r.assignee == 'Non assigné' ? 'Support 01' : r.assignee;
   var remove = false;
-  final canRemove = r.listing.isNotEmpty && ref.read(listingsProvider).any((l) => l.title == r.listing);
+  final canRemove = Backend.ready ? r.listingId.isNotEmpty : r.listing.isNotEmpty && ref.read(listingsProvider).any((l) => l.title == r.listing);
   return gDialog<void>(
     context: context,
     builder: (ctx) => StatefulBuilder(
@@ -128,13 +180,14 @@ Future<void> reportDialog(BuildContext context, WidgetRef ref, Report r) {
               items: [for (final s in const ['Ouvert', 'En traitement', 'Résolu']) DropdownMenuItem(value: s, child: Text('Statut : $s', style: _st))],
               onChanged: (v) => set(() => status = v ?? status),
             ),
-            DropdownButton<String>(
-              value: who,
-              isExpanded: true,
-              style: _st,
-              items: [for (final s in const ['Support 01', 'Support 02', 'Support 03']) DropdownMenuItem(value: s, child: Text('Assigné à : $s', style: _st))],
-              onChanged: (v) => set(() => who = v ?? who),
-            ),
+            if (!Backend.ready)
+              DropdownButton<String>(
+                value: who,
+                isExpanded: true,
+                style: _st,
+                items: [for (final s in const ['Support 01', 'Support 02', 'Support 03']) DropdownMenuItem(value: s, child: Text('Assigné à : $s', style: _st))],
+                onChanged: (v) => set(() => who = v ?? who),
+              ),
             if (canRemove)
               CheckboxListTile(
                 contentPadding: EdgeInsets.zero,
@@ -147,7 +200,30 @@ Future<void> reportDialog(BuildContext context, WidgetRef ref, Report r) {
         actions: [
           TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text('Annuler', style: _st)),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
+              if (Backend.ready) {
+                // Statut enregistré par le serveur ; rien n'est annoncé sans sa confirmation.
+                if (r.id.isEmpty) return;
+                final code = _reportStatusLabels.entries.firstWhere((e) => e.value == status, orElse: () => const MapEntry('open', 'Ouvert')).key;
+                final err = await Backend.setReportStatus(r.id, code);
+                if (!ctx.mounted) return;
+                if (err != null) {
+                  await gAlert(ctx, 'Signalement non modifié', err);
+                  return;
+                }
+                var removed = false;
+                if (remove) {
+                  final e2 = await Backend.decideListing(r.listingId, false, 'Retirée par la modération à la suite d’un signalement');
+                  if (!ctx.mounted) return;
+                  if (e2 != null) await gAlert(ctx, 'Annonce non retirée', e2);
+                  removed = e2 == null;
+                }
+                if (!ctx.mounted) return;
+                Navigator.of(ctx).pop();
+                await ref.read(serverReportsProvider.notifier).refresh();
+                if (context.mounted) gToast(context, removed ? 'Statut enregistré, annonce retirée du catalogue' : 'Statut enregistré par le serveur');
+                return;
+              }
               final rn = ref.read(reportsProvider.notifier);
               if (ref.read(reportsProvider).any((x) => identical(x, r))) {
                 rn.replace(r, r.copy(status: status, assignee: who));

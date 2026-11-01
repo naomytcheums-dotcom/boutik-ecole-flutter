@@ -5,9 +5,22 @@ import '../gen.dart';
 import '../nav.dart';
 import 'audit.dart';
 import 'auth.dart';
+import 'backend.dart';
+import 'drafts.dart';
+import 'engage.dart' show engageAction, unavailableAction;
 import 'store.dart';
 
 /// Hackathons et concours : agenda, inscription d'équipe, coéquipiers, dépôt, jury, classement (écrans 160 à 167).
+/// Avec le serveur : l'inscription est un engagement réel (event_registration) ; le dépôt, la notation du jury et les invitations
+/// de coéquipiers n'ont pas encore de fonction serveur et l'expliquent au lieu de simuler un envoi ; le classement n'affiche
+/// aucune équipe fictive.
+
+/// Explique qu'une étape du concours n'est pas encore reliée au serveur (jamais de faux succès en production).
+bool _notYetOnServer(BuildContext context, String title, String why) {
+  if (!Backend.ready) return false;
+  unavailableAction(context, title, why);
+  return true;
+}
 
 class Hackathon {
   const Hackathon(this.id, this.title, this.dates, this.city, this.prize, this.places, this.status, {this.free = false, this.hours = 48, this.desc = ''});
@@ -110,6 +123,10 @@ Color inviteFill(bool invited) => invited ? const Color(0xFFDDF5EC) : const Colo
 Color inviteInk(bool invited) => invited ? const Color(0xFF0F7A52) : const Color(0xFF5A3FE0);
 
 void toggleInvite(WidgetRef ref, BuildContext context, Mate m) {
+  if (_notYetOnServer(context, 'Invitations indisponibles',
+      'L’invitation de coéquipiers n’est pas encore reliée au serveur : aucune invitation n’est envoyée. Contactez vos coéquipiers par la messagerie.')) {
+    return;
+  }
   final n = ref.read(teamMembersProvider.notifier);
   if (n.has(m.name)) {
     n.remove(m.name);
@@ -154,6 +171,10 @@ void submitRegistration(WidgetRef ref, BuildContext context) {
     return;
   }
   ref.read(errorsProvider.notifier).clear();
+  if (Backend.ready) {
+    _serverRegistration(ref, context, ev, name, theme);
+    return;
+  }
   ref.read(registrationsProvider.notifier).add(Registration(ev.id, name, theme));
   ref.read(auditProvider.notifier).log(ref.read(profileAccountProvider).name, 'Équipe inscrite', '$name · ${ev.title}', 'Validations');
   gToast(context, 'Inscription validée : ${ev.title}');
@@ -161,6 +182,16 @@ void submitRegistration(WidgetRef ref, BuildContext context) {
 }
 
 // ------------------------------------------------------------------ dépôt (165), jury (167), classement (166)
+
+/// Inscription enregistrée côté serveur (engagement « event_registration ») ; l'état local ne suit qu'après confirmation.
+Future<void> _serverRegistration(WidgetRef ref, BuildContext context, Hackathon ev, String name, String theme) async {
+  final ok = await engageAction(context, ref, 'event_registration', 'hackathon:${ev.id}',
+      data: {'team': name, 'theme': theme, 'event': ev.title}, success: 'Inscription enregistrée : ${ev.title}', need: 'inscrire votre équipe',
+      already: 'Votre équipe est déjà inscrite à ce concours.');
+  if (!ok || !context.mounted) return;
+  ref.read(registrationsProvider.notifier).add(Registration(ev.id, name, theme));
+  gOpen(context, '164');
+}
 
 class Submission {
   const Submission(this.team, this.title, this.link, this.desc, {this.points});
@@ -181,6 +212,10 @@ class Submissions extends Notifier<Submission?> {
 final submissionProvider = NotifierProvider<Submissions, Submission?>(Submissions.new);
 
 void submitDeposit(WidgetRef ref, BuildContext context) {
+  if (_notYetOnServer(context, 'Dépôt non disponible',
+      'Le dépôt des projets de concours n’est pas encore relié au serveur : rien n’est transmis au jury. Gardez votre brouillon (« Enregistrer ») et remettez le projet aux organisateurs.')) {
+    return;
+  }
   final f = ref.read(formProvider);
   final title = (f['dp_title'] ?? 'Paiement mobile hors connexion').trim();
   final link = (f['dp_link'] ?? '').trim();
@@ -197,6 +232,7 @@ void submitDeposit(WidgetRef ref, BuildContext context) {
   ref.read(errorsProvider.notifier).clear();
   final reg = ref.read(registrationsProvider).values.isEmpty ? null : ref.read(registrationsProvider).values.first;
   ref.read(submissionProvider.notifier).submit(Submission(reg?.teamName ?? 'Team Innov’', title, link, desc));
+  Drafts.clear('165', const ['dp_title', 'dp_link', 'dp_desc']);
   ref.read(auditProvider.notifier).log(ref.read(profileAccountProvider).name, 'Projet déposé', title, 'Validations');
   gToast(context, 'Projet déposé : le jury le recevra après clôture');
   gOpen(context, '164');
@@ -222,10 +258,12 @@ const _seedRanking = [
   Ranked('Équipe Solaire+', 'Énergie hors réseau', 86),
 ];
 
-/// Classement : équipes de démonstration + projet déposé et noté par le jury.
+/// Classement : avec le serveur, seulement le projet réellement noté (aucune équipe fictive) ; hors connexion (tests, aperçu),
+/// équipes d'exemple de la maquette + projet déposé et noté par le jury.
 final rankingProvider = Provider<List<Ranked>>((ref) {
   final s = ref.watch(submissionProvider);
-  final base = [for (final r in _seedRanking) if (s == null || s.points == null || r.team != s.team) r];
+  final seeds = Backend.ready ? const <Ranked>[] : _seedRanking;
+  final base = [for (final r in seeds) if (s == null || s.points == null || r.team != s.team) r];
   final all = [...base, if (s != null && s.points != null) Ranked(s.team, s.title, s.points!)];
   all.sort((a, b) => b.pts.compareTo(a.pts));
   return all;
@@ -239,6 +277,10 @@ int provisionalRank(List<int> scores) {
 String ordinal(int n) => n == 1 ? '1er' : '${n}e';
 
 void validateJury(WidgetRef ref, BuildContext context) {
+  if (_notYetOnServer(context, 'Notation non disponible',
+      'La notation du jury n’est pas encore reliée au serveur : aucune note n’est enregistrée ni publiée. Les notes saisies restent affichées sur cet écran.')) {
+    return;
+  }
   final pts = (ref.read(scoresProvider).fold(0, (a, b) => a + b) * 100 / 40).round();
   final s = ref.read(submissionProvider);
   ref.read(auditProvider.notifier).log('Jury', 'Note validée', '${s?.title ?? 'Serre intelligente'} · $pts pts', 'Validations');

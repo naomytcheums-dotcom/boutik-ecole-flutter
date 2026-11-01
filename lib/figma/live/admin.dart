@@ -4,12 +4,33 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import 'audit.dart';
 import 'auth.dart';
+import 'backend.dart';
 
 /// Administration des comptes (écran 128) : liste, rôles, suspension.
 const staffRoles = ['Client', 'Étudiant-vendeur', 'Entreprise', 'Autre rôle', 'Resp. département', 'Direction', 'Finance', 'Support', 'Admin global'];
 
-/// Comptes affichés : les inscriptions récentes d'abord, puis les comptes de démonstration.
+/// Rôle serveur (app_role) correspondant à chaque libellé de [staffRoles], dans le même ordre.
+const staffRoleKeys = ['client', 'student', 'company', 'other', 'dept', 'direction', 'finance', 'support', 'admin'];
+
+/// Comptes du serveur, lus par l'administrateur (RLS) ; rechargés après chaque modification confirmée.
+class ServerAccounts extends Notifier<List<Account>> {
+  @override
+  List<Account> build() {
+    if (Backend.ready) Future.microtask(refresh);
+    return const [];
+  }
+
+  Future<void> refresh() async {
+    final l = await Backend.adminAccounts();
+    if (l != null) state = l;
+  }
+}
+
+final serverAccountsProvider = NotifierProvider<ServerAccounts, List<Account>>(ServerAccounts.new);
+
+/// Comptes affichés : avec le serveur, les comptes réels ; hors connexion (tests, aperçu), les inscriptions récentes puis les comptes de démonstration.
 final adminUsersProvider = Provider<List<Account>>((ref) {
+  if (Backend.ready) return ref.watch(serverAccountsProvider);
   final all = ref.watch(authProvider).accounts;
   final seeds = seedAccounts.map((s) => s.email).toSet();
   return [
@@ -54,8 +75,21 @@ Future<void> userDialog(BuildContext context, WidgetRef ref, Account a) {
         actions: [
           TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text('Annuler', style: st)),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
               final idx = staffRoles.indexOf(role);
+              if (Backend.ready) {
+                // Rien n'est annoncé comme enregistré sans confirmation du serveur.
+                final err = await Backend.adminSetAccount(a.serverId, staffRoleKeys[idx < 0 ? 0 : idx], suspended);
+                if (!ctx.mounted) return;
+                if (err != null) {
+                  await gAlert(ctx, 'Compte non modifié', err);
+                  return;
+                }
+                Navigator.of(ctx).pop();
+                await ref.read(serverAccountsProvider.notifier).refresh();
+                if (context.mounted) gToast(context, 'Compte mis à jour par le serveur');
+                return;
+              }
               final updated = a.copyWith(role: idx < 4 ? idx : a.role, staff: idx < 4 ? '' : role, suspended: suspended);
               ref.read(authProvider.notifier).update(updated);
               if (suspended != a.suspended) {

@@ -1,6 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Version publiée : accès au serveur Supabase (sans cette permission, seules les versions debug/profile se connectent). -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Messages vocaux (record) et dictée de l'assistante Kéla (speech_to_text). -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <application
-        android:label="boutik_ecole"
+        android:label="Boutik-École"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

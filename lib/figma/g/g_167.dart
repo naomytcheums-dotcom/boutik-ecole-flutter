@@ -80,7 +80,7 @@ class G_167 extends ConsumerWidget {
       gP(235, 778, 99, 18, gText('Valider la note', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gTap(203, 760, 163, 54, () { validateJury(ref, context); }),
-      gTap(24, 760, 163, 54, () { gToast(context, 'Note enregistrée en brouillon'); }),
+      gTap(24, 760, 163, 54, () { gToast(context, 'Notes gardées à l’écran pendant votre session : rien n’est transmis avant « Valider ».'); }),
       gTap(24, 208, 342, 44, () { ref.read(scoresProvider.notifier).bump(0); }),
       gTap(24, 252, 342, 44, () { ref.read(scoresProvider.notifier).bump(1); }),
       gTap(24, 296, 342, 44, () { ref.read(scoresProvider.notifier).bump(2); }),

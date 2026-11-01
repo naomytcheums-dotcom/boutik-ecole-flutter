@@ -194,6 +194,18 @@ Future<void> saveNeed(BuildContext context, WidgetRef ref, {required bool publis
   if (publish) gBack(context);
 }
 
+/// Écran 191 (mission sur mesure) : le besoin décrit est publié côté serveur ; le département qualifie les équipes.
+/// Retourne vrai uniquement si le serveur a enregistré la demande.
+Future<bool> publishMissionBrief(BuildContext context, WidgetRef ref, String kind, String desc) async {
+  if (!await _ready(context, ref, 'envoyer votre besoin')) return false;
+  if (!context.mounted) return false;
+  final r = await _run(context, 'save_mission', {
+    'p_id': null, 'p_title': 'Mission sur mesure · $kind', 'p_description': desc,
+    'p_budget_min': null, 'p_budget_max': null, 'p_deadline': '', 'p_publish': true, 'p_kind': 'mission',
+  }, title: 'Besoin non envoyé');
+  return r.ok;
+}
+
 /// Écran 202 : « Commander le pack » crée une demande de mission sur mesure ; « Personnaliser » ouvre le formulaire de besoin.
 Future<void> orderPack(BuildContext context, WidgetRef ref) async {
   if (!await _ready(context, ref, 'commander le pack')) return;
@@ -577,6 +589,46 @@ Future<void> issueCertificateDialog(BuildContext context, WidgetRef ref) async {
   final kind = t.startsWith('proj') ? 'project' : (t.startsWith('tal') ? 'talent' : 'product');
   final r = await _run(context, 'issue_certificate', {'p_kind': kind, 'p_subject': v[1], 'p_holder_email': v[2], 'p_holder_name': v[3], 'p_department': v[4]}, title: 'Certificat non émis');
   if (r.ok && context.mounted) await gAlert(context, 'Certificat émis', 'Code : ${r.data}\nLe titulaire est notifié ; le code se vérifie publiquement.');
+}
+
+/// Révocation d'un certificat (département, administration) : code et motif obligatoires, vérifiés par le serveur (revoke_certificate).
+Future<void> revokeCertificateDialog(BuildContext context, WidgetRef ref) async {
+  if (!await _ready(context, ref, 'révoquer un certificat')) return;
+  if (!context.mounted) return;
+  final v = await formDialog(context, 'Révoquer un certificat', [('Code du certificat', ''), ('Motif (5 caractères minimum)', '')],
+      submit: 'Révoquer', intro: 'La révocation est définitive : la vérification publique indiquera que le certificat n’est plus valide, avec le motif.');
+  if (v == null || !context.mounted) return;
+  final r = await _run(context, 'revoke_certificate', {'p_code': v[0], 'p_reason': v[1]}, title: 'Certificat non révoqué');
+  if (r.ok && context.mounted) gToast(context, 'Certificat révoqué : la vérification publique le signale désormais.');
+}
+
+/// Demandes de badge « certifié » (administration, qui seule peut lire tous les profils) : examen, validation, refus ou retrait,
+/// transitions contrôlées par le serveur (decide_certification).
+Future<void> certificationRequestsDialog(BuildContext context, WidgetRef ref) async {
+  if (!await _ready(context, ref, 'traiter les demandes de certification')) return;
+  if (!context.mounted) return;
+  final rows = await _load(context, 'profiles', 'id,name,department,certification');
+  if (rows == null || !context.mounted) return;
+  const labels = {'pending': 'Demande reçue', 'review': 'En examen', 'approved': 'Certifié'};
+  final todo = [for (final p in rows) if (labels.containsKey(p['certification'])) p];
+  await _listDialog(context, 'Demandes de certification', todo, (p) => '${p['name'] ?? ''}',
+      sub: (p) => [p['department'] ?? '', labels[p['certification']] ?? ''].where((x) => '$x'.isNotEmpty).join(' · '),
+      empty: 'Aucune demande en attente.',
+      actions: (p) => [
+            for (final (label, status) in switch (p['certification']) {
+              'pending' => const [('Examiner', 'review'), ('Valider', 'approved'), ('Refuser', 'rejected')],
+              'review' => const [('Valider', 'approved'), ('Refuser', 'rejected')],
+              _ => const [('Retirer le badge', 'revoked')],
+            })
+              (
+                label,
+                (x) async {
+                  final r = await _run(context, 'decide_certification', {'p_user': x['id'], 'p_status': status}, title: 'Décision non enregistrée');
+                  if (r.ok && context.mounted) gToast(context, 'Décision enregistrée par le serveur.');
+                  return r.ok;
+                }
+              ),
+          ]);
 }
 
 /// Vérification publique d'un certificat par son code (aucune donnée personnelle au-delà du certificat).

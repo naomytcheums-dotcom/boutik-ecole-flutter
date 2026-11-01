@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/lots.dart' show missionDossierDialog;
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_194 extends ConsumerWidget {
@@ -171,7 +172,7 @@ class G_194 extends ConsumerWidget {
       gP(125, 1104, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gTap(250, 560, 60, 30, () { gOpen(context, '197'); }),
       gTap(250, 644, 60, 30, () { gOpen(context, '197'); }),
-      gTap(24, 910, 342, 84, () { gToast(context, 'Message envoyé à l’équipe'); }),
+      gTap(24, 910, 342, 84, () { missionDossierDialog(context, ref); }),
       gTap(144, 356, 217, 50, () { gOpen(context, '233'); }), // lien métier 194 -> 233
     ]);
   }

@@ -1,11 +1,12 @@
 {
-    "name": "boutik_ecole",
-    "short_name": "boutik_ecole",
+    "name": "Boutik-École",
+    "short_name": "Boutik-École",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#F4EFE6",
+    "theme_color": "#111015",
+    "description": "La marketplace des créations, services et talents des étudiants de l’IUT de Douala.",
+    "lang": "fr",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

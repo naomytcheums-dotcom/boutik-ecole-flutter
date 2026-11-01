@@ -4,10 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app.dart';
 import 'figma/live/auth.dart';
 import 'figma/live/backend.dart';
+import 'figma/live/drafts.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Backend.init();
+  await Drafts.load();
   final remembered = await loadRemembered();
   runApp(AppRoot(remembered: remembered));
 }

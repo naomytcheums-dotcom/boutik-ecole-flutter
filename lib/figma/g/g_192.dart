@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/lots.dart' show missionDossierDialog;
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_192 extends ConsumerWidget {
@@ -93,7 +94,7 @@ class G_192 extends ConsumerWidget {
       gP(224, 836, 121, 18, gText('Accepter le devis', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 888, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gTap(203, 818, 163, 54, () { acceptQuote(ref, context); }),
-      gTap(24, 818, 163, 54, () { gToast(context, 'Question envoyée à l’administrateur'); }),
+      gTap(24, 818, 163, 54, () { missionDossierDialog(context, ref); }),
       gTap(32, 506, 54, 34, () { gOpen(context, '190'); }), // parcours 192 -> 190
     ]);
   }

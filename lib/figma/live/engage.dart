@@ -6,7 +6,6 @@ import '../nav.dart';
 import 'auth.dart';
 import 'backend.dart';
 import 'messages.dart' show contactSeller;
-import 'seller.dart';
 import 'share.dart';
 import 'store.dart';
 

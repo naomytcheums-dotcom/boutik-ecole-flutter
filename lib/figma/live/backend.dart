@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'auth.dart';
@@ -17,13 +17,84 @@ class Backend {
   static const key = String.fromEnvironment('BE_KEY', defaultValue: 'sb_publishable_yYEzuivRZlBnVOkuMCiSow_syCjss01');
   static bool ready = false;
 
+  /// Vrai entre l'ouverture du lien de réinitialisation reçu par e-mail (événement passwordRecovery) et le changement
+  /// effectif du mot de passe : l'écran 16 n'enregistre un nouveau mot de passe que dans cet état.
+  static final recovery = ValueNotifier<bool>(false);
+
   static Future<void> init() async {
     try {
       await Supabase.initialize(url: url, publishableKey: key);
       ready = true;
+      // gotrue rejoue les événements passés : le passwordRecovery émis pendant l'initialisation est bien reçu ici.
+      Supabase.instance.client.auth.onAuthStateChange.listen((s) {
+        if (s.event == AuthChangeEvent.passwordRecovery) recovery.value = true;
+      });
+      await Future<void>.delayed(Duration.zero);
     } catch (_) {
       ready = false;
     }
+  }
+
+  /// Envoie le lien de réinitialisation (flux PKCE : le lien doit être ouvert dans ce même navigateur).
+  /// Supabase répond de la même façon que le compte existe ou non : aucune information sur l'existence d'un compte ne fuit.
+  static Future<String?> resetPassword(String email) async {
+    final c = _c;
+    if (c == null) return 'Connexion au serveur impossible.';
+    try {
+      await c.auth.resetPasswordForEmail(email, redirectTo: kIsWeb ? '${Uri.base.origin}/' : null);
+      return null;
+    } on AuthException catch (e) {
+      final m = e.message.toLowerCase();
+      if (e.statusCode == '429' || m.contains('rate limit') || m.contains('security purposes')) {
+        return 'Trop de demandes rapprochées : réessayez dans quelques minutes.';
+      }
+      return 'Envoi impossible : ${e.message}';
+    } catch (_) {
+      return 'Connexion au serveur impossible. Réessayez.';
+    }
+  }
+
+  /// Renvoie l'e-mail de confirmation d'inscription (Supabase Auth). Retourne null si le serveur a accepté l'envoi.
+  static Future<String?> resendSignupConfirmation(String email) async {
+    final c = _c;
+    if (c == null) return 'Connexion au serveur impossible.';
+    try {
+      await c.auth.resend(type: OtpType.signup, email: email);
+      return null;
+    } on AuthException catch (e) {
+      final m = e.message.toLowerCase();
+      if (e.statusCode == '429' || m.contains('rate limit') || m.contains('security purposes')) {
+        return 'Trop de demandes rapprochées : réessayez dans quelques minutes.';
+      }
+      return 'Envoi impossible : ${e.message}';
+    } catch (_) {
+      return 'Connexion au serveur impossible. Réessayez.';
+    }
+  }
+
+  /// Enregistre le nouveau mot de passe pendant une récupération, puis ferme la session de récupération :
+  /// l'utilisateur se reconnecte avec le nouveau mot de passe. Retourne null si le serveur a confirmé.
+  static Future<String?> updatePassword(String password) async {
+    if (!recovery.value) return 'Ouvrez d’abord, dans ce navigateur, le lien de réinitialisation reçu par e-mail.';
+    final c = _c;
+    if (c == null) return 'Connexion au serveur impossible.';
+    if (c.auth.currentUser == null) {
+      return 'Ouvrez d’abord, dans ce navigateur, le lien de réinitialisation reçu par e-mail.';
+    }
+    try {
+      await c.auth.updateUser(UserAttributes(password: password));
+    } on AuthException catch (e) {
+      final m = e.message.toLowerCase();
+      if (e.code == 'same_password' || m.contains('different from the old')) return 'Choisissez un mot de passe différent de l’ancien.';
+      if (e.code == 'weak_password' || m.contains('weak')) return 'Mot de passe trop faible : choisissez-en un plus long et plus varié.';
+      if (m.contains('session') || m.contains('jwt')) return 'Le lien de réinitialisation a expiré : demandez-en un nouveau.';
+      return 'Mot de passe non modifié : ${e.message}';
+    } catch (_) {
+      return 'Connexion au serveur impossible. Réessayez.';
+    }
+    recovery.value = false;
+    await signOut();
+    return null;
   }
 
   static SupabaseClient? get _c => ready ? Supabase.instance.client : null;
@@ -843,6 +914,61 @@ class Backend {
 
   /// Vrai pendant une déconnexion demandée par l'utilisateur (sinon, une perte de session est une expiration : écran 150-2).
   static bool signingOut = false;
+
+  /// Administration (écran 128) : comptes lisibles par l'administrateur (RLS), les plus récents d'abord.
+  static Future<List<Account>?> adminAccounts() async {
+    final c = _c;
+    if (c == null || c.auth.currentUser == null) return null;
+    try {
+      final rows = await c.from('profiles').select().order('created_at', ascending: false).limit(500);
+      return [for (final r in rows) _fromRow(r, (r['email'] ?? '').toString())];
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Signalements d'annonces visibles par la modération (RLS : support, département, administration), les plus récents d'abord.
+  static Future<List<Map<String, dynamic>>?> moderationReports() async {
+    final c = _c;
+    if (c == null || c.auth.currentUser == null) return null;
+    try {
+      final rows = await c.from('listing_reports').select('id,listing_id,reason,details,status,created_at,listings(title)').order('created_at', ascending: false).limit(200);
+      return [for (final r in rows) Map<String, dynamic>.from(r)];
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Statut d'un signalement (open, reviewing, closed), appliqué par le serveur. Retourne null si le serveur a confirmé.
+  static Future<String?> setReportStatus(String reportId, String status) async {
+    final c = _c;
+    if (c == null || c.auth.currentUser == null) return 'Connexion requise.';
+    try {
+      await c.rpc('set_report_status', params: {'p_report': reportId, 'p_status': status});
+      return null;
+    } on PostgrestException catch (e) {
+      if (e.code == 'PGRST202' || e.code == '42883') return 'Fonction serveur non encore installée (migration 20261101000000 à appliquer).';
+      return e.message;
+    } catch (_) {
+      return 'Connexion au serveur impossible. Réessayez.';
+    }
+  }
+
+  /// Rôle et suspension d'un compte, appliqués par le serveur (admin_set_account). Retourne null si le serveur a confirmé.
+  static Future<String?> adminSetAccount(String userId, String role, bool suspended) async {
+    final c = _c;
+    if (c == null || c.auth.currentUser == null) return 'Connexion requise.';
+    if (userId.isEmpty) return 'Compte sans identifiant serveur.';
+    try {
+      await c.rpc('admin_set_account', params: {'p_user': userId, 'p_role': role, 'p_suspended': suspended});
+      return null;
+    } on PostgrestException catch (e) {
+      if (e.code == 'PGRST202' || e.code == '42883') return 'Fonction serveur non encore installée (migration 20261101000000 à appliquer).';
+      return e.message;
+    } catch (_) {
+      return 'Connexion au serveur impossible. Réessayez.';
+    }
+  }
 
   /// Ferme les sessions de ce compte sur TOUS les appareils.
   static Future<void> signOutAll() async {

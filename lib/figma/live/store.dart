@@ -6,6 +6,7 @@ import '../../data/demo/section_a_demo.dart';
 import 'dart:async' show Timer;
 import 'auth.dart' show authProvider, demoContent;
 import 'backend.dart';
+import 'delivery.dart' show deliveryFee, deliverySettingsProvider;
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 /// État partagé du parcours d'achat : fiche produit → panier → livraison → paiement → commande → suivi.
@@ -106,7 +107,7 @@ final totalsProvider = Provider<Totals>((ref) {
   final home = ref.watch(homeDeliveryProvider);
   final sub = lines.fold<int>(0, (a, l) => a + l.price * l.qty);
   final n = lines.fold<int>(0, (a, l) => a + l.qty);
-  return Totals(n, sub, lines.isEmpty ? 0 : (home ? 5000 : 0));
+  return Totals(n, sub, lines.isEmpty ? 0 : deliveryFee(home, ref.watch(deliverySettingsProvider)));
 });
 
 class Order {

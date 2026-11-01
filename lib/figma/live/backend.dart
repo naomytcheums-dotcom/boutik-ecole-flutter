@@ -1055,7 +1055,7 @@ class Backend {
 
   /// Création de commande côté serveur : le serveur recalcule les prix, le client n'envoie que des titres et des quantités.
   /// Retourne {number, subtotal, fee} ou {error: message}.
-  static Future<Map<String, dynamic>> createOrder(List<CartLine> lines, bool home, String method) async {
+  static Future<Map<String, dynamic>> createOrder(List<CartLine> lines, bool home, String method, {String? address}) async {
     final c = _c;
     if (c == null || c.auth.currentUser == null) return {'error': 'Connexion requise pour passer commande.'};
     try {
@@ -1063,6 +1063,8 @@ class Backend {
         'p_items': [for (final l in lines) {'title': l.title, 'qty': l.qty}],
         'p_home': home,
         'p_method': method,
+        // livraison à domicile : adresse du carnet (migration 20261101000300) ; retrait sur campus : signature d'origine
+        if (home && address != null && address.isNotEmpty) 'p_address': address,
       });
       return Map<String, dynamic>.from(r as Map);
     } on PostgrestException catch (e) {

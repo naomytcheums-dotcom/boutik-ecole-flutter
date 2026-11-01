@@ -8,6 +8,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../gen.dart';
 import '../nav.dart';
 import 'audit.dart';
+import 'delivery.dart' show selectedAddressProvider;
 import 'auth.dart';
 import 'backend.dart';
 import 'store.dart';
@@ -117,7 +118,7 @@ Future<void> startPayment(WidgetRef ref, BuildContext context) async {
   }
   pay.set(const PayState(PayPhase.starting));
   var o = ref.read(ordersProvider.notifier).place();
-  final created = await Backend.createOrder(o.lines, ref.read(homeDeliveryProvider), o.method);
+  final created = await Backend.createOrder(o.lines, ref.read(homeDeliveryProvider), o.method, address: ref.read(selectedAddressProvider));
   if (created['error'] != null) {
     ref.read(ordersProvider.notifier).discard(o.id);
     final raw = created['error'] as String;

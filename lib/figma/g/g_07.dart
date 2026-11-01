@@ -1,10 +1,11 @@
-// GÉNÉRÉ par tool/figma_export/convert.py — écran 07 (nœud Figma 14:130). Ne pas éditer à la main.
+// GÉNÉRÉ par tool/figma_export/convert.py — écran 07 (nœud Figma 14:130), puis raccordé à la main (gelé dans bindings.json).
 // ignore_for_file: camel_case_types, prefer_is_empty, prefer_interpolation_to_compose_strings, unnecessary_string_interpolations, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/delivery.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -101,7 +102,7 @@ class G_07 extends ConsumerWidget {
       gTap(26, 723, 342, 51, () => gOpen(context, '08')),
       gTap(20, 790, 350, 50, () => gOpen(context, '08')),
       gTap(25, 166, 346, 104, () { ref.read(homeDeliveryProvider.notifier).set(false); gToast(context, 'Retrait sur campus · gratuit'); }),
-      gTap(25, 279, 346, 105, () { ref.read(homeDeliveryProvider.notifier).set(true); gToast(context, 'Livraison à domicile · 5 000 FCFA'); }),
+      gTap(25, 279, 346, 105, () { chooseHomeDelivery(context, ref); }), // domicile seulement si activé par l'administrateur (20261101000300)
       gTap(18.2, 410.2, 163, 35, () { gOpen(context, '41'); }), // parcours 07 -> 41
     ]);
   }

@@ -6,6 +6,7 @@ import 'access.dart';
 import 'auth.dart';
 import 'feedback.dart';
 import 'lots.dart';
+import 'referral.dart';
 import 'services.dart';
 
 const _st = TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 14, color: Color(0xFF111015));
@@ -26,6 +27,7 @@ class _Group {
 }
 
 Future<void> _devis(BuildContext c, WidgetRef r) => quotesDialog(c, r);
+Future<void> _parrain(BuildContext c, WidgetRef r) => claimReferralDialog(c, r);
 Future<void> _reclamations(BuildContext c, WidgetRef r) => claimsDialog(c, r);
 Future<void> _assign(BuildContext c, WidgetRef r) => assignNeedDialog(c, r);
 
@@ -50,6 +52,7 @@ final _groups = <_Group>[
     _Entry('Reels et lives', screen: '245'),
     _Entry('Défis et récompenses', screen: '253'),
     _Entry('Parrainer et gagner', screen: '240'),
+    _Entry('J’ai un code de parrainage', action: _parrain, roles: {'client', 'student', 'company', 'other'}),
     _Entry('Missions sur mesure', screen: '191'),
     _Entry('Impact de Boutik-École', screen: '238'),
   ]),

@@ -1,10 +1,11 @@
-// GÉNÉRÉ par tool/figma_export/convert.py — écran 240 (nœud Figma 125:3). Ne pas éditer à la main.
+// GÉNÉRÉ par tool/figma_export/convert.py — écran 240 (nœud Figma 125:3), puis raccordé à la main (gelé dans bindings.json).
 // ignore_for_file: camel_case_types, prefer_is_empty, prefer_interpolation_to_compose_strings, unnecessary_string_interpolations, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/referral.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -47,9 +48,9 @@ class G_240 extends ConsumerWidget {
       gP(44, 146, 203, 56, gText('Invite, partage,\ngagne.', 22, Color(0xFFFFFFFF), weight: 600, lh: 28, wrap: true)),
       gP(44, 218, 153, 32, gText('Chaque ami inscrit te rapporte des FCFA.', 11.5, Color(0xFFFFFFFF), lh: 16, wrap: true)),
       gP(44, 266, 170, 32, gBox(color: Color(0x29FFFFFF), radii: [16, 16, 16, 16])),
-      gP(66, 274, 126, 14, gText('Mes gains · 12 500 FCFA', 11, Color(0xFFFFFFFF), weight: 600)),
+      gP(66, 274, 126, 14, gText(demoContent ? 'Mes gains · 12 500 FCFA' : 'Mes gains · ${fcfa(ref.watch(referralProvider)?.total ?? 0)}', 11, Color(0xFFFFFFFF), weight: 600)),
       gP(44, 344, 109, 15, gText('Ton lien d’invitation', 12, Color(0xFF66636E), weight: 500)),
-      gP(44, 366, 222, 40, GField(hint: '', initial: 'boutik-ecole.cm/r/mariam24', size: 12, hintColor: Color(0xFF111015), weight: 500, padL: 14)),
+      gP(44, 366, 222, 40, (demoContent ? GField(hint: '', initial: 'boutik-ecole.cm/r/mariam24', size: 12, hintColor: Color(0xFF111015), weight: 500, padL: 14) : Align(alignment: Alignment.centerLeft, child: Padding(padding: const EdgeInsets.only(left: 14), child: gText(invitationText(ref.watch(referralCodeProvider)), 12, Color(0xFF111015), weight: 500))))),
       gP(274, 366, 74, 40, gBox(color: Color(0xFF111015), radii: [20, 20, 20, 20])),
       gP(287.375, 381.375, 13.042, 13.042, gImg('assets/figma/v/a5ad75fcb14e8a.svg')),
       gP(283.583, 377.583, 13.042, 13.042, gImg('assets/figma/v/872da465016e01.svg')),
@@ -80,10 +81,10 @@ class G_240 extends ConsumerWidget {
       gP(330.167, 473.5, 12.667, 12.667, gImg('assets/figma/v/50a1540c3efbda.svg')),
       gP(339.333, 473.583, 11, 20.917, gImg('assets/figma/v/d84ac38e1914fb.svg')),
       gP(317.5, 514, 43, 12, gText('Contacts', 9.5, Color(0xFF111015), weight: 500)),
-      gP(44, 558, 102, 19, gText('Niveau Argent', 15, Color(0xFF111015), weight: 600)),
+      gP(44, 558, 102, 19, gText(demoContent ? 'Niveau Argent' : (ref.watch(referralProvider) ?? const ReferralSummary()).tierLabel, 15, Color(0xFF111015), weight: 600)),
       gP(280, 554, 66, 26, gBox(color: Color(0xFFEEE9FF), radii: [100, 100, 100, 100])),
-      gP(292, 560, 42, 14, gText('7 filleuls', 11, Color(0xFF5A3FE0), weight: 600)),
-      gP(44, 584, 178, 14, gText('Plus que 13 filleuls pour passer Or', 11.5, Color(0xFF66636E))),
+      gP(292, 560, 42, 14, gText(demoContent ? '7 filleuls' : '${(ref.watch(referralProvider) ?? const ReferralSummary()).active} actifs', 11, Color(0xFF5A3FE0), weight: 600)),
+      gP(44, 584, 178, 14, gText(demoContent ? 'Plus que 13 filleuls pour passer Or' : (ref.watch(referralProvider) ?? const ReferralSummary()).nextLabel, 11.5, Color(0xFF66636E))),
       gP(44, 606, 302, 10, gBox(color: Color(0xFFECE8F6), radii: [5, 5, 5, 5])),
       gP(44, 606, 106, 10, gBox(gradient: LinearGradient(begin: Alignment(-1.24, -0.68), end: Alignment(0.36, 0.52), colors: [Color(0xFF9B7BFF), Color(0xFF6A4DFF)], stops: [0, 1]), radii: [5, 5, 5, 5])),
       gP(44, 636, 96, 88, gBox(color: Color(0xFFF6F3FA), radii: [22, 22, 22, 22])),
@@ -122,6 +123,7 @@ class G_240 extends ConsumerWidget {
       gP(335.15, 81.233, 6, 16.292, gImg('assets/figma/v/d9aa0c7d61ed0e.svg')),
       gTap(16, 430, 97, 34, () { gOpen(context, '173'); }), // parcours 240 -> 173
       gTap(58, 266, 142, 32, () { gOpen(context, '243'); }), // parcours 240 -> 243
+      gTap(274, 366, 74, 40, () { copyInvitation(context, ref); }), // copie réelle du code de parrainage (20261101000400)
       gTap(309.5, 506, 59, 32, () { gOpen(context, '241'); }), // lien métier 240 -> 241
     ]);
   }

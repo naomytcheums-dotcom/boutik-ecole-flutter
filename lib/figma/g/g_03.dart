@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/home_hero.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_03 extends ConsumerWidget {
@@ -93,18 +94,18 @@ class G_03 extends ConsumerWidget {
       gP(334.986, 287.806, 36, 13, gText('Projets', 10.382, Color(0xFF111015), weight: 500, align: TextAlign.center)),
       gTap(338, 184, 38, 32, () => gEspace(context)),
       gTap(18.056, 238.333, 57.778, 62.0, () => gOpen(context, '04')), gTap(94.792, 238.333, 57.778, 62.0, () => gOpen(context, '22')), gTap(171.528, 238.333, 57.778, 62.0, () => gOpen(context, '22b')), gTap(248.264, 238.333, 57.778, 62.0, () => gOpen(context, '70')), gTap(324.097, 238.333, 57.778, 62.0, () => gOpen(context, '78')),
-      gP(14.444, 322.292, 372.847, 185.069, gBox(image: 'assets/figma/img/6baf8125049f662c1c5c4c23c6b514db2881910c.png', fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 6), blurRadius: 16, spreadRadius: 0)], radii: [18.056, 18.056, 18.056, 18.056])),
+      gP(14.444, 322.292, 372.847, 185.069, heroSlot((s, _) => gBox(image: s.image, fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 6), blurRadius: 16, spreadRadius: 0)], radii: [18.056, 18.056, 18.056, 18.056]))),
       gP(37.917, 346.667, 54.167, 18.056, gBox(color: Color(0xFF111015), radii: [9.028, 9.028, 9.028, 9.028])),
       gP(47.5, 349.694, 35, 12, gText('À la une', 9.479, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
-      gP(37.917, 373.722, 187, 47, gText('L’innovation\nétudiante en action', 19.861, Color(0xFFFFFFFF), weight: 700, lh: 23.472)),
-      gP(37.917, 425.153, 152, 29, gText('Des projets qui transforment\ndemain.', 11.285, Color(0xFFFFFFFF), lh: 14.444)),
+      gP(37.917, 373.722, 187, 47, heroSlot((s, _) => gText(s.title, 19.861, Color(0xFFFFFFFF), weight: 700, lh: 23.472))),
+      gP(37.917, 425.153, 152, 29, heroSlot((s, _) => gText(s.sub, 11.285, Color(0xFFFFFFFF), lh: 14.444))),
       gP(37.917, 463.125, 30.694, 30.694, gBox(color: Color(0xFFFFFFFF), radii: [15.347, 15.347, 15.347, 15.347])),
       gP(45.788, 475.472, 14.953, 6, gImg('assets/figma/v/5e22db51bd766d.svg')),
       gP(50.264, 470.996, 10.476, 14.953, gImg('assets/figma/v/654dcf2191c5fb.svg')),
-      gP(340.347, 486.597, 5.417, 5.417, gBox(color: Color(0xF2FFFFFF), radii: [2.708, 2.708, 2.708, 2.708])),
-      gP(350.278, 486.597, 5.417, 5.417, gBox(color: Color(0x8CFFFFFF), radii: [2.708, 2.708, 2.708, 2.708])),
-      gP(360.208, 486.597, 5.417, 5.417, gBox(color: Color(0x8CFFFFFF), radii: [2.708, 2.708, 2.708, 2.708])),
-      gP(17.153, 529.056, 134, 18, gText('Produits en vedette', 13.993, Color(0xFF111015), weight: 700)),
+      gP(340.347, 486.597, 5.417, 5.417, heroSlot((_, i) => gBox(color: Color(i == 0 ? 0xF2FFFFFF : 0x8CFFFFFF), radii: [2.708, 2.708, 2.708, 2.708]))),
+      gP(350.278, 486.597, 5.417, 5.417, heroSlot((_, i) => gBox(color: Color(i == 1 ? 0xF2FFFFFF : 0x8CFFFFFF), radii: [2.708, 2.708, 2.708, 2.708]))),
+      gP(360.208, 486.597, 5.417, 5.417, heroSlot((_, i) => gBox(color: Color(i == 2 ? 0xF2FFFFFF : 0x8CFFFFFF), radii: [2.708, 2.708, 2.708, 2.708]))),
+            heroSwipe(14.444, 322.292, 372.847, 185.069), gTap(37.917, 463.125, 30.694, 30.694, HomeHero.next),      gP(17.153, 529.056, 134, 18, gText('Produits en vedette', 13.993, Color(0xFF111015), weight: 700)),
       gP(308.986, 531.958, 44, 14, gText('Voir tout', 10.833, Color(0xFF5A3FE0), weight: 500, align: TextAlign.right)),
       gP(369.133, 535.958, 12.846, 6, gImg('assets/figma/v/92b236aeae97cb.svg')),
       gP(372.556, 532.535, 9.423, 12.846, gImg('assets/figma/v/337e7bc848e314.svg')),

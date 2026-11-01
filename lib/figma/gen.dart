@@ -38,10 +38,20 @@ class GScreen extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       body: LayoutBuilder(builder: (context, c) {
         if (h > 860 && w < 700) {
-          // Écran plus haut qu'un téléphone : on adapte la largeur et on fait défiler (jamais de contenu réduit ou inaccessible).
-          final s = math.min(1.0, c.maxWidth / w);
+          // Maquette entière visible sans défilement tant qu'elle reste lisible :
+          // ≥ 70 % de sa taille sur ordinateur, ≥ 85 % de la largeur disponible sur téléphone.
+          final ws = math.min(1.0, c.maxWidth / w);
+          final fit = math.min(c.maxWidth / w, c.maxHeight / h);
+          if (h * ws > c.maxHeight + 1 && fit >= (c.maxWidth >= 600 ? 0.7 : 0.85 * ws)) {
+            return Center(child: SizedBox(width: w * fit, height: h * fit, child: FittedBox(fit: BoxFit.fill, child: canvas)));
+          }
+          // Sinon : largeur adaptée, centrée si elle tient, défilement si l'écran est très long (jamais de contenu réduit ou inaccessible).
+          final s = ws;
           return SingleChildScrollView(
-            child: Center(child: SizedBox(width: w * s, height: h * s, child: FittedBox(fit: BoxFit.fill, child: canvas))),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: c.maxHeight),
+              child: Center(child: SizedBox(width: w * s, height: h * s, child: FittedBox(fit: BoxFit.fill, child: canvas))),
+            ),
           );
         }
         return Center(child: FittedBox(fit: BoxFit.contain, child: canvas));

@@ -91,3 +91,13 @@ Limites : parcours non rejoués dans un navigateur après déploiement (outil in
 | Compte administrateur | 1 compte réel (`naomytcheums@gmail.com`), sans session ; mot de passe à définir par « Mot de passe oublié » |
 | Fonctions Edge, secrets | inchangés |
 | Sauvegardes | `%USERPROFILE%\boutik_backups\migrations_20261101_1119\` et `site_20261101\` |
+
+## Déploiement du 01/11/2026 (≈ 15 h) — parrainage, notifications, reels et défis, recette par rôle
+| Élément | Valeur |
+|---|---|
+| Migrations appliquées en production | `20261101000400` (parrainage), `…0500` (notifications, sans envoi), `…0600` (reels et défis), `…0700` (révocation des écritures anonymes) — garde : exactement ces 4 ; 24/24 versions |
+| Contrôles après | catalogue = réplique (0 écart) ; delta : ajouts + 8 droits retirés ; empreintes de données identiques (seuls compartiments, déclencheurs et historique changent, comme prévu) ; REST anonyme 12/12 ; REST réplique 386/386 équivalent |
+| Recette par rôle en production | 5 comptes `zz-test-recette-*` (administrateur, département, support, vendeur, client) ; 58 contrôles réussis (suspension et réactivation, annonce validée puis retirée, commande puis annulation avec restitution du stock, domicile refusé, concours brouillon annulé, parrainage, adresse, consentement, reel validé puis masqué et média supprimé) ; mots de passe : `%USERPROFILE%\boutik_backups\recette_20261101\comptes_recette.json` (accès restreint) |
+| Code déployé | commit `0ec397b` ; SHA-256 `f6e08b52e640fe6618145daa2ce5f060f9938e6d22ec8a7689083104b0a9bb94` servi = build |
+| Déploiement Vercel | `dpl_F8phfwU7f8c8fDCcXqZ5ydjyjm5E` ; précédent : `dpl_9VYEJFJaFRAXSHJoqM5xVHFJhjAn` |
+| Vérification en ligne | Playwright 17/17 (dont `/design` et l'écran 245 sans reel inventé) |

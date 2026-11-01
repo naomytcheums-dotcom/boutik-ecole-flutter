@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/lots.dart' show exportCatalog;
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_110 extends ConsumerWidget {
@@ -110,7 +111,7 @@ class G_110 extends ConsumerWidget {
       gP(960, 15, 28, 28, gBox(image: 'assets/figma/img/ebf23a969ca7b1083d1dcab994c4899c0b4db38b.png', fit: BoxFit.cover, border: Color(0xFFFFFFFF), bw: 2, oval: true)),
       gP(980, 15, 28, 28, gBox(image: 'assets/figma/img/c15478a4e0a5cc1be462d8179ed1a24390853242.png', fit: BoxFit.cover, border: Color(0xFFFFFFFF), bw: 2, oval: true)),
       gP(1026, 17, 24, 24, gBox(color: Color(0xFF111015), oval: true)),
-      gP(1040, 10, 36, 36, gBox(color: Color(0xFFF2EFF6), oval: true)), gP(1040, 22, 36, 13, gText('+3', 11, Color(0xFF4A4854), weight: 600, inter: true, align: TextAlign.center)), gP(1090, 10, 162, 36, gBox(color: Color(0xFF0B0B0D), radii: [18, 18, 18, 18]), tap: () => gToast(context, 'Export des annonces en cours de préparation')), gP(1090, 22, 162, 14, gText('Exporter', 12, Color(0xFFFFFFFF), weight: 600, inter: true, align: TextAlign.center)),
+      gP(1040, 10, 36, 36, gBox(color: Color(0xFFF2EFF6), oval: true)), gP(1040, 22, 36, 13, gText('+3', 11, Color(0xFF4A4854), weight: 600, inter: true, align: TextAlign.center)), gP(1090, 10, 162, 36, gBox(color: Color(0xFF0B0B0D), radii: [18, 18, 18, 18]), tap: () => exportCatalog(context, ref)), gP(1090, 22, 162, 14, gText('Exporter', 12, Color(0xFFFFFFFF), weight: 600, inter: true, align: TextAlign.center)),
       gP(1214.125, 20.125, 15.75, 15.75, gImg('assets/figma/v/c7f198a8ce01e5.svg')),
       gP(0, 56, 240, 824, gBox(color: Color(0xFFF1EFEC))),
       gP(20, 84, 42, 12, gText('Principal', 10, Color(0xFF716D65), weight: 500, inter: true)),

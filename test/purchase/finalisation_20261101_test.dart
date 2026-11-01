@@ -1,3 +1,4 @@
+import 'package:boutik_ecole/figma/g/g_110.dart';
 import 'package:boutik_ecole/figma/g/g_164.dart';
 import 'package:boutik_ecole/figma/g/g_165.dart';
 import 'package:boutik_ecole/figma/g/g_167.dart';
@@ -135,6 +136,14 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.textContaining('nécessite la connexion au serveur'), findsOneWidget);
       expect(find.textContaining('Signalement envoyé au département'), findsNothing);
+    });
+
+    testWidgets('écran 110 : « Exporter » lance le vrai export (hors connexion : expliqué)', (tester) async {
+      await pump(tester, const G_110(), size: const Size(1280, 880));
+      await tester.tap(find.text('Exporter'), warnIfMissed: false);
+      await tester.pumpAndSettle();
+      expect(find.text('Hors connexion'), findsOneWidget);
+      expect(find.textContaining('en cours de préparation'), findsNothing);
     });
   });
 

@@ -8,6 +8,7 @@ import 'auth.dart';
 import 'backend.dart';
 import 'drafts.dart';
 import 'engage.dart' show engageAction, unavailableAction;
+import 'lots.dart' show copyText;
 import 'store.dart';
 
 /// Hackathons et concours : agenda, inscription d'équipe, coéquipiers, dépôt, jury, classement (écrans 160 à 167).
@@ -182,6 +183,13 @@ void submitRegistration(WidgetRef ref, BuildContext context) {
 }
 
 // ------------------------------------------------------------------ dépôt (165), jury (167), classement (166)
+
+/// 161 « Partager » : copie réellement le lien du concours ; le message dépend du résultat de la copie.
+Future<void> shareEventLink(WidgetRef ref, BuildContext context) async {
+  final ev = ref.read(currentEventProvider);
+  final ok = await copyText('${ev.title} · Boutik-École : ${Uri.base.origin}/#/s/161');
+  if (context.mounted) gToast(context, ok ? 'Lien du concours copié' : 'Copie impossible : autorisez l’accès au presse-papiers.');
+}
 
 /// Inscription enregistrée côté serveur (engagement « event_registration ») ; l'état local ne suit qu'après confirmation.
 Future<void> _serverRegistration(WidgetRef ref, BuildContext context, Hackathon ev, String name, String theme) async {

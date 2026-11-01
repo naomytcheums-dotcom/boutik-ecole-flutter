@@ -18,8 +18,8 @@ void main() {
   });
   tearDown(() => GAnim.enabled = true);
 
-  Future<GoRouter> open(WidgetTester tester, String location, Type screen) async {
-    tester.view.physicalSize = const Size(390, 939);
+  Future<GoRouter> open(WidgetTester tester, String location, Type screen, {Size size = const Size(390, 939)}) async {
+    tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
     await tester.pumpWidget(ProviderScope(child: BoutikEcoleApp(initialLocation: location)));
@@ -49,6 +49,21 @@ void main() {
     await tester.tap(find.text('Continuer'));
     await tester.pumpAndSettle();
     expect(r.state.uri.path, '/s/57');
+  });
+
+  testWidgets('maquette d’ordinateur sur téléphone : agrandissable, et ses liens restent actifs', (tester) async {
+    final r = await open(tester, '/s/237', InteractiveViewer, size: const Size(390, 844));
+    final iv = tester.widget<InteractiveViewer>(find.byType(InteractiveViewer));
+    expect(iv.maxScale, closeTo(1280 / 390, 0.01));
+    const s = 390 / 1280;
+    await tester.tapAt(Offset(202 * s, (844 - 820 * s) / 2 + 141 * s));
+    await tester.pumpAndSettle();
+    expect(r.state.uri.path, '/s/238');
+  });
+
+  testWidgets('maquette d’ordinateur sur ordinateur : rendu inchangé, sans zoom', (tester) async {
+    await open(tester, '/s/237', Scaffold, size: const Size(1280, 900));
+    expect(find.byType(InteractiveViewer), findsNothing);
   });
 
   testWidgets('03 : la flèche et le glissement changent le visuel « À la une »', (tester) async {

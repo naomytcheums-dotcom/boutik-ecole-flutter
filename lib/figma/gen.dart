@@ -54,6 +54,13 @@ class GScreen extends StatelessWidget {
             ),
           );
         }
+        if (math.min(c.maxWidth / w, c.maxHeight / h) < 0.6) {
+          // Maquette d'ordinateur sur petit écran : affichée en entier, agrandissable au pincement (jusqu'à 100 %) et déplaçable.
+          return InteractiveViewer(
+            maxScale: math.max(1.0, math.max(w / c.maxWidth, h / c.maxHeight)),
+            child: Center(child: FittedBox(fit: BoxFit.contain, child: canvas)),
+          );
+        }
         return Center(child: FittedBox(fit: BoxFit.contain, child: canvas));
       }),
     );

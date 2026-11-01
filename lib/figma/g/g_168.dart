@@ -1,4 +1,4 @@
-// GÉNÉRÉ par tool/figma_export/convert.py — écran 168 (nœud Figma 60:1306). Ne pas éditer à la main.
+// GÉNÉRÉ par tool/figma_export/convert.py — écran 168 (nœud Figma 60:1306), puis raccordé à la main (gelé dans bindings.json).
 // ignore_for_file: camel_case_types, prefer_is_empty, prefer_interpolation_to_compose_strings, unnecessary_string_interpolations, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,6 +15,7 @@ import '../live/audit.dart';
 import '../live/admin.dart';
 import '../live/talents.dart';
 import '../live/hackathons.dart';
+import '../live/contests.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
@@ -133,6 +134,7 @@ class G_168 extends ConsumerWidget {
       gP(1118, 87, 111, 14, gText('Personnaliser la vue', 11.5, Color(0xFF111015), weight: 500, inter: true)),
       gTap(44, 139, 98, 32, () { gOpen(context, '169'); }), // parcours 168 -> 169
       gTap(44, 291, 69, 32, () { gOpen(context, '86'); }), // parcours 168 -> 86
+      gTap(268, 574, 265, 50, () { publishContestDialog(context, ref); }), // publication réelle (département, migration 20261101000200)
     ]);
   }
 }

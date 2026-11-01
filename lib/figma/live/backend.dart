@@ -97,7 +97,14 @@ class Backend {
     return null;
   }
 
-  static SupabaseClient? get _c => ready ? Supabase.instance.client : null;
+  static SupabaseClient? get _c {
+    if (!ready) return null;
+    try {
+      return Supabase.instance.client;
+    } catch (_) {
+      return null; // client non initialisé : chaque appel répond « Connexion requise » au lieu d'échouer
+    }
+  }
 
   /// Identifiant de connexion côté serveur : l'e-mail, ou un e-mail dérivé du téléphone.
   static String loginOf(Account a) => a.email.isNotEmpty ? a.email : '${a.phone}@phone.boutik-ecole.cm';

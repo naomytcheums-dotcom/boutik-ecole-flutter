@@ -158,21 +158,19 @@ void main() {
       expect(c.read(missionProvider).funded, 0);
     });
 
-    testWidgets('concours : dépôt et notation expliqués, aucun envoi simulé', (tester) async {
+    testWidgets('concours : dépôt incomplet refusé, aucun envoi simulé', (tester) async {
       Backend.ready = true;
       final c = await pumpAction(tester, (ref, context) => submitDeposit(ref, context));
-      expect(find.text('Dépôt non disponible'), findsOneWidget);
+      expect(c.read(errorsProvider), isNotEmpty); // champs obligatoires vérifiés avant tout envoi
       expect(c.read(submissionProvider), isNull);
-      await tester.tap(find.text('Compris').last);
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('agir'));
-      await tester.pumpAndSettle();
+      expect(find.textContaining('Projet déposé'), findsNothing);
     });
 
-    testWidgets('jury : aucune note annoncée comme enregistrée', (tester) async {
+    testWidgets('jury : aucune note annoncée comme enregistrée sans réponse du serveur', (tester) async {
       Backend.ready = true;
       await pumpAction(tester, (ref, context) => validateJury(ref, context));
-      expect(find.text('Notation non disponible'), findsOneWidget);
+      expect(find.text('Lecture impossible'), findsOneWidget);
+      expect(find.textContaining('Note enregistrée'), findsNothing);
       expect(find.textContaining('Note validée'), findsNothing);
     });
 

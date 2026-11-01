@@ -56,7 +56,10 @@ const liveCatalog = <LiveProduct>[
 /// Produits ajoutés par les vendeurs (mis à jour par allProductsProvider).
 List<LiveProduct> extraProducts = const [];
 
-LiveProduct productByTitle(String t) => [...extraProducts, ...liveCatalog].firstWhere((p) => p.title == t, orElse: () => liveCatalog.first);
+/// Produits de la plateforme affichés (serveur une fois connecté, sinon catalogue d'exemple ; mis à jour par allProductsProvider).
+List<LiveProduct> platformProducts = liveCatalog;
+
+LiveProduct productByTitle(String t) => [...extraProducts, ...platformProducts, ...liveCatalog].firstWhere((p) => p.title == t, orElse: () => liveCatalog.first);
 
 /// « 25 000 FCFA · Yannick M. » : prix et vendeur abrégé (nom enregistré « Nom Prénom »).
 String productPriceAndSeller(LiveProduct p) {

@@ -16,10 +16,13 @@ import 'store.dart';
 // ------------------------------------------------------------------ annonces
 
 class Listing {
-  const Listing({required this.title, required this.category, required this.price, required this.stock, this.published = true, this.inReview = false, this.description = '', this.id = '', this.status = '', this.note = '', this.images = const []});
-  final String title, category, description;
+  const Listing({required this.title, required this.category, required this.price, required this.stock, this.published = true, this.inReview = false, this.description = '', this.id = '', this.status = '', this.note = '', this.images = const [], this.department = '', this.platform = false});
+  final String title, category, description, department;
   final int price, stock;
   final bool published, inReview;
+
+  /// Produit de la plateforme (annonce sans vendeur), géré par le département ou l'administrateur.
+  final bool platform;
 
   /// Identifiant serveur (vide hors connexion), statut serveur (draft · pending · approved · rejected) et motif de refus.
   final String id, status, note;
@@ -44,6 +47,8 @@ class Listing {
       published: st == 'approved',
       inReview: st == 'pending',
       images: [for (final i in (r['images'] as List? ?? const [])) i.toString()],
+      department: (r['department'] ?? '').toString(),
+      platform: r.containsKey('seller_id') && r['seller_id'] == null,
     );
   }
 
@@ -55,6 +60,8 @@ class Listing {
   Listing copyWith({int? stock, bool? published, bool? inReview, String? status}) => Listing(
         id: id,
         images: images,
+        department: department,
+        platform: platform,
         status: status ?? this.status,
         note: note,
         title: title,
@@ -81,7 +88,8 @@ class Listings extends Notifier<List<Listing>> {
   }
 
   Future<void> refresh() async {
-    final l = await Backend.myListings();
+    final staff = ref.read(authProvider).current?.staff ?? '';
+    final l = await Backend.myListings(platform: platformManagers.contains(staff));
     if (ref.mounted) state = l;
   }
 
@@ -193,6 +201,53 @@ class PublicListings extends Notifier<List<Listing>> {
 
 final publicListingsProvider = NotifierProvider<PublicListings, List<Listing>>(PublicListings.new);
 
+/// Rôles internes qui gèrent les produits de la plateforme (stock, prix, préparation des commandes).
+const platformManagers = {'Resp. département', 'Admin global'};
+
+/// Vendeur affiché pour un produit de la plateforme (aucun étudiant n'en est le vendeur).
+const platformSeller = 'Boutik-École';
+
+/// Produits de la plateforme lus sur le serveur ; null tant que la première lecture n'a pas abouti.
+class PlatformListings extends Notifier<List<Listing>?> {
+  @override
+  List<Listing>? build() {
+    if (!Backend.ready) return null;
+    Future.microtask(refresh);
+    final t = Timer.periodic(const Duration(seconds: 60), (_) => refresh());
+    ref.onDispose(t.cancel);
+    return null;
+  }
+
+  Future<void> refresh() async {
+    final l = await Backend.platformListings();
+    if (l != null && ref.mounted) state = l; // en cas d'échec, la dernière lecture réussie reste affichée
+  }
+}
+
+final platformListingsProvider = NotifierProvider<PlatformListings, List<Listing>?>(PlatformListings.new);
+
+/// Fiche acheteur d'un produit de la plateforme : valeurs du serveur, photo du stockage ou visuel d'origine du catalogue.
+LiveProduct platformProduct(Listing l) {
+  final orig = liveCatalog.where((p) => p.title == l.title);
+  final image = l.images.isNotEmpty ? _photoOf(l) : (orig.isEmpty ? 'placeholder' : orig.first.image);
+  return LiveProduct(l.title, l.department.isEmpty ? 'IUT de Douala' : l.department, l.price, platformSeller,
+      l.description.isEmpty ? (orig.isEmpty ? '' : orig.first.description) : l.description, image,
+      category: liveCategories.contains(l.category) ? l.category : 'Maison');
+}
+
+/// Catalogue de la plateforme : hors connexion au serveur, le catalogue d'exemple ; sinon les produits publiés et en stock.
+final platformProductsProvider = Provider<List<LiveProduct>>((ref) {
+  if (!Backend.ready) return liveCatalog;
+  final rows = ref.watch(platformListingsProvider) ?? const <Listing>[];
+  int rank(Listing l) {
+    final i = liveCatalog.indexWhere((p) => p.title == l.title);
+    return i < 0 ? liveCatalog.length : i;
+  }
+
+  final sorted = [for (final l in rows) if (l.published && l.stock > 0) l]..sort((a, b) => rank(a).compareTo(rank(b)));
+  return [for (final l in sorted) platformProduct(l)];
+});
+
 final sellerFilterProvider = NotifierProvider<IntV, int>(IntV.new);
 final sellerQueryProvider = NotifierProvider<StrV, String>(StrV.new);
 
@@ -219,11 +274,12 @@ final allProductsProvider = Provider<List<LiveProduct>>((ref) {
   final own = ref.watch(listingsProvider);
   final ownIds = {for (final l in own) l.id};
   final mine = [...own, ...ref.watch(publicListingsProvider)];
-  final base = liveCatalog;
+  final base = ref.watch(platformProductsProvider);
+  platformProducts = base;
   final seen = <String>{};
   final extra = [
     for (final l in mine)
-      if (l.published && l.stock > 0 && l.category != 'Services' && !base.any((p) => p.title == l.title) && seen.add(l.title))
+      if (!l.platform && l.published && l.stock > 0 && l.category != 'Services' && !base.any((p) => p.title == l.title) && seen.add(l.title))
         LiveProduct(l.title, 'Étudiant-vendeur', l.price, (l.id.isNotEmpty && ownIds.contains(l.id)) || (l.id.isEmpty && own.contains(l)) ? ref.watch(profileAccountProvider).name : 'Étudiant-vendeur',
             l.description.isEmpty ? 'Annonce publiée par un étudiant de l’IUT de Douala.' : l.description, _photoOf(l), category: liveCategories.contains(l.category) ? l.category : 'Maison'),
   ];

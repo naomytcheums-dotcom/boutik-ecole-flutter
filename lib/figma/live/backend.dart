@@ -294,12 +294,14 @@ class Backend {
     return m;
   }
 
-  static Future<List<Listing>> myListings() async {
+  /// Annonces du vendeur connecté ; avec [platform] (département, administrateur), aussi les produits de la plateforme.
+  static Future<List<Listing>> myListings({bool platform = false}) async {
     final c = _c;
     final uid = c?.auth.currentUser?.id;
     if (c == null || uid == null) return const [];
     try {
-      final rows = await c.from('listings').select().eq('seller_id', uid).neq('status', 'removed').order('created_at', ascending: false);
+      final base = c.from('listings').select();
+      final rows = await (platform ? base.or('seller_id.eq.$uid,seller_id.is.null') : base.eq('seller_id', uid)).neq('status', 'removed').order('created_at', ascending: false);
       return [for (final r in rows) Listing.fromRow(r)];
     } catch (_) {
       return const [];
@@ -314,6 +316,18 @@ class Backend {
       return [for (final r in rows) Listing.fromRow(r)];
     } catch (_) {
       return const [];
+    }
+  }
+
+  /// Produits de la plateforme (annonces sans vendeur) publiés : prix, stock et description font foi côté serveur.
+  static Future<List<Listing>?> platformListings() async {
+    final c = _c;
+    if (c == null) return null;
+    try {
+      final rows = await c.from('listings').select().eq('status', 'approved').isFilter('seller_id', null).order('title');
+      return [for (final r in rows) Listing.fromRow(r)];
+    } catch (_) {
+      return null;
     }
   }
 

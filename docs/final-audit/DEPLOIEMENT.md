@@ -77,3 +77,17 @@ Limites : parcours non rejoués dans un navigateur après déploiement (outil in
 | Déploiement Vercel | `dpl_5VXXmTvNUZzvaU9ZaokJ47SqcrJu`, READY, alias `boutik-ecole.vercel.app` ; précédent (retour arrière) : `boutik-ecole-rmhifulr0-…` |
 | Vérification après déploiement | `visiteur` 12/12, `retrait_en_ligne` 1/1, `connexion_en_ligne` 1/1 ; compteurs de production inchangés |
 | Base, fonctions, secrets | inchangés (16 migrations ; `pay` v6, `notchpay-webhook` v6, `notchpay-mcp` v3) |
+
+## Déploiement du 01/11/2026 (≈ 12 h) — migrations 20261101 et site
+| Élément | Valeur |
+|---|---|
+| Migrations appliquées en production | `20261101000000` (administration), `…0100` (produits plateforme), `…0200` (concours), `…0300` (livraison) — `db push --linked --workdir %TEMP%\push_20261101` après essai à blanc limité à ces 4 (garde automatique) |
+| Contrôles après | `migration list --linked` 20/20 ; catalogue production = réplique (0 écart) ; delta : ajouts + 4 fonctions redéfinies (`create_order`, `protect_listing_status`, `seller_orders`, `set_seller_order_status`) ; 34/35 empreintes de données identiques (historique seul) ; REST anonyme 14/14 |
+| Code déployé | commit `673c324` (non poussé sur GitHub) |
+| Tests avant build | `flutter test` 460/460 ; `flutter analyze` 0 erreur ; REST réplique 386/386 |
+| Version servie = build testé | SHA-256 `main.dart.js` : `706cb391d4f0f08a5c9571693086db19f02eea42d4e65706748ad8bbd33ba3fb` des deux côtés ; aucune adresse locale ; aucun secret |
+| Déploiement Vercel | `dpl_9VYEJFJaFRAXSHJoqM5xVHFJhjAn`, READY, alias `boutik-ecole.vercel.app` ; précédent (retour arrière) : `dpl_5VXXmTvNUZzvaU9ZaokJ47SqcrJu` |
+| Vérification après déploiement | Playwright en ligne 15/15 (visiteur 12, connexion 1, retrait 1, démarrage S1 1) ; 35/35 empreintes de données inchangées |
+| Compte administrateur | 1 compte réel (`naomytcheums@gmail.com`), sans session ; mot de passe à définir par « Mot de passe oublié » |
+| Fonctions Edge, secrets | inchangés |
+| Sauvegardes | `%USERPROFILE%\boutik_backups\migrations_20261101_1119\` et `site_20261101\` |

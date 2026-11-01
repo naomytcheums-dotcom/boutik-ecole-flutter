@@ -1,4 +1,4 @@
-// GÉNÉRÉ par tool/figma_export/convert.py — écran 201 (nœud Figma 83:461). Ne pas éditer à la main.
+// GÉNÉRÉ par tool/figma_export/convert.py — écran 201 (nœud Figma 83:461), puis raccordé à la main (gelé dans bindings.json).
 // ignore_for_file: camel_case_types, prefer_is_empty, prefer_interpolation_to_compose_strings, unnecessary_string_interpolations, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -42,32 +42,32 @@ class G_201 extends ConsumerWidget {
       gP(331.5, 19.5, 28, 17, gImg('assets/figma/v/6a818f3296df50.svg')),
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(24, 70, 135, 26, gText('Mes missions', 21, Color(0xFF111015), weight: 700)),
-      gP(74.5, 134, 13, 25, gText('3', 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
+      gP(74.5, 134, 13, 25, gText(demoContent ? '3' : (ref.watch(missionProvider).real ? '1' : '0'), 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
       gP(57.5, 164, 47, 14, gText('En cours', 11.5, Color(0xFF66636E), align: TextAlign.center)),
-      gP(168.5, 134, 53, 25, Consumer(builder: (context, ref, _) => gText('${(245000 + ref.watch(missionProvider).studentEarned) ~/ 1000} k', 20, Color(0xFF111015), weight: 800, align: TextAlign.center))),
+      gP(168.5, 134, 53, 25, Consumer(builder: (context, ref, _) => gText((demoContent ? '${(245000 + ref.watch(missionProvider).studentEarned) ~/ 1000} k' : '${ref.watch(missionProvider).studentEarned ~/ 1000} k'), 20, Color(0xFF111015), weight: 800, align: TextAlign.center))),
       gP(173, 164, 44, 14, gText('Gagnés', 11.5, Color(0xFF66636E), align: TextAlign.center)),
       gP(138, 134, 1, 48, gBox(color: Color(0xFFF2EFF6))),
-      gP(292, 134, 34, 25, gText('4,9', 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
+      gP(292, 134, 34, 25, gText(demoContent ? '4,9' : '–', 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
       gP(295, 164, 28, 14, gText('Note', 11.5, Color(0xFF66636E), align: TextAlign.center)),
       gP(252, 134, 1, 48, gBox(color: Color(0xFFF2EFF6))),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 210, 85.2, 34, 'En cours', 12.5, 600), GChip(117.2, 210, 92.6, 34, 'À valider', 12.5, 500), GChip(217.8, 210, 92.6, 34, 'Terminées', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF66636E), radius: 17)),
       gP(36, 266, 50, 50, gBox(image: 'assets/figma/img/4b7b6cea2f4622846841cd8342842e81fa1ed891.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
-      gP(98, 270, 149, 17, Consumer(builder: (context, ref, _) => gText('${ref.watch(missionProvider).kind} Mbella', 13.5, Color(0xFF111015), weight: 600))),
+      gP(98, 270, 149, 17, Consumer(builder: (context, ref, _) => gText((demoContent ? '${ref.watch(missionProvider).kind} Mbella' : ref.watch(missionProvider).kind), 13.5, Color(0xFF111015), weight: 600))),
       gP(98, 292, 73, 14, Consumer(builder: (context, ref, _) => gText('Jalon ${(ref.watch(missionProvider).released + 1).clamp(1, 3)} · ${ref.watch(missionProvider).pct} %', 11.5, Color(0xFF66636E)))),
       gP(293.6, 280, 58.4, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11])),
       gP(307.8, 284, 30, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(missionProvider).proof > ref.watch(missionProvider).released ? 'À valider' : 'Livrer', 11, Color(0xFF8F5400), weight: 600, align: TextAlign.center))),
-      gP(98, 324, 256, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(36, 332, 50, 50, gBox(image: 'assets/figma/img/4ca68f79023605aecb4f83724629d508e921e885.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
-      gP(98, 336, 165, 17, gText('Emballage savons Kamga', 13.5, Color(0xFF111015), weight: 600)),
-      gP(98, 358, 69, 14, gText('Jalon 1 · 25 %', 11.5, Color(0xFF66636E))),
-      gP(280.8, 346, 71.2, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
-      gP(293.9, 350, 45, 14, gText('En cours', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)),
-      gP(98, 390, 256, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(36, 398, 50, 50, gBox(image: 'assets/figma/img/1574e42a325d3a4ac509841e7a5eb5a285a3d991.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
-      gP(98, 402, 136, 17, gText('Spot promo parfums', 13.5, Color(0xFF111015), weight: 600)),
-      gP(98, 424, 114, 14, gText('Attribuée aujourd’hui', 11.5, Color(0xFF66636E))),
-      gP(287.2, 412, 64.8, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
-      gP(295.6, 416, 48, 14, gText('Nouveau', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
+      gP(98, 324, 256, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(36, 332, 50, 50, gBox(image: 'assets/figma/img/4ca68f79023605aecb4f83724629d508e921e885.png', fit: BoxFit.cover, radii: [12, 12, 12, 12]), show: demoContent),
+      gP(98, 336, 165, 17, gText('Emballage savons Kamga', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(98, 358, 69, 14, gText('Jalon 1 · 25 %', 11.5, Color(0xFF66636E)), show: demoContent),
+      gP(280.8, 346, 71.2, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(293.9, 350, 45, 14, gText('En cours', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center), show: demoContent),
+      gP(98, 390, 256, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(36, 398, 50, 50, gBox(image: 'assets/figma/img/1574e42a325d3a4ac509841e7a5eb5a285a3d991.png', fit: BoxFit.cover, radii: [12, 12, 12, 12]), show: demoContent),
+      gP(98, 402, 136, 17, gText('Spot promo parfums', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(98, 424, 114, 14, gText('Attribuée aujourd’hui', 11.5, Color(0xFF66636E)), show: demoContent),
+      gP(287.2, 412, 64.8, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(295.6, 416, 48, 14, gText('Nouveau', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center), show: demoContent),
       gP(40, 484, 85, 18, gText('Mes revenus', 14, Color(0xFF111015), weight: 700)),
       gP(40, 518, 146, 16, gText('Disponible au versement', 12.5, Color(0xFF66636E))),
       gP(130, 518, 220, 16, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(missionProvider).studentEarned), 12.5, Color(0xFF111015), weight: 700, wrap: true, align: TextAlign.right))),
@@ -92,7 +92,7 @@ class G_201 extends ConsumerWidget {
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       gTap(24, 264, 342, 60, () { gOpen(context, '195'); }),
-      gTap(287.6, 408, 64, 32, () { gOpen(context, '219'); }), // parcours 201 -> 219
+      if (demoContent) gTap(287.6, 408, 64, 32, () { gOpen(context, '219'); }), // parcours 201 -> 219 (exemple de la maquette)
     ]);
   }
 }

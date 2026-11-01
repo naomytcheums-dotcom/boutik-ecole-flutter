@@ -586,6 +586,33 @@ class Backend {
     }
   }
 
+  /// Mission en cours du compte connecté (la plus récente qu'il a commandée, sinon celle qu'il a obtenue comme talent),
+  /// avec le montant accepté et les jalons. `mission` null : aucune mission ; résultat null : lecture impossible.
+  static Future<({Map<String, dynamic>? mission, int? accepted, List<Map<String, dynamic>> milestones})?> currentMission() async {
+    final c = _c;
+    final uid = c?.auth.currentUser?.id;
+    if (c == null || uid == null) return null;
+    const cols = 'id,number,title,kind,description,total,status,assigned_team,deadline,created_at,updated_at,budget_max,client_id';
+    try {
+      var rows = await c.from('missions').select(cols).eq('client_id', uid).not('status', 'in', '(draft,cancelled)').order('updated_at', ascending: false).limit(1);
+      if (rows.isEmpty) {
+        final won = await c.from('mission_proposals').select('mission_id').eq('author_id', uid).eq('status', 'accepted').order('decided_at', ascending: false).limit(1);
+        if (won.isNotEmpty) rows = await c.from('missions').select(cols).eq('id', won.first['mission_id'] as String).limit(1);
+      }
+      if (rows.isEmpty) return (mission: null, accepted: null, milestones: const <Map<String, dynamic>>[]);
+      final m = Map<String, dynamic>.from(rows.first);
+      final acc = await c.from('mission_proposals').select('amount').eq('mission_id', m['id'] as String).eq('status', 'accepted').limit(1);
+      final miles = await c.from('mission_milestones').select('position,title,amount,status,updated_at').eq('mission_id', m['id'] as String).order('position');
+      return (
+        mission: m,
+        accepted: acc.isEmpty ? null : (acc.first['amount'] as num?)?.toInt(),
+        milestones: [for (final r in miles) Map<String, dynamic>.from(r)],
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
   static Future<({int notifications, int messages})> unreadCounts() async {
     final c = _c;
     if (c == null || c.auth.currentUser == null) return (notifications: 0, messages: 0);

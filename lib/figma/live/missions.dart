@@ -146,33 +146,126 @@ class Mission {
     this.funded = 0,
     this.proof = 0,
     this.released = 0,
+    this.team = '',
+    this.deadline = '',
+    this.status = '',
+    this.milestoneAmounts = const [],
+    this.steps = const [],
+    this.real = false,
   });
   final String id, kind, desc, date;
   final int total;
   final bool accepted;
   final int funded, proof, released; // nombre de jalons financés / avec preuve / libérés
 
+  /// Mission lue sur le serveur : équipe attribuée, échéance, statut serveur et montants réels des jalons.
+  final String team, deadline, status;
+  final List<int> milestoneAmounts;
+
+  /// Jalons réels : titre et état lisible (« Validé », « Livré, à valider », « Correction demandée », « À venir »).
+  final List<(String, String)> steps;
+  final bool real;
+
+  /// Titre et état du jalon i (vides s'il n'existe pas).
+  (String, String) step(int i) => i < steps.length ? steps[i] : (i == 0 && real && steps.isEmpty ? ('Jalons à définir par l’équipe', '') : ('', ''));
+
+  /// Aucune mission (compte connecté qui n'en a pas) : rien de la maquette n'est affiché à sa place.
+  static const none = Mission(id: '', kind: '', desc: '', total: 0, date: '');
+
+  /// Ligne serveur (missions, proposition acceptée, jalons) ; le séquestre n'est pas activé : rien n'est « financé ».
+  factory Mission.fromServer(Map<String, dynamic> m, int? acceptedAmount, List<Map<String, dynamic>> miles) {
+    final st = (m['status'] ?? '').toString();
+    final validated = miles.where((x) => x['status'] == 'validated').length;
+    final delivered = miles.where((x) => x['status'] == 'submitted' || x['status'] == 'validated').length;
+    return Mission(
+      id: (m['number'] ?? '').toString(),
+      kind: ((m['title'] ?? '').toString().trim().isNotEmpty ? m['title'] : (m['kind'] ?? 'Mission')).toString(),
+      desc: (m['description'] ?? '').toString(),
+      total: acceptedAmount ?? (m['total'] as num?)?.toInt() ?? (m['budget_max'] as num?)?.toInt() ?? 0,
+      date: missionDate(m['created_at']),
+      accepted: const {'assigned', 'in_progress', 'delivered', 'closed'}.contains(st),
+      proof: delivered,
+      released: validated,
+      team: (m['assigned_team'] ?? '').toString(),
+      deadline: (m['deadline'] ?? '').toString(),
+      status: st,
+      milestoneAmounts: [for (final x in miles) (x['amount'] as num?)?.toInt() ?? 0],
+      steps: [
+        for (final x in miles)
+          (
+            (x['title'] ?? '').toString(),
+            switch ((x['status'] ?? '').toString()) {
+              'validated' => 'Validé',
+              'submitted' => 'Livré, à valider',
+              'correction' => 'Correction demandée',
+              _ => 'À venir',
+            },
+          ),
+      ],
+      real: true,
+    );
+  }
+
   static const shares = [30, 40, 30];
-  int amountOf(int i) => total * shares[i.clamp(0, 2)] ~/ 100;
+  int amountOf(int i) => milestoneAmounts.isNotEmpty ? milestoneAmounts[i.clamp(0, milestoneAmounts.length - 1)] : total * shares[i.clamp(0, 2)] ~/ 100;
   int get fee => total ~/ 10;
   int get releasedAmount => [for (var i = 0; i < released; i++) amountOf(i)].fold(0, (a, b) => a + b);
   int get studentEarned => releasedAmount * 70 ~/ 100;
   int get pendingAmount => proof > released ? amountOf(released) : 0;
   int get nextToFund => funded.clamp(0, 3);
-  int get pct => ((released * 3 + proof * 2 + funded) * 100 / 9).round().clamp(0, 100);
+  int get milestoneCount => milestoneAmounts.isNotEmpty ? milestoneAmounts.length : 3;
+  int get pct => real
+      ? (milestoneAmounts.isEmpty ? 0 : (released * 100 / milestoneAmounts.length).round())
+      : ((released * 3 + proof * 2 + funded) * 100 / 9).round().clamp(0, 100);
 
   Mission copyWith({bool? accepted, int? funded, int? proof, int? released}) => Mission(
-        id: id, kind: kind, desc: desc, total: total, date: date,
+        id: id, kind: kind, desc: desc, total: total, date: date, team: team, deadline: deadline, status: status, milestoneAmounts: milestoneAmounts, steps: steps, real: real,
         accepted: accepted ?? this.accepted, funded: funded ?? this.funded, proof: proof ?? this.proof, released: released ?? this.released);
 }
+
+/// « 12 oct. 2026 » à partir d'une date serveur.
+String missionDate(Object? iso) {
+  const m = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+  final d = DateTime.tryParse('${iso ?? ''}')?.toLocal();
+  return d == null ? '' : '${d.day} ${m[d.month - 1]} ${d.year}';
+}
+
+/// « Équipe MMI · livraison le 28 nov. » à partir de la mission réelle.
+String missionTeamLine(Mission m) => [m.team.isEmpty ? 'Équipe à attribuer' : 'Équipe ${m.team}', if (m.deadline.isNotEmpty) 'livraison le ${m.deadline}'].join(' · ');
+
+/// Libellé d'un statut serveur de mission.
+String missionStatusLabel(String s) => switch (s) {
+      'published' => 'Propositions en cours',
+      'assigned' => 'Équipe attribuée',
+      'in_progress' => 'En cours',
+      'delivered' => 'Livrée',
+      'closed' => 'Terminée',
+      _ => s,
+    };
 
 const missionKinds = ['Identité visuelle', 'Savons et parfums', 'Vidéo et photo', 'Site ou application', 'Prototype', 'Étude ou audit'];
 
 class MissionNotifier extends Notifier<Mission> {
   @override
-  Mission build() => const Mission(
+  Mission build() {
+    if (Backend.ready) {
+      // connecté : la mission réelle du compte, ou aucune ; jamais la mission d'exemple de la maquette
+      final uid = ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
+      if (uid.isNotEmpty) Future.microtask(refresh);
+      return Mission.none;
+    }
+    return const Mission(
         id: '#BR-0412', kind: 'Identité visuelle', desc: 'Identité visuelle complète pour la marque de parfums Mbella.', total: 180000, date: '12 oct. 2026',
         accepted: true, funded: 2, proof: 1, released: 1);
+  }
+
+  /// Relit la mission sur le serveur ; une lecture échouée laisse l'état inchangé (et non « aucune mission »).
+  Future<void> refresh() async {
+    final r = await Backend.currentMission();
+    if (!ref.mounted || r == null) return;
+    state = r.mission == null ? Mission.none : Mission.fromServer(r.mission!, r.accepted, r.milestones);
+    ref.read(missionLoadedProvider.notifier).set(true);
+  }
 
   void create(Mission m) => state = m;
   void accept() => state = state.copyWith(accepted: true);
@@ -183,6 +276,24 @@ class MissionNotifier extends Notifier<Mission> {
 }
 
 final missionProvider = NotifierProvider<MissionNotifier, Mission>(MissionNotifier.new);
+
+class _MissionLoaded extends Notifier<bool> {
+  @override
+  bool build() {
+    ref.watch(authProvider.select((a) => a.current?.serverId ?? '')); // nouveau compte : rien n'est encore lu
+    return false;
+  }
+
+  void set(bool v) => state = v;
+}
+
+/// Vrai dès qu'une lecture de la mission a réussi (Mission.none signifie alors « aucune mission »).
+final missionLoadedProvider = NotifierProvider<_MissionLoaded, bool>(_MissionLoaded.new);
+
+/// Écrans du suivi d'une mission : sans mission réelle, ils ne montrent pas la mission d'exemple.
+const missionScreens = {'192', '193', '194', '195', '196', '197', '201'};
+
+bool redirectMissionScreen({required bool ready, required bool loaded, required Mission mission}) => ready && loaded && !mission.real;
 final missionKindProvider = NotifierProvider<IntV, int>(IntV.new);
 
 String _today() {

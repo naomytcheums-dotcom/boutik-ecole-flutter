@@ -10,6 +10,7 @@ import 'core/theme/app_theme.dart';
 import 'figma/live/auth.dart' show appSessionExpired;
 import 'figma/live/backend.dart';
 import 'figma/live/connectivity_stub.dart' if (dart.library.js_interop) 'figma/live/connectivity_web.dart';
+import 'figma/live/missions.dart' show missionLoadedProvider, missionProvider, missionScreens, redirectMissionScreen;
 import 'figma/live/store.dart' show ordersProvider, ordersLoadedProvider, showEmptyOrders;
 import 'figma/live/system_states.dart';
 import 'l10n/gen/app_localizations.dart';
@@ -33,6 +34,7 @@ class _BoutikEcoleAppState extends ConsumerState<BoutikEcoleApp> {
     Backend.recovery.addListener(_onRecovery);
     if (Backend.recovery.value) WidgetsBinding.instance.addPostFrameCallback((_) => _onRecovery());
     _router.routerDelegate.addListener(_ordersScreen);
+    _router.routerDelegate.addListener(_missionScreen);
   }
 
   void _onRecovery() {
@@ -52,10 +54,26 @@ class _BoutikEcoleAppState extends ConsumerState<BoutikEcoleApp> {
     });
   }
 
+  final _messenger = GlobalKey<ScaffoldMessengerState>();
+
+  /// Suivi de mission (192 à 197, 201) sans mission réelle : retour à « Votre besoin » (191), sans la mission d'exemple.
+  void _missionScreen() {
+    if (!mounted) return;
+    final here = screenOf(_router);
+    if (!missionScreens.contains(here)) return;
+    if (!redirectMissionScreen(ready: Backend.ready, loaded: ref.read(missionLoadedProvider), mission: ref.read(missionProvider))) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || screenOf(_router) != here) return;
+      _router.pushReplacement(screenPath('191'));
+      _messenger.currentState?.showSnackBar(const SnackBar(content: Text('Aucune mission en cours : décrivez votre besoin pour en démarrer une.'), behavior: SnackBarBehavior.floating));
+    });
+  }
+
   @override
   void dispose() {
     Backend.recovery.removeListener(_onRecovery);
     _router.routerDelegate.removeListener(_ordersScreen);
+    _router.routerDelegate.removeListener(_missionScreen);
     _router.dispose();
     super.dispose();
   }
@@ -66,8 +84,11 @@ class _BoutikEcoleAppState extends ConsumerState<BoutikEcoleApp> {
     if (Backend.ready) {
       ref.listen(ordersLoadedProvider, (_, _) => _ordersScreen());
       ref.listen(ordersProvider, (_, _) => _ordersScreen());
+      ref.listen(missionLoadedProvider, (_, _) => _missionScreen());
+      ref.listen(missionProvider, (_, _) => _missionScreen());
     }
     return MaterialApp.router(
+      scaffoldMessengerKey: _messenger,
       title: 'Boutik-École',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),

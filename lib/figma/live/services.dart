@@ -99,7 +99,8 @@ Future<void> submitQuoteRequest(BuildContext context, WidgetRef ref) async {
 /// Écran 40 (ouvert depuis le profil, sans service désigné) : la demande n'est envoyée que pour le service consulté ;
 /// sinon, rien n'est envoyé et l'utilisateur sait comment désigner le prestataire.
 Future<void> submitGeneralQuote(BuildContext context, WidgetRef ref) async {
-  if (!Backend.ready) return gAlert(context, 'Hors connexion', 'La demande de devis nécessite la connexion au serveur.');
+  // Maquette (aucun serveur) : lien du prototype Figma 40 → 06, sans aucun message de succès.
+  if (!Backend.ready) return gOpen(context, '06');
   if (currentService(ref) == null) {
     return gAlert(context, 'Choisissez un service',
         'Une demande de devis est adressée au prestataire d’un service. Ouvrez la fiche du service qui vous intéresse, puis « Demander un devis ». Rien n’a été envoyé.');

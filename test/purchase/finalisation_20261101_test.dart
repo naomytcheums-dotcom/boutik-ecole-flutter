@@ -153,7 +153,9 @@ void main() {
       final c = await pumpAction(tester, (ref, context) => payNextMilestone(ref, context));
       expect(find.text('Paiement du jalon indisponible'), findsOneWidget);
       expect(find.textContaining('bloqué en séquestre'), findsNothing);
-      expect(c.read(missionProvider).funded, 2); // la mission d'exemple n'est pas modifiée
+      // connecté : jamais la mission d'exemple (lot 3) ; aucun jalon n'est « financé » par l'action
+      expect(c.read(missionProvider).real, isFalse);
+      expect(c.read(missionProvider).funded, 0);
     });
 
     testWidgets('concours : dépôt et notation expliqués, aucun envoi simulé', (tester) async {

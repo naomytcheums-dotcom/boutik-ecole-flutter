@@ -1,4 +1,4 @@
-// GÉNÉRÉ par tool/figma_export/convert.py — écran 192 (nœud Figma 83:86). Ne pas éditer à la main.
+// GÉNÉRÉ par tool/figma_export/convert.py — écran 192 (nœud Figma 83:86), puis raccordé à la main (gelé dans bindings.json).
 // ignore_for_file: camel_case_types, prefer_is_empty, prefer_interpolation_to_compose_strings, unnecessary_string_interpolations, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -52,26 +52,26 @@ class G_192 extends ConsumerWidget {
       gP(88, 132, 157, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(missionProvider).kind, 13.5, Color(0xFF111015), weight: 600))),
       gP(88, 154, 166, 14, Consumer(builder: (context, ref, _) => gText('Brief ${ref.watch(missionProvider).id} · reçu le ${ref.watch(missionProvider).date}', 11.5, Color(0xFF66636E)))),
       gP(268, 142, 84, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
-      gP(283, 146, 54, 14, gText('Devis prêt', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
+      gP(283, 146, 54, 14, gText(demoContent ? 'Devis prêt' : missionStatusLabel(ref.watch(missionProvider).status), 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
       gP(24, 200, 148, 19, gText('Étapes de validation', 15, Color(0xFF111015), weight: 700)),
       gP(33, 260, 2, 40, gBox(color: Color(0xFFBFE8D6), radii: [1, 1, 1, 1])),
       gP(24, 239, 20, 20, gBox(color: Color(0xFF1F9D6B), oval: true)),
       gP(27.333, 243.25, 13.333, 11.042, gImg('assets/figma/v/23149818a3337a.svg')),
       gP(56, 238, 175, 17, gText('Brief reçu', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
-      gP(56, 258, 175, 14, gText('12 oct. · 09:14', 11.5, Color(0xFF66636E), wrap: true)),
+      gP(56, 258, 175, 14, gText(demoContent ? '12 oct. · 09:14' : ref.watch(missionProvider).date, 11.5, Color(0xFF66636E), wrap: true)),
       gP(33, 322, 2, 40, gBox(color: Color(0xFFBFE8D6), radii: [1, 1, 1, 1])),
       gP(24, 301, 20, 20, gBox(color: Color(0xFF1F9D6B), oval: true)),
       gP(27.333, 305.25, 13.333, 11.042, gImg('assets/figma/v/23149818a3337a.svg')),
       gP(56, 300, 175, 34, gText('Analysé par l’administrateur', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
-      gP(56, 320, 175, 14, gText('12 oct. · 11:40', 11.5, Color(0xFF66636E), wrap: true)),
+      gP(56, 320, 175, 14, gText(demoContent ? '12 oct. · 11:40' : (ref.watch(missionProvider).status == 'published' ? 'En attente' : 'Fait'), 11.5, Color(0xFF66636E), wrap: true)),
       gP(33, 384, 2, 40, gBox(color: Color(0xFFBFE8D6), radii: [1, 1, 1, 1])),
       gP(24, 363, 20, 20, gBox(color: Color(0xFF1F9D6B), oval: true)),
       gP(27.333, 367.25, 13.333, 11.042, gImg('assets/figma/v/23149818a3337a.svg')),
       gP(56, 362, 175, 34, gText('Équipe qualifiée sélectionnée', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
-      gP(56, 382, 175, 14, gText('13 oct. · MMI + TCO', 11.5, Color(0xFF66636E), wrap: true)),
+      gP(56, 382, 175, 14, gText(demoContent ? '13 oct. · MMI + TCO' : (ref.watch(missionProvider).team.isEmpty ? 'En attente' : ref.watch(missionProvider).team), 11.5, Color(0xFF66636E), wrap: true)),
       gP(24, 425, 20, 20, gBox(color: Color(0xFF111015), oval: true)),
       gP(56, 424, 175, 17, gText('Devis envoyé', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
-      gP(56, 444, 175, 14, gText('14 oct. · à valider', 11.5, Color(0xFF66636E), wrap: true)),
+      gP(56, 444, 175, 14, gText(demoContent ? '14 oct. · à valider' : (ref.watch(missionProvider).accepted ? 'Proposition acceptée · ${fcfa(ref.watch(missionProvider).total)}' : 'En attente des propositions'), 11.5, Color(0xFF66636E), wrap: true)),
       gP(40, 514, 38, 18, gText('Devis', 14, Color(0xFF111015), weight: 700)),
       gP(40, 548, 53, 16, gText('Livrables', 12.5, Color(0xFF66636E))),
       gP(191, 548, 159, 16, gText('Logo, charte, déclinaisons', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),

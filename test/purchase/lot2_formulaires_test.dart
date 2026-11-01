@@ -9,6 +9,7 @@ import 'package:boutik_ecole/figma/live/backend.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 import '../helpers/render.dart';
 
@@ -71,14 +72,20 @@ void main() {
       await tester.pump();
     }
 
-    testWidgets('hors serveur : maquette, et l’envoi n’annonce aucun succès', (tester) async {
-      final c = ProviderContainer();
-      addTearDown(c.dispose);
-      await pump(tester, c);
+    testWidgets('hors serveur : maquette et lien du prototype 40 → 06, sans aucun message de succès', (tester) async {
+      GAnim.enabled = false;
+      tester.view.physicalSize = const Size(390, 900);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      final router = GoRouter(initialLocation: '/s/40', routes: [
+        GoRoute(path: '/s/:id', builder: (_, s) => s.pathParameters['id'] == '40' ? const Scaffold(body: G_40()) : Text('écran ${s.pathParameters['id']}')),
+      ]);
+      await tester.pumpWidget(ProviderScope(child: MaterialApp.router(routerConfig: router)));
+      await tester.pump();
       expect(find.text('Site vitrine pour mon association'), findsOneWidget);
       await tester.tap(find.text('Envoyer la demande'), warnIfMissed: false);
       await tester.pumpAndSettle();
-      expect(find.text('Hors connexion'), findsOneWidget);
+      expect(find.text('écran 06'), findsOneWidget);
       expect(find.textContaining('Demande envoyée'), findsNothing);
     });
 

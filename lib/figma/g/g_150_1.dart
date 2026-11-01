@@ -1,4 +1,4 @@
-// GÉNÉRÉ par tool/figma_export/convert.py — écran 150-1 (nœud Figma 40:1056). Ne pas éditer à la main.
+// GÉNÉRÉ par tool/figma_export/convert.py — écran 150-1 (nœud Figma 40:1056), puis raccordé à la main (gelé dans bindings.json).
 // ignore_for_file: camel_case_types, prefer_is_empty, prefer_interpolation_to_compose_strings, unnecessary_string_interpolations, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/sync.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_150_1 extends ConsumerWidget {
@@ -29,6 +30,9 @@ class G_150_1 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Avec le serveur : résultat de la dernière resynchronisation réelle ; sans serveur, la maquette.
+    final real = !demoContent;
+    final r = ref.watch(syncProvider);
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
@@ -53,7 +57,7 @@ class G_150_1 extends ConsumerWidget {
       gP(48.051, 151.499, 14.033, 8.706, gImg('assets/figma/v/b08731205bbc2d.svg')),
       gP(44.042, 155.204, 9.662, 7.905, gImg('assets/figma/v/703e1a605a7fe0.svg')),
       gP(49, 162.167, 6.007, 6, gImg('assets/figma/v/c499ab72bb5251.svg')),
-      gP(76, 134, 277, 51, gText('Mode hors ligne : certaines fonctions sont limitées. Vos actions seront synchronisées au retour du réseau.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
+      gP(76, 134, 277, 51, gText(real ? 'Les données de votre compte sont relues sur le serveur. Une action faite hors ligne n’est pas mise en attente : refaites-la une fois connecté.' : 'Mode hors ligne : certaines fonctions sont limitées. Vos actions seront synchronisées au retour du réseau.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
       gP(38, 223, 100, 100, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF0E1A0B), Color(0xFF000000)], stops: [0, 1]), radii: [50, 50, 50, 50])),
       gP(38, 268, 100, 55, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x008DF03A), Color(0xBF8DF03A)], stops: [0, 1]))),
       gP(85, 221.5, 6, 14.5, gImg('assets/figma/v/bb3ffcce1ff37a.svg')),
@@ -129,15 +133,15 @@ class G_150_1 extends ConsumerWidget {
       gP(76.58, 222.24, 7.47, 14.37, gImg('assets/figma/v/9eeba09b250050.svg')),
       gP(80.77, 221.68, 6.74, 14.47, gImg('assets/figma/v/4510aeb054463f.svg')),
       gP(80.667, 241.083, 14.667, 16.833, gImg('assets/figma/v/fb0d9d095f4d85.svg')),
-      gP(61, 259, 54, 33, gText('72%', 27, Color(0xFF9BE88A), weight: 300, inter: true)),
-      gP(154, 247, 199, 19, gText('Synchronisation en cours', 15, Color(0xFF111015), weight: 700, wrap: true)),
-      gP(154, 273, 199, 17, gText('3 éléments sur 4 envoyés', 12, Color(0xFF66636E), lh: 17, wrap: true)),
+      gP(61, 259, 54, 33, gText(real ? '${r.percent}%' : '72%', 27, Color(0xFF9BE88A), weight: 300, inter: true)),
+      gP(154, 247, 199, 19, gText(real ? (r.running ? 'Synchronisation en cours' : (r.at == null ? 'Pas encore synchronisé' : (r.allOk ? 'Synchronisation terminée' : 'Synchronisation incomplète'))) : 'Synchronisation en cours', 15, Color(0xFF111015), weight: 700, wrap: true)),
+      gP(154, 273, 199, 17, gText(real ? '${r.upToDate} éléments sur 3 à jour' : '3 éléments sur 4 envoyés', 12, Color(0xFF66636E), lh: 17, wrap: true)),
       gP(36, 360, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(48.833, 383.667, 7.667, 7.667, gImg('assets/figma/v/1494b1f7d3ff5c.svg')),
       gP(58, 383.667, 7.667, 7.667, gImg('assets/figma/v/1494b1f7d3ff5c.svg')),
       gP(44.708, 368.708, 22.7, 17.667, gImg('assets/figma/v/e60f95351ae701.svg')),
       gP(88, 359, 41, 17, gText('Panier', 13.5, Color(0xFF111015), weight: 600)),
-      gP(88, 381, 68, 14, gText('Synchronisé', 11.5, Color(0xFF66636E))),
+      gP(88, 381, 160, 14, gText(real ? 'Conservé sur cet appareil' : 'Synchronisé', 11.5, Color(0xFF66636E))),
       gP(319.2, 369, 32.8, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
       gP(326.6, 373, 18, 14, gText('OK', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
       gP(88, 413, 266, 1, gBox(color: Color(0xFFF2EFF6))),
@@ -145,26 +149,26 @@ class G_150_1 extends ConsumerWidget {
       gP(44.667, 435.5, 22.667, 21, gImg('assets/figma/v/7565149e296580.svg')),
       gP(38, 428, 36, 36, GHeart()),
       gP(88, 425, 47, 17, gText('Favoris', 13.5, Color(0xFF111015), weight: 600)),
-      gP(88, 447, 68, 14, gText('Synchronisé', 11.5, Color(0xFF66636E))),
+      gP(88, 447, 160, 14, gText(real ? syncLabel(r.favorites) : 'Synchronisé', 11.5, Color(0xFF66636E))),
       gP(319.2, 435, 32.8, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
-      gP(326.6, 439, 18, 14, gText('OK', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
+      gP(326.6, 439, 18, 14, gText(real && r.favorites != true ? '–' : 'OK', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
       gP(88, 479, 266, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(36, 492, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(46, 502, 20, 20, const SizedBox.expand(), tap: () => gTab(context, '53')),
       gP(44.667, 501.493, 21.84, 21.84, gImg('assets/figma/v/c011934b9b1395.svg')),
       gP(88, 491, 66, 17, gText('Messages', 13.5, Color(0xFF111015), weight: 600)),
-      gP(88, 513, 98, 14, gText('En attente d’envoi', 11.5, Color(0xFF66636E))),
+      gP(88, 513, 98, 14, gText(real ? syncLabel(r.messages) : 'En attente d’envoi', 11.5, Color(0xFF66636E))),
       gP(268, 501, 84, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11])),
-      gP(282.5, 505, 55, 14, gText('En attente', 11, Color(0xFF8F5400), weight: 600, align: TextAlign.center)),
+      gP(282.5, 505, 55, 14, gText(real ? (r.messages == true ? 'OK' : (r.messages == null ? 'À vérifier' : 'Échec')) : 'En attente', 11, Color(0xFF8F5400), weight: 600, align: TextAlign.center)),
       gP(40, 571, 186, 17, gText('Mode économie de données', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 593, 133, 14, gText('Charger moins d’images', 11.5, Color(0xFF66636E))),
       gP(308, 580, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
       gP(40, 651, 147, 16, gText('Dernière synchronisation', 12.5, Color(0xFF66636E))),
-      gP(245, 651, 105, 16, gText('Aujourd’hui 10:24', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
+      gP(245, 651, 105, 16, gText(real ? syncTime(ref.watch(lastSyncProvider), DateTime.now()) : 'Aujourd’hui 10:24', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
       gP(40, 676, 310, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 685, 137, 16, gText('Disponibilité du service', 12.5, Color(0xFF66636E))),
-      gP(269, 685, 81, 16, gText('Opérationnel', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
-      gP(24, 737, 342, 50, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [25, 25, 25, 25])),
+      gP(269, 685, 81, 16, gText(real ? (r.at == null ? 'Non vérifié' : (r.allOk ? 'Opérationnel' : 'Perturbé')) : 'Opérationnel', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
+      gP(24, 737, 342, 50, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [25, 25, 25, 25]), tap: () => syncNowAction(context, ref)),
       gP(120.5, 753, 174, 18, gText('Synchroniser maintenant', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(94.625, 752.625, 18.75, 12.375, gImg('assets/figma/v/61c3463d3cf08b.svg')),
       gP(103.833, 752.625, 9.542, 9.542, gImg('assets/figma/v/381bf2cb0d6c1e.svg')),

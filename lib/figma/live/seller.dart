@@ -445,6 +445,15 @@ String? _intError(String v, String what, {int min = 0}) {
   return null;
 }
 
+/// Champs du formulaire « Nouveau produit » (58) dont les erreurs sont récapitulées par l'écran 275.
+const newProductErrorKeys = ['np_title', 'np_price', 'np_cat', 'np_stock'];
+
+/// « 2 champs à corriger… » : nombre réel d'erreurs ; rien n'est enregistré tant qu'elles subsistent.
+String newProductErrorsSummary(Map<String, String> errs) {
+  final n = newProductErrorKeys.where(errs.containsKey).length;
+  return '$n champ${n > 1 ? 's' : ''} à corriger avant de continuer. Rien n’a été enregistré.';
+}
+
 Future<void> submitListing(WidgetRef ref, BuildContext context, {required bool publish}) async {
   final f = ref.read(formProvider);
   final title = (f['np_title'] ?? '').trim();
@@ -458,6 +467,7 @@ Future<void> submitListing(WidgetRef ref, BuildContext context, {required bool p
   final bad = {for (final e in errs.entries) if (e.value != null) e.key: e.value!};
   if (bad.isNotEmpty) {
     ref.read(errorsProvider.notifier).setAll(bad);
+    if (bad.length >= 2 && context.mounted) gOpen(context, '275'); // plusieurs erreurs : récapitulatif de la maquette
     return;
   }
   if (ref.read(listingsProvider).any((l) => l.title.toLowerCase() == title.toLowerCase())) {

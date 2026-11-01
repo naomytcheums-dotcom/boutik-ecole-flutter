@@ -501,14 +501,15 @@ class Backend {
   }
 
   /// Commandes de la personne connectée, avec leurs articles (isolées par le serveur).
-  static Future<List<Map<String, dynamic>>> myOrders() async {
+  /// Commandes du compte connecté ; null si la lecture a échoué (à ne pas confondre avec « aucune commande »).
+  static Future<List<Map<String, dynamic>>?> myOrders() async {
     final c = _c;
-    if (c == null || c.auth.currentUser == null) return const [];
+    if (c == null || c.auth.currentUser == null) return null;
     try {
       final rows = await c.from('orders').select('number,subtotal,fee,method,reference,status,paid,cancelled,cancelled_at,created_at,order_lines(title,qty,unit_price,fulfillment)').order('created_at', ascending: false);
       return [for (final r in rows) Map<String, dynamic>.from(r as Map)];
     } catch (_) {
-      return const [];
+      return null;
     }
   }
 
@@ -564,6 +565,25 @@ class Backend {
     try {
       await _c?.rpc('mark_notifications_read');
     } catch (_) {}
+  }
+
+  /// Lecture de contrôle (écran 150-1) : vrai si la source répond pour le compte connecté, faux si la lecture échoue.
+  static Future<bool> probe(String source) async {
+    final c = _c;
+    if (c == null || c.auth.currentUser == null) return false;
+    try {
+      switch (source) {
+        case 'favorites':
+          await c.from('favorites').select('listing_id').limit(1);
+        case 'messages':
+          await c.rpc('unread_counts');
+        default:
+          return false;
+      }
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 
   static Future<({int notifications, int messages})> unreadCounts() async {

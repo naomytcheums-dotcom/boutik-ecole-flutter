@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/router/paths.dart';
 import 'backend.dart';
 import 'connectivity_stub.dart' if (dart.library.js_interop) 'connectivity_web.dart';
+import 'sync.dart';
 
 /// États système affichés lorsqu'ils se produisent réellement (et non par un lien) :
 /// - coupure réseau → 150-3 « Connexion impossible » (qui propose le mode hors ligne, 182) ;
@@ -117,11 +119,17 @@ class _SystemStatesState extends State<SystemStates> {
 }
 
 /// « Réessayer » (150-3, 183) : ne quitte l'état hors ligne que si le réseau est réellement revenu.
+/// Compte connecté au serveur : l'état hors ligne laisse place à 150-1, qui relit réellement les données du compte.
 void retryNetwork(BuildContext context) {
   if (!browserOnline()) {
     ScaffoldMessenger.maybeOf(context)?.showSnackBar(const SnackBar(content: Text('Toujours hors ligne. Vérifiez votre connexion.'), behavior: SnackBarBehavior.floating));
     return;
   }
   final r = GoRouter.of(context);
+  if (Backend.ready && Supabase.instance.client.auth.currentUser != null) {
+    ProviderScope.containerOf(context, listen: false).read(syncProvider.notifier).run();
+    r.pushReplacement(screenPath('150-1'));
+    return;
+  }
   r.canPop() ? r.pop() : r.go(screenPath('03'));
 }

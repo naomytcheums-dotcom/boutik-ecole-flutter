@@ -151,10 +151,12 @@ class Orders extends Notifier<List<Order>> {
   /// Relit les commandes du compte connecté sur le serveur (état de préparation, paiement, annulation).
   Future<void> refresh() async {
     final rows = await Backend.myOrders();
-    if (!ref.mounted) return;
+    if (!ref.mounted || rows == null) return; // lecture échouée : la dernière liste connue reste affichée
     final server = [for (final r in rows) _fromServer(r)];
     final ids = {for (final o in server) o.id};
     state = [for (final o in state) if (!ids.contains(o.id) && !o.paid && !o.cancelled) o, ...server];
+    ref.read(ordersLoadedProvider.notifier).set(true);
+    ref.read(lastSyncProvider.notifier).set(DateTime.now());
   }
 
   static Order _fromServer(Map<String, dynamic> r) {
@@ -211,6 +213,31 @@ class Orders extends Notifier<List<Order>> {
 }
 
 final ordersProvider = NotifierProvider<Orders, List<Order>>(Orders.new);
+
+class _OrdersLoaded extends Notifier<bool> {
+  @override
+  bool build() {
+    ref.watch(authProvider.select((a) => a.current?.serverId ?? '')); // nouveau compte : rien n'est encore lu
+    return false;
+  }
+
+  void set(bool v) => state = v;
+}
+
+/// Vrai dès qu'une lecture des commandes sur le serveur a réussi (une liste vide signifie alors « aucune commande »).
+final ordersLoadedProvider = NotifierProvider<_OrdersLoaded, bool>(_OrdersLoaded.new);
+
+class _When extends Notifier<DateTime?> {
+  @override
+  DateTime? build() => null;
+  void set(DateTime v) => state = v;
+}
+
+/// Heure de la dernière lecture réussie des données du compte sur le serveur (écran 150-1).
+final lastSyncProvider = NotifierProvider<_When, DateTime?>(_When.new);
+
+/// « Mes commandes » d'un compte connecté sans aucune commande : l'écran d'état vide 150-4 remplace la liste 45.
+bool showEmptyOrders({required bool ready, required bool loaded, required List<Order> orders}) => ready && loaded && orders.isEmpty;
 
 /// Dernière commande passée (ou une commande d'exemple si aucune).
 final lastOrderProvider = Provider<Order>((ref) {

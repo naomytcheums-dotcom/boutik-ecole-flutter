@@ -22,6 +22,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../live/engage.dart';
 import '../live/lots.dart';
@@ -103,6 +104,7 @@ class G_250 extends ConsumerWidget {
       gP(326, 386, 26, 26, gBox(color: Color(0xFFEDE7FF), oval: true)),
       gP(332, 390, 13, 18, gText('@', 14, Color(0xFF5A3FE0), weight: 700)),
       gTap(301, 78, 65, 27, () => demoContent ? gOpen(context, '244') : publishReel(context, ref)),
+      gTap(40, 144, 67, 25, () { uploadMedia(context, ref); }), // audit 01/11 : « Modifier » n'avait aucun effet
     ]);
   }
 }

@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -331,6 +332,10 @@ gP(-13, 165.451, 296, 34.583, gImg('assets/figma/v/5ffec176ca9577.svg'))
       gP(1008, 968, 336, 34, GField(hint: 'Quels enseignements cherches-tu ?', size: 11, hintColor: Color(0xFF66636E), weight: 400, padL: 16, inter: true)),
       gP(1008, 1012, 336, 76, gBox(color: Color(0xFFFFFFFF), radii: [16, 16, 16, 16])),
       gP(1022, 1020, 313, 45, gText('Tes revenus ont progressé de 6 % ce mois-ci, portés par tes meilleurs produits. Veux-tu un plan pour doubler les commandes de la lampe ?', 10.5, Color(0xFF4A4944), inter: true, lh: 15, wrap: true)),
+      gTap(974, 426, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
+      gTap(1094, 426, 142, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
+      gTap(1264, 496, 80, 26, () { uiFilters(context); }), // audit 01/11 : « Filtrer » n'avait aucun effet
+      gTap(874, 756, 80, 26, () { uiFilters(context); }), // audit 01/11 : « Filtrer » n'avait aucun effet
     ]);
   }
 }

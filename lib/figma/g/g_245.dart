@@ -22,6 +22,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -93,6 +94,8 @@ class G_245 extends ConsumerWidget {
       gTap(336, 382, 20, 20, () => gOpen(context, '252')),
       gTap(336, 568, 20, 20, () => gOpen(context, '248')),
       gTap(22, 612, 40, 40, () => gOpen(context, '247')),
+      gTap(320, 470, 52, 32, () { uiCopy(context, uiLink('245'), 'Lien du reel'); }), // audit 01/11 : « Partager » n'avait aucun effet
+      gTap(160, 610, 77, 25, () { uiFollow(context); }), // audit 01/11 : « S’abonner » n'avait aucun effet
     ]);
   }
 }

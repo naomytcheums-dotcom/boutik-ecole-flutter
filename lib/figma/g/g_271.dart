@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../live/engage.dart';
 import '../live/lots.dart';
@@ -106,6 +107,9 @@ class G_271 extends ConsumerWidget {
       gP(41.656, 321.833, 20.687, 24.333, gImg('assets/figma/v/0c6b181e4879f8.svg')),
       gP(39.833, 334.667, 12.417, 8.347, gImg('assets/figma/v/6ad61c694ba2bd.svg')),
       gTap(30, 70, 44, 44, () => gOpen(context, '10')),
+      gTap(24, 368, 342, 52, () { addProfileLink(context, ref); }), // audit 01/11 : « Ajouter un lien » n'avait aucun effet
+      gTap(24, 428, 342, 52, () { addProfileLink(context, ref); }), // audit 01/11 : « Ajouter un lien » n'avait aucun effet
+      gTap(24, 488, 342, 52, () { addProfileLink(context, ref); }), // audit 01/11 : « Ajouter un lien » n'avait aucun effet
     ]);
   }
 }

@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../live/engage.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
@@ -169,6 +170,8 @@ class G_153 extends ConsumerWidget {
       gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => engageOrManage(context, ref, 'application', 'offer:153', data: {'title': 'Stage développeur web', 'company': 'Orange Cameroun'}, success: 'Candidature enregistrée.', need: 'postuler', activeTitle: 'Vous avez déjà postulé', activeBody: 'Votre candidature « Stage développeur web » est en cours d’examen.', keepLabel: 'La garder', cancelLabel: 'Retirer ma candidature', cancelled: 'Candidature retirée.', onCreated: () => gOpen(context, '159'))),
       if (isEngaged(ref, 'application|offer:153')) gP(203, 778, 163, 18, gText('Candidature ✓', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)) else gP(255, 778, 59, 18, gText('Postuler', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      gTap(82, 583, 188, 32, () { gOpen(context, '72'); }), // audit 01/11 : « Ajouter un certificat de sc… » n'avait aucun effet
+      gTap(82, 649, 188, 32, () { gOpen(context, '72'); }), // audit 01/11 : « Ajouter une réalisation web » n'avait aucun effet
     ]);
   }
 }

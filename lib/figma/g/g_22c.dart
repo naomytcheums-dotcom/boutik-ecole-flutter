@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -116,6 +117,8 @@ class G_22c extends ConsumerWidget {
       gP(184, 1024, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 1022.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       gTap(34, 278, 325, 39, () { gOpen(context, '102'); }), // lien métier 22c -> 102
+      gTap(295.5, 356, 61, 32, () { gOpen(context, '22'); }), // audit 01/11 : « Voir tout » n'avait aucun effet
+      gTap(295.5, 791, 61, 32, () { gOpen(context, '22'); }), // audit 01/11 : « Voir tout » n'avait aucun effet
     ]);
   }
 }

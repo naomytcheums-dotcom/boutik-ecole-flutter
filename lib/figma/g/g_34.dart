@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -70,6 +71,7 @@ class G_34 extends ConsumerWidget {
       gP(42, 844, 309, 23, gText('Fabrication de la lampe', 18, Color(0xFFFFFFFF), weight: 700, wrap: true)),
       gP(42, 872, 309, 15, gText('Vidéo · 1 min 24', 12, Color(0xFFE3ECF7), wrap: true)),
       gP(125, 936, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      gTap(295.5, 462, 61, 32, () { uiAllShown(context); }), // audit 01/11 : « Tout voir » n'avait aucun effet
     ]);
   }
 }

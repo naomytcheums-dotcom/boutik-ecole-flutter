@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -159,6 +160,9 @@ class G_114 extends ConsumerWidget {
       gTap(12, 408, 216, 36, () => gOpen(context, '115')),
       gTap(12, 448, 216, 36, () => gOpen(context, '116')),
       gTap(276, 244, 111, 32, () { gOpen(context, '77'); }), // lien métier 114 -> 77
+      gTap(928.667, 134, 323.333, 50, () { uiSoon(context, 'Ajouter un mentor', 'Les mentors créent leur compte ; leur profil apparaît ici une fois validé.'); }), // audit 01/11 : « Ajouter un mentor » n'avait aucun effet
+      gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
+      gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
     ]);
   }
 }

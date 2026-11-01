@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -71,6 +72,7 @@ class G_235 extends ConsumerWidget {
       gP(320, 780, 46, 46, gBox(color: Color(0xFF128C7E), oval: true)),
       gP(331.667, 791.667, 22.667, 22.667, gImg('assets/figma/v/37684f95055729.svg')),
       gP(339.167, 791.667, 15.167, 15.167, gImg('assets/figma/v/850ac0825ae325.svg')),
+      gTap(30, 342, 282, 32, () { uiSoon(context, 'Le paiement par WhatsApp', 'Payez votre commande dans l’application, à l’étape Paiement.'); }), // audit 01/11 : « Payer avec Orange Money » n'avait aucun effet
     ]);
   }
 }

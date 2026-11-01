@@ -22,6 +22,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -97,6 +98,7 @@ class G_P4 extends ConsumerWidget {
       Positioned.fill(child: GChoiceGroup(chips: [GChip(9, 790, 166, 40, 'Planifier', 12.5, 500), GChip(200, 790, 166, 40, 'Propulser ce post', 12.5, 600)], selected: 1, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 20)),
       gP(22, 38, 34, 32, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       if (!demoContent) gTap(297.5, 78, 65, 27, () { publishReel(context, ref); }), // publication réelle (20261101000600)
+      gTap(296, 76, 68, 32, () { publishReel(context, ref); }), // audit 01/11 : « Publier » n'avait aucun effet
     ]);
   }
 }

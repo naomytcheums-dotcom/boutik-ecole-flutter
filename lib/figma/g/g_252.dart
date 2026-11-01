@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -99,6 +100,7 @@ class G_252 extends ConsumerWidget {
       gP(335, 777.75, 6, 9.167, gImg('assets/figma/v/6c8704a6160690.svg')),
       gP(276, 752, 34, 34, gBox(color: Color(0xFFEDE7FF), oval: true)),
       gP(286, 758, 16, 21, gText('@', 17, Color(0xFF5A3FE0), weight: 700)),
+      gTap(74, 752, 198, 48, () { uiSoon(context, 'Commenter', 'Vous pouvez noter une commande reçue depuis « Mon espace client ».'); }), // audit 01/11 : « Ajouter un commentaire… (@ pour citer) » n'avait aucun effet
     ]);
   }
 }

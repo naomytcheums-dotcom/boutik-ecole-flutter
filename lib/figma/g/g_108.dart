@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -339,6 +340,10 @@ gP(-13, 165.451, 296, 34.583, gImg('assets/figma/v/5ffec176ca9577.svg'))
       gTap(40, 443, 232, 36, () { gOpen(context, '115'); }), // parcours 108 -> 115
       gTap(40, 517, 232, 36, () { gOpen(context, '116'); }), // parcours 108 -> 116
       gTap(930, 566, 110, 32, () { gOpen(context, 'a1'); }), // lien métier 108 -> a1
+      gTap(860, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
+      gTap(980, 78, 142, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
+      gTap(1150, 148, 80, 26, () { uiFilters(context); }), // audit 01/11 : « Filtrer » n'avait aucun effet
+      gTap(760, 408, 80, 26, () { uiFilters(context); }), // audit 01/11 : « Filtrer » n'avait aucun effet
     ]);
   }
 }

@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -156,6 +157,8 @@ class G_268 extends ConsumerWidget {
       gP(738, 702, 58, 14, gText('il y a 6 min', 11.5, Color(0xFF3D3B37), inter: true)),
       gP(968, 702, 25, 14, gText('1.8.2', 11.5, Color(0xFF3D3B37), inter: true)),
       gP(1128, 702, 43, 14, gText('En ligne', 11.5, Color(0xFF3D3B37), inter: true)),
+      gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
+      gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
     ]);
   }
 }

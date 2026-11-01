@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -148,6 +149,8 @@ class G_262 extends ConsumerWidget {
       gP(668, 838, 54, 14, gText('4 équipes', 11.5, Color(0xFF3D3B37), inter: true)),
       gP(828, 838, 39, 14, gText('15 nov.', 11.5, Color(0xFF3D3B37), inter: true)),
       gP(988, 838, 38, 14, gText('Ouvert', 11.5, Color(0xFF3D3B37), inter: true)),
+      gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
+      gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
     ]);
   }
 }

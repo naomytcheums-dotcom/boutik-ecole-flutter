@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../live/home_hero.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
@@ -152,6 +153,8 @@ class G_03 extends ConsumerWidget {
       gTap(24, 180, 342, 48, () => gOpen(context, '19')),
       gTap(198, 559, 178, 229, () { ref.read(selectedProductProvider.notifier).select('Drone éducatif'); gOpen(context, '05'); }),
       gTap(10.1, 107.1, 133, 44, () { gOpen(context, '177'); }), // parcours 03 -> 177
+      gTap(303, 523, 56, 32, () { gOpen(context, '22'); }), // audit 01/11 : « Voir tout » n'avait aucun effet
+      gTap(303, 797, 56, 32, () { gOpen(context, '70'); }), // audit 01/11 : « Voir tout » n'avait aucun effet
     ]);
   }
 }

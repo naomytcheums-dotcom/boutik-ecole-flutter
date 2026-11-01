@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -96,6 +97,7 @@ class G_18b extends ConsumerWidget {
       gP(181.175, 196.075, 40.25, 40.25, gImg('assets/figma/r/173_49.png')),
       gP(169.1, 236.325, 64.4, 32.2, gImg('assets/figma/r/173_50.png')),
       gTap(24, 764, 342, 54, () { submitProfile(ref, context); }),
+      gTap(135.5, 280, 119, 32, () { uiSoon(context, 'Ajouter une photo de profil', 'Votre profil s’affiche avec vos initiales ; l’ajout de photo arrivera dans une prochaine version.'); }), // audit 01/11 : « Ajouter une photo » n'avait aucun effet
     ]);
   }
 }

@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -96,6 +97,8 @@ class G_222 extends ConsumerWidget {
       gP(328.333, 89, 19.333, 14.333, gImg('assets/figma/v/9c92298f9fd6b2.svg')),
       gP(331.667, 80.667, 12.667, 9.333, gImg('assets/figma/v/bb8ad3c4792df6.svg')),
       gP(335, 80.667, 6, 16.833, gImg('assets/figma/v/5bb53be308dfb1.svg')),
+      gTap(270, 515, 82, 26, () { uiFollow(context); }), // audit 01/11 : « S’abonner » n'avait aucun effet
+      gTap(258, 628, 94, 26, () { gOpen(context, '05'); }), // audit 01/11 : « Commander » n'avait aucun effet
     ]);
   }
 }

@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../live/lots.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
@@ -114,6 +115,8 @@ class G_264 extends ConsumerWidget {
       Positioned.fill(child: GChoiceGroup(chips: [GChip(881, 500, 120, 36, 'Publier', 11.5, 600), GChip(1001, 500, 120, 36, 'Aperçu', 11.5, 500)], selected: 0, selFill: Color(0xFF0B0B0D), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 18, inter: true)),
       gP(1011, 500, 100, 36, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E3DE), bw: 1, radii: [18, 18, 18, 18]), tap: () => previewPagesDialog(context)),
       gP(881, 560, 165, 13, gText('Historique des versions conservé', 10.5, Color(0xFF66636E), inter: true)),
+      gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
+      gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
     ]);
   }
 }

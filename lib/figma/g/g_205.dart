@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../live/engage.dart';
 import '../live/lots.dart';
@@ -85,6 +86,7 @@ class G_205 extends ConsumerWidget {
       gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => saveProject(context, ref, submit: true)),
       gP(234, 778, 101, 18, gText('Envoyer à l’IUT', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      gTap(82.5, 573, 167, 32, () { gOpen(context, '163'); }), // audit 01/11 : « Ajouter des coéquipiers » n'avait aucun effet
     ]);
   }
 }

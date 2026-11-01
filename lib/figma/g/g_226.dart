@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -69,6 +70,7 @@ gP(7, 37, 376, 181, gImg('assets/figma/v/c901e6036f3570.svg'))
       gP(91, 786, 102, 16, gText('Ajouter au panier', 12.5, Color(0xFFFFFFFF), weight: 600)),
       gP(262, 772, 96, 44, gBox(color: Color(0xFFF1EEFB), radii: [100, 100, 100, 100])),
       gP(279.5, 787, 61, 14, gText('Réinitialiser', 11, Color(0xFF5A3FE0), weight: 600)),
+      gTap(30, 772, 224, 44, () { gOpen(context, '05'); }), // audit 01/11 : « Ajouter au panier » n'avait aucun effet
     ]);
   }
 }

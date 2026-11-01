@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -120,6 +121,8 @@ class G_269 extends ConsumerWidget {
       gP(829, 360, 423, 174, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
       gP(853, 380, 143, 16, gText('Tendance du trimestre', 13, Color(0xFF18181B), weight: 600, inter: true)),
       gP(853, 408, 378, 34, gText('Les demandes en énergies renouvelables progressent de 22 % : renforcer l’offre du département ENR.', 11.5, Color(0xFF66636E), inter: true, lh: 17, wrap: true)),
+      gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
+      gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
     ]);
   }
 }

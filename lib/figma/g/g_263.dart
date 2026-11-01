@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../live/lots.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
@@ -137,6 +138,8 @@ class G_263 extends ConsumerWidget {
       gP(1029, 470, 60.4, 22, gBox(color: Color(0xFFE8F7EE), radii: [11, 11, 11, 11])),
       gP(1043.7, 474, 31, 13, gText('Public', 10.5, Color(0xFF126B49), weight: 500, inter: true)),
       gP(268, 744, 403, 14, gText('Stockage utilisé : 14,2 Go sur 50 Go · URLs signées pour les fichiers privés', 11.5, Color(0xFF66636E), inter: true)),
+      gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
+      gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
     ]);
   }
 }

@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -95,6 +96,7 @@ class G_80 extends ConsumerWidget {
       gTap(117.7, 150, 54, 32, () { gOpen(context, '81'); }), // parcours 80 -> 81
       gTap(16, 180, 100, 32, () { gOpen(context, '82'); }), // parcours 80 -> 82
       gTap(217.8, 150, 55, 32, () { gOpen(context, '83'); }), // parcours 80 -> 83
+      gTap(82, 569, 152, 32, () { gOpen(context, '81'); }), // audit 01/11 : « Ajouter des membres » n'avait aucun effet
     ]);
   }
 }

@@ -21,6 +21,8 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
+import '../live/feedback.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -97,6 +99,7 @@ class G_261 extends ConsumerWidget {
       gTap(16, 600, 213, 35, () { gOpen(context, '192'); }), // parcours 261 -> 192
       gTap(64, 740, 219, 48, () { gOpen(context, '30'); }), // parcours 261 -> 30
       gTap(92, 444, 156, 32, () { gOpen(context, '252'); }), // parcours 261 -> 252
+      gTap(301, 744, 53, 25, () { reviewOrderDialog(context, ref); }), // audit 01/11 : « Noter » n'avait aucun effet
     ]);
   }
 }

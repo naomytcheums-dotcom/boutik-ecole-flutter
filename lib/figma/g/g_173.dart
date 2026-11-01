@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -84,6 +85,8 @@ class G_173 extends ConsumerWidget {
       gP(170, 608, 50, 18, gText('Fermer', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gTap(16, 192, 103, 35, () { gOpen(context, '228'); }), // parcours 173 -> 228
+      gTap(82, 453, 96, 32, () { uiCopy(context, uiLink('05'), 'Lien'); }), // audit 01/11 : « Copier le lien » n'avait aucun effet
+      gTap(293.6, 458, 58.4, 22, () { uiCopy(context, uiLink('05'), 'Lien'); }), // audit 01/11 : « Copier » n'avait aucun effet
     ]);
   }
 }

@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -164,6 +165,8 @@ class G_123 extends ConsumerWidget {
       gTap(12, 408, 216, 36, () => gOpen(context, '124')),
       gTap(12, 448, 216, 36, () => gOpen(context, '125')),
       gTap(12, 488, 216, 36, () => gOpen(context, '126')),
+      gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
+      gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
     ]);
   }
 }

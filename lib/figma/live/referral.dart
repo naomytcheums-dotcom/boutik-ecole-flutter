@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gen.dart';
+import 'share.dart' show siteUrl;
 import 'auth.dart';
 import 'backend.dart';
 import 'lots.dart' show copyText;
@@ -90,7 +91,7 @@ Future<void> copyInvitation(BuildContext context, WidgetRef ref) async {
   if (!Backend.ready) return gToast(context, 'Lien copié');
   final code = ref.read(referralCodeProvider);
   if (code.isEmpty) return gAlert(context, 'Parrainage', 'Connectez-vous pour obtenir votre code de parrainage.');
-  final ok = await copyText('Rejoins Boutik-École : ${Uri.base.origin} — à l’inscription, saisis mon code de parrainage $code.');
+  final ok = await copyText('Rejoins Boutik-École : $siteUrl — à l’inscription, saisis mon code de parrainage $code.');
   if (context.mounted) gToast(context, ok ? 'Invitation copiée' : 'Copie impossible : autorisez l’accès au presse-papiers.');
 }
 

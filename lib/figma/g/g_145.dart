@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -150,6 +151,9 @@ class G_145 extends ConsumerWidget {
       gTap(730.5, 269, 70, 32, () { gOpen(context, '276'); }), // lien métier 145 -> 276
       gTap(276, 268, 140, 32, () { gOpen(context, '277'); }), // lien métier 145 -> 277
       gTap(606, 139, 98, 32, () { gOpen(context, '268'); }), // lien métier 145 -> 268
+      gTap(268, 408, 261, 50, () { uiSoon(context, 'Ajouter un point de retrait', 'Les points de retrait sont ouverts par l’équipe Boutik-École à la demande d’un établissement.'); }), // audit 01/11 : « Ajouter un point de retrait » n'avait aucun effet
+      gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
+      gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
     ]);
   }
 }

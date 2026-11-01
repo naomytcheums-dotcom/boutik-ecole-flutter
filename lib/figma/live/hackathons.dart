@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gen.dart';
+import 'share.dart' show siteUrl;
 import '../nav.dart';
 import 'audit.dart';
 import 'contests.dart';
@@ -191,7 +192,7 @@ void submitRegistration(WidgetRef ref, BuildContext context) {
 /// 161 « Partager » : copie réellement le lien du concours ; le message dépend du résultat de la copie.
 Future<void> shareEventLink(WidgetRef ref, BuildContext context) async {
   final ev = ref.read(currentEventProvider);
-  final ok = await copyText('${ev.title} · Boutik-École : ${Uri.base.origin}/#/s/161');
+  final ok = await copyText('${ev.title} · Boutik-École : $siteUrl/#/s/161');
   if (context.mounted) gToast(context, ok ? 'Lien du concours copié' : 'Copie impossible : autorisez l’accès au presse-papiers.');
 }
 

@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -101,6 +102,7 @@ class G_58 extends ConsumerWidget {
       gTap(24, 760, 163, 54, () { submitListing(ref, context, publish: false); }),
       gTap(203, 760, 163, 54, () { submitListing(ref, context, publish: true); }),
       gTap(80, 214, 166, 32, () { gOpen(context, '279'); }), // lien métier 58 -> 279
+      gTap(82, 193, 136, 32, () { uiSoon(context, 'Ajouter des photos au produit', 'Enregistrez d’abord le produit en brouillon ; les photos se gèrent ensuite depuis « Modifier l’annonce ».'); }), // audit 01/11 : « Ajouter des photos » n'avait aucun effet
     ]);
   }
 }

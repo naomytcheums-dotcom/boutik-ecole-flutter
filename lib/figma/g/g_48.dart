@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../live/feedback.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
@@ -82,6 +83,7 @@ class G_48 extends ConsumerWidget {
       gTap(24, 268, 342, 34, () { ref.read(claimReasonProvider.notifier).set(1); }),
       gTap(24, 304, 342, 34, () { ref.read(claimReasonProvider.notifier).set(2); }),
       gTap(24, 340, 342, 34, () { ref.read(claimReasonProvider.notifier).set(3); }),
+      gTap(82, 517, 136, 32, () { uiSoon(context, 'Joindre des photos', 'Décrivez le problème ; le support pourra vous demander des photos par message.'); }), // audit 01/11 : « Ajouter des photos » n'avait aucun effet
     ]);
   }
 }

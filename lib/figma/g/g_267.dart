@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -115,6 +116,8 @@ class G_267 extends ConsumerWidget {
       gP(1149.75, 514, 17, 13, gText('+ 2', 10.5, Color(0xFF126B49), weight: 500, inter: true)),
       gP(731, 560, 524, 17, gText('Chaque établissement choisit les contenus qu’il partage dans le catalogue national.', 11.5, Color(0xFF66636E), inter: true, lh: 17, wrap: true)),
       gTap(44, 179, 123, 32, () { gOpen(context, '270'); }), // lien métier 267 -> 270
+      gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
+      gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
     ]);
   }
 }

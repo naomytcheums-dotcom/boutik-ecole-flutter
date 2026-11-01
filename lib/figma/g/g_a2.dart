@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../live/engage.dart';
 import '../live/lots.dart';
@@ -105,6 +106,7 @@ class G_A2 extends ConsumerWidget {
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       gP(22, 38, 34, 32, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gTap(74, 258, 97, 32, () { gOpen(context, 'a3'); }), // A2 = échantillon de référence de 231 : mêmes destinations (décision du 01/11)
+      gTap(312, 356, 60, 32, () { uiAllShown(context); }), // audit 01/11 : « Tout voir » n'avait aucun effet
     ]);
   }
 }

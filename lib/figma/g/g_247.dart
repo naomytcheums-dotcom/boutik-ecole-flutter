@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -135,6 +136,7 @@ class G_247 extends ConsumerWidget {
       gTap(280, 200, 76, 26, () => gOpen(context, '248')),
       gTap(228, 412, 20, 20, () => gOpen(context, '248')),
       gTap(313, 412, 20, 20, () => gOpen(context, '252')),
+      gTap(126, 200, 82, 26, () { uiFollow(context); }), // audit 01/11 : « S’abonner » n'avait aucun effet
     ]);
   }
 }

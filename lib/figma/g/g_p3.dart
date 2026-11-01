@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -159,6 +160,7 @@ class G_P3 extends ConsumerWidget {
       gP(22, 38, 34, 32, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gTap(24, 1072, 342, 56, () => gOpen(context, 'P5')),
       gTap(16, 602, 179, 36, () { gOpen(context, 'p5'); }), // lien métier p3 -> p5
+      gTap(44, 1242, 130, 26, () { uiCopy(context, uiLink('P1'), 'Lien du profil'); }), // audit 01/11 : « Copier le lien » n'avait aucun effet
     ]);
   }
 }

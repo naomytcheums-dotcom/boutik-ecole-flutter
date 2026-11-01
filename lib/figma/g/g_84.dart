@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../live/engage.dart';
 import '../live/lots.dart';
@@ -100,6 +101,7 @@ class G_84 extends ConsumerWidget {
       gP(37.5, 388.5, 21, 15, gImg('assets/figma/v/24162e31d4b858.svg')),
       gP(43.125, 391.125, 9.75, 9.75, gImg('assets/figma/v/b916ebbd5954b5.svg')),
       gP(40.5, 393, 15.007, 6, gImg('assets/figma/v/bc5c9bd2e55ecc.svg')),
+      gTap(82.5, 651, 179, 32, () { uiSoon(context, 'Ajouter des contreparties', 'Décrivez les contreparties dans la présentation de la campagne.'); }), // audit 01/11 : « Ajouter des contreparties » n'avait aucun effet
     ]);
   }
 }

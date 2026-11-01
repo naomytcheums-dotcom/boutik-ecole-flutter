@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../live/lots.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
@@ -340,6 +341,9 @@ class G_228 extends ConsumerWidget {
       gP(46.333, 495, 19.333, 14.333, gImg('assets/figma/v/9c92298f9fd6b2.svg')),
       gP(49.667, 486.667, 12.667, 9.333, gImg('assets/figma/v/bb8ad3c4792df6.svg')),
       gP(53, 486.667, 6, 16.833, gImg('assets/figma/v/5bb53be308dfb1.svg')),
+      gTap(82, 430, 96, 32, () { regenerateCvLink(context, ref); }), // audit 01/11 : « Copier le lien » n'avait aucun effet
+      gTap(293.6, 435, 58.4, 22, () { regenerateCvLink(context, ref); }), // audit 01/11 : « Copier » n'avait aucun effet
+      gTap(82.5, 534, 137, 32, () { uiSoon(context, 'Télécharger le CV en PDF', 'Partagez le lien de votre CV : il s’ouvre dans tout navigateur et peut être imprimé.'); }), // audit 01/11 : « Télécharger en PDF » n'avait aucun effet
     ]);
   }
 }

@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -167,6 +168,7 @@ class G_38 extends ConsumerWidget {
       gP(312.8, 850, 39.2, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11])),
       gP(322.9, 854, 19, 14, gText('4.0', 11, Color(0xFF8F5400), weight: 600, align: TextAlign.center)),
       gP(125, 924, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      gTap(295.5, 718, 61, 32, () { gOpen(context, '31'); }), // audit 01/11 : « Voir tout » n'avait aucun effet
     ]);
   }
 }

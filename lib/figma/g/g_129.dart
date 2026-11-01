@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -170,6 +171,10 @@ class G_129 extends ConsumerWidget {
       gTap(12, 488, 216, 36, () => gOpen(context, '136')),
       gTap(12, 528, 216, 36, () => gOpen(context, '137')),
       gTap(12, 568, 216, 36, () => gOpen(context, '138')),
+      gTap(1009.5, 134, 242.5, 50, () { uiSoon(context, 'Ajouter une institution', 'Pour ouvrir un nouvel établissement, contactez l’équipe Boutik-École.'); }), // audit 01/11 : « Ajouter une institution » n'avait aucun effet
+      gTap(278.5, 376, 125, 32, () { uiSoon(context, 'Ajouter une institution', 'Pour ouvrir un nouvel établissement, contactez l’équipe Boutik-École.'); }), // audit 01/11 : « Nouvelle institution » n'avait aucun effet
+      gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
+      gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
     ]);
   }
 }

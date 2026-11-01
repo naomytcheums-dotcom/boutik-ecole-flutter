@@ -9,9 +9,11 @@ import 'package:go_router/go_router.dart';
 
 /// Parcours de démonstration de la soutenance, suivi avec les liens du prototype Figma :
 /// chaque écran doit contenir une zone cliquable qui mène à l'écran suivant.
-const path = [
-  '03', '19', '22', '05', '33', '10', '40', '06', '07', '08', '257', '259', '260', '44', '09',
-  '111', '213', '212', '206', '207', '208', '209', '210', '237',
+/// Deux segments : l'acheteur (jusqu'à « Ma commande ») puis le département depuis son tableau de bord ; l'ancien
+/// raccourci caché 09 → 111 masquait la flèche retour de « Ma commande » (audit du 01/11).
+const segments = [
+  ['03', '19', '22', '05', '33', '10', '40', '06', '07', '08', '257', '259', '260', '44', '09'],
+  ['108', '111', '213', '212', '206', '207', '208', '209', '210', '237'],
 ];
 
 void main() {
@@ -29,7 +31,7 @@ void main() {
     }
 
     addTearDown(tester.view.reset);
-    size(sizeOf(path.first));
+    size(sizeOf(segments.first.first));
     // Le parcours passe par des écrans réservés (département, administration) : on joue avec le compte administrateur.
     await tester.pumpWidget(ProviderScope(
       overrides: [initialAccountProvider.overrideWithValue(seedAccounts.last)],
@@ -40,6 +42,7 @@ void main() {
     expect(router().state.uri.path, '/s/03');
 
     final missing = <String>[];
+    for (final path in segments) {
     for (var i = 0; i < path.length - 1; i++) {
       final from = path[i], to = path[i + 1];
       size(sizeOf(from));
@@ -68,6 +71,7 @@ void main() {
         }
       }
       if (!ok) missing.add('$from → $to');
+    }
     }
     expect(missing, isEmpty, reason: 'liens manquants dans le parcours : $missing');
   });

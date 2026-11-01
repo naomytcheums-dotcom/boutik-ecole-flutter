@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -156,6 +157,10 @@ class G_V1 extends ConsumerWidget {
       gP(200.333, 815, 19.333, 14.333, gImg('assets/figma/v/9c92298f9fd6b2.svg')),
       gP(203.667, 806.667, 12.667, 9.333, gImg('assets/figma/v/bb8ad3c4792df6.svg')),
       gP(207, 806.667, 6, 16.833, gImg('assets/figma/v/5bb53be308dfb1.svg')),
+      gTap(317.5, 104, 59, 32, () { gOpen(context, '223'); }), // audit 01/11 : « Voir tout » n'avait aucun effet
+      gTap(276, 692, 80, 32, () { uiFollow(context); }), // audit 01/11 : « S’abonner » n'avait aucun effet
+      gTap(220, 801, 60, 32, () { uiCopy(context, uiLink('V1'), 'Lien de la vitrine'); }), // audit 01/11 : « Partager » n'avait aucun effet
+      gTap(310, 801, 44, 32, () { gOpen(context, '31'); }), // audit 01/11 : « Noter » n'avait aucun effet
     ]);
   }
 }

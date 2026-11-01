@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../live/lots.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
@@ -118,6 +119,8 @@ class G_265 extends ConsumerWidget {
       gP(900, 370, 228, 13, gText('Variables : {prénom} {montant} {numéro} {lien}', 10.5, Color(0xFF66636E), inter: true)),
       gP(900, 420, 150, 36, gBox(color: Color(0xFF0B0B0D), radii: [18, 18, 18, 18]), tap: () => editTemplatesDialog(context, ref)),
       gP(925.5, 430, 99, 13, gText('Modifier le modèle', 11, Color(0xFFFFFFFF), weight: 600, inter: true)),
+      gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
+      gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
     ]);
   }
 }

@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -178,6 +179,8 @@ class G_138 extends ConsumerWidget {
       gTap(823, 358, 128, 32, () { gOpen(context, '104'); }), // lien métier 138 -> 104
       gTap(276, 358, 81, 32, () { gOpen(context, '262'); }), // lien métier 138 -> 262
       gTap(823, 204, 155, 32, () { gOpen(context, '265'); }), // lien métier 138 -> 265
+      gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
+      gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
     ]);
   }
 }

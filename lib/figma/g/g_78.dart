@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -102,6 +103,7 @@ class G_78 extends ConsumerWidget {
       gTap(24, 458, 342, 62, () { final l = ref.read(visibleProjectsProvider); if (l.length > 1) { ref.read(selectedProjectProvider.notifier).set(l[1].title); gOpen(context, '79'); } }),
       gTap(24, 524, 342, 62, () { final l = ref.read(visibleProjectsProvider); if (l.length > 2) { ref.read(selectedProjectProvider.notifier).set(l[2].title); gOpen(context, '79'); } }),
       gTap(24, 590, 342, 62, () { final l = ref.read(visibleProjectsProvider); if (l.length > 3) { ref.read(selectedProjectProvider.notifier).set(l[3].title); gOpen(context, '79'); } }),
+      gTap(295.5, 346, 61, 32, () { gOpen(context, '87'); }), // audit 01/11 : « Voir tout » n'avait aucun effet
     ]);
   }
 }

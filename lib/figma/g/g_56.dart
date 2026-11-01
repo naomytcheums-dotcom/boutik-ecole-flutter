@@ -21,6 +21,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -80,6 +81,7 @@ class G_56 extends ConsumerWidget {
       gP(94.958, 706.583, 13.083, 9.542, gImg('assets/figma/v/3ee7d7ad9e826a.svg')),
       gP(98.5, 701.625, 6, 14.5, gImg('assets/figma/v/c6f78b73bf1246.svg')),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      gTap(24, 686, 342, 50, () { gOpen(context, '273'); }), // audit 01/11 : « Télécharger mes données » n'avait aucun effet
     ]);
   }
 }

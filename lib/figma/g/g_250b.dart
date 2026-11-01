@@ -22,6 +22,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../live/engage.dart';
 import '../live/lots.dart';
@@ -116,6 +117,7 @@ class G_250b extends ConsumerWidget {
       gP(92, 575, 113, 18, gText('@mbarga.carine', 14, Color(0xFF111015), weight: 600)),
       gP(92, 593, 137, 14, gText('Carine Mbarga · Génie civil', 11, Color(0xFF6B6877))),
       gTap(301, 78, 65, 27, () => demoContent ? gOpen(context, '244') : publishReel(context, ref)),
+      gTap(40, 144, 67, 25, () { uploadMedia(context, ref); }), // audit 01/11 : « Modifier » n'avait aucun effet
     ]);
   }
 }

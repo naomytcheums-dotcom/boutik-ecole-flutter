@@ -30,7 +30,7 @@ class G_188 extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 1280, h: 890, radius: 16, color: Color(0xFFF7F6F4), children: [
-      gP(268, 134, 727.5, 48, GField(hint: 'Compétence, filière, nom…', size: 13.5, hintColor: Color(0xFF66636E), weight: 400, padL: 46, inter: true)),
+      gP(268, 134, 727.5, 48, GField(hint: 'Compétence, filière, nom…', size: 13.5, hintColor: Color(0xFF66636E), weight: 400, padL: 46, inter: true, onSubmitted: (v) { ref.read(talentQueryProvider.notifier).set(v); gOpen(context, '70'); })),
       gP(284.5, 148.5, 19, 19, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(283.875, 147.875, 18.667, 18.667, gImg('assets/figma/v/50f467eb8a9b46.svg')),
       gP(294.721, 158.721, 9.404, 9.404, gImg('assets/figma/v/18d279137d73d9.svg')),
@@ -79,7 +79,7 @@ class G_188 extends ConsumerWidget {
       gP(0, 0, 1280, 56, gBox(color: Color(0xFFFFFFFF))),
       gP(20, 10, 36, 34, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(62, 17, 107, 21, gText('Boutik-École', 17, Color(0xFF18181B), weight: 700, inter: true)),
-      gP(240, 12, 330, 34, GField(hint: 'Rechercher données, rapports, produits…', size: 11.5, hintColor: Color(0xFF66636E), weight: 400, padL: 36, inter: true)),
+      gP(240, 12, 330, 34, GField(hint: 'Rechercher données, rapports, produits…', size: 11.5, hintColor: Color(0xFF66636E), weight: 400, padL: 36, inter: true, onSubmitted: (v) { backofficeSearch(context, ref, v); })),
       gP(252.5, 21.5, 15, 15, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(251.375, 20.375, 16, 16, gImg('assets/figma/v/3a82c8c513bd84.svg')),
       gP(259.938, 28.938, 8.687, 8.687, gImg('assets/figma/v/ee5ed5a7003f46.svg')),

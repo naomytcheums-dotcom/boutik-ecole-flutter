@@ -38,7 +38,7 @@ class G_251 extends ConsumerWidget {
       gP(62, 42, 114, 30, gText('Découvrir', 24, Color(0xFF111015), weight: 600)),
       gP(330, 36, 40, 40, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
       gP(340.625, 48.042, 18.75, 15.917, gImg('assets/figma/v/5fc2e1f97be34c.svg')),
-      gP(24, 104, 342, 48, GField(hint: 'Rechercher un talent, un produit, un live', size: 12.5, hintColor: Color(0xFF66636E), weight: 400, padL: 48)),
+      gP(24, 104, 342, 48, GField(hint: 'Rechercher un talent, un produit, un live', size: 12.5, hintColor: Color(0xFF66636E), weight: 400, padL: 48, onSubmitted: (v) { ref.read(searchQueryProvider.notifier).set(v); gOpen(context, '22'); })),
       gP(38.625, 118.625, 17.333, 17.333, gImg('assets/figma/v/fc3dbed79a7c48.svg')),
       gP(48.329, 128.329, 9.046, 9.046, gImg('assets/figma/v/a4779ccb4d017c.svg')),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 166, 60, 32, 'Tout', 11.5, 500), GChip(92, 166, 52, 32, 'MMI', 11.5, 400), GChip(152, 166, 44, 32, 'GI', 11.5, 400), GChip(204, 166, 44, 32, 'GC', 11.5, 400), GChip(256, 166, 52, 32, 'TCO', 11.5, 400), GChip(316, 166, 60, 32, 'GEII', 11.5, 400)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFFFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 16)),

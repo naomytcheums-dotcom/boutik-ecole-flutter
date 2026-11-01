@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../features/screens.dart' show allScreens;
+import '../../core/router/screen_entry.dart' show ScreenEntry;
 import '../gen.dart';
+import '../nav.dart';
+import 'access.dart' show canOpen;
 import 'audit.dart';
 import 'auth.dart';
 import 'backend.dart';
+import 'store.dart' show normText, searchQueryProvider;
 
 /// Administration des comptes (écran 128) : liste, rôles, suspension.
 const staffRoles = ['Client', 'Étudiant-vendeur', 'Entreprise', 'Autre rôle', 'Resp. département', 'Direction', 'Finance', 'Support', 'Admin global'];
@@ -111,3 +116,54 @@ Future<void> userDialog(BuildContext context, WidgetRef ref, Account a) {
 
 Color statusFill(bool suspended) => suspended ? const Color(0xFFFDE6E7) : const Color(0xFFDDF5EC);
 Color statusInk(bool suspended) => suspended ? const Color(0xFFE5484D) : const Color(0xFF0F7A52);
+
+// ------------------------------------------------------------------ recherche d'en-tête du back-office
+
+/// « Rechercher données, rapports, produits… » (en-tête des écrans web du back-office) : pages autorisées au rôle
+/// dont le titre correspond, et recherche du mot-clé dans le catalogue (22). Rien n'est inventé : sans résultat, on le dit.
+List<ScreenEntry> backofficeMatches(Account? account, String query) {
+  final q = normText(query.trim());
+  if (q.length < 2) return const [];
+  final seen = <String>{};
+  return [
+    for (final s in allScreens)
+      if (normText(s.title).contains(q) && canOpen(account, s.id) && seen.add(s.title)) s,
+  ].take(8).toList();
+}
+
+Future<void> backofficeSearch(BuildContext context, WidgetRef ref, String query) async {
+  final q = query.trim();
+  if (q.length < 2) {
+    gToast(context, 'Saisissez au moins 2 caractères.');
+    return;
+  }
+  final pages = backofficeMatches(ref.read(authProvider).current, q);
+  await showModalBottomSheet<void>(
+    context: context,
+    showDragHandle: true,
+    builder: (sheet) => SafeArea(
+      child: ListView(shrinkWrap: true, children: [
+        ListTile(title: Text('Résultats pour « $q »', style: const TextStyle(fontWeight: FontWeight.w700))),
+        if (pages.isEmpty) const ListTile(title: Text('Aucune page de votre espace ne correspond.')),
+        for (final p in pages)
+          ListTile(
+            leading: const Icon(Icons.article_outlined),
+            title: Text(p.title),
+            onTap: () {
+              Navigator.of(sheet).pop();
+              gOpen(context, p.id);
+            },
+          ),
+        ListTile(
+          leading: const Icon(Icons.storefront_outlined),
+          title: Text('Rechercher « $q » dans le catalogue'),
+          onTap: () {
+            Navigator.of(sheet).pop();
+            ref.read(searchQueryProvider.notifier).set(q);
+            gOpen(context, '22');
+          },
+        ),
+      ]),
+    ),
+  );
+}

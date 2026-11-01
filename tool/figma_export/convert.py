@@ -562,6 +562,9 @@ def _emit_node_inner(ctx, n, PM, ox, oy, out, root=False):
                 cb_ += ', onChanged: (v) { %s }' % bi_['onChanged']
             if bi_.get('onSubmitted'):
                 cb_ += ', onSubmitted: (v) { %s }' % bi_['onSubmitted']
+            elif tn['characters'] == 'Rechercher données, rapports, produits…':
+                # recherche d'en-tête du back-office : pages autorisées au rôle et catalogue (live/admin.dart)
+                cb_ += ', onSubmitted: (v) { backofficeSearch(context, ref, v); }'
             if bi_.get('initial'):
                 txt = txt.split(', initial')[0] + ', initial: ' + bi_['initial'] if 'initial' in txt else txt + ', initial: ' + bi_['initial']
             out.append("gP(%s, GField(%s, size: %s, hintColor: %s, weight: %d, padL: %s%s%s%s))" % (

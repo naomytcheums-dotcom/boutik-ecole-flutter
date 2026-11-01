@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
+import '../live/services.dart';
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/l06.dart';
@@ -50,18 +51,18 @@ class G_40 extends ConsumerWidget {
       gP(98, 132, 98, 17, gText('Mariam Essono', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 154, 177, 14, gText('Développement web sur mesure', 11.5, Color(0xFF66636E))),
       gP(24, 200, 127, 16, gText('Objet de la demande', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 220, 342, 48, GField(hint: '', initial: 'Site vitrine pour mon association', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
+      gP(24, 220, 342, 48, GField(hint: demoContent ? '' : 'Ex. Site vitrine pour mon association', initial: demoContent ? 'Site vitrine pour mon association' : '', size: 13.5, hintColor: demoContent ? Color(0xFF111015) : Color(0xFF66636E), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('q_obj', v); })),
       gP(37.5, 233.5, 20.996, 20.996, gImg('assets/figma/v/5cb3a366ba37dc.svg')),
       gP(40.875, 236.875, 7.5, 7.5, gImg('assets/figma/v/af3b58bd7187b4.svg')),
       gP(24, 282, 132, 16, gText('Description du besoin', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 302, 342, 96, GField(hint: 'Décrivez votre projet, vos attentes et vos contraintes…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, multiline: true, padT: 14)),
+      gP(24, 302, 342, 96, GField(hint: 'Décrivez votre projet, vos attentes et vos contraintes…', size: 13.5, hintColor: Color(0xFF66636E), weight: 500, padL: 16, multiline: true, padT: 14, onChanged: (v) { ref.read(formProvider.notifier).put('q_desc', v); })),
       gP(24, 412, 89, 16, gText('Budget estimé', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 432, 342, 48, GField(hint: '', initial: '50 000 – 80 000 FCFA', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
+      gP(24, 432, 342, 48, GField(hint: demoContent ? '' : 'Ex. 80 000', initial: demoContent ? '50 000 – 80 000 FCFA' : '', size: 13.5, hintColor: demoContent ? Color(0xFF111015) : Color(0xFF66636E), weight: 500, padL: 48, numeric: !demoContent, onChanged: (v) { ref.read(formProvider.notifier).put('q_budget', v); })),
       gP(38.25, 446.25, 20.25, 15.75, gImg('assets/figma/v/a842b4c78dabfc.svg')),
       gP(38.25, 447.75, 19.5, 18, gImg('assets/figma/v/fbc7a9ade9c600.svg')),
       gP(334.5, 450.75, 15, 10.5, gImg('assets/figma/v/7abbf201b36418.svg')),
       gP(24, 494, 85, 16, gText('Délai souhaité', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 514, 342, 48, GField(hint: '', initial: 'Dans 2 semaines', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
+      gP(24, 514, 342, 48, GField(hint: demoContent ? '' : 'Ex. 15 déc. 2026', initial: demoContent ? 'Dans 2 semaines' : '', size: 13.5, hintColor: demoContent ? Color(0xFF111015) : Color(0xFF66636E), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('q_date', v); })),
       gP(38.25, 529, 19.5, 19.5, gImg('assets/figma/v/99b18d1a251e8c.svg')),
       gP(48, 527.5, 6, 9, gImg('assets/figma/v/4d0c4aa2d5e373.svg')),
       gP(42, 527.5, 6, 9, gImg('assets/figma/v/4d0c4aa2d5e373.svg')),
@@ -78,7 +79,7 @@ class G_40 extends ConsumerWidget {
       gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27])),
       gP(124.5, 778, 141, 18, gText('Envoyer la demande', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
-      gTap(24, 760, 342, 54, () => gOpen(context, '06')),
+      gTap(24, 760, 342, 54, () { submitGeneralQuote(context, ref); }),
     ]);
   }
 }

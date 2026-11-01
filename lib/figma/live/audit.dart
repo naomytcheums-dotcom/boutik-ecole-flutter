@@ -57,7 +57,8 @@ List<AuditEntry> _filtered(Ref ref, bool institutional) {
   final cats = _cats(ref.watch(auditTabProvider), institutional);
   final q = ref.watch(auditQueryProvider).trim().toLowerCase();
   return [
-    for (final e in [...ref.watch(auditProvider), ..._seedAudit])
+    // les exemples de la maquette ne sont jamais présentés comme le journal réel d'un serveur
+    for (final e in [...ref.watch(auditProvider), if (!Backend.ready) ..._seedAudit])
       if ((cats == null || cats.contains(e.cat)) && (q.isEmpty || '${e.actor} ${e.action} ${e.target}'.toLowerCase().contains(q))) e,
   ];
 }

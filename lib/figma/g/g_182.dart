@@ -43,7 +43,7 @@ class G_182 extends ConsumerWidget {
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
       gP(24, 70, 86, 26, gText('Explorer', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 48, GField(hint: 'Rechercher un produit, service, t…', size: 13.5, hintColor: Color(0xFF66636E), weight: 400, padL: 46)),
+      gP(24, 120, 342, 48, GField(hint: 'Rechercher un produit, service, t…', size: 13.5, hintColor: Color(0xFF66636E), weight: 400, padL: 46, onSubmitted: (v) { ref.read(searchQueryProvider.notifier).set(v); gOpen(context, '22'); })),
       gP(40.5, 134.5, 19, 19, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(39.875, 133.875, 18.667, 18.667, gImg('assets/figma/v/50f467eb8a9b46.svg')),
       gP(50.721, 144.721, 9.404, 9.404, gImg('assets/figma/v/18d279137d73d9.svg')),

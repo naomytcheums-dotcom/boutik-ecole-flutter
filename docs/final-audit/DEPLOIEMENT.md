@@ -101,3 +101,10 @@ Limites : parcours non rejoués dans un navigateur après déploiement (outil in
 | Code déployé | commit `0ec397b` ; SHA-256 `f6e08b52e640fe6618145daa2ce5f060f9938e6d22ec8a7689083104b0a9bb94` servi = build |
 | Déploiement Vercel | `dpl_F8phfwU7f8c8fDCcXqZ5ydjyjm5E` ; précédent : `dpl_9VYEJFJaFRAXSHJoqM5xVHFJhjAn` |
 | Vérification en ligne | Playwright 17/17 (dont `/design` et l'écran 245 sans reel inventé) |
+
+## Déploiement du 01/11/2026 (≈ 20 h) — produits d'exemple, 5 défauts d'écran corrigés
+| Élément | Valeur |
+|---|---|
+| Migration | `20261101000800` (produits d'exemple) : garde « exactement 0800 » (un premier essai a échoué par délai réseau sans rien appliquer, relancé) ; catalogue = réplique (0 écart) ; empreintes : seules les 11 annonces marquées « exemple », le déclencheur et l'historique changent ; en ligne : commande d'un exemple refusée (400) |
+| Code déployé | commit `0934df7` ; `dpl_9aVTiCFewP9zrEASeZT3kBvQHLFe` ; servi = build (`19c61eda…`) |
+| Tests | 315 écrans ouverts en mode connecté sans erreur (5 défauts corrigés) ; golden 315/315 ; autres tests 151/151 ; en ligne 17/17 (2 réussis au second essai : délais, machine saturée en mémoire) |

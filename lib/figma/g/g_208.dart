@@ -82,7 +82,7 @@ class G_208 extends ConsumerWidget {
       gP(575, 1190, 38, 21, gText('Aide', 17, Color(0xFF111015), weight: 500)),
       gP(80, 980, 360, 82, const SizedBox.expand(), tap: () => gOpen(context, '209')),
       gTap(80, 980, 360, 82, () { startPhoneTransfer(ref, context); }),
-      gTap(452, 980, 188, 82, () { ref.read(cartProvider.notifier).add(ref.read(kioskCurrentProvider).toLine()); gToast(context, 'Ajouté au panier : retrait à la borne');  }),
+      gTap(452, 980, 188, 82, () { if (ref.read(kioskCurrentProvider).showcase) { gToast(context, 'Produit d’exemple : non disponible à la vente'); return; } ref.read(cartProvider.notifier).add(ref.read(kioskCurrentProvider).toLine()); gToast(context, 'Ajouté au panier : retrait à la borne');  }),
     ]);
   }
 }

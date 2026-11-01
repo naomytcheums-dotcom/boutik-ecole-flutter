@@ -16,13 +16,16 @@ import 'store.dart';
 // ------------------------------------------------------------------ annonces
 
 class Listing {
-  const Listing({required this.title, required this.category, required this.price, required this.stock, this.published = true, this.inReview = false, this.description = '', this.id = '', this.status = '', this.note = '', this.images = const [], this.department = '', this.platform = false});
+  const Listing({required this.title, required this.category, required this.price, required this.stock, this.published = true, this.inReview = false, this.description = '', this.id = '', this.status = '', this.note = '', this.images = const [], this.department = '', this.platform = false, this.showcase = false});
   final String title, category, description, department;
   final int price, stock;
   final bool published, inReview;
 
   /// Produit de la plateforme (annonce sans vendeur), géré par le département ou l'administrateur.
   final bool platform;
+
+  /// Produit d'exemple : affiché, jamais vendu (20261101000800).
+  final bool showcase;
 
   /// Identifiant serveur (vide hors connexion), statut serveur (draft · pending · approved · rejected) et motif de refus.
   final String id, status, note;
@@ -49,6 +52,7 @@ class Listing {
       images: [for (final i in (r['images'] as List? ?? const [])) i.toString()],
       department: (r['department'] ?? '').toString(),
       platform: r.containsKey('seller_id') && r['seller_id'] == null,
+      showcase: r['showcase'] == true,
     );
   }
 
@@ -62,6 +66,7 @@ class Listing {
         images: images,
         department: department,
         platform: platform,
+        showcase: showcase,
         status: status ?? this.status,
         note: note,
         title: title,
@@ -230,9 +235,9 @@ final platformListingsProvider = NotifierProvider<PlatformListings, List<Listing
 LiveProduct platformProduct(Listing l) {
   final orig = liveCatalog.where((p) => p.title == l.title);
   final image = l.images.isNotEmpty ? _photoOf(l) : (orig.isEmpty ? 'placeholder' : orig.first.image);
-  return LiveProduct(l.title, l.department.isEmpty ? 'IUT de Douala' : l.department, l.price, platformSeller,
+  return LiveProduct(l.title, l.department.isEmpty ? 'IUT de Douala' : l.department, l.price, l.showcase ? '$platformSeller · exemple' : platformSeller,
       l.description.isEmpty ? (orig.isEmpty ? '' : orig.first.description) : l.description, image,
-      category: liveCategories.contains(l.category) ? l.category : 'Maison');
+      category: liveCategories.contains(l.category) ? l.category : 'Maison', showcase: l.showcase);
 }
 
 /// Catalogue de la plateforme : hors connexion au serveur, le catalogue d'exemple ; sinon les produits publiés et en stock.
@@ -433,6 +438,8 @@ final visibleSellerOrdersProvider = Provider<List<SellerOrder>>((ref) {
 final currentSellerOrderProvider = Provider<SellerOrder>((ref) {
   final all = ref.watch(sellerOrdersProvider);
   final id = ref.watch(selectedSellerOrderProvider);
+  // aucune commande (compte réel sans vente) : fiche vide plutôt qu'une erreur d'affichage
+  if (all.isEmpty) return const SellerOrder('', 'Aucune commande à préparer', '', 0, 0, status: 0);
   return all.firstWhere((o) => o.id == id, orElse: () => all.first);
 });
 

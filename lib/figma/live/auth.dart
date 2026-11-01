@@ -301,7 +301,7 @@ Widget rememberBox(double x, double y) => gP(
               child: on ? OverflowBox(maxWidth: 16, maxHeight: 16, child: Center(child: SizedBox(width: 14.667, height: 11.958, child: gImg('assets/figma/v/w_check.svg')))) : null,
             ),
             const SizedBox(width: 8),
-            const Text('Se souvenir de moi', style: TextStyle(inherit: false, fontFamily: 'PlusJakartaSans', fontSize: 11.5, fontWeight: FontWeight.w500, color: Color(0xFF111015), textBaseline: TextBaseline.alphabetic)),
+            const Flexible(child: Text('Se souvenir de moi', maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(inherit: false, fontFamily: 'PlusJakartaSans', fontSize: 11.5, fontWeight: FontWeight.w500, color: Color(0xFF111015), textBaseline: TextBaseline.alphabetic))),
           ]),
         );
       }),

@@ -81,6 +81,8 @@ final kioskProductsProvider = Provider<List<LiveProduct>>((ref) {
 final kioskCurrentProvider = Provider<LiveProduct>((ref) {
   final all = ref.watch(allProductsProvider);
   final t = ref.watch(kioskProductProvider);
+  // catalogue vide (serveur sans annonce publiée) : fiche neutre, non vendable, plutôt qu'une erreur d'affichage
+  if (all.isEmpty) return const LiveProduct('Aucun article disponible', '', 0, '', '', 'placeholder', showcase: true);
   return all.firstWhere((p) => p.title == t, orElse: () => all.first);
 });
 

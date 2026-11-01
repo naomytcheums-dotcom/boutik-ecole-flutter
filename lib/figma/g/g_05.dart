@@ -102,7 +102,7 @@ class G_05 extends ConsumerWidget {
       gP(131.195, 988.621, 129.044, 3.585, gBox(color: Color(0xFF111015), radii: [2.151, 2.151, 2.151, 2.151])),
       gTap(29, 79, 20, 20, () => gOpen(context, '04')),
       gTap(286, 394, 88, 28, () { gOpen(context, '170'); }),
-      gTap(24, 760, 345, 46, () { ref.read(cartProvider.notifier).add(ref.read(selectedProductProvider).toLine()); gToast(context, 'Ajouté au panier'); gOpen(context, '06'); }),
+      gTap(24, 760, 345, 46, () { if (ref.read(selectedProductProvider).showcase) { gToast(context, 'Produit d’exemple : non disponible à la vente'); return; } ref.read(cartProvider.notifier).add(ref.read(selectedProductProvider).toLine()); gToast(context, 'Ajouté au panier'); gOpen(context, '06'); }),
       gTap(20, 832, 350, 36, () => gOpen(context, '33')),
       gTap(98.8, 660.3, 71, 32, () { gOpen(context, '172'); }), // parcours 05 -> 172
       gTap(276.7, 598, 89, 32, () { gOpen(context, '32'); }), // lien métier 05 -> 32

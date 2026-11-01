@@ -22,9 +22,12 @@ String fcfa(num v) {
 }
 
 class LiveProduct {
-  const LiveProduct(this.title, this.department, this.price, this.seller, this.description, this.image, {this.category = 'Maison'});
+  const LiveProduct(this.title, this.department, this.price, this.seller, this.description, this.image, {this.category = 'Maison', this.showcase = false});
   final String title, department, seller, description, image, category;
   final int price;
+
+  /// Produit d'exemple (fictif) : visible pour montrer le rendu, jamais vendu (refus côté serveur, 20261101000800).
+  final bool showcase;
 
   CartLine toLine() => CartLine(title, 'Département : $department', price, image);
 }

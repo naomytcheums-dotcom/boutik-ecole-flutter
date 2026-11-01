@@ -1,8 +1,9 @@
-// GÉNÉRÉ par tool/figma_export/convert.py — écran 49 (nœud Figma 36:813). Ne pas éditer à la main.
+// GÉNÉRÉ par tool/figma_export/convert.py — écran 49 (nœud Figma 36:813), puis raccordé à la main (gelé dans bindings.json).
 // ignore_for_file: camel_case_types, prefer_is_empty, prefer_interpolation_to_compose_strings, unnecessary_string_interpolations, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
+import '../live/searches.dart';
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/l06.dart';
@@ -46,7 +47,7 @@ class G_49 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 159, 26, gText('Aide et support', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 48, GField(hint: 'Comment pouvons-nous vous aider ?', size: 13.5, hintColor: Color(0xFF66636E), weight: 400, padL: 46)),
+      gP(24, 120, 342, 48, GField(hint: 'Comment pouvons-nous vous aider ?', size: 13.5, hintColor: Color(0xFF66636E), weight: 400, padL: 46, onSubmitted: (v) { helpSearch(context, v); })),
       gP(40.5, 134.5, 19, 19, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(39.875, 133.875, 18.667, 18.667, gImg('assets/figma/v/50f467eb8a9b46.svg')),
       gP(50.721, 144.721, 9.404, 9.404, gImg('assets/figma/v/18d279137d73d9.svg')),

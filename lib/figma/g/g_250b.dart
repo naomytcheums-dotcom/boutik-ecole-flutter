@@ -1,8 +1,9 @@
-// GÉNÉRÉ par tool/figma_export/convert.py — écran 250b (nœud Figma 197:23). Ne pas éditer à la main.
+// GÉNÉRÉ par tool/figma_export/convert.py — écran 250b (nœud Figma 197:23), puis raccordé à la main (gelé dans bindings.json).
 // ignore_for_file: camel_case_types, prefer_is_empty, prefer_interpolation_to_compose_strings, unnecessary_string_interpolations, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
+import '../live/reels.dart';
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/l06.dart';
@@ -114,7 +115,7 @@ class G_250b extends ConsumerWidget {
       gP(55, 581, 14, 19, gText('M', 15, Color(0xFF111015), weight: 700)),
       gP(92, 575, 113, 18, gText('@mbarga.carine', 14, Color(0xFF111015), weight: 600)),
       gP(92, 593, 137, 14, gText('Carine Mbarga · Génie civil', 11, Color(0xFF6B6877))),
-      gTap(301, 78, 65, 27, () => gOpen(context, '244')),
+      gTap(301, 78, 65, 27, () => demoContent ? gOpen(context, '244') : publishReel(context, ref)),
     ]);
   }
 }

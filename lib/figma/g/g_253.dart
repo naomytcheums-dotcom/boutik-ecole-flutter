@@ -1,10 +1,11 @@
-// GÉNÉRÉ par tool/figma_export/convert.py — écran 253 (nœud Figma 156:16). Ne pas éditer à la main.
+// GÉNÉRÉ par tool/figma_export/convert.py — écran 253 (nœud Figma 156:16), puis raccordé à la main (gelé dans bindings.json).
 // ignore_for_file: camel_case_types, prefer_is_empty, prefer_interpolation_to_compose_strings, unnecessary_string_interpolations, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/reels.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -44,8 +45,8 @@ class G_253 extends ConsumerWidget {
       gP(316, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
       gP(327.208, 81.208, 21.583, 21.583, gImg('assets/figma/v/543588e08aee64.svg')),
       gP(24, 128, 342, 156, gBox(gradient: LinearGradient(begin: Alignment(-1.24, -0.68), end: Alignment(0.36, 0.52), colors: [Color(0xFF1B1630), Color(0xFF4A38B8)], stops: [0, 1]), shadows: [BoxShadow(color: Color(0x40403366), offset: Offset(0, 12), blurRadius: 26, spreadRadius: 0)], radii: [34, 34, 34, 34])),
-      gP(44, 146, 161, 28, gText('Série de 5 jours', 22, Color(0xFFFFFFFF), weight: 700)),
-      gP(44, 176, 193, 30, gText('Reviens demain pour passer à 6 jours : +1 boost 24 h', 10.5, Color(0xCCFFFFFF), lh: 15, wrap: true)),
+      gP(44, 146, 161, 28, gText(demoContent ? 'Série de 5 jours' : (ref.watch(challengesProvider) ?? const Challenges()).streakLabel, 22, Color(0xFFFFFFFF), weight: 700)),
+      gP(44, 176, 193, 30, gText(demoContent ? 'Reviens demain pour passer à 6 jours : +1 boost 24 h' : (ref.watch(challengesProvider) ?? const Challenges()).nextLabel, 10.5, Color(0xCCFFFFFF), lh: 15, wrap: true)),
       gP(45, 233, 30, 30, gBox(color: Color(0xF2FFFFFF), oval: true)),
       gP(52.667, 241.75, 14.667, 11.958, gImg('assets/figma/v/ac006383c9ee5c.svg')),
       gP(88, 233, 30, 30, gBox(color: Color(0xF2FFFFFF), oval: true)),
@@ -67,14 +68,14 @@ class G_253 extends ConsumerWidget {
       gP(284, 342, 56, 14, gText('Récupérer', 11, Color(0xFFFFFFFF), weight: 600)),
       gP(24, 404, 138, 19, gText('Défis de la semaine', 15, Color(0xFF111015), weight: 600)),
       gP(253, 402, 113, 25, gBox(color: Color(0xFFEEE9FF), radii: [100, 100, 100, 100])),
-      gP(265, 408, 89, 13, gText('Se termine dans 3 j', 10, Color(0xFF5A3FE0), weight: 600)),
+      gP(265, 408, 89, 13, gText(demoContent ? 'Se termine dans 3 j' : 'Se termine dans ${(ref.watch(challengesProvider) ?? const Challenges()).weekEndDays} j', 10, Color(0xFF5A3FE0), weight: 600)),
       gP(35, 447, 38, 38, gBox(color: Color(0xFFF1EEFB), oval: true)),
       gP(51, 469, 12.75, 6, gImg('assets/figma/v/077154502d192d.svg')),
       gP(44.25, 456.159, 18.841, 18.841, gImg('assets/figma/v/80acba5fb06071.svg')),
       gP(86, 444, 89, 16, gText('Publier 3 posts', 12.5, Color(0xFF111015), weight: 600)),
       gP(86, 470, 170, 6, gBox(color: Color(0xFFECE8F6), radii: [3, 3, 3, 3])),
       gP(86, 470, 112.2, 6, gBox(gradient: LinearGradient(begin: Alignment(-1.24, -0.68), end: Alignment(0.36, 0.52), colors: [Color(0xFF9B7BFF), Color(0xFF6A4DFF)], stops: [0, 1]), radii: [3, 3, 3, 3])),
-      gP(86, 480, 20, 12, gText('2 / 3', 9.5, Color(0xFF66636E), weight: 500)),
+      gP(86, 480, 20, 12, gText(demoContent ? '2 / 3' : '${(ref.watch(challengesProvider) ?? const Challenges()).postsWeek.clamp(0, 3)} / 3', 9.5, Color(0xFF66636E), weight: 500)),
       gP(282, 454, 70, 25, gBox(color: Color(0xFFFFF1D6), radii: [100, 100, 100, 100])),
       gP(294, 460, 46, 13, gText('+ 200 pts', 10, Color(0xFFB26A00), weight: 600)),
       gP(35, 519, 38, 38, gBox(color: Color(0xFFF1EEFB), oval: true)),
@@ -83,7 +84,7 @@ class G_253 extends ConsumerWidget {
       gP(86, 516, 81, 16, gText('Lancer un live', 12.5, Color(0xFF111015), weight: 600)),
       gP(86, 542, 170, 6, gBox(color: Color(0xFFECE8F6), radii: [3, 3, 3, 3])),
       gP(86, 542, 5.1, 6, gBox(gradient: LinearGradient(begin: Alignment(-1.24, -0.68), end: Alignment(0.36, 0.52), colors: [Color(0xFF9B7BFF), Color(0xFF6A4DFF)], stops: [0, 1]), radii: [3, 3, 3, 3])),
-      gP(86, 552, 19, 12, gText('0 / 1', 9.5, Color(0xFF66636E), weight: 500)),
+      gP(86, 552, 19, 12, gText(demoContent ? '0 / 1' : 'Bientôt', 9.5, Color(0xFF66636E), weight: 500)),
       gP(281, 526, 71, 25, gBox(color: Color(0xFFFFF1D6), radii: [100, 100, 100, 100])),
       gP(293, 532, 47, 13, gText('+ 500 pts', 10, Color(0xFFB26A00), weight: 600)),
       gP(35, 591, 38, 38, gBox(color: Color(0xFFF1EEFB), oval: true)),
@@ -91,7 +92,7 @@ class G_253 extends ConsumerWidget {
       gP(86, 588, 169, 16, gText('Répondre à 5 commentaires', 12.5, Color(0xFF111015), weight: 600)),
       gP(86, 614, 170, 6, gBox(color: Color(0xFFECE8F6), radii: [3, 3, 3, 3])),
       gP(86, 614, 136, 6, gBox(gradient: LinearGradient(begin: Alignment(-1.24, -0.68), end: Alignment(0.36, 0.52), colors: [Color(0xFF9B7BFF), Color(0xFF6A4DFF)], stops: [0, 1]), radii: [3, 3, 3, 3])),
-      gP(86, 624, 20, 12, gText('4 / 5', 9.5, Color(0xFF66636E), weight: 500)),
+      gP(86, 624, 20, 12, gText(demoContent ? '4 / 5' : 'Bientôt', 9.5, Color(0xFF66636E), weight: 500)),
       gP(284, 598, 68, 25, gBox(color: Color(0xFFFFF1D6), radii: [100, 100, 100, 100])),
       gP(296, 604, 44, 13, gText('+ 100 pts', 10, Color(0xFFB26A00), weight: 600)),
       gP(24, 656, 89, 19, gText('Mes badges', 15, Color(0xFF111015), weight: 600)),
@@ -124,7 +125,7 @@ class G_253 extends ConsumerWidget {
       gP(223.767, 690.167, 27.667, 26.583, gImg('assets/figma/v/178e2ca53bcb73.svg')),
       gP(310.15, 699.917, 25.5, 17.917, gImg('assets/figma/v/4ff26848f1fd07.svg')),
       gP(314.483, 690.167, 16.833, 15.75, gImg('assets/figma/v/fa389fd66db971.svg')),
-      gTap(272, 336, 80, 26, () => gOpen(context, '253b')),
+      gTap(272, 336, 80, 26, () => demoContent ? gOpen(context, '253b') : claimReward(context, ref)),
       gTap(16, 648, 105, 35, () { gOpen(context, '253b'); }), // parcours 253 -> 253b
     ]);
   }

@@ -1,10 +1,11 @@
-// GÉNÉRÉ par tool/figma_export/convert.py — écran 245 (nœud Figma 152:125). Ne pas éditer à la main.
+// GÉNÉRÉ par tool/figma_export/convert.py — écran 245 (nœud Figma 152:125), puis raccordé à la main (gelé dans bindings.json).
 // ignore_for_file: camel_case_types, prefer_is_empty, prefer_interpolation_to_compose_strings, unnecessary_string_interpolations, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/reels.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -45,7 +46,7 @@ class G_245 extends ConsumerWidget {
       gP(324, 308, 44, 44, gBox(color: Color(0x38FFFFFF), oval: true)),
       gP(334.667, 319.5, 22.667, 21, gImg('assets/figma/v/f81603d78186bb.svg')),
       gP(328, 312, 36, 36, GHeart()),
-      gP(335, 356, 22, 12, gText('2,6 k', 9.5, Color(0xFFFFFFFF), weight: 500)),
+      gP(335, 356, 22, 12, gText(demoContent ? '2,6 k' : compactCount(ref.watch(currentReelProvider)?.likes ?? 0), 9.5, Color(0xFFFFFFFF), weight: 500)),
       gP(324, 370, 44, 44, gBox(color: Color(0x38FFFFFF), oval: true)),
       gP(335.5, 383.358, 21, 19.142, gImg('assets/figma/v/3fc89363db42fe.svg')),
       gP(338, 418, 16, 12, gText('312', 9.5, Color(0xFFFFFFFF), weight: 500)),
@@ -63,14 +64,14 @@ class G_245 extends ConsumerWidget {
       gP(335.5, 570, 21, 12.667, gImg('assets/figma/v/33c7823e8b4d0f.svg')),
       gP(324.5, 604, 43, 12, gText('Boutique', 9.5, Color(0xFFFFFFFF), weight: 500)),
       gP(22, 612, 40, 40, gBox(image: 'assets/figma/img/ebf23a969ca7b1083d1dcab994c4899c0b4db38b.png', fit: BoxFit.cover, radii: [20, 20, 20, 20]), tap: () => gOpen(context, '247')),
-      gP(72, 614, 52, 17, gText('Brice N.', 13.5, Color(0xFFFFFFFF), weight: 600)),
+      gP(72, 614, 52, 17, gText(demoContent ? 'Brice N.' : (ref.watch(currentReelProvider)?.author ?? ''), 13.5, Color(0xFFFFFFFF), weight: 600)),
       gP(160, 610, 77, 25, gBox(color: Color(0x40FFFFFF), radii: [100, 100, 100, 100])),
       gP(172, 616, 53, 13, gText('S’abonner', 10.5, Color(0xFFFFFFFF), weight: 600)),
-      gP(22, 664, 293, 34, gText('Pose d’un kit solaire sur le toit de l’atelier. Tout est fait par les étudiants d’Énergies renouvelables !', 12, Color(0xFFFFFFFF), lh: 17, wrap: true)),
+      gP(22, 664, 293, 34, gText(demoContent ? 'Pose d’un kit solaire sur le toit de l’atelier. Tout est fait par les étudiants d’Énergies renouvelables !' : (ref.watch(currentReelProvider)?.caption ?? 'Aucun reel publié pour le moment. Publiez le premier depuis « Nouvelle publication ».'), 12, Color(0xFFFFFFFF), lh: 17, wrap: true)),
       gP(27.375, 708.125, 12.5, 14.125, gImg('assets/figma/v/8069565849e696.svg')),
       gP(24.125, 714.625, 9.25, 9.25, gImg('assets/figma/v/c928a326a5830e.svg')),
       gP(30.625, 713.542, 9.25, 9.25, gImg('assets/figma/v/c928a326a5830e.svg')),
-      gP(50, 709, 105, 13, gText('Son original · Brice N.', 10.5, Color(0xFFFFFFFF), weight: 500)),
+      gP(50, 709, 105, 13, gText(demoContent ? 'Son original · Brice N.' : (ref.watch(currentReelProvider) == null ? '' : 'Son original · ${ref.watch(currentReelProvider)!.author}'), 10.5, Color(0xFFFFFFFF), weight: 500)),
       gP(22, 736, 346, 3, gBox(color: Color(0x4DFFFFFF), radii: [2, 2, 2, 2])),
       gP(22, 736, 120, 3, gBox(color: Color(0xFFFFFFFF), radii: [2, 2, 2, 2])),
       gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),

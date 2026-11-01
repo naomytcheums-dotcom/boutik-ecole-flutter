@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/screens.dart';
+import '../../features/design_lab/design_lab_screen.dart';
 import '../../figma/gsound.dart' show GAnim;
 import '../../figma/live/access.dart';
 import '../../figma/live/espace.dart';
@@ -35,6 +36,7 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/', redirect: (_, _) => screenPath('01')),
     GoRoute(path: '/catalogue', builder: (_, _) => const ScreenCatalogue()),
     GoRoute(path: '/espace', builder: (_, _) => const EspaceScreen()),
+    GoRoute(path: '/design', builder: (_, _) => const DesignLabScreen()),
     GoRoute(path: '/cv/:token', builder: (_, state) => SharedCvScreen(token: state.pathParameters['token'] ?? '')),
     GoRoute(
       path: '/s/:id',

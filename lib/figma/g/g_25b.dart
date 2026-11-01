@@ -1,8 +1,9 @@
-// GÉNÉRÉ par tool/figma_export/convert.py — écran 25b (nœud Figma 36:385). Ne pas éditer à la main.
+// GÉNÉRÉ par tool/figma_export/convert.py — écran 25b (nœud Figma 36:385), puis raccordé à la main (gelé dans bindings.json).
 // ignore_for_file: camel_case_types, prefer_is_empty, prefer_interpolation_to_compose_strings, unnecessary_string_interpolations, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
+import '../live/searches.dart';
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/l06.dart';
@@ -48,7 +49,7 @@ class G_25b extends ConsumerWidget {
       gP(76, 70, 160, 26, gText('Mes collections', 21, Color(0xFF111015), weight: 700)),
       gP(342.583, 79, 18.833, 6, gImg('assets/figma/v/6fe571ab77e960.svg')),
       gP(349, 72.583, 6, 18.833, gImg('assets/figma/v/87cbf4a9a18b64.svg')),
-      gP(24, 120, 342, 48, GField(hint: 'Rechercher dans mes listes', size: 13.5, hintColor: Color(0xFF66636E), weight: 400, padL: 46)),
+      gP(24, 120, 342, 48, GField(hint: 'Rechercher dans mes listes', size: 13.5, hintColor: Color(0xFF66636E), weight: 400, padL: 46, onSubmitted: (v) { favoritesSearch(context, ref, v); })),
       gP(40.5, 134.5, 19, 19, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(39.875, 133.875, 18.667, 18.667, gImg('assets/figma/v/50f467eb8a9b46.svg')),
       gP(50.721, 144.721, 9.404, 9.404, gImg('assets/figma/v/18d279137d73d9.svg')),

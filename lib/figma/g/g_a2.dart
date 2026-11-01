@@ -1,4 +1,4 @@
-// GÉNÉRÉ par tool/figma_export/convert.py — écran A2 (nœud Figma 94:50). Ne pas éditer à la main.
+// GÉNÉRÉ par tool/figma_export/convert.py — écran A2 (nœud Figma 94:50), puis raccordé à la main (gelé dans bindings.json).
 // ignore_for_file: camel_case_types, prefer_is_empty, prefer_interpolation_to_compose_strings, unnecessary_string_interpolations, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -104,6 +104,7 @@ class G_A2 extends ConsumerWidget {
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       gP(22, 38, 34, 32, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
+      gTap(74, 258, 97, 32, () { gOpen(context, 'a3'); }), // A2 = échantillon de référence de 231 : mêmes destinations (décision du 01/11)
     ]);
   }
 }

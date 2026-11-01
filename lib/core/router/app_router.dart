@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/screens.dart';
+import '../../figma/gsound.dart' show GAnim;
 import '../../figma/live/access.dart';
 import '../../figma/live/espace.dart';
 import '../../figma/live/shared_cv.dart';
@@ -39,9 +42,11 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
         final entry = screenById(state.pathParameters['id']);
         final sid = entry?.id ?? state.pathParameters['id'] ?? '?';
         final child = entry == null ? MissingScreen(id: sid) : AccessGuard(id: sid, child: entry.builder(context));
+        // S1 « Démarrage animé » : écran de lancement, puis passage automatique à l'accueil (01).
+        final page = sid == 'S1' ? SplashAdvance(child: child) : child;
         return CustomTransitionPage<void>(
           key: state.pageKey,
-          child: child,
+          child: page,
           transitionDuration: const Duration(milliseconds: 320),
           reverseTransitionDuration: const Duration(milliseconds: 240),
           transitionsBuilder: (context, animation, secondary, child) {
@@ -57,6 +62,45 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
   ],
   errorBuilder: (_, state) => MissingScreen(id: state.uri.toString()),
 );
+
+/// Écran de démarrage (S1) : laisse voir le logo, puis remplace l'écran par l'accueil (01). Sans animation (tests, rendus de
+/// référence), aucun minuteur n'est lancé ; avec « réduire les animations », le passage est plus rapide.
+class SplashAdvance extends StatefulWidget {
+  const SplashAdvance({super.key, required this.child, this.next = '01'});
+  final Widget child;
+  final String next;
+
+  static const delay = Duration(milliseconds: 1200);
+
+  @override
+  State<SplashAdvance> createState() => _SplashAdvanceState();
+}
+
+class _SplashAdvanceState extends State<SplashAdvance> {
+  Timer? _t;
+
+  @override
+  void initState() {
+    super.initState();
+    if (!GAnim.enabled) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final quick = MediaQuery.maybeOf(context)?.disableAnimations ?? false;
+      _t = Timer(quick ? const Duration(milliseconds: 300) : SplashAdvance.delay, () {
+        if (mounted) GoRouter.of(context).go(screenPath(widget.next));
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _t?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
+}
 
 /// Affiché pour un numéro d'écran absent du registre.
 class MissingScreen extends StatelessWidget {

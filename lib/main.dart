@@ -61,6 +61,7 @@ class _AppRootState extends State<AppRoot> {
   Widget build(BuildContext context) => ProviderScope(
         key: ValueKey(_generation),
         overrides: [if (!_loggedOut && widget.remembered != null) initialAccountProvider.overrideWithValue(widget.remembered!)],
-        child: BoutikEcoleApp(initialLocation: _expired ? '/s/150-2' : (_loggedOut ? '/s/03' : '/s/01')),
+        // démarrage à froid sans adresse précise : écran de lancement S1, qui passe seul à l'accueil 01
+        child: BoutikEcoleApp(initialLocation: _expired ? '/s/150-2' : (_loggedOut ? '/s/03' : '/s/S1')),
       );
 }

@@ -5,6 +5,7 @@ import 'package:boutik_ecole/figma/g/g_175.dart';
 import 'package:boutik_ecole/figma/gsound.dart';
 import 'package:boutik_ecole/figma/live/home_hero.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show LogicalKeyboardKey;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -64,6 +65,20 @@ void main() {
   testWidgets('maquette d’ordinateur sur ordinateur : rendu inchangé, sans zoom', (tester) async {
     await open(tester, '/s/237', Scaffold, size: const Size(1280, 900));
     expect(find.byType(InteractiveViewer), findsNothing);
+  });
+
+  testWidgets('clavier : Tab atteint un bouton (contour visible) et Entrée l’active', (tester) async {
+    final r = await open(tester, '/s/02', G_02);
+    final h = tester.ensureSemantics();
+    expect(tester.getSemantics(find.byType(GPress).first).flagsCollection.isButton, isTrue);
+    h.dispose();
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pumpAndSettle();
+    expect(FocusManager.instance.primaryFocus?.context?.findAncestorWidgetOfExactType<GPress>(), isNotNull);
+    expect(find.byWidgetPredicate((w) => w is DecoratedBox && w.position == DecorationPosition.foreground && w.decoration is BoxDecoration && (w.decoration as BoxDecoration).border != null), findsOneWidget);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(r.state.uri.path, isNot('/s/02'));
   });
 
   testWidgets('03 : la flèche et le glissement changent le visuel « À la une »', (tester) async {

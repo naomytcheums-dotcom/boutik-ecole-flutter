@@ -41,6 +41,16 @@ class GPress extends StatefulWidget {
 
 class _GPressState extends State<GPress> {
   bool down = false;
+  bool focus = false;
+
+  void _activate() {
+    if (GAnim.enabled) {
+      GSound.play(widget.sound);
+      HapticFeedback.selectionClick();
+    }
+    widget.onTap();
+  }
+
   @override
   Widget build(BuildContext context) {
     final child = widget.flash
@@ -56,25 +66,35 @@ class _GPressState extends State<GPress> {
             ),
           ])
         : widget.child;
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTapDown: (_) => setState(() => down = true),
-        onTapCancel: () => setState(() => down = false),
-        onTapUp: (_) => setState(() => down = false),
-        onTap: () {
-          if (GAnim.enabled) {
-            GSound.play(widget.sound);
-            HapticFeedback.selectionClick();
-          }
-          widget.onTap();
-        },
-        child: AnimatedScale(
-          scale: down ? 0.96 : 1,
-          duration: const Duration(milliseconds: 110),
-          curve: Curves.easeOut,
-          child: AnimatedOpacity(opacity: down && !widget.flash ? 0.85 : 1, duration: const Duration(milliseconds: 110), child: child),
+    // Accessibilité : annoncé comme bouton, atteignable avec Tab, activé par Entrée ou Espace, contour visible au clavier.
+    return Semantics(
+      button: true,
+      child: FocusableActionDetector(
+        mouseCursor: SystemMouseCursors.click,
+        actions: {ActivateIntent: CallbackAction<ActivateIntent>(onInvoke: (_) => _activate())},
+        onShowFocusHighlight: (v) => setState(() => focus = v),
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTapDown: (_) => setState(() => down = true),
+          onTapCancel: () => setState(() => down = false),
+          onTapUp: (_) => setState(() => down = false),
+          onTap: _activate,
+          child: AnimatedScale(
+            scale: down ? 0.96 : 1,
+            duration: const Duration(milliseconds: 110),
+            curve: Curves.easeOut,
+            child: AnimatedOpacity(
+              opacity: down && !widget.flash ? 0.85 : 1,
+              duration: const Duration(milliseconds: 110),
+              child: focus
+                  ? DecoratedBox(
+                      position: DecorationPosition.foreground,
+                      decoration: BoxDecoration(border: Border.all(color: const Color(0xFF5A3FE0), width: 2.5), borderRadius: BorderRadius.circular(10)),
+                      child: child,
+                    )
+                  : child,
+            ),
+          ),
         ),
       ),
     );

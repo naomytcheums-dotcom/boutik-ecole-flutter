@@ -154,7 +154,7 @@ class CommunitiesList extends ConsumerWidget {
               height: 40,
               decoration: BoxDecoration(color: const Color(0xFFF1EEFB), borderRadius: BorderRadius.circular(13)),
               alignment: Alignment.center,
-              child: gText(c.name.characters.first.toUpperCase(), 15, const Color(0xFF5A3FE0), weight: 700),
+              child: Text(c.name.characters.first.toUpperCase(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Color(0xFF5A3FE0))),
             ),
             const SizedBox(width: 12),
             Expanded(

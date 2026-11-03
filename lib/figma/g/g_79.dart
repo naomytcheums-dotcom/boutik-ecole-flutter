@@ -67,7 +67,7 @@ class G_79 extends ConsumerWidget {
       gP(40, 484, 310, 7, gBox(color: Color(0xFFF2EFF6), radii: [4, 4, 4, 4])),
       gP(40, 484, 310, 7, gBox(color: Color(0xFF1F9D6B), radii: [4, 4, 4, 4])),
       gP(40, 506, 73, 16, gText('Tests terrain', 12.5, Color(0xFF111015), weight: 600)),
-      gP(321, 506, 29, 15, gText(demoContent ? '40%' : '—', 12, Color(0xFF57545F), weight: 600, align: TextAlign.right)),
+      gP(321, 506, 29, 15, gText('40%', 12, Color(0xFF57545F), weight: 600, align: TextAlign.right)),
       gP(40, 528, 310, 7, gBox(color: Color(0xFFF2EFF6), radii: [4, 4, 4, 4])),
       gP(40, 528, 124, 7, gBox(color: Color(0xFF1E4A80), radii: [4, 4, 4, 4])),
       gP(24, 566, 345, 41, Consumer(builder: (context, ref, _) => gText(ref.watch(currentProjectProvider).desc, 13, Color(0xFF4A4854), lh: 20.15, wrap: true))),

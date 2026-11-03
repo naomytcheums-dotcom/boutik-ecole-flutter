@@ -65,7 +65,7 @@ class G_164 extends ConsumerWidget {
       gP(40, 224, 310, 7, gBox(color: Color(0xFFF2EFF6), radii: [4, 4, 4, 4])),
       gP(40, 224, 201.5, 7, gBox(color: Color(0xFF6A4DFF), radii: [4, 4, 4, 4])),
       gP(40, 246, 120, 16, gText('Présentation (pitch)', 12.5, Color(0xFF111015), weight: 600)),
-      gP(321, 246, 29, 15, gText(demoContent ? '30%' : '—', 12, Color(0xFF57545F), weight: 600, align: TextAlign.right)),
+      gP(321, 246, 29, 15, gText('30%', 12, Color(0xFF57545F), weight: 600, align: TextAlign.right)),
       gP(40, 268, 310, 7, gBox(color: Color(0xFFF2EFF6), radii: [4, 4, 4, 4])),
       gP(40, 268, 93, 7, gBox(color: Color(0xFF1E4A80), radii: [4, 4, 4, 4])),
       gP(40, 290, 95, 16, gText('Documentation', 12.5, Color(0xFF111015), weight: 600)),

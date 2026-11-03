@@ -111,7 +111,7 @@ class GScreen extends StatelessWidget {
     for (var i = 0; i < children.length; i++) {
       final r = rects[i];
       if (r == null || taps[i] || r.top <= h * 0.6) continue;
-      final nav = r.width >= 330 && r.width <= 360 && r.height >= 54 && r.height <= 74 && r.left >= 8 && r.left <= 36;
+      final nav = r.width >= 330 && r.width <= 360 && r.height >= 54 && r.height <= 74 && r.left >= 8 && r.left <= 36 && (r.height >= 58 || r.top > h * 0.85);
       final bar = r.left <= 1 && r.width >= w - 2 && r.bottom >= h - 2 && r.height >= 40 && r.height <= 160;
       if (!nav && !bar) continue;
       final zone = nav ? Rect.fromLTRB(r.left - 4, r.top - 24, r.right + 4, r.bottom + 8) : Rect.fromLTRB(-1, r.top - 2, w + 1, h + 1);

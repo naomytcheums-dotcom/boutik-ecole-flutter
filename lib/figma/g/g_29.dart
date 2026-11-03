@@ -78,7 +78,7 @@ class G_29 extends ConsumerWidget {
       gP(26.391, 612.414, 123, 16, gText('Adresse de livraison', 12.707, Color(0xFF111015), weight: 700)),
       gP(31.048, 654.912, 17.078, 19.847, gImg('assets/figma/v/aeca3d14d1ba7e.svg')),
       gP(34.509, 658.373, 10.154, 10.154, gImg('assets/figma/v/5c78743d895a79.svg')),
-      gP(60.113, 651.912, 190, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(viewedOrderProvider).fee > 0 ? 'Livraison à domicile' : 'IUT de Douala – Bâtiment principal', 10.752, Color(0xFF4A4854)))),
+      gP(60.113, 651.912, 190, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(viewedOrderProvider).fee > 0 ? 'Livraison à domicile' : 'Campus de l’IUT de Douala', 10.752, Color(0xFF4A4854)))),
       gP(60.113, 680.046, 190, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(viewedOrderProvider).fee > 0 ? 'Douala, Cameroun' : 'Service de retrait', 10.752, Color(0xFF4A4854)))),
       gP(18.571, 731.467, 182.293, 64.411, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28]), tap: () => contactOrderSeller(ref, context)),
       gP(41.474, 755.542, 136, 17, gText('Contacter le vendeur', 13.195, Color(0xFF111015), weight: 700, align: TextAlign.center)),

@@ -52,7 +52,7 @@ class G_11 extends ConsumerWidget {
       errorText('li_id', 28, 416),
       gP(41.458, 377.083, 17.083, 21.833, gImg('assets/figma/v/2660f7e30da185.svg')),
       gP(47, 389.75, 6.008, 6, gImg('assets/figma/v/964b38e3841185.svg')),
-      gP(74, 379, 35, 18, gText(demoContent ? '+237' : '—', 14.5, Color(0xFF111015), weight: 600)),
+      gP(74, 379, 35, 18, gText('+237', 14.5, Color(0xFF111015), weight: 600)),
       gP(116, 376, 1.5, 24, gBox(color: Color(0xFFECE8F2))),
       gP(24, 428, 84, 16, gText('Mot de passe', 13, Color(0xFF111015), weight: 600)),
       gP(24, 452, 342, 52, GField(hint: 'Mot de passe', size: 17, hintColor: Color(0xFF111015), weight: 500, padL: 52, obscure: true, onChanged: (v) { ref.read(formProvider.notifier).put('li_pw', v); }, onSubmitted: (v) { submitLogin(ref, context); })),

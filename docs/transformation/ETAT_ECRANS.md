@@ -24,7 +24,7 @@ Source : `etat_ecrans.csv` (une ligne par écran, calculée **depuis le code**).
 | Écrans corrigés en profondeur (données réelles, états, règles) | **10** |
 | Écrans dont la composition aux 3 largeurs est testée | **315** (sans exception de rendu ; ne prouve pas le fonctionnement) |
 | Écrans dont le fonctionnement est testé par un test dédié de ce lot | **10** (les 10 ci-dessus) ; d'autres écrans ont des tests antérieurs (23 « connectés et fonctionnels » selon l'inventaire du 01/11) |
-| Écrans vérifiés visuellement | **3** (42, 46, 103) sur rendu de test ; **0 dans un navigateur** |
+| Écrans vérifiés visuellement | **3** sur rendu de test (42, 46, 103) ; **8 dans un navigateur** connecté à la base locale isolée : 11, 10, 45, 09, 29, 245, 252, 103 (voir ci-dessous) |
 | Écrans bloqués | voir ci-dessous |
 
 ## Ce qui reste pour que chaque écran soit réellement « corrigé »
@@ -34,4 +34,18 @@ Source : `etat_ecrans.csv` (une ligne par écran, calculée **depuis le code**).
 - **Textes fictifs non numériques** (noms de personnes, intitulés, adresses) : non traités automatiquement ; seuls ceux des écrans individuels ci-dessus ont été retirés.
 - **Formulaires, validations, états de chargement/vide/erreur** : traités seulement sur les écrans individuels ci-dessus et sur ceux qui l'étaient déjà.
 - **Clavier (D-085)** : l'anneau de focus existe sur les zones cliquables ; les listes déroulantes de la recherche avancée (21) n'ont pas été corrigées.
-- **Vérification dans un navigateur** : non faite (serveur de développement actuel pointé sur la production par défaut ; à relancer sur la base locale isolée).
+- **Vérification dans un navigateur** : faite sur 8 écrans seulement, contre la base locale isolée (serveur de développement relancé avec `BE_URL` local ; compte fictif `recette.a@example.test`). Les écrans 42, 43, 46, 47 et les formats web/borne ne sont pas vérifiés dans un navigateur.
+
+## Constats du navigateur (3 novembre, base locale isolée)
+
+| Écran | Constat | Suite |
+|---|---|---|
+| 11 Connexion | `+237` affichait « — » : le masquage des chiffres fictifs avait touché l'indicatif ; le bouton « Se connecter » recouvrait le champ mot de passe (fausse « barre fixe ») | **corrigés** (12 exceptions rétablies dans la liste de masquage ; seul un menu du bas de 58 px ou plus, ou une barre placée dans les 15 % inférieurs, reste fixe) ; vérifié dans le navigateur |
+| 10 Profil | compte réel : « Awa Recette », initiales AR, « Informatique · IUT de Douala » (aucune photo de maquette) ; « Demander la certification » connecté : statut « Certification en attente » puis fenêtre « Demande envoyée » | vérifié |
+| 45 → 09 | la commande #BE-2026-0225 créée sur le serveur s'affiche avec date, moyen de paiement, étape « Confirmée », ligne et quantité ×3 | vérifié ; **défaut non corrigé** : un produit absent du catalogue de l'application reçoit la photo de la lampe (repli de `productByTitle`) |
+| 29 | liste des articles (Qté : 3), frais « Gratuit », total 3 000 FCFA, adresse du retrait | vérifié ; le texte d'adresse recouvrait « Annuler la commande » : raccourci à « Campus de l’IUT de Douala » (non revérifié dans le navigateur) |
+| 245 | compteur de commentaires = 2 (serveur) ; l'image de fond reste la photo de la maquette, pas le média de la publication (le média de test n'existe pas dans le stockage) | vérifié ; défaut ouvert |
+| 252 | commentaires réels (auteur, ancienneté, suppression) ; la barre de saisie devait défiler au lieu de rester fixe, et l'initiale d'avatar était mal centrée | corrigés dans le code, **non revérifiés dans le navigateur** |
+| 103 | anciens fictifs retirés, message d'absence de réseau, « Aucune communauté pour le moment » ; le libellé du bouton « Créer une communauté » était collé en haut | libellé corrigé, non revérifié |
+| Saisie dans les champs | la saisie par l'outil de test dans les champs du canevas est peu fiable (texte dupliqué, sélection ignorée) : connexion faite par une session écrite dans le stockage local du navigateur de test | limite de la vérification |
+

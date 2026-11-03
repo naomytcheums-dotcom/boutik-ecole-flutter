@@ -149,13 +149,13 @@ class G_268 extends ConsumerWidget {
       gP(290, 658, 66, 14, gText('BORNE-001', 11.5, Color(0xFF18181B), weight: 600, inter: true)),
       gP(528, 658, 101, 14, gText('IUT Douala · Hall A', 11.5, Color(0xFF3D3B37), inter: true)),
       gP(738, 658, 58, 14, gText('il y a 2 min', 11.5, Color(0xFF3D3B37), inter: true)),
-      gP(968, 658, 25, 14, gText(demoContent ? '1.8.2' : '—', 11.5, Color(0xFF3D3B37), inter: true)),
+      gP(968, 658, 25, 14, gText('1.8.2', 11.5, Color(0xFF3D3B37), inter: true)),
       gP(1128, 658, 43, 14, gText('En ligne', 11.5, Color(0xFF3D3B37), inter: true)),
       gP(282, 684, 956, 1, gBox(color: Color(0xFFEEECE8))),
       gP(290, 702, 68, 14, gText('BORNE-002', 11.5, Color(0xFF18181B), weight: 600, inter: true)),
       gP(528, 702, 138, 14, gText('IUT Douala · Bibliothèque', 11.5, Color(0xFF3D3B37), inter: true)),
       gP(738, 702, 58, 14, gText('il y a 6 min', 11.5, Color(0xFF3D3B37), inter: true)),
-      gP(968, 702, 25, 14, gText(demoContent ? '1.8.2' : '—', 11.5, Color(0xFF3D3B37), inter: true)),
+      gP(968, 702, 25, 14, gText('1.8.2', 11.5, Color(0xFF3D3B37), inter: true)),
       gP(1128, 702, 43, 14, gText('En ligne', 11.5, Color(0xFF3D3B37), inter: true)),
       gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
       gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet

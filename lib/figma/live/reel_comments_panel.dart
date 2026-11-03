@@ -47,7 +47,7 @@ class _State extends ConsumerState<ReelCommentsPanel> {
             height: 38,
             decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFFEDE7FF)),
             alignment: Alignment.center,
-            child: gText(c.author.isEmpty ? '?' : c.author.characters.first.toUpperCase(), 14, const Color(0xFF5A3FE0), weight: 700),
+            child: Text(c.author.isEmpty ? '?' : c.author.characters.first.toUpperCase(), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF5A3FE0))),
           ),
           const SizedBox(width: 12),
           Expanded(

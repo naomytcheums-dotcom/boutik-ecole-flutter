@@ -144,7 +144,7 @@ class G_85 extends ConsumerWidget {
       gP(56, 498, 305, 14, gText('', 11.5, Color(0xFF57545F), wrap: true)),
       gP(40, 568, 138, 18, gText('Utilisation des fonds', 14, Color(0xFF111015), weight: 700)),
       gP(40, 602, 48, 16, gText('Matériel', 12.5, Color(0xFF57545F))),
-      gP(318, 602, 32, 16, gText(demoContent ? '40 %' : '—', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
+      gP(318, 602, 32, 16, gText('40 %', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
       gP(40, 627, 310, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 636, 67, 16, gText('Fabrication', 12.5, Color(0xFF57545F))),
       gP(319, 636, 31, 16, gText(demoContent ? '35 %' : '—', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
@@ -153,7 +153,7 @@ class G_85 extends ConsumerWidget {
       gP(322, 670, 28, 16, gText(demoContent ? '15 %' : '—', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
       gP(40, 695, 310, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 704, 97, 16, gText('Frais plateforme', 12.5, Color(0xFF57545F))),
-      gP(321, 704, 29, 16, gText(demoContent ? '10 %' : '—', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
+      gP(321, 704, 29, 16, gText('10 %', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
     ]);
   }

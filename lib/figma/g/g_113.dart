@@ -82,7 +82,7 @@ class G_113 extends ConsumerWidget {
       gP(284, 382, 104, 15, gText('Drone éducatif v2', 12, Color(0xFF111015), weight: 600, inter: true)),
       gP(550.56, 382, 68, 15, gText('Team Innov’', 12, Color(0xFF4A4854), inter: true)),
       gP(760, 382, 58, 15, gText('Pr Ngassa', 12, Color(0xFF4A4854), inter: true)),
-      gP(931.36, 382, 34, 15, gText(demoContent ? '100 %' : '—', 12, Color(0xFF4A4854), inter: true)),
+      gP(931.36, 382, 34, 15, gText('100 %', 12, Color(0xFF4A4854), inter: true)),
       gP(1083.68, 379, 64.8, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
       gP(1094.08, 383, 44, 13, gText('Terminé', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center)),
       gP(280, 412, 960, 1, gBox(color: Color(0xFFF2EFF6))),

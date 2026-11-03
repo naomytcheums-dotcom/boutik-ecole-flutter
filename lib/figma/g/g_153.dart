@@ -144,7 +144,7 @@ class G_153 extends ConsumerWidget {
       gP(40, 458, 310, 7, gBox(color: Color(0xFFF2EFF6), radii: [4, 4, 4, 4])),
       gP(40, 458, 263.5, 7, gBox(color: Color(0xFF6A4DFF), radii: [4, 4, 4, 4])),
       gP(40, 480, 73, 16, gText('Localisation', 12.5, Color(0xFF111015), weight: 600)),
-      gP(315, 480, 35, 15, gText(demoContent ? '100%' : '—', 12, Color(0xFF57545F), weight: 600, align: TextAlign.right)),
+      gP(315, 480, 35, 15, gText('100%', 12, Color(0xFF57545F), weight: 600, align: TextAlign.right)),
       gP(40, 502, 310, 7, gBox(color: Color(0xFFF2EFF6), radii: [4, 4, 4, 4])),
       gP(40, 502, 310, 7, gBox(color: Color(0xFF1F9D6B), radii: [4, 4, 4, 4])),
       gP(24, 540, 130, 19, gText('Points à améliorer', 15, Color(0xFF111015), weight: 700)),

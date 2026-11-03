@@ -95,7 +95,7 @@ class G_103 extends ConsumerWidget {
       gP(336.75, 655.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg'), show: demoContent),
       if (!demoContent) gP(24, 566, 342, 130, const CommunitiesList(width: 342, height: 130)),
       if (!demoContent) gP(24, 706, 342, 40, gBox(color: Color(0xFF111015), radii: [20, 20, 20, 20]), tap: () { createCommunityFlow(context, ref); }),
-      if (!demoContent) gP(24, 706, 342, 40, Center(child: gText('Créer une communauté', 13, Color(0xFFFFFFFF), weight: 600))),
+      if (!demoContent) gP(24, 706, 342, 40, Center(child: Text('Créer une communauté', style: TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFFFFFFFF))))),
       if (!demoContent) gP(24, 190, 342, 120, Center(child: gText('Le réseau des anciens n’est pas encore disponible. Rejoignez une communauté ci-dessous pour échanger.', 12.5, Color(0xFF57545F), wrap: true, align: TextAlign.center))),
       gP(125, 832, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),

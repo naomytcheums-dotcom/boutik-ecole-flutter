@@ -5,6 +5,7 @@ import '../gen.dart';
 import '../nav.dart';
 import 'auth.dart';
 import 'backend.dart';
+import 'lots.dart' show formDialog;
 import 'store.dart';
 
 /// Livraison (écrans 07, 41 ; migration 20261101000300, règles § 5) : retrait sur campus par défaut ; la livraison à domicile
@@ -83,4 +84,27 @@ Future<void> saveDeliveryAddress(BuildContext context, WidgetRef ref) async {
   ref.read(selectedAddressProvider.notifier).set('${r.data}');
   gToast(context, 'Adresse enregistrée');
   gOpen(context, '42');
+}
+
+/// Réglage administrateur (menu du compte) : active ou coupe la livraison à domicile, ville desservie et frais.
+/// Enregistré par la fonction serveur set_home_delivery (réservée à l'administration, tracée dans le journal d'audit).
+Future<void> homeDeliverySettingsDialog(BuildContext context, WidgetRef ref) async {
+  if (!Backend.ready) return gAlert(context, 'Livraison à domicile', 'Connectez-vous avec un compte administrateur pour modifier ce réglage.');
+  await ref.read(deliverySettingsProvider.notifier).refresh();
+  if (!context.mounted) return;
+  final s = ref.read(deliverySettingsProvider);
+  final v = await formDialog(context, 'Livraison à domicile', [
+    ('Proposée aux clients (oui / non)', s?.enabled == true ? 'oui' : 'non'),
+    ('Ville desservie', s?.city ?? 'Douala'),
+    ('Frais de livraison (FCFA)', '${s?.fee ?? 5000}'),
+  ], intro: 'Actuellement : ${s?.enabled == true ? 'proposée' : 'non proposée'}.');
+  if (v == null || !context.mounted) return;
+  final on = v[0].trim().toLowerCase().startsWith('o');
+  final fee = int.tryParse(v[2].replaceAll(RegExp(r'\D'), ''));
+  if (fee == null || fee > 100000 || v[1].trim().isEmpty) return gAlert(context, 'Réglage invalide', 'Indiquez une ville et des frais entre 0 et 100 000 FCFA.');
+  final r = await Backend.rpc('set_home_delivery', {'p_enabled': on, 'p_city': v[1].trim(), 'p_fee': fee});
+  if (!context.mounted) return;
+  if (r.error != null) return gAlert(context, 'Réglage non enregistré', r.error!);
+  await ref.read(deliverySettingsProvider.notifier).refresh();
+  if (context.mounted) gToast(context, on ? 'Livraison à domicile proposée · ${v[1].trim()} · $fee FCFA' : 'Livraison à domicile coupée');
 }

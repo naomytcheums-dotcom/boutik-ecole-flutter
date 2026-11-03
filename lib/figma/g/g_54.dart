@@ -50,7 +50,7 @@ class G_54 extends ConsumerWidget {
       chatHeaderOrderSub('Mouanga Yannick · En ligne'),
       gP(36, 128, 50, 50, gBox(image: 'assets/figma/img/84a49a20614dc5f12ab62f18400caa2290c40ec0.png', fit: BoxFit.cover, radii: [12, 12, 12, 12]), show: demoContent),
       gP(98, 132, 145, 17, gText('Lampe en bois recyclé', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
-      gP(98, 154, 160, 14, gText('Prête au retrait · 25 000 FCFA', 11.5, Color(0xFF66636E)), show: demoContent),
+      gP(98, 154, 160, 14, gText('Prête au retrait · 25 000 FCFA', 11.5, Color(0xFF57545F)), show: demoContent),
       gP(306.4, 142, 45.6, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11]), show: demoContent),
       gP(318.7, 146, 21, 14, gText('Voir', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center), show: demoContent),
       chatPanelAuto('Commande #BE-2026-0142', const [ChatMsg('Votre commande est prête, vous pouvez la retirer au Bloc A.', false, '10:12'), ChatMsg('Merci ! Je passe cet après-midi.', true, '10:14')], order: true),

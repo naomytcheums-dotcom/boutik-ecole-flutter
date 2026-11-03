@@ -51,7 +51,7 @@ void main() {
     await _pump(tester, const G_29(), _OneOrder.new);
     expect(find.text('#BE-2026-0161'), findsOneWidget);
     expect(find.text('Casque audio'), findsOneWidget);
-    expect(find.text('×2'), findsOneWidget);
+    expect(find.text('Qté : 2'), findsOneWidget);
     expect(find.text(fcfa(60000)), findsWidgets);
     expect(find.text('Sac à dos design'), findsNothing);
   });

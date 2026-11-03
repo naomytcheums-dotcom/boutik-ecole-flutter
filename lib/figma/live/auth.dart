@@ -297,7 +297,7 @@ Widget rememberBox(double x, double y) => gP(
               duration: const Duration(milliseconds: 140),
               width: 16,
               height: 16,
-              decoration: BoxDecoration(color: on ? const Color(0xFF111015) : Colors.transparent, borderRadius: BorderRadius.circular(5), border: on ? null : Border.all(color: const Color(0xFF66636E), width: 1.4)),
+              decoration: BoxDecoration(color: on ? const Color(0xFF111015) : Colors.transparent, borderRadius: BorderRadius.circular(5), border: on ? null : Border.all(color: const Color(0xFF57545F), width: 1.4)),
               child: on ? OverflowBox(maxWidth: 16, maxHeight: 16, child: Center(child: SizedBox(width: 14.667, height: 11.958, child: gImg('assets/figma/v/w_check.svg')))) : null,
             ),
             const SizedBox(width: 8),
@@ -587,7 +587,7 @@ Future<void> _serverReset(WidgetRef ref, BuildContext context, String password) 
 /// Message d'erreur rouge sous un champ.
 Widget errorText(String key, double x, double y) => gP(
       x, y, 320, 13,
-      Consumer(builder: (context, ref, _) => gText(ref.watch(errorsProvider)[key] ?? '', 10.5, const Color(0xFFD92D20), weight: 500)),
+      Consumer(builder: (context, ref, _) => gText(ref.watch(errorsProvider)[key] ?? '', 10.5, const Color(0xFFC0261B), weight: 500)),
     );
 
 // ------------------------------------------------------------------ profil (identité réelle)
@@ -629,7 +629,7 @@ Widget profileNameBadge(double y) => gP(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Flexible(
-              child: Text(empty ? 'Nom à compléter' : a.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: _pt(23, empty ? const Color(0xFF9A98A3) : const Color(0xFF111015), FontWeight.w500)),
+              child: Text(empty ? 'Nom à compléter' : a.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: _pt(23, empty ? const Color(0xFF57545F) : const Color(0xFF111015), FontWeight.w500)),
             ),
             if (a.certified) ...[
               const SizedBox(width: 8),
@@ -652,7 +652,7 @@ Widget profileSkillsOrCert(double y) => gP(
       Consumer(builder: (context, ref, _) {
         final a = ref.watch(profileAccountProvider);
         final skills = a.skills.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).map((e) => '#$e').join('   ');
-        if (skills.isNotEmpty) return Center(child: Text(skills, style: _pt(12, const Color(0xFF66636E), FontWeight.w400)));
+        if (skills.isNotEmpty) return Center(child: Text(skills, style: _pt(12, const Color(0xFF57545F), FontWeight.w400)));
         const labels = {
           'pending': 'Certification en attente',
           'review': 'Certification en cours d’examen',
@@ -666,13 +666,16 @@ Widget profileSkillsOrCert(double y) => gP(
         return GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: canAsk ? () => requestCertificationFlow(ref, context) : null,
-          child: Center(child: Text(label, style: _pt(12, canAsk ? const Color(0xFF5A3FE0) : const Color(0xFF66636E), canAsk ? FontWeight.w600 : FontWeight.w500))),
+          child: Center(child: Text(label, style: _pt(12, canAsk ? const Color(0xFF5A3FE0) : const Color(0xFF57545F), canAsk ? FontWeight.w600 : FontWeight.w500))),
         );
       }),
     );
 
 Future<void> requestCertificationFlow(WidgetRef ref, BuildContext context) async {
   if (!Backend.ready) return gAlert(context, 'Certification', 'La demande de certification nécessite la connexion au serveur.');
+  // Visiteur : on propose la connexion au lieu d'envoyer une demande que le serveur refuserait (D-024).
+  if (!await requireLogin(context, ref, 'demander la certification')) return;
+  if (!context.mounted) return;
   final err = await Backend.requestCertification();
   if (!context.mounted) return;
   if (err != null) return gAlert(context, 'Demande impossible', err);
@@ -688,7 +691,7 @@ Widget profileBio(double y) => gP(
       Consumer(builder: (context, ref, _) {
         final a = ref.watch(profileAccountProvider);
         final empty = a.bio.trim().isEmpty;
-        return gText(empty ? 'Aucune description pour le moment.' : a.bio.trim(), 11.5, empty ? const Color(0xFF9A98A3) : const Color(0xFF6F6D77), lh: 17, align: TextAlign.center, wrap: true);
+        return gText(empty ? 'Aucune description pour le moment.' : a.bio.trim(), 11.5, empty ? const Color(0xFF57545F) : const Color(0xFF6F6D77), lh: 17, align: TextAlign.center, wrap: true);
       }),
     );
 
@@ -703,7 +706,7 @@ Widget profileSubline(double y) => gP(
       Consumer(builder: (context, ref, _) {
         final a = ref.watch(profileAccountProvider);
         final t = [a.department, a.institution].where((e) => e.trim().isNotEmpty && e != '—').join(' · ');
-        return Center(child: Text(t, style: _pt(11.5, const Color(0xFF66636E), FontWeight.w400)));
+        return Center(child: Text(t, style: _pt(11.5, const Color(0xFF57545F), FontWeight.w400)));
       }),
     );
 
@@ -725,7 +728,7 @@ Future<void> editProfileDialog(BuildContext context, WidgetRef ref) async {
   final skills = TextEditingController(text: a.skills);
   final city = TextEditingController(text: a.city);
   const st = TextStyle(inherit: false, fontFamily: 'PlusJakartaSans', fontSize: 13.5, color: Color(0xFF111015), textBaseline: TextBaseline.alphabetic);
-  InputDecoration deco(String h) => InputDecoration(hintText: h, hintStyle: st.copyWith(color: const Color(0xFF9A98A3)), isDense: true, border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)));
+  InputDecoration deco(String h) => InputDecoration(hintText: h, hintStyle: st.copyWith(color: const Color(0xFF57545F)), isDense: true, border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)));
   final saved = await gDialog<bool>(
     context: context,
     builder: (ctx) => AlertDialog(

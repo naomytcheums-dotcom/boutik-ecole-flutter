@@ -311,7 +311,7 @@ class _ServerChatPanelState extends ConsumerState<ServerChatPanel> {
     if (cid.isEmpty) {
       return Padding(
         padding: const EdgeInsets.fromLTRB(40, 240, 40, 0),
-        child: Align(alignment: Alignment.topCenter, child: Text('Choisissez une conversation dans « Messages », ou touchez « Contacter le vendeur » depuis une commande.', textAlign: TextAlign.center, style: _st(13, w: FontWeight.w500, c: const Color(0xFF66636E)).copyWith(height: 1.5))),
+        child: Align(alignment: Alignment.topCenter, child: Text('Choisissez une conversation dans « Messages », ou touchez « Contacter le vendeur » depuis une commande.', textAlign: TextAlign.center, style: _st(13, w: FontWeight.w500, c: const Color(0xFF57545F)).copyWith(height: 1.5))),
       );
     }
     final all = [...msgs, ...pending];
@@ -323,9 +323,9 @@ class _ServerChatPanelState extends ConsumerState<ServerChatPanel> {
         width: 390,
         height: 540,
         child: loading && all.isEmpty
-            ? Center(child: Text('Chargement…', style: _st(13, w: FontWeight.w500, c: const Color(0xFF66636E))))
+            ? Center(child: Text('Chargement…', style: _st(13, w: FontWeight.w500, c: const Color(0xFF57545F))))
             : all.isEmpty
-                ? Center(child: Text('Aucun message pour le moment.', style: _st(13, w: FontWeight.w500, c: const Color(0xFF66636E))))
+                ? Center(child: Text('Aucun message pour le moment.', style: _st(13, w: FontWeight.w500, c: const Color(0xFF57545F))))
                 : ListView.builder(controller: scroll, padding: const EdgeInsets.fromLTRB(24, 6, 24, 20), itemCount: all.length, itemBuilder: (_, i) => _bubble(all[i])),
       ),
       if (recording)
@@ -356,7 +356,7 @@ class _ServerChatPanelState extends ConsumerState<ServerChatPanel> {
               onChanged: (_) => setState(() {}),
               onSubmitted: (_) => _sendText(),
               cursorColor: const Color(0xFF6A4DFF),
-              decoration: InputDecoration(isCollapsed: true, filled: false, border: InputBorder.none, enabledBorder: InputBorder.none, focusedBorder: InputBorder.none, hintText: 'Écrire un message…', hintStyle: _st(13, c: const Color(0xFF66636E))),
+              decoration: InputDecoration(isCollapsed: true, filled: false, border: InputBorder.none, enabledBorder: InputBorder.none, focusedBorder: InputBorder.none, hintText: 'Écrire un message…', hintStyle: _st(13, c: const Color(0xFF57545F))),
             ),
           ),
           const SizedBox(width: 6),

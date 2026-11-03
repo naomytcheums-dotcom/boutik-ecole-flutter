@@ -226,7 +226,7 @@ class _ChatPanelState extends ConsumerState<_ChatPanel> {
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
                 hintText: 'Écrire un message…',
-                hintStyle: _st(13, c: const Color(0xFF66636E)),
+                hintStyle: _st(13, c: const Color(0xFF57545F)),
               ),
             ),
           ),

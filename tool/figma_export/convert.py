@@ -50,8 +50,9 @@ for _l in open(os.path.join(HERE, 'links.txt'), encoding='utf-8'):
         else:  # première entrée : "x,y,w,h>dest"
             pass
 CERCLE = {'152:17', '152:125', '152:191', '153:16', '153:124', '153:205', '154:96', '156:16', '156:130', '157:16', '157:124'}
-NAV_DEST = {'icon/search': '29:2', 'icon/chat': '36:709', 'icon/mic': '106:89', 'icon/user': '15:96', 'icon/home': '3:3', 'Accueil': '3:3'}
-NAV_DEST_CERCLE = {'icon/search': '154:96', 'icon/chat': '36:709', 'icon/mic': '106:89', 'icon/user': '153:16', 'icon/home': '152:17', 'Accueil': '152:17'}
+COLOR_FIX = [('0xFF66636E', '0xFF57545F'), ('0xFF9A98A3', '0xFF57545F'), ('0xFFB8C2CE', '0xFF57545F'), ('0xFF6B7A8C', '0xFF57545F'), ('0xFF6B6877', '0xFF57545F'), ('0xFFD92D20', '0xFFC0261B')]
+NAV_DEST = {'icon/search': '29:2', 'icon/chat': '36:635', 'icon/mic': '106:89', 'icon/user': '15:96', 'icon/home': '3:3', 'Accueil': '3:3'}
+NAV_DEST_CERCLE = {'icon/search': '154:96', 'icon/chat': '36:635', 'icon/mic': '106:89', 'icon/user': '153:16', 'icon/home': '152:17', 'Accueil': '152:17'}
 
 # ---------- utilitaires ----------
 def num(v):
@@ -866,6 +867,8 @@ class %s extends ConsumerWidget {
     if sid in BINDINGS.get('_frozen', []):
         print('écran figé (modifié à la main), non régénéré :', sid)
     else:
+        for _old, _new in COLOR_FIX:  # contrastes WCAG : textes secondaires relevés au-dessus de 4,5:1 (D-084)
+            code = code.replace(_old, _new)
         open(os.path.join(OUT, cls.lower() + '.dart'), 'w', encoding='utf-8').write(code)
     return ctx
 

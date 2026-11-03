@@ -40,13 +40,13 @@ class G_281 extends ConsumerWidget {
       gP(43.458, 83.458, 11.542, 17.083, gImg('assets/figma/v/7a21623fe0dfea.svg')),
       gP(43.458, 89, 17.083, 6, gImg('assets/figma/v/e130a05f3cf779.svg')),
       gP(116, 76, 158, 21, gText('Rôles et périmètres', 17, Color(0xFF111015), weight: 500)),
-      gP(124, 102, 142, 15, gText('Institution : IUT de Douala', 12, Color(0xFF66636E))),
+      gP(124, 102, 142, 15, gText('Institution : IUT de Douala', 12, Color(0xFF57545F))),
       gP(173, 135.25, 27.5, 27.5, gImg('assets/figma/r/209_494.png')),
       gP(163.375, 136.625, 63.25, 49.5, gImg('assets/figma/r/209_495.png')),
-      gP(44, 228, 24, 14, gText('Rôle', 11, Color(0xFF66636E), weight: 600)),
-      gP(230, 228, 20, 14, gText('Lire', 11, Color(0xFF66636E), weight: 600)),
-      gP(270, 228, 31, 14, gText('Écrire', 11, Color(0xFF66636E), weight: 600)),
-      gP(316, 228, 37, 14, gText('Valider', 11, Color(0xFF66636E), weight: 600)),
+      gP(44, 228, 24, 14, gText('Rôle', 11, Color(0xFF57545F), weight: 600)),
+      gP(230, 228, 20, 14, gText('Lire', 11, Color(0xFF57545F), weight: 600)),
+      gP(270, 228, 31, 14, gText('Écrire', 11, Color(0xFF57545F), weight: 600)),
+      gP(316, 228, 37, 14, gText('Valider', 11, Color(0xFF57545F), weight: 600)),
       gP(44, 252, 44, 15, gText('Visiteur', 12, Color(0xFF111015), weight: 600)),
       gP(236, 252, 12, 15, gText('●', 12, Color(0xFF111015), weight: 700)),
       gP(282, 252, 8, 15, gText('–', 12, Color(0xFFB3AFBB), weight: 700)),
@@ -84,7 +84,7 @@ class G_281 extends ConsumerWidget {
       gP(282, 572, 12, 15, gText('●', 12, Color(0xFF111015), weight: 700)),
       gP(330, 572, 12, 15, gText('●', 12, Color(0xFF111015), weight: 700)),
       gP(44, 664, 164, 18, gText('Isolation des institutions', 14, Color(0xFF111015), weight: 600)),
-      gP(44, 688, 302, 20, gText('Chaque compte voit uniquement les données de son institution. Les actions sensibles sont journalisées.', 12, Color(0xFF66636E))),
+      gP(44, 688, 302, 20, gText('Chaque compte voit uniquement les données de son institution. Les actions sensibles sont journalisées.', 12, Color(0xFF57545F))),
     ]);
   }
 }

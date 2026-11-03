@@ -35,7 +35,7 @@ class SharedCvScreen extends StatelessWidget {
                     Text(snap.data!.error ?? 'Ce lien a été remplacé ou n’existe pas. Demandez un nouveau lien à son auteur.', style: _t(14, FontWeight.w400, const Color(0xFF4A4854))),
                   ] else ...[
                     Text('${d['nom']}', style: _t(26, FontWeight.w800, const Color(0xFF111015))),
-                    Text([d['departement'], d['etablissement']].where((x) => x != null && '$x'.isNotEmpty).join(' · '), style: _t(14, FontWeight.w500, const Color(0xFF66636E))),
+                    Text([d['departement'], d['etablissement']].where((x) => x != null && '$x'.isNotEmpty).join(' · '), style: _t(14, FontWeight.w500, const Color(0xFF57545F))),
                     if (d['certifie'] == true) Text('✓ Profil certifié par l’établissement', style: _t(13, FontWeight.w600, const Color(0xFF0F7A52))),
                     const SizedBox(height: 18),
                     if ('${d['bio'] ?? ''}'.isNotEmpty) Text('${d['bio']}', style: _t(14.5, FontWeight.w400, const Color(0xFF111015))),

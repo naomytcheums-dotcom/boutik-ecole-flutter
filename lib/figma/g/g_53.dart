@@ -52,7 +52,7 @@ class G_53 extends ConsumerWidget {
       chatHeaderSub(),
       gP(36, 128, 50, 50, gBox(image: 'assets/figma/img/a76e4a9cacb04ffda33cfd8133809ed5cc5c402c.png', fit: BoxFit.cover, radii: [12, 12, 12, 12]), show: demoContent),
       gP(98, 132, 145, 17, gText('Lampe en bois recyclé', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
-      gP(98, 154, 73, 14, gText('25 000 FCFA', 11.5, Color(0xFF66636E)), show: demoContent),
+      gP(98, 154, 73, 14, gText('25 000 FCFA', 11.5, Color(0xFF57545F)), show: demoContent),
       gP(324, 144, 26, 17, gText('Voir', 13.5, Color(0xFF111015), weight: 700, align: TextAlign.right), show: demoContent),
       chatPanelAuto('Mouanga Yannick', const [ChatMsg('Bonjour ! Votre lampe est prête, vous pouvez venir la retirer demain.', false, '10:12'), ChatMsg('Parfait, merci. Je passe à 14 h au Bloc A.', true, '10:14'), ChatMsg('Très bien, je l’emballe avec soin. À demain !', false, '10:15')]),
       

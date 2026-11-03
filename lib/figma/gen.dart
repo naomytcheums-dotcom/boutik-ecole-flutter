@@ -20,6 +20,15 @@ class GScreen extends StatelessWidget {
   final Color? color;
   final List<Widget> children;
 
+  /// Rendu « cadre de maquette » (taille Figma exacte) : réservé aux rendus de référence et aux tests de coordonnées.
+  static bool mockupFrame = false;
+
+  /// Largeur maximale de la colonne des écrans de format mobile sur grand écran.
+  static const maxColumn = 480.0;
+
+  /// Hauteur de la fausse barre d'état iOS dessinée dans les maquettes (9:41, réseau, batterie).
+  static const statusBand = 44.0;
+
   @override
   Widget build(BuildContext context) {
     final canvas = SizedBox(
@@ -37,6 +46,18 @@ class GScreen extends StatelessWidget {
       backgroundColor: const Color(0xFFE9E6EE),
       resizeToAvoidBottomInset: false,
       body: LayoutBuilder(builder: (context, c) {
+        // Téléphone : plein écran (largeur entière, hauteur entière), menus du bas fixes, contenu défilant jusqu'au bout.
+        if (!mockupFrame && w < 700) {
+          // Écran de format mobile sur tablette ou ordinateur : même composition plein écran que sur téléphone, mais dans une
+          // colonne de 480 px au plus, centrée sur le fond de l'écran lui-même (ni cadre de téléphone, ni fausse barre d'état).
+          final cw = math.min(c.maxWidth, maxColumn);
+          final column = _phone(context, BoxConstraints.tightFor(width: cw, height: c.maxHeight));
+          if (c.maxWidth <= cw + 0.5) return column;
+          return DecoratedBox(
+            decoration: BoxDecoration(gradient: bg, color: color ?? (bg == null ? const Color(0xFFFFFFFF) : null)),
+            child: Center(child: SizedBox(width: cw, height: c.maxHeight, child: column)),
+          );
+        }
         if (h > 860 && w < 700) {
           // Maquette entière visible sans défilement tant qu'elle reste lisible :
           // ≥ 70 % de sa taille sur ordinateur, ≥ 85 % de la largeur disponible sur téléphone.
@@ -65,6 +86,78 @@ class GScreen extends StatelessWidget {
       }),
     );
   }
+
+  /// Plein écran sur téléphone. La maquette est mise à l'échelle de la largeur réelle de l'écran (référence Figma : `w`),
+  /// sans cadre ni marges ; la fausse barre d'état et la fausse barre d'accueil iOS sont retirées (le téléphone a les siennes) ;
+  /// le menu du bas et les barres d'actions pleine largeur restent fixes en bas, et le contenu reçoit en bas un espace de
+  /// leur hauteur pour que la dernière section soit entièrement visible au-dessus.
+  Widget _phone(BuildContext context, BoxConstraints c) {
+    final pad = MediaQuery.paddingOf(context);
+    final keyboard = MediaQuery.viewInsetsOf(context).bottom;
+    final s = c.maxWidth / w;
+    final rects = [for (final ch in children) ch is GPos ? ch.rect : null];
+    final taps = [for (final ch in children) ch is GPos && ch.tap];
+
+    final hidden = <int>{};
+    for (var i = 0; i < children.length; i++) {
+      final r = rects[i];
+      if (r == null || taps[i]) continue;
+      final status = r.bottom <= statusBand + 2 && r.height < 30 && r.width < 120;
+      final homeBar = r.height <= 6 && r.width >= 100 && r.width <= 150 && (r.center.dx - w / 2).abs() < 12 && r.top >= h - 80;
+      if (status || homeBar) hidden.add(i);
+    }
+
+    final band = <int>{};
+    for (var i = 0; i < children.length; i++) {
+      final r = rects[i];
+      if (r == null || taps[i] || r.top <= h * 0.6) continue;
+      final nav = r.width >= 330 && r.width <= 360 && r.height >= 54 && r.height <= 74 && r.left >= 8 && r.left <= 36;
+      final bar = r.left <= 1 && r.width >= w - 2 && r.bottom >= h - 2 && r.height >= 40 && r.height <= 160;
+      if (!nav && !bar) continue;
+      final zone = nav ? Rect.fromLTRB(r.left - 4, r.top - 24, r.right + 4, r.bottom + 8) : Rect.fromLTRB(-1, r.top - 2, w + 1, h + 1);
+      for (var j = i; j < children.length; j++) {
+        final q = rects[j];
+        if (q != null && !hidden.contains(j) && zone.contains(q.center)) band.add(j);
+      }
+    }
+    var bandTop = h, bandBottom = 0.0;
+    for (final j in band) {
+      bandTop = math.min(bandTop, rects[j]!.top);
+      bandBottom = math.max(bandBottom, math.min(h, rects[j]!.bottom));
+    }
+
+    Widget layer(List<Widget> kids, double from, double to) => SizedBox(
+          width: w * s,
+          height: (to - from) * s,
+          child: FittedBox(
+            fit: BoxFit.fill,
+            alignment: Alignment.topLeft,
+            child: SizedBox(
+              width: w,
+              height: to - from,
+              child: Stack(clipBehavior: Clip.hardEdge, children: [
+                Positioned(left: 0, top: -from, width: w, height: h, child: Stack(clipBehavior: Clip.none, children: kids)),
+              ]),
+            ),
+          ),
+        );
+
+    final content = [for (var i = 0; i < children.length; i++) if (!band.contains(i) && !hidden.contains(i)) children[i]];
+    final fixed = [for (var i = 0; i < children.length; i++) if (band.contains(i)) children[i]];
+    final bandH = band.isEmpty ? 0.0 : (bandBottom - bandTop + 8) * s;
+    return DecoratedBox(
+      decoration: BoxDecoration(gradient: bg, color: color ?? (bg == null ? const Color(0xFFFFFFFF) : null)),
+      child: Stack(children: [
+        Positioned.fill(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.only(top: pad.top, bottom: pad.bottom + bandH + keyboard),
+            child: layer(content, statusBand, h),
+          ),
+        ),
+        if (band.isNotEmpty) Positioned(left: 0, right: 0, bottom: pad.bottom, child: layer(fixed, bandTop, bandBottom)),
+      ]),
+    );
+  }
 }
 
 /// Positionne un élément (avec rotation, opacité, animation d'entrée, effet ambiant et retour tactile).
@@ -77,11 +170,20 @@ Widget gP(double x, double y, double w, double h, Widget child,
   if (op < 1) c = Opacity(opacity: op, child: c);
   if (tap != null) c = GPress(onTap: tap, sound: sound, child: c);
   if (GAnim.enabled && w * h < 140000) c = GEnter(delay: Duration(milliseconds: (y * 0.5).clamp(0, 520).round()), child: c);
-  return Positioned(left: x, top: y, child: c);
+  return GPos(x: x, y: y, gw: w, gh: h, tap: tap != null, child: c);
 }
 
 Widget gTap(double x, double y, double w, double h, VoidCallback tap) =>
-    Positioned(left: x, top: y, child: GPress(onTap: tap, sound: 'whoosh', flash: true, child: SizedBox(width: w, height: h)));
+    GPos(x: x, y: y, gw: w, gh: h, tap: true, child: GPress(onTap: tap, sound: 'whoosh', flash: true, child: SizedBox(width: w, height: h)));
+
+/// Élément positionné de la maquette qui connaît son rectangle (pour l'adaptation plein écran des téléphones).
+class GPos extends Positioned {
+  const GPos({super.key, required double x, required double y, required this.gw, required this.gh, this.tap = false, required super.child})
+      : super(left: x, top: y);
+  final double gw, gh;
+  final bool tap;
+  Rect get rect => Rect.fromLTWH(left!, top!, gw, gh);
+}
 
 BorderRadius _br(List<double>? r) => r == null
     ? BorderRadius.zero

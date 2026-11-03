@@ -291,14 +291,14 @@ class Backend {
     final m = e is PostgrestException ? e.message : e.toString();
     final code = e is PostgrestException ? e.code : null;
     if (code == 'PGRST202' || code == 'PGRST205' || m.contains('Could not find the function') || m.contains('Could not find the table')) {
-      return 'Cette fonction n’est pas encore activée sur le serveur (migration 20261031a à appliquer par l’administrateur de la base).';
+      return 'Cette fonction n’est pas disponible pour le moment. Réessayez plus tard ou contactez le support.';
     }
     if (m.contains('listings_titre_unique') || m.contains('duplicate key')) return 'Une annonce porte déjà ce titre. Choisissez un titre plus précis (marque, couleur, taille…).';
     if (m.contains('listings_price_min')) return 'Le prix doit être d’au moins 500 FCFA.';
     if (m.contains('listings_title_len')) return 'Le titre doit comporter de 3 à 80 caractères.';
     if (m.contains('listings_stock_check')) return 'Le stock doit être compris entre 0 et 100 000.';
     if (m.contains('row-level security')) return 'Votre compte n’est pas autorisé à publier des annonces (rôle étudiant-vendeur requis).';
-    return m;
+    return userMessage(m);
   }
 
   /// Annonces du vendeur connecté ; avec [platform] (département, administrateur), aussi les produits de la plateforme.
@@ -948,6 +948,18 @@ class Backend {
     }
   }
 
+  /// Message affichable pour une erreur du serveur : un texte technique (refus de permission, fonction, JWT, SQL) n'est jamais
+  /// montré à l'utilisateur ; seuls les messages métier lisibles (français, sans vocabulaire technique) sont conservés.
+  static String userMessage(String raw) {
+    final low = raw.toLowerCase();
+    const reseau = ['socketexception', 'clientexception', 'failed host lookup', 'xmlhttprequest', 'connection closed', 'connection refused', 'network', 'handshake', 'timeoutexception'];
+    if (reseau.any(low.contains)) return 'Connexion impossible. Vérifiez votre réseau puis réessayez.';
+    const technique = ['permission denied', 'function', 'exception', 'stack', 'dart', 'postgrest', 'jwt', 'violates', 'row-level', 'rls', 'syntax', 'relation ', 'column ', 'null value', 'pgrst', 'not authenticated', 'unauthorized'];
+    if (low.contains('not authenticated') || low.contains('jwt') || low.contains('unauthorized')) return 'Votre session a expiré. Reconnectez-vous puis réessayez.';
+    if (technique.any(low.contains)) return 'Cette action n’est pas disponible pour votre compte pour le moment. Si le problème continue, contactez le support.';
+    return raw;
+  }
+
   /// Dépose une demande de certification (état « en attente ») ; la décision appartient au département.
   static Future<String?> requestCertification() async {
     final c = _c;
@@ -956,7 +968,7 @@ class Backend {
       await c.rpc('request_certification');
       return null;
     } on PostgrestException catch (e) {
-      return e.message;
+      return userMessage(e.message);
     } catch (_) {
       return 'Connexion au serveur impossible.';
     }

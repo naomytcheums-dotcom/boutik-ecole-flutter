@@ -25,7 +25,7 @@ Future<String?> askText(BuildContext context, {required String title, required S
         content: SizedBox(
           width: 360,
           child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(body, style: _st.copyWith(height: 1.55, color: const Color(0xFF66636E))),
+            Text(body, style: _st.copyWith(height: 1.55, color: const Color(0xFF57545F))),
             const SizedBox(height: 12),
             TextField(controller: c, style: _st, minLines: 2, maxLines: 4, decoration: InputDecoration(hintText: hint, errorText: error, border: const OutlineInputBorder())),
           ]),
@@ -163,7 +163,7 @@ Color stageInk(String s) => switch (s) {
       'En cours' => const Color(0xFF5A3FE0),
       'Financement' => const Color(0xFF8F5400),
       'Terminé' => const Color(0xFF0F7A52),
-      _ => const Color(0xFF66636E),
+      _ => const Color(0xFF57545F),
     };
 
 void submitProject(WidgetRef ref, BuildContext context) {

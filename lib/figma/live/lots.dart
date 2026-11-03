@@ -19,7 +19,7 @@ import 'store.dart' show ordersProvider, viewedOrderProvider;
 /// puis affiche le résultat du serveur. Rien n'est simulé : sans serveur, l'action l'explique.
 
 const _st = TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 13.5, color: Color(0xFF111015));
-const _muted = TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 12, color: Color(0xFF66636E));
+const _muted = TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 12, color: Color(0xFF57545F));
 
 /// Valeur d'un champ du formulaire : la saisie, sinon la valeur affichée par la maquette (champ prérempli).
 String field(WidgetRef ref, String key, [String shown = '']) {

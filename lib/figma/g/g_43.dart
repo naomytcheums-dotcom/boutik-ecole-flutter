@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/order_summary.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -47,29 +48,29 @@ class G_43 extends ConsumerWidget {
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 255, 26, gText('Instructions de paiement', 21, Color(0xFF111015), weight: 700)),
       gP(40, 134, 135, 18, gText('Détails du paiement', 14, Color(0xFF111015), weight: 700)),
-      gP(40, 168, 118, 16, gText('Moyen de paiement', 12.5, Color(0xFF66636E))),
-      gP(260, 168, 90, 16, gText('Orange Money', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
+      gP(40, 168, 118, 16, gText('Moyen de paiement', 12.5, Color(0xFF57545F))),
+      gP(200, 168, 150, 16, Consumer(builder: (context, ref, _) => gText(payMethodLabel(ref.watch(payMethodProvider)), 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right))),
       gP(40, 193, 310, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(40, 202, 110, 16, gText('Numéro marchand', 12.5, Color(0xFF66636E))),
+      gP(40, 202, 110, 16, gText('Numéro marchand', 12.5, Color(0xFF57545F))),
       gP(270, 202, 80, 16, gText('6 9X XX XX XX', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
       gP(40, 227, 310, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(40, 236, 122, 16, gText('Référence à indiquer', 12.5, Color(0xFF66636E))),
-      gP(257, 236, 93, 16, gText('BE-2026-0142', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),
+      gP(40, 236, 122, 16, gText('Référence à indiquer', 12.5, Color(0xFF57545F))),
+      gP(170, 236, 180, 16, Consumer(builder: (context, ref, _) => gText(orderReferenceLabel(ref.watch(ordersProvider)), 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right))),
       gP(40, 261, 310, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(40, 270, 96, 16, gText('Montant à payer', 12.5, Color(0xFF66636E))),
-      gP(262, 270, 88, 16, gText('330 000 FCFA', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),
+      gP(40, 270, 96, 16, gText('Montant à payer', 12.5, Color(0xFF57545F))),
+      gP(190, 270, 160, 16, Consumer(builder: (context, ref, _) => gText(fcfa(amountToPay(ref.watch(ordersProvider), ref.watch(totalsProvider))), 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right))),
       gP(33, 344, 2, 40, gBox(color: Color(0xFFBFE8D6), radii: [1, 1, 1, 1])),
       gP(24, 323, 20, 20, gBox(color: Color(0xFF1F9D6B), oval: true)),
       gP(27.333, 327.25, 13.333, 11.042, gImg('assets/figma/v/23149818a3337a.svg')),
-      gP(56, 322, 305, 17, gText('Ouvrez Orange Money', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
-      gP(56, 342, 305, 14, gText('Menu « Paiement marchand »', 11.5, Color(0xFF66636E), wrap: true)),
+      gP(56, 322, 305, 17, Consumer(builder: (context, ref, _) => gText('Ouvrez ${payMethodLabel(ref.watch(payMethodProvider))}', 13.5, Color(0xFF111015), weight: 600, wrap: true))),
+      gP(56, 342, 305, 14, gText('Menu « Paiement marchand »', 11.5, Color(0xFF57545F), wrap: true)),
       gP(33, 406, 2, 40, gBox(color: Color(0xFFE4E8EE), radii: [1, 1, 1, 1])),
       gP(24, 385, 20, 20, gBox(color: Color(0xFF111015), oval: true)),
       gP(56, 384, 305, 17, gText('Saisissez le numéro marchand', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
-      gP(56, 404, 305, 14, gText('Puis le montant exact', 11.5, Color(0xFF66636E), wrap: true)),
+      gP(56, 404, 305, 14, gText('Puis le montant exact', 11.5, Color(0xFF57545F), wrap: true)),
       gP(24, 447, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true)),
       gP(56, 446, 305, 17, gText('Indiquez la référence', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
-      gP(56, 466, 305, 14, gText('BE-2026-0142 dans le motif', 11.5, Color(0xFF66636E), wrap: true)),
+      gP(56, 466, 305, 14, Consumer(builder: (context, ref, _) => gText('${orderReferenceLabel(ref.watch(ordersProvider))} dans le motif', 11.5, Color(0xFF57545F), wrap: true))),
       gP(24, 522, 342, 62, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
       gP(36, 537, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(41.917, 542.917, 20.167, 20.167, gImg('assets/figma/v/48fd286aff90cc.svg')),

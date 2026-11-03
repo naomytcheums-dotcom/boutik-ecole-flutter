@@ -169,7 +169,7 @@ class _QuoteTile extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 10),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text('$title', style: _st.copyWith(fontWeight: FontWeight.w700)),
-        Text(lines, style: _st.copyWith(fontSize: 12, color: const Color(0xFF66636E))),
+        Text(lines, style: _st.copyWith(fontSize: 12, color: const Color(0xFF57545F))),
         Wrap(spacing: 6, children: [
           if (!mine && open) TextButton(onPressed: () { close(); _answer(parent, r['id'] as String, amount); }, child: Text(s == 'quoted' ? 'Modifier mon devis' : 'Répondre avec un devis')),
           if (mine && s == 'quoted') TextButton(onPressed: () { close(); _decide(parent, r['id'] as String, true); }, child: const Text('Accepter')),

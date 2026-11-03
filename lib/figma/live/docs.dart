@@ -13,7 +13,7 @@ import 'store.dart';
 
 const _logo = 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png';
 const _ink = PdfColor.fromInt(0xFF111015);
-const _muted = PdfColor.fromInt(0xFF66636E);
+const _muted = PdfColor.fromInt(0xFF57545F);
 const _violet = PdfColor.fromInt(0xFF5A3FE0);
 const _line = PdfColor.fromInt(0xFFE4E0EC);
 

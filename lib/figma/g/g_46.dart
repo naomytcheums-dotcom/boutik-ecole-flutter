@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/order_summary.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -55,30 +56,14 @@ class G_46 extends ConsumerWidget {
       gP(55.5, 153.333, 9.333, 9.333, gImg('assets/figma/v/87052a066968e5.svg')),
       gP(47.167, 153.333, 9.333, 9.333, gImg('assets/figma/v/87052a066968e5.svg')),
       gP(88, 132, 112, 17, gText(demoContent ? '#BE-2026-0142' : ref.watch(viewedOrderProvider).id, 13.5, Color(0xFF111015), weight: 600)),
-      gP(88, 154, 149, 14, gText('Arrivée prévue demain · 14 h', 11.5, Color(0xFF66636E))),
-      gP(280.8, 142, 71.2, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
-      gP(294.4, 146, 44, 14, gText('En route', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)),
-      gP(33, 406, 2, 40, gBox(color: Color(0xFFBFE8D6), radii: [1, 1, 1, 1])),
-      gP(24, 385, 20, 20, gBox(color: Color(0xFF1F9D6B), oval: true)),
-      gP(27.333, 389.25, 13.333, 11.042, gImg('assets/figma/v/23149818a3337a.svg')),
-      gP(56, 384, 305, 17, gText('Commande confirmée', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
-      gP(56, 404, 305, 14, gText('22 oct. · 08:12', 11.5, Color(0xFF66636E), wrap: true)),
-      gP(33, 468, 2, 40, gBox(color: Color(0xFFBFE8D6), radii: [1, 1, 1, 1])),
-      gP(24, 447, 20, 20, gBox(color: Color(0xFF1F9D6B), oval: true)),
-      gP(27.333, 451.25, 13.333, 11.042, gImg('assets/figma/v/23149818a3337a.svg')),
-      gP(56, 446, 305, 17, gText('Remise au transporteur', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
-      gP(56, 466, 305, 14, gText('23 oct. · 10:24', 11.5, Color(0xFF66636E), wrap: true)),
-      gP(33, 530, 2, 40, gBox(color: Color(0xFFE4E8EE), radii: [1, 1, 1, 1])),
-      gP(24, 509, 20, 20, gBox(color: Color(0xFF111015), oval: true)),
-      gP(56, 508, 305, 17, gText('En route vers le kiosque', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
-      gP(56, 528, 305, 14, gText('En cours', 11.5, Color(0xFF66636E), wrap: true)),
-      gP(24, 571, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true)),
-      gP(56, 570, 305, 17, gText('Prête au retrait · Bloc A', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
-      gP(56, 590, 305, 14, gText('Demain · 14 h', 11.5, Color(0xFF66636E), wrap: true)),
-      gP(40, 658, 87, 16, gText('Point de retrait', 12.5, Color(0xFF66636E))),
+      gP(88, 154, 190, 14, Consumer(builder: (context, ref, _) => gText('Commande du ${ref.watch(viewedOrderProvider).date}', 11.5, Color(0xFF57545F)))),
+      gP(252, 142, 100, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
+      gP(252, 146, 100, 14, Consumer(builder: (context, ref, _) => gText(orderStatusLabel(ref.watch(viewedOrderProvider)), 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center))),
+      gP(24, 384, 340, 248, const OrderTimeline()),
+      gP(40, 658, 87, 16, gText('Point de retrait', 12.5, Color(0xFF57545F))),
       gP(228, 658, 122, 16, gText('Kiosque IUT – Bloc A', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
       gP(40, 683, 310, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(40, 692, 90, 16, gText('Code de retrait', 12.5, Color(0xFF66636E))),
+      gP(40, 692, 90, 16, gText('Code de retrait', 12.5, Color(0xFF57545F))),
       gP(303, 692, 47, 16, gText(demoContent ? '482 915' : '••• •••', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)), // code réel : bouton ci-dessous
       gP(0, 754, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
       gP(24, 770, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => contactOrderSeller(ref, context)),
@@ -86,16 +71,16 @@ class G_46 extends ConsumerWidget {
       gP(203, 770, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => showPickupCode(context, ref)),
       gP(210, 788, 149, 18, gText('Voir le code de retrait', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 840, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
-      gP(48, 210, 102, 151, gImg('assets/figma/r/149_16.png')),
-      gP(62.021, 320.665, 27.375, 11.277, gImg('assets/figma/v/74702652bc28de.svg')),
-      gP(58.833, 323.542, 10, 10, gBox(color: Color(0xFFFF7A1A), border: Color(0xFFFFFFFF), bw: 2, oval: true)),
-      gP(82.583, 325.833, 10, 10, gBox(color: Color(0xFF120F14), border: Color(0xFFFFFFFF), bw: 2, oval: true)),
-      gP(194, 222, 36, 13, gText('Départ', 10.5, Color(0xFF66636E), weight: 500)),
-      gP(194, 238, 106, 18, gText('Douala · Littoral', 14, Color(0xFF120F14), weight: 600)),
-      gP(194, 272, 73, 13, gText('Arrivée prévue', 10.5, Color(0xFF66636E), weight: 500)),
-      gP(194, 288, 117, 18, gText('Yaoundé · Centre', 14, Color(0xFF120F14), weight: 600)),
-      gP(194, 322, 150, 30, gBox(color: Color(0xFFEDE8FF), radii: [15, 15, 15, 15])),
-      gP(206, 330, 125, 13, gText('235 km · 4 h 30 restantes', 10.5, Color(0xFF5A3FE0), weight: 600)),
+      gP(48, 210, 102, 151, gImg('assets/figma/r/149_16.png'), show: false),
+      gP(62.021, 320.665, 27.375, 11.277, gImg('assets/figma/v/74702652bc28de.svg'), show: false),
+      gP(58.833, 323.542, 10, 10, gBox(color: Color(0xFFFF7A1A), border: Color(0xFFFFFFFF), bw: 2, oval: true), show: false),
+      gP(82.583, 325.833, 10, 10, gBox(color: Color(0xFF120F14), border: Color(0xFFFFFFFF), bw: 2, oval: true), show: false),
+      gP(194, 222, 36, 13, gText('Départ', 10.5, Color(0xFF57545F), weight: 500), show: false),
+      gP(194, 238, 106, 18, gText('Douala · Littoral', 14, Color(0xFF120F14), weight: 600), show: false),
+      gP(194, 272, 73, 13, gText('Arrivée prévue', 10.5, Color(0xFF57545F), weight: 500), show: false),
+      gP(194, 288, 117, 18, gText('Yaoundé · Centre', 14, Color(0xFF120F14), weight: 600), show: false),
+      gP(194, 322, 150, 30, gBox(color: Color(0xFFEDE8FF), radii: [15, 15, 15, 15]), show: false),
+      gP(206, 330, 125, 13, gText('235 km · 4 h 30 restantes', 10.5, Color(0xFF5A3FE0), weight: 600), show: false),
     ]);
   }
 }

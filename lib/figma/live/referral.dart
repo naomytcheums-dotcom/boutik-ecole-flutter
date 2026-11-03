@@ -110,7 +110,7 @@ Future<void> claimReferralDialog(BuildContext context, WidgetRef ref) async {
 /// Liste des filleuls réels (243), à la place des exemples de la maquette.
 Widget refereeList(ReferralSummary s) => s.referees.isEmpty
     ? Text('Aucun filleul pour le moment. Partagez votre code depuis « Parrainer et gagner ».',
-        style: const TextStyle(fontSize: 12.5, color: Color(0xFF66636E), height: 1.4))
+        style: const TextStyle(fontSize: 12.5, color: Color(0xFF57545F), height: 1.4))
     : Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         for (final r in s.referees.take(5))
           Padding(

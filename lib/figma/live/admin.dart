@@ -59,7 +59,7 @@ Future<void> userDialog(BuildContext context, WidgetRef ref, Account a) {
         content: SizedBox(
           width: 340,
           child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('${a.email}\n${a.phone} · ${a.institution}', style: st.copyWith(height: 1.6, color: const Color(0xFF66636E))),
+            Text('${a.email}\n${a.phone} · ${a.institution}', style: st.copyWith(height: 1.6, color: const Color(0xFF57545F))),
             const SizedBox(height: 14),
             Text('Rôle', style: st.copyWith(fontWeight: FontWeight.w600)),
             DropdownButton<String>(

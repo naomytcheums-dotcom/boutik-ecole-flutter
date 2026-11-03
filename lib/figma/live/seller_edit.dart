@@ -25,7 +25,7 @@ final currentListingProvider = Provider<Listing?>((ref) {
 });
 
 const _ink = Color(0xFF111015);
-const _mute = Color(0xFF66636E);
+const _mute = Color(0xFF57545F);
 
 TextStyle _t(double s, FontWeight w, Color c) => TextStyle(inherit: false, fontFamily: 'PlusJakartaSans', fontSize: s, fontWeight: w, color: c, textBaseline: TextBaseline.alphabetic);
 
@@ -42,7 +42,7 @@ Widget listingTitleLive() => _live(24, 388, 345, 28, (l) => Text(l.title, maxLin
 
 Widget listingPriceLive() => _live(24, 420, 345, 19, (l) => Text('${fcfa(l.price)} · ${l.category}', style: _t(13, FontWeight.w400, _mute)));
 
-Widget listingDescLive() => _live(24, 493, 345, 60, (l) => Text(l.description.isEmpty ? 'Aucune description.' : l.description, maxLines: 3, overflow: TextOverflow.ellipsis, style: _t(13, FontWeight.w400, l.description.isEmpty ? const Color(0xFF9A98A3) : const Color(0xFF4A4854)).copyWith(height: 1.55)));
+Widget listingDescLive() => _live(24, 493, 345, 60, (l) => Text(l.description.isEmpty ? 'Aucune description.' : l.description, maxLines: 3, overflow: TextOverflow.ellipsis, style: _t(13, FontWeight.w400, l.description.isEmpty ? const Color(0xFF57545F) : const Color(0xFF4A4854)).copyWith(height: 1.55)));
 
 Widget listingStockLive() => _live(250, 560, 100, 16, (l) => Align(alignment: Alignment.centerRight, child: Text('${l.stock} unité${l.stock > 1 ? 's' : ''}', style: _t(12.5, FontWeight.w600, _ink))));
 
@@ -92,7 +92,7 @@ Future<void> editListingDialog(BuildContext context, WidgetRef ref) async {
   var images = [...l0.images];
   var gone = false;
   const st = TextStyle(inherit: false, fontFamily: 'PlusJakartaSans', fontSize: 13.5, color: _ink, textBaseline: TextBaseline.alphabetic);
-  InputDecoration deco(String h) => InputDecoration(hintText: h, hintStyle: st.copyWith(color: const Color(0xFF9A98A3)), isDense: true, border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)));
+  InputDecoration deco(String h) => InputDecoration(hintText: h, hintStyle: st.copyWith(color: const Color(0xFF57545F)), isDense: true, border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)));
 
   await gDialog<void>(
     context: context,

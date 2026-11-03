@@ -54,7 +54,7 @@ class G_P4 extends ConsumerWidget {
       gP(294, 134, 72, 104, gBox(image: 'assets/figma/img/768cf16e6d8103ad4296d6cc0fdf1af309f03817.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
       gP(275.583, 287, 18.833, 6, gImg('assets/figma/v/6fe571ab77e960.svg')),
       gP(282, 280.583, 6, 18.833, gImg('assets/figma/v/87cbf4a9a18b64.svg')),
-      gP(243.5, 320, 83, 14, gText('Photo ou vidéo', 11.5, Color(0xFF66636E), weight: 500, align: TextAlign.center)),
+      gP(243.5, 320, 83, 14, gText('Photo ou vidéo', 11.5, Color(0xFF57545F), weight: 500, align: TextAlign.center)),
       gP(40, 386, 313, 38, gText('Spot promo pour le parfum Mbella : tournage, montage et étalonnage.', 13, Color(0xFF111015), lh: 19, wrap: true)),
       gP(40, 432, 131, 15, gText('#vidéo #MMI #Douala', 12, Color(0xFF5A3FE0), weight: 500)),
       gP(24, 482, 207, 19, gText('Publier aussi sur mes réseaux', 15, Color(0xFF111015), weight: 600)),

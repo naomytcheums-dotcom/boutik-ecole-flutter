@@ -76,7 +76,7 @@ Widget chatHeaderOrderSub(String demo) => gP(
       Consumer(builder: (context, ref, _) {
         final c = ref.watch(selectedConversationItemProvider);
         final t = demoContent ? demo : (c?.otherName ?? '');
-        return Text(t, maxLines: 1, overflow: TextOverflow.ellipsis, style: _t(12, FontWeight.w400, const Color(0xFF66636E)));
+        return Text(t, maxLines: 1, overflow: TextOverflow.ellipsis, style: _t(12, FontWeight.w400, const Color(0xFF57545F)));
       }),
     );
 
@@ -142,7 +142,7 @@ Widget conversationsPanel() => gP(
             padding: const EdgeInsets.only(top: 80, left: 16, right: 16),
             child: Align(
               alignment: Alignment.topCenter,
-              child: Text('Aucune conversation pour le moment.\nOuvrez une commande ou une annonce, puis touchez « Contacter le vendeur ».', textAlign: TextAlign.center, style: _t(13, FontWeight.w500, const Color(0xFF66636E)).copyWith(height: 1.5)),
+              child: Text('Aucune conversation pour le moment.\nOuvrez une commande ou une annonce, puis touchez « Contacter le vendeur ».', textAlign: TextAlign.center, style: _t(13, FontWeight.w500, const Color(0xFF57545F)).copyWith(height: 1.5)),
             ),
           );
         }
@@ -173,12 +173,12 @@ Widget conversationsPanel() => gP(
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text(c.otherName, maxLines: 1, overflow: TextOverflow.ellipsis, style: _t(13.5, FontWeight.w600, const Color(0xFF111015))),
                       const SizedBox(height: 3),
-                      Text(c.orderNumber.isEmpty ? c.lastBody : 'Commande ${c.orderNumber} · ${c.lastBody}', maxLines: 1, overflow: TextOverflow.ellipsis, style: _t(11.5, c.unread > 0 ? FontWeight.w600 : FontWeight.w400, const Color(0xFF66636E))),
+                      Text(c.orderNumber.isEmpty ? c.lastBody : 'Commande ${c.orderNumber} · ${c.lastBody}', maxLines: 1, overflow: TextOverflow.ellipsis, style: _t(11.5, c.unread > 0 ? FontWeight.w600 : FontWeight.w400, const Color(0xFF57545F))),
                     ]),
                   ),
                   const SizedBox(width: 8),
                   Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.end, children: [
-                    Text(_ago(c.lastAt), style: _t(10.5, FontWeight.w400, const Color(0xFF9A98A3))),
+                    Text(_ago(c.lastAt), style: _t(10.5, FontWeight.w400, const Color(0xFF57545F))),
                     const SizedBox(height: 6),
                     if (c.unread > 0)
                       Container(
@@ -210,8 +210,8 @@ Widget chatHeaderSub() => gP(
       76, 96, 240, 15,
       Consumer(builder: (context, ref, _) {
         final c = ref.watch(selectedConversationItemProvider);
-        if (demoContent) return Text('En ligne', style: _t(12, FontWeight.w400, const Color(0xFF66636E)));
-        return Text(c == null || c.listingTitle.isEmpty ? '' : 'À propos de « ${c.listingTitle} »', maxLines: 1, overflow: TextOverflow.ellipsis, style: _t(12, FontWeight.w400, const Color(0xFF66636E)));
+        if (demoContent) return Text('En ligne', style: _t(12, FontWeight.w400, const Color(0xFF57545F)));
+        return Text(c == null || c.listingTitle.isEmpty ? '' : 'À propos de « ${c.listingTitle} »', maxLines: 1, overflow: TextOverflow.ellipsis, style: _t(12, FontWeight.w400, const Color(0xFF57545F)));
       }),
     );
 

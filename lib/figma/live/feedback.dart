@@ -50,7 +50,7 @@ Widget ratingChip(String title) => Consumer(
 /// Fiche produit : note moyenne et nombre d'avis, ou « Aucun avis » ; maquette inchangée hors connexion serveur.
 Widget ratingAverageText(String title, {required bool count}) => Consumer(
       builder: (context, ref, _) {
-        const ink = Color(0xFF111015), grey = Color(0xFF66636E);
+        const ink = Color(0xFF111015), grey = Color(0xFF57545F);
         if (!Backend.ready) return gText(count ? '(24 avis)' : '4.8', count ? 12.904 : 13.621, count ? grey : ink, weight: count ? 400 : 700);
         final r = ref.watch(ratingsProvider.select((m) => m[title]));
         if (count) return gText(r == null ? 'Aucun avis pour le moment' : '(${r.total} avis)', 12.904, grey);
@@ -189,7 +189,7 @@ Future<void> claimsDialog(BuildContext context, WidgetRef ref) async {
             ListTile(
               contentPadding: EdgeInsets.zero,
               title: Text(claimReasonLabels[claimReasons.indexOf(r['reason'] as String).clamp(0, 3)], style: _st.copyWith(fontWeight: FontWeight.w600)),
-              subtitle: Text('${r['details']}\n${r['status'] == 'open' ? 'En attente de réponse' : 'Réponse : ${r['answer']}'}', style: _st.copyWith(fontSize: 12, color: const Color(0xFF66636E))),
+              subtitle: Text('${r['details']}\n${r['status'] == 'open' ? 'En attente de réponse' : 'Réponse : ${r['answer']}'}', style: _st.copyWith(fontSize: 12, color: const Color(0xFF57545F))),
               isThreeLine: true,
               trailing: r['status'] == 'open' && r['claimant_id'] != me
                   ? TextButton(

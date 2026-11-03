@@ -1,0 +1,316 @@
+ecran;titre;format;correction_contraste_texte;onglet_messages_vers_liste;metriques_fictives_masquees_hors_demo;composition_plein_ecran_tablette_ordinateur;correction_specifique;test_composition_3_largeurs;rendu_reference_a_jour;test_fonctionnel_dedie;statut_donnees_inventaire_lancement;verifie_navigateur
+01;Bienvenue;mobile;non;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+02;Bienvenue (variante);mobile;non;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+03;Accueil;mobile;oui;oui;2;oui;;oui;oui;non;NON VÉRIFIÉ;non
+04;Explorer;mobile;oui;oui;1;oui;;oui;oui;non;DONNÉES FICTIVES;non
+05;Fiche produit;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+06;Mon panier;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+07;Livraison;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+08;Paiement;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+09;Ma commande;mobile;oui;oui;0;oui;miniatures des lignes liées à la commande;oui;oui;non;NON VÉRIFIÉ;non
+10;Profil étudiant;mobile;oui;oui;0;oui;erreur de certification visiteur (action Demander la certification);oui;oui;non;NON VÉRIFIÉ;non
+100;Événements;mobile;oui;oui;0;oui;;oui;oui;non;DONNÉES FICTIVES;non
+101;Événement;mobile;oui;sans objet;0;oui;;oui;oui;oui;CONNECTÉ MAIS PARTIEL;non
+102;Vitrine;mobile;oui;sans objet;4;oui;;oui;oui;non;DONNÉES FICTIVES;non
+103;Communauté;mobile;oui;oui;0;oui;communautés réelles, groupes et anciens fictifs retirés;oui;oui;non;DONNÉES FICTIVES;non
+104;Carte de l’innovation;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+105;Inter-établissements;mobile;oui;oui;4;oui;;oui;oui;non;DONNÉES FICTIVES;non
+106;Économie circulaire;mobile;oui;oui;4;oui;;oui;oui;non;DONNÉES FICTIVES;non
+107;Mon impact;mobile;oui;oui;2;oui;;oui;oui;non;DONNÉES FICTIVES;non
+108;Tableau de bord du département;web;oui;sans objet;4;non (format web);;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+109;Étudiants et vendeurs;web;oui;sans objet;4;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+11;Connexion;mobile;oui;sans objet;1;oui;;oui;oui;non;NON VÉRIFIÉ;non
+110;Validation des annonces;web;oui;sans objet;0;non (format web);;oui;oui;oui;CONNECTÉ ET FONCTIONNEL;non
+111;Validation des projets;web;oui;sans objet;0;non (format web);;oui;oui;non;NON VÉRIFIÉ;non
+112;Statistiques du département;web;oui;sans objet;9;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+113;Suivi des productions;web;oui;sans objet;4;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+114;Mentors et encadreurs;web;oui;sans objet;0;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+115;Événements et initiatives;web;oui;sans objet;2;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+116;Rapports et exports;web;oui;sans objet;0;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+117;Tableau de bord institutionnel;web;oui;sans objet;16;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+118;Établissement et identité visuelle;web;oui;sans objet;0;non (format web);;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+119;Départements et filières;web;oui;sans objet;4;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+12;Créer un compte;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+120;Utilisateurs et affectations;web;oui;sans objet;0;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+121;Responsables et encadreurs;web;oui;sans objet;4;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+122;Circuits de validation;web;oui;sans objet;0;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+123;Ventes et activité;web;oui;sans objet;7;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+124;Événements et campagnes;web;oui;sans objet;0;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+125;Rapports consolidés;web;oui;sans objet;0;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+126;Journal d’audit;web;oui;sans objet;0;non (format web);;oui;oui;non;CONNECTÉ ET FONCTIONNEL;non
+127;Tableau de bord de la plateforme;web;oui;sans objet;16;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+128;Comptes, rôles et permissions;web;oui;sans objet;0;non (format web);;oui;oui;non;NON VÉRIFIÉ;non
+129;Institutions;web;oui;sans objet;6;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+13;Choix du profil;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+130;Modération;web;oui;sans objet;0;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+131;Signalements;web;oui;sans objet;0;non (format web);;oui;oui;non;NON VÉRIFIÉ;non
+132;Commandes et incidents;web;oui;sans objet;0;non (format web);;oui;oui;non;NON VÉRIFIÉ;non
+133;Litiges et remboursements;web;oui;sans objet;3;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+134;Transactions et rapprochements;web;oui;sans objet;6;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+135;Commissions et règles économiques;web;oui;sans objet;0;non (format web);;oui;oui;non;NON VÉRIFIÉ;non
+136;Sécurité et accès;web;oui;sans objet;0;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+137;Journal d’audit global;web;oui;sans objet;0;non (format web);;oui;oui;non;CONNECTÉ ET FONCTIONNEL;non
+138;Configuration générale;web;oui;sans objet;0;non (format web);;oui;oui;non;NON VÉRIFIÉ;non
+139;Tableau de bord financier;web;oui;sans objet;4;non (format web);;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+14;Vérification du compte;mobile;oui;sans objet;0;oui;;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+140;Paiements déclarés;web;oui;sans objet;4;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+141;Journal financier;web;oui;sans objet;7;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+142;Rapports financiers;web;oui;sans objet;8;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+143;Versements et montants dus;web;oui;sans objet;7;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+144;Moyens de paiement et règles;web;oui;sans objet;0;non (format web);;oui;oui;non;NON VÉRIFIÉ;non
+145;Points de retrait et kiosques;web;oui;sans objet;0;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+146-1;Kiosque (gestionnaire);mobile;oui;oui;0;oui;;oui;oui;non;DONNÉES FICTIVES;non
+146-2;Remise d’une commande;mobile;oui;oui;1;oui;;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+147-1;Incidents et maintenance;web;oui;sans objet;0;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+147-2;Tickets de support;web;oui;sans objet;0;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+147-3;Interventions et résolutions;web;oui;sans objet;0;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+148-1;Paramètres;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+148-2;Centre de sécurité;mobile;oui;oui;1;oui;;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+149;Langue et affichage;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+15;Mot de passe oublié;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+150-1;Synchronisation;mobile;oui;sans objet;0;oui;;oui;oui;non;CONNECTÉ ET FONCTIONNEL;non
+150-2;Session expirée;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+150-3;Connexion impossible;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+150-4;Mes commandes (vide);mobile;oui;oui;0;oui;;oui;oui;non;CONNECTÉ ET FONCTIONNEL;non
+151;Opportunités;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+152;Kéla te recommande;mobile;oui;oui;6;oui;;oui;oui;non;DONNÉES FICTIVES;non
+153;Pourquoi cette offre ?;mobile;oui;sans objet;5;oui;;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+154;Mon dossier;mobile;oui;sans objet;2;oui;;oui;oui;non;DONNÉES FICTIVES;non
+155;Alertes;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+156;Préférences d’alertes;mobile;oui;sans objet;0;oui;;oui;oui;oui;CONNECTÉ ET FONCTIONNEL;non
+157;Résumé de Kéla;mobile;oui;oui;2;oui;;oui;oui;non;DONNÉES FICTIVES;non
+158;Candidatures classées;mobile;oui;sans objet;4;oui;;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+159;Candidature envoyée;mobile;oui;sans objet;1;oui;;oui;oui;non;NON VÉRIFIÉ;non
+16;Nouveau mot de passe;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+160;Hackathons et concours;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+161;Hackathon;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+162;Inscription;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+163;Trouver des coéquipiers;mobile;oui;sans objet;0;oui;;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+164;Espace d’équipe;mobile;oui;sans objet;3;oui;;oui;oui;oui;CONNECTÉ MAIS PARTIEL;non
+165;Dépôt du projet;mobile;oui;sans objet;0;oui;;oui;oui;oui;NON VÉRIFIÉ;non
+166;Résultats;mobile;oui;sans objet;1;oui;;oui;oui;non;CONNECTÉ ET FONCTIONNEL;non
+167;Noter un projet;mobile;oui;sans objet;0;oui;;oui;oui;oui;NON VÉRIFIÉ;non
+168;Publier un concours;web;oui;sans objet;0;non (format web);;oui;oui;non;NON VÉRIFIÉ;non
+169;Modération des concours;web;oui;sans objet;1;non (format web);;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+17;Conditions et confidentialité;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+170;Signaler une annonce;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+171;Paiement sécurisé;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+172;Confiance du vendeur;mobile;oui;sans objet;2;oui;;oui;oui;non;DONNÉES FICTIVES;non
+173;Partager;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+174;Centre de confiance;mobile;non;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+175;Bienvenue, étudiant;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+176;Bienvenue;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+177;Bienvenue, entreprise;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+178;Bienvenue, jury;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+179;Guide d’utilisation;mobile;oui;oui;0;oui;;oui;oui;non;CONNECTÉ ET FONCTIONNEL;non
+18;État de validation;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+180;Rôles et permissions;web;oui;sans objet;0;non (format web);;oui;oui;non;NON VÉRIFIÉ;non
+181;Matrice des permissions;web;oui;sans objet;0;non (format web);;oui;oui;non;NON VÉRIFIÉ;non
+182;Explorer (chargement);mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+183;Mes commandes (hors ligne);mobile;oui;oui;0;oui;;oui;oui;non;DONNÉES FICTIVES;non
+184;Économie de données;mobile;oui;sans objet;0;oui;;oui;oui;non;DONNÉES FICTIVES;non
+185;Language;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+186;Accessibilité;mobile;oui;sans objet;0;oui;;oui;oui;non;DONNÉES FICTIVES;non
+187;Tableau de bord entreprise;web;oui;sans objet;8;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+188;Recherche de talents et d’équipes;web;oui;sans objet;0;non (format web);;oui;oui;non;NON VÉRIFIÉ;non
+189;Propositions reçues;web;oui;sans objet;8;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+18b;Compléter mon profil;mobile;oui;sans objet;1;oui;;oui;oui;non;NON VÉRIFIÉ;non
+18c;Vérification étudiant;mobile;oui;sans objet;0;oui;;oui;oui;non;BLOQUÉ PAR UNE DÉPENDANCE;non
+19;Découvrir;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+190;Devis et négociations;web;oui;sans objet;3;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+191;Votre besoin;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+192;Votre devis;mobile;oui;sans objet;0;oui;;oui;oui;oui;CONNECTÉ ET FONCTIONNEL;non
+193;Paiement sécurisé;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+194;Ma mission;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+195;Ajouter une preuve;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+196;Dossier;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+197;Valider le jalon;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+198;Briefs reçus;web;oui;sans objet;0;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+199;Attribuer;web;oui;sans objet;0;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+20;Résultats de recherche;mobile;oui;oui;3;oui;;oui;oui;non;DONNÉES FICTIVES;non
+200;Missions et encaissement;web;oui;sans objet;5;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+201;Mes missions;mobile;oui;oui;0;oui;;oui;oui;non;CONNECTÉ ET FONCTIONNEL;non
+202;Pack Lancement de marque;mobile;oui;sans objet;1;oui;;oui;oui;non;NON VÉRIFIÉ;non
+203;Mes compétences;mobile;oui;oui;3;oui;;oui;oui;non;DONNÉES FICTIVES;non
+204;Coup de pouce startup;mobile;oui;oui;0;oui;;oui;oui;non;DONNÉES FICTIVES;non
+205;Soumettre mon projet;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+206;Borne · Accueil;borne;oui;sans objet;0;non (format borne);;oui;oui;non;NON VÉRIFIÉ;non
+207;Borne · Explorer;borne;oui;sans objet;0;non (format borne);;oui;oui;non;NON VÉRIFIÉ;non
+208;Borne · Fiche article;borne;oui;sans objet;0;non (format borne);;oui;oui;non;NON VÉRIFIÉ;non
+209;Borne · QR téléphone;borne;oui;sans objet;0;non (format borne);;oui;oui;non;NON VÉRIFIÉ;non
+21;Recherche avancée;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+210;Borne · C’est envoyé;borne;oui;sans objet;0;non (format borne);;oui;oui;non;BLOQUÉ PAR UNE DÉPENDANCE;non
+211;Passeport du produit;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+212;Vérifier un certificat;mobile;oui;sans objet;0;oui;;oui;oui;non;DONNÉES FICTIVES;non
+213;Registre des certificats;web;oui;sans objet;2;non (format web);;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+214;Départements;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+215;Fiche département;mobile;oui;sans objet;2;oui;;oui;oui;non;DONNÉES FICTIVES;non
+216;Marché des vœux;mobile;oui;oui;3;oui;;oui;oui;non;DONNÉES FICTIVES;non
+217;Fiche d’un vœu;mobile;oui;sans objet;2;oui;;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+218;Publier un vœu;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+219;Nouveau duel;mobile;oui;sans objet;2;oui;;oui;oui;non;BLOQUÉ PAR UNE DÉPENDANCE;non
+22;Catalogue de produits;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+220;Duel de talents;mobile;oui;oui;5;oui;;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+221;Résultat du duel;mobile;oui;sans objet;1;oui;;oui;oui;non;DONNÉES FICTIVES;non
+222;Atelier en direct;mobile;oui;sans objet;3;oui;;oui;oui;non;DONNÉES FICTIVES;non
+223;Ateliers en direct;mobile;oui;oui;0;oui;;oui;oui;non;DONNÉES FICTIVES;non
+224;Validation des vœux;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+225;Jumeau 3D;mobile;oui;sans objet;0;oui;;oui;oui;non;DONNÉES FICTIVES;non
+226;Modération des duels;mobile;oui;sans objet;1;oui;;oui;oui;non;NON VÉRIFIÉ;non
+227;Régie des ateliers en direct;mobile;oui;oui;1;oui;;oui;oui;non;DONNÉES FICTIVES;non
+228;Partager mon CV;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+229;CV vivant;mobile;oui;sans objet;1;oui;;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+22b;Services et prestations;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+22c;Tendances et nouveautés;mobile;oui;oui;4;oui;;oui;oui;non;DONNÉES FICTIVES;non
+22d;Pour vous;mobile;oui;oui;4;oui;;oui;oui;non;DONNÉES FICTIVES;non
+23;Filtres;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+230;Assistante vocale Kéla;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+231;Accueil Kéla;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+232;Voix en texte;mobile;oui;oui;0;oui;;oui;oui;non;DONNÉES FICTIVES;non
+233;WhatsApp · suivi de mission;mobile;oui;sans objet;0;oui;;oui;oui;non;DONNÉES FICTIVES;non
+234;WhatsApp · validation de jalon;mobile;oui;sans objet;0;oui;;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+235;WhatsApp · paiement sécurisé;mobile;oui;sans objet;1;oui;;oui;oui;non;DONNÉES FICTIVES;non
+236;Canaux et notifications;mobile;oui;sans objet;0;oui;;oui;oui;oui;CONNECTÉ ET FONCTIONNEL;non
+237;Impact par territoire;web;oui;sans objet;8;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+238;Impact de Boutik-École;mobile;oui;oui;6;oui;;oui;oui;non;DONNÉES FICTIVES;non
+239;Rapport sponsors;web;oui;sans objet;5;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+24;Profil vendeur;mobile;oui;oui;4;oui;;oui;oui;non;DONNÉES FICTIVES;non
+240;Parrainer et gagner;mobile;oui;oui;0;oui;;oui;oui;non;CONNECTÉ ET FONCTIONNEL;non
+241;Mes contacts;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+242;Kit à partager;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+243;Mes gains;mobile;oui;oui;0;oui;;oui;oui;non;CONNECTÉ ET FONCTIONNEL;non
+244;Cercle;mobile;oui;oui;2;oui;;oui;oui;non;DONNÉES FICTIVES;non
+244b;Cercle · publication aimée;mobile;oui;oui;2;oui;;oui;oui;non;DONNÉES FICTIVES;non
+245;Reels;mobile;non;oui;0;oui;compteurs, balayage, enregistrement, abonnement, partage;oui;oui;non;CONNECTÉ ET FONCTIONNEL;non
+246;Lives;mobile;oui;oui;1;oui;;oui;oui;non;DONNÉES FICTIVES;non
+247;Profil créateur;mobile;oui;oui;8;oui;;oui;oui;non;DONNÉES FICTIVES;non
+248;Boutique du créateur;mobile;oui;oui;3;oui;;oui;oui;non;DONNÉES FICTIVES;non
+249;Créer;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+25;Mes favoris;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+250;Nouvelle publication;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+250b;Nouvelle publication;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+251;Découvrir;mobile;oui;oui;1;oui;;oui;oui;non;NON VÉRIFIÉ;non
+252;Commentaires et avis;mobile;oui;sans objet;0;oui;commentaires réels, états vide et erreur;oui;oui;non;DONNÉES FICTIVES;non
+253;Défis et récompenses;mobile;oui;oui;1;oui;;oui;oui;non;CONNECTÉ ET FONCTIONNEL;non
+253b;Défis · récompense récupérée;mobile;oui;oui;0;oui;;oui;oui;non;DONNÉES FICTIVES;non
+254;Activité;mobile;oui;oui;0;oui;;oui;oui;non;DONNÉES FICTIVES;non
+255;Suivi de publication;mobile;oui;sans objet;0;oui;;oui;oui;non;DONNÉES FICTIVES;non
+256;Contrôles de la fiche;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+257;Paiement en attente de confirmation;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+258;Paiement échoué;mobile;oui;sans objet;1;oui;;oui;oui;non;NON VÉRIFIÉ;non
+259;Reçu;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+25b;Mes collections;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+26;Comparer des offres;mobile;non;sans objet;2;oui;;oui;oui;non;DONNÉES FICTIVES;non
+260;Facture;mobile;oui;sans objet;0;oui;;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+261;Mon espace client;mobile;oui;oui;0;oui;;oui;oui;non;DONNÉES FICTIVES;non
+262;Accueil B2B;web;oui;sans objet;1;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+263;Médiathèque;web;oui;sans objet;0;non (format web);;oui;oui;non;NON VÉRIFIÉ;non
+264;Pages éditoriales;web;oui;sans objet;0;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+265;Modèles de notifications;web;oui;sans objet;0;non (format web);;oui;oui;non;NON VÉRIFIÉ;non
+266;État technique;web;oui;sans objet;0;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+267;Boutik-École Network;web;oui;sans objet;2;non (format web);;oui;oui;non;NON VÉRIFIÉ;non
+268;Analytics de la borne;web;oui;sans objet;12;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+269;Innovation Radar;web;oui;sans objet;6;non (format web);;oui;oui;non;DONNÉES FICTIVES;non
+27;Mes adresses;mobile;non;oui;0;oui;;oui;oui;non;DONNÉES FICTIVES;non
+270;Showroom national;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+271;Mes liens et réseaux;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+272;Vérification en 2 étapes;mobile;oui;sans objet;0;oui;;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+273;Mes données;mobile;oui;sans objet;0;oui;;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+274;Conditions générales;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+275;Déposer un produit (erreurs);mobile;oui;sans objet;0;oui;;oui;oui;non;CONNECTÉ ET FONCTIONNEL;non
+276;Borne hors ligne;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+277;Supervision des bornes;mobile;oui;sans objet;0;oui;;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+278;Fiche projet · liens et PI;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+279;Ajouter des fichiers;mobile;oui;sans objet;0;oui;;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+28;Mes commandes;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+280;Intégrations;mobile;oui;sans objet;0;oui;;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+281;Rôles et périmètres;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+282;QR de transfert;mobile;oui;sans objet;0;oui;;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+283;Registre des certificats;mobile;oui;sans objet;0;oui;;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+284;Registre financier;mobile;oui;sans objet;5;oui;;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+285;Espace projet;mobile;oui;sans objet;1;oui;;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+286;Soumissions et équipe;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+287;Catalogue département (tablette);tablette;oui;sans objet;6;non (format tablette);;oui;oui;non;DONNÉES FICTIVES;non
+288;Catalogue département (web);web;oui;sans objet;9;non (format web);;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+29;Détail de la commande;mobile;oui;sans objet;0;oui;toutes les lignes, adresse et totaux liés à la commande;oui;oui;oui;CONNECTÉ ET FONCTIONNEL;non
+30;Commande reçue;mobile;non;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+31;Avis et évaluations;mobile;oui;oui;8;oui;;oui;oui;non;DONNÉES FICTIVES;non
+32;Détail du produit;mobile;oui;sans objet;0;oui;;oui;oui;non;DONNÉES FICTIVES;non
+33;Histoire du produit;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+34;Galerie;mobile;non;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+35;Disponibilité;mobile;oui;sans objet;0;oui;;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+36;Détail du service;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+38;Réputation;mobile;oui;sans objet;7;oui;;oui;oui;non;DONNÉES FICTIVES;non
+39;Demande de renseignements;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+40;Demande de devis;mobile;oui;sans objet;0;oui;;oui;oui;non;CONNECTÉ ET FONCTIONNEL;non
+41;Adresse de livraison;mobile;oui;sans objet;0;oui;;oui;oui;non;CONNECTÉ ET FONCTIONNEL;non
+42;Récapitulatif;mobile;oui;sans objet;0;oui;récapitulatif lié au panier, à la livraison et au paiement;oui;oui;non;DONNÉES FICTIVES;non
+43;Instructions de paiement;mobile;oui;sans objet;0;oui;montant, référence et moyen de paiement liés à la commande;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+44;Commande confirmée;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+45;Mes commandes;mobile;oui;oui;0;oui;;oui;oui;oui;CONNECTÉ ET FONCTIONNEL;non
+46;Suivi de livraison;mobile;oui;sans objet;0;oui;statut et chronologie liés à la commande, trajet fictif retiré;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+47;Annuler la commande;mobile;oui;sans objet;0;oui;statut lié à la commande;oui;oui;oui;CONNECTÉ ET FONCTIONNEL;non
+48;Réclamation;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+49;Aide et support;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+50;Notifications;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+51;Détail d’une notification;mobile;oui;sans objet;1;oui;;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+52;Messages;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+53;Conversation;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+54;Conversation commande;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+55;Conversation entreprise;mobile;oui;sans objet;0;oui;;oui;oui;non;DONNÉES FICTIVES;non
+56;Notifications et confidentialité;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+57;Tableau de bord vendeur;mobile;oui;oui;1;oui;;oui;oui;oui;CONNECTÉ ET FONCTIONNEL;non
+58;Nouveau produit;mobile;oui;sans objet;1;oui;;oui;oui;non;NON VÉRIFIÉ;non
+59;Nouveau service;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+60;Modifier l’annonce;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+61;Mon catalogue;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+62;Stocks;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+63;Commandes reçues;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+64;Préparer une commande;mobile;oui;sans objet;0;oui;;oui;oui;oui;CONNECTÉ ET FONCTIONNEL;non
+65;Détail d’une vente;mobile;oui;sans objet;2;oui;;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+66;Revenus;mobile;oui;oui;2;oui;;oui;oui;non;DONNÉES FICTIVES;non
+67;Statistiques;mobile;oui;oui;5;oui;;oui;oui;non;DONNÉES FICTIVES;non
+69;Validations;mobile;oui;sans objet;1;oui;;oui;oui;non;DONNÉES FICTIVES;non
+70;Talents étudiants;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+72;Ajouter à mon profil;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+73;Mes documents;mobile;oui;sans objet;0;oui;;oui;oui;non;DONNÉES FICTIVES;non
+74;Talent Passport;mobile;oui;sans objet;0;oui;;oui;oui;non;DONNÉES FICTIVES;non
+75;Opportunités;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+76;Ma candidature;mobile;oui;sans objet;0;oui;;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+77;Profil de mentor;mobile;oui;oui;1;oui;;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+78;Projets innovants;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+79;Projet;mobile;oui;sans objet;1;oui;;oui;oui;non;NON VÉRIFIÉ;non
+80;Soumettre un projet;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+81;Équipe du projet;mobile;oui;sans objet;3;oui;;oui;oui;non;DONNÉES FICTIVES;non
+82;Journal du projet;mobile;oui;sans objet;0;oui;;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+83;Médias et preuves;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+84;Nouvelle campagne;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+84b;Financement;mobile;oui;sans objet;6;oui;;oui;oui;non;BLOQUÉ PAR UNE DÉPENDANCE;non
+85;Objectifs et jalons;mobile;oui;sans objet;5;oui;;oui;oui;non;DONNÉES FICTIVES;non
+86;Résultats de campagne;mobile;oui;sans objet;4;oui;;oui;oui;non;DONNÉES FICTIVES;non
+87;Registre des innovations;mobile;oui;sans objet;0;oui;;oui;oui;non;DONNÉES FICTIVES;non
+88;Espace entreprise;mobile;oui;oui;1;oui;;oui;oui;non;NON VÉRIFIÉ;non
+89;Profil de l’entreprise;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+90;Publier un besoin;mobile;oui;sans objet;0;oui;;oui;oui;oui;CONNECTÉ ET FONCTIONNEL;non
+91;Rechercher des talents;mobile;oui;oui;0;oui;;oui;oui;non;DONNÉES FICTIVES;non
+93;Propositions reçues;mobile;oui;sans objet;3;oui;;oui;oui;non;DONNÉES FICTIVES;non
+93b;Proposition;mobile;oui;sans objet;1;oui;;oui;oui;non;CONNECTÉ MAIS PARTIEL;non
+94;Comparer les propositions;mobile;oui;sans objet;6;oui;;oui;oui;non;DONNÉES FICTIVES;non
+95;Devis et négociations;mobile;oui;oui;0;oui;;oui;oui;non;DONNÉES FICTIVES;non
+95b;Demande de devis;mobile;oui;sans objet;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+96;Défis d’innovation;mobile;oui;oui;3;oui;;oui;oui;non;DONNÉES FICTIVES;non
+97;Recrutement;mobile;oui;oui;0;oui;;oui;oui;non;NON VÉRIFIÉ;non
+98;Collaborations;mobile;oui;oui;2;oui;;oui;oui;non;DONNÉES FICTIVES;non
+99;Historique;mobile;oui;oui;0;oui;;oui;oui;non;DONNÉES FICTIVES;non
+a1;;;oui;sans objet;0;non (format );;oui;oui;non;;non
+a2;;;oui;oui;0;non (format );;oui;oui;non;;non
+a3;;;oui;oui;0;non (format );;oui;oui;non;;non
+d1;;;oui;sans objet;11;non (format );;oui;oui;non;;non
+l1;;;oui;sans objet;0;non (format );;oui;oui;non;;non
+p1;;;oui;oui;1;non (format );;oui;oui;non;;non
+p2;;;oui;oui;2;non (format );;oui;oui;non;;non
+p3;;;oui;sans objet;2;non (format );;oui;oui;non;;non
+p4;;;oui;sans objet;0;non (format );;oui;oui;non;;non
+p5;;;oui;sans objet;0;non (format );;oui;oui;non;;non
+s1;;;non;sans objet;0;non (format );;oui;oui;non;;non
+v1;;;oui;oui;2;non (format );;oui;oui;non;;non

@@ -51,7 +51,7 @@ class G_176 extends ConsumerWidget {
       gP(186, 344, 18, 6, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(204, 344, 8, 6, gBox(color: Color(0xFFE6E1EE), radii: [3, 3, 3, 3])),
       gP(24, 366, 345, 28, gText('Trouvez ce qui vous inspire', 22, Color(0xFF111015), weight: 800, wrap: true)),
-      gP(24, 398, 345, 38, gText('Parcourez les produits, commandez en toute confiance et retirez au kiosque près de vous.', 13, Color(0xFF66636E), lh: 19, wrap: true)),
+      gP(24, 398, 345, 38, gText('Parcourez les produits, commandez en toute confiance et retirez au kiosque près de vous.', 13, Color(0xFF57545F), lh: 19, wrap: true)),
       gP(36, 456, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(48.833, 479.667, 7.667, 7.667, gImg('assets/figma/v/1494b1f7d3ff5c.svg')),
       gP(58, 479.667, 7.667, 7.667, gImg('assets/figma/v/1494b1f7d3ff5c.svg')),

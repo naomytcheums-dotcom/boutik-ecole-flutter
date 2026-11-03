@@ -11,7 +11,7 @@ import 'figma/live/auth.dart' show appSessionExpired;
 import 'figma/live/backend.dart';
 import 'figma/live/connectivity_stub.dart' if (dart.library.js_interop) 'figma/live/connectivity_web.dart';
 import 'figma/live/missions.dart' show missionLoadedProvider, missionProvider, missionScreens, redirectMissionScreen;
-import 'figma/live/store.dart' show ordersProvider, ordersLoadedProvider, showEmptyOrders;
+import 'figma/live/store.dart' show ordersProvider, ordersLoadedProvider, showEmptyOrders, redirectOrderDetail;
 import 'figma/live/system_states.dart';
 import 'l10n/gen/app_localizations.dart';
 
@@ -35,6 +35,7 @@ class _BoutikEcoleAppState extends ConsumerState<BoutikEcoleApp> {
     if (Backend.recovery.value) WidgetsBinding.instance.addPostFrameCallback((_) => _onRecovery());
     _router.routerDelegate.addListener(_ordersScreen);
     _router.routerDelegate.addListener(_missionScreen);
+    _router.routerDelegate.addListener(_orderDetailScreen);
   }
 
   void _onRecovery() {
@@ -51,6 +52,19 @@ class _BoutikEcoleAppState extends ConsumerState<BoutikEcoleApp> {
     if (target == null) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted && screenOf(_router) == here) _router.pushReplacement(screenPath(target));
+    });
+  }
+
+  /// Détail, suivi et annulation d'une commande (09, 29, 46, 47) sans commande réelle : retour à « Mes commandes » au lieu
+  /// d'afficher une commande d'exemple (D-082, D-083). Hors connexion au serveur, la démonstration reste affichée.
+  void _orderDetailScreen() {
+    if (!mounted) return;
+    final here = screenOf(_router);
+    if (!redirectOrderDetail(ready: Backend.ready, loaded: ref.read(ordersLoadedProvider), orders: ref.read(ordersProvider), screen: here)) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || screenOf(_router) != here) return;
+      _router.pushReplacement(screenPath('45'));
+      _messenger.currentState?.showSnackBar(const SnackBar(content: Text('Vous n’avez pas encore de commande.'), behavior: SnackBarBehavior.floating));
     });
   }
 
@@ -74,6 +88,7 @@ class _BoutikEcoleAppState extends ConsumerState<BoutikEcoleApp> {
     Backend.recovery.removeListener(_onRecovery);
     _router.routerDelegate.removeListener(_ordersScreen);
     _router.routerDelegate.removeListener(_missionScreen);
+    _router.routerDelegate.removeListener(_orderDetailScreen);
     _router.dispose();
     super.dispose();
   }
@@ -84,6 +99,8 @@ class _BoutikEcoleAppState extends ConsumerState<BoutikEcoleApp> {
     if (Backend.ready) {
       ref.listen(ordersLoadedProvider, (_, _) => _ordersScreen());
       ref.listen(ordersProvider, (_, _) => _ordersScreen());
+      ref.listen(ordersLoadedProvider, (_, _) => _orderDetailScreen());
+      ref.listen(ordersProvider, (_, _) => _orderDetailScreen());
       ref.listen(missionLoadedProvider, (_, _) => _missionScreen());
       ref.listen(missionProvider, (_, _) => _missionScreen());
     }

@@ -41,7 +41,7 @@ class G_206 extends ConsumerWidget {
       gP(596, 50, 68, 48, gBox(color: Color(0xFFFFFFFF), radii: [24, 24, 24, 24])),
       gP(100, 170, 520, 520, kelaOrb(image: 'assets/figma/img/2b51b5d6469cca917952ac344a2ddf9cc1440830.png', fit: BoxFit.contain, shadows: [BoxShadow(color: Color(0x4D403366), offset: Offset(0, 24), blurRadius: 40, spreadRadius: 0)])),
       gP(38.5, 716, 643, 108, gText('Les talents de l’IUT de Douala,\nà portée de main', 44, Color(0xFF111015), weight: 600, lh: 54, align: TextAlign.center, wrap: true)),
-      gP(58.5, 832, 603, 28, gText('Achetez, commandez un service ou lancez une mission.', 22, Color(0xFF66636E), align: TextAlign.center, wrap: true)),
+      gP(58.5, 832, 603, 28, gText('Achetez, commandez un service ou lancez une mission.', 22, Color(0xFF57545F), align: TextAlign.center, wrap: true)),
       gP(110, 930, 500, 110, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x4D403366), offset: Offset(0, 14), blurRadius: 30, spreadRadius: 0)], radii: [55, 55, 55, 55])),
       gP(161.5, 967, 337, 34, gText('Touchez pour commencer', 27, Color(0xFFFFFFFF), weight: 600)),
       gP(510, 957, 56, 56, gBox(color: Color(0xFFFFFFFF), oval: true)),

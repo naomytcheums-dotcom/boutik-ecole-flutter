@@ -86,7 +86,7 @@ class G_05 extends ConsumerWidget {
       gP(23.658, 663.86, 67.39, 67.39, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, radii: [33.695, 33.695, 33.695, 33.695])),
       gP(106.82, 668.331, 55, 14, gText('Créée par', 11.471, Color(0xFF5A3FE0))),
       gP(106.82, 684.971, 123, 18, Consumer(builder: (context, ref, _) => gText(ref.watch(selectedProductProvider).seller, 14.338, Color(0xFF111015), weight: 700))),
-      gP(106.82, 709.195, 136, 14, Consumer(builder: (context, ref, _) => gText('Département : ${ref.watch(selectedProductProvider).department}', 11.471, Color(0xFF66636E)))),
+      gP(106.82, 709.195, 136, 14, Consumer(builder: (context, ref, _) => gText('Département : ${ref.watch(selectedProductProvider).department}', 11.471, Color(0xFF57545F)))),
       gP(23.658, 759.926, 344.835, 45.882, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [22.941, 22.941, 22.941, 22.941]), tap: () => gOpen(context, '06')),
       gP(134.934, 774.085, 123, 19, gText('Ajouter au panier', 15.055, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(23.658, 828.033, 346.268, 0.717, gBox(color: Color(0xFFF2EFF6))),

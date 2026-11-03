@@ -171,7 +171,7 @@ Future<void> reportDialog(BuildContext context, WidgetRef ref, Report r) {
         content: SizedBox(
           width: 340,
           child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('Type : ${r.type} · Reçu : ${r.received}', style: _st.copyWith(color: const Color(0xFF66636E))),
+            Text('Type : ${r.type} · Reçu : ${r.received}', style: _st.copyWith(color: const Color(0xFF57545F))),
             const SizedBox(height: 10),
             DropdownButton<String>(
               value: status,
@@ -286,7 +286,7 @@ Future<void> commissionDialog(BuildContext context, WidgetRef ref) {
             field('Commission services (%)', c2),
             field('Financement participatif (%)', c3),
             field('Seuil de paiement vendeur (FCFA)', c4),
-            if (error != null) Text(error!, style: _st.copyWith(color: const Color(0xFFD92D20), fontSize: 12)),
+            if (error != null) Text(error!, style: _st.copyWith(color: const Color(0xFFC0261B), fontSize: 12)),
           ]),
         ),
         actions: [
@@ -345,7 +345,7 @@ Color orderRowFill(String s) => switch (s) {
 
 Color orderRowInk(String s) => switch (s) {
       'Livrée' => const Color(0xFF0F7A52),
-      'Annulée' => const Color(0xFF66636E),
+      'Annulée' => const Color(0xFF57545F),
       'Incident' => const Color(0xFFE5484D),
       'En retard' => const Color(0xFF8F5400),
       _ => const Color(0xFF5A3FE0),
@@ -381,7 +381,7 @@ Future<void> projectReviewDialog(BuildContext context, WidgetRef ref, Project p)
       content: SizedBox(
         width: 340,
         child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('${p.dept} · ${p.stage} · ${p.progress} %\nChef de projet : ${p.lead}\n${p.desc}', style: _st.copyWith(height: 1.55, color: const Color(0xFF66636E))),
+          Text('${p.dept} · ${p.stage} · ${p.progress} %\nChef de projet : ${p.lead}\n${p.desc}', style: _st.copyWith(height: 1.55, color: const Color(0xFF57545F))),
           const SizedBox(height: 10),
           TextField(controller: note, style: _st, decoration: const InputDecoration(hintText: 'Motif (obligatoire pour « À corriger »)', border: OutlineInputBorder())),
         ]),

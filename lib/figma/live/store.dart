@@ -218,7 +218,7 @@ class Orders extends Notifier<List<Order>> {
 
 final ordersProvider = NotifierProvider<Orders, List<Order>>(Orders.new);
 
-class _OrdersLoaded extends Notifier<bool> {
+class OrdersLoaded extends Notifier<bool> {
   @override
   bool build() {
     ref.watch(authProvider.select((a) => a.current?.serverId ?? '')); // nouveau compte : rien n'est encore lu
@@ -229,7 +229,7 @@ class _OrdersLoaded extends Notifier<bool> {
 }
 
 /// Vrai dès qu'une lecture des commandes sur le serveur a réussi (une liste vide signifie alors « aucune commande »).
-final ordersLoadedProvider = NotifierProvider<_OrdersLoaded, bool>(_OrdersLoaded.new);
+final ordersLoadedProvider = NotifierProvider<OrdersLoaded, bool>(OrdersLoaded.new);
 
 class _When extends Notifier<DateTime?> {
   @override
@@ -242,6 +242,13 @@ final lastSyncProvider = NotifierProvider<_When, DateTime?>(_When.new);
 
 /// « Mes commandes » d'un compte connecté sans aucune commande : l'écran d'état vide 150-4 remplace la liste 45.
 bool showEmptyOrders({required bool ready, required bool loaded, required List<Order> orders}) => ready && loaded && orders.isEmpty;
+
+/// Écrans qui montrent une commande existante : sans commande réelle, ils ne s'affichent pas (connecté au serveur).
+const orderDetailScreens = {'09', '29', '46', '47'};
+
+/// Faut-il quitter un écran de commande ? Oui : connecté au serveur, commandes lues, aucune commande, et écran de détail.
+bool redirectOrderDetail({required bool ready, required bool loaded, required List<Order> orders, required String screen}) =>
+    ready && loaded && orders.isEmpty && orderDetailScreens.contains(screen);
 
 /// Dernière commande passée (ou une commande d'exemple si aucune).
 final lastOrderProvider = Provider<Order>((ref) {

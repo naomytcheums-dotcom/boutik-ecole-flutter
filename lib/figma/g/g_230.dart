@@ -47,7 +47,7 @@ class G_230 extends ConsumerWidget {
       gP(43.546, 83.546, 11.454, 16.908, gImg('assets/figma/v/eadfa38ab5fb32.svg')),
       gP(43.546, 89, 16.908, 6, gImg('assets/figma/v/876f9e4ca5bd5d.svg')),
       gP(104.5, 72, 181, 21, gText('Assistante vocale Kéla', 17, Color(0xFF111015), weight: 500, align: TextAlign.center)),
-      gP(161, 98, 68, 16, gText('À l’écoute…', 12.5, Color(0xFF66636E), align: TextAlign.center)),
+      gP(161, 98, 68, 16, gText('À l’écoute…', 12.5, Color(0xFF57545F), align: TextAlign.center)),
       gP(316, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
       gP(328.767, 83, 18.467, 18.233, gImg('assets/figma/v/menu3.svg')), gTap(316, 70, 44, 44, () => gOpen(context, '231')),
       gP(95, 240, 200, 200, gBox(color: Color(0x59FFB36B), layerBlur: 90, oval: true), fx: 'halo'),

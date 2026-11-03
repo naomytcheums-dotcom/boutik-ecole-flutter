@@ -131,7 +131,7 @@ class _EspaceScreenState extends ConsumerState<EspaceScreen> {
                   padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
                   child: Text(
                     '${roleNames[roleKey(account)] ?? 'Visiteur'} · $total écran${total > 1 ? 's' : ''} accessible${total > 1 ? 's' : ''}',
-                    style: _t(12.5, FontWeight.w500, const Color(0xFF66636E)),
+                    style: _t(12.5, FontWeight.w500, const Color(0xFF57545F)),
                   ),
                 ),
                 Padding(
@@ -142,7 +142,7 @@ class _EspaceScreenState extends ConsumerState<EspaceScreen> {
                     cursorColor: const Color(0xFF111015),
                     decoration: InputDecoration(
                       hintText: 'Rechercher une rubrique ou un écran',
-                      hintStyle: _t(14, FontWeight.w500, const Color(0xFF9A98A3)),
+                      hintStyle: _t(14, FontWeight.w500, const Color(0xFF57545F)),
                       filled: true,
                       fillColor: const Color(0xB2FFFFFF),
                       isDense: true,
@@ -155,7 +155,7 @@ class _EspaceScreenState extends ConsumerState<EspaceScreen> {
                   child: ListView(
                     padding: const EdgeInsets.fromLTRB(20, 6, 20, 32),
                     children: [
-                      if (total == 0) Padding(padding: const EdgeInsets.only(top: 40), child: Center(child: Text('Aucun résultat', style: _t(14, FontWeight.w500, const Color(0xFF66636E))))),
+                      if (total == 0) Padding(padding: const EdgeInsets.only(top: 40), child: Center(child: Text('Aucun résultat', style: _t(14, FontWeight.w500, const Color(0xFF57545F))))),
                       for (final r in order)
                         if (data[r] != null)
                           Padding(
@@ -172,7 +172,7 @@ class _EspaceScreenState extends ConsumerState<EspaceScreen> {
                                   iconColor: const Color(0xFF111015),
                                   collapsedIconColor: const Color(0xFF111015),
                                   title: Text(r.titre, style: _t(14.5, FontWeight.w700)),
-                                  subtitle: Text('${data[r]!.length} écran${data[r]!.length > 1 ? 's' : ''}', style: _t(11.5, FontWeight.w500, const Color(0xFF66636E))),
+                                  subtitle: Text('${data[r]!.length} écran${data[r]!.length > 1 ? 's' : ''}', style: _t(11.5, FontWeight.w500, const Color(0xFF57545F))),
                                   children: [
                                     for (final (id, titre) in data[r]!)
                                       InkWell(
@@ -181,9 +181,9 @@ class _EspaceScreenState extends ConsumerState<EspaceScreen> {
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
                                           child: Row(children: [
-                                            SizedBox(width: 46, child: Text(id, style: _t(12, FontWeight.w600, const Color(0xFF66636E)))),
+                                            SizedBox(width: 46, child: Text(id, style: _t(12, FontWeight.w600, const Color(0xFF57545F)))),
                                             Expanded(child: Text(titre, style: _t(13.5, FontWeight.w500))),
-                                            Text('›', style: _t(18, FontWeight.w500, const Color(0xFF66636E))),
+                                            Text('›', style: _t(18, FontWeight.w500, const Color(0xFF57545F))),
                                           ]),
                                         ),
                                       ),

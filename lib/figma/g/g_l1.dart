@@ -74,7 +74,7 @@ class G_L1 extends ConsumerWidget {
       gP(48, 629, 14, 11.5, gImg('assets/figma/v/d9758b2cc9e4ca.svg')),
       gP(74, 628, 94, 15, gText('Note 4,0 ou plus', 12, Color(0xFF111015), weight: 500)),
       gP(202, 624, 22, 22, gBox(color: Color(0xFFE4E1EA), oval: true)),
-      gP(232, 628, 97, 15, gText('Charte acceptée', 12, Color(0xFF66636E))),
+      gP(232, 628, 97, 15, gText('Charte acceptée', 12, Color(0xFF57545F))),
       gP(44, 648, 202, 13, gText('Aucun seuil d’abonnés sur Boutik-École.', 10.5, Color(0xFF126B49), weight: 500)),
       gP(44, 696, 106, 16, gText('Diffuser aussi sur', 13, Color(0xFF111015), weight: 600)),
       gP(40, 722, 152, 48, gBox(color: Color(0xFFF6F3FA), radii: [24, 24, 24, 24])),

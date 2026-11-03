@@ -46,9 +46,9 @@ List<Widget> liveTimeline(WidgetRef ref) => [
                   gBox(color: i <= s ? const Color(0xFF111015) : Colors.white, oval: true, border: i <= s ? null : const Color(0xFFE6E1EE), bw: 1)),
               for (final ic in _icons[i])
                 gP(ic.$1, ic.$2, ic.$3, ic.$4,
-                    ColorFiltered(colorFilter: ColorFilter.mode(i <= s ? Colors.white : const Color(0xFF6B6877), BlendMode.srcIn), child: gImg('$_v/${ic.$5}.svg'))),
+                    ColorFiltered(colorFilter: ColorFilter.mode(i <= s ? Colors.white : const Color(0xFF57545F), BlendMode.srcIn), child: gImg('$_v/${ic.$5}.svg'))),
               gP(_labelX[i], 256.643, _labelW[i], 14,
-                  gText(_labels[i], 11.223, i < s ? const Color(0xFF5A3FE0) : (i == s ? const Color(0xFF111015) : const Color(0xFF6B6877)),
+                  gText(_labels[i], 11.223, i < s ? const Color(0xFF5A3FE0) : (i == s ? const Color(0xFF111015) : const Color(0xFF57545F)),
                       weight: i == s ? 700 : 500, align: TextAlign.center, wrap: true)),
             ],
           ]);

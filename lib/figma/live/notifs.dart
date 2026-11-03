@@ -94,7 +94,7 @@ Widget notificationsPanel() => gP(
         if (items.isEmpty) {
           return Padding(
             padding: const EdgeInsets.only(top: 80),
-            child: Align(alignment: Alignment.topCenter, child: Text('Aucune notification pour le moment.', style: _t(13.5, FontWeight.w500, const Color(0xFF66636E)))),
+            child: Align(alignment: Alignment.topCenter, child: Text('Aucune notification pour le moment.', style: _t(13.5, FontWeight.w500, const Color(0xFF57545F)))),
           );
         }
         return ListView.separated(
@@ -124,9 +124,9 @@ Widget notificationsPanel() => gP(
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text(n.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: _t(13.5, FontWeight.w600, const Color(0xFF111015))),
                       const SizedBox(height: 3),
-                      Text(n.body, maxLines: 2, overflow: TextOverflow.ellipsis, style: _t(11.5, FontWeight.w400, const Color(0xFF66636E))),
+                      Text(n.body, maxLines: 2, overflow: TextOverflow.ellipsis, style: _t(11.5, FontWeight.w400, const Color(0xFF57545F))),
                       const SizedBox(height: 3),
-                      Text(_ago(n.createdAt), style: _t(10.5, FontWeight.w400, const Color(0xFF9A98A3))),
+                      Text(_ago(n.createdAt), style: _t(10.5, FontWeight.w400, const Color(0xFF57545F))),
                     ]),
                   ),
                   if (!n.read)

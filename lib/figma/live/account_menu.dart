@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../nav.dart';
 import 'access.dart';
 import 'auth.dart';
+import 'delivery.dart' show homeDeliverySettingsDialog;
 import 'feedback.dart';
 import 'lots.dart';
 import 'referral.dart';
@@ -125,6 +126,7 @@ final _groups = <_Group>[
     _Entry('Finance', screen: '139', roles: {'finance', 'direction', 'admin'}),
     _Entry('Registre financier', screen: '284', roles: {'finance', 'direction', 'admin'}),
     _Entry('Kiosques et support', screen: '145', roles: {'support', 'admin'}),
+    _Entry('Livraison à domicile (réglage)', action: homeDeliverySettingsDialog, roles: {'admin'}),
     _Entry('Supervision des bornes', screen: '277', roles: {'support', 'admin'}),
   ]),
   const _Group('Mon compte', [
@@ -180,13 +182,13 @@ Future<void> accountMenu(BuildContext context, WidgetRef ref) {
           Text('Mon compte · ${roleNames[role] ?? ''}', style: _st.copyWith(fontSize: 16, fontWeight: FontWeight.w700)),
           for (final g in visible) ...[
             const SizedBox(height: 14),
-            Text(g.title, style: _st.copyWith(fontSize: 12, color: const Color(0xFF66636E), fontWeight: FontWeight.w600)),
+            Text(g.title, style: _st.copyWith(fontSize: 12, color: const Color(0xFF57545F), fontWeight: FontWeight.w600)),
             for (final e in g.entries)
               ListTile(
                 dense: true,
                 contentPadding: EdgeInsets.zero,
                 title: Text(e.label, style: _st.copyWith(fontWeight: FontWeight.w500)),
-                trailing: const Icon(Icons.chevron_right, size: 18, color: Color(0xFF66636E)),
+                trailing: const Icon(Icons.chevron_right, size: 18, color: Color(0xFF57545F)),
                 onTap: () {
                   Navigator.pop(ctx);
                   if (e.screen != null) {

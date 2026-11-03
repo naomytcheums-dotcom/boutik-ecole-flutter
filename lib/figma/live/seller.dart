@@ -420,7 +420,7 @@ Color listingPillInk(String l) => switch (l) {
       'Publié' => const Color(0xFF0F7A52),
       'Rupture' => const Color(0xFFE5484D),
       'Stock bas' || 'En validation' => const Color(0xFF8F5400),
-      _ => const Color(0xFF66636E),
+      _ => const Color(0xFF57545F),
     };
 
 /// Commande de la liste filtrée par onglet : 0 À préparer (nouvelles + à préparer) · 1 En cours · 2 Prêtes · 3 Livrées.

@@ -36,6 +36,7 @@ class G_245 extends ConsumerWidget {
       gP(-110, 580, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(200, 140, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(0, 0, 390, 844, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x40000000), Color(0x00000000), Color(0x99000000)], stops: [0, 0.45, 1]))),
+      gP(0, 110, 316, 480, GestureDetector(behavior: HitTestBehavior.translucent, onVerticalDragEnd: (d) { if (!demoContent) moveReel(ref, (d.primaryVelocity ?? 0) < 0 ? 1 : -1); }, child: const SizedBox.expand())),
       gP(30, 14, 28, 18, gText('9:41', 14, Color(0xFFFFFFFF), weight: 600)),
       gP(140, 10, 110, 30, gBox(color: Color(0xFF000000), radii: [15, 15, 15, 15])),
       gP(24, 62, 58, 28, gText('Reels', 22, Color(0xFFFFFFFF), weight: 600)),
@@ -50,7 +51,7 @@ class G_245 extends ConsumerWidget {
       gP(335, 356, 22, 12, gText(demoContent ? '2,6 k' : compactCount(ref.watch(currentReelProvider)?.likes ?? 0), 9.5, Color(0xFFFFFFFF), weight: 500)),
       gP(324, 370, 44, 44, gBox(color: Color(0x38FFFFFF), oval: true)),
       gP(335.5, 383.358, 21, 19.142, gImg('assets/figma/v/3fc89363db42fe.svg')),
-      gP(338, 418, 16, 12, gText('312', 9.5, Color(0xFFFFFFFF), weight: 500)),
+      gP(338, 418, 16, 12, Consumer(builder: (context, ref, _) => gText(demoContent ? '312' : compactCount(ref.watch(currentReelProvider)?.comments ?? 0), 9.5, Color(0xFFFFFFFF), weight: 500))),
       gP(324, 432, 44, 44, gBox(color: Color(0x38FFFFFF), oval: true)),
       gP(336.333, 451, 19.333, 14.333, gImg('assets/figma/v/624b33ad1df422.svg')),
       gP(339.667, 442.667, 12.667, 9.333, gImg('assets/figma/v/fb09d2f284479b.svg')),
@@ -58,7 +59,7 @@ class G_245 extends ConsumerWidget {
       gP(326, 480, 40, 12, gText('Partager', 9.5, Color(0xFFFFFFFF), weight: 500)),
       gP(324, 494, 44, 44, gBox(color: Color(0x38FFFFFF), oval: true)),
       gP(337.667, 507.667, 16.667, 15.833, gImg('assets/figma/r/152_156.png')),
-      gP(338.5, 542, 15, 12, gText('4,9', 9.5, Color(0xFFFFFFFF), weight: 500)),
+      gP(338.5, 542, 15, 12, Consumer(builder: (context, ref, _) => gText(demoContent ? '4,9' : compactCount(ref.watch(currentReelProvider)?.saves ?? 0), 9.5, Color(0xFFFFFFFF), weight: 500))),
       gP(324, 556, 44, 44, gBox(color: Color(0x38FFFFFF), oval: true)),
       gP(336, 568, 20, 20, const SizedBox.expand(), tap: () => gOpen(context, '248')),
       gP(335.5, 566.667, 21, 22.667, gImg('assets/figma/v/aede3bf7db6d35.svg')),
@@ -79,7 +80,7 @@ class G_245 extends ConsumerWidget {
       gP(47.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '251')),
       gP(47.125, 777.125, 20, 20, gImg('assets/figma/v/96285515fb0e14.svg')),
       gP(59.113, 789.113, 9.762, 9.762, gImg('assets/figma/v/524f40fa464a05.svg')),
-      gP(113.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '53')),
+      gP(113.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '52')),
       gP(112.25, 777.118, 22.632, 22.632, gImg('assets/figma/v/5610544a74c77c.svg')),
       gP(255.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '230')),
       gP(260.375, 776.25, 11.25, 16.5, gImg('assets/figma/v/3adad339ddf7e4.svg')),
@@ -94,8 +95,9 @@ class G_245 extends ConsumerWidget {
       gTap(336, 382, 20, 20, () => gOpen(context, '252')),
       gTap(336, 568, 20, 20, () => gOpen(context, '248')),
       gTap(22, 612, 40, 40, () => gOpen(context, '247')),
-      gTap(320, 470, 52, 32, () { uiCopy(context, uiLink('245'), 'Lien du reel'); }), // audit 01/11 : « Partager » n'avait aucun effet
-      gTap(160, 610, 77, 25, () { uiFollow(context); }), // audit 01/11 : « S’abonner » n'avait aucun effet
+      gTap(320, 470, 52, 32, () { uiCopy(context, uiLink('245'), 'Lien du reel'); if (!demoContent) recordReelShare(ref); }), // audit 01/11 : « Partager » n'avait aucun effet
+      gTap(160, 610, 77, 25, () { demoContent ? uiFollow(context) : toggleFollowReelAuthor(context, ref); }),
+      gTap(324, 494, 44, 44, () { demoContent ? gToast(context, 'Publication enregistrée (démonstration)') : saveCurrentReel(context, ref); }), // audit 01/11 : « S’abonner » n'avait aucun effet
     ]);
   }
 }

@@ -10,7 +10,7 @@ import 'store.dart';
 /// 06 · Panier — partie vivante : lignes du panier (quantités, suppression) et totaux.
 /// Les coordonnées reprennent exactement celles de la maquette Figma (nœud 14:2).
 const _ink = Color(0xFF111015);
-const _grey = Color(0xFF66636E);
+const _grey = Color(0xFF57545F);
 const _violet = Color(0xFF5A3FE0);
 const _v = 'assets/figma/v';
 const _rowH = 165.56;

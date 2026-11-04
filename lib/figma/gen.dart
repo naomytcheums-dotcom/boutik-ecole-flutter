@@ -242,16 +242,51 @@ class GScreen extends StatelessWidget {
     final bandH = band.isEmpty ? 0.0 : (bandBottom - bandTop + 8) * s;
     return DecoratedBox(
       decoration: BoxDecoration(gradient: bg, color: color ?? (bg == null ? const Color(0xFFFFFFFF) : null)),
-      child: Stack(children: [
-        Positioned.fill(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.only(top: pad.top, bottom: pad.bottom + bandH + keyboard),
-            child: layer(content, statusBand, h),
-          ),
-        ),
-        if (band.isNotEmpty) Positioned(left: 0, right: 0, bottom: pad.bottom, child: layer(fixed, bandTop, bandBottom)),
-      ]),
+      child: _PhoneBody(
+        padding: EdgeInsets.only(top: pad.top, bottom: pad.bottom + bandH + keyboard),
+        content: layer(content, statusBand, h),
+        fixed: band.isEmpty ? null : layer(fixed, bandTop, bandBottom),
+        bottom: pad.bottom,
+      ),
     );
+  }
+}
+
+/// Corps d'un écran de téléphone : contenu défilant plein écran et menu du bas fixe. Un glissement vertical démarré sur le
+/// menu fait défiler le contenu (le menu ne « mange » pas le geste), les appuis sur ses boutons restent des appuis.
+class _PhoneBody extends StatefulWidget {
+  const _PhoneBody({required this.padding, required this.content, required this.fixed, required this.bottom});
+  final EdgeInsets padding;
+  final Widget content;
+  final Widget? fixed;
+  final double bottom;
+
+  @override
+  State<_PhoneBody> createState() => _PhoneBodyState();
+}
+
+class _PhoneBodyState extends State<_PhoneBody> {
+  final _controller = ScrollController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _drag(DragUpdateDetails d) {
+    if (!_controller.hasClients) return;
+    final p = _controller.position;
+    _controller.jumpTo((p.pixels - d.delta.dy).clamp(p.minScrollExtent, p.maxScrollExtent));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(children: [
+      Positioned.fill(child: SingleChildScrollView(controller: _controller, padding: widget.padding, child: widget.content)),
+      if (widget.fixed != null)
+        Positioned(left: 0, right: 0, bottom: widget.bottom, child: GestureDetector(onVerticalDragUpdate: _drag, child: widget.fixed)),
+    ]);
   }
 }
 

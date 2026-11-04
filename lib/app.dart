@@ -1,3 +1,4 @@
+import 'dart:ui' show PointerDeviceKind;
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -109,6 +110,7 @@ class _BoutikEcoleAppState extends ConsumerState<BoutikEcoleApp> {
       title: 'Boutik-École',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
+      scrollBehavior: const _MobileScrollBehavior(),
       locale: settings.locale,
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: const [
@@ -136,4 +138,16 @@ class _BoutikEcoleAppState extends ConsumerState<BoutikEcoleApp> {
       },
     );
   }
+}
+
+/// Comportement de défilement d'une application mobile : aucune barre de défilement (même dans un navigateur d'ordinateur),
+/// glissement au doigt, à la souris ou au stylet.
+class _MobileScrollBehavior extends MaterialScrollBehavior {
+  const _MobileScrollBehavior();
+
+  @override
+  Widget buildScrollbar(BuildContext context, Widget child, ScrollableDetails details) => child;
+
+  @override
+  Set<PointerDeviceKind> get dragDevices => {PointerDeviceKind.touch, PointerDeviceKind.mouse, PointerDeviceKind.stylus, PointerDeviceKind.trackpad};
 }

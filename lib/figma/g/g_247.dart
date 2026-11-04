@@ -23,6 +23,7 @@ import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/inert_actions.dart';
 import '../live/pay.dart';
+import '../live/social_profile.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_247 extends ConsumerWidget {
@@ -136,7 +137,8 @@ class G_247 extends ConsumerWidget {
       gTap(280, 200, 76, 26, () => gOpen(context, '248')),
       gTap(228, 412, 20, 20, () => gOpen(context, '248')),
       gTap(313, 412, 20, 20, () => gOpen(context, '252')),
-      gTap(126, 200, 82, 26, () { uiFollow(context); }), // audit 01/11 : « S’abonner » n'avait aucun effet
+      gTap(126, 200, 82, 26, () { uiFollow(context); }),
+      if (!demoContent) gP(0, 0, 390, 756, SocialProfilePanel(userId: gProfileUserId(context))),
     ]);
   }
 }

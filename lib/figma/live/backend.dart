@@ -880,6 +880,9 @@ class Backend {
     }
   }
 
+  /// URL publique d'une photo ou vidéo de publication (`post-media`, lecture publique).
+  static String postMediaUrl(String path) => publicFileUrl('post-media', path);
+
   static Future<String?> signedFileUrl(String bucket, String path) async {
     try {
       return await _c?.storage.from(bucket).createSignedUrl(path, 3600);

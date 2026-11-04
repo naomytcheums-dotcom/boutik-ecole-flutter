@@ -6,6 +6,22 @@ import '../core/router/paths.dart';
 /// Ouvre un autre écran du manifeste (liens du prototype Figma).
 void gOpen(BuildContext context, String id) => GoRouter.of(context).push(screenPath(id));
 
+/// Ouvre le profil public d'une personne (`userId`) ou le profil personnel (vide).
+/// Le paramètre de route évite de garder un auteur sélectionné périmé au retour.
+void gOpenProfile(BuildContext context, String userId) {
+  final id = userId.trim();
+  GoRouter.of(context).push(id.isEmpty ? screenPath('247') : '${screenPath('247')}?user=${Uri.encodeQueryComponent(id)}');
+}
+
+/// Personne dont le profil public est demandé ; vide pour le profil personnel.
+String gProfileUserId(BuildContext context) {
+  try {
+    return GoRouterState.of(context).uri.queryParameters['user']?.trim() ?? '';
+  } catch (_) {
+    return '';
+  }
+}
+
 /// Onglet du menu principal : remplace la pile (pas d'empilement d'écrans) pour que « retour » reste cohérent.
 void gTab(BuildContext context, String id) => GoRouter.of(context).go(screenPath(id));
 

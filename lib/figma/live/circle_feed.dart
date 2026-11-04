@@ -126,16 +126,20 @@ class _Post extends ConsumerWidget {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(22), border: Border.all(color: const Color(0xFFECE8F2))),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(children: [
-          Container(width: 38, height: 38, alignment: Alignment.center, decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFFEDE9F6)), child: Text(initial, style: _st(14, w: FontWeight.w700, c: const Color(0xFF4A4854)))),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(post.author, maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(13.5, w: FontWeight.w700)),
-              if (post.publishedAt != null) Text(relativeTime(post.publishedAt!, now), style: _st(11, c: _grey)),
-            ]),
-          ),
-        ]),
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: post.authorId.isEmpty ? null : () => gOpenProfile(context, post.authorId),
+          child: Row(children: [
+            Container(width: 38, height: 38, alignment: Alignment.center, decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFFEDE9F6)), child: Text(initial, style: _st(14, w: FontWeight.w700, c: const Color(0xFF4A4854)))),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(post.author, maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(13.5, w: FontWeight.w700)),
+                if (post.publishedAt != null) Text(relativeTime(post.publishedAt!, now), style: _st(11, c: _grey)),
+              ]),
+            ),
+          ]),
+        ),
         if (post.caption.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 10), child: Text(post.caption, style: _st(13, c: const Color(0xFF2A2833)).copyWith(height: 1.45))),
         if (post.mediaUrl.isNotEmpty && !post.video)
           Padding(

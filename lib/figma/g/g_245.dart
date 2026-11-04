@@ -65,7 +65,7 @@ class G_245 extends ConsumerWidget {
       gP(335.5, 566.667, 21, 22.667, gImg('assets/figma/v/aede3bf7db6d35.svg')),
       gP(335.5, 570, 21, 12.667, gImg('assets/figma/v/33c7823e8b4d0f.svg')),
       gP(324.5, 604, 43, 12, gText('Boutique', 9.5, Color(0xFFFFFFFF), weight: 500)),
-      gP(22, 612, 40, 40, gBox(image: 'assets/figma/img/ebf23a969ca7b1083d1dcab994c4899c0b4db38b.png', fit: BoxFit.cover, radii: [20, 20, 20, 20]), tap: () => gOpen(context, '247')),
+      gP(22, 612, 40, 40, gBox(image: 'assets/figma/img/ebf23a969ca7b1083d1dcab994c4899c0b4db38b.png', fit: BoxFit.cover, radii: [20, 20, 20, 20]), tap: () => gOpenProfile(context, ref.read(currentReelProvider)?.authorId ?? '')),
       gP(72, 614, 52, 17, gText(demoContent ? 'Brice N.' : (ref.watch(currentReelProvider)?.author ?? ''), 13.5, Color(0xFFFFFFFF), weight: 600)),
       gP(160, 610, 77, 25, gBox(color: Color(0x40FFFFFF), radii: [100, 100, 100, 100])),
       gP(172, 616, 53, 13, gText('S’abonner', 10.5, Color(0xFFFFFFFF), weight: 600)),
@@ -86,7 +86,7 @@ class G_245 extends ConsumerWidget {
       gP(260.375, 776.25, 11.25, 16.5, gImg('assets/figma/v/3adad339ddf7e4.svg')),
       gP(256.875, 783.25, 18.25, 13, gImg('assets/figma/v/9c6e9349b8c3b4.svg')),
       gP(263, 790.25, 6, 9.5, gImg('assets/figma/v/c403dd00a5d407.svg')),
-      gP(321.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '247')),
+      gP(321.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gOpenProfile(context, '')),
       gP(324.625, 777.125, 14.75, 14.75, gImg('assets/figma/v/c6a28fb600186c.svg')),
       gP(322, 785.875, 20, 13, gImg('assets/figma/v/de7faa24b27dad.svg')),
       gP(169, 762, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gOpen(context, '244')),
@@ -94,7 +94,7 @@ class G_245 extends ConsumerWidget {
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       gTap(336, 382, 20, 20, () => gOpen(context, '252')),
       gTap(336, 568, 20, 20, () => gOpen(context, '248')),
-      gTap(22, 612, 40, 40, () => gOpen(context, '247')),
+      gTap(22, 612, 40, 40, () => gOpenProfile(context, ref.read(currentReelProvider)?.authorId ?? '')),
       gTap(320, 470, 52, 32, () { uiCopy(context, uiLink('245'), 'Lien du reel'); if (!demoContent) recordReelShare(ref); }), // audit 01/11 : « Partager » n'avait aucun effet
       gTap(160, 610, 77, 25, () { demoContent ? uiFollow(context) : toggleFollowReelAuthor(context, ref); }),
       gTap(324, 494, 44, 44, () { demoContent ? gToast(context, 'Publication enregistrée (démonstration)') : saveCurrentReel(context, ref); }), // audit 01/11 : « S’abonner » n'avait aucun effet

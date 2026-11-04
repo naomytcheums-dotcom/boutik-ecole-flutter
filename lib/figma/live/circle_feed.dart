@@ -24,9 +24,10 @@ class CircleTab extends Notifier<int> {
 /// Onglet choisi : 0 Pour toi · 1 Abonnements · 2 Vidéos · 3 Boutique · autres : tout.
 final circleTabProvider = NotifierProvider<CircleTab, int>(CircleTab.new);
 
-/// Publications visibles selon l'onglet (« Abonnements » n'a pas de source : liste vide tant que le suivi n'est pas relié).
-List<Reel> filterCircle(List<Reel> all, int tab) => switch (tab) {
-      1 => const [],
+/// Publications visibles selon l'onglet. « Abonnements » ne garde que les auteurs réellement suivis
+/// (`engagements.follow`) ; `following` vaut null tant que la liste n'est pas lue.
+List<Reel> filterCircle(List<Reel> all, int tab, {Set<String>? following}) => switch (tab) {
+      1 => [for (final r in all) if (following?.contains(r.authorId) ?? false) r],
       2 => [for (final r in all) if (r.video) r],
       3 => [for (final r in all) if (r.listing.isNotEmpty) r],
       _ => all,
@@ -40,6 +41,7 @@ class CircleFeed extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final all = ref.watch(reelsProvider);
     final tab = ref.watch(circleTabProvider);
+    final following = ref.watch(followingIdsProvider);
     final now = ref.watch(nowProvider);
     Widget note(String t, {String? action, VoidCallback? onTap}) => Container(
           width: width,
@@ -60,9 +62,12 @@ class CircleFeed extends ConsumerWidget {
           ]),
         );
     if (all == null) return note('Chargement des publications…');
-    final list = filterCircle(all, tab);
+    if (tab == 1 && following == null) return note('Chargement des abonnements…');
+    final list = filterCircle(all, tab, following: following);
     if (list.isEmpty) {
-      if (tab == 1) return note('Les publications des créateurs que vous suivez apparaîtront ici.');
+      if (tab == 1) {
+        return note(following!.isEmpty ? 'Vous ne suivez personne pour le moment.\nSuivez un créateur pour retrouver ses publications ici.' : 'Aucune publication récente des créateurs que vous suivez.', action: 'Découvrir', onTap: () => gOpen(context, '251'));
+      }
       return note(all.isEmpty ? 'Aucune publication pour le moment.\nSoyez le premier à partager une photo ou une vidéo.' : 'Aucune publication dans cette catégorie.', action: 'Publier', onTap: () => publishReel(context, ref));
     }
     return SizedBox(
@@ -160,6 +165,53 @@ class _Post extends ConsumerWidget {
           if (post.listing.isNotEmpty) action(Icons.storefront_outlined, 'Boutique', () => gOpen(context, '22')),
         ]),
       ]),
+    );
+  }
+}
+
+/// Les trois vidéos phares du profil (écran 10, derrière la photo) : les trois dernières vidéos publiées par la personne connectée.
+/// Un emplacement libre invite à publier une vidéo ; rien n'est inventé.
+class FeaturedVideo extends ConsumerWidget {
+  const FeaturedVideo({super.key, required this.slot});
+  final int slot;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final me = ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
+    final all = ref.watch(reelsProvider) ?? const <Reel>[];
+    final mine = [for (final r in all) if (r.video && me.isNotEmpty && r.authorId == me) r];
+    final v = slot < mine.length ? mine[slot] : null;
+    const radius = BorderRadius.all(Radius.circular(26));
+    if (v == null) {
+      return GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => publishReel(context, ref),
+        child: Container(
+          decoration: BoxDecoration(color: const Color(0x66FFFFFF), borderRadius: radius, border: Border.all(color: const Color(0xCCFFFFFF), width: 1.2)),
+          alignment: Alignment.center,
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            const Icon(Icons.add_circle_outline, size: 30, color: _grey),
+            const SizedBox(height: 8),
+            Padding(padding: const EdgeInsets.symmetric(horizontal: 10), child: Text('Vidéo phare', textAlign: TextAlign.center, style: _st(12, c: _grey))),
+          ]),
+        ),
+      );
+    }
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        ref.read(reelIndexProvider.notifier).set(all.indexWhere((r) => r.id == v.id).clamp(0, all.length - 1));
+        gOpen(context, '245');
+      },
+      child: Container(
+        decoration: const BoxDecoration(borderRadius: radius, gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0xFF2A2833), Color(0xFF0E0F14)])),
+        alignment: Alignment.bottomLeft,
+        padding: const EdgeInsets.all(12),
+        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+          const Icon(Icons.play_circle_fill, color: Colors.white, size: 34),
+          if (v.caption.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 6), child: Text(v.caption, maxLines: 2, overflow: TextOverflow.ellipsis, style: _st(11, c: Colors.white))),
+        ]),
+      ),
     );
   }
 }

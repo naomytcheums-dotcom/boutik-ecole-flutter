@@ -137,6 +137,27 @@ void moveReel(WidgetRef ref, int delta) {
   ref.read(reelIndexProvider.notifier).set((ref.read(reelIndexProvider) + delta).clamp(0, n - 1));
 }
 
+/// Personnes suivies par la personne connectée (`engagements` de type `follow`), lues sur le serveur.
+/// `null` : lecture en cours (l'onglet « Abonnements » attend) ; ensemble vide : aucun abonnement.
+class FollowingIdsNotifier extends Notifier<Set<String>?> {
+  @override
+  Set<String>? build() {
+    if (!Backend.ready) return null;
+    final uid = ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
+    if (uid.isEmpty) return const {};
+    Future.microtask(refresh);
+    return null;
+  }
+
+  Future<void> refresh() async {
+    final rows = await Backend.myEngagements(kind: 'follow');
+    if (!ref.mounted) return;
+    state = {for (final e in rows) if (e['status'] == 'active') '${e['ref']}'};
+  }
+}
+
+final followingIdsProvider = NotifierProvider<FollowingIdsNotifier, Set<String>?>(FollowingIdsNotifier.new);
+
 /// « S'abonner » : suit (ou ne suit plus) l'auteur du reel affiché, par le mécanisme d'engagements existant (`follow`).
 Future<void> toggleFollowReelAuthor(BuildContext context, WidgetRef ref) async {
   final r = ref.read(currentReelProvider);
@@ -146,10 +167,14 @@ Future<void> toggleFollowReelAuthor(BuildContext context, WidgetRef ref) async {
   if (r.authorId == ref.read(authProvider).current?.serverId) return gToast(context, 'C’est votre publication.');
   final err = await Backend.engage('follow', r.authorId, const {});
   if (!context.mounted) return;
-  if (err == null) return gToast(context, 'Vous suivez ${r.author}');
+  if (err == null) {
+    ref.invalidate(followingIdsProvider);
+    return gToast(context, 'Vous suivez ${r.author}');
+  }
   if (err.contains('Déjà')) {
     final e2 = await Backend.cancelEngagement('follow', r.authorId);
     if (!context.mounted) return;
+    if (e2 == null) ref.invalidate(followingIdsProvider);
     return e2 == null ? gToast(context, 'Vous ne suivez plus ${r.author}') : gAlert(context, 'Action impossible', Backend.userMessage(e2));
   }
   gAlert(context, 'Action impossible', Backend.userMessage(err));

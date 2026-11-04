@@ -1,9 +1,8 @@
 import 'package:boutik_ecole/figma/g/g_03.dart';
+import 'package:boutik_ecole/figma/g/g_10.dart';
 import 'package:boutik_ecole/figma/g/g_244.dart';
 import 'package:boutik_ecole/figma/gen.dart';
-import 'package:boutik_ecole/figma/gsound.dart';
 import 'package:boutik_ecole/figma/live/backend.dart';
-import 'package:boutik_ecole/figma/live/circle_feed.dart';
 import 'package:boutik_ecole/figma/live/home_live.dart';
 import 'package:boutik_ecole/figma/live/reels.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +16,13 @@ class _Reels extends ReelsNotifier {
   final List<Reel>? v;
   @override
   List<Reel>? build() => v;
+}
+
+class _Following extends FollowingIdsNotifier {
+  _Following(this.v);
+  final Set<String>? v;
+  @override
+  Set<String>? build() => v;
 }
 
 class _NoTalents extends TalentsNotifier {
@@ -63,7 +69,7 @@ void main() {
     expect(choisi, 4);
   });
 
-  testWidgets('réseau social 244 connecté : aucune publication de maquette, état vide avec « Publier »', (t) async {
+  testWidgets('réseau social 244 connecté sans publication réelle : l’ancienne présentation reste affichée', (t) async {
     Backend.ready = true;
     GAnim.enabled = false;
     t.view.physicalSize = const Size(393, 852);
@@ -71,9 +77,19 @@ void main() {
     addTearDown(t.view.reset);
     await t.pumpWidget(ProviderScope(overrides: [reelsProvider.overrideWith(() => _Reels(const []))], child: MaterialApp(home: G_244())));
     await t.pumpAndSettle();
-    expect(find.text('Yannick M.'), findsNothing);
+    expect(find.text('Yannick M.'), findsOneWidget);
     expect(find.text('Cercle'), findsNothing);
-    expect(find.text('Publier'), findsOneWidget);
+  });
+
+  testWidgets('profil 10 connecté : trois emplacements de vidéos phares, jamais de photo de maquette', (t) async {
+    Backend.ready = true;
+    GAnim.enabled = false;
+    t.view.physicalSize = const Size(393, 852);
+    t.view.devicePixelRatio = 1;
+    addTearDown(t.view.reset);
+    await t.pumpWidget(ProviderScope(overrides: [reelsProvider.overrideWith(() => _Reels(const []))], child: MaterialApp(home: G_10())));
+    await t.pumpAndSettle();
+    expect(find.text('Vidéo phare'), findsNWidgets(3));
   });
 
   testWidgets('réseau social 244 connecté : les publications réelles s’affichent avec leurs compteurs', (t) async {
@@ -89,6 +105,44 @@ void main() {
     expect(find.text('Mon premier projet'), findsOneWidget);
     expect(find.text('3'), findsOneWidget);
     expect(find.text('Publier une photo ou une vidéo'), findsOneWidget);
+  });
+
+  testWidgets('onglet Abonnements : ne montre que les publications des créateurs suivis', (t) async {
+    Backend.ready = true;
+    GAnim.enabled = false;
+    t.view.physicalSize = const Size(393, 852);
+    t.view.devicePixelRatio = 1;
+    addTearDown(t.view.reset);
+    const a = Reel(id: '1', author: 'Alice Suivie', caption: 'Projet suivi', mediaUrl: '', video: false, authorId: 'alice');
+    const b = Reel(id: '2', author: 'Bob NonSuivi', caption: 'Projet non suivi', mediaUrl: '', video: false, authorId: 'bob');
+    await t.pumpWidget(ProviderScope(overrides: [
+      reelsProvider.overrideWith(() => _Reels(const [a, b])),
+      followingIdsProvider.overrideWith(() => _Following(const {'alice'})),
+    ], child: const MaterialApp(home: G_244())));
+    await t.pumpAndSettle();
+    await t.tap(find.text('Abonnements'));
+    await t.pumpAndSettle();
+    expect(find.text('Alice Suivie'), findsOneWidget);
+    expect(find.text('Bob NonSuivi'), findsNothing);
+    expect(find.text('Yannick M.'), findsNothing);
+  });
+
+  testWidgets('onglet Abonnements sans abonnement : état vide explicite, pas de maquette', (t) async {
+    Backend.ready = true;
+    GAnim.enabled = false;
+    t.view.physicalSize = const Size(393, 852);
+    t.view.devicePixelRatio = 1;
+    addTearDown(t.view.reset);
+    const a = Reel(id: '1', author: 'Alice', caption: 'Projet', mediaUrl: '', video: false, authorId: 'alice');
+    await t.pumpWidget(ProviderScope(overrides: [
+      reelsProvider.overrideWith(() => _Reels(const [a])),
+      followingIdsProvider.overrideWith(() => _Following(const {})),
+    ], child: const MaterialApp(home: G_244())));
+    await t.pumpAndSettle();
+    await t.tap(find.text('Abonnements'));
+    await t.pumpAndSettle();
+    expect(find.textContaining('Vous ne suivez personne'), findsOneWidget);
+    expect(find.text('Alice'), findsNothing);
   });
 
   testWidgets('accueil connecté sans profil réel : cartes d’exemple marquées « Exemple »', (t) async {

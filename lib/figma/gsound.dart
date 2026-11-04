@@ -53,19 +53,8 @@ class _GPressState extends State<GPress> {
 
   @override
   Widget build(BuildContext context) {
-    final child = widget.flash
-        ? Stack(fit: StackFit.passthrough, children: [
-            widget.child,
-            Positioned.fill(
-              child: IgnorePointer(
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 90),
-                  decoration: BoxDecoration(color: down ? const Color(0x14111015) : const Color(0x00111015), borderRadius: BorderRadius.circular(14)),
-                ),
-              ),
-            ),
-          ])
-        : widget.child;
+    // aucune lueur ni rectangle au toucher : seul le léger retrait du bouton signale l'appui
+    final child = widget.child;
     // Accessibilité : annoncé comme bouton, atteignable avec Tab, activé par Entrée ou Espace, contour visible au clavier.
     return Semantics(
       button: true,

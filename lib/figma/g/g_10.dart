@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/circle_feed.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -35,8 +36,11 @@ class G_10 extends ConsumerWidget {
       gP(200, 140, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 580, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(18, 92, 114, 244, gBox(image: 'assets/figma/img/768cf16e6d8103ad4296d6cc0fdf1af309f03817.png', fit: BoxFit.cover, radii: [26, 26, 26, 26]), show: demoContent),
+      if (!demoContent) gP(18, 92, 114, 244, const FeaturedVideo(slot: 0)),
       gP(140, 92, 124, 244, gBox(image: 'assets/figma/img/d5a96228e65dc2920e40cfac9b1205c2faee3caf.png', fit: BoxFit.cover, radii: [26, 26, 26, 26]), show: demoContent),
+      if (!demoContent) gP(140, 92, 124, 244, const FeaturedVideo(slot: 1)),
       gP(272, 92, 114, 244, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [26, 26, 26, 26]), show: demoContent),
+      if (!demoContent) gP(272, 92, 114, 244, const FeaturedVideo(slot: 2)),
       gP(0, 92, 390, 250, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00F2EBF0), Color(0x00F2EBF0), Color(0xD9F2EBF0)], stops: [0, 0.78, 1]))),
       gP(30, 14, 28, 18, gText('9:41', 14, Color(0xFF111015), weight: 600)),
       gP(140, 10, 110, 30, gBox(color: Color(0xFF000000), radii: [15, 15, 15, 15])),

@@ -242,44 +242,65 @@ class GScreen extends StatelessWidget {
           ),
         );
 
-    // Menu du bas : la loupe devient Kéla (assistante) et le micro devient le réseau social ; l'accueil reste au centre.
+    // Menu du bas : cinq onglets reconstruits (Kéla, messages, accueil, réseau social, profil). La pastille sombre, cerclée
+    // d'argent, suit l'onglet de l'écran affiché ; la loupe est devenue Kéla et le micro le réseau social.
     final swapped = <int>{};
     final extra = <Widget>[];
     if (pill != null) {
-      final inSearch = <int>[], inMic = <int>[];
+      const slotsX = [57.5, 124.0, 195.0, 266.0, 332.0];
+      final bySlot = List.generate(5, (_) => <int>[]);
       for (final j in band) {
         final q = rects[j];
-        if (q == null || q.center.dy < pill.top - 4 || q.center.dy > pill.bottom + 4) continue;
-        if (q.center.dx >= 40 && q.center.dx <= 76) inSearch.add(j);
-        if (q.center.dx >= 250 && q.center.dx <= 282) inMic.add(j);
+        if (q == null || q == pill || q.width > 70 || q.height > 70 || q.center.dy < pill.top - 4 || q.center.dy > pill.bottom + 4) continue;
+        for (var k = 0; k < 5; k++) {
+          if ((q.center.dx - slotsX[k]).abs() < 30) bySlot[k].add(j);
+        }
       }
-      if (inSearch.isNotEmpty && inMic.isNotEmpty) {
-        swapped..addAll(inSearch)..addAll(inMic);
-        final cy = pill.center.dy;
-        // onglet actif : pastille sombre sous l'icône, comme dans la maquette (Kéla : 230 et 231 ; réseau social : 244 à 255)
+      if (bySlot.every((l) => l.isNotEmpty)) {
+        for (final l in bySlot) {
+          swapped.addAll(l);
+        }
         var path = '';
         try {
           path = GoRouter.of(context).routeInformationProvider.value.uri.path;
         } catch (_) {}
         final id = path.startsWith('/s/') ? path.substring(3) : '';
-        final kelaOn = id == '230' || id == '231' || id == 'A1' || id == 'A2';
-        final reseauOn = const {'244', '244b', '245', '246', '247', '248', '249', '250', '251', '252', '253', '254', '255'}.contains(id);
-        Widget slot(double cx, Widget glyph, bool on, String target) => gP(
-              cx - 22,
-              cy - 22,
-              44,
-              44,
-              Container(
-                alignment: Alignment.center,
-                decoration: on ? const BoxDecoration(shape: BoxShape.circle, gradient: RadialGradient(colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)])) : null,
-                child: glyph,
-              ),
-              tap: () => gTab(context, target),
-            );
-        // Kéla : l'orbe de l'assistante (même visuel que sur ses écrans)
-        final orb = Image.asset('assets/figma/img/2b51b5d6469cca917952ac344a2ddf9cc1440830.png', width: 30, height: 30, fit: BoxFit.contain);
-        extra.add(slot(57.5, orb, kelaOn, '231'));
-        extra.add(slot(266, Icon(Icons.groups_outlined, size: 24, color: reseauOn ? Colors.white : const Color(0xFF111015)), reseauOn, '244'));
+        const kela = {'230', '231', 'A1', 'A2'};
+        const reseau = {'244', '244b', '245', '246', '247', '248', '249', '250', '251', '252', '253', '254', '255'};
+        final active = kela.contains(id) ? 0 : (id == '52' ? 1 : (id == '03' ? 2 : (reseau.contains(id) ? 3 : (id == '10' ? 4 : -1))));
+        final cy = pill.center.dy;
+        const targets = ['231', '52', '03', '244', '10'];
+        Widget glyph(int k, Color c) => switch (k) {
+              0 => Image.asset('assets/figma/img/2b51b5d6469cca917952ac344a2ddf9cc1440830.png', width: 30, height: 30, fit: BoxFit.contain),
+              1 => Icon(Icons.chat_bubble_outline, size: 23, color: c),
+              2 => Icon(Icons.home_rounded, size: 25, color: c),
+              3 => Icon(Icons.groups_outlined, size: 25, color: c),
+              _ => Icon(Icons.person_outline, size: 25, color: c),
+            };
+        for (var k = 0; k < 5; k++) {
+          final on = k == active;
+          extra.add(gP(
+            slotsX[k] - 25,
+            cy - 25,
+            50,
+            50,
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeOut,
+              alignment: Alignment.center,
+              decoration: on
+                  ? BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: const RadialGradient(colors: [Color(0xF22A2D36), Color(0xF20E0F14)]),
+                      border: Border.all(color: const Color(0xB3E3E6EE), width: 1.6),
+                      boxShadow: const [BoxShadow(color: Color(0x33FFFFFF), blurRadius: 6, spreadRadius: -1), BoxShadow(color: Color(0x29122640), offset: Offset(0, 4), blurRadius: 10)],
+                    )
+                  : const BoxDecoration(shape: BoxShape.circle),
+              child: glyph(k, on ? Colors.white : const Color(0xFF111015)),
+            ),
+            tap: () => gTab(context, targets[k]),
+          ));
+        }
       }
     }
     final content = [for (var i = 0; i < children.length; i++) if (!band.contains(i) && !hidden.contains(i)) children[i]];

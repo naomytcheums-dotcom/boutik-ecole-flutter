@@ -61,7 +61,7 @@ class G_159 extends ConsumerWidget {
       gP(58, 609.25, 10.5, 10.5, gImg('assets/figma/v/6fd6a3c35cbbc1.svg')),
       gP(84, 593, 269, 18, gText('Conseil de l’IA', 14, Color(0xFFFFFFFF), weight: 700, wrap: true)),
       gP(84, 616, 269, 32, gText('Complétez votre certificat de scolarité pour renforcer votre dossier.', 11.5, Color(0xFFE9E4F5), lh: 16, wrap: true)),
-      gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
+      gP(0, 744, 390, 100, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 0.4), colors: [Color(0x00F7E9DB), Color(0xFFF7E9DB)], stops: [0, 1]))),
       gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gOpen(context, '76')),
       gP(43, 778, 125, 18, gText('Mes candidatures', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
       gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gOpen(context, '152')),

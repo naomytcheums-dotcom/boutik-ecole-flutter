@@ -134,6 +134,10 @@ class Backend {
       avatarUrl: (r['avatar_url'] ?? '').toString(),
       certification: (r['certification'] ?? 'none').toString(),
       serverId: (r['id'] ?? '').toString(),
+      matricule: (r['matricule'] ?? '').toString(),
+      institutionId: (r['institution_id'] ?? '').toString(),
+      departmentId: (r['department_id'] ?? '').toString(),
+      studyLevel: (r['study_level'] ?? '').toString(),
     );
   }
 
@@ -239,8 +243,7 @@ class Backend {
       await c.from('profiles').update({
         'name': a.name,
         'city': a.city,
-        'institution': a.institution,
-        'department': a.department,
+        if (parseBirth(a.birth) != null) 'birth': parseBirth(a.birth)!.toIso8601String().substring(0, 10),
         'bio': a.bio,
         'skills': a.skills,
       }).eq('id', uid);
@@ -837,6 +840,50 @@ class Backend {
       return (rows: const <Map<String, dynamic>>[], error: _msg(e));
     }
   }
+
+  /// Dépôt d'un fichier dans un compartiment ; renvoie un message d'erreur lisible, ou null si le fichier est enregistré.
+  static Future<String?> uploadFile(String bucket, String path, Uint8List bytes, String mime) async {
+    final c = _c;
+    if (c == null || c.auth.currentUser == null) return 'Connexion requise.';
+    try {
+      await c.storage.from(bucket).uploadBinary(path, bytes, fileOptions: FileOptions(contentType: mime, upsert: false));
+      return null;
+    } on StorageException catch (e) {
+      final m = e.message.toLowerCase();
+      if (m.contains('mime') || m.contains('type')) return 'Type de fichier refusé.';
+      if (m.contains('size') || m.contains('large') || m.contains('exceed')) return 'Fichier trop lourd.';
+      if (m.contains('bucket') || m.contains('not found')) return 'Le stockage n’est pas encore activé sur ce serveur.';
+      if (m.contains('row-level') || m.contains('unauthorized')) return 'Votre compte n’est pas autorisé à déposer ce fichier.';
+      return 'Envoi impossible : ${e.message}';
+    } catch (_) {
+      return 'Envoi interrompu. Vérifiez votre connexion et réessayez.';
+    }
+  }
+
+  static Future<void> removeFile(String bucket, String path) async {
+    try {
+      await _c?.storage.from(bucket).remove([path]);
+    } catch (_) {}
+  }
+
+  static String publicFileUrl(String bucket, String path) {
+    try {
+      return _c?.storage.from(bucket).getPublicUrl(path) ?? '';
+    } catch (_) {
+      return '';
+    }
+  }
+
+  static Future<String?> signedFileUrl(String bucket, String path) async {
+    try {
+      return await _c?.storage.from(bucket).createSignedUrl(path, 3600);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Identifiant de la personne connectée (dossier de ses fichiers), ou null.
+  static String? get userId => _c?.auth.currentUser?.id;
 
   /// Dépôt dans le compartiment privé « project-files » (chemin dans le dossier de la personne connectée).
   static Future<({String? path, String? error})> uploadProjectFile(String scope, String name, Uint8List bytes, String mime) async {

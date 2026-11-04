@@ -83,7 +83,7 @@ class G_84b extends ConsumerWidget {
       gP(88, 690, 107, 17, gText('Parrain du projet', 13.5, Color(0xFF111015), weight: 600)),
       gP(88, 712, 116, 14, gText('Votre nom sur la serre', 11.5, Color(0xFF57545F))),
       gP(301, 702, 49, 17, gText(demoContent ? '50 000' : '—', 13.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),
-      gP(0, 768, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
+      gP(0, 768, 390, 100, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 0.4), colors: [Color(0x00F7E6D6), Color(0xFFF7E6D6)], stops: [0, 1]))),
       gP(24, 784, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => unavailableAction(context, 'Contribution indisponible', 'Les contributions à une campagne passent par le paiement sécurisé, qui sera activé en production.')),
       gP(156.5, 802, 77, 18, gText('Contribuer', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 854, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),

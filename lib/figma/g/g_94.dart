@@ -82,7 +82,7 @@ class G_94 extends ConsumerWidget {
       gP(49, 470, 6, 8.833, gImg('assets/figma/v/9fc27387b9ffa1.svg')),
       gP(49, 467.167, 6.007, 6, gImg('assets/figma/v/c499ab72bb5251.svg')),
       gP(76, 456, 277, 34, gText('Comparez les critères puis acceptez la proposition qui répond le mieux à votre besoin.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
-      gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
+      gP(0, 744, 390, 100, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 0.4), colors: [Color(0x00F7E6D6), Color(0xFFF7E6D6)], stops: [0, 1]))),
       gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gOpen(context, '93b')),
       gP(114, 778, 162, 18, gText('Choisir une proposition', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),

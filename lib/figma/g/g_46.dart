@@ -65,7 +65,7 @@ class G_46 extends ConsumerWidget {
       gP(40, 495, 310, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 504, 90, 16, gText('Code de retrait', 12.5, Color(0xFF57545F))),
       gP(303, 504, 47, 16, gText(demoContent ? '482 915' : '••• •••', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)), // code réel : bouton ci-dessous
-      gP(0, 754, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
+      gP(0, 754, 390, 100, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 0.4), colors: [Color(0x00F7E6D6), Color(0xFFF7E6D6)], stops: [0, 1]))),
       gP(24, 770, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => contactOrderSeller(ref, context)),
       gP(31.5, 788, 148, 18, gText('Contacter le vendeur', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
       gP(203, 770, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => showPickupCode(context, ref)),

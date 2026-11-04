@@ -75,7 +75,7 @@ class G_196 extends ConsumerWidget {
       gP(88, 570, 84, 14, gText('Libéré le 14 oct.', 11.5, Color(0xFF57545F)), show: demoContent),
       gP(306.4, 558, 45.6, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: demoContent),
       gP(316.2, 562, 26, 14, gText('Payé', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center), show: demoContent),
-      gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
+      gP(0, 744, 390, 100, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 0.4), colors: [Color(0x00F7E6D6), Color(0xFFF7E6D6)], stops: [0, 1]))),
       gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => missionFileUpload(context, ref)),
       gP(46.5, 778, 118, 18, gText('Ajouter un fichier', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
       gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => missionDossierDialog(context, ref)),

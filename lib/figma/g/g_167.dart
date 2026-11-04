@@ -73,7 +73,7 @@ class G_167 extends ConsumerWidget {
       gP(194, 488, 156, 16, Consumer(builder: (context, ref, _) => gText(ordinal(provisionalRank(ref.watch(scoresProvider))), 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(24, 540, 126, 16, gText('Commentaire du jury', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 560, 342, 96, GField(hint: 'Points forts et axes d’amélioration…', size: 13.5, hintColor: Color(0xFF57545F), weight: 500, padL: 16, multiline: true, padT: 14)),
-      gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
+      gP(0, 744, 390, 100, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 0.4), colors: [Color(0x00F7E6D6), Color(0xFFF7E6D6)], stops: [0, 1]))),
       gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27])),
       gP(66.5, 778, 78, 18, gText('Enregistrer', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
       gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27])),

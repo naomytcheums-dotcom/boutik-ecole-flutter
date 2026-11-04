@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/profile_data.dart';
+import '../live/verification.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -48,13 +50,13 @@ class G_18c extends ConsumerWidget {
       gP(38.667, 145.667, 22.667, 22.667, gImg('assets/figma/v/be05bf41534ad8.svg')),
       gP(47, 154, 6, 9.333, gImg('assets/figma/v/1e56c9812e5c79.svg')),
       gP(47, 150.667, 6.008, 6, gImg('assets/figma/v/0f091c2614d4b3.svg')),
-      gP(76, 139, 250, 36, gText('Ces informations permettent de confirmer\nvotre statut d’étudiant de l’IUT de Douala.', 12.5, Color(0xFF4A4854), lh: 18)),
+      gP(76, 139, 250, 36, gText('Ces informations permettent de confirmer\nvotre statut d’étudiant dans votre établissement.', 12.5, Color(0xFF4A4854), lh: 18)),
       gP(24, 198, 59, 16, gText('Matricule', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 222, 342, 52, GField(hint: '', initial: 'IUT-2023-0412', size: 14.5, hintColor: Color(0xFF111015), weight: 500, padL: 52)),
+      gP(24, 222, 342, 52, GField(hint: 'Votre numéro de matricule', initial: demoContent ? 'IUT-2023-0412' : ref.read(profileAccountProvider).matricule, size: 14.5, hintColor: Color(0xFF57545F), weight: 500, padL: 52, onChanged: (v) { ref.read(formProvider.notifier).put('vs_mat', v); })),
       gP(39.083, 239.458, 21.833, 13.917, gImg('assets/figma/v/c98361d28851b5.svg')),
       gP(42.25, 245, 15.5, 11.74, gImg('assets/figma/v/6ec829d4faedab.svg')),
       gP(24, 282, 38, 16, gText('Filière', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 306, 342, 52, GField(hint: '', initial: 'Génie informatique', size: 14.5, hintColor: Color(0xFF111015), weight: 500, padL: 52)),
+      gP(24, 306, 342, 52, demoContent ? GField(hint: '', initial: 'Génie informatique', size: 14.5, hintColor: Color(0xFF111015), weight: 500, padL: 52) : PickerField(nameKey: 'pf_dept_name', fallback: ref.read(profileAccountProvider).department, placeholder: 'Sélectionnez votre filière', onTap: () => chooseDepartment(context, ref))),
       gP(39.875, 336.125, 20.25, 6, gImg('assets/figma/v/d7874e6aba6e58.svg')),
       gP(41.458, 321.875, 17.083, 20.25, gImg('assets/figma/v/1b67178ff4d68e.svg')),
       gP(44.625, 331.375, 10.75, 10.75, gImg('assets/figma/v/d1b2d323733bea.svg')),
@@ -62,7 +64,7 @@ class G_18c extends ConsumerWidget {
       gP(49.375, 327.417, 6.008, 6, gImg('assets/figma/v/3f8aa7666c0108.svg')),
       gP(330.25, 326.625, 15.5, 10.75, gImg('assets/figma/v/debe62e3abf025.svg')),
       gP(24, 366, 96, 16, gText('Niveau d’étude', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 390, 342, 52, GField(hint: 'Sélectionnez votre niveau', size: 14.5, hintColor: Color(0xFF57545F), weight: 500, padL: 52)),
+      gP(24, 390, 342, 52, demoContent ? GField(hint: 'Sélectionnez votre niveau', size: 14.5, hintColor: Color(0xFF57545F), weight: 500, padL: 52) : PickerField(nameKey: 'vs_level', fallback: ref.read(profileAccountProvider).studyLevel, placeholder: 'Sélectionnez votre niveau', onTap: () => chooseStudyLevel(context, ref))),
       gP(39.083, 407.458, 21.833, 13.917, gImg('assets/figma/v/c98361d28851b5.svg')),
       gP(42.25, 413, 15.5, 11.74, gImg('assets/figma/v/6ec829d4faedab.svg')),
       gP(330.25, 410.625, 15.5, 10.75, gImg('assets/figma/v/debe62e3abf025.svg')),
@@ -71,15 +73,15 @@ class G_18c extends ConsumerWidget {
       gP(54, 515, 22, 26, gImg('assets/figma/v/31af238caaf3f0.svg')),
       gP(64, 515, 12, 12, gImg('assets/figma/v/8e2e7e901fb142.svg')),
       gP(104, 508, 116, 18, gText('Carte d’étudiant', 14.5, Color(0xFF111015), weight: 600)),
-      gP(104, 532.5, 153, 15, gText('carte_etudiant.jpg • 1,2 Mo', 12, Color(0xFF57545F))),
-      gP(323, 514, 26, 26, gBox(color: Color(0xFF1F9D6B), oval: true)),
-      gP(328.333, 520.5, 15.333, 12.417, gImg('assets/figma/v/ad3423d22b0298.svg')),
+      gP(104, 532.5, 200, 15, DocLine(kind: 'student_card', demo: 'carte_etudiant.jpg • 1,2 Mo', empty: 'Appuyez pour téléverser')),
+      gP(323, 514, 26, 26, DocBadge(kind: 'student_card', child: gBox(color: Color(0xFF1F9D6B), oval: true))),
+      gP(328.333, 520.5, 15.333, 12.417, DocBadge(kind: 'student_card', child: gImg('assets/figma/v/ad3423d22b0298.svg'))),
       gP(175, 596, 40, 40, gBox(color: Color(0xFFFDEFC8), oval: true)),
       gP(184.5, 615.5, 21, 11, gImg('assets/figma/v/e3af7898ac3f9a.svg')),
       gP(187.833, 605.5, 14.333, 10.167, gImg('assets/figma/v/09f03a98f4325f.svg')),
       gP(192, 605.5, 6, 16, gImg('assets/figma/v/85622fb50b760d.svg')),
       gP(119, 637, 152, 18, gText('Certificat de scolarité', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
-      gP(65.5, 660, 259, 14, gText('Appuyez pour téléverser (PDF ou JPG, 5 Mo max)', 11.5, Color(0xFF57545F), align: TextAlign.center)),
+      gP(65.5, 660, 259, 14, DocLine(kind: 'enrollment_certificate', demo: 'Appuyez pour téléverser (PDF ou JPG, 10 Mo max)', empty: 'Appuyez pour téléverser (PDF ou JPG, 10 Mo max)', center: true)),
       gP(24, 696, 342, 56, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
       gP(39.5, 720.167, 21, 15.167, gImg('assets/figma/v/a22c4670362503.svg')),
       gP(42.833, 712.667, 14.333, 13.5, gImg('assets/figma/v/36c552ce02b737.svg')),
@@ -89,6 +91,9 @@ class G_18c extends ConsumerWidget {
       gP(281.75, 804, 16.5, 6, gImg('assets/figma/v/5a610cda8a2e08.svg')),
       gP(287, 798.75, 11.25, 16.5, gImg('assets/figma/v/d16794a9c0b390.svg')),
       gP(125, 884, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      gTap(24, 496, 342, 64, () { importDocument(context, ref, kind: 'student_card'); }),
+      gTap(24, 576, 342, 110, () { importDocument(context, ref, kind: 'enrollment_certificate'); }),
+      gTap(24, 780, 342, 54, () { submitVerification(ref, context); }),
     ]);
   }
 }

@@ -59,7 +59,7 @@ class G_171 extends ConsumerWidget {
       gP(40, 574, 310, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 583, 37, 16, gText('Statut', 12.5, Color(0xFF57545F))),
       gP(273, 583, 77, 16, gText('Non reconnu', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
-      gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
+      gP(0, 744, 390, 100, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 0.4), colors: [Color(0x00F7E9DB), Color(0xFFF7E9DB)], stops: [0, 1]))),
       gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gBack(context)),
       gP(36.5, 778, 138, 18, gText('Annuler le paiement', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
       gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gOpen(context, '08')),

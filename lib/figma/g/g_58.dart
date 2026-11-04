@@ -89,7 +89,7 @@ class G_58 extends ConsumerWidget {
       gP(45, 554.25, 6, 9.75, gImg('assets/figma/v/0fc23fb9b18d78.svg')),
       gP(24, 596, 71, 16, gText('Description', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 616, 342, 96, GField(hint: 'Matériaux, dimensions, particularités…', size: 13.5, hintColor: Color(0xFF57545F), weight: 500, padL: 16, onChanged: (v) { ref.read(formProvider.notifier).put('np_desc', v); }, multiline: true, padT: 14)),
-      gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
+      gP(0, 744, 390, 100, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 0.4), colors: [Color(0x00F7E6D6), Color(0xFFF7E6D6)], stops: [0, 1]))),
       gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27])),
       gP(74.5, 778, 62, 18, gText('Brouillon', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
       gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27])),

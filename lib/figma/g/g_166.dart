@@ -91,7 +91,7 @@ class G_166 extends ConsumerWidget {
       gP(40, 661, 310, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 670, 50, 16, gText('Visibilité', 12.5, Color(0xFF57545F))),
       gP(219, 670, 131, 16, gText('Passeport des talents', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
-      gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
+      gP(0, 744, 390, 100, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 0.4), colors: [Color(0x00F7E6D6), Color(0xFFF7E6D6)], stops: [0, 1]))),
       gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => myCertificatesDialog(context, ref)),
       gP(140, 778, 110, 18, gText('Voir le certificat', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),

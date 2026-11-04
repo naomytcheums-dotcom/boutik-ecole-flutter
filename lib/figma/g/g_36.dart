@@ -101,7 +101,7 @@ class G_36 extends ConsumerWidget {
       gP(24, 320, 342, 24, Consumer(builder: (context, ref, _) { final l = currentService(ref); return gText(l == null ? '' : servicePriceLine(l), 18, Color(0xFF111015), weight: 800); }), show: !demoContent),
       gP(24, 360, 342, 120, Consumer(builder: (context, ref, _) { final l = currentService(ref); return gText(l == null || l.description.isEmpty ? 'Demandez un devis pour préciser votre besoin, le délai et le tarif final avec le prestataire.' : l.description, 13.5, Color(0xFF4A4854), lh: 21, wrap: true); }), show: !demoContent),
       gP(24, 500, 342, 60, gText('Le tarif final est fixé par devis : le prestataire vous répond avec un montant et un délai, vous acceptez ou refusez.', 12, Color(0xFF57545F), lh: 17, wrap: true), show: !demoContent),
-      gP(0, 856, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
+      gP(0, 856, 390, 100, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 0.4), colors: [Color(0x00F7E6D6), Color(0xFFF7E6D6)], stops: [0, 1]))),
       gP(24, 872, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () { askQuote(context, ref); }),
       gP(38.5, 890, 134, 18, gText('Demander un devis', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
       gP(203, 872, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () { orderService(context, ref); }),

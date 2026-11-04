@@ -5,6 +5,8 @@ import '../gen.dart';
 import '../nav.dart';
 import 'audit.dart';
 import 'auth.dart';
+import 'backend.dart';
+import 'home_live.dart' show LiveTalent, liveTalentsProvider;
 import 'store.dart';
 
 /// Talents, projets innovants et opportunités (écrans 70, 75, 78 à 80, 151).
@@ -51,9 +53,12 @@ Future<String?> askText(BuildContext context, {required String title, required S
 // ------------------------------------------------------------------ talents (70)
 
 class Talent {
-  const Talent(this.name, this.dept, this.skills, this.category, {this.available = true, this.bio = ''});
-  final String name, dept, skills, category, bio;
+  const Talent(this.name, this.dept, this.skills, this.category, {this.available = true, this.bio = '', this.showStatus = true, this.avatarUrl = ''});
+  final String name, dept, skills, category, bio, avatarUrl;
   final bool available;
+
+  /// Faux pour un vrai profil : aucune disponibilité n'est enregistrée, elle n'est donc jamais affichée.
+  final bool showStatus;
   String get sub => '$dept · $skills';
 }
 
@@ -85,6 +90,15 @@ const talentCats = ['Tous', 'Développement', 'Design', 'Audiovisuel', 'Électro
 final visibleTalentsProvider = Provider<List<Talent>>((ref) {
   final cat = talentCats[ref.watch(talentTabProvider).clamp(0, 4)];
   final q = normText(ref.watch(talentQueryProvider).trim());
+  if (Backend.ready) {
+    // connecté : vrais profils étudiants ayant renseigné leurs compétences ; la catégorie filtre sur leurs compétences et leur département
+    final live = ref.watch(liveTalentsProvider) ?? const <LiveTalent>[];
+    return [
+      for (final t in live)
+        if ((cat == 'Tous' || normText('${t.skills} ${t.department}').contains(normText(cat))) && (q.isEmpty || normText('${t.name} ${t.department} ${t.skills}').contains(q)))
+          Talent(t.name, t.department, t.skills, cat, showStatus: false, avatarUrl: t.avatarUrl),
+    ];
+  }
   return [
     for (final t in talents)
       if ((cat == 'Tous' || t.category == cat) && (q.isEmpty || normText('${t.name} ${t.dept} ${t.skills}').contains(q))) t,

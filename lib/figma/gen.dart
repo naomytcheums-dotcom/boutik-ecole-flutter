@@ -739,7 +739,7 @@ class GSplashBar extends StatefulWidget {
 }
 
 class _GSplashBarState extends State<GSplashBar> with SingleTickerProviderStateMixin {
-  late final AnimationController c = AnimationController(vsync: this, duration: const Duration(milliseconds: 2800));
+  late final AnimationController c = AnimationController(vsync: this, duration: const Duration(milliseconds: 4200));
   @override
   void initState() {
     super.initState();

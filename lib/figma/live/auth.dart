@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import 'audit.dart';
 import 'backend.dart';
+import 'profile_data.dart' show saveAcademic;
 import 'drafts.dart';
 import '../nav.dart';
 
@@ -28,10 +29,17 @@ class Account {
     this.avatarUrl = '',
     this.certification = 'none',
     this.serverId = '',
+    this.matricule = '',
+    this.institutionId = '',
+    this.departmentId = '',
+    this.studyLevel = '',
   });
   final String name, phone, email, password, city, institution, department, birth;
   /// Description, compétences (séparées par des virgules), photo, état de certification (none · pending · review · approved · rejected · revoked) et identifiant Supabase.
   final String bio, skills, avatarUrl, certification, serverId;
+
+  /// Matricule saisi par la personne (jamais généré), références du référentiel et niveau d'études.
+  final String matricule, institutionId, departmentId, studyLevel;
   /// Le badge bleu n'existe que pour une certification réellement approuvée côté serveur.
   bool get certified => certification == 'approved';
   final int role; // 0 client · 1 étudiant vendeur · 2 entreprise · 3 autre
@@ -43,7 +51,7 @@ class Account {
   String get firstName => name.split(' ').first;
   String get lastName => name.split(' ').length > 1 ? name.split(' ').skip(1).join(' ') : '';
 
-  Account copyWith({String? name, String? password, int? role, bool? verified, String? city, String? institution, String? department, String? birth, bool? suspended, String? staff, String? bio, String? skills, String? avatarUrl, String? serverId}) => Account(
+  Account copyWith({String? name, String? password, int? role, bool? verified, String? city, String? institution, String? department, String? birth, bool? suspended, String? staff, String? bio, String? skills, String? avatarUrl, String? serverId, String? matricule, String? institutionId, String? departmentId, String? studyLevel}) => Account(
         name: name ?? this.name,
         phone: phone,
         email: email,
@@ -61,6 +69,10 @@ class Account {
         avatarUrl: avatarUrl ?? this.avatarUrl,
         certification: certification,
         serverId: serverId ?? this.serverId,
+        matricule: matricule ?? this.matricule,
+        institutionId: institutionId ?? this.institutionId,
+        departmentId: departmentId ?? this.departmentId,
+        studyLevel: studyLevel ?? this.studyLevel,
       );
 }
 
@@ -402,6 +414,10 @@ void submitSignup(WidgetRef ref, BuildContext context) {
     email: f['su_email']!.trim(),
     password: f['su_pw']!,
     verified: false,
+    // aucune valeur imposée : établissement, département et ville sont choisis par la personne
+    institution: '',
+    department: '',
+    city: '',
   );
   if (Backend.ready) {
     _serverSignup(ref, context, created);
@@ -490,18 +506,35 @@ Future<void> submitProfile(WidgetRef ref, BuildContext context) async {
   }
   ref.read(errorsProvider.notifier).clear();
   if (a != null) {
+    final instId = (f['pf_inst_id'] ?? '').isNotEmpty ? f['pf_inst_id']! : a.institutionId;
+    final deptId = (f['pf_dept_id'] ?? '').isNotEmpty ? f['pf_dept_id']! : a.departmentId;
+    final birth = (f['pf_birth'] ?? a.birth).trim();
+    if (birth.isNotEmpty && parseBirth(birth) == null) {
+      _errors(ref, {'pf_birth': 'Date invalide : écrivez JJ/MM/AAAA, par exemple 07/03/2002.'});
+      return;
+    }
     final maj = a.copyWith(
       name: '$first $last',
       city: (f['pf_city'] ?? a.city).trim(),
-      institution: (f['pf_inst'] ?? a.institution).trim(),
-      department: (f['pf_dept'] ?? a.department).trim(),
-      birth: f['pf_birth'] ?? a.birth,
+      institution: (f['pf_inst_name'] ?? a.institution).trim(),
+      institutionId: instId,
+      department: (f['pf_dept_name'] ?? a.department).trim(),
+      departmentId: deptId,
+      birth: birth,
     );
     if (Backend.ready) {
       await Backend.createProfile(maj); // idempotent : crée le profil si le choix du rôle a été sauté
       if (!await Backend.saveProfile(maj)) {
         if (context.mounted) await gAlert(context, 'Profil non enregistré', 'Vos informations n’ont pas pu être enregistrées. Réessayez.');
         return;
+      }
+      // établissement et département viennent du référentiel ; le matricule et le niveau déjà saisis sont conservés
+      if (instId.isNotEmpty || deptId.isNotEmpty) {
+        final err = await saveAcademic(ref, institutionId: instId, departmentId: deptId, matricule: a.matricule, level: a.studyLevel);
+        if (err != null) {
+          if (context.mounted) await gAlert(context, 'Établissement non enregistré', err);
+          return;
+        }
       }
     }
     ref.read(authProvider.notifier).update(maj);
@@ -774,4 +807,19 @@ Future<void> editProfileDialog(BuildContext context, WidgetRef ref) async {
 Future<void> logoutEverywhere(WidgetRef ref, BuildContext context) async {
   await Backend.signOutAll();
   ref.read(authProvider.notifier).logout();
+}
+
+
+/// Date de naissance saisie « JJ/MM/AAAA » (espaces tolérés) ou « AAAA-MM-JJ » : renvoie la date, ou null si elle est invalide ou irréaliste.
+DateTime? parseBirth(String v) {
+  final t = v.replaceAll(' ', '');
+  final m = RegExp(r'^(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})$').firstMatch(t) ?? RegExp(r'^(\d{4})-(\d{1,2})-(\d{1,2})$').firstMatch(t);
+  if (m == null) return null;
+  final iso = t.contains(RegExp(r'^\d{4}-'));
+  final y = int.parse(iso ? m.group(1)! : m.group(3)!), mo = int.parse(m.group(2)!), d = int.parse(iso ? m.group(3)! : m.group(1)!);
+  final dt = DateTime(y, mo, d);
+  if (dt.year != y || dt.month != mo || dt.day != d) return null;
+  final now = DateTime.now();
+  if (dt.isAfter(now) || y < 1920) return null;
+  return dt;
 }

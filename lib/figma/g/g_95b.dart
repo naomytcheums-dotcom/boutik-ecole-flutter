@@ -71,7 +71,7 @@ class G_95b extends ConsumerWidget {
       gP(48, 609.5, 6, 9, gImg('assets/figma/v/4d0c4aa2d5e373.svg')),
       gP(42, 609.5, 6, 9, gImg('assets/figma/v/4d0c4aa2d5e373.svg')),
       gP(38.25, 615.5, 19.5, 6, gImg('assets/figma/v/40b22babe144e0.svg')),
-      gP(0, 744, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
+      gP(0, 744, 390, 100, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 0.4), colors: [Color(0x00F7E6D6), Color(0xFFF7E6D6)], stops: [0, 1]))),
       gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () { submitQuoteRequest(context, ref); }),
       gP(124.5, 778, 141, 18, gText('Envoyer la demande', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),

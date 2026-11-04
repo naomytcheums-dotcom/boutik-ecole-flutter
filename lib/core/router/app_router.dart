@@ -72,7 +72,7 @@ class SplashAdvance extends StatefulWidget {
   final Widget child;
   final String next;
 
-  static const delay = Duration(milliseconds: 1200);
+  static const delay = Duration(milliseconds: 2200);
 
   @override
   State<SplashAdvance> createState() => _SplashAdvanceState();

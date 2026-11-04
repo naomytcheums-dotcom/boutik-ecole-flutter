@@ -203,12 +203,16 @@ class GScreen extends StatelessWidget {
     }
 
     final band = <int>{};
+    Rect? pill;
+    var hasBar = false;
     for (var i = 0; i < children.length; i++) {
       final r = rects[i];
       if (r == null || taps[i] || r.top <= h * 0.6) continue;
       final nav = r.width >= 330 && r.width <= 360 && r.height >= 54 && r.height <= 74 && r.left >= 8 && r.left <= 36 && r.top > h * 0.8 && (r.height >= 58 || r.top > h * 0.85);
       final bar = r.left <= 1 && r.width >= w - 2 && r.bottom >= h - 2 && r.height >= 40 && r.height <= 160;
       if (!nav && !bar) continue;
+      if (nav) pill ??= r;
+      if (bar) hasBar = true;
       final zone = nav ? Rect.fromLTRB(r.left - 4, r.top - 24, r.right + 4, r.bottom + 8) : Rect.fromLTRB(-1, r.top - 2, w + 1, h + 1);
       for (var j = i; j < children.length; j++) {
         final q = rects[j];
@@ -237,9 +241,43 @@ class GScreen extends StatelessWidget {
           ),
         );
 
+    // Menu du bas : la loupe devient Kéla (assistante) et le micro devient le réseau social ; l'accueil reste au centre.
+    final swapped = <int>{};
+    final extra = <Widget>[];
+    if (pill != null) {
+      final inSearch = <int>[], inMic = <int>[];
+      for (final j in band) {
+        final q = rects[j];
+        if (q == null || q.center.dy < pill.top - 4 || q.center.dy > pill.bottom + 4) continue;
+        if (q.center.dx >= 40 && q.center.dx <= 76) inSearch.add(j);
+        if (q.center.dx >= 250 && q.center.dx <= 282) inMic.add(j);
+      }
+      if (inSearch.isNotEmpty && inMic.isNotEmpty) {
+        swapped..addAll(inSearch)..addAll(inMic);
+        final cy = pill.center.dy;
+        Widget icon(IconData d) => Icon(d, size: 24, color: const Color(0xFF111015));
+        extra.add(gP(57.5 - 16, cy - 16, 32, 32, Center(child: icon(Icons.auto_awesome)), tap: () => gTab(context, '231')));
+        extra.add(gP(266 - 16, cy - 16, 32, 32, Center(child: icon(Icons.groups_outlined)), tap: () => gTab(context, '244')));
+      }
+    }
     final content = [for (var i = 0; i < children.length; i++) if (!band.contains(i) && !hidden.contains(i)) children[i]];
-    final fixed = [for (var i = 0; i < children.length; i++) if (band.contains(i)) children[i]];
+    final fixed = [for (var i = 0; i < children.length; i++) if (band.contains(i) && !swapped.contains(i)) children[i], ...extra];
     final bandH = band.isEmpty ? 0.0 : (bandBottom - bandTop + 8) * s;
+    // Barre d'actions pleine largeur (Continuer, Passer…) : les boutons reposent directement sur le fond de l'écran. Le contenu qui
+    // défile derrière est masqué par le même fond, aligné sur le dégradé de l'écran entier (aucun aplat visible).
+    Decoration? backing;
+    double backingH = 0;
+    if (hasBar && band.isNotEmpty) {
+      backingH = (bandBottom - bandTop) * s + pad.bottom + 8;
+      final g = bg;
+      if (g != null && g.colors.length >= 2) {
+        final viewH = c.maxHeight;
+        final top = viewH - backingH;
+        backing = BoxDecoration(gradient: LinearGradient(begin: Alignment(0, -2 * top / backingH - 1), end: Alignment(0, 2 * (viewH - top) / backingH - 1), colors: g.colors, stops: g.stops));
+      } else {
+        backing = BoxDecoration(color: color ?? const Color(0xFFFFFFFF));
+      }
+    }
     return DecoratedBox(
       decoration: BoxDecoration(gradient: bg, color: color ?? (bg == null ? const Color(0xFFFFFFFF) : null)),
       child: _PhoneBody(
@@ -247,6 +285,8 @@ class GScreen extends StatelessWidget {
         content: layer(content, statusBand, h),
         fixed: band.isEmpty ? null : layer(fixed, bandTop, bandBottom),
         bottom: pad.bottom,
+        backing: backing,
+        backingHeight: backingH,
       ),
     );
   }
@@ -255,7 +295,9 @@ class GScreen extends StatelessWidget {
 /// Corps d'un écran de téléphone : contenu défilant plein écran et menu du bas fixe. Un glissement vertical démarré sur le
 /// menu fait défiler le contenu (le menu ne « mange » pas le geste), les appuis sur ses boutons restent des appuis.
 class _PhoneBody extends StatefulWidget {
-  const _PhoneBody({required this.padding, required this.content, required this.fixed, required this.bottom});
+  const _PhoneBody({required this.padding, required this.content, required this.fixed, required this.bottom, this.backing, this.backingHeight = 0});
+  final Decoration? backing;
+  final double backingHeight;
   final EdgeInsets padding;
   final Widget content;
   final Widget? fixed;
@@ -284,6 +326,7 @@ class _PhoneBodyState extends State<_PhoneBody> {
   Widget build(BuildContext context) {
     return Stack(children: [
       Positioned.fill(child: SingleChildScrollView(controller: _controller, padding: widget.padding, child: widget.content)),
+      if (widget.backing != null) Positioned(left: 0, right: 0, bottom: 0, height: widget.backingHeight, child: IgnorePointer(child: DecoratedBox(decoration: widget.backing!))),
       if (widget.fixed != null)
         Positioned(left: 0, right: 0, bottom: widget.bottom, child: GestureDetector(onVerticalDragUpdate: _drag, child: widget.fixed)),
     ]);
@@ -568,6 +611,9 @@ class GField extends StatefulWidget {
 
 class _GFieldState extends State<GField> {
   late final TextEditingController c = TextEditingController(text: widget.initial);
+
+  /// Champ de mot de passe : masqué par défaut, l'œil de la maquette (à droite) l'affiche ou le masque.
+  late bool hide = widget.obscure;
   final FocusNode f = FocusNode();
   @override
   void dispose() {
@@ -586,18 +632,18 @@ class _GFieldState extends State<GField> {
       fontWeight: FontWeight.values[((widget.weight ~/ 100).clamp(1, 9)) - 1],
       color: widget.textColor,
     );
-    return GestureDetector(
+    final field = GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: f.requestFocus,
       child: Padding(
-        padding: EdgeInsets.only(left: widget.padL, right: 14, top: widget.multiline ? widget.padT : 0),
+        padding: EdgeInsets.only(left: widget.padL, right: widget.obscure ? 56 : 14, top: widget.multiline ? widget.padT : 0),
         child: Align(
           alignment: widget.multiline ? Alignment.topLeft : Alignment.centerLeft,
           child: TextField(
             controller: c,
             focusNode: f,
             style: st,
-            obscureText: widget.obscure,
+            obscureText: hide,
             keyboardType: widget.numeric ? TextInputType.number : null,
             inputFormatters: [
               if (widget.numeric) FilteringTextInputFormatter.digitsOnly,
@@ -623,7 +669,44 @@ class _GFieldState extends State<GField> {
         ),
       ),
     );
+    if (!widget.obscure) return field;
+    return Stack(children: [
+      Positioned.fill(child: field),
+      Positioned(
+        right: 0,
+        top: 0,
+        bottom: 0,
+        width: 56,
+        child: Semantics(
+          button: true,
+          label: hide ? 'Afficher le mot de passe' : 'Masquer le mot de passe',
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => setState(() => hide = !hide),
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Padding(padding: const EdgeInsets.only(right: 14), child: hide ? const SizedBox(width: 26, height: 26) : CustomPaint(size: const Size(26, 26), painter: _EyeSlash())),
+            ),
+          ),
+        ),
+      ),
+    ]);
   }
+}
+
+/// Barre oblique sur l'œil de la maquette : le mot de passe est affiché.
+class _EyeSlash extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final p = Paint()
+      ..color = const Color(0xFF111015)
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round;
+    canvas.drawLine(Offset(size.width * .18, size.height * .84), Offset(size.width * .82, size.height * .16), p);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter old) => false;
 }
 
 /// Une pastille d'un groupe à choix unique.

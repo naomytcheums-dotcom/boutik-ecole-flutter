@@ -90,7 +90,7 @@ class G_156 extends ConsumerWidget {
       gP(43.333, 854.916, 17.333, 20.169, gImg('assets/figma/v/d9a3b6dd8cdae8.svg')),
       gP(46.875, 860.583, 10.25, 8.833, gImg('assets/figma/v/2bdcafa88f7a43.svg')),
       gP(76, 848, 277, 34, gText('L’IA n’envoie jamais d’alerte sans votre accord et vous pouvez tout désactiver.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
-      gP(0, 920, 390, 100, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 0.4), colors: [Color(0x00F7E6D6), Color(0xFFF7E6D6)], stops: [0, 1]))),
+      gP(0, 920, 390, 100, gBox(color: Color(0x00FFFFFF))),
       gP(24, 936, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => savePrefs(context, ref, alertPrefsProvider)),
       gP(100.5, 954, 189, 18, gText('Enregistrer les préférences', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 1006, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),

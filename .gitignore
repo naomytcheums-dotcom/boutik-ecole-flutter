@@ -51,3 +51,6 @@ app.*.map.json
 tool/figma_export/.figma_token
 tool/figma_export/cache/
 supabase/.temp/
+
+# images de comparaison générées par les tests de rendu (régénérables)
+test/golden/failures/

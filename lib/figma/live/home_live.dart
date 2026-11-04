@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../nav.dart';
-import 'auth.dart';
 import 'backend.dart';
 import 'seller.dart' show allProductsProvider;
 import 'store.dart';
@@ -43,8 +42,6 @@ class TalentsNotifier extends Notifier<List<LiveTalent>?> {
   @override
   List<LiveTalent>? build() {
     if (!Backend.ready) return null;
-    final signedIn = ref.watch(authProvider.select((a) => a.current != null));
-    if (!signedIn) return null;
     Future.microtask(refresh);
     return null;
   }
@@ -84,8 +81,6 @@ class HomeTalents extends ConsumerWidget {
             ],
           ]),
         );
-    final signedIn = ref.watch(authProvider.select((a) => a.current != null));
-    if (!signedIn) return note('Connectez-vous pour découvrir les talents de la communauté.', action: 'Se connecter', onTap: () => gOpen(context, '11'));
     final list = ref.watch(liveTalentsProvider);
     if (list == null) return note('Chargement des talents…');
     if (list.isEmpty) {

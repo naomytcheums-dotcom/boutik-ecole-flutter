@@ -79,7 +79,7 @@ class G_93 extends ConsumerWidget {
       gP(40, 522, 63, 15, gText('Aminata B.', 12, Color(0xFF111015), weight: 600)),
       gP(164, 522, 43, 15, gText(demoContent ? '65 000' : '—', 12, Color(0xFF4A4854))),
       gP(263.2, 522, 37, 15, gText('6 jours', 12, Color(0xFF4A4854))),
-      gP(0, 744, 390, 100, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 0.4), colors: [Color(0x00F7E6D6), Color(0xFFF7E6D6)], stops: [0, 1]))),
+      gP(0, 744, 390, 100, gBox(color: Color(0x00FFFFFF))),
       gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gOpen(context, '94')),
       gP(118, 778, 154, 18, gText('Comparer la sélection', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),

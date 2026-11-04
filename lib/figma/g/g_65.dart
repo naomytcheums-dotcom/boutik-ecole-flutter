@@ -87,7 +87,7 @@ class G_65 extends ConsumerWidget {
       gP(24, 695, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true)),
       gP(56, 694, 305, 17, gText('Remise au point de retrait', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
       gP(56, 714, 305, 14, gText('', 11.5, Color(0xFF57545F), wrap: true)),
-      gP(0, 780, 390, 100, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 0.4), colors: [Color(0x00F7E6D6), Color(0xFFF7E6D6)], stops: [0, 1]))),
+      gP(0, 780, 390, 100, gBox(color: Color(0x00FFFFFF))),
       gP(24, 796, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => advanceCurrentOrder(ref, context)),
       orderActionText(24, 814, 342),
       gP(125, 866, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),

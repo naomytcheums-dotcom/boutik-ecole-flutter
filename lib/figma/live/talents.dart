@@ -53,8 +53,8 @@ Future<String?> askText(BuildContext context, {required String title, required S
 // ------------------------------------------------------------------ talents (70)
 
 class Talent {
-  const Talent(this.name, this.dept, this.skills, this.category, {this.available = true, this.bio = '', this.showStatus = true, this.avatarUrl = ''});
-  final String name, dept, skills, category, bio, avatarUrl;
+  const Talent(this.name, this.dept, this.skills, this.category, {this.available = true, this.bio = '', this.showStatus = true, this.avatarUrl = '', this.userId = ''});
+  final String name, dept, skills, category, bio, avatarUrl, userId;
   final bool available;
 
   /// Faux pour un vrai profil : aucune disponibilité n'est enregistrée, elle n'est donc jamais affichée.
@@ -96,7 +96,7 @@ final visibleTalentsProvider = Provider<List<Talent>>((ref) {
     return [
       for (final t in live)
         if ((cat == 'Tous' || normText('${t.skills} ${t.department}').contains(normText(cat))) && (q.isEmpty || normText('${t.name} ${t.department} ${t.skills}').contains(q)))
-          Talent(t.name, t.department, t.skills, cat, showStatus: false, avatarUrl: t.avatarUrl),
+          Talent(t.name, t.department, t.skills, cat, showStatus: false, avatarUrl: t.avatarUrl, userId: t.id),
     ];
   }
   return [
@@ -119,6 +119,17 @@ Future<void> talentDialog(BuildContext context, WidgetRef ref, Talent t) async {
     min: 10,
   );
   if (msg == null || !context.mounted) return;
+  if (Backend.ready) {
+    // connecté : la proposition part réellement, en message direct à la personne (elle la lit dans ses Messages)
+    if (t.userId.isEmpty) return gToast(context, 'Ce profil ne peut pas recevoir de proposition pour le moment.');
+    if (!await requireLogin(context, ref, 'proposer une mission') || !context.mounted) return;
+    final r = await Backend.startDirectConversation(t.userId, 'Proposition de mission de ${ref.read(profileAccountProvider).name} :\n\n$msg');
+    if (!context.mounted) return;
+    if (r.error != null) return gAlert(context, 'Proposition non envoyée', r.error!);
+    ref.read(talentRequestsProvider.notifier).send(t.name, msg);
+    gToast(context, 'Proposition envoyée à ${t.name} : retrouvez la conversation dans vos messages');
+    return;
+  }
   ref.read(talentRequestsProvider.notifier).send(t.name, msg);
   ref.read(auditProvider.notifier).log(ref.read(profileAccountProvider).name, 'Mission proposée', t.name, 'Validations');
   gToast(context, 'Proposition envoyée à ${t.name}');

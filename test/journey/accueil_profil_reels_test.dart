@@ -1,4 +1,5 @@
 import 'package:boutik_ecole/figma/g/g_03.dart';
+import 'package:boutik_ecole/figma/g/g_11.dart';
 import 'package:boutik_ecole/figma/g/g_18c.dart';
 import 'package:boutik_ecole/figma/gen.dart';
 import 'package:boutik_ecole/figma/gsound.dart';
@@ -98,6 +99,24 @@ void main() {
     final d = UserDoc(id: '1', kind: 'student_card', name: 'ma_carte.jpg', path: 'u/student_card/1', size: 1300000, status: 'pending', note: '', createdAt: DateTime(2026, 11, 4));
     await monter(t, const G_18c(), connecte: true, docs: [d]);
     expect(find.text('ma_carte.jpg • 1,2 Mo • En attente'), findsOneWidget);
+  });
+
+  testWidgets('menu du bas : Kéla remplace la loupe, le réseau remplace le micro, l’accueil reste au centre', (t) async {
+    await monter(t, const G_03(), connecte: false);
+    expect(find.byIcon(Icons.auto_awesome), findsOneWidget);
+    expect(find.byIcon(Icons.groups_outlined), findsOneWidget);
+  });
+
+  testWidgets('mot de passe : l’œil affiche puis masque la saisie', (t) async {
+    await monter(t, const G_11(), connecte: false);
+    bool masque() => t.widget<TextField>(find.byWidgetPredicate((w) => w is TextField && w.obscureText || (w is TextField && w.decoration?.hintText == 'Mot de passe'))).obscureText;
+    expect(masque(), isTrue);
+    await t.tap(find.bySemanticsLabel('Afficher le mot de passe'));
+    await t.pumpAndSettle();
+    expect(masque(), isFalse);
+    await t.tap(find.bySemanticsLabel('Masquer le mot de passe'));
+    await t.pumpAndSettle();
+    expect(masque(), isTrue);
   });
 
   group('contrôles d’envoi et de saisie', () {

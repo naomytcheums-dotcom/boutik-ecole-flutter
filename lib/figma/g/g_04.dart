@@ -114,6 +114,7 @@ class G_04 extends ConsumerWidget {
       gP(184, 951, 22, 22, const SizedBox.expand(), tap: () => gOpen(context, '03')),
       gP(183.75, 949.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       gTap(18, 186, 172, 268, () => gOpen(context, '05')),
+      gTap(36.7, 856.3, 110.2, 29.7, () { gOpen(context, '70'); }), // « En savoir plus » ouvre les talents
       gTap(16, 610.7, 88, 32, () { gOpen(context, '205'); }), // parcours 04 -> 205
     ]);
   }

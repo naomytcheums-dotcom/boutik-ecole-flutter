@@ -733,6 +733,12 @@ class Backend {
     } catch (_) {}
   }
 
+  /// Message direct à une personne (hors annonce) : retrouve la conversation ou la crée, puis ajoute le message.
+  static Future<({String? id, String? error})> startDirectConversation(String userId, String body) async {
+    final r = await rpc('start_direct_conversation', {'p_user': userId, 'p_body': body});
+    return r.error != null ? (id: null, error: userMessage(r.error!)) : (id: '${r.data}', error: null);
+  }
+
   static Future<({String? id, String? error})> startConversation(String listingId, String body) async {
     final c = _c;
     if (c == null || c.auth.currentUser == null) return (id: null, error: 'Connexion requise.');

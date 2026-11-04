@@ -51,10 +51,18 @@ void main() {
       // le bas du contenu (y = 939 dans la maquette) arrive juste au-dessus du menu
       final contentBottom = tester.getBottomLeft(layer).dy;
       expect(contentBottom, lessThanOrEqualTo(tester.getTopLeft(menu).dy + 0.5));
-      // le menu reste utilisable : l'icône Kéla (maquette 255,872) ouvre 230
+      // le menu reste utilisable : le Réseau social (ancien micro, maquette 255,872) ouvre 244
       await tester.tapAt(Offset(266 * s, size.height - (915 - 883) * s));
       await tester.pumpAndSettle();
-      expect(r.state.uri.path, '/s/230');
+      expect(r.state.uri.path, '/s/244');
+      // Kéla (ancienne loupe, maquette 47,872) ouvre l'accueil Kéla 231
+      r.go('/s/03');
+      await tester.pumpAndSettle();
+      st.position.jumpTo(st.position.maxScrollExtent);
+      await tester.pumpAndSettle();
+      await tester.tapAt(Offset(57.5 * s, size.height - (915 - 883) * s));
+      await tester.pumpAndSettle();
+      expect(r.state.uri.path, '/s/231');
     });
   }
 
@@ -71,12 +79,12 @@ void main() {
       final st = tester.state<ScrollableState>(find.descendant(of: scroll, matching: find.byType(Scrollable)));
       st.position.jumpTo(st.position.maxScrollExtent);
       await tester.pumpAndSettle();
-      // le menu du bas reste utilisable : l'icône Kéla ouvre 230
+      // le menu du bas reste utilisable : le Réseau social ouvre 244
       final s = GScreen.maxColumn / 390;
       final left = (size.width - GScreen.maxColumn) / 2;
       await tester.tapAt(Offset(left + 266 * s, size.height - (915 - 883) * s));
       await tester.pumpAndSettle();
-      expect(r.state.uri.path, '/s/230');
+      expect(r.state.uri.path, '/s/244');
     });
   }
 

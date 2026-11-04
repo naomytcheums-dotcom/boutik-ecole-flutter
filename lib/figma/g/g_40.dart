@@ -75,7 +75,7 @@ class G_40 extends ConsumerWidget {
       gP(88, 588, 191, 17, gText('Joindre un cahier des charges', 13.5, Color(0xFF111015), weight: 600)),
       gP(88, 610, 113, 14, gText('PDF, DOC · 5 Mo max', 11.5, Color(0xFF57545F))),
       gP(336.75, 601.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
-      gP(0, 744, 390, 100, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 0.4), colors: [Color(0x00F7E6D6), Color(0xFFF7E6D6)], stops: [0, 1]))),
+      gP(0, 744, 390, 100, gBox(color: Color(0x00FFFFFF))),
       gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27])),
       gP(124.5, 778, 141, 18, gText('Envoyer la demande', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),

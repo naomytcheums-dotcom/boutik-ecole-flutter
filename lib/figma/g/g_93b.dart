@@ -79,7 +79,7 @@ class G_93b extends ConsumerWidget {
       gP(24, 640, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true)),
       gP(56, 639, 305, 17, gText('Tests et livraison', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
       gP(56, 659, 305, 14, gText('Jour 7', 11.5, Color(0xFF57545F), wrap: true)),
-      gP(0, 744, 390, 100, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 0.4), colors: [Color(0x00F7E6D6), Color(0xFFF7E6D6)], stops: [0, 1]))),
+      gP(0, 744, 390, 100, gBox(color: Color(0x00FFFFFF))),
       gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE5484D), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => myNeedsDialog(context, ref)),
       gP(78.5, 778, 54, 18, gText('Refuser', 14.5, Color(0xFFE5484D), weight: 600, align: TextAlign.center)),
       gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => myNeedsDialog(context, ref)),

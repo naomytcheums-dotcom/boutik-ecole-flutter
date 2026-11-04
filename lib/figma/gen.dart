@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'gsound.dart';
 import 'nav.dart';
 
@@ -255,9 +256,30 @@ class GScreen extends StatelessWidget {
       if (inSearch.isNotEmpty && inMic.isNotEmpty) {
         swapped..addAll(inSearch)..addAll(inMic);
         final cy = pill.center.dy;
-        Widget icon(IconData d) => Icon(d, size: 24, color: const Color(0xFF111015));
-        extra.add(gP(57.5 - 16, cy - 16, 32, 32, Center(child: icon(Icons.auto_awesome)), tap: () => gTab(context, '231')));
-        extra.add(gP(266 - 16, cy - 16, 32, 32, Center(child: icon(Icons.groups_outlined)), tap: () => gTab(context, '244')));
+        // onglet actif : pastille sombre sous l'icône, comme dans la maquette (Kéla : 230 et 231 ; réseau social : 244 à 255)
+        var path = '';
+        try {
+          path = GoRouter.of(context).routeInformationProvider.value.uri.path;
+        } catch (_) {}
+        final id = path.startsWith('/s/') ? path.substring(3) : '';
+        final kelaOn = id == '230' || id == '231' || id == 'A1' || id == 'A2';
+        final reseauOn = const {'244', '244b', '245', '246', '247', '248', '249', '250', '251', '252', '253', '254', '255'}.contains(id);
+        Widget slot(double cx, Widget glyph, bool on, String target) => gP(
+              cx - 22,
+              cy - 22,
+              44,
+              44,
+              Container(
+                alignment: Alignment.center,
+                decoration: on ? const BoxDecoration(shape: BoxShape.circle, gradient: RadialGradient(colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)])) : null,
+                child: glyph,
+              ),
+              tap: () => gTab(context, target),
+            );
+        // Kéla : l'orbe de l'assistante (même visuel que sur ses écrans)
+        final orb = Image.asset('assets/figma/img/2b51b5d6469cca917952ac344a2ddf9cc1440830.png', width: 30, height: 30, fit: BoxFit.contain);
+        extra.add(slot(57.5, orb, kelaOn, '231'));
+        extra.add(slot(266, Icon(Icons.groups_outlined, size: 24, color: reseauOn ? Colors.white : const Color(0xFF111015)), reseauOn, '244'));
       }
     }
     final content = [for (var i = 0; i < children.length; i++) if (!band.contains(i) && !hidden.contains(i)) children[i]];
@@ -745,12 +767,12 @@ class GChoiceGroup extends StatefulWidget {
 
 class _GChoiceGroupState extends State<GChoiceGroup> {
   late int sel = widget.selected;
-  @override
-  Widget build(BuildContext context) => Stack(clipBehavior: Clip.none, children: [
+
+  List<Widget> _chips(double dy) => [
         for (var i = 0; i < widget.chips.length; i++)
           Positioned(
             left: widget.chips[i].x,
-            top: widget.chips[i].y,
+            top: widget.chips[i].y - dy,
             width: widget.chips[i].w,
             height: widget.chips[i].h,
             child: GestureDetector(
@@ -777,7 +799,29 @@ class _GChoiceGroupState extends State<GChoiceGroup> {
               ),
             ),
           ),
-      ]);
+      ];
+
+  /// Les pastilles qui dépassent la largeur de l'écran défilent horizontalement (la dernière est atteignable).
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(builder: (context, box) {
+        if (widget.chips.isEmpty) return const SizedBox.shrink();
+        final maxX = widget.chips.map((c) => c.x + c.w).reduce(math.max);
+        if (!box.hasBoundedWidth || maxX <= box.maxWidth + 0.5) return Stack(clipBehavior: Clip.none, children: _chips(0));
+        final minY = widget.chips.map((c) => c.y).reduce(math.min);
+        final maxY = widget.chips.map((c) => c.y + c.h).reduce(math.max);
+        return Stack(children: [
+          Positioned(
+            left: 0,
+            right: 0,
+            top: minY,
+            height: maxY - minY,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SizedBox(width: maxX + 24, height: maxY - minY, child: Stack(clipBehavior: Clip.none, children: _chips(minY))),
+            ),
+          ),
+        ]);
+      });
 }
 
 /// Case à cocher.

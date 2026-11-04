@@ -32,8 +32,9 @@ void main() {
         // exception assumée : les consoles web sur écran étroit gardent une échelle lisible (60 % au moins) et défilent
         // horizontalement pour le contenu large (tableaux), avec menu en tiroir (voir consoles_web_adaptatives_test).
         final consoleEtroite = s.format == ScreenFormat.web && size.width < 1000;
-        final horizontaux = find.byWidgetPredicate((w) => w is SingleChildScrollView && w.scrollDirection == Axis.horizontal);
-        if (!consoleEtroite) expect(horizontaux, findsNothing, reason: 'défilement horizontal sur ${s.id}');
+        // les rangées de filtres (GChoiceGroup) défilent volontairement à l'horizontale : seule la page entière ne doit pas le faire
+        final horizontauxPage = find.byWidgetPredicate((w) => w is SingleChildScrollView && w.scrollDirection == Axis.horizontal && w.child is! SizedBox);
+        if (!consoleEtroite) expect(horizontauxPage, findsNothing, reason: 'défilement horizontal sur ${s.id}');
       });
     }
   }

@@ -93,11 +93,12 @@ final visibleTalentsProvider = Provider<List<Talent>>((ref) {
   if (Backend.ready) {
     // connecté : vrais profils étudiants ayant renseigné leurs compétences ; la catégorie filtre sur leurs compétences et leur département
     final live = ref.watch(liveTalentsProvider) ?? const <LiveTalent>[];
-    return [
+    if (live.isNotEmpty) return [
       for (final t in live)
         if ((cat == 'Tous' || normText('${t.skills} ${t.department}').contains(normText(cat))) && (q.isEmpty || normText('${t.name} ${t.department} ${t.skills}').contains(q)))
           Talent(t.name, t.department, t.skills, cat, showStatus: false, avatarUrl: t.avatarUrl, userId: t.id),
     ];
+    // aucun profil réel : exemples de la maquette (affichés comme avant)
   }
   return [
     for (final t in talents)

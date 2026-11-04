@@ -103,7 +103,7 @@ void main() {
 
   testWidgets('menu du bas : Kéla remplace la loupe, le réseau remplace le micro, l’accueil reste au centre', (t) async {
     await monter(t, const G_03(), connecte: false);
-    expect(find.byIcon(Icons.auto_awesome), findsOneWidget);
+    expect(find.byWidgetPredicate((w) => w is Image && w.image is AssetImage && (w.image as AssetImage).assetName.contains('2b51b5d6469cca917952ac344a2ddf9cc1440830')), findsOneWidget, reason: 'l’orbe de Kéla est dans le menu');
     expect(find.byIcon(Icons.groups_outlined), findsOneWidget);
   });
 

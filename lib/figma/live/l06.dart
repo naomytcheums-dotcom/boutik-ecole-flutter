@@ -5,6 +5,7 @@ import '../../data/demo/section_a_demo.dart';
 import '../../data/repositories/repositories.dart' show cartProvider, CartNotifier;
 import '../gen.dart';
 import '../nav.dart';
+import 'auth.dart' show demoContent;
 import 'store.dart';
 
 /// 06 · Panier — partie vivante : lignes du panier (quantités, suppression) et totaux.
@@ -77,7 +78,8 @@ class _Cart extends StatelessWidget {
 
   List<Widget> _row(BuildContext context, int i, CartLine l, CartNotifier cart) {
     final y = i * _rowH; // relatif à la liste (le haut de la liste = 129)
-    final img = _figmaImages[l.title] ?? l.image;
+    // connecté : l'image du produit lui-même (ou l'image neutre), jamais celle d'une autre maquette
+    final img = demoContent ? (_figmaImages[l.title] ?? l.image) : (l.image.startsWith('assets/') ? l.image : neutralProductImage);
     Widget trash(double dy) => gP(
           330, y + dy - 10, 40, 40,
           Stack(children: [

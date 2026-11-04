@@ -52,7 +52,7 @@ class G_77 extends ConsumerWidget {
       gP(138, 273, 114, 114, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFFF4B6E), Color(0xFFFF8A3D), Color(0xFF9B7BFF)], stops: [0, 0.5, 1]), oval: true)),
       gP(143, 278, 104, 104, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x1A403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], oval: true)),
       gP(149, 284, 92, 92, gBox(image: 'assets/figma/img/2bbb6fbaae9e6d864765beabd4e677ca34d5a95e.png', fit: BoxFit.cover, radii: [46, 46, 46, 46])),
-      gP(138, 392, 114, 29, gText('Dr Mbarga', 23, Color(0xFF111015), weight: 500)),
+      gP(138, 392, 114, 29, Consumer(builder: (context, ref, _) { final a = ref.watch(profileAccountProvider); return gText(demoContent ? 'Dr Mbarga' : a.name, 23, Color(0xFF111015), weight: 500); })),
       gP(258, 396, 16, 16, gBox(color: Color(0xFF2F7DF6), oval: true)),
       gP(259.667, 398.5, 12.667, 10.583, gImg('assets/figma/v/ca53f14df8dcc8.svg')),
       gP(103, 426, 184, 14, gText('Responsable · Génie informatique', 11.5, Color(0xFF57545F))),

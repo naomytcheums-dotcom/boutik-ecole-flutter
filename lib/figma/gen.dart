@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'gsound.dart';
+import 'nav.dart';
 
 export 'gsound.dart';
 
@@ -47,6 +48,13 @@ class GScreen extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       body: LayoutBuilder(builder: (context, c) {
         // Téléphone : plein écran (largeur entière, hauteur entière), menus du bas fixes, contenu défilant jusqu'au bout.
+        // Console web (toile de 1272 px) sur tablette ou téléphone : barre d'application, menu latéral en tiroir, contenu à une échelle lisible.
+        if (!mockupFrame && w >= 1000 && c.maxWidth < 1000) return _web(context, c);
+        // Borne ou tablette (toile de 700 à 999 px) plus large que l'écran : largeur adaptée, défilement vertical.
+        if (!mockupFrame && w >= 700 && w < 1000 && c.maxWidth < w) {
+          final s = c.maxWidth / w;
+          return SingleChildScrollView(child: SizedBox(width: c.maxWidth, height: h * s, child: FittedBox(fit: BoxFit.fill, child: canvas)));
+        }
         if (!mockupFrame && w < 700) {
           // Écran de format mobile sur tablette ou ordinateur : même composition plein écran que sur téléphone, mais dans une
           // colonne de 480 px au plus, centrée sur le fond de l'écran lui-même (ni cadre de téléphone, ni fausse barre d'état).
@@ -87,6 +95,93 @@ class GScreen extends StatelessWidget {
     );
   }
 
+  /// Largeur du menu latéral des consoles web dans la maquette.
+  static const webSidebar = 208.0;
+
+  /// Console web sur écran étroit : le menu latéral devient un tiroir (entrées reconstruites depuis les zones cliquables de la
+  /// maquette), la barre du haut devient une barre d'application, et le contenu garde une échelle lisible (au moins 60 %),
+  /// avec défilement horizontal si nécessaire.
+  Widget _web(BuildContext context, BoxConstraints c) {
+    final side = <GPos>[];
+    final main = <Widget>[];
+    for (final ch in children) {
+      if (ch is GPos) {
+        final r = ch.rect;
+        if (r.right <= webSidebar + 2 && r.bottom <= 58) continue; // logo et titre de la barre du haut
+        // zones cliquables du menu : leur largeur déborde sur le contenu dans la maquette, on se fie à leur centre
+        if (ch.tap && ch.onTap != null && r.center.dx < webSidebar && r.top >= 56) {
+          side.add(ch);
+          continue;
+        }
+        if (r.right <= webSidebar + 2 && r.top >= 56) continue;
+      }
+      main.add(ch);
+    }
+    final labels = [for (final ch in children) if (ch is GPos && ch.label != null && ch.rect.right <= webSidebar + 2 && ch.rect.top >= 56) ch];
+    final entries = <({String label, VoidCallback onTap, double y})>[];
+    for (final t in side) {
+      final box = t.rect.inflate(4);
+      final hit = labels.where((l) => box.contains(l.rect.center)).toList();
+      if (hit.isEmpty) continue;
+      if (entries.any((e) => e.label == hit.first.label)) continue;
+      entries.add((label: hit.first.label!, onTap: t.onTap!, y: t.rect.top));
+    }
+    entries.sort((a, b) => a.y.compareTo(b.y));
+    // Console dont la maquette ne rend pas ses entrées de menu cliquables : accès aux rubriques du rôle et à l'accueil.
+    if (entries.isEmpty) {
+      entries.add((label: 'Mes rubriques', onTap: () => gEspace(context), y: 0));
+      entries.add((label: 'Accueil', onTap: () => gTab(context, '03'), y: 1));
+    }
+    final mainW = w - webSidebar;
+    final s = math.max(c.maxWidth / mainW, 0.6);
+    final canvasW = mainW * s;
+    return Scaffold(
+      backgroundColor: color ?? const Color(0xFFF7F6F4),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: const Text('Boutik-École', style: TextStyle(fontFamily: 'PlusJakartaSans', fontWeight: FontWeight.w700, fontSize: 17, color: Color(0xFF18181B))),
+        iconTheme: const IconThemeData(color: Color(0xFF111015)),
+      ),
+      drawer: Drawer(
+        backgroundColor: Colors.white,
+        child: SafeArea(
+          child: ListView(children: [
+            for (final e in entries)
+              ListTile(
+                title: Text(e.label, style: const TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF18181B))),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  e.onTap();
+                },
+              ),
+          ]),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: SizedBox(
+            width: canvasW,
+            height: h * s,
+            child: FittedBox(
+              fit: BoxFit.fill,
+              child: SizedBox(
+                width: mainW,
+                height: h,
+                child: ClipRect(
+                  child: Stack(clipBehavior: Clip.hardEdge, children: [
+                    Positioned(left: -webSidebar, top: 0, width: w, height: h, child: Stack(clipBehavior: Clip.none, children: main)),
+                  ]),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   /// Plein écran sur téléphone. La maquette est mise à l'échelle de la largeur réelle de l'écran (référence Figma : `w`),
   /// sans cadre ni marges ; la fausse barre d'état et la fausse barre d'accueil iOS sont retirées (le téléphone a les siennes) ;
   /// le menu du bas et les barres d'actions pleine largeur restent fixes en bas, et le contenu reçoit en bas un espace de
@@ -111,7 +206,7 @@ class GScreen extends StatelessWidget {
     for (var i = 0; i < children.length; i++) {
       final r = rects[i];
       if (r == null || taps[i] || r.top <= h * 0.6) continue;
-      final nav = r.width >= 330 && r.width <= 360 && r.height >= 54 && r.height <= 74 && r.left >= 8 && r.left <= 36 && (r.height >= 58 || r.top > h * 0.85);
+      final nav = r.width >= 330 && r.width <= 360 && r.height >= 54 && r.height <= 74 && r.left >= 8 && r.left <= 36 && r.top > h * 0.8 && (r.height >= 58 || r.top > h * 0.85);
       final bar = r.left <= 1 && r.width >= w - 2 && r.bottom >= h - 2 && r.height >= 40 && r.height <= 160;
       if (!nav && !bar) continue;
       final zone = nav ? Rect.fromLTRB(r.left - 4, r.top - 24, r.right + 4, r.bottom + 8) : Rect.fromLTRB(-1, r.top - 2, w + 1, h + 1);
@@ -170,18 +265,22 @@ Widget gP(double x, double y, double w, double h, Widget child,
   if (op < 1) c = Opacity(opacity: op, child: c);
   if (tap != null) c = GPress(onTap: tap, sound: sound, child: c);
   if (GAnim.enabled && w * h < 140000) c = GEnter(delay: Duration(milliseconds: (y * 0.5).clamp(0, 520).round()), child: c);
-  return GPos(x: x, y: y, gw: w, gh: h, tap: tap != null, child: c);
+  return GPos(x: x, y: y, gw: w, gh: h, tap: tap != null, onTap: tap, label: child is GTextBox ? child.label : null, child: c);
 }
 
 Widget gTap(double x, double y, double w, double h, VoidCallback tap) =>
-    GPos(x: x, y: y, gw: w, gh: h, tap: true, child: GPress(onTap: tap, sound: 'whoosh', flash: true, child: SizedBox(width: w, height: h)));
+    GPos(x: x, y: y, gw: w, gh: h, tap: true, onTap: tap, child: GPress(onTap: tap, sound: 'whoosh', flash: true, child: SizedBox(width: w, height: h)));
 
 /// Élément positionné de la maquette qui connaît son rectangle (pour l'adaptation plein écran des téléphones).
 class GPos extends Positioned {
-  const GPos({super.key, required double x, required double y, required this.gw, required this.gh, this.tap = false, required super.child})
+  const GPos({super.key, required double x, required double y, required this.gw, required this.gh, this.tap = false, this.onTap, this.label, required super.child})
       : super(left: x, top: y);
   final double gw, gh;
   final bool tap;
+
+  /// Action de la zone cliquable et libellé du texte, pour reconstruire les menus latéraux (consoles web).
+  final VoidCallback? onTap;
+  final String? label;
   Rect get rect => Rect.fromLTWH(left!, top!, gw, gh);
 }
 
@@ -268,8 +367,14 @@ Widget gText(String s, double size, Color color,
       maxLines: maxLines,
       overflow: maxLines != null ? TextOverflow.ellipsis : TextOverflow.visible,
       textHeightBehavior: const TextHeightBehavior(leadingDistribution: TextLeadingDistribution.even));
-  if (wrap) return IgnorePointer(child: t);
-  return IgnorePointer(child: OverflowBox(alignment: Alignment.topLeft, minWidth: 0, maxWidth: double.infinity, child: t));
+  if (wrap) return GTextBox(label: s, child: t);
+  return GTextBox(label: s, child: OverflowBox(alignment: Alignment.topLeft, minWidth: 0, maxWidth: double.infinity, child: t));
+}
+
+/// Texte de la maquette : garde son libellé pour reconstruire les menus latéraux des consoles web en tiroir.
+class GTextBox extends IgnorePointer {
+  const GTextBox({super.key, required this.label, required super.child});
+  final String label;
 }
 
 /// Texte à plusieurs styles : chaque run = (texte, taille, poids, couleur).

@@ -367,3 +367,21 @@ Future<void> claimReward(BuildContext context, WidgetRef ref) async {
   await ref.read(challengesProvider.notifier).refresh();
   if (context.mounted) gToast(context, fn == 'claim_streak_boost' ? 'Boost de 24 h activé sur votre dernière publication' : '+200 points ajoutés');
 }
+
+/// Fond du reel affiché (écran 245) : le média de la publication quand c'est une image qui se charge, sinon un fond neutre.
+/// Jamais la photo de la maquette avec une vraie publication.
+class ReelBackdrop extends ConsumerWidget {
+  const ReelBackdrop({super.key});
+
+  static const _neutral = DecoratedBox(
+    decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0xFF2B2740), Color(0xFF15131F)])),
+    child: SizedBox.expand(),
+  );
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final r = ref.watch(currentReelProvider);
+    if (r == null || r.video || r.mediaUrl.isEmpty) return _neutral;
+    return Image.network(r.mediaUrl, fit: BoxFit.cover, width: double.infinity, height: double.infinity, errorBuilder: (_, _, _) => _neutral, loadingBuilder: (_, child, p) => p == null ? child : _neutral);
+  }
+}

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/overview.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -94,8 +95,8 @@ class G_108 extends ConsumerWidget {
       gP(52, 567, 84, 15, gText('Aide et retours', 12, Color(0xFF55524C), inter: true)),
       gP(12, 692, 176, 56, gBox(color: Color(0xFFFFFFFF), radii: [14, 14, 14, 14])),
       gP(22, 702, 36, 36, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [18, 18, 18, 18])),
-      gP(66, 707, 59, 14, gText('Dr Mbarga', 11.5, Color(0xFF111015), weight: 600, inter: true)),
-      gP(66, 724, 109, 11, gText('Dép. Génie informatique', 9.5, Color(0xFF57545F), inter: true)),
+      gP(66, 707, 59, 14, Consumer(builder: (context, ref, _) { final a = ref.watch(profileAccountProvider); return gText(demoContent ? 'Dr Mbarga' : a.name, 11.5, Color(0xFF111015), weight: 600, inter: true); })),
+      gP(66, 724, 109, 11, Consumer(builder: (context, ref, _) { final a = ref.watch(profileAccountProvider); return gText(demoContent ? 'Dép. Génie informatique' : 'Dép. ${a.department}', 9.5, Color(0xFF57545F), inter: true); })),
       gP(220, 76, 377, 29, gText('Tableau de bord du département', 24, Color(0xFF18181B), weight: 500, inter: true)),
       gP(220, 110, 393, 15, gText('Étudiants, productions et ventes du département Génie informatique.', 12, Color(0xFF6D6A64), inter: true)),
       gP(860, 78, 110, 34, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E3DE), bw: 1, radii: [17, 17, 17, 17])),
@@ -120,7 +121,7 @@ gP(-13, 165.451, 296, 34.583, gImg('assets/figma/v/5ffec176ca9577.svg'))
       gP(624, 152, 206, 16, gText('Ventes du département (k FCFA)', 13, Color(0xFF18181B), weight: 600, inter: true)),
       gP(1150, 148, 80, 26, gBox(color: Color(0xFFF4F3F1), radii: [13, 13, 13, 13])),
       gP(1175, 154, 30, 13, gText('Filtrer', 10.5, Color(0xFF111015), weight: 500, inter: true, align: TextAlign.center)),
-      gP(624, 184, 208, 31, Consumer(builder: (context, ref, _) => gText(fcfa(4820000 + flowTotal(ref)), 26, Color(0xFF18181B), weight: 700, inter: true))),
+      gP(624, 184, 208, 31, Consumer(builder: (context, ref, _) => gText(demoContent ? fcfa(4820000 + flowTotal(ref)) : overviewRevenue(ref.watch(overviewProvider)), 26, Color(0xFF18181B), weight: 700, inter: true))),
       gP(852, 190, 64, 22, gBox(color: Color(0xFFCFF29A), radii: [11, 11, 11, 11])),
       gP(869.5, 195, 28, 13, gText(demoContent ? '+ 9 %' : '—', 10.5, Color(0xFF35570D), weight: 700, inter: true, align: TextAlign.center)),
       gP(924, 194, 140, 12, gText('+ 398 000 vs mois précédent', 10, Color(0xFF57545F), inter: true)),
@@ -228,7 +229,7 @@ gP(-13, 165.451, 296, 34.583, gImg('assets/figma/v/5ffec176ca9577.svg'))
       gP(1096, 366, 24, 11, gText('Sept.', 9.5, Color(0xFF57545F), inter: true)),
       gP(1214, 366, 19, 11, gText('Oct.', 9.5, Color(0xFF57545F), inter: true)),
       gP(1030, 266, 120, 44, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x1F403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [10, 10, 10, 10])),
-      gP(1044, 272, 45, 15, Consumer(builder: (context, ref, _) => gText('${((4820000 + flowTotal(ref)) / 1000).round()} k', 12, Color(0xFF18181B), weight: 700, inter: true))),
+      gP(1044, 272, 45, 15, Consumer(builder: (context, ref, _) => gText(demoContent ? '${((4820000 + flowTotal(ref)) / 1000).round()} k' : overviewRevenueK(ref.watch(overviewProvider)), 12, Color(0xFF18181B), weight: 700, inter: true))),
       gP(1044, 290, 60, 11, gText('Octobre 2026', 9, Color(0xFF57545F), inter: true)),
       gP(220, 394, 640, 360, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
       gP(250, 412, 138, 16, gText('Validations en attente', 13, Color(0xFF18181B), weight: 600, inter: true)),

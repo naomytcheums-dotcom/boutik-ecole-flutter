@@ -63,7 +63,12 @@ List<LiveProduct> extraProducts = const [];
 /// Produits de la plateforme affichés (serveur une fois connecté, sinon catalogue d'exemple ; mis à jour par allProductsProvider).
 List<LiveProduct> platformProducts = liveCatalog;
 
-LiveProduct productByTitle(String t) => [...extraProducts, ...platformProducts, ...liveCatalog].firstWhere((p) => p.title == t, orElse: () => liveCatalog.first);
+/// Image neutre des produits absents du catalogue de l'application (jamais la photo d'un autre produit).
+const neutralProductImage = 'assets/figma/img/neutre.png';
+
+/// Produit du catalogue par son titre ; un titre inconnu (annonce récente, produit retiré) donne une fiche neutre, pas un autre produit.
+LiveProduct productByTitle(String t) => [...extraProducts, ...platformProducts, ...liveCatalog]
+    .firstWhere((p) => p.title == t, orElse: () => LiveProduct(t, '', 0, '', 'Les détails de ce produit ne sont pas disponibles pour le moment.', neutralProductImage));
 
 /// « 25 000 FCFA · Yannick M. » : prix et vendeur abrégé (nom enregistré « Nom Prénom »).
 String productPriceAndSeller(LiveProduct p) {
@@ -169,7 +174,7 @@ class Orders extends Notifier<List<Order>> {
         () {
           final t = (l as Map)['title'] as String;
           final p = productByTitle(t);
-          return CartLine(t, 'Département : ${p.department}', (l['unit_price'] as num).toInt(), p.image, qty: (l['qty'] as num).toInt());
+          return CartLine(t, (p.department.isEmpty ? '' : 'Département : ${p.department}'), (l['unit_price'] as num).toInt(), p.image, qty: (l['qty'] as num).toInt());
         }(),
     ];
     final f = [for (final l in (r['order_lines'] as List? ?? const [])) ((l as Map)['fulfillment'] as num?)?.toInt() ?? 0];
@@ -271,7 +276,7 @@ final _history = <Order>[
 
 CartLine liveLine(String title, int price) {
   final p = productByTitle(title);
-  return CartLine(p.title, 'Département : ${p.department}', price, p.image);
+  return CartLine(p.title, p.department.isEmpty ? '' : 'Département : ${p.department}', price, p.image);
 }
 
 final ordersAllProvider = Provider<List<Order>>((ref) => demoContent ? [...ref.watch(ordersProvider), ..._history] : ref.watch(ordersProvider));

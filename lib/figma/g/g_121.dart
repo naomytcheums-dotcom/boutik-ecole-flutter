@@ -64,7 +64,7 @@ class G_121 extends ConsumerWidget {
       gP(702.88, 253, 71, 13, gText('Département', 11, Color(0xFF57545F), weight: 600, inter: true)),
       gP(912.32, 253, 66, 13, gText('Affectations', 11, Color(0xFF57545F), weight: 600, inter: true)),
       gP(1083.68, 253, 33, 13, gText('Statut', 11, Color(0xFF57545F), weight: 600, inter: true)),
-      gP(284, 294, 61, 15, gText('Dr Mbarga', 12, Color(0xFF111015), weight: 600, inter: true)),
+      gP(284, 294, 61, 15, Consumer(builder: (context, ref, _) { final a = ref.watch(profileAccountProvider); return gText(demoContent ? 'Dr Mbarga' : a.name, 12, Color(0xFF111015), weight: 600, inter: true); })),
       gP(512.48, 294, 73, 15, gText('Responsable', 12, Color(0xFF4A4854), inter: true)),
       gP(702.88, 294, 108, 15, gText('Génie informatique', 12, Color(0xFF4A4854), inter: true)),
       gP(912.32, 294, 79, 15, gText(demoContent ? '248 étudiants' : '—', 12, Color(0xFF4A4854), inter: true)),

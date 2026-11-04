@@ -46,7 +46,7 @@ class G_157 extends ConsumerWidget {
       gP(24, 70, 161, 26, gText('Résumé de Kéla', 21, Color(0xFF111015), weight: 700)),
       gP(340.75, 69.833, 22.5, 19.75, gImg('assets/figma/v/c416ae6fb27d36.svg')),
       gP(347.442, 87.25, 9.117, 6.922, gImg('assets/figma/v/76ffe03c455014.svg')),
-      gP(24, 96, 106, 15, gText('Orange Cameroun', 12, Color(0xFF57545F))),
+      gP(24, 96, 106, 15, Consumer(builder: (context, ref, _) { final a = ref.watch(profileAccountProvider); return gText(demoContent ? 'Orange Cameroun' : a.name, 12, Color(0xFF57545F)); })),
       gP(24, 120, 342, 168, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xFF0F2E4E), Color(0xFF1E4A80)], stops: [0, 1]), radii: [24, 24, 24, 24])),
       gP(84, 137, 269, 18, gText('Résumé de la semaine par Kéla', 14, Color(0xFFFFFFFF), weight: 700, wrap: true)),
       gP(84, 160, 269, 32, gText('23 propositions reçues pour 3 besoins. 6 sont très adaptées.', 11.5, Color(0xFFE9E4F5), lh: 16, wrap: true)),

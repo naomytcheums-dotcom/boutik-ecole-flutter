@@ -1,3 +1,4 @@
+import '../../figma/live/backend.dart' show Backend;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../demo/catalog_demo.dart';
@@ -50,7 +51,8 @@ final roleProvider = NotifierProvider<RoleNotifier, int>(RoleNotifier.new);
 /// Panier partagé entre la fiche produit (05), le panier (06) et le paiement (08).
 class CartNotifier extends Notifier<List<CartLine>> {
   @override
-  List<CartLine> build() => ref.read(sectionADataProvider).cart;
+  // Connecté au serveur : le panier démarre vide (les articles d'exemple de la maquette ne sont que pour la démonstration hors connexion).
+  List<CartLine> build() => Backend.ready ? const <CartLine>[] : ref.read(sectionADataProvider).cart;
 
   void setQty(int index, int qty) {
     if (qty < 1) return remove(index);

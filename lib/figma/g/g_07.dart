@@ -68,7 +68,7 @@ class G_07 extends ConsumerWidget {
       gP(276.796, 295.04, 76.619, 21.654, gBox(color: Color(0xFF111015), radii: [11.044, 11.044, 11.044, 11.044]), show: ref.watch(homeDeliveryProvider)),
       gP(285.261, 299.367, 59, 13, gText('Sélectionné', 10.009, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center), show: ref.watch(homeDeliveryProvider)),
       gP(26.23, 418.169, 147, 19, gText('Adresse de livraison', 15.186, Color(0xFF111015), weight: 700)),
-      gP(24.85, 450.677, 343.752, 52.105, GField(hint: '', initial: 'Douala, Cameroun', size: 12.425, hintColor: Color(0xFF111015), weight: 500, padL: 54.531)),
+      gP(24.85, 450.677, 343.752, 52.105, GField(hint: 'Adresse (livraison à domicile uniquement)', initial: demoContent ? 'Douala, Cameroun' : '', size: 12.425, hintColor: Color(0xFF111015), weight: 500, padL: 54.531)),
       gP(45.549, 466.59, 17.965, 20.956, gImg('assets/figma/v/4eaba6cfe96f7f.svg')),
       gP(49.288, 470.329, 10.487, 10.487, gImg('assets/figma/v/84555793b853fc.svg')),
       gP(339.372, 469.926, 10.142, 14.283, gImg('assets/figma/v/1e9e003afc49b5.svg')),

@@ -95,7 +95,7 @@ class G_139 extends ConsumerWidget {
       gP(12, 692, 176, 56, gBox(color: Color(0xFFFFFFFF), radii: [14, 14, 14, 14])),
       gP(22, 702, 36, 36, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [18, 18, 18, 18])),
       gP(66, 707, 44, 14, gText('Finance', 11.5, Color(0xFF111015), weight: 600, inter: true)),
-      gP(66, 724, 104, 11, gText('finance@iut-douala.cm', 9.5, Color(0xFF57545F), inter: true)),
+      gP(66, 724, 104, 11, Consumer(builder: (context, ref, _) { final a = ref.watch(profileAccountProvider); return gText(demoContent ? 'finance@iut-douala.cm' : a.email, 9.5, Color(0xFF57545F), inter: true); })),
       gP(220, 76, 293, 29, gText('Tableau de bord financier', 24, Color(0xFF18181B), weight: 500, inter: true)),
       gP(220, 110, 360, 15, gText('Encaissements, reversements et commissions en un coup d’œil.', 12, Color(0xFF6D6A64), inter: true)),
       gP(860, 78, 110, 34, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E3DE), bw: 1, radii: [17, 17, 17, 17])),

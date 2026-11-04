@@ -59,12 +59,12 @@ class G_46 extends ConsumerWidget {
       gP(88, 154, 190, 14, Consumer(builder: (context, ref, _) => gText('Commande du ${ref.watch(viewedOrderProvider).date}', 11.5, Color(0xFF57545F)))),
       gP(252, 142, 100, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
       gP(252, 146, 100, 14, Consumer(builder: (context, ref, _) => gText(orderStatusLabel(ref.watch(viewedOrderProvider)), 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center))),
-      gP(24, 384, 340, 248, const OrderTimeline()),
-      gP(40, 658, 87, 16, gText('Point de retrait', 12.5, Color(0xFF57545F))),
-      gP(228, 658, 122, 16, gText('Kiosque IUT – Bloc A', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
-      gP(40, 683, 310, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(40, 692, 90, 16, gText('Code de retrait', 12.5, Color(0xFF57545F))),
-      gP(303, 692, 47, 16, gText(demoContent ? '482 915' : '••• •••', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)), // code réel : bouton ci-dessous
+      gP(24, 200, 340, 248, const OrderTimeline()),
+      gP(40, 470, 87, 16, gText('Point de retrait', 12.5, Color(0xFF57545F))),
+      gP(228, 470, 122, 16, gText('Kiosque IUT – Bloc A', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
+      gP(40, 495, 310, 1, gBox(color: Color(0xFFF2EFF6))),
+      gP(40, 504, 90, 16, gText('Code de retrait', 12.5, Color(0xFF57545F))),
+      gP(303, 504, 47, 16, gText(demoContent ? '482 915' : '••• •••', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)), // code réel : bouton ci-dessous
       gP(0, 754, 390, 100, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12122640), offset: Offset(0, -4), blurRadius: 16, spreadRadius: 0)])),
       gP(24, 770, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => contactOrderSeller(ref, context)),
       gP(31.5, 788, 148, 18, gText('Contacter le vendeur', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),

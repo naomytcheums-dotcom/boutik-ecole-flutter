@@ -120,7 +120,7 @@ class G_168 extends ConsumerWidget {
       gP(52, 339, 89, 15, gText('Communication', 12, Color(0xFF55524C), inter: true)),
       gP(12, 814, 216, 56, gBox(color: Color(0xFFFFFFFF), radii: [14, 14, 14, 14])),
       gP(22, 824, 36, 36, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, oval: true)),
-      gP(66, 827, 121, 14, gText('Orange Digital Center', 11.5, Color(0xFF111015), weight: 600, inter: true)),
+      gP(66, 827, 121, 14, Consumer(builder: (context, ref, _) { final a = ref.watch(profileAccountProvider); return gText(demoContent ? 'Orange Digital Center' : a.name, 11.5, Color(0xFF111015), weight: 600, inter: true); })),
       gP(66, 844, 107, 11, gText('Organisateur partenaire', 9.5, Color(0xFF57545F), inter: true)),
       gP(268, 76, 229, 29, gText('Publier un concours', 24, Color(0xFF18181B), weight: 500, inter: true)),
       gP(268, 110, 226, 15, gText('Vue d’ensemble · mise à jour aujourd’hui', 12, Color(0xFF6D6A64), inter: true)),

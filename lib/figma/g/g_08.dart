@@ -49,7 +49,7 @@ class G_08 extends ConsumerWidget {
       gP(25.096, 129.376, 144, 19, gText('Moyen de paiement', 14.922, Color(0xFF111015), weight: 700)),
       gP(88.174, 182.697, 50.87, 53.258, gBox(image: 'assets/figma/img/c7764301f1686610d42f1dec67db0ef7e710852f.png', fit: BoxFit.cover, radii: [9.496, 9.496, 9.496, 9.496])),
       gP(153.287, 188.18, 92, 16, gText('Orange Money', 12.887, Color(0xFF111015), weight: 500)),
-      gP(153.287, 214.124, 80, 14, gText('Compte IUT DFI', 10.852, Color(0xFF5A3FE0))),
+      gP(153.287, 214.124, 80, 14, gText(demoContent ? 'Compte IUT DFI' : 'Paiement Mobile Money', 10.852, Color(0xFF5A3FE0))),
       gP(334.383, 201.524, 16.278, 16.278, gBox(border: Color(0xFF6A4DFF), bw: 1.696, oval: true)),
       gP(338.113, 205.254, 8.817, 8.817, gBox(color: Color(0xFF6A4DFF), oval: true)),
       gP(88.174, 282.472, 50.87, 53.258, gBox(image: 'assets/figma/img/c64e9a62ce99f11990178c5744b4f94fa121876a.png', fit: BoxFit.cover, radii: [9.496, 9.496, 9.496, 9.496])),

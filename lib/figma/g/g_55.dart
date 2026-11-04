@@ -45,7 +45,7 @@ class G_55 extends ConsumerWidget {
       gP(31, 71, 22, 22, const SizedBox.expand(), tap: () => gBack(context)),
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
-      gP(76, 70, 189, 26, gText('Orange Cameroun', 21, Color(0xFF111015), weight: 700)),
+      gP(76, 70, 189, 26, Consumer(builder: (context, ref, _) { final a = ref.watch(profileAccountProvider); return gText(demoContent ? 'Orange Cameroun' : a.name, 21, Color(0xFF111015), weight: 700); })),
       gP(76, 96, 203, 15, gText('Partenaire vérifié · Répond sous 24 h', 12, Color(0xFF57545F))),
       gP(36, 133, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(44.667, 145.833, 22.667, 17.667, gImg('assets/figma/v/0b1915710c6b88.svg')),

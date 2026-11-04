@@ -1,4 +1,6 @@
 import 'package:boutik_ecole/figma/g/g_108.dart';
+import 'package:boutik_ecole/figma/g/g_123.dart';
+import 'package:boutik_ecole/figma/g/g_127.dart';
 import 'package:boutik_ecole/figma/gsound.dart';
 import 'package:boutik_ecole/figma/live/backend.dart';
 import 'package:boutik_ecole/figma/live/overview.dart';
@@ -22,13 +24,13 @@ void main() {
   setUpAll(loadAppFonts);
   tearDown(() => Backend.ready = false);
 
-  Future<void> monter(WidgetTester t, {required bool connecte, Overview? vue}) async {
+  Future<void> monter(WidgetTester t, {required bool connecte, Overview? vue, Widget ecran = const G_108()}) async {
     Backend.ready = connecte;
     GAnim.enabled = false;
     t.view.physicalSize = const Size(1280, 800);
     t.view.devicePixelRatio = 1;
     addTearDown(t.view.reset);
-    await t.pumpWidget(ProviderScope(overrides: [overviewProvider.overrideWith(() => _Vue(vue))], child: const MaterialApp(home: Scaffold(body: G_108()))));
+    await t.pumpWidget(ProviderScope(overrides: [overviewProvider.overrideWith(() => _Vue(vue))], child: MaterialApp(home: Scaffold(body: ecran))));
     await t.pumpAndSettle();
   }
 
@@ -57,5 +59,27 @@ void main() {
   testWidgets('108 hors connexion : la démonstration de la maquette reste affichée', (t) async {
     await monter(t, connecte: false);
     expect(find.text('Dr Mbarga'), findsOneWidget);
+  });
+
+  const vue = Overview(students: 75, sellers: 25, listingsApproved: 11, listingsPending: 2, orders: 52, ordersPaid: 34, paidRevenue: 980500);
+
+  testWidgets('123 connecté : chiffre d’affaires, commandes et vendeurs viennent du serveur', (t) async {
+    await monter(t, connecte: true, vue: vue, ecran: const G_123());
+    expect(find.text(fcfa(980500)), findsOneWidget);
+    expect(find.text('52'), findsOneWidget);
+    expect(find.text('25'), findsOneWidget);
+    expect(find.text('1 482'), findsNothing);
+    expect(find.textContaining('28 400 000'), findsNothing);
+  });
+
+  testWidgets('127 connecté : volume des transactions du serveur, jamais 182 500 000', (t) async {
+    await monter(t, connecte: true, vue: vue, ecran: const G_127());
+    expect(find.text(fcfa(980500)), findsOneWidget);
+    expect(find.textContaining('182 500 000'), findsNothing);
+  });
+
+  testWidgets('123 hors connexion : démonstration conservée', (t) async {
+    await monter(t, connecte: false, ecran: const G_123());
+    expect(find.text('1 482'), findsOneWidget);
   });
 }

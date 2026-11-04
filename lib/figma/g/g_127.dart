@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/overview.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -120,7 +121,7 @@ gP(-13, 165.451, 296, 34.583, gImg('assets/figma/v/5ffec176ca9577.svg'))
       gP(624, 152, 218, 16, gText('Volume des transactions (M FCFA)', 13, Color(0xFF18181B), weight: 600, inter: true)),
       gP(1150, 148, 80, 26, gBox(color: Color(0xFFF4F3F1), radii: [13, 13, 13, 13])),
       gP(1175, 154, 30, 13, gText('Filtrer', 10.5, Color(0xFF111015), weight: 500, inter: true, align: TextAlign.center)),
-      gP(624, 184, 238, 31, gText(demoContent ? '182 500 000 FCFA' : '—', 26, Color(0xFF18181B), weight: 700, inter: true)),
+      gP(624, 184, 238, 31, Consumer(builder: (context, ref, _) => gText(demoContent ? '182 500 000 FCFA' : overviewRevenue(ref.watch(overviewProvider)), 26, Color(0xFF18181B), weight: 700, inter: true))),
       gP(852, 190, 64, 22, gBox(color: Color(0xFFCFF29A), radii: [11, 11, 11, 11])),
       gP(866.5, 195, 34, 13, gText(demoContent ? '+ 14 %' : '—', 10.5, Color(0xFF35570D), weight: 700, inter: true, align: TextAlign.center)),
       gP(924, 194, 155, 12, gText('+ 22 600 000 vs mois précédent', 10, Color(0xFF57545F), inter: true)),

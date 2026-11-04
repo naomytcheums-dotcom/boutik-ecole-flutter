@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/overview.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -33,14 +34,14 @@ class G_123 extends ConsumerWidget {
     return GScreen(w: 1280, h: 890, radius: 16, color: Color(0xFFF7F6F4), children: [
       gP(268, 134, 238.5, 92, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
       gP(282, 146, 91, 14, gText('Chiffre d’affaires', 11.5, Color(0xFF57545F), weight: 500, inter: true)),
-      gP(282, 166, 174, 24, gText(demoContent ? '28 400 000 FCFA' : '—', 20, Color(0xFF111015), weight: 700, inter: true)),
+      gP(282, 166, 174, 24, Consumer(builder: (context, ref, _) => gText(demoContent ? '28 400 000 FCFA' : overviewRevenue(ref.watch(overviewProvider)), 20, Color(0xFF111015), weight: 700, inter: true))),
       gP(282, 198, 30, 13, gText(demoContent ? '+11 %' : '—', 11, Color(0xFF0F7A52), weight: 600, inter: true)),
       gP(466.5, 146, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),
       gP(471.875, 151.375, 17.875, 14.125, gImg('assets/figma/v/b45a94448c908a.svg')),
       gP(471.875, 152.625, 17.25, 16, gImg('assets/figma/v/942aaa660c45c9.svg')),
       gP(516.5, 134, 238.5, 92, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
       gP(530.5, 146, 70, 14, gText('Commandes', 11.5, Color(0xFF57545F), weight: 500, inter: true)),
-      gP(530.5, 166, 54, 24, gText(demoContent ? '1 482' : '—', 20, Color(0xFF111015), weight: 700, inter: true)),
+      gP(530.5, 166, 54, 24, Consumer(builder: (context, ref, _) => gText(demoContent ? '1 482' : overviewCount(ref.watch(overviewProvider), (o) => o.orders), 20, Color(0xFF111015), weight: 700, inter: true))),
       gP(530.5, 198, 27, 13, gText(demoContent ? '+9 %' : '—', 11, Color(0xFF0F7A52), weight: 600, inter: true)),
       gP(715, 146, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),
       gP(721, 150.75, 16, 18.5, gImg('assets/figma/v/b8b641560aad30.svg')),
@@ -48,7 +49,7 @@ class G_123 extends ConsumerWidget {
       gP(726, 153.562, 6, 12.875, gImg('assets/figma/v/084a5a2da19358.svg')),
       gP(765, 134, 238.5, 92, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
       gP(779, 146, 86, 14, gText('Vendeurs actifs', 11.5, Color(0xFF57545F), weight: 500, inter: true)),
-      gP(779, 166, 36, 24, gText(demoContent ? '312' : '—', 20, Color(0xFF111015), weight: 700, inter: true)),
+      gP(779, 166, 36, 24, Consumer(builder: (context, ref, _) => gText(demoContent ? '312' : overviewCount(ref.watch(overviewProvider), (o) => o.sellers), 20, Color(0xFF111015), weight: 700, inter: true))),
       gP(779, 198, 22, 13, gText('+24', 11, Color(0xFF0F7A52), weight: 600, inter: true)),
       gP(963.5, 146, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),
       gP(968.25, 158.875, 14.75, 9.75, gImg('assets/figma/v/1782796e9e22c0.svg')),

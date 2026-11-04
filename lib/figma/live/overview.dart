@@ -41,3 +41,6 @@ final overviewProvider = NotifierProvider<OverviewNotifier, Overview?>(OverviewN
 /// Chiffre d'affaires encaissé : « — » tant qu'il n'est pas lu.
 String overviewRevenue(Overview? o) => o == null ? '—' : fcfa(o.paidRevenue);
 String overviewRevenueK(Overview? o) => o == null ? '—' : '${(o.paidRevenue / 1000).round()} k';
+
+/// Compteur entier lu sur le serveur : « — » tant qu'il n'est pas lu.
+String overviewCount(Overview? o, int Function(Overview) pick) => o == null ? '—' : '${pick(o)}';

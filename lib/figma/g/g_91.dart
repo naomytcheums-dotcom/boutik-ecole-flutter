@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/entreprise.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -31,7 +32,7 @@ class G_91 extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
-      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo', show: demoContent),
       gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
       gP(286, 24, 9, 14, gImg('assets/figma/v/c57de3594f8754.svg')),
@@ -61,30 +62,30 @@ class G_91 extends ConsumerWidget {
       gP(333.833, 139.417, 6, 9.167, gImg('assets/figma/v/3221f2f163c9f7.svg')),
       gP(340.167, 145.75, 6, 9.167, gImg('assets/figma/v/3221f2f163c9f7.svg')),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 182, 55.6, 34, 'Tous', 12.5, 600), GChip(87.6, 182, 122.2, 34, 'Développement', 12.5, 500), GChip(217.8, 182, 70.4, 34, 'Design', 12.5, 500), GChip(296.2, 182, 107.4, 34, 'Audiovisuel', 12.5, 500), GChip(411.6, 182, 77.8, 34, 'Équipes', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
-      gP(24, 230, 181, 19, gText('48 profils correspondent', 15, Color(0xFF111015), weight: 700)),
-      gP(36, 276, 50, 50, gBox(image: 'assets/figma/img/c15478a4e0a5cc1be462d8179ed1a24390853242.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
-      gP(98, 280, 98, 17, gText('Mariam Essono', 13.5, Color(0xFF111015), weight: 600)),
-      gP(98, 302, 142, 14, gText('Génie informatique · 4.9 ★', 11.5, Color(0xFF57545F))),
-      gP(268, 290, 84, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
-      gP(281.5, 294, 57, 14, gText('Disponible', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
-      gP(98, 334, 256, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(36, 342, 50, 50, gBox(image: 'assets/figma/img/8d2db59994dcfe0c5b9851845e0b9f6aec49d36d.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
-      gP(98, 346, 90, 17, gText('Aminata Bello', 13.5, Color(0xFF111015), weight: 600)),
-      gP(98, 368, 98, 14, gText('MMI · UI/UX · 4.8 ★', 11.5, Color(0xFF57545F))),
-      gP(268, 356, 84, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
-      gP(281.5, 360, 57, 14, gText('Disponible', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
-      gP(98, 400, 256, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(36, 408, 50, 50, gBox(image: 'assets/figma/img/2bbb6fbaae9e6d864765beabd4e677ca34d5a95e.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
-      gP(98, 412, 126, 17, gText('Équipe Team Innov’', 13.5, Color(0xFF111015), weight: 600)),
-      gP(98, 434, 160, 14, gText('Génie électrique · 4 membres', 11.5, Color(0xFF57545F))),
-      gP(293.6, 422, 58.4, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
-      gP(303.8, 426, 38, 14, gText('Équipe', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)),
-      gP(98, 466, 256, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(36, 474, 50, 50, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
-      gP(98, 478, 93, 17, gText('Kouassi Tagne', 13.5, Color(0xFF111015), weight: 600)),
-      gP(98, 500, 99, 14, gText('Audiovisuel · 4.7 ★', 11.5, Color(0xFF57545F))),
-      gP(293.6, 488, 58.4, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11])),
-      gP(300.8, 492, 44, 14, gText('Occupé', 11, Color(0xFF8F5400), weight: 600, align: TextAlign.center)),
+      gP(24, 230, 181, 19, gText('48 profils correspondent', 15, Color(0xFF111015), weight: 700), show: demoContent),
+      gP(36, 276, 50, 50, gBox(image: 'assets/figma/img/c15478a4e0a5cc1be462d8179ed1a24390853242.png', fit: BoxFit.cover, radii: [25, 25, 25, 25]), show: demoContent),
+      gP(98, 280, 98, 17, gText('Mariam Essono', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(98, 302, 142, 14, gText('Génie informatique · 4.9 ★', 11.5, Color(0xFF57545F)), show: demoContent),
+      gP(268, 290, 84, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(281.5, 294, 57, 14, gText('Disponible', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center), show: demoContent),
+      gP(98, 334, 256, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(36, 342, 50, 50, gBox(image: 'assets/figma/img/8d2db59994dcfe0c5b9851845e0b9f6aec49d36d.png', fit: BoxFit.cover, radii: [25, 25, 25, 25]), show: demoContent),
+      gP(98, 346, 90, 17, gText('Aminata Bello', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(98, 368, 98, 14, gText('MMI · UI/UX · 4.8 ★', 11.5, Color(0xFF57545F)), show: demoContent),
+      gP(268, 356, 84, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(281.5, 360, 57, 14, gText('Disponible', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center), show: demoContent),
+      gP(98, 400, 256, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(36, 408, 50, 50, gBox(image: 'assets/figma/img/2bbb6fbaae9e6d864765beabd4e677ca34d5a95e.png', fit: BoxFit.cover, radii: [25, 25, 25, 25]), show: demoContent),
+      gP(98, 412, 126, 17, gText('Équipe Team Innov’', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(98, 434, 160, 14, gText('Génie électrique · 4 membres', 11.5, Color(0xFF57545F)), show: demoContent),
+      gP(293.6, 422, 58.4, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(303.8, 426, 38, 14, gText('Équipe', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center), show: demoContent),
+      gP(98, 466, 256, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(36, 474, 50, 50, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [25, 25, 25, 25]), show: demoContent),
+      gP(98, 478, 93, 17, gText('Kouassi Tagne', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(98, 500, 99, 14, gText('Audiovisuel · 4.7 ★', 11.5, Color(0xFF57545F)), show: demoContent),
+      gP(293.6, 488, 58.4, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(300.8, 492, 44, 14, gText('Occupé', 11, Color(0xFF8F5400), weight: 600, align: TextAlign.center), show: demoContent),
       gP(125, 832, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
       gP(47.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '19')),
@@ -102,7 +103,8 @@ class G_91 extends ConsumerWidget {
       gP(169, 762, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gTab(context, '03')),
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
-      gTap(90, 338, 106, 33, () { gOpen(context, 'p1'); }), // lien métier 91 -> p1
+      if (demoContent) gTap(90, 338, 106, 33, () { gOpen(context, 'p1'); }), // lien métier 91 -> p1
+      if (!demoContent) gP(24, 230, 342, 500, const TalentSearchList(width: 342, height: 500)),
     ]);
   }
 }

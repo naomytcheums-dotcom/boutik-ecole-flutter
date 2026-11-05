@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/compte.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -31,7 +32,7 @@ class G_27 extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo', show: demoContent),
       gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 19, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
@@ -50,36 +51,36 @@ class G_27 extends ConsumerWidget {
       gP(345.081, 74.311, 17.967, 17.967, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(344.327, 73.557, 17.978, 17.978, gImg('assets/figma/v/e8558e10aa6b5f.svg')),
       gP(354.584, 83.813, 9.219, 9.219, gImg('assets/figma/v/a79ae7aacdf827.svg')),
-      gP(37.163, 156.121, 25.024, 29.78, gImg('assets/figma/v/4c6aa9d1fade48.svg')),
-      gP(43.108, 162.066, 13.134, 13.134, gImg('assets/figma/v/d15dc14bdbcebc.svg')),
-      gP(79.797, 149.243, 123, 17, gText('Adresse par défaut', 13.211, Color(0xFF111015), weight: 700)),
-      gP(79.797, 181.676, 199, 17, gText('IUT de Douala, Quartier Ndokoti', 13.211, Color(0xFF2B3F5C), weight: 500)),
-      gP(79.797, 211.161, 118, 17, gText('Douala, Cameroun', 13.211, Color(0xFF2B3F5C), weight: 500)),
-      gP(302.276, 176.908, 58.13, 35.382, gBox(color: Color(0xFFF2EFF6), radii: [12.683, 12.683, 12.683, 12.683])),
-      gP(307.841, 187.099, 47, 15, gText('Modifier', 11.626, Color(0xFF111015), weight: 600, align: TextAlign.center)),
-      gP(30.65, 291.981, 98, 19, gText('Mes adresses', 14.797, Color(0xFF111015), weight: 700)),
-      gP(298.252, 296.193, 50, 15, gText('Voir tout', 12.154, Color(0xFF5A3FE0), weight: 500, align: TextAlign.right)),
-      gP(352.43, 300.693, 12.782, 6, gImg('assets/figma/v/855926f1899ef7.svg')),
-      gP(355.821, 297.302, 9.391, 12.782, gImg('assets/figma/v/aa2eaaf31287b4.svg')),
-      gP(41.39, 359.259, 20.797, 24.496, gImg('assets/figma/v/4530e4fe2e7100.svg')),
-      gP(46.014, 363.883, 11.549, 11.549, gImg('assets/figma/v/dbd70a6e45bc06.svg')),
-      gP(79.797, 356.136, 45, 16, gText('Maison', 12.683, Color(0xFF111015), weight: 700)),
-      gP(79.797, 383.91, 101, 15, gText('Bonapriso, Douala', 11.626, Color(0xFF5A3FE0))),
-      gP(79.797, 408.972, 59, 15, gText('Cameroun', 11.626, Color(0xFF5A3FE0))),
-      gP(305.976, 358.976, 54.431, 28.748, gBox(color: Color(0xFFFDF0D5), radii: [10.041, 10.041, 10.041, 10.041])),
-      gP(308.955, 366.482, 49, 13, gText('Principale', 10.041, Color(0xFF8F5400), weight: 600, align: TextAlign.center)),
-      gP(42.315, 492.128, 18.947, 22.646, gImg('assets/figma/v/0670fa9a3ceee9.svg')),
-      gP(46.014, 492.128, 11.549, 9.699, gImg('assets/figma/v/75655af53eeb33.svg')),
-      gP(46.939, 500.452, 10.624, 9.699, gImg('assets/figma/v/65db527a4e9160.svg')),
-      gP(79.797, 490.292, 44, 16, gText('Bureau', 12.683, Color(0xFF111015), weight: 700)),
-      gP(79.797, 516.591, 74, 15, gText('Akwa, Douala', 11.626, Color(0xFF5A3FE0))),
-      gP(79.797, 541.653, 59, 15, gText('Cameroun', 11.626, Color(0xFF5A3FE0))),
-      gP(346.309, 500.966, 9.171, 12.341, gImg('assets/figma/v/36e35652505fba.svg')),
-      gP(129.378, 642.715, 17.098, 6, gImg('assets/figma/v/8c26a4a28a3a65.svg')),
-      gP(134.927, 637.166, 6, 17.098, gImg('assets/figma/v/88280087bf7b2f.svg')),
-      gP(160.65, 638.215, 115, 15, gText('Ajouter une adresse', 12.154, Color(0xFF111015), weight: 500)),
+      gP(37.163, 156.121, 25.024, 29.78, gImg('assets/figma/v/4c6aa9d1fade48.svg'), show: demoContent),
+      gP(43.108, 162.066, 13.134, 13.134, gImg('assets/figma/v/d15dc14bdbcebc.svg'), show: demoContent),
+      gP(79.797, 149.243, 123, 17, gText('Adresse par défaut', 13.211, Color(0xFF111015), weight: 700), show: demoContent),
+      gP(79.797, 181.676, 199, 17, gText('IUT de Douala, Quartier Ndokoti', 13.211, Color(0xFF2B3F5C), weight: 500), show: demoContent),
+      gP(79.797, 211.161, 118, 17, gText('Douala, Cameroun', 13.211, Color(0xFF2B3F5C), weight: 500), show: demoContent),
+      gP(302.276, 176.908, 58.13, 35.382, gBox(color: Color(0xFFF2EFF6), radii: [12.683, 12.683, 12.683, 12.683]), show: demoContent),
+      gP(307.841, 187.099, 47, 15, gText('Modifier', 11.626, Color(0xFF111015), weight: 600, align: TextAlign.center), show: demoContent),
+      gP(30.65, 291.981, 98, 19, gText('Mes adresses', 14.797, Color(0xFF111015), weight: 700), show: demoContent),
+      gP(298.252, 296.193, 50, 15, gText('Voir tout', 12.154, Color(0xFF5A3FE0), weight: 500, align: TextAlign.right), show: demoContent),
+      gP(352.43, 300.693, 12.782, 6, gImg('assets/figma/v/855926f1899ef7.svg'), show: demoContent),
+      gP(355.821, 297.302, 9.391, 12.782, gImg('assets/figma/v/aa2eaaf31287b4.svg'), show: demoContent),
+      gP(41.39, 359.259, 20.797, 24.496, gImg('assets/figma/v/4530e4fe2e7100.svg'), show: demoContent),
+      gP(46.014, 363.883, 11.549, 11.549, gImg('assets/figma/v/dbd70a6e45bc06.svg'), show: demoContent),
+      gP(79.797, 356.136, 45, 16, gText('Maison', 12.683, Color(0xFF111015), weight: 700), show: demoContent),
+      gP(79.797, 383.91, 101, 15, gText('Bonapriso, Douala', 11.626, Color(0xFF5A3FE0)), show: demoContent),
+      gP(79.797, 408.972, 59, 15, gText('Cameroun', 11.626, Color(0xFF5A3FE0)), show: demoContent),
+      gP(305.976, 358.976, 54.431, 28.748, gBox(color: Color(0xFFFDF0D5), radii: [10.041, 10.041, 10.041, 10.041]), show: demoContent),
+      gP(308.955, 366.482, 49, 13, gText('Principale', 10.041, Color(0xFF8F5400), weight: 600, align: TextAlign.center), show: demoContent),
+      gP(42.315, 492.128, 18.947, 22.646, gImg('assets/figma/v/0670fa9a3ceee9.svg'), show: demoContent),
+      gP(46.014, 492.128, 11.549, 9.699, gImg('assets/figma/v/75655af53eeb33.svg'), show: demoContent),
+      gP(46.939, 500.452, 10.624, 9.699, gImg('assets/figma/v/65db527a4e9160.svg'), show: demoContent),
+      gP(79.797, 490.292, 44, 16, gText('Bureau', 12.683, Color(0xFF111015), weight: 700), show: demoContent),
+      gP(79.797, 516.591, 74, 15, gText('Akwa, Douala', 11.626, Color(0xFF5A3FE0)), show: demoContent),
+      gP(79.797, 541.653, 59, 15, gText('Cameroun', 11.626, Color(0xFF5A3FE0)), show: demoContent),
+      gP(346.309, 500.966, 9.171, 12.341, gImg('assets/figma/v/36e35652505fba.svg'), show: demoContent),
+      gP(129.378, 642.715, 17.098, 6, gImg('assets/figma/v/8c26a4a28a3a65.svg'), show: demoContent),
+      gP(134.927, 637.166, 6, 17.098, gImg('assets/figma/v/88280087bf7b2f.svg'), show: demoContent),
+      gP(160.65, 638.215, 115, 15, gText('Ajouter une adresse', 12.154, Color(0xFF111015), weight: 500), show: demoContent),
       gP(125, 832, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
-      gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
+      gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32]), show: demoContent),
       gP(47.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(47.125, 777.125, 20, 20, gImg('assets/figma/v/96285515fb0e14.svg')),
       gP(59.113, 789.113, 9.762, 9.762, gImg('assets/figma/v/524f40fa464a05.svg')),
@@ -95,9 +96,10 @@ class G_27 extends ConsumerWidget {
       gP(169, 762, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gTab(context, '03')),
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
-      gTap(302.276, 176.908, 58.13, 35.382, () { gOpen(context, '41'); }), // audit 01/11 : « Modifier » n'avait aucun effet
-      gTap(292, 288, 62, 32, () { uiAllShown(context); }), // audit 01/11 : « Voir tout » n'avait aucun effet
-      gTap(154.5, 630, 127, 32, () { gOpen(context, '41'); }), // audit 01/11 : « Ajouter une adresse » n'avait aucun effet
+      if (demoContent) gTap(302.276, 176.908, 58.13, 35.382, () { gOpen(context, '41'); }), // audit 01/11 : « Modifier » n'avait aucun effet
+      if (demoContent) gTap(292, 288, 62, 32, () { uiAllShown(context); }), // audit 01/11 : « Voir tout » n'avait aucun effet
+      if (demoContent) gTap(154.5, 630, 127, 32, () { gOpen(context, '41'); }), // audit 01/11 : « Ajouter une adresse » n'avait aucun effet
+      if (!demoContent) gP(24, 125, 342, 620, const AddressBook(width: 342, height: 620)),
     ]);
   }
 }

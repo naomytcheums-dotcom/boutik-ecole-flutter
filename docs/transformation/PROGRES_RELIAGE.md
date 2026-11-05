@@ -27,3 +27,6 @@
 
 ## Lot vendeur et entreprise (écrans 66, 67, 69, 189, 190)
 - Migration `20261105000800_revenus_vendeur.sql` (seller_revenue : ventes payées, reversé, prévu, disponible, séries mensuelle et hebdomadaire). Tests SQL 4/4, `vendeur_test.dart` 10/10. 69 lit les vrais justificatifs ; 189 propositions et 190 devis réels. Vues d'annonces et conversion : non mesurées, dit à l'écran.
+
+## Lot compte et fiche produit (écrans 27, 31, 32)
+- 27 Mes adresses : carnet réel (lecture RLS, ajout par save_address, suppression par delete_address). 31 Avis : moyenne, répartition et commentaires réels du produit choisi. 32 Détail du produit : produit réellement choisi, sans caractéristiques inventées. Test `compte_test.dart`.

@@ -30,3 +30,6 @@
 
 ## Lot compte et fiche produit (écrans 27, 31, 32)
 - 27 Mes adresses : carnet réel (lecture RLS, ajout par save_address, suppression par delete_address). 31 Avis : moyenne, répartition et commentaires réels du produit choisi. 32 Détail du produit : produit réellement choisi, sans caractéristiques inventées. Test `compte_test.dart`.
+
+## Lot vitrine et vendeur (écrans 04, 20, 22c, 22d, 24, 38, 115, 172, 187, 212)
+- Migration `20261105000900_vendeur_public.sql` (seller_public, lisible sans compte, aucune donnée privée). Tests SQL 5/5, `lot_vitrine_vendeur_test.dart`. 24/38/172 : profil, réputation et confiance calculés ; 212 : vérification par code ; 04/20/22c/22d : vrais produits ; 115 : événements réels ; 187 : besoins réels de l'entreprise.

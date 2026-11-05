@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/produits_liste.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -59,43 +60,43 @@ class G_04 extends ConsumerWidget {
       
       
       
-      gP(28.967, 363.522, 121, 36, gText('Pots connectés pour\nl’agriculture urbaine', 12.1, Color(0xFF111015), weight: 600, lh: 17.663)),
-      gP(28.967, 406.728, 78, 16, gText(demoContent ? '15 000 FCFA' : '—', 12.717, Color(0xFF111015), weight: 600)),
-      gP(28.967, 429.424, 131, 13, gText('Département : Agronomie', 10.598, Color(0xFF57545F))),
+      gP(28.967, 363.522, 121, 36, gText('Pots connectés pour\nl’agriculture urbaine', 12.1, Color(0xFF111015), weight: 600, lh: 17.663), show: demoContent),
+      gP(28.967, 406.728, 78, 16, gText(demoContent ? '15 000 FCFA' : '—', 12.717, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(28.967, 429.424, 131, 13, gText('Département : Agronomie', 10.598, Color(0xFF57545F)), show: demoContent),
       gP(207.717, 187.228, 166.033, 162.5, gBox(image: 'assets/figma/img/209b06d9669544abc2d1f3eb45ceb34026db6495.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
       gP(341.957, 193.587, 25.435, 25.435, gBox(color: Color(0xFFFFFFFF), oval: true)),
       gP(345.786, 198.005, 17.775, 16.598, gImg('assets/figma/v/2b12c20ee1d37c.svg')),
       gP(339.609, 191.239, 30.13, 30.13, GHeart()),
       
       
-      gP(216.902, 363.522, 124, 36, gText('Développement web\nsur mesure', 12.1, Color(0xFF111015), weight: 600, lh: 17.663)),
-      gP(216.902, 406.728, 147, 16, gText('À partir de 30 000 FCFA', 12.717, Color(0xFF111015), weight: 600)),
-      gP(216.902, 429.424, 140, 13, gText('Département : Informatique', 10.598, Color(0xFF57545F))),
-      gP(19.783, 474.076, 168.859, 162.5, gBox(image: 'assets/figma/img/97b7907df36c390ae2383cc290f76358e22d2d7a.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
-      gP(156.848, 480.435, 25.435, 25.435, gBox(color: Color(0xFFFFFFFF), oval: true)),
-      gP(160.678, 484.853, 17.775, 16.598, gImg('assets/figma/v/2b12c20ee1d37c.svg')),
-      gP(154.5, 478.087, 30.13, 30.13, GHeart()),
+      gP(216.902, 363.522, 124, 36, gText('Développement web\nsur mesure', 12.1, Color(0xFF111015), weight: 600, lh: 17.663), show: demoContent),
+      gP(216.902, 406.728, 147, 16, gText('À partir de 30 000 FCFA', 12.717, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(216.902, 429.424, 140, 13, gText('Département : Informatique', 10.598, Color(0xFF57545F)), show: demoContent),
+      gP(19.783, 474.076, 168.859, 162.5, gBox(image: 'assets/figma/img/97b7907df36c390ae2383cc290f76358e22d2d7a.png', fit: BoxFit.cover, radii: [22, 22, 22, 22]), show: demoContent),
+      gP(156.848, 480.435, 25.435, 25.435, gBox(color: Color(0xFFFFFFFF), oval: true), show: demoContent),
+      gP(160.678, 484.853, 17.775, 16.598, gImg('assets/figma/v/2b12c20ee1d37c.svg'), show: demoContent),
+      gP(154.5, 478.087, 30.13, 30.13, GHeart(), show: demoContent),
       
       
-      gP(28.967, 637.652, 121, 36, gText('Système de filtration\nd’eau innovant', 12.1, Color(0xFF111015), weight: 600, lh: 17.663)),
-      gP(28.967, 682.359, 154, 13, gText('Département : Génie chimique', 10.598, Color(0xFF57545F))),
-      gP(207.717, 474.076, 166.033, 162.5, gBox(image: 'assets/figma/img/8397f0465c777ec9d53e7683ddc72818ff961acd.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
-      gP(341.957, 480.435, 25.435, 25.435, gBox(color: Color(0xFFFFFFFF), oval: true)),
-      gP(345.786, 484.853, 17.775, 16.598, gImg('assets/figma/v/2b12c20ee1d37c.svg')),
-      gP(339.609, 478.087, 30.13, 30.13, GHeart()),
+      gP(28.967, 637.652, 121, 36, gText('Système de filtration\nd’eau innovant', 12.1, Color(0xFF111015), weight: 600, lh: 17.663), show: demoContent),
+      gP(28.967, 682.359, 154, 13, gText('Département : Génie chimique', 10.598, Color(0xFF57545F)), show: demoContent),
+      gP(207.717, 474.076, 166.033, 162.5, gBox(image: 'assets/figma/img/8397f0465c777ec9d53e7683ddc72818ff961acd.png', fit: BoxFit.cover, radii: [22, 22, 22, 22]), show: demoContent),
+      gP(341.957, 480.435, 25.435, 25.435, gBox(color: Color(0xFFFFFFFF), oval: true), show: demoContent),
+      gP(345.786, 484.853, 17.775, 16.598, gImg('assets/figma/v/2b12c20ee1d37c.svg'), show: demoContent),
+      gP(339.609, 478.087, 30.13, 30.13, GHeart(), show: demoContent),
       
       
-      gP(216.902, 637.652, 151, 36, gText('Montage vidéo & création\nde contenu', 12.1, Color(0xFF111015), weight: 600, lh: 17.663)),
-      gP(216.902, 680.152, 144, 16, gText('À partir de 10 000 FCFA', 12.717, Color(0xFF111015), weight: 600)),
-      gP(216.902, 702.848, 133, 13, gText('Département : Audiovisuel', 10.598, Color(0xFF57545F))), gP(24, 328.5, 72, 21, gBox(color: Color(0xFFFFFFFF), radii: [10.5, 10.5, 10.5, 10.5])), gP(24, 331.7, 72, 15, gText('Produit', 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.center)),gP(212, 328.5, 72, 21, gBox(color: Color(0xFFFFFFFF), radii: [10.5, 10.5, 10.5, 10.5])), gP(212, 331.7, 72, 15, gText('Service', 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.center)),gP(24, 615.5, 72, 21, gBox(color: Color(0xFFFFFFFF), radii: [10.5, 10.5, 10.5, 10.5])), gP(24, 618.7, 72, 15, gText('Projet', 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.center)),gP(212, 615.5, 72, 21, gBox(color: Color(0xFFFFFFFF), radii: [10.5, 10.5, 10.5, 10.5])), gP(212, 618.7, 72, 15, gText('Talent', 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.center)),
-      gP(18.37, 753.152, 354.674, 151.902, gBox(image: 'assets/figma/img/8f6ca1bb4903a4a383d533c9719e840c10c65c71.png', fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 5), blurRadius: 14, spreadRadius: 0)], radii: [18.37, 18.37, 18.37, 18.37])),
-      gP(18.37, 753.152, 354.674, 151.902, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xD1120F1A), Color(0x33120F1A)], stops: [0, 1]), radii: [18.37, 18.37, 18.37, 18.37])),
-      gP(36.739, 779.891, 206, 20, gRich([('Vous êtes ', 16.25, 700, Color(0xFFFFFFFF)), ('une entreprise ?', 16.25, 700, Color(0xFFFBC02D))])),
-      gP(36.739, 807.217, 184, 36, gText('Découvrez les talents et projets\nqui peuvent vous intéresser.', 12.364, Color(0xFFFFFFFF), lh: 17.663)),
-      gP(36.739, 856.304, 110.217, 29.674, gBox(color: Color(0xFF111015), radii: [14.837, 14.837, 14.837, 14.837])),
-      gP(50.87, 864.141, 73, 14, gText('En savoir plus', 11.304, Color(0xFFFFFFFF), weight: 600)),
-      gP(124.91, 868.141, 13.006, 6, gImg('assets/figma/v/243355d11635f3.svg')),
-      gP(128.413, 864.638, 9.503, 13.006, gImg('assets/figma/v/bcffd14c4cbbcd.svg')),
+      gP(216.902, 637.652, 151, 36, gText('Montage vidéo & création\nde contenu', 12.1, Color(0xFF111015), weight: 600, lh: 17.663), show: demoContent),
+      gP(216.902, 680.152, 144, 16, gText('À partir de 10 000 FCFA', 12.717, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(216.902, 702.848, 133, 13, gText('Département : Audiovisuel', 10.598, Color(0xFF57545F))), gP(24, 328.5, 72, 21, gBox(color: Color(0xFFFFFFFF), radii: [10.5, 10.5, 10.5, 10.5])), gP(24, 331.7, 72, 15, gText('Produit', 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.center)),gP(212, 328.5, 72, 21, gBox(color: Color(0xFFFFFFFF), radii: [10.5, 10.5, 10.5, 10.5])), gP(212, 331.7, 72, 15, gText('Service', 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.center)),gP(24, 615.5, 72, 21, gBox(color: Color(0xFFFFFFFF), radii: [10.5, 10.5, 10.5, 10.5])), gP(24, 618.7, 72, 15, gText('Projet', 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.center)),gP(212, 615.5, 72, 21, gBox(color: Color(0xFFFFFFFF), radii: [10.5, 10.5, 10.5, 10.5])), gP(212, 618.7, 72, 15, gText('Talent', 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.center), show: demoContent),
+      gP(18.37, 753.152, 354.674, 151.902, gBox(image: 'assets/figma/img/8f6ca1bb4903a4a383d533c9719e840c10c65c71.png', fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 5), blurRadius: 14, spreadRadius: 0)], radii: [18.37, 18.37, 18.37, 18.37]), show: demoContent),
+      gP(18.37, 753.152, 354.674, 151.902, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xD1120F1A), Color(0x33120F1A)], stops: [0, 1]), radii: [18.37, 18.37, 18.37, 18.37]), show: demoContent),
+      gP(36.739, 779.891, 206, 20, gRich([('Vous êtes ', 16.25, 700, Color(0xFFFFFFFF)), ('une entreprise ?', 16.25, 700, Color(0xFFFBC02D))]), show: demoContent),
+      gP(36.739, 807.217, 184, 36, gText('Découvrez les talents et projets\nqui peuvent vous intéresser.', 12.364, Color(0xFFFFFFFF), lh: 17.663), show: demoContent),
+      gP(36.739, 856.304, 110.217, 29.674, gBox(color: Color(0xFF111015), radii: [14.837, 14.837, 14.837, 14.837]), show: demoContent),
+      gP(50.87, 864.141, 73, 14, gText('En savoir plus', 11.304, Color(0xFFFFFFFF), weight: 600), show: demoContent),
+      gP(124.91, 868.141, 13.006, 6, gImg('assets/figma/v/243355d11635f3.svg'), show: demoContent),
+      gP(128.413, 864.638, 9.503, 13.006, gImg('assets/figma/v/bcffd14c4cbbcd.svg'), show: demoContent),
       gP(124.348, 1001.848, 142.011, 3.533, gBox(color: Color(0xFF111015), radii: [2.12, 2.12, 2.12, 2.12])),
       gP(22, 930, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
       gP(47.5, 951.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '19')),
@@ -114,8 +115,9 @@ class G_04 extends ConsumerWidget {
       gP(184, 951, 22, 22, const SizedBox.expand(), tap: () => gOpen(context, '03')),
       gP(183.75, 949.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       gTap(18, 186, 172, 268, () => gOpen(context, '05')),
-      gTap(36.7, 856.3, 110.2, 29.7, () { gOpen(context, '70'); }), // « En savoir plus » ouvre les talents
-      gTap(16, 610.7, 88, 32, () { gOpen(context, '205'); }), // parcours 04 -> 205
+      if (demoContent) gTap(36.7, 856.3, 110.2, 29.7, () { gOpen(context, '70'); }), // « En savoir plus » ouvre les talents
+      if (demoContent) gTap(16, 610.7, 88, 32, () { gOpen(context, '205'); }), // parcours 04 -> 205
+      if (!demoContent) gP(24, 350, 342, 390, const ProductCards(width: 342, rows: 2)),
     ]);
   }
 }

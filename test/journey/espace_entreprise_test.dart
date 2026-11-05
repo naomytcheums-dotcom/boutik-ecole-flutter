@@ -1,3 +1,7 @@
+import 'package:boutik_ecole/figma/g/g_78.dart';
+import 'package:boutik_ecole/figma/g/g_85.dart';
+import 'package:boutik_ecole/figma/g/g_86.dart';
+import 'package:boutik_ecole/figma/g/g_87.dart';
 import 'package:boutik_ecole/figma/g/g_91.dart';
 import 'package:boutik_ecole/figma/g/g_93.dart';
 import 'package:boutik_ecole/figma/g/g_95.dart';
@@ -119,7 +123,38 @@ void main() {
     expect(find.text('Aminata Bello'), findsNothing);
   });
 
-  for (final c in <(String, Widget, String)>[('93', const G_93(), 'Équipe Team Innov’'), ('99', const G_99(), 'Charte graphique'), ('96', const G_96(), 'Défi Orange : paiement mobile inclusif'), ('91', const G_91(), 'Aminata Bello')]) {
+  testWidgets('78 connecté : projets validés réels, aucun projet de maquette', (t) async {
+    await monter(t, const G_78(), connecte: true, overrides: [
+      projectsCatalogProvider.overrideWith(() => _Rows('table:projects', [{'title': 'Projet réel', 'department': 'Informatique', 'summary': 'Une application', 'status': 'approved'}]))
+    ]);
+    expect(find.text('Projet réel'), findsOneWidget);
+    expect(find.text('Validé'), findsOneWidget);
+    expect(find.text('Drone éducatif connecté'), findsNothing);
+  });
+
+  testWidgets('87 connecté : certificats réels du registre', (t) async {
+    await monter(t, const G_87(), connecte: true, overrides: [
+      certificatesProvider.overrideWith(() => _Rows('table:certificates', [{'subject_title': 'Serre intelligente', 'code': 'BE-CERT-0021', 'issued_at': '2026-10-02T10:00:00Z', 'revoked': false}]))
+    ]);
+    expect(find.text('Serre intelligente'), findsOneWidget);
+    expect(find.text('Certifié'), findsOneWidget);
+    expect(find.textContaining('BE-CERT-0021'), findsOneWidget);
+    expect(find.text('Filtre à sable modulaire'), findsNothing);
+  });
+
+  testWidgets('85 connecté sans campagne : état vide, aucun montant de maquette', (t) async {
+    await monter(t, const G_85(), connecte: true, overrides: [campaignsProvider.overrideWith(() => _Rows('table:campaigns', const []))]);
+    expect(find.textContaining('Aucune campagne pour le moment'), findsOneWidget);
+    expect(find.text('Objectif : 2 000 000 FCFA'), findsNothing);
+  });
+
+  testWidgets('86 connecté : message honnête, aucun chiffre de maquette', (t) async {
+    await monter(t, const G_86(), connecte: true);
+    expect(find.textContaining('pas encore collectées en ligne'), findsOneWidget);
+    expect(find.text('4,2 %'), findsNothing);
+  });
+
+  for (final c in <(String, Widget, String)>[('93', const G_93(), 'Équipe Team Innov’'), ('99', const G_99(), 'Charte graphique'), ('96', const G_96(), 'Défi Orange : paiement mobile inclusif'), ('91', const G_91(), 'Aminata Bello'), ('78', const G_78(), 'Drone éducatif connecté'), ('87', const G_87(), 'Filtre à sable modulaire'), ('86', const G_86(), '4,2 %')]) {
     testWidgets('${c.$1} hors connexion : la démonstration reste affichée', (t) async {
       await monter(t, c.$2, connecte: false);
       expect(find.text(c.$3), findsWidgets);

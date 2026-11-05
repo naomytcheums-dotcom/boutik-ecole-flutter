@@ -36,6 +36,10 @@ final companyMissionsProvider = NotifierProvider<RpcRows, List<Map<String, dynam
 final contestsListProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('contests', 'title,prize,reg_close_at,places,status,city', order: 'reg_close_at', ascending: true));
 final quotesListProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('quote_requests', 'brief,budget,status,quote_amount,quote_delay_days,created_at', order: 'created_at'));
 
+final projectsCatalogProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('projects', 'title,summary,department,status,created_at', order: 'created_at'));
+final certificatesProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('certificates', 'subject_title,code,subject_kind,issued_at,revoked,holder_name', order: 'issued_at'));
+final campaignsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('campaigns', 'project,goal,status,kind,duration_days,created_at', order: 'created_at'));
+
 const _mois = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
 String dateCourte(Object? iso) {
   final d = DateTime.tryParse('${iso ?? ''}')?.toLocal();
@@ -162,3 +166,30 @@ class TalentSearchList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => CommunityMembers(width: width, height: height);
 }
+
+String projectStatus(Object? s) => switch ('$s') { 'approved' => 'Validé', 'submitted' => 'À valider', 'draft' => 'Brouillon', 'rejected' => 'Refusé', _ => '$s' };
+String campaignStatus(Object? s) => switch ('$s') { 'approved' => 'Ouverte', 'submitted' => 'À valider', 'draft' => 'Brouillon', 'rejected' => 'Refusée', _ => '$s' };
+
+Widget projectsCatalogList() => MobileList(
+      provider: projectsCatalogProvider,
+      title: (r) => '${r['title']}',
+      subtitle: (r) => [if ('${r['department'] ?? ''}'.isNotEmpty) '${r['department']}', '${r['summary'] ?? ''}'].where((e) => e.isNotEmpty).join(' · '),
+      trailing: (r) => projectStatus(r['status']),
+      emptyText: 'Aucun projet validé pour le moment.\nLes projets des étudiants apparaissent ici après validation.',
+    );
+
+Widget innovationRegistryList() => MobileList(
+      provider: certificatesProvider,
+      title: (r) => '${r['subject_title']}',
+      subtitle: (r) => 'Certificat n° ${r['code']} · délivré le ${dateCourte(r['issued_at'])}',
+      trailing: (r) => r['revoked'] == true ? 'Révoqué' : 'Certifié',
+      emptyText: 'Aucun certificat enregistré pour le moment.',
+    );
+
+Widget campaignsListWidget() => MobileList(
+      provider: campaignsProvider,
+      title: (r) => '${r['project']}',
+      subtitle: (r) => 'Objectif : ${r['goal'] ?? '—'}${r['duration_days'] == null ? '' : ' · ${r['duration_days']} jours'}',
+      trailing: (r) => campaignStatus(r['status']),
+      emptyText: 'Aucune campagne pour le moment.\nLes sommes collectées ne sont pas encore suivies en ligne.',
+    );

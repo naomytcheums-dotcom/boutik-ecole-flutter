@@ -13,3 +13,4 @@
 | 109, 112 | 2026-11-05 | RELIÉS : migration 20261105000300 (dept_students, dept_stats, portée par département) ; SQL 6/6 ; test console_administration_test.dart 14/14 |
 | 91, 93, 95, 96, 98, 99 | 2026-11-05 | RELIÉS : migration 20261105000400 (company_proposals, company_missions) + lecture RLS des devis et défis ; SQL 5/5 ; test espace_entreprise_test.dart 12/12 |
 | 139, 140, 141, 142, 143 | 2026-11-05 | RELIÉS : migration 20261105000500 (payout_batches ; finance_overview, finance_payments, finance_journal, finance_by_department, finance_payouts ; création et statut des lots réservés finance/admin) ; SQL 10/10 ; test finance_test.dart 11/11 |
+| 78, 85, 86, 87 | 2026-11-05 | RELIÉS (lecture RLS des projets validés, certificats, campagnes ; contributions non collectées en ligne : message honnête) ; test espace_entreprise_test.dart 19/19 |

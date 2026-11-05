@@ -9,3 +9,4 @@
 | 105, 107, 237, 238, 239 | 2026-11-05 | chiffres et listes inventés retirés hors démo : message « source de données non disponible » (aucune table d impact, de sponsoring ou inter-établissements) ; test ecrans_sans_source_test.dart |
 | 124 Événements (administration) | 2026-11-05 | relié (table réelle des événements, inscrits, statut ; test evenements_test.dart) |
 | 105, 107, 237, 238, 239 | 2026-11-05 | RELIÉS : migration 20261105000100 (champs recycled/recycled_kg sur les annonces, impact calculé, sponsors et contributions, créations d autres établissements) ; SQL 12/12 ; test ecrans_sans_source_test.dart 12/12 |
+| 119, 120, 121 | 2026-11-05 | RELIÉS : migration 20261105000200 (admin_departments, admin_users, réservées à la gestion) ; SQL 7/7 ; test console_administration_test.dart 9/9 |

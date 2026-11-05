@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/console.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -64,33 +65,33 @@ class G_121 extends ConsumerWidget {
       gP(702.88, 253, 71, 13, gText('Département', 11, Color(0xFF57545F), weight: 600, inter: true)),
       gP(912.32, 253, 66, 13, gText('Affectations', 11, Color(0xFF57545F), weight: 600, inter: true)),
       gP(1083.68, 253, 33, 13, gText('Statut', 11, Color(0xFF57545F), weight: 600, inter: true)),
-      gP(284, 294, 61, 15, Consumer(builder: (context, ref, _) { final a = ref.watch(profileAccountProvider); return gText(demoContent ? 'Dr Mbarga' : a.name, 12, Color(0xFF111015), weight: 600, inter: true); })),
-      gP(512.48, 294, 73, 15, gText('Responsable', 12, Color(0xFF4A4854), inter: true)),
-      gP(702.88, 294, 108, 15, gText('Génie informatique', 12, Color(0xFF4A4854), inter: true)),
-      gP(912.32, 294, 79, 15, gText(demoContent ? '248 étudiants' : '—', 12, Color(0xFF4A4854), inter: true)),
-      gP(1083.68, 291, 52, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
-      gP(1096.68, 295, 26, 13, gText('Actif', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center)),
-      gP(280, 324, 960, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(284, 338, 68, 15, gText('Dr Tchoupo', 12, Color(0xFF111015), weight: 600, inter: true)),
-      gP(512.48, 338, 73, 15, gText('Responsable', 12, Color(0xFF4A4854), inter: true)),
-      gP(702.88, 338, 59, 15, gText('Génie civil', 12, Color(0xFF4A4854), inter: true)),
-      gP(912.32, 338, 77, 15, gText(demoContent ? '212 étudiants' : '—', 12, Color(0xFF4A4854), inter: true)),
-      gP(1083.68, 335, 52, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
-      gP(1096.68, 339, 26, 13, gText('Actif', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center)),
-      gP(280, 368, 960, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(284, 382, 59, 15, gText('Pr Ngassa', 12, Color(0xFF111015), weight: 600, inter: true)),
-      gP(512.48, 382, 58, 15, gText('Encadreur', 12, Color(0xFF4A4854), inter: true)),
-      gP(702.88, 382, 93, 15, gText('Génie électrique', 12, Color(0xFF4A4854), inter: true)),
-      gP(912.32, 382, 56, 15, gText(demoContent ? '18 projets' : '—', 12, Color(0xFF4A4854), inter: true)),
-      gP(1083.68, 379, 52, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
-      gP(1096.68, 383, 26, 13, gText('Actif', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center)),
-      gP(280, 412, 960, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(284, 426, 66, 15, gText('Mme Etoga', 12, Color(0xFF111015), weight: 600, inter: true)),
-      gP(512.48, 426, 73, 15, gText('Responsable', 12, Color(0xFF4A4854), inter: true)),
-      gP(702.88, 426, 25, 15, gText('MMI', 12, Color(0xFF4A4854), inter: true)),
-      gP(912.32, 426, 77, 15, gText(demoContent ? '180 étudiants' : '—', 12, Color(0xFF4A4854), inter: true)),
-      gP(1083.68, 423, 52, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
-      gP(1096.68, 427, 26, 13, gText('Actif', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center)),
+      gP(284, 294, 61, 15, Consumer(builder: (context, ref, _) { final a = ref.watch(profileAccountProvider); return gText(demoContent ? 'Dr Mbarga' : a.name, 12, Color(0xFF111015), weight: 600, inter: true); }), show: demoContent),
+      gP(512.48, 294, 73, 15, gText('Responsable', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(702.88, 294, 108, 15, gText('Génie informatique', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(912.32, 294, 79, 15, gText(demoContent ? '248 étudiants' : '—', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(1083.68, 291, 52, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(1096.68, 295, 26, 13, gText('Actif', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
+      gP(280, 324, 960, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(284, 338, 68, 15, gText('Dr Tchoupo', 12, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(512.48, 338, 73, 15, gText('Responsable', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(702.88, 338, 59, 15, gText('Génie civil', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(912.32, 338, 77, 15, gText(demoContent ? '212 étudiants' : '—', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(1083.68, 335, 52, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(1096.68, 339, 26, 13, gText('Actif', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
+      gP(280, 368, 960, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(284, 382, 59, 15, gText('Pr Ngassa', 12, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(512.48, 382, 58, 15, gText('Encadreur', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(702.88, 382, 93, 15, gText('Génie électrique', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(912.32, 382, 56, 15, gText(demoContent ? '18 projets' : '—', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(1083.68, 379, 52, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(1096.68, 383, 26, 13, gText('Actif', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
+      gP(280, 412, 960, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(284, 426, 66, 15, gText('Mme Etoga', 12, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(512.48, 426, 73, 15, gText('Responsable', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(702.88, 426, 25, 15, gText('MMI', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(912.32, 426, 77, 15, gText(demoContent ? '180 étudiants' : '—', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(1083.68, 423, 52, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(1096.68, 427, 26, 13, gText('Actif', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
       gP(0, 0, 1280, 56, gBox(color: Color(0xFFFFFFFF))),
       gP(20, 10, 36, 34, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(62, 17, 107, 21, gText('Boutik-École', 17, Color(0xFF18181B), weight: 700, inter: true)),
@@ -173,6 +174,7 @@ class G_121 extends ConsumerWidget {
       gTap(12, 488, 216, 36, () => gOpen(context, '126')),
       gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
       gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
+      if (!demoContent) gP(268, 290, 940, 520, ConsoleTable(provider: adminResponsablesProvider, columns: [ConsoleColumn(16, 220, (r) => '${r['name']}', bold: true), ConsoleColumn(244.48, 170, (r) => roleLabel(r['role'])), ConsoleColumn(434.88, 190, (r) => '${r['department']}'.isEmpty ? '—' : '${r['department']}'), ConsoleColumn(644.32, 150, (r) => '${r['students']} étudiants'), ConsoleColumn(815.68, 120, (r) => r['suspended'] == true ? 'Suspendu' : 'Actif')], emptyText: 'Aucun responsable enregistré.', width: 940, height: 520)),
     ]);
   }
 }

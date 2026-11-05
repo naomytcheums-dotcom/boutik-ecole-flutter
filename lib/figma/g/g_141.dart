@@ -5,6 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/finance.dart';
+import '../live/entreprise.dart' show dateCourte;
+import '../live/console.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -38,46 +41,46 @@ class G_141 extends ConsumerWidget {
       gP(591.333, 147, 29, 13, gText('Débit', 11, Color(0xFF57545F), weight: 600, inter: true)),
       gP(689.68, 147, 33, 13, gText('Crédit', 11, Color(0xFF57545F), weight: 600, inter: true)),
       gP(788.027, 147, 58, 13, gText('Rapproché', 11, Color(0xFF57545F), weight: 600, inter: true)),
-      gP(284, 188, 41, 15, gText('22 oct.', 12, Color(0xFF111015), weight: 600, inter: true)),
-      gP(382.347, 188, 118, 15, gText('Encaissement #0142', 12, Color(0xFF4A4854), inter: true)),
-      gP(591.333, 188, 12, 15, gText('—', 12, Color(0xFF4A4854), inter: true)),
-      gP(689.68, 188, 41, 15, gText(demoContent ? '25 000' : '—', 12, Color(0xFF4A4854), inter: true)),
-      gP(788.027, 185, 39.2, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
-      gP(798.127, 189, 19, 13, gText('Oui', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center)),
-      gP(280, 218, 622.667, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(284, 232, 41, 15, gText('22 oct.', 12, Color(0xFF111015), weight: 600, inter: true)),
-      gP(382.347, 232, 134, 15, gText('Commission plateforme', 12, Color(0xFF4A4854), inter: true)),
-      gP(591.333, 232, 12, 15, gText('—', 12, Color(0xFF4A4854), inter: true)),
-      gP(689.68, 232, 32, 15, gText(demoContent ? '1 250' : '—', 12, Color(0xFF4A4854), inter: true)),
-      gP(788.027, 229, 39.2, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
-      gP(798.127, 233, 19, 13, gText('Oui', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center)),
-      gP(280, 262, 622.667, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(284, 276, 41, 15, gText('22 oct.', 12, Color(0xFF111015), weight: 600, inter: true)),
-      gP(382.347, 276, 125, 15, gText('Reversement vendeur', 12, Color(0xFF4A4854), inter: true)),
-      gP(591.333, 276, 40, 15, gText(demoContent ? '23 750' : '—', 12, Color(0xFF4A4854), inter: true)),
-      gP(689.68, 276, 12, 15, gText('—', 12, Color(0xFF4A4854), inter: true)),
-      gP(788.027, 273, 39.2, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
-      gP(798.127, 277, 19, 13, gText('Oui', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center)),
-      gP(280, 306, 622.667, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(284, 320, 39, 15, gText('21 oct.', 12, Color(0xFF111015), weight: 600, inter: true)),
-      gP(382.347, 320, 118, 15, gText('Encaissement #0138', 12, Color(0xFF4A4854), inter: true)),
-      gP(591.333, 320, 12, 15, gText('—', 12, Color(0xFF4A4854), inter: true)),
-      gP(689.68, 320, 39, 15, gText(demoContent ? '17 000' : '—', 12, Color(0xFF4A4854), inter: true)),
-      gP(788.027, 317, 39.2, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11])),
-      gP(796.627, 321, 22, 13, gText('Non', 11, Color(0xFF8F5400), weight: 600, inter: true, align: TextAlign.center)),
+      gP(284, 188, 41, 15, gText('22 oct.', 12, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(382.347, 188, 118, 15, gText('Encaissement #0142', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(591.333, 188, 12, 15, gText('—', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(689.68, 188, 41, 15, gText(demoContent ? '25 000' : '—', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(788.027, 185, 39.2, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(798.127, 189, 19, 13, gText('Oui', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
+      gP(280, 218, 622.667, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(284, 232, 41, 15, gText('22 oct.', 12, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(382.347, 232, 134, 15, gText('Commission plateforme', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(591.333, 232, 12, 15, gText('—', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(689.68, 232, 32, 15, gText(demoContent ? '1 250' : '—', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(788.027, 229, 39.2, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(798.127, 233, 19, 13, gText('Oui', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
+      gP(280, 262, 622.667, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(284, 276, 41, 15, gText('22 oct.', 12, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(382.347, 276, 125, 15, gText('Reversement vendeur', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(591.333, 276, 40, 15, gText(demoContent ? '23 750' : '—', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(689.68, 276, 12, 15, gText('—', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(788.027, 273, 39.2, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(798.127, 277, 19, 13, gText('Oui', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
+      gP(280, 306, 622.667, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(284, 320, 39, 15, gText('21 oct.', 12, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(382.347, 320, 118, 15, gText('Encaissement #0138', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(591.333, 320, 12, 15, gText('—', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(689.68, 320, 39, 15, gText(demoContent ? '17 000' : '—', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(788.027, 317, 39.2, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(796.627, 321, 22, 13, gText('Non', 11, Color(0xFF8F5400), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
       gP(928.667, 134, 323.333, 188, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
       gP(944.667, 148, 66, 17, gText('Synthèse', 14, Color(0xFF111015), weight: 700, inter: true)),
-      gP(944.667, 182, 73, 15, gText('Total crédits', 12.5, Color(0xFF57545F), inter: true)),
-      gP(1157, 182, 79, 15, gText(demoContent ? '43 250 FCFA' : '—', 12.5, Color(0xFF111015), weight: 600, inter: true, align: TextAlign.right)),
-      gP(944.667, 207, 291.333, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(944.667, 216, 70, 15, gText('Total débits', 12.5, Color(0xFF57545F), inter: true)),
-      gP(1158, 216, 78, 15, gText(demoContent ? '23 750 FCFA' : '—', 12.5, Color(0xFF111015), weight: 600, inter: true, align: TextAlign.right)),
-      gP(944.667, 241, 291.333, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(944.667, 250, 34, 15, gText('Solde', 12.5, Color(0xFF57545F), inter: true)),
-      gP(1158, 250, 78, 15, gText(demoContent ? '19 500 FCFA' : '—', 12.5, Color(0xFF111015), weight: 700, inter: true, align: TextAlign.right)),
-      gP(944.667, 275, 291.333, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(944.667, 284, 118, 15, gText('Lignes à rapprocher', 12.5, Color(0xFF57545F), inter: true)),
-      gP(1229, 284, 7, 15, gText('1', 12.5, Color(0xFF111015), weight: 600, inter: true, align: TextAlign.right)),
+      gP(944.667, 182, 73, 15, gText('Total crédits', 12.5, Color(0xFF57545F), inter: true), show: demoContent),
+      gP(1157, 182, 79, 15, gText(demoContent ? '43 250 FCFA' : '—', 12.5, Color(0xFF111015), weight: 600, inter: true, align: TextAlign.right), show: demoContent),
+      gP(944.667, 207, 291.333, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(944.667, 216, 70, 15, gText('Total débits', 12.5, Color(0xFF57545F), inter: true), show: demoContent),
+      gP(1158, 216, 78, 15, gText(demoContent ? '23 750 FCFA' : '—', 12.5, Color(0xFF111015), weight: 600, inter: true, align: TextAlign.right), show: demoContent),
+      gP(944.667, 241, 291.333, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(944.667, 250, 34, 15, gText('Solde', 12.5, Color(0xFF57545F), inter: true), show: demoContent),
+      gP(1158, 250, 78, 15, gText(demoContent ? '19 500 FCFA' : '—', 12.5, Color(0xFF111015), weight: 700, inter: true, align: TextAlign.right), show: demoContent),
+      gP(944.667, 275, 291.333, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(944.667, 284, 118, 15, gText('Lignes à rapprocher', 12.5, Color(0xFF57545F), inter: true), show: demoContent),
+      gP(1229, 284, 7, 15, gText('1', 12.5, Color(0xFF111015), weight: 600, inter: true, align: TextAlign.right), show: demoContent),
       gP(0, 0, 1280, 56, gBox(color: Color(0xFFFFFFFF))),
       gP(20, 10, 36, 34, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(62, 17, 107, 21, gText('Boutik-École', 17, Color(0xFF18181B), weight: 700, inter: true)),
@@ -150,9 +153,11 @@ class G_141 extends ConsumerWidget {
       gTap(40, 329, 232, 36, () { gOpen(context, '147_2'); }), // parcours 141 -> 147_2
       gTap(40, 369, 232, 36, () { gOpen(context, '147_1'); }), // parcours 141 -> 147_1
       gTap(40, 409, 232, 36, () { gOpen(context, '147_3'); }), // parcours 141 -> 147_3
-      gTap(374.3, 180, 134, 32, () { gOpen(context, '284'); }), // lien métier 141 -> 284
+      if (demoContent) gTap(374.3, 180, 134, 32, () { gOpen(context, '284'); }), // lien métier 141 -> 284
       gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
       gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
+      if (!demoContent) gP(268, 188, 660, 560, ConsoleTable(provider: financeJournalProvider, columns: [ConsoleColumn(16, 90, (r) => dateCourte(r['date'])), ConsoleColumn(114.35, 200, (r) => '${r['label']}', bold: true), ConsoleColumn(323.33, 90, (r) => (r['debit'] as num) == 0 ? '—' : fcfa((r['debit'] as num).toInt())), ConsoleColumn(421.68, 90, (r) => (r['credit'] as num) == 0 ? '—' : fcfa((r['credit'] as num).toInt())), ConsoleColumn(520, 90, (r) => r['reconciled'] == true ? 'Oui' : 'Non')], emptyText: 'Aucune écriture pour le moment.', width: 660, height: 560)),
+      if (!demoContent) gP(944, 182, 300, 200, const JournalSummary(width: 280)),
     ]);
   }
 }

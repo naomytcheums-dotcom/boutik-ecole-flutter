@@ -65,7 +65,7 @@ class G_58 extends ConsumerWidget {
       gP(88, 222, 150, 14, gText('Jusqu’à 6 photos · JPG, PNG', 11.5, Color(0xFF57545F))),
       gP(336.75, 213.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
       gP(24, 268, 92, 16, gText('Titre du produit', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 288, 342, 48, GField(hint: 'Ex. Lampe en bois recyclé', size: 13.5, hintColor: Color(0xFF57545F), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('np_title', v); })),
+      gP(24, 288, 342, 48, GField(hint: demoContent ? 'Ex. Lampe en bois recyclé' : 'Ex. Titre de votre produit', size: 13.5, hintColor: Color(0xFF57545F), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('np_title', v); })),
       errorText('np_title', 28, 338),
       gP(37.5, 301.5, 20.996, 20.996, gImg('assets/figma/v/5cb3a366ba37dc.svg')),
       gP(40.875, 304.875, 7.5, 7.5, gImg('assets/figma/v/af3b58bd7187b4.svg')),

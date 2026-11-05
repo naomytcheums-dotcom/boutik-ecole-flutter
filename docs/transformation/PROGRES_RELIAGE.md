@@ -55,3 +55,13 @@
 - Chaque écran est ouvert en mode connecté, serveur muet, et la liste des noms, références et montants de maquette encore affichés est écrite dans `build/audit_maquette.txt`. Avant : 43 écrans en affichaient. Après : 4 (fil social d'exemple voulu sur 244, deux textes d'aide « Ex. … » dans des champs de saisie 58 et 80, un format de prix sur 217).
 - Corrections à la source : commande « d'exemple » (dernière commande), lignes d'exemple de la console des commandes et des flux financiers, talents, opportunités, équipes et projets d'exemple, produit par défaut de la fiche (« Aucun produit choisi »), chef de projet. 127 remis à son état précédent (il lisait déjà le volume réel du serveur). Deux zones de toucher ajoutées sur 102 et 154 ne sont plus actives en démonstration (elles masquaient les boutons d'origine).
 - Reste à décision du propriétaire : assistante vocale Kéla (a1-a3, 230-232), 3D/AR (225, 226), double authentification (272), contacts (241), langue (149, 185), permissions (181, 281), contrôles de fiche (256), ajout de fichiers (279).
+
+## Décisions prises sur les écrans restants
+- Kéla (230, a1, 232, a3, 231, a2) : la dictée vocale n'existe pas, le brief se fait par écrit et crée un brouillon de besoin réel (save_mission) ; 232/a3 listent les briefs du compte ; 231/a2 deviennent un menu vers les vrais écrans.
+- 3D / réalité augmentée (225, 226) : aucun modèle n'existe ; en connecté l'écran dit qu'il n'y en a pas et montre la photo de l'annonce.
+- Vérification en 2 étapes (272) : double authentification réelle par application (TOTP Supabase Auth : activation, code, désactivation) à la place du code SMS de maquette.
+- Contacts (241) : le navigateur ne donne pas accès au répertoire ; remplacé par le code de parrainage à partager.
+- Langue (149, 185) : français actif, anglais « bientôt disponible » ; interrupteurs d'accessibilité de 149 mémorisés sur l'appareil.
+- Contrôles de fiche (256) : calculés sur l'annonce réelle du vendeur ; 279 : règles de dépôt sans fichiers fictifs ; 281 : institution du compte.
+- Permissions (181) et matrices de rôles : conservées, ce sont les règles de la plateforme (documentation), pas des données.
+- Textes d'aide 58 et 80 : neutres hors démonstration. 244 : fil d'exemple conservé à la demande du propriétaire.

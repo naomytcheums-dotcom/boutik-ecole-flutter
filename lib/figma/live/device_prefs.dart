@@ -34,3 +34,6 @@ const dataPrefsDefaults = {'data_saver': true, 'low_images': true, 'wifi_video':
 const accessPrefsDefaults = {'large_text': true, 'contrast': true, 'reduce_motion': false, 'screen_reader': false};
 final dataPrefsProvider = NotifierProvider<DevicePrefs, Map<String, bool>>(() => DevicePrefs(dataPrefsDefaults));
 final accessPrefsProvider = NotifierProvider<DevicePrefs, Map<String, bool>>(() => DevicePrefs(accessPrefsDefaults));
+
+const accessPrefs149Defaults = {'a149_large_text': false, 'a149_contrast': true, 'a149_reduce_motion': false, 'a149_screen_reader': false};
+final accessPrefs149Provider = NotifierProvider<DevicePrefs, Map<String, bool>>(() => DevicePrefs(accessPrefs149Defaults));

@@ -59,7 +59,7 @@ class G_80 extends ConsumerWidget {
       gP(331, 120, 30, 30, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true)),
       gP(331.5, 158, 29, 14, gText('Envoi', 11, Color(0xFF57545F), weight: 500, align: TextAlign.center)),
       gP(24, 188, 84, 16, gText('Titre du projet', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 208, 342, 48, GField(hint: 'Ex. Serre intelligente', size: 13.5, hintColor: Color(0xFF57545F), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('pj_title', v); })),
+      gP(24, 208, 342, 48, GField(hint: demoContent ? 'Ex. Serre intelligente' : 'Ex. Titre de votre projet', size: 13.5, hintColor: Color(0xFF57545F), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('pj_title', v); })),
       errorText('pj_title', 28, 258),
       gP(40.5, 221.5, 15, 15, gImg('assets/figma/v/a49ecdd3bef596.svg')),
       gP(42.75, 233.5, 10.5, 6, gImg('assets/figma/v/2e2c4a27235860.svg')),

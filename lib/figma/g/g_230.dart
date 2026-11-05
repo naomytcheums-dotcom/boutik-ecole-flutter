@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/decisions.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -30,7 +31,7 @@ class G_230 extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 390, h: 844, radius: 46, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF1EEE6), Color(0xFFEBE6EA), Color(0xFFE5DAEE)], stops: [0, 0.55, 1]), children: [
-      gP(200, 180, 300, 300, gBox(color: Color(0x99CDB2F2), layerBlur: 90, oval: true), fx: 'halo'),
+      gP(200, 180, 300, 300, gBox(color: Color(0x99CDB2F2), layerBlur: 90, oval: true), fx: 'halo', show: demoContent),
       gP(-130, 630, 300, 300, gBox(color: Color(0x8CF4C6B0), layerBlur: 90, oval: true), fx: 'halo'),
       gP(30, 14, 28, 18, gText('9:41', 14, Color(0xFF111015), weight: 600)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
@@ -50,26 +51,27 @@ class G_230 extends ConsumerWidget {
       gP(161, 98, 68, 16, gText('À l’écoute…', 12.5, Color(0xFF57545F), align: TextAlign.center)),
       gP(316, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
       gP(328.767, 83, 18.467, 18.233, gImg('assets/figma/v/menu3.svg')), gTap(316, 70, 44, 44, () => gOpen(context, '231')),
-      gP(95, 240, 200, 200, gBox(color: Color(0x59FFB36B), layerBlur: 90, oval: true), fx: 'halo'),
-      gP(70, 205, 250, 250, kelaOrb(image: 'assets/figma/img/2b51b5d6469cca917952ac344a2ddf9cc1440830.png', fit: BoxFit.contain, shadows: [BoxShadow(color: Color(0x47FF731A), offset: Offset(0, 18), blurRadius: 28, spreadRadius: 0)])),
-      gP(34, 484, 329, 150, Consumer(builder: (context, ref, _) => gText(ref.watch(kelaTextProvider).isEmpty ? 'Touche le micro et parle…' : ref.watch(kelaTextProvider), 26, Color(0xFF111015), weight: 500, lh: 34, wrap: true, maxLines: 4))),
+      gP(95, 240, 200, 200, gBox(color: Color(0x59FFB36B), layerBlur: 90, oval: true), fx: 'halo', show: demoContent),
+      gP(70, 205, 250, 250, kelaOrb(image: 'assets/figma/img/2b51b5d6469cca917952ac344a2ddf9cc1440830.png', fit: BoxFit.contain, shadows: [BoxShadow(color: Color(0x47FF731A), offset: Offset(0, 18), blurRadius: 28, spreadRadius: 0)]), show: demoContent),
+      gP(34, 484, 329, 150, Consumer(builder: (context, ref, _) => gText(ref.watch(kelaTextProvider).isEmpty ? 'Touche le micro et parle…' : ref.watch(kelaTextProvider), 26, Color(0xFF111015), weight: 500, lh: 34, wrap: true, maxLines: 4)), show: demoContent),
       
-      gP(168, 655, 4, 10, gBox(color: Color(0xFF8E7BFF), radii: [2, 2, 2, 2]), fx: 'wave'),
-      gP(178, 651, 4, 18, gBox(color: Color(0xFF8E7BFF), radii: [2, 2, 2, 2]), fx: 'wave'),
-      gP(188, 645, 4, 30, gBox(color: Color(0xFF8E7BFF), radii: [2, 2, 2, 2]), fx: 'wave'),
-      gP(198, 651, 4, 18, gBox(color: Color(0xFF8E7BFF), radii: [2, 2, 2, 2]), fx: 'wave'),
-      gP(208, 643, 4, 34, gBox(color: Color(0xFF8E7BFF), radii: [2, 2, 2, 2]), fx: 'wave'),
-      gP(218, 651, 4, 18, gBox(color: Color(0xFF8E7BFF), radii: [2, 2, 2, 2]), fx: 'wave'),
-      gP(228, 655, 4, 10, gBox(color: Color(0xFF8E7BFF), radii: [2, 2, 2, 2]), fx: 'wave'),
-      
-      
-      gP(153, 704, 84, 84, GMic(onResult: (on) => kelaToggle(ref, on, context), child: gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x4D000000), offset: Offset(0, 12), blurRadius: 26, spreadRadius: 0)], oval: true))),
-      gP(188.25, 730.5, 13.5, 21, gImg('assets/figma/v/2d0fe55c8faa41.svg')),
-      gP(183.25, 740.5, 23.5, 16, gImg('assets/figma/v/e0998b9bdd25ce.svg')),
-      gP(192, 750.5, 6, 11, gImg('assets/figma/v/170c9f72b8a8fd.svg')),
+      gP(168, 655, 4, 10, gBox(color: Color(0xFF8E7BFF), radii: [2, 2, 2, 2]), fx: 'wave', show: demoContent),
+      gP(178, 651, 4, 18, gBox(color: Color(0xFF8E7BFF), radii: [2, 2, 2, 2]), fx: 'wave', show: demoContent),
+      gP(188, 645, 4, 30, gBox(color: Color(0xFF8E7BFF), radii: [2, 2, 2, 2]), fx: 'wave', show: demoContent),
+      gP(198, 651, 4, 18, gBox(color: Color(0xFF8E7BFF), radii: [2, 2, 2, 2]), fx: 'wave', show: demoContent),
+      gP(208, 643, 4, 34, gBox(color: Color(0xFF8E7BFF), radii: [2, 2, 2, 2]), fx: 'wave', show: demoContent),
+      gP(218, 651, 4, 18, gBox(color: Color(0xFF8E7BFF), radii: [2, 2, 2, 2]), fx: 'wave', show: demoContent),
+      gP(228, 655, 4, 10, gBox(color: Color(0xFF8E7BFF), radii: [2, 2, 2, 2]), fx: 'wave', show: demoContent),
       
       
+      gP(153, 704, 84, 84, GMic(onResult: (on) => kelaToggle(ref, on, context), child: gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x4D000000), offset: Offset(0, 12), blurRadius: 26, spreadRadius: 0)], oval: true)), show: demoContent),
+      gP(188.25, 730.5, 13.5, 21, gImg('assets/figma/v/2d0fe55c8faa41.svg'), show: demoContent),
+      gP(183.25, 740.5, 23.5, 16, gImg('assets/figma/v/e0998b9bdd25ce.svg'), show: demoContent),
+      gP(192, 750.5, 6, 11, gImg('assets/figma/v/170c9f72b8a8fd.svg'), show: demoContent),
       
+      
+      
+      if (!demoContent) gP(24, 125, 342, 620, const KelaBrief(width: 342)),
     ]);
   }
 }

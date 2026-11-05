@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/decisions.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -46,31 +47,32 @@ gP(7, 37, 376, 181, gImg('assets/figma/v/c901e6036f3570.svg'))
       gP(154, 84, 65, 14, gText('Sol détecté', 11.5, Color(0xFFFFFFFF), weight: 600)),
       gP(316, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
       gP(327.987, 81.208, 20.025, 21.583, gImg('assets/figma/v/dc71fdaa4dee30.svg')),
-      gP(110, 612, 170, 30, gBox(color: Color(0x59000000), layerBlur: 10, oval: true)),
-      gP(125, 380, 140, 230, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x59403366), offset: Offset(0, 14), blurRadius: 22, spreadRadius: 0)], radii: [22, 22, 22, 22])),
-      gP(111, 366, 168, 258, gImg('assets/figma/v/fead007312dd35.svg')),
-      gP(104, 359, 12, 12, gBox(color: Color(0xFFFFFFFF), oval: true)),
-      gP(270, 359, 12, 12, gBox(color: Color(0xFFFFFFFF), oval: true)),
-      gP(270, 615, 12, 12, gBox(color: Color(0xFFFFFFFF), oval: true)),
-      gP(104, 615, 12, 12, gBox(color: Color(0xFFFFFFFF), oval: true)),
-      gP(147, 330, 105, 30, gBox(color: Color(0xE5FFFFFF), radii: [100, 100, 100, 100])),
-      gP(161, 338, 77, 14, gText('Hauteur 42 cm', 11, Color(0xFF111015), weight: 600)),
-      gP(16, 664, 358, 164, gBox(color: Color(0xB8FFFFFF), border: Color(0xFFFFFFFF), bw: 1, backBlur: 30, radii: [36, 36, 36, 36])),
-      gP(30, 678, 56, 56, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [18, 18, 18, 18])),
+      gP(110, 612, 170, 30, gBox(color: Color(0x59000000), layerBlur: 10, oval: true), show: demoContent),
+      gP(125, 380, 140, 230, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x59403366), offset: Offset(0, 14), blurRadius: 22, spreadRadius: 0)], radii: [22, 22, 22, 22]), show: demoContent),
+      gP(111, 366, 168, 258, gImg('assets/figma/v/fead007312dd35.svg'), show: demoContent),
+      gP(104, 359, 12, 12, gBox(color: Color(0xFFFFFFFF), oval: true), show: demoContent),
+      gP(270, 359, 12, 12, gBox(color: Color(0xFFFFFFFF), oval: true), show: demoContent),
+      gP(270, 615, 12, 12, gBox(color: Color(0xFFFFFFFF), oval: true), show: demoContent),
+      gP(104, 615, 12, 12, gBox(color: Color(0xFFFFFFFF), oval: true), show: demoContent),
+      gP(147, 330, 105, 30, gBox(color: Color(0xE5FFFFFF), radii: [100, 100, 100, 100]), show: demoContent),
+      gP(161, 338, 77, 14, gText('Hauteur 42 cm', 11, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(16, 664, 358, 164, gBox(color: Color(0xB8FFFFFF), border: Color(0xFFFFFFFF), bw: 1, backBlur: 30, radii: [36, 36, 36, 36]), show: demoContent),
+      gP(30, 678, 56, 56, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [18, 18, 18, 18]), show: demoContent),
       gP(98, 682, 151, 18, gText('Lampe en bois recyclé', 14, Color(0xFF111015), weight: 600), show: demoContent),
-      gP(98, 704, 79, 16, gText(demoContent ? '25 000 FCFA' : '—', 12.5, Color(0xFF5A3FE0), weight: 700)),
-      gP(30, 748, 27, 14, gText('Taille', 11, Color(0xFF57545F), weight: 500)),
-      gP(74, 753, 200, 4, gBox(color: Color(0xFFDAD7E0), radii: [2, 2, 2, 2])),
-      gP(74, 753, 120, 4, gBox(color: Color(0xFF6A4DFF), radii: [2, 2, 2, 2])),
-      gP(186, 747, 16, 16, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x33403366), offset: Offset(0, 2), blurRadius: 6, spreadRadius: 0)], oval: true)),
-      gP(299, 682, 48, 48, gBox(color: Color(0xFFFFFFFF), oval: true)),
-      gP(305, 688, 36, 36, gBox(color: Color(0xFF111015), oval: true)),
-      gP(310, 693, 26, 26, gBox(color: Color(0xFFFFFFFF), oval: true)),
+      gP(98, 704, 79, 16, gText(demoContent ? '25 000 FCFA' : '—', 12.5, Color(0xFF5A3FE0), weight: 700), show: demoContent),
+      gP(30, 748, 27, 14, gText('Taille', 11, Color(0xFF57545F), weight: 500), show: demoContent),
+      gP(74, 753, 200, 4, gBox(color: Color(0xFFDAD7E0), radii: [2, 2, 2, 2]), show: demoContent),
+      gP(74, 753, 120, 4, gBox(color: Color(0xFF6A4DFF), radii: [2, 2, 2, 2]), show: demoContent),
+      gP(186, 747, 16, 16, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x33403366), offset: Offset(0, 2), blurRadius: 6, spreadRadius: 0)], oval: true), show: demoContent),
+      gP(299, 682, 48, 48, gBox(color: Color(0xFFFFFFFF), oval: true), show: demoContent),
+      gP(305, 688, 36, 36, gBox(color: Color(0xFF111015), oval: true), show: demoContent),
+      gP(310, 693, 26, 26, gBox(color: Color(0xFFFFFFFF), oval: true), show: demoContent),
       gP(30, 772, 224, 44, gBox(color: Color(0xFF111015), radii: [100, 100, 100, 100])),
       gP(91, 786, 102, 16, gText('Ajouter au panier', 12.5, Color(0xFFFFFFFF), weight: 600)),
       gP(262, 772, 96, 44, gBox(color: Color(0xFFF1EEFB), radii: [100, 100, 100, 100])),
       gP(279.5, 787, 61, 14, gText('Réinitialiser', 11, Color(0xFF5A3FE0), weight: 600)),
       gTap(30, 772, 224, 44, () { gOpen(context, '05'); }), // audit 01/11 : « Ajouter au panier » n'avait aucun effet
+      if (!demoContent) gP(24, 125, 342, 620, const ProductNoModel(width: 342)),
     ]);
   }
 }

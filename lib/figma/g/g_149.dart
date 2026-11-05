@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/decisions.dart';
+import '../live/device_prefs.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -30,7 +32,7 @@ class G_149 extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo', show: demoContent),
       gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
@@ -46,36 +48,37 @@ class G_149 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 202, 26, gText('Langue et affichage', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 54, 19, gText('Langue', 15, Color(0xFF111015), weight: 700)),
-      gP(40, 170, 55, 17, gText('Français', 13.5, Color(0xFF111015), weight: 600)),
-      gP(40, 192, 100, 14, gText('Langue par défaut', 11.5, Color(0xFF57545F))),
-      gP(300, 180, 52, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
-      gP(313, 184, 26, 14, gText('Actif', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
-      gP(40, 224, 314, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(40, 236, 47, 17, gText('English', 13.5, Color(0xFF111015), weight: 600)),
-      gP(40, 258, 107, 14, gText('English (Cameroon)', 11.5, Color(0xFF57545F))),
-      gP(336.75, 249.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
-      gP(24, 304, 94, 19, gText('Accessibilité', 15, Color(0xFF111015), weight: 700)),
+      gP(24, 120, 54, 19, gText('Langue', 15, Color(0xFF111015), weight: 700), show: demoContent),
+      gP(40, 170, 55, 17, gText('Français', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(40, 192, 100, 14, gText('Langue par défaut', 11.5, Color(0xFF57545F)), show: demoContent),
+      gP(300, 180, 52, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(313, 184, 26, 14, gText('Actif', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center), show: demoContent),
+      gP(40, 224, 314, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(40, 236, 47, 17, gText('English', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(40, 258, 107, 14, gText('English (Cameroon)', 11.5, Color(0xFF57545F)), show: demoContent),
+      gP(336.75, 249.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg'), show: demoContent),
+      gP(24, 304, 94, 19, gText('Accessibilité', 15, Color(0xFF111015), weight: 700), show: demoContent),
       gP(40, 354, 88, 17, gText('Texte agrandi', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 376, 159, 14, gText('Augmenter la taille des textes', 11.5, Color(0xFF57545F))),
-      gP(308, 363, 42, 24, GToggle(on: false, onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18)),
+      gP(308, 363, 42, 24, GToggle(on: ref.watch(accessPrefs149Provider)['a149_large_text'] ?? false, onChanged: (v) => ref.read(accessPrefs149Provider.notifier).set('a149_large_text', v), onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18)),
       gP(40, 408, 314, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 420, 125, 17, gText('Contraste renforcé', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 442, 107, 14, gText('Améliorer la lisibilité', 11.5, Color(0xFF57545F))),
-      gP(308, 429, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
+      gP(308, 429, 42, 24, GToggle(on: ref.watch(accessPrefs149Provider)['a149_contrast'] ?? true, onChanged: (v) => ref.read(accessPrefs149Provider.notifier).set('a149_contrast', v), onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
       gP(40, 474, 314, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 486, 145, 17, gText('Réduire les animations', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 508, 129, 14, gText('Limiter les mouvements', 11.5, Color(0xFF57545F))),
-      gP(308, 495, 42, 24, GToggle(on: false, onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18)),
+      gP(308, 495, 42, 24, GToggle(on: ref.watch(accessPrefs149Provider)['a149_reduce_motion'] ?? false, onChanged: (v) => ref.read(accessPrefs149Provider.notifier).set('a149_reduce_motion', v), onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18)),
       gP(40, 540, 314, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 552, 97, 17, gText('Lecture vocale', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 574, 150, 14, gText('Compatible lecteur d’écran', 11.5, Color(0xFF57545F))),
-      gP(308, 561, 42, 24, GToggle(on: false, onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18)),
+      gP(308, 561, 42, 24, GToggle(on: ref.watch(accessPrefs149Provider)['a149_screen_reader'] ?? false, onChanged: (v) => ref.read(accessPrefs149Provider.notifier).set('a149_screen_reader', v), onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18)),
       gP(24, 620, 100, 19, gText('Taille du texte', 15, Color(0xFF111015), weight: 700)),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 658, 63, 34, 'Petit', 12.5, 500), GChip(95, 658, 70.4, 34, 'Normal', 12.5, 600), GChip(173.4, 658, 63, 34, 'Grand', 12.5, 500)], selected: 1, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
-      gTap(16, 296, 110, 35, () { gOpen(context, '186'); }), // parcours 149 -> 186
-      gTap(32, 184, 116, 32, () { gOpen(context, '185'); }), // lien métier 149 -> 185
+      if (demoContent) gTap(16, 296, 110, 35, () { gOpen(context, '186'); }), // parcours 149 -> 186
+      if (demoContent) gTap(32, 184, 116, 32, () { gOpen(context, '185'); }), // lien métier 149 -> 185
+      if (!demoContent) gP(24, 125, 342, 220, const LanguagePanel(width: 342)),
     ]);
   }
 }

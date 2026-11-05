@@ -90,3 +90,21 @@ class VitrineCount extends ConsumerWidget {
     return Text('$n', textAlign: TextAlign.center, style: _st(20, w: FontWeight.w800));
   }
 }
+
+/// Écran dont les indicateurs n'ont pas encore de source de données sur le serveur (impact, parrainage, comparaisons) :
+/// hors démonstration, un message honnête remplace les chiffres et listes de la maquette. Aucun chiffre n'est inventé.
+class NoSource extends StatelessWidget {
+  const NoSource({super.key, required this.what, this.width = 342, this.height = 200});
+  final String what;
+  final double width, height;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        width: width,
+        height: height,
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 28),
+        decoration: BoxDecoration(color: const Color(0x66FFFFFF), borderRadius: BorderRadius.circular(22), border: Border.all(color: const Color(0xFFECE8F2))),
+        child: Text('$what\n\nCes indicateurs seront affichés dès que leur source de données sera disponible.', textAlign: TextAlign.center, style: _st(13, c: _grey).copyWith(height: 1.5)),
+      );
+}

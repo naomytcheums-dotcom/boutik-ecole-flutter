@@ -21,3 +21,6 @@
 
 ## Lot opportunités (écrans 152, 157, 203, 204)
 - 152 offres ouvertes réelles (missions publiées) sans pourcentage ; 157 résumé calculé sur propositions et besoins de l'entreprise ; 203 compétences du profil, sans score inventé ; 204 projets réels. Aucune migration. Classement Kéla, scores, financement et mentors : non disponibles côté serveur, dit explicitement à l'écran. Test `opportunites_test.dart`.
+
+## Lot encadrement (écrans 113, 114)
+- Migration `20261105000700_encadrement_productions.sql` : tables mentors et productions, fonctions staff_mentors, staff_productions, mentor_create, production_create, production_update ; « en retard » calculé. Tests SQL 8/8, `encadrement_test.dart` 7/7. Bouton « Ajouter un mentor » réel. Création de productions : fonction serveur prête, pas encore de formulaire à l'écran.

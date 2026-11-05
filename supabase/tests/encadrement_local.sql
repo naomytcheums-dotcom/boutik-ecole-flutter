@@ -1,0 +1,30 @@
+create temp table res (n serial, test text, ok boolean, detail text);
+grant all on res to public; grant usage on sequence res_n_seq to public;
+set role anon;
+do $$ begin begin perform staff_mentors(); insert into res values (default, 'E1 visiteur refusé', false, 'accepté'); exception when others then insert into res values (default, 'E1 visiteur refusé', true, sqlerrm); end; end $$;
+reset role;
+select set_config('request.jwt.claims', json_build_object('sub', 'a7ae1021-2bc7-437b-b7af-bd7d6422c5ab', 'role', 'authenticated')::text, false);
+set role authenticated;
+do $$ begin
+  begin perform staff_productions(); insert into res values (default, 'E2 étudiant ne lit pas', false, 'accepté'); exception when others then insert into res values (default, 'E2 étudiant ne lit pas', sqlerrm = 'Action non autorisée', sqlerrm); end;
+  begin perform mentor_create('ZZ test', 'Mentor', 'x'); insert into res values (default, 'E3 étudiant ne crée pas', false, 'accepté'); exception when others then insert into res values (default, 'E3 étudiant ne crée pas', sqlerrm = 'Action non autorisée', sqlerrm); end;
+end $$;
+reset role;
+select set_config('request.jwt.claims', json_build_object('sub', 'c8332c75-ae70-4685-8589-d6ab77667e16', 'role', 'authenticated')::text, false);
+set role authenticated;
+do $$ declare m uuid; p uuid; q uuid; begin
+  m := mentor_create('ZZ test mentor', 'Encadreur', 'Génie logiciel');
+  p := production_create('ZZ test prod', 'Équipe A', m, current_date - 3);
+  q := production_create('ZZ test prod 2', 'Équipe B', m, current_date + 10);
+  insert into res values (default, 'E4 le mentor compte ses productions en cours', (select (e->>'productions')::int from jsonb_array_elements(staff_mentors()) e where e->>'id' = m::text) = 2, '');
+  insert into res values (default, 'E5 échéance dépassée = en retard', (select e->>'status' from jsonb_array_elements(staff_productions()) e where e->>'id' = p::text) = 'en_retard', '');
+  perform production_update(q, 40, 'en_cours');
+  insert into res values (default, 'E6 avancement enregistré', (select (e->>'progress')::int from jsonb_array_elements(staff_productions()) e where e->>'id' = q::text) = 40, '');
+  perform production_update(p, 10, 'terminee');
+  insert into res values (default, 'E7 terminée passe à 100 %', (select (e->>'progress')::int from jsonb_array_elements(staff_productions()) e where e->>'id' = p::text) = 100, '');
+  begin perform production_update(p, 10, 'bidon'); insert into res values (default, 'E8 statut invalide refusé', false, 'accepté'); exception when others then insert into res values (default, 'E8 statut invalide refusé', sqlerrm = 'Statut invalide', sqlerrm); end;
+end $$;
+reset role;
+delete from productions where title like 'ZZ test%'; delete from mentors where name like 'ZZ test%';
+select n, case when ok then 'PASS' else 'FAIL' end resultat, test, left(detail, 80) detail from res order by n;
+select count(*) filter (where ok) reussis, count(*) filter (where not ok) echoues from res;

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/entreprise.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -31,38 +32,38 @@ class G_190 extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 1280, h: 880, radius: 16, color: Color(0xFFF7F6F4), children: [
-      gP(268, 160, 984, 1, gBox(color: Color(0xFFECE8F2))),
-      gP(404, 134, 56, 16, gText('En cours', 13, Color(0xFF111015), weight: 700, inter: true, align: TextAlign.center)),
-      gP(317.2, 158, 229.6, 3, gBox(color: Color(0xFF6A4DFF), radii: [2, 2, 2, 2])),
-      gP(730.5, 134, 59, 16, gText('Acceptés', 13, Color(0xFF57545F), weight: 500, inter: true, align: TextAlign.center)),
-      gP(1063, 134, 51, 16, gText('Refusés', 13, Color(0xFF57545F), weight: 500, inter: true, align: TextAlign.center)),
-      gP(268, 178, 984, 172, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
-      gP(269, 179, 982, 39, gBox(color: Color(0xFFF4F1F8), radii: [15, 15, 15, 15])),
-      gP(284, 191, 30, 13, gText('Devis', 11, Color(0xFF57545F), weight: 600, inter: true)),
-      gP(550.56, 191, 59, 13, gText('Prestataire', 11, Color(0xFF57545F), weight: 600, inter: true)),
-      gP(760, 191, 85, 13, gText('Montant (FCFA)', 11, Color(0xFF57545F), weight: 600, inter: true)),
-      gP(931.36, 191, 52, 13, gText('Mis à jour', 11, Color(0xFF57545F), weight: 600, inter: true)),
-      gP(1064.64, 191, 33, 13, gText('Statut', 11, Color(0xFF57545F), weight: 600, inter: true)),
-      gP(284, 232, 174, 15, gText('DEV-2026-014 · Borne solaire', 12, Color(0xFF111015), weight: 600, inter: true)),
-      gP(550.56, 232, 68, 15, gText('Team Innov’', 12, Color(0xFF4A4854), inter: true)),
-      gP(760, 232, 49, 15, gText(demoContent ? '450 000' : '—', 12, Color(0xFF4A4854), inter: true)),
-      gP(931.36, 232, 63, 15, gText('Aujourd’hui', 12, Color(0xFF4A4854), inter: true)),
-      gP(1064.64, 229, 90.4, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11])),
-      gP(1077.84, 233, 65, 13, gText('Négociation', 11, Color(0xFF8F5400), weight: 600, inter: true, align: TextAlign.center)),
-      gP(280, 262, 960, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(284, 276, 194, 15, gText('DEV-2026-012 · Application CRM', 12, Color(0xFF111015), weight: 600, inter: true)),
-      gP(550.56, 276, 56, 15, gText('Mariam E.', 12, Color(0xFF4A4854), inter: true)),
-      gP(760, 276, 41, 15, gText(demoContent ? '80 000' : '—', 12, Color(0xFF4A4854), inter: true)),
-      gP(931.36, 276, 24, 15, gText('Hier', 12, Color(0xFF4A4854), inter: true)),
-      gP(1064.64, 273, 77.6, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
-      gP(1080.44, 277, 47, 13, gText('À valider', 11, Color(0xFF5A3FE0), weight: 600, inter: true, align: TextAlign.center)),
-      gP(280, 306, 960, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(284, 320, 184, 15, gText('DEV-2026-009 · Logo et charte', 12, Color(0xFF111015), weight: 600, inter: true)),
-      gP(550.56, 320, 61, 15, gText('Aminata B.', 12, Color(0xFF4A4854), inter: true)),
-      gP(760, 320, 41, 15, gText(demoContent ? '65 000' : '—', 12, Color(0xFF4A4854), inter: true)),
-      gP(931.36, 320, 40, 15, gText('20 oct.', 12, Color(0xFF4A4854), inter: true)),
-      gP(1064.64, 317, 64.8, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
-      gP(1075.04, 321, 45, 13, gText('Accepté', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center)),
+      gP(268, 160, 984, 1, gBox(color: Color(0xFFECE8F2)), show: demoContent),
+      gP(404, 134, 56, 16, gText('En cours', 13, Color(0xFF111015), weight: 700, inter: true, align: TextAlign.center), show: demoContent),
+      gP(317.2, 158, 229.6, 3, gBox(color: Color(0xFF6A4DFF), radii: [2, 2, 2, 2]), show: demoContent),
+      gP(730.5, 134, 59, 16, gText('Acceptés', 13, Color(0xFF57545F), weight: 500, inter: true, align: TextAlign.center), show: demoContent),
+      gP(1063, 134, 51, 16, gText('Refusés', 13, Color(0xFF57545F), weight: 500, inter: true, align: TextAlign.center), show: demoContent),
+      gP(268, 178, 984, 172, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26]), show: demoContent),
+      gP(269, 179, 982, 39, gBox(color: Color(0xFFF4F1F8), radii: [15, 15, 15, 15]), show: demoContent),
+      gP(284, 191, 30, 13, gText('Devis', 11, Color(0xFF57545F), weight: 600, inter: true), show: demoContent),
+      gP(550.56, 191, 59, 13, gText('Prestataire', 11, Color(0xFF57545F), weight: 600, inter: true), show: demoContent),
+      gP(760, 191, 85, 13, gText('Montant (FCFA)', 11, Color(0xFF57545F), weight: 600, inter: true), show: demoContent),
+      gP(931.36, 191, 52, 13, gText('Mis à jour', 11, Color(0xFF57545F), weight: 600, inter: true), show: demoContent),
+      gP(1064.64, 191, 33, 13, gText('Statut', 11, Color(0xFF57545F), weight: 600, inter: true), show: demoContent),
+      gP(284, 232, 174, 15, gText('DEV-2026-014 · Borne solaire', 12, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(550.56, 232, 68, 15, gText('Team Innov’', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(760, 232, 49, 15, gText(demoContent ? '450 000' : '—', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(931.36, 232, 63, 15, gText('Aujourd’hui', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(1064.64, 229, 90.4, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(1077.84, 233, 65, 13, gText('Négociation', 11, Color(0xFF8F5400), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
+      gP(280, 262, 960, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(284, 276, 194, 15, gText('DEV-2026-012 · Application CRM', 12, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(550.56, 276, 56, 15, gText('Mariam E.', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(760, 276, 41, 15, gText(demoContent ? '80 000' : '—', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(931.36, 276, 24, 15, gText('Hier', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(1064.64, 273, 77.6, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(1080.44, 277, 47, 13, gText('À valider', 11, Color(0xFF5A3FE0), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
+      gP(280, 306, 960, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(284, 320, 184, 15, gText('DEV-2026-009 · Logo et charte', 12, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(550.56, 320, 61, 15, gText('Aminata B.', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(760, 320, 41, 15, gText(demoContent ? '65 000' : '—', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(931.36, 320, 40, 15, gText('20 oct.', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(1064.64, 317, 64.8, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(1075.04, 321, 45, 13, gText('Accepté', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
       gP(0, 0, 1280, 56, gBox(color: Color(0xFFFFFFFF))),
       gP(20, 10, 36, 34, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(62, 17, 107, 21, gText('Boutik-École', 17, Color(0xFF18181B), weight: 700, inter: true)),
@@ -129,6 +130,7 @@ class G_190 extends ConsumerWidget {
       gP(1118, 87, 111, 14, gText('Personnaliser la vue', 11.5, Color(0xFF111015), weight: 500, inter: true)),
       gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
       gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
+      if (!demoContent) gP(268, 150, 984, 640, quotesListWidgetWide()),
     ]);
   }
 }

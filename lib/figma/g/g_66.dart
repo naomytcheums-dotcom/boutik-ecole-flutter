@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/vendeur.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -31,7 +32,7 @@ class G_66 extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo', show: demoContent),
       gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
@@ -44,46 +45,46 @@ class G_66 extends ConsumerWidget {
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
       gP(24, 70, 87, 26, gText('Revenus', 21, Color(0xFF111015), weight: 700)),
-      gP(38, 132, 60, 14, gText('Disponible', 11.5, Color(0xFF57545F), weight: 500)),
-      gP(38, 152, 140, 25, gText(demoContent ? '845 000 FCFA' : '—', 20, Color(0xFF111015), weight: 800)),
-      gP(150, 132, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),
-      gP(155.375, 137.375, 17.875, 14.125, gImg('assets/figma/v/b45a94448c908a.svg')),
-      gP(155.375, 138.625, 17.25, 16, gImg('assets/figma/v/942aaa660c45c9.svg')),
-      gP(214, 132, 57, 14, gText('En attente', 11.5, Color(0xFF57545F), weight: 500)),
-      gP(214, 152, 140, 25, gText(demoContent ? '320 000 FCFA' : '—', 20, Color(0xFF111015), weight: 800)),
-      gP(214, 184, 66, 14, gText('4 paiements', 11, Color(0xFF8F5400), weight: 600)),
-      gP(326, 132, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),
-      gP(330.75, 136.75, 18.5, 18.5, gImg('assets/figma/v/273a872595c6ee.svg')),
-      gP(337, 139.25, 8.5, 11, gImg('assets/figma/v/6dc3ac1ada1685.svg')),
-      gP(40, 240, 118, 18, gText('Revenus cumulés', 14, Color(0xFF111015), weight: 700)),
-      gP(314, 242, 36, 14, gText('6 mois', 11.5, Color(0xFF57545F), weight: 500, align: TextAlign.right)),
-      gP(44, 282, 302, 104, gImg('assets/figma/r/37_803.png')),
-      gP(41, 279, 308, 110, gImg('assets/figma/v/9213e8c783ec6b.svg')),
-      gP(341, 277, 10, 10, gBox(color: Color(0xFF111015), oval: true)),
-      gP(24, 430, 145, 19, gText('Relevés disponibles', 15, Color(0xFF111015), weight: 700)),
-      gP(36, 481, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
-      gP(46.333, 489.667, 19.333, 22.667, gImg('assets/figma/v/8a418070bfb100.svg')),
-      gP(54.667, 489.667, 11, 11, gImg('assets/figma/v/2e28e879cb0de7.svg')),
-      gP(88, 480, 136, 17, gText('Relevé octobre 2026', 13.5, Color(0xFF111015), weight: 600)),
-      gP(88, 502, 111, 14, gText('PDF · 12 transactions', 11.5, Color(0xFF57545F))),
-      gP(261.6, 490, 90.4, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
-      gP(275.3, 494, 63, 14, gText('Télécharger', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)),
-      gP(88, 534, 266, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(36, 547, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
-      gP(46.333, 555.667, 19.333, 22.667, gImg('assets/figma/v/8a418070bfb100.svg')),
-      gP(54.667, 555.667, 11, 11, gImg('assets/figma/v/2e28e879cb0de7.svg')),
-      gP(88, 546, 155, 17, gText('Relevé septembre 2026', 13.5, Color(0xFF111015), weight: 600)),
-      gP(88, 568, 112, 14, gText('PDF · 18 transactions', 11.5, Color(0xFF57545F))),
-      gP(261.6, 556, 90.4, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
-      gP(275.3, 560, 63, 14, gText('Télécharger', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)),
-      gP(88, 600, 266, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(36, 613, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
-      gP(46.333, 621.667, 19.333, 22.667, gImg('assets/figma/v/8a418070bfb100.svg')),
-      gP(54.667, 621.667, 11, 11, gImg('assets/figma/v/2e28e879cb0de7.svg')),
-      gP(88, 612, 113, 17, gText('Relevé août 2026', 13.5, Color(0xFF111015), weight: 600)),
-      gP(88, 634, 107, 14, gText('PDF · 9 transactions', 11.5, Color(0xFF57545F))),
-      gP(261.6, 622, 90.4, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
-      gP(275.3, 626, 63, 14, gText('Télécharger', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)),
+      gP(38, 132, 60, 14, gText('Disponible', 11.5, Color(0xFF57545F), weight: 500), show: demoContent),
+      gP(38, 152, 140, 25, gText(demoContent ? '845 000 FCFA' : '—', 20, Color(0xFF111015), weight: 800), show: demoContent),
+      gP(150, 132, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9]), show: demoContent),
+      gP(155.375, 137.375, 17.875, 14.125, gImg('assets/figma/v/b45a94448c908a.svg'), show: demoContent),
+      gP(155.375, 138.625, 17.25, 16, gImg('assets/figma/v/942aaa660c45c9.svg'), show: demoContent),
+      gP(214, 132, 57, 14, gText('En attente', 11.5, Color(0xFF57545F), weight: 500), show: demoContent),
+      gP(214, 152, 140, 25, gText(demoContent ? '320 000 FCFA' : '—', 20, Color(0xFF111015), weight: 800), show: demoContent),
+      gP(214, 184, 66, 14, gText('4 paiements', 11, Color(0xFF8F5400), weight: 600), show: demoContent),
+      gP(326, 132, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9]), show: demoContent),
+      gP(330.75, 136.75, 18.5, 18.5, gImg('assets/figma/v/273a872595c6ee.svg'), show: demoContent),
+      gP(337, 139.25, 8.5, 11, gImg('assets/figma/v/6dc3ac1ada1685.svg'), show: demoContent),
+      gP(40, 240, 118, 18, gText('Revenus cumulés', 14, Color(0xFF111015), weight: 700), show: demoContent),
+      gP(314, 242, 36, 14, gText('6 mois', 11.5, Color(0xFF57545F), weight: 500, align: TextAlign.right), show: demoContent),
+      gP(44, 282, 302, 104, gImg('assets/figma/r/37_803.png'), show: demoContent),
+      gP(41, 279, 308, 110, gImg('assets/figma/v/9213e8c783ec6b.svg'), show: demoContent),
+      gP(341, 277, 10, 10, gBox(color: Color(0xFF111015), oval: true), show: demoContent),
+      gP(24, 430, 145, 19, gText('Relevés disponibles', 15, Color(0xFF111015), weight: 700), show: demoContent),
+      gP(36, 481, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13]), show: demoContent),
+      gP(46.333, 489.667, 19.333, 22.667, gImg('assets/figma/v/8a418070bfb100.svg'), show: demoContent),
+      gP(54.667, 489.667, 11, 11, gImg('assets/figma/v/2e28e879cb0de7.svg'), show: demoContent),
+      gP(88, 480, 136, 17, gText('Relevé octobre 2026', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(88, 502, 111, 14, gText('PDF · 12 transactions', 11.5, Color(0xFF57545F)), show: demoContent),
+      gP(261.6, 490, 90.4, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(275.3, 494, 63, 14, gText('Télécharger', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center), show: demoContent),
+      gP(88, 534, 266, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(36, 547, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13]), show: demoContent),
+      gP(46.333, 555.667, 19.333, 22.667, gImg('assets/figma/v/8a418070bfb100.svg'), show: demoContent),
+      gP(54.667, 555.667, 11, 11, gImg('assets/figma/v/2e28e879cb0de7.svg'), show: demoContent),
+      gP(88, 546, 155, 17, gText('Relevé septembre 2026', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(88, 568, 112, 14, gText('PDF · 18 transactions', 11.5, Color(0xFF57545F)), show: demoContent),
+      gP(261.6, 556, 90.4, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(275.3, 560, 63, 14, gText('Télécharger', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center), show: demoContent),
+      gP(88, 600, 266, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(36, 613, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13]), show: demoContent),
+      gP(46.333, 621.667, 19.333, 22.667, gImg('assets/figma/v/8a418070bfb100.svg'), show: demoContent),
+      gP(54.667, 621.667, 11, 11, gImg('assets/figma/v/2e28e879cb0de7.svg'), show: demoContent),
+      gP(88, 612, 113, 17, gText('Relevé août 2026', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(88, 634, 107, 14, gText('PDF · 9 transactions', 11.5, Color(0xFF57545F)), show: demoContent),
+      gP(261.6, 622, 90.4, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(275.3, 626, 63, 14, gText('Télécharger', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center), show: demoContent),
       gP(125, 832, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
       gP(47.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '19')),
@@ -101,9 +102,10 @@ class G_66 extends ConsumerWidget {
       gP(169, 762, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gTab(context, '03')),
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
-      gTap(261.6, 490, 90.4, 22, () { uiExport(context); }), // audit 01/11 : « Télécharger » n'avait aucun effet
-      gTap(261.6, 556, 90.4, 22, () { uiExport(context); }), // audit 01/11 : « Télécharger » n'avait aucun effet
-      gTap(261.6, 622, 90.4, 22, () { uiExport(context); }), // audit 01/11 : « Télécharger » n'avait aucun effet
+      if (demoContent) gTap(261.6, 490, 90.4, 22, () { uiExport(context); }), // audit 01/11 : « Télécharger » n'avait aucun effet
+      if (demoContent) gTap(261.6, 556, 90.4, 22, () { uiExport(context); }), // audit 01/11 : « Télécharger » n'avait aucun effet
+      if (demoContent) gTap(261.6, 622, 90.4, 22, () { uiExport(context); }), // audit 01/11 : « Télécharger » n'avait aucun effet
+      if (!demoContent) gP(24, 130, 342, 610, const SellerRevenuePanel(width: 342)),
     ]);
   }
 }

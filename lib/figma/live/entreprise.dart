@@ -193,3 +193,13 @@ Widget campaignsListWidget() => MobileList(
       trailing: (r) => campaignStatus(r['status']),
       emptyText: 'Aucune campagne pour le moment.\nLes sommes collectées ne sont pas encore suivies en ligne.',
     );
+
+Widget quotesListWidgetWide() => MobileList(
+      provider: quotesListProvider,
+      title: (r) => '${r['brief']}',
+      subtitle: (r) => r['quote_amount'] == null ? 'En attente de devis' : '${_money(r['quote_amount'])} · ${r['quote_delay_days'] ?? '—'} jours',
+      trailing: (r) => quoteStatus(r['status']),
+      emptyText: 'Aucune demande de devis pour le moment.',
+      width: 984,
+      height: 640,
+    );

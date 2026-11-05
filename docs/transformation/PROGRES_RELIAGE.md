@@ -24,3 +24,6 @@
 
 ## Lot encadrement (écrans 113, 114)
 - Migration `20261105000700_encadrement_productions.sql` : tables mentors et productions, fonctions staff_mentors, staff_productions, mentor_create, production_create, production_update ; « en retard » calculé. Tests SQL 8/8, `encadrement_test.dart` 7/7. Bouton « Ajouter un mentor » réel. Création de productions : fonction serveur prête, pas encore de formulaire à l'écran.
+
+## Lot vendeur et entreprise (écrans 66, 67, 69, 189, 190)
+- Migration `20261105000800_revenus_vendeur.sql` (seller_revenue : ventes payées, reversé, prévu, disponible, séries mensuelle et hebdomadaire). Tests SQL 4/4, `vendeur_test.dart` 10/10. 69 lit les vrais justificatifs ; 189 propositions et 190 devis réels. Vues d'annonces et conversion : non mesurées, dit à l'écran.

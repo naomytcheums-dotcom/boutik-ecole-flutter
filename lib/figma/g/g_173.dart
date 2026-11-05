@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/lot20b.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -31,7 +32,7 @@ class G_173 extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo', show: demoContent),
       gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
@@ -48,8 +49,8 @@ class G_173 extends ConsumerWidget {
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 89, 26, gText('Partager', 21, Color(0xFF111015), weight: 700)),
       gP(36, 128, 50, 50, gBox(image: 'assets/figma/img/84a49a20614dc5f12ab62f18400caa2290c40ec0.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
-      gP(98, 132, 145, 17, gText('Lampe en bois recyclé', 13.5, Color(0xFF111015), weight: 600)),
-      gP(98, 154, 257, 14, gText('25 000 FCFA · boutik-ecole.cm/p/lampe-0142', 11.5, Color(0xFF57545F))),
+      gP(98, 132, 145, 17, gText('Lampe en bois recyclé', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(98, 154, 257, 14, gText('25 000 FCFA · boutik-ecole.cm/p/lampe-0142', 11.5, Color(0xFF57545F)), show: demoContent),
       gP(24, 200, 87, 19, gText('Partager via', 15, Color(0xFF111015), weight: 700)),
       gP(36, 251, 40, 40, gBox(color: Color(0xFFDDF5EC), radii: [13, 13, 13, 13])),
       gP(44.667, 260.493, 21.84, 21.84, gImg('assets/figma/v/20aa6d17761aae.svg')),
@@ -87,6 +88,7 @@ class G_173 extends ConsumerWidget {
       gTap(16, 192, 103, 35, () { gOpen(context, '228'); }), // parcours 173 -> 228
       gTap(82, 453, 96, 32, () { uiCopy(context, uiLink('05'), 'Lien'); }), // audit 01/11 : « Copier le lien » n'avait aucun effet
       gTap(293.6, 458, 58.4, 22, () { uiCopy(context, uiLink('05'), 'Lien'); }), // audit 01/11 : « Copier » n'avait aucun effet
+      if (!demoContent) gP(98, 130, 270, 50, const ProductLine(width: 270)),
     ]);
   }
 }

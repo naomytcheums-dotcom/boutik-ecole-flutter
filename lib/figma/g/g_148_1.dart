@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/lot20b.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -47,8 +48,8 @@ class G_148_1 extends ConsumerWidget {
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 118, 26, gText('Paramètres', 21, Color(0xFF111015), weight: 700)),
       gP(159, 136, 72, 72, gBox(image: 'assets/figma/img/c15478a4e0a5cc1be462d8179ed1a24390853242.png', fit: BoxFit.cover, radii: [36, 36, 36, 36])),
-      gP(22.5, 216, 345, 21, gText('Mariam Essono', 17, Color(0xFF111015), weight: 700, align: TextAlign.center, wrap: true)),
-      gP(22.5, 240, 345, 15, gText('mariam@iut-douala.cm', 12, Color(0xFF57545F), align: TextAlign.center, wrap: true)),
+      gP(22.5, 216, 345, 21, gText('Mariam Essono', 17, Color(0xFF111015), weight: 700, align: TextAlign.center, wrap: true), show: demoContent),
+      gP(22.5, 240, 345, 15, gText('mariam@iut-douala.cm', 12, Color(0xFF57545F), align: TextAlign.center, wrap: true), show: demoContent),
       gP(36, 290, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(46, 300, 20, 20, const SizedBox.expand(), tap: () => gTab(context, '10')),
       gP(48.833, 299.5, 14.333, 14.333, gImg('assets/figma/v/89c36cb8c670bc.svg')),
@@ -115,6 +116,7 @@ class G_148_1 extends ConsumerWidget {
       gTap(80, 501, 145, 33, () { gOpen(context, '149'); }), // parcours 148_1 -> 149
       gTap(80, 553, 117, 33, () { gOpen(context, '49'); }), // parcours 148_1 -> 49
       gTap(80, 397, 152, 33, () { gOpen(context, '144'); }), // parcours 148_1 -> 144
+      if (!demoContent) gP(22, 212, 300, 50, const AccountHeader(width: 300)),
     ]);
   }
 }

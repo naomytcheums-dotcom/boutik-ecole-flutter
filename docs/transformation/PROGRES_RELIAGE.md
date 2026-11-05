@@ -42,3 +42,6 @@
 
 ## Lot de 20 écrans (117, 145, 146_1, 147_1, 147_2, 147_3, 155, 169, 180, 183, 217, 268, 270, 276, 277, 283, 284, 286, 287, 288)
 - Bornes (kiosks, incidents), annonces à modérer, notifications, commandes du compte, concours, rôles (comptes par rôle), registres de certificats et financier, vœux, établissements, impact de la plateforme. Aucune migration ; lectures protégées par RLS ou fonctions déjà en production. Test `lot20_test.dart` (48). Les statistiques de sessions/scans de la borne et les retraits par casier ne sont pas mesurés : masqués en mode connecté.
+
+## Deuxième lot de 20 écrans (33, 51, 74, 88, 93b, 94, 97, 101, 104, 127, 148_1, 158, 173, 244b, 248, 251, 25b, 263, 278, 285)
+- Paramètres (nom/e-mail du compte), boutique (annonces du vendeur), favoris, projets, besoins et propositions de l'entreprise, événements, établissements, catalogue de gestion, cercle, découverte, notifications. Aucune migration. Test `lot20b_test.dart` (42).

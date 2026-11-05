@@ -200,3 +200,83 @@ class EventsList extends ConsumerWidget {
     );
   }
 }
+
+class AdminEvent {
+  const AdminEvent({required this.title, required this.startsAt, required this.place, required this.registered, required this.capacity, required this.status});
+  final String title, place, status;
+  final DateTime startsAt;
+  final int registered;
+  final int? capacity;
+
+  String get statusLabel => switch (status) { 'published' => 'Publié', 'cancelled' => 'Annulé', _ => 'Brouillon' };
+  String get dateLabel => '${startsAt.day} ${_mois[startsAt.month - 1]} ${startsAt.year}';
+  String get registeredLabel => capacity == null ? '$registered' : '$registered / $capacity';
+}
+
+/// Tous les événements (écran 124, réservé à la gestion : le serveur ne renvoie que ce que le rôle peut voir).
+/// `null` : lecture en cours ou serveur absent.
+class AdminEventsNotifier extends Notifier<List<AdminEvent>?> {
+  bool error = false;
+
+  @override
+  List<AdminEvent>? build() {
+    if (!Backend.ready) return null;
+    Future.microtask(refresh);
+    return null;
+  }
+
+  Future<void> refresh() async {
+    final r = await Backend.rows('events', 'title,starts_at,place,capacity,status,event_registrations(count)', order: 'starts_at', ascending: false, limit: 100);
+    if (!ref.mounted) return;
+    error = r.error != null;
+    state = [
+      for (final x in r.rows)
+        AdminEvent(
+          title: '${x['title']}',
+          startsAt: (DateTime.tryParse('${x['starts_at']}') ?? DateTime.now()).toLocal(),
+          place: '${x['place'] ?? ''}',
+          registered: (((x['event_registrations'] as List?)?.firstOrNull as Map?)?['count'] as num?)?.toInt() ?? 0,
+          capacity: (x['capacity'] as num?)?.toInt(),
+          status: '${x['status']}',
+        ),
+    ];
+  }
+}
+
+final adminEventsProvider = NotifierProvider<AdminEventsNotifier, List<AdminEvent>?>(AdminEventsNotifier.new);
+
+/// Tableau des événements de la console de gestion : mêmes colonnes que la maquette, lignes réelles, états vide et erreur.
+class AdminEventsTable extends ConsumerWidget {
+  const AdminEventsTable({super.key, this.width = 940, this.height = 420});
+  final double width, height;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final list = ref.watch(adminEventsProvider);
+    final failed = ref.read(adminEventsProvider.notifier).error;
+    Widget note(String t) => SizedBox(width: width, height: height, child: Align(alignment: Alignment.topLeft, child: Padding(padding: const EdgeInsets.only(left: 16, top: 12), child: Text(t, style: _st(13, c: _grey)))));
+    if (list == null) return note('Chargement des événements…');
+    if (failed) return note('Les événements ne peuvent pas être chargés pour le moment (accès réservé à la gestion).');
+    if (list.isEmpty) return note('Aucun événement enregistré.');
+    Widget cell(double x, double w, String t, {FontWeight fw = FontWeight.w500, Color? c}) => Positioned(left: x, width: w, top: 0, child: Text(t, maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(12.5, w: fw, c: c ?? const Color(0xFF3D3B37))));
+    return SizedBox(
+      width: width,
+      height: height,
+      child: ListView.builder(
+        padding: EdgeInsets.zero,
+        itemCount: list.length,
+        itemExtent: 44,
+        itemBuilder: (_, i) {
+          final e = list[i];
+          return Stack(children: [
+            cell(16, 270, e.title, fw: FontWeight.w600, c: _ink),
+            cell(301.6, 140, e.dateLabel),
+            cell(453.9, 160, e.place.isEmpty ? '—' : e.place),
+            cell(625.3, 120, e.registeredLabel),
+            cell(758.6, 150, e.statusLabel, fw: FontWeight.w600, c: e.status == 'published' ? const Color(0xFF0F7A52) : _grey),
+          ]);
+        },
+      ),
+    );
+  }
+}

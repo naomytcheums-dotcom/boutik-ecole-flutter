@@ -1,4 +1,5 @@
 import 'package:boutik_ecole/figma/g/g_100.dart';
+import 'package:boutik_ecole/figma/g/g_124.dart';
 import 'package:boutik_ecole/figma/gen.dart';
 import 'package:boutik_ecole/figma/gsound.dart';
 import 'package:boutik_ecole/figma/live/backend.dart';
@@ -15,6 +16,13 @@ class _Events extends EventsNotifier {
   final List<AppEvent>? v;
   @override
   List<AppEvent>? build() => v;
+}
+
+class _Admin extends AdminEventsNotifier {
+  _Admin(this.v);
+  final List<AdminEvent>? v;
+  @override
+  List<AdminEvent>? build() => v;
 }
 
 void main() {
@@ -81,6 +89,36 @@ void main() {
 
   testWidgets('hors connexion : la démonstration de la maquette reste affichée', (t) async {
     await monter(t, connecte: false);
+    expect(find.text('Exposition des innovations'), findsOneWidget);
+  });
+
+  Future<void> monter124(WidgetTester t, {required bool connecte, List<AdminEvent>? events}) async {
+    Backend.ready = connecte;
+    GAnim.enabled = false;
+    t.view.physicalSize = const Size(1280, 890);
+    t.view.devicePixelRatio = 1;
+    addTearDown(t.view.reset);
+    await t.pumpWidget(ProviderScope(overrides: [adminEventsProvider.overrideWith(() => _Admin(events))], child: const MaterialApp(home: G_124())));
+    await t.pumpAndSettle();
+  }
+
+  testWidgets('124 connecté sans événement : aucun événement de maquette, état vide', (t) async {
+    await monter124(t, connecte: true, events: const []);
+    expect(find.text('Exposition des innovations'), findsNothing);
+    expect(find.text('Aucun événement enregistré.'), findsOneWidget);
+  });
+
+  testWidgets('124 connecté : les événements réels avec inscrits et statut', (t) async {
+    final e = AdminEvent(title: 'Atelier réel', startsAt: DateTime(2026, 11, 6, 15), place: 'Salle B2', registered: 3, capacity: 12, status: 'published');
+    await monter124(t, connecte: true, events: [e]);
+    expect(find.text('Atelier réel'), findsOneWidget);
+    expect(find.text('3 / 12'), findsOneWidget);
+    expect(find.text('Publié'), findsOneWidget);
+    expect(find.text('Exposition des innovations'), findsNothing);
+  });
+
+  testWidgets('124 hors connexion : la démonstration reste affichée', (t) async {
+    await monter124(t, connecte: false);
     expect(find.text('Exposition des innovations'), findsOneWidget);
   });
 }

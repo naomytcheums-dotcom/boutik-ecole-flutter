@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/evenements.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -55,26 +56,26 @@ class G_124 extends ConsumerWidget {
       gP(721.92, 211, 23, 13, gText('Lieu', 11, Color(0xFF57545F), weight: 600, inter: true)),
       gP(893.28, 211, 40, 13, gText('Inscrits', 11, Color(0xFF57545F), weight: 600, inter: true)),
       gP(1026.56, 211, 33, 13, gText('Statut', 11, Color(0xFF57545F), weight: 600, inter: true)),
-      gP(284, 252, 156, 15, gText('Exposition des innovations', 12, Color(0xFF111015), weight: 600, inter: true)),
-      gP(569.6, 252, 73, 15, gText('24 oct. 2026', 12, Color(0xFF4A4854), inter: true)),
-      gP(721.92, 252, 73, 15, gText('Hall principal', 12, Color(0xFF4A4854), inter: true)),
-      gP(893.28, 252, 54, 15, gText('186 / 250', 12, Color(0xFF4A4854), inter: true)),
-      gP(1026.56, 249, 71.2, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
-      gP(1037.16, 253, 50, 13, gText('Confirmé', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center)),
-      gP(280, 282, 960, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(284, 296, 179, 15, gText('Salon des créations étudiantes', 12, Color(0xFF111015), weight: 600, inter: true)),
-      gP(569.6, 296, 74, 15, gText('14 nov. 2026', 12, Color(0xFF4A4854), inter: true)),
-      gP(721.92, 296, 47, 15, gText('Campus', 12, Color(0xFF4A4854), inter: true)),
-      gP(893.28, 296, 49, 15, gText('94 / 300', 12, Color(0xFF4A4854), inter: true)),
-      gP(1026.56, 293, 154.4, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
-      gP(1047.76, 297, 113, 13, gText('Inscriptions ouvertes', 11, Color(0xFF5A3FE0), weight: 600, inter: true, align: TextAlign.center)),
-      gP(280, 326, 960, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(284, 340, 165, 15, gText('Campagne « Achetez local »', 12, Color(0xFF111015), weight: 600, inter: true)),
-      gP(569.6, 340, 59, 15, gText('Nov. 2026', 12, Color(0xFF4A4854), inter: true)),
-      gP(721.92, 340, 45, 15, gText('En ligne', 12, Color(0xFF4A4854), inter: true)),
-      gP(893.28, 340, 12, 15, gText('—', 12, Color(0xFF4A4854), inter: true)),
-      gP(1026.56, 337, 77.6, 22, gBox(color: Color(0xFFF2EFF6), radii: [11, 11, 11, 11])),
-      gP(1041.86, 341, 47, 13, gText('Brouillon', 11, Color(0xFF57545F), weight: 600, inter: true, align: TextAlign.center)),
+      gP(284, 252, 156, 15, gText('Exposition des innovations', 12, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(569.6, 252, 73, 15, gText('24 oct. 2026', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(721.92, 252, 73, 15, gText('Hall principal', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(893.28, 252, 54, 15, gText('186 / 250', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(1026.56, 249, 71.2, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(1037.16, 253, 50, 13, gText('Confirmé', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
+      gP(280, 282, 960, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(284, 296, 179, 15, gText('Salon des créations étudiantes', 12, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(569.6, 296, 74, 15, gText('14 nov. 2026', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(721.92, 296, 47, 15, gText('Campus', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(893.28, 296, 49, 15, gText('94 / 300', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(1026.56, 293, 154.4, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(1047.76, 297, 113, 13, gText('Inscriptions ouvertes', 11, Color(0xFF5A3FE0), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
+      gP(280, 326, 960, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(284, 340, 165, 15, gText('Campagne « Achetez local »', 12, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(569.6, 340, 59, 15, gText('Nov. 2026', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(721.92, 340, 45, 15, gText('En ligne', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(893.28, 340, 12, 15, gText('—', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(1026.56, 337, 77.6, 22, gBox(color: Color(0xFFF2EFF6), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(1041.86, 341, 47, 13, gText('Brouillon', 11, Color(0xFF57545F), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
       gP(0, 0, 1280, 56, gBox(color: Color(0xFFFFFFFF))),
       gP(20, 10, 36, 34, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(62, 17, 107, 21, gText('Boutik-École', 17, Color(0xFF18181B), weight: 700, inter: true)),
@@ -157,6 +158,7 @@ class G_124 extends ConsumerWidget {
       gTap(12, 488, 216, 36, () => gOpen(context, '126')),
       gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
       gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
+      if (!demoContent) gP(268, 240, 940, 420, const AdminEventsTable(width: 940, height: 420)),
     ]);
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/reseau.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -31,7 +32,7 @@ class G_223 extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo', show: demoContent),
       gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),
@@ -45,31 +46,31 @@ class G_223 extends ConsumerWidget {
       gP(24, 70, 173, 26, gText('Ateliers en direct', 21, Color(0xFF111015), weight: 700)),
       gP(340.75, 69.833, 22.5, 19.75, gImg('assets/figma/v/c416ae6fb27d36.svg')),
       gP(347.442, 87.25, 9.117, 6.922, gImg('assets/figma/v/76ffe03c455014.svg')),
-      gP(24, 120, 342, 170, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [26, 26, 26, 26])),
-      gP(24, 120, 342, 170, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x000B2340), Color(0xE00B2340)], stops: [0, 1]), radii: [26, 26, 26, 26])),
-      gP(42, 228, 309, 23, gText('En direct maintenant · Atelier bois', 18, Color(0xFFFFFFFF), weight: 800, wrap: true)),
-      gP(42, 258, 309, 15, gText('Génie civil · 124 spectateurs', 12, Color(0xD9FFFFFF), weight: 500, wrap: true)),
+      gP(24, 120, 342, 170, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [26, 26, 26, 26]), show: demoContent),
+      gP(24, 120, 342, 170, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x000B2340), Color(0xE00B2340)], stops: [0, 1]), radii: [26, 26, 26, 26]), show: demoContent),
+      gP(42, 228, 309, 23, gText('En direct maintenant · Atelier bois', 18, Color(0xFFFFFFFF), weight: 800, wrap: true), show: demoContent),
+      gP(42, 258, 309, 15, gText('Génie civil · 124 spectateurs', 12, Color(0xD9FFFFFF), weight: 500, wrap: true), show: demoContent),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 304, 107.4, 34, 'Aujourd’hui', 12.5, 600), GChip(139.4, 304, 122.2, 34, 'Cette semaine', 12.5, 500), GChip(269.6, 304, 107.4, 34, 'Mes rappels', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
-      gP(24, 352, 50, 19, gText('À venir', 15, Color(0xFF111015), weight: 700)),
-      gP(36, 398, 50, 50, gBox(image: 'assets/figma/img/4ca68f79023605aecb4f83724629d508e921e885.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
-      gP(98, 402, 179, 17, gText('Fabrication du jus de bissap', 13.5, Color(0xFF111015), weight: 600)),
-      gP(98, 424, 111, 14, gText('BTA · Aujourd’hui 16 h', 11.5, Color(0xFF57545F))),
-      gP(293.6, 412, 58.4, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
-      gP(303.8, 416, 38, 14, gText('Rappel', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)),
-      gP(98, 456, 256, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(36, 464, 50, 50, gBox(image: 'assets/figma/img/d5a96228e65dc2920e40cfac9b1205c2faee3caf.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
-      gP(98, 468, 130, 17, gText('Monter un kit solaire', 13.5, Color(0xFF111015), weight: 600)),
-      gP(98, 490, 96, 14, gText('ENR · Demain 10 h', 11.5, Color(0xFF57545F))),
-      gP(293.6, 478, 58.4, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
-      gP(303.8, 482, 38, 14, gText('Rappel', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)),
-      gP(98, 522, 256, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(36, 530, 50, 50, gBox(image: 'assets/figma/img/1574e42a325d3a4ac509841e7a5eb5a285a3d991.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
-      gP(98, 534, 148, 17, gText('Créer un logo en direct', 13.5, Color(0xFF111015), weight: 600)),
-      gP(98, 556, 80, 14, gText('MMI · Jeudi 15 h', 11.5, Color(0xFF57545F))),
-      gP(293.6, 544, 58.4, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
-      gP(303.8, 548, 38, 14, gText('Rappel', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)),
+      gP(24, 352, 50, 19, gText('À venir', 15, Color(0xFF111015), weight: 700), show: demoContent),
+      gP(36, 398, 50, 50, gBox(image: 'assets/figma/img/4ca68f79023605aecb4f83724629d508e921e885.png', fit: BoxFit.cover, radii: [12, 12, 12, 12]), show: demoContent),
+      gP(98, 402, 179, 17, gText('Fabrication du jus de bissap', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(98, 424, 111, 14, gText('BTA · Aujourd’hui 16 h', 11.5, Color(0xFF57545F)), show: demoContent),
+      gP(293.6, 412, 58.4, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(303.8, 416, 38, 14, gText('Rappel', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center), show: demoContent),
+      gP(98, 456, 256, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(36, 464, 50, 50, gBox(image: 'assets/figma/img/d5a96228e65dc2920e40cfac9b1205c2faee3caf.png', fit: BoxFit.cover, radii: [12, 12, 12, 12]), show: demoContent),
+      gP(98, 468, 130, 17, gText('Monter un kit solaire', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(98, 490, 96, 14, gText('ENR · Demain 10 h', 11.5, Color(0xFF57545F)), show: demoContent),
+      gP(293.6, 478, 58.4, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(303.8, 482, 38, 14, gText('Rappel', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center), show: demoContent),
+      gP(98, 522, 256, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(36, 530, 50, 50, gBox(image: 'assets/figma/img/1574e42a325d3a4ac509841e7a5eb5a285a3d991.png', fit: BoxFit.cover, radii: [12, 12, 12, 12]), show: demoContent),
+      gP(98, 534, 148, 17, gText('Créer un logo en direct', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(98, 556, 80, 14, gText('MMI · Jeudi 15 h', 11.5, Color(0xFF57545F)), show: demoContent),
+      gP(293.6, 544, 58.4, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(303.8, 548, 38, 14, gText('Rappel', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center), show: demoContent),
       gP(125, 832, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
-      gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
+      gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32]), show: demoContent),
       gP(47.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(47.125, 777.125, 20, 20, gImg('assets/figma/v/96285515fb0e14.svg')),
       gP(59.113, 789.113, 9.762, 9.762, gImg('assets/figma/v/524f40fa464a05.svg')),
@@ -85,8 +86,9 @@ class G_223 extends ConsumerWidget {
       gP(169, 762, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gTab(context, '03')),
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
-      gTap(34, 220, 325, 39, () { gOpen(context, '222'); }), // parcours 223 -> 222
-      gTap(92, 527, 160, 32, () { gOpen(context, '222'); }), // audit 01/11 : « Créer un logo en direct » n'avait aucun effet
+      if (demoContent) gTap(34, 220, 325, 39, () { gOpen(context, '222'); }), // parcours 223 -> 222
+      if (demoContent) gTap(92, 527, 160, 32, () { gOpen(context, '222'); }), // audit 01/11 : « Créer un logo en direct » n'avait aucun effet
+      if (!demoContent) gP(24, 125, 342, 620, livesAgenda()),
     ]);
   }
 }

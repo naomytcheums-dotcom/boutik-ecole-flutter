@@ -33,3 +33,6 @@
 
 ## Lot vitrine et vendeur (écrans 04, 20, 22c, 22d, 24, 38, 115, 172, 187, 212)
 - Migration `20261105000900_vendeur_public.sql` (seller_public, lisible sans compte, aucune donnée privée). Tests SQL 5/5, `lot_vitrine_vendeur_test.dart`. 24/38/172 : profil, réputation et confiance calculés ; 212 : vérification par code ; 04/20/22c/22d : vrais produits ; 115 : événements réels ; 187 : besoins réels de l'entreprise.
+
+## Lot réseau, vœux, lives, litiges (écrans 118, 129, 133, 134, 213, 214, 216, 223, 246, 261, 262, 267)
+- Listes réelles (établissements, départements publiés, vœux ouverts, lives programmés, réclamations, paiements déclarés, certificats) et résumé entreprise sur 261/262. Aucune migration. Test `lot_reseau_test.dart` (29).

@@ -3,3 +3,5 @@
 | Écran | Date | Statut |
 |---|---|---|
 | 100 Événements | 2026-11-05 | relié (migration 20261105000000 locale, test evenements_test.dart) |
+| 102 Vitrine | 2026-11-05 | relié (produits réels, compteurs réels ; test vitrine_economie_circulaire_test.dart) |
+| 106 Économie circulaire | 2026-11-05 | relié (produits de récupération réels ; même test) |

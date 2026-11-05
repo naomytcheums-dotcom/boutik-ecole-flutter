@@ -1,5 +1,6 @@
 import 'package:boutik_ecole/figma/g/g_189.dart';
 import 'package:boutik_ecole/figma/g/g_190.dart';
+import 'package:boutik_ecole/figma/g/g_32.dart';
 import 'package:boutik_ecole/figma/g/g_66.dart';
 import 'package:boutik_ecole/figma/g/g_67.dart';
 import 'package:boutik_ecole/figma/g/g_69.dart';
@@ -111,7 +112,14 @@ void main() {
     expect(find.text('DEV-2026-014 · Borne solaire'), findsNothing);
   });
 
-  for (final c in <(String, Widget, String, bool)>[('66', const G_66(), 'Relevé octobre 2026', false), ('67', const G_67(), 'Lampe en bois recyclé', false), ('69', const G_69(), 'Certificat de scolarité', false), ('189', const G_189(), 'Team Innov’', true), ('190', const G_190(), 'DEV-2026-014 · Borne solaire', true)]) {
+  testWidgets('32 connecté : produit choisi, aucune caractéristique de maquette', (t) async {
+    await monter(t, const G_32(), connecte: true);
+    expect(find.textContaining('Vendeur :'), findsOneWidget);
+    expect(find.text('LED E27 incluse'), findsNothing);
+    expect(find.text('Mouanga Yannick'), findsNothing);
+  });
+
+  for (final c in <(String, Widget, String, bool)>[('32', const G_32(), 'LED E27 incluse', false), ('66', const G_66(), 'Relevé octobre 2026', false), ('67', const G_67(), 'Lampe en bois recyclé', false), ('69', const G_69(), 'Certificat de scolarité', false), ('189', const G_189(), 'Team Innov’', true), ('190', const G_190(), 'DEV-2026-014 · Borne solaire', true)]) {
     testWidgets('${c.$1} hors connexion : la démonstration reste affichée', (t) async {
       await monter(t, c.$2, connecte: false, large: c.$4);
       expect(find.text(c.$3), findsWidgets);

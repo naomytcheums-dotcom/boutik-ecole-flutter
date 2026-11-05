@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'auth.dart';
 import 'impact.dart' show RpcMap;
 import 'profile_data.dart';
-import 'store.dart' show fcfa;
+import 'store.dart' show fcfa, selectedProductProvider;
 
 /// Espace vendeur (écrans 66 Revenus, 67 Statistiques, 69 Validations) : chiffres calculés sur les commandes payées de ses annonces
 /// (migration 20261105000800) et état réel de ses justificatifs. Les vues d'annonces et le taux de conversion ne sont pas mesurés.
@@ -145,6 +145,31 @@ class ValidationsPanel extends ConsumerWidget {
               Text(r.$3, style: _st(11.5, w: FontWeight.w700, c: tone(r.$3))),
             ]),
           ),
+      ]),
+    );
+  }
+}
+
+/// Fiche produit (écran 32, variante de l'écran 05) : le produit réellement choisi, sans caractéristiques inventées.
+class SelectedProductInfo extends ConsumerWidget {
+  const SelectedProductInfo({super.key, this.width = 342});
+  final double width;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final p = ref.watch(selectedProductProvider);
+    return SizedBox(
+      width: width,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(p.title, style: _st(22, w: FontWeight.w700)),
+        const SizedBox(height: 8),
+        Text(fcfa(p.price), style: _st(18, w: FontWeight.w700)),
+        const SizedBox(height: 14),
+        Text(p.description, style: _st(13.5, c: const Color(0xFF4A4854)).copyWith(height: 1.55)),
+        const SizedBox(height: 22),
+        Text('Vendeur : ${p.seller}', style: _st(14, w: FontWeight.w600)),
+        const SizedBox(height: 4),
+        Text('Département : ${p.department}', style: _st(12, c: _grey)),
       ]),
     );
   }

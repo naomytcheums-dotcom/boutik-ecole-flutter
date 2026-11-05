@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/lot20.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -31,40 +32,40 @@ class G_145 extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 1280, h: 890, radius: 16, color: Color(0xFFF7F6F4), children: [
-      gP(268, 134, 582, 216, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
-      gP(269, 135, 580, 39, gBox(color: Color(0xFFF4F1F8), radii: [15, 15, 15, 15])),
-      gP(284, 147, 79, 13, gText('Point de retrait', 11, Color(0xFF57545F), weight: 600, inter: true)),
-      gP(471, 147, 23, 13, gText('Lieu', 11, Color(0xFF57545F), weight: 600, inter: true)),
-      gP(614, 147, 82, 13, gText('Retraits du jour', 11, Color(0xFF57545F), weight: 600, inter: true)),
-      gP(724, 147, 22, 13, gText('État', 11, Color(0xFF57545F), weight: 600, inter: true)),
-      gP(284, 188, 88, 15, gText('Kiosque Bloc A', 12, Color(0xFF111015), weight: 600, inter: true)),
-      gP(471, 188, 63, 15, gText('IUT Douala', 12, Color(0xFF4A4854), inter: true)),
-      gP(614, 188, 15, 15, gText('24', 12, Color(0xFF4A4854), inter: true)),
-      gP(724, 185, 71.2, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
-      gP(738.1, 189, 42, 13, gText('En ligne', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center)),
-      gP(280, 218, 558, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(284, 232, 87, 15, gText('Kiosque Bloc B', 12, Color(0xFF111015), weight: 600, inter: true)),
-      gP(471, 232, 63, 15, gText('IUT Douala', 12, Color(0xFF4A4854), inter: true)),
-      gP(614, 232, 12, 15, gText('11', 12, Color(0xFF4A4854), inter: true)),
-      gP(724, 229, 71.2, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
-      gP(738.1, 233, 42, 13, gText('En ligne', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center)),
-      gP(280, 262, 558, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(284, 276, 124, 15, gText('Kiosque Bibliothèque', 12, Color(0xFF111015), weight: 600, inter: true)),
-      gP(471, 276, 63, 15, gText('IUT Douala', 12, Color(0xFF4A4854), inter: true)),
-      gP(614, 276, 7, 15, gText('7', 12, Color(0xFF4A4854), inter: true)),
-      gP(724, 273, 84, 22, gBox(color: Color(0xFFFDE6E7), radii: [11, 11, 11, 11])),
-      gP(738.5, 277, 54, 13, gText('Hors ligne', 11, Color(0xFFE5484D), weight: 600, inter: true, align: TextAlign.center)),
-      gP(280, 306, 558, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(284, 320, 105, 15, gText('Kiosque Cafétéria', 12, Color(0xFF111015), weight: 600, inter: true)),
-      gP(471, 320, 63, 15, gText('IUT Douala', 12, Color(0xFF4A4854), inter: true)),
-      gP(614, 320, 13, 15, gText('15', 12, Color(0xFF4A4854), inter: true)),
-      gP(724, 317, 71.2, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
-      gP(738.1, 321, 42, 13, gText('En ligne', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center)),
-      gP(864, 134, 388, 260, gBox(color: Color(0xB2FFFFFF), radii: [22, 22, 22, 22])),
-      gP(268, 408, 261, 50, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [25, 25, 25, 25])),
-      gP(320, 424, 181, 18, gText('Ajouter un point de retrait', 14.5, Color(0xFFFFFFFF), weight: 600, inter: true, align: TextAlign.center)),
-      gP(296.542, 430, 15.917, 6, gImg('assets/figma/v/53a47ecfc209e9.svg')),
-      gP(301.5, 425.042, 6, 15.917, gImg('assets/figma/v/8e0fc17de3058a.svg')),
+      gP(268, 134, 582, 216, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26]), show: demoContent),
+      gP(269, 135, 580, 39, gBox(color: Color(0xFFF4F1F8), radii: [15, 15, 15, 15]), show: demoContent),
+      gP(284, 147, 79, 13, gText('Point de retrait', 11, Color(0xFF57545F), weight: 600, inter: true), show: demoContent),
+      gP(471, 147, 23, 13, gText('Lieu', 11, Color(0xFF57545F), weight: 600, inter: true), show: demoContent),
+      gP(614, 147, 82, 13, gText('Retraits du jour', 11, Color(0xFF57545F), weight: 600, inter: true), show: demoContent),
+      gP(724, 147, 22, 13, gText('État', 11, Color(0xFF57545F), weight: 600, inter: true), show: demoContent),
+      gP(284, 188, 88, 15, gText('Kiosque Bloc A', 12, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(471, 188, 63, 15, gText('IUT Douala', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(614, 188, 15, 15, gText('24', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(724, 185, 71.2, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(738.1, 189, 42, 13, gText('En ligne', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
+      gP(280, 218, 558, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(284, 232, 87, 15, gText('Kiosque Bloc B', 12, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(471, 232, 63, 15, gText('IUT Douala', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(614, 232, 12, 15, gText('11', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(724, 229, 71.2, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(738.1, 233, 42, 13, gText('En ligne', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
+      gP(280, 262, 558, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(284, 276, 124, 15, gText('Kiosque Bibliothèque', 12, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(471, 276, 63, 15, gText('IUT Douala', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(614, 276, 7, 15, gText('7', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(724, 273, 84, 22, gBox(color: Color(0xFFFDE6E7), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(738.5, 277, 54, 13, gText('Hors ligne', 11, Color(0xFFE5484D), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
+      gP(280, 306, 558, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(284, 320, 105, 15, gText('Kiosque Cafétéria', 12, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(471, 320, 63, 15, gText('IUT Douala', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(614, 320, 13, 15, gText('15', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(724, 317, 71.2, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(738.1, 321, 42, 13, gText('En ligne', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
+      gP(864, 134, 388, 260, gBox(color: Color(0xB2FFFFFF), radii: [22, 22, 22, 22]), show: demoContent),
+      gP(268, 408, 261, 50, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [25, 25, 25, 25]), show: demoContent),
+      gP(320, 424, 181, 18, gText('Ajouter un point de retrait', 14.5, Color(0xFFFFFFFF), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
+      gP(296.542, 430, 15.917, 6, gImg('assets/figma/v/53a47ecfc209e9.svg'), show: demoContent),
+      gP(301.5, 425.042, 6, 15.917, gImg('assets/figma/v/8e0fc17de3058a.svg'), show: demoContent),
       gP(0, 0, 1280, 56, gBox(color: Color(0xFFFFFFFF))),
       gP(20, 10, 36, 34, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(62, 17, 107, 21, gText('Boutik-École', 17, Color(0xFF18181B), weight: 700, inter: true)),
@@ -130,16 +131,16 @@ class G_145 extends ConsumerWidget {
       gP(1095.833, 90.917, 8.167, 8.167, gImg('assets/figma/v/aa6a66611de441.svg')),
       gP(1100.167, 94.167, 8.167, 8.167, gImg('assets/figma/v/aa6a66611de441.svg')),
       gP(1118, 87, 111, 14, gText('Personnaliser la vue', 11.5, Color(0xFF111015), weight: 500, inter: true)),
-      gP(886, 148, 156.715, 232, gImg('assets/figma/r/169_77.png')),
-      gP(906.057, 326.59, 9, 9, gBox(color: Color(0xFFFF7A1A), border: Color(0xFFFFFFFF), bw: 1.5, oval: true)),
-      gP(897.057, 318.59, 9, 9, gBox(color: Color(0xFF1F9D6B), border: Color(0xFFFFFFFF), bw: 1.5, oval: true)),
-      gP(914.057, 316.59, 9, 9, gBox(color: Color(0xFF1F9D6B), border: Color(0xFFFFFFFF), bw: 1.5, oval: true)),
-      gP(902.057, 336.59, 9, 9, gBox(color: Color(0xFFE5484D), border: Color(0xFFFFFFFF), bw: 1.5, oval: true)),
-      gP(1074, 160, 100, 13, gText('Réseau de kiosques', 10.5, Color(0xFF57545F), weight: 500)),
-      gP(1074, 178, 113, 19, gText('Douala · Littoral', 15, Color(0xFF120F14), weight: 600)),
-      gP(1074, 204, 140, 14, gText('4 kiosques · IUT de Douala', 11.5, Color(0xFF57545F))),
-      gP(1074, 246, 55, 15, gText('3 en ligne', 12, Color(0xFF0F7A52), weight: 600)),
-      gP(1074, 268, 63, 15, gText('1 hors ligne', 12, Color(0xFFE5474D), weight: 600)),
+      gP(886, 148, 156.715, 232, gImg('assets/figma/r/169_77.png'), show: demoContent),
+      gP(906.057, 326.59, 9, 9, gBox(color: Color(0xFFFF7A1A), border: Color(0xFFFFFFFF), bw: 1.5, oval: true), show: demoContent),
+      gP(897.057, 318.59, 9, 9, gBox(color: Color(0xFF1F9D6B), border: Color(0xFFFFFFFF), bw: 1.5, oval: true), show: demoContent),
+      gP(914.057, 316.59, 9, 9, gBox(color: Color(0xFF1F9D6B), border: Color(0xFFFFFFFF), bw: 1.5, oval: true), show: demoContent),
+      gP(902.057, 336.59, 9, 9, gBox(color: Color(0xFFE5484D), border: Color(0xFFFFFFFF), bw: 1.5, oval: true), show: demoContent),
+      gP(1074, 160, 100, 13, gText('Réseau de kiosques', 10.5, Color(0xFF57545F), weight: 500), show: demoContent),
+      gP(1074, 178, 113, 19, gText('Douala · Littoral', 15, Color(0xFF120F14), weight: 600), show: demoContent),
+      gP(1074, 204, 140, 14, gText('4 kiosques · IUT de Douala', 11.5, Color(0xFF57545F)), show: demoContent),
+      gP(1074, 246, 55, 15, gText('3 en ligne', 12, Color(0xFF0F7A52), weight: 600), show: demoContent),
+      gP(1074, 268, 63, 15, gText('1 hors ligne', 12, Color(0xFFE5474D), weight: 600), show: demoContent),
       gTap(40, 97, 232, 36, () { gOpen(context, '139'); }), // parcours 145 -> 139
       gTap(40, 137, 232, 36, () { gOpen(context, '140'); }), // parcours 145 -> 140
       gTap(40, 177, 232, 36, () { gOpen(context, '141'); }), // parcours 145 -> 141
@@ -147,13 +148,14 @@ class G_145 extends ConsumerWidget {
       gTap(40, 329, 232, 36, () { gOpen(context, '147_2'); }), // parcours 145 -> 147_2
       gTap(40, 369, 232, 36, () { gOpen(context, '147_1'); }), // parcours 145 -> 147_1
       gTap(40, 409, 232, 36, () { gOpen(context, '147_3'); }), // parcours 145 -> 147_3
-      gTap(276, 180, 104, 32, () { gOpen(context, '146_1'); }), // parcours 145 -> 146_1
-      gTap(730.5, 269, 70, 32, () { gOpen(context, '276'); }), // lien métier 145 -> 276
-      gTap(276, 268, 140, 32, () { gOpen(context, '277'); }), // lien métier 145 -> 277
-      gTap(606, 139, 98, 32, () { gOpen(context, '268'); }), // lien métier 145 -> 268
-      gTap(268, 408, 261, 50, () { uiSoon(context, 'Ajouter un point de retrait', 'Les points de retrait sont ouverts par l’équipe Boutik-École à la demande d’un établissement.'); }), // audit 01/11 : « Ajouter un point de retrait » n'avait aucun effet
+      if (demoContent) gTap(276, 180, 104, 32, () { gOpen(context, '146_1'); }), // parcours 145 -> 146_1
+      if (demoContent) gTap(730.5, 269, 70, 32, () { gOpen(context, '276'); }), // lien métier 145 -> 276
+      if (demoContent) gTap(276, 268, 140, 32, () { gOpen(context, '277'); }), // lien métier 145 -> 277
+      if (demoContent) gTap(606, 139, 98, 32, () { gOpen(context, '268'); }), // lien métier 145 -> 268
+      if (demoContent) gTap(268, 408, 261, 50, () { uiSoon(context, 'Ajouter un point de retrait', 'Les points de retrait sont ouverts par l’équipe Boutik-École à la demande d’un établissement.'); }), // audit 01/11 : « Ajouter un point de retrait » n'avait aucun effet
       gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
       gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
+      if (!demoContent) gP(268, 150, 984, 640, kiosksListing()),
     ]);
   }
 }

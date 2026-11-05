@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/reseau.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -32,7 +33,7 @@ class G_283 extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 390, h: 844, radius: 46, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 140, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(200, 140, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo', show: demoContent),
       gP(-110, 580, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 28, 18, gText('9:41', 14, Color(0xFF111015), weight: 600)),
       gP(140, 10, 110, 30, gBox(color: Color(0xFF000000), radii: [15, 15, 15, 15])),
@@ -43,29 +44,30 @@ class G_283 extends ConsumerWidget {
       gP(43.458, 89, 17.083, 6, gImg('assets/figma/v/e130a05f3cf779.svg')),
       gP(101, 76, 188, 21, gText('Registre des certificats', 17, Color(0xFF111015), weight: 500)),
       gP(90.5, 102, 209, 15, gText('Émission réservée aux rôles autorisés', 12, Color(0xFF57545F))),
-      gP(175, 132, 40, 40, gImg('assets/figma/r/209_758.png')),
-      gP(177.666, 161.332, 34.668, 29.335, gImg('assets/figma/r/209_759.png')),
-      gP(44, 228, 221, 16, gText('BE-C-0412 · Lampe en bois recyclé', 13, Color(0xFF111015), weight: 600)),
-      gP(318, 228, 28, 15, gText('Émis', 12, Color(0xFF0F7A52), weight: 700)),
-      gP(44, 254, 155, 15, gText('Par Dr Ngono · 02/09/2026', 12, Color(0xFF57545F))),
-      gP(44, 274, 201, 14, gText('Journalisé · empreinte SHA-256 ancrée', 11, Color(0xFF57545F))),
-      gP(44, 320, 215, 16, gText('BE-C-0398 · Chaise ergonomique', 13, Color(0xFF111015), weight: 600)),
-      gP(308, 320, 38, 15, gText('Vérifié', 12, Color(0xFF5A3FE0), weight: 700)),
-      gP(44, 346, 146, 15, gText('Scan public · 29/08/2026', 12, Color(0xFF57545F))),
-      gP(44, 366, 201, 14, gText('Journalisé · empreinte SHA-256 ancrée', 11, Color(0xFF57545F))),
-      gP(44, 412, 197, 16, gText('BE-C-0377 · Panneau solaire V1', 13, Color(0xFF111015), weight: 600)),
-      gP(287, 412, 59, 15, gText('Remplacé', 12, Color(0xFF8F5400), weight: 700)),
-      gP(44, 438, 146, 15, gText('Remplacé par BE-C-0419', 12, Color(0xFF57545F))),
-      gP(44, 458, 201, 14, gText('Journalisé · empreinte SHA-256 ancrée', 11, Color(0xFF57545F))),
-      gP(44, 504, 186, 16, gText('BE-C-0351 · Prototype drone', 13, Color(0xFF111015), weight: 600)),
-      gP(294, 504, 52, 15, gText('Révoqué', 12, Color(0xFFB42318), weight: 700)),
-      gP(44, 530, 206, 15, gText('Motif : non-conformité · 14/08/2026', 12, Color(0xFF57545F))),
-      gP(44, 550, 201, 14, gText('Journalisé · empreinte SHA-256 ancrée', 11, Color(0xFF57545F))),
-      gP(44, 604, 126, 16, gText('Émission journalisée', 13, Color(0xFF111015), weight: 600)),
-      gP(44, 626, 302, 20, gText('Chaque émission, remplacement ou révocation enregistre l’auteur, la date et le motif.', 11, Color(0xFF57545F))),
+      gP(175, 132, 40, 40, gImg('assets/figma/r/209_758.png'), show: demoContent),
+      gP(177.666, 161.332, 34.668, 29.335, gImg('assets/figma/r/209_759.png'), show: demoContent),
+      gP(44, 228, 221, 16, gText('BE-C-0412 · Lampe en bois recyclé', 13, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(318, 228, 28, 15, gText('Émis', 12, Color(0xFF0F7A52), weight: 700), show: demoContent),
+      gP(44, 254, 155, 15, gText('Par Dr Ngono · 02/09/2026', 12, Color(0xFF57545F)), show: demoContent),
+      gP(44, 274, 201, 14, gText('Journalisé · empreinte SHA-256 ancrée', 11, Color(0xFF57545F)), show: demoContent),
+      gP(44, 320, 215, 16, gText('BE-C-0398 · Chaise ergonomique', 13, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(308, 320, 38, 15, gText('Vérifié', 12, Color(0xFF5A3FE0), weight: 700), show: demoContent),
+      gP(44, 346, 146, 15, gText('Scan public · 29/08/2026', 12, Color(0xFF57545F)), show: demoContent),
+      gP(44, 366, 201, 14, gText('Journalisé · empreinte SHA-256 ancrée', 11, Color(0xFF57545F)), show: demoContent),
+      gP(44, 412, 197, 16, gText('BE-C-0377 · Panneau solaire V1', 13, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(287, 412, 59, 15, gText('Remplacé', 12, Color(0xFF8F5400), weight: 700), show: demoContent),
+      gP(44, 438, 146, 15, gText('Remplacé par BE-C-0419', 12, Color(0xFF57545F)), show: demoContent),
+      gP(44, 458, 201, 14, gText('Journalisé · empreinte SHA-256 ancrée', 11, Color(0xFF57545F)), show: demoContent),
+      gP(44, 504, 186, 16, gText('BE-C-0351 · Prototype drone', 13, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(294, 504, 52, 15, gText('Révoqué', 12, Color(0xFFB42318), weight: 700), show: demoContent),
+      gP(44, 530, 206, 15, gText('Motif : non-conformité · 14/08/2026', 12, Color(0xFF57545F)), show: demoContent),
+      gP(44, 550, 201, 14, gText('Journalisé · empreinte SHA-256 ancrée', 11, Color(0xFF57545F)), show: demoContent),
+      gP(44, 604, 126, 16, gText('Émission journalisée', 13, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(44, 626, 302, 20, gText('Chaque émission, remplacement ou révocation enregistre l’auteur, la date et le motif.', 11, Color(0xFF57545F)), show: demoContent),
       gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => issueCertificateDialog(context, ref)),
       gP(120.5, 788, 149, 19, gText('Émettre un certificat', 15, Color(0xFFFFFFFF), weight: 600)),
-      gTap(36, 220, 237, 32, () { gOpen(context, '211'); }), // lien métier 283 -> 211
+      if (demoContent) gTap(36, 220, 237, 32, () { gOpen(context, '211'); }), // lien métier 283 -> 211
+      if (!demoContent) gP(24, 125, 342, 620, certificatesWide(width: 342, height: 620)),
     ]);
   }
 }

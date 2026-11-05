@@ -39,3 +39,6 @@
 
 ## Lot réglages et profil (écrans 184, 186, 211, 227, 229)
 - 184/186 : interrupteurs mémorisés sur l'appareil (valeurs par défaut de la maquette), consommation de données non mesurée donc non affichée. 227/229 : carte construite sur le profil et le dernier CV réels. 211 : produit choisi. Test `lot_profil_reglages_test.dart`.
+
+## Lot de 20 écrans (117, 145, 146_1, 147_1, 147_2, 147_3, 155, 169, 180, 183, 217, 268, 270, 276, 277, 283, 284, 286, 287, 288)
+- Bornes (kiosks, incidents), annonces à modérer, notifications, commandes du compte, concours, rôles (comptes par rôle), registres de certificats et financier, vœux, établissements, impact de la plateforme. Aucune migration ; lectures protégées par RLS ou fonctions déjà en production. Test `lot20_test.dart` (48). Les statistiques de sessions/scans de la borne et les retraits par casier ne sont pas mesurés : masqués en mode connecté.

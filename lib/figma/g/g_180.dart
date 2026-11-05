@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/lot20.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -35,29 +36,29 @@ class G_180 extends ConsumerWidget {
       gP(280, 147, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(292, 155.667, 16, 16, gImg('assets/figma/v/3a82c8c513bd84.svg')),
       gP(292.833, 164.742, 14.333, 13.592, gImg('assets/figma/v/9253f57ddf05f2.svg')),
-      gP(332, 146, 30, 16, gText('Jury', 13.5, Color(0xFF111015), weight: 600, inter: true)),
-      gP(332, 168, 245, 14, gText('Note les projets, commente, voit les résultats', 11.5, Color(0xFF57545F), inter: true)),
-      gP(661.4, 156, 77.6, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
-      gP(671.7, 160, 57, 13, gText('4 comptes', 11, Color(0xFF5A3FE0), weight: 600, inter: true, align: TextAlign.center)),
-      gP(332, 200, 409, 1, gBox(color: Color(0xFFF2EFF6))),
+      gP(332, 146, 30, 16, gText('Jury', 13.5, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(332, 168, 245, 14, gText('Note les projets, commente, voit les résultats', 11.5, Color(0xFF57545F), inter: true), show: demoContent),
+      gP(661.4, 156, 77.6, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(671.7, 160, 57, 13, gText('4 comptes', 11, Color(0xFF5A3FE0), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
+      gP(332, 200, 409, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
       gP(280, 213, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(288.667, 223.333, 9.333, 10.167, gImg('assets/figma/v/ff038cff524fea.svg')),
-      gP(302, 223.333, 9.333, 10.167, gImg('assets/figma/v/6d7d6e6c277316.svg')),
+      gP(302, 223.333, 9.333, 10.167, gImg('assets/figma/v/6d7d6e6c277316.svg'), show: demoContent),
       gP(290.333, 238.333, 19.333, 6, gImg('assets/figma/v/3035c903f4ca6a.svg')),
       gP(292, 221.667, 16, 16.833, gImg('assets/figma/v/ddb12173c17b9f.svg')),
-      gP(332, 212, 157, 16, gText('Organisateur partenaire', 13.5, Color(0xFF111015), weight: 600, inter: true)),
-      gP(332, 234, 226, 14, gText('Publie des concours, gère les inscriptions', 11.5, Color(0xFF57545F), inter: true)),
-      gP(661.4, 222, 77.6, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
-      gP(671.7, 226, 57, 13, gText('3 comptes', 11, Color(0xFF5A3FE0), weight: 600, inter: true, align: TextAlign.center)),
-      gP(332, 266, 409, 1, gBox(color: Color(0xFFF2EFF6))),
+      gP(332, 212, 157, 16, gText('Organisateur partenaire', 13.5, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(332, 234, 226, 14, gText('Publie des concours, gère les inscriptions', 11.5, Color(0xFF57545F), inter: true), show: demoContent),
+      gP(661.4, 222, 77.6, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(671.7, 226, 57, 13, gText('3 comptes', 11, Color(0xFF5A3FE0), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
+      gP(332, 266, 409, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
       gP(280, 279, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(288.667, 291.833, 22.667, 17.667, gImg('assets/figma/v/0b1915710c6b88.svg')),
       gP(293.667, 288.5, 12.667, 21, gImg('assets/figma/v/baf18a4f525e16.svg')),
-      gP(332, 278, 68, 16, gText('Entreprise', 13.5, Color(0xFF111015), weight: 600, inter: true)),
-      gP(332, 300, 175, 14, gText('Publie des besoins et des offres', 11.5, Color(0xFF57545F), inter: true)),
-      gP(655, 288, 84, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
-      gP(665, 292, 64, 13, gText('28 comptes', 11, Color(0xFF5A3FE0), weight: 600, inter: true, align: TextAlign.center)),
-      gP(767, 134, 485, 188, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
+      gP(332, 278, 68, 16, gText('Entreprise', 13.5, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(332, 300, 175, 14, gText('Publie des besoins et des offres', 11.5, Color(0xFF57545F), inter: true), show: demoContent),
+      gP(655, 288, 84, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(665, 292, 64, 13, gText('28 comptes', 11, Color(0xFF5A3FE0), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
+      gP(767, 134, 485, 188, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26]), show: demoContent),
       gP(783, 148, 131, 17, gText('Règles du rôle Jury', 14, Color(0xFF111015), weight: 700, inter: true)),
       gP(783, 182, 98, 15, gText('Rôle sélectionné', 12.5, Color(0xFF57545F), inter: true)),
       gP(1209, 182, 27, 15, gText('Jury', 12.5, Color(0xFF111015), weight: 600, inter: true, align: TextAlign.right)),
@@ -152,10 +153,11 @@ class G_180 extends ConsumerWidget {
       gP(1095.833, 90.917, 8.167, 8.167, gImg('assets/figma/v/aa6a66611de441.svg')),
       gP(1100.167, 94.167, 8.167, 8.167, gImg('assets/figma/v/aa6a66611de441.svg')),
       gP(1118, 87, 111, 14, gText('Personnaliser la vue', 11.5, Color(0xFF111015), weight: 500, inter: true)),
-      gTap(775, 140, 147, 33, () { gOpen(context, '281'); }), // lien métier 180 -> 281
+      if (demoContent) gTap(775, 140, 147, 33, () { gOpen(context, '281'); }), // lien métier 180 -> 281
       gTap(268, 346, 171, 50, () { uiSoon(context, 'Créer un rôle', 'Les rôles sont fixes ; attribuez-les depuis « Comptes, rôles et permissions ».'); }), // audit 01/11 : « Créer un rôle » n'avait aucun effet
       gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
       gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
+      if (!demoContent) gP(332, 146, 440, 200, const RoleCounts(width: 440)),
     ]);
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/lot20.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -32,7 +33,7 @@ class G_277 extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 390, h: 844, radius: 46, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 140, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
+      gP(200, 140, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo', show: demoContent),
       gP(-110, 580, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 14, 28, 18, gText('9:41', 14, Color(0xFF111015), weight: 600)),
       gP(140, 10, 110, 30, gBox(color: Color(0xFF000000), radii: [15, 15, 15, 15])),
@@ -43,29 +44,30 @@ class G_277 extends ConsumerWidget {
       gP(43.458, 89, 17.083, 6, gImg('assets/figma/v/e130a05f3cf779.svg')),
       gP(100, 76, 190, 21, gText('Supervision des bornes', 17, Color(0xFF111015), weight: 500)),
       gP(113, 102, 164, 15, gText('Vue administrateur · 4 bornes', 12, Color(0xFF57545F))),
-      gP(167, 144.667, 56, 50.666, gImg('assets/figma/r/200_695.png')),
-      gP(40, 240, 12, 12, gBox(color: Color(0xFF12B76A), oval: true)),
-      gP(62, 236, 145, 18, gText('Borne 1 · Hall principal', 14, Color(0xFF111015), weight: 600)),
-      gP(305, 236, 45, 15, gText('En ligne', 12, Color(0xFF027A48), weight: 700)),
-      gP(62, 260, 124, 15, gText('Dernier signal il y a 12 s', 12, Color(0xFF57545F))),
-      gP(62, 282, 217, 14, gText('Redémarrer  ·  Journal  ·  Activer le secours', 11, Color(0xFF5A3FE0), weight: 600)),
-      gP(40, 336, 12, 12, gBox(color: Color(0xFFC0261B), oval: true)),
-      gP(62, 332, 149, 18, gText('Borne 2 · Bibliothèque', 14, Color(0xFF111015), weight: 600)),
-      gP(292, 332, 58, 15, gText('Hors ligne', 12, Color(0xFFC0261B), weight: 700)),
-      gP(62, 356, 183, 15, gText('Mode secours actif depuis 6 min', 12, Color(0xFF57545F))),
-      gP(62, 378, 217, 14, gText('Redémarrer  ·  Journal  ·  Activer le secours', 11, Color(0xFF5A3FE0), weight: 600)),
-      gP(40, 432, 12, 12, gBox(color: Color(0xFF12B76A), oval: true)),
-      gP(62, 428, 184, 18, gText('Borne 3 · Département MMI', 14, Color(0xFF111015), weight: 600)),
-      gP(305, 428, 45, 15, gText('En ligne', 12, Color(0xFF027A48), weight: 700)),
-      gP(62, 452, 120, 15, gText('Dernier signal il y a 8 s', 12, Color(0xFF57545F))),
-      gP(62, 474, 217, 14, gText('Redémarrer  ·  Journal  ·  Activer le secours', 11, Color(0xFF5A3FE0), weight: 600)),
-      gP(40, 528, 12, 12, gBox(color: Color(0xFFF79009), oval: true)),
-      gP(62, 524, 161, 18, gText('Borne 4 · Salle des profs', 14, Color(0xFF111015), weight: 600)),
-      gP(289, 524, 61, 15, gText('Mise à jour', 12, Color(0xFFB54708), weight: 700)),
-      gP(62, 548, 146, 15, gText('Version 1.8.2 → 1.8.3 (72 %)', 12, Color(0xFF57545F))),
-      gP(62, 570, 217, 14, gText('Redémarrer  ·  Journal  ·  Activer le secours', 11, Color(0xFF5A3FE0), weight: 600)),
+      gP(167, 144.667, 56, 50.666, gImg('assets/figma/r/200_695.png'), show: demoContent),
+      gP(40, 240, 12, 12, gBox(color: Color(0xFF12B76A), oval: true), show: demoContent),
+      gP(62, 236, 145, 18, gText('Borne 1 · Hall principal', 14, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(305, 236, 45, 15, gText('En ligne', 12, Color(0xFF027A48), weight: 700), show: demoContent),
+      gP(62, 260, 124, 15, gText('Dernier signal il y a 12 s', 12, Color(0xFF57545F)), show: demoContent),
+      gP(62, 282, 217, 14, gText('Redémarrer  ·  Journal  ·  Activer le secours', 11, Color(0xFF5A3FE0), weight: 600), show: demoContent),
+      gP(40, 336, 12, 12, gBox(color: Color(0xFFC0261B), oval: true), show: demoContent),
+      gP(62, 332, 149, 18, gText('Borne 2 · Bibliothèque', 14, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(292, 332, 58, 15, gText('Hors ligne', 12, Color(0xFFC0261B), weight: 700), show: demoContent),
+      gP(62, 356, 183, 15, gText('Mode secours actif depuis 6 min', 12, Color(0xFF57545F)), show: demoContent),
+      gP(62, 378, 217, 14, gText('Redémarrer  ·  Journal  ·  Activer le secours', 11, Color(0xFF5A3FE0), weight: 600), show: demoContent),
+      gP(40, 432, 12, 12, gBox(color: Color(0xFF12B76A), oval: true), show: demoContent),
+      gP(62, 428, 184, 18, gText('Borne 3 · Département MMI', 14, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(305, 428, 45, 15, gText('En ligne', 12, Color(0xFF027A48), weight: 700), show: demoContent),
+      gP(62, 452, 120, 15, gText('Dernier signal il y a 8 s', 12, Color(0xFF57545F)), show: demoContent),
+      gP(62, 474, 217, 14, gText('Redémarrer  ·  Journal  ·  Activer le secours', 11, Color(0xFF5A3FE0), weight: 600), show: demoContent),
+      gP(40, 528, 12, 12, gBox(color: Color(0xFFF79009), oval: true), show: demoContent),
+      gP(62, 524, 161, 18, gText('Borne 4 · Salle des profs', 14, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(289, 524, 61, 15, gText('Mise à jour', 12, Color(0xFFB54708), weight: 700), show: demoContent),
+      gP(62, 548, 146, 15, gText('Version 1.8.2 → 1.8.3 (72 %)', 12, Color(0xFF57545F)), show: demoContent),
+      gP(62, 570, 217, 14, gText('Redémarrer  ·  Journal  ·  Activer le secours', 11, Color(0xFF5A3FE0), weight: 600), show: demoContent),
       gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => kioskIncidentsDialog(context, ref)),
       gP(94.5, 788, 201, 19, gText('Voir les journaux d’incidents', 15, Color(0xFFFFFFFF), weight: 600)),
+      if (!demoContent) gP(24, 125, 342, 620, kiosksListing(width: 342, height: 620)),
     ]);
   }
 }

@@ -1,3 +1,5 @@
+import 'package:boutik_ecole/figma/g/g_109.dart';
+import 'package:boutik_ecole/figma/g/g_112.dart';
 import 'package:boutik_ecole/figma/g/g_119.dart';
 import 'package:boutik_ecole/figma/g/g_120.dart';
 import 'package:boutik_ecole/figma/g/g_121.dart';
@@ -6,6 +8,7 @@ import 'package:boutik_ecole/figma/gsound.dart';
 import 'package:boutik_ecole/figma/live/auth.dart';
 import 'package:boutik_ecole/figma/live/backend.dart';
 import 'package:boutik_ecole/figma/live/console.dart';
+import 'package:boutik_ecole/figma/live/impact.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -22,6 +25,13 @@ class _Rows extends RpcRows {
     error = fail;
     return v;
   }
+}
+
+class _Stats extends RpcMap {
+  _Stats(super.fn, this.v);
+  final Map<String, dynamic>? v;
+  @override
+  Map<String, dynamic>? build() => v;
 }
 
 void main() {
@@ -96,7 +106,30 @@ void main() {
     expect(find.text('7 étudiants'), findsOneWidget);
   });
 
-  for (final c in <(String, Widget, String)>[('119', const G_119(), 'Génie informatique'), ('120', const G_120(), 'Mariam Essono'), ('121', const G_121(), 'Génie informatique')]) {
+  testWidgets('109 connecté : étudiants du département avec annonces, ventes et vérification', (t) async {
+    await monter(t, const G_109(), connecte: true, login: true, overrides: [
+      deptStudentsProvider.overrideWith(() => _Rows('dept_students', [{'name': 'Alice Test', 'department': 'Informatique', 'role': 'student', 'listings': 3, 'sales': 45000, 'verified': true}]))
+    ]);
+    expect(find.text('Alice Test'), findsOneWidget);
+    expect(find.text('Vérifié'), findsOneWidget);
+    expect(find.text('3'), findsOneWidget);
+    expect(find.text('Yannick Mouanga'), findsNothing);
+  });
+
+  testWidgets('109 connecté sans étudiant : état vide', (t) async {
+    await monter(t, const G_109(), connecte: true, login: true, overrides: [deptStudentsProvider.overrideWith(() => _Rows('dept_students', const []))]);
+    expect(find.textContaining('Aucun étudiant dans votre département'), findsOneWidget);
+  });
+
+  testWidgets('112 connecté : chiffres réels du département, aucun chiffre de maquette', (t) async {
+    final d = <String, dynamic>{'revenue': 170000, 'orders': 9, 'avg_basket': 18888, 'services_revenue': 17000, 'weeks': [{'week': '2026-11-02', 'revenue': 90000}]};
+    await monter(t, const G_112(), connecte: true, login: true, overrides: [deptStatsProvider.overrideWith(() => _Stats('dept_stats', d))]);
+    expect(find.text('9'), findsOneWidget);
+    expect(find.text('10 %'), findsOneWidget);
+    expect(find.text('4,7 / 5'), findsNothing);
+  });
+
+  for (final c in <(String, Widget, String)>[('119', const G_119(), 'Génie informatique'), ('120', const G_120(), 'Mariam Essono'), ('121', const G_121(), 'Génie informatique'), ('109', const G_109(), 'Mariam Essono'), ('112', const G_112(), '4,7 / 5')]) {
     testWidgets('${c.$1} hors connexion : la démonstration reste affichée', (t) async {
       await monter(t, c.$2, connecte: false);
       expect(find.text(c.$3), findsWidgets);

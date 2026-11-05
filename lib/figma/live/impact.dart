@@ -37,6 +37,7 @@ class RpcMap extends Notifier<Map<String, dynamic>?> {
 }
 
 final platformImpactProvider = NotifierProvider<RpcMap, Map<String, dynamic>?>(() => RpcMap('platform_impact'));
+final deptStatsProvider = NotifierProvider<RpcMap, Map<String, dynamic>?>(() => RpcMap('dept_stats', needsLogin: true));
 final myImpactProvider = NotifierProvider<RpcMap, Map<String, dynamic>?>(() => RpcMap('my_impact', needsLogin: true));
 
 /// Première fiche de sponsor visible par la personne (le sien, ou n'importe lequel pour la gestion), puis son rapport.
@@ -285,6 +286,64 @@ class OtherInstitutionsGrid extends ConsumerWidget {
             Text(fcfa(((x['price'] as num?) ?? 0).toInt()), style: _st(12.5, w: FontWeight.w700)),
           ]);
         },
+      ),
+    );
+  }
+}
+
+/// Statistiques du département (écran 112) : chiffre d'affaires, commandes, panier moyen, part des services et ventes par semaine.
+class DeptStatsPanel extends ConsumerWidget {
+  const DeptStatsPanel({super.key, this.width = 960, this.height = 560});
+  final double width, height;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (ref.watch(authProvider.select((a) => a.current == null))) return _note('Connectez-vous avec un compte de gestion pour voir ces statistiques.', width, height: 140);
+    final d = ref.watch(deptStatsProvider);
+    if (d == null) return _note('Chargement des statistiques…', width, height: 140);
+    if (ref.read(deptStatsProvider.notifier).error) return _note('Accès réservé à la gestion, ou statistiques indisponibles pour le moment.', width, height: 140);
+    final weeks = [for (final w in (d['weeks'] as List? ?? const [])) Map<String, dynamic>.from(w as Map)];
+    final maxRev = weeks.fold<double>(0, (a, w) => ((w['revenue'] as num?)?.toDouble() ?? 0) > a ? (w['revenue'] as num).toDouble() : a);
+    final revenue = ((d['revenue'] as num?) ?? 0).toInt();
+    final services = ((d['services_revenue'] as num?) ?? 0).toInt();
+    final servicesPct = revenue == 0 ? 0 : (services * 100 / revenue).round();
+    final w4 = (width - 3 * 14) / 4;
+    return SizedBox(
+      width: width,
+      height: height,
+      child: SingleChildScrollView(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(children: [
+            _kpi('Chiffre d’affaires', fcfa(revenue), w4),
+            const SizedBox(width: 14),
+            _kpi('Commandes', '${d['orders'] ?? 0}', w4),
+            const SizedBox(width: 14),
+            _kpi('Panier moyen', fcfa(((d['avg_basket'] as num?) ?? 0).toInt()), w4),
+            const SizedBox(width: 14),
+            _kpi('Part des services', '$servicesPct %', w4),
+          ]),
+          const SizedBox(height: 24),
+          Text('Ventes par semaine (FCFA)', style: _st(15, w: FontWeight.w700)),
+          const SizedBox(height: 12),
+          if (weeks.isEmpty || maxRev == 0)
+            Text('Aucune vente payée sur les huit dernières semaines.', style: _st(12.5, c: _grey))
+          else
+            SizedBox(
+              height: 170,
+              child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+                for (final w in weeks)
+                  Expanded(
+                    child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+                      Text(fcfa(((w['revenue'] as num?) ?? 0).toInt()), style: _st(10, c: _grey)),
+                      const SizedBox(height: 4),
+                      Container(height: 110 * (((w['revenue'] as num?)?.toDouble() ?? 0) / maxRev) + 2, margin: const EdgeInsets.symmetric(horizontal: 14), decoration: BoxDecoration(color: const Color(0xFF5A3FE0), borderRadius: BorderRadius.circular(6))),
+                      const SizedBox(height: 4),
+                      Text('${w['week']}'.substring(5), style: _st(10.5, c: _grey)),
+                    ]),
+                  ),
+              ]),
+            ),
+        ]),
       ),
     );
   }

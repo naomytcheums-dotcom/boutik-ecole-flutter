@@ -34,6 +34,7 @@ class RpcRows extends Notifier<List<Map<String, dynamic>>?> {
   }
 }
 
+final deptStudentsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => RpcRows('dept_students', const {'p_limit': 200}));
 final adminDepartmentsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => RpcRows('admin_departments'));
 final consoleUsersProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => RpcRows('admin_users', const {'p_limit': 200}));
 final adminResponsablesProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => RpcRows('admin_users', const {'p_roles': ['dept', 'direction'], 'p_limit': 200}));

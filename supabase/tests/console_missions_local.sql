@@ -1,0 +1,20 @@
+create temp table res (n serial, test text, ok boolean, detail text);
+grant all on res to public; grant usage on sequence res_n_seq to public;
+set role anon;
+do $$ begin begin perform staff_missions(); insert into res values (default, 'M1 visiteur refusé', false, 'accepté'); exception when others then insert into res values (default, 'M1 visiteur refusé', true, sqlerrm); end; end $$;
+reset role;
+select set_config('request.jwt.claims', json_build_object('sub', 'a7ae1021-2bc7-437b-b7af-bd7d6422c5ab', 'role', 'authenticated')::text, false);
+set role authenticated;
+do $$ begin begin perform staff_missions(); insert into res values (default, 'M2 étudiant refusé', false, 'accepté'); exception when others then insert into res values (default, 'M2 étudiant refusé', sqlerrm = 'Action non autorisée', sqlerrm); end; end $$;
+reset role;
+select set_config('request.jwt.claims', json_build_object('sub', 'c8332c75-ae70-4685-8589-d6ab77667e16', 'role', 'authenticated')::text, false);
+set role authenticated;
+do $$ declare j jsonb; n int; begin
+  j := staff_missions();
+  select count(*) into n from missions where status <> 'draft';
+  insert into res values (default, 'M3 l''administrateur voit toutes les missions non brouillon', jsonb_array_length(j) = n, n::text);
+  insert into res values (default, 'M4 propositions lisibles', jsonb_typeof(staff_mission_proposals(gen_random_uuid())) = 'array', '');
+end $$;
+reset role;
+select n, case when ok then 'PASS' else 'FAIL' end resultat, test, left(detail, 80) detail from res order by n;
+select count(*) filter (where ok) reussis, count(*) filter (where not ok) echoues from res;

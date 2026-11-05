@@ -14,3 +14,7 @@
 | 91, 93, 95, 96, 98, 99 | 2026-11-05 | RELIÉS : migration 20261105000400 (company_proposals, company_missions) + lecture RLS des devis et défis ; SQL 5/5 ; test espace_entreprise_test.dart 12/12 |
 | 139, 140, 141, 142, 143 | 2026-11-05 | RELIÉS : migration 20261105000500 (payout_batches ; finance_overview, finance_payments, finance_journal, finance_by_department, finance_payouts ; création et statut des lots réservés finance/admin) ; SQL 10/10 ; test finance_test.dart 11/11 |
 | 78, 85, 86, 87 | 2026-11-05 | RELIÉS (lecture RLS des projets validés, certificats, campagnes ; contributions non collectées en ligne : message honnête) ; test espace_entreprise_test.dart 19/19 |
+
+## Lot missions (écrans 154, 198, 199, 200)
+- 154 Mon dossier : checklist calculée sur les pièces réellement envoyées (CV, carte d'étudiant, certificat de scolarité, diplôme, photo, matricule). Test `dossier_test.dart`.
+- 198 Briefs reçus, 199 Attribution, 200 Missions : migration `20261105000600_console_missions.sql` (staff_missions, staff_mission_proposals), attribution réelle par `assign_mission`. Les montants de l'écran 200 sont ceux des jalons ; aucun séquestre réel n'existe en ligne. Tests SQL 4/4, `console_missions_test.dart` 8/8.

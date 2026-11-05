@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
-import '../live/produits_liste.dart';
+import '../live/impact.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -170,7 +170,7 @@ class G_237 extends ConsumerWidget {
       gP(290, 784, 130, 13, gText('Données de démonstration', 10, Color(0xFF57545F)), show: demoContent),
       gTap(86, 123, 232, 36, () { gOpen(context, '238'); }), // parcours 237 -> 238
       if (demoContent) gTap(306, 188, 54, 32, () { gOpen(context, '107'); }), // parcours 237 -> 107
-      if (!demoContent) gP(240, 140, 980, 260, const NoSource(what: 'L’impact par territoire n’est pas encore disponible.', width: 980, height: 260)),
+      if (!demoContent) gP(240, 140, 980, 640, const PlatformImpactPanel(width: 520, height: 640)),
     ]);
   }
 }

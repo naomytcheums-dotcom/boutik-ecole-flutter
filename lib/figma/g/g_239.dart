@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
-import '../live/produits_liste.dart';
+import '../live/impact.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -136,7 +136,7 @@ class G_239 extends ConsumerWidget {
       gP(1118, 87, 111, 14, gText('Personnaliser la vue', 11.5, Color(0xFF111015), weight: 500, inter: true)),
       gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
       gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
-      if (!demoContent) gP(40, 150, 1200, 260, const NoSource(what: 'Le rapport de sponsoring n’est pas encore disponible.', width: 1200, height: 260)),
+      if (!demoContent) gP(40, 150, 1200, 640, const SponsorReportPanel(width: 1180, height: 640)),
     ]);
   }
 }

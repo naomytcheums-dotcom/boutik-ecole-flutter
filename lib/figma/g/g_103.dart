@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/home_live.dart';
 import '../live/communities.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
@@ -115,8 +116,9 @@ class G_103 extends ConsumerWidget {
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       gTap(53.5, 470, 63, 32, () { gOpen(context, '105'); }), // parcours 103 -> 105
-      gTap(255.2, 190, 96.8, 22, () { gOpen(context, '52'); }), // audit 01/11 : « Se connecter » n'avait aucun effet
-      gTap(255.2, 256, 96.8, 22, () { gOpen(context, '52'); }), // audit 01/11 : « Se connecter » n'avait aucun effet
+      if (demoContent) gTap(255.2, 190, 96.8, 22, () { gOpen(context, '52'); }), // audit 01/11 : « Se connecter » n'avait aucun effet
+      if (demoContent) gTap(255.2, 256, 96.8, 22, () { gOpen(context, '52'); }), // audit 01/11 : « Se connecter » n'avait aucun effet
+      if (!demoContent) gP(24, 172, 342, 190, const CommunityMembers(width: 342, height: 190)),
     ]);
   }
 }

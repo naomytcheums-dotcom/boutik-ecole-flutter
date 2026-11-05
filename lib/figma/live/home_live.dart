@@ -206,3 +206,58 @@ class TalentAvatar extends ConsumerWidget {
     return _Avatar(t.isEmpty ? LiveTalent(id: '', name: shown[index].name, department: '', skills: '', avatarUrl: shown[index].avatarUrl, certified: false) : t.first, size: 50);
   }
 }
+
+/// Membres de la communauté (écran 103) : les vrais profils étudiants, avec ouverture de leur profil public.
+/// Chargement, état vide et erreur ; aucun nom de maquette hors démonstration.
+class CommunityMembers extends ConsumerWidget {
+  const CommunityMembers({super.key, this.width = 342, this.height = 190});
+  final double width, height;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final list = ref.watch(liveTalentsProvider);
+    final failed = ref.read(liveTalentsProvider.notifier).error;
+    Widget note(String t) => Container(
+          width: width,
+          height: height,
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          decoration: BoxDecoration(color: const Color(0x66FFFFFF), borderRadius: BorderRadius.circular(22), border: Border.all(color: const Color(0xFFECE8F2))),
+          child: Text(t, textAlign: TextAlign.center, style: _st(12.5, c: _grey).copyWith(height: 1.5)),
+        );
+    if (list == null) return note('Chargement des membres…');
+    if (list.isEmpty) return note(failed ? 'Les membres ne peuvent pas être chargés pour le moment.' : 'Aucun membre à présenter pour le moment.\nLes étudiants qui renseignent leurs compétences apparaissent ici.');
+    return SizedBox(
+      width: width,
+      height: height,
+      child: ListView.separated(
+        padding: EdgeInsets.zero,
+        itemCount: list.length,
+        separatorBuilder: (_, _) => const Divider(height: 16, thickness: 1, color: Color(0xFFF2EFF6)),
+        itemBuilder: (_, i) {
+          final t = list[i];
+          return GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => gOpenProfile(context, t.id),
+            child: Row(children: [
+              _Avatar(t, size: 50),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Row(children: [
+                    Flexible(child: Text(t.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(13.5, w: FontWeight.w600))),
+                    if (t.certified) const Padding(padding: EdgeInsets.only(left: 4), child: Icon(Icons.verified, size: 14, color: Color(0xFF2F6BFF))),
+                  ]),
+                  const SizedBox(height: 2),
+                  Text([if (t.department.isNotEmpty) t.department, t.skills].join(' · '), maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(11.5, c: _grey)),
+                ]),
+              ),
+              const SizedBox(width: 8),
+              Container(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6), decoration: BoxDecoration(color: const Color(0xFFEFEBFA), borderRadius: BorderRadius.circular(11)), child: Text('Voir le profil', style: _st(11, w: FontWeight.w600, c: const Color(0xFF5A3FE0)))),
+            ]),
+          );
+        },
+      ),
+    );
+  }
+}

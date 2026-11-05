@@ -1,5 +1,7 @@
 import 'package:boutik_ecole/figma/g/g_102.dart';
+import 'package:boutik_ecole/figma/g/g_103.dart';
 import 'package:boutik_ecole/figma/g/g_106.dart';
+import 'package:boutik_ecole/figma/live/home_live.dart';
 import 'package:boutik_ecole/figma/gen.dart';
 import 'package:boutik_ecole/figma/gsound.dart';
 import 'package:boutik_ecole/figma/live/backend.dart';
@@ -14,6 +16,13 @@ import '../helpers/render.dart';
 
 const _lampe = LiveProduct('Lampe en bois recyclé', 'Génie civil', 25000, 'Alice', 'Lampe fabriquée à partir de bois de récupération.', 'placeholder');
 const _sac = LiveProduct('Sac à dos', 'Design', 18000, 'Bruno', 'Sac neuf en toile.', 'placeholder');
+
+class _Membres extends TalentsNotifier {
+  _Membres(this.v);
+  final List<LiveTalent>? v;
+  @override
+  List<LiveTalent>? build() => v;
+}
 
 void main() {
   setUpAll(loadAppFonts);
@@ -69,5 +78,33 @@ void main() {
     expect(find.text('Lancement officiel le 24 octobre'), findsOneWidget);
     await monter(t, const G_106(), connecte: false);
     expect(find.text('Sac en bâche recyclée'), findsOneWidget);
+  });
+
+  Future<void> monter103(WidgetTester t, List<LiveTalent> membres) async {
+    Backend.ready = true;
+    GAnim.enabled = false;
+    t.view.physicalSize = const Size(393, 852);
+    t.view.devicePixelRatio = 1;
+    addTearDown(t.view.reset);
+    await t.pumpWidget(ProviderScope(overrides: [liveTalentsProvider.overrideWith(() => _Membres(membres))], child: const MaterialApp(home: G_103())));
+    await t.pumpAndSettle();
+  }
+
+  testWidgets('103 connecté sans membre : aucun ancien inventé, état vide', (t) async {
+    await monter103(t, const []);
+    expect(find.text('Rodrigue Fotso'), findsNothing);
+    expect(find.textContaining('Aucun membre à présenter'), findsOneWidget);
+  });
+
+  testWidgets('103 connecté : les membres réels s’affichent avec l’accès à leur profil', (t) async {
+    await monter103(t, const [LiveTalent(id: 'u1', name: 'Alice Test', department: 'Informatique', skills: 'Flutter', avatarUrl: '', certified: true)]);
+    expect(find.text('Alice Test'), findsOneWidget);
+    expect(find.text('Voir le profil'), findsOneWidget);
+    expect(find.text('Rodrigue Fotso'), findsNothing);
+  });
+
+  testWidgets('103 hors connexion : la démonstration reste affichée', (t) async {
+    await monter(t, const G_103(), connecte: false);
+    expect(find.text('Rodrigue Fotso'), findsOneWidget);
   });
 }

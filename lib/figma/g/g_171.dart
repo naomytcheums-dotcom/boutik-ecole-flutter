@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/decisions.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -67,6 +68,7 @@ class G_171 extends ConsumerWidget {
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(167.867, 154.433, 67.467, 84.333, gImg('assets/figma/r/173_26.png')),
       gP(198.6, 176.733, 6.042, 39.733, gImg('assets/figma/v/0d7d3f9c852d67.svg')),
+      if (!demoContent) gP(0, 100, 390, 700, const CmsPageOverlay(title: 'Paiement sécurisé', height: 700)),
     ]);
   }
 }

@@ -6,6 +6,7 @@ import '../gen.dart';
 import '../live/searches.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/decisions.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -108,6 +109,7 @@ class G_179 extends ConsumerWidget {
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       gTap(82, 300.5, 199, 32, () { gOpen(context, '58'); }), // audit 01/11 : « Créer et publier une annonce » n'avait aucun effet
+      if (!demoContent) gP(0, 100, 390, 700, const CmsPageOverlay(title: 'Guide d’utilisation', height: 700)),
     ]);
   }
 }

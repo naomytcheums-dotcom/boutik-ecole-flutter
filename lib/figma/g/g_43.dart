@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/paiement_messagerie.dart';
+import 'package:go_router/go_router.dart';
 import '../live/order_summary.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
@@ -82,6 +84,8 @@ class G_43 extends ConsumerWidget {
       gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () { checkPaymentNow(ref, context); }),
       gP(254.5, 778, 60, 18, gText('J’ai payé', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      if (!demoContent) gP(24, 690, 342, 50, gBox(color: Color(0xFF1F9D6B), radii: [25, 25, 25, 25]), tap: () { final o = ref.read(lastOrderProvider); startMessagePayment(context, ref, kind: 'order', subject: 'Commande ' + o.id, amount: o.total); }),
+      if (!demoContent) gP(24, 704, 342, 22, gText('Payer par messagerie (WhatsApp, Dikalo)', 13.5, Color(0xFFFFFFFF), weight: 700, align: TextAlign.center)),
     ]);
   }
 }

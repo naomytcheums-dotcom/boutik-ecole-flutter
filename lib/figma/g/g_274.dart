@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/decisions.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -58,6 +59,7 @@ class G_274 extends ConsumerWidget {
       gP(115.5, 788, 159, 19, gText('Accepter et continuer', 15, Color(0xFFFFFFFF), weight: 600)),
       gP(30, 581.5, 13, 19, gText('✓', 15, Color(0xFFFFFFFF), weight: 700)),
       gP(30, 615.5, 13, 19, gText('✓', 15, Color(0xFFFFFFFF), weight: 700)),
+      if (!demoContent) gP(0, 100, 390, 700, const CmsPageOverlay(title: 'Conditions générales', height: 700)),
     ]);
   }
 }

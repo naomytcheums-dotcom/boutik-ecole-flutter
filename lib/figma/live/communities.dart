@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gen.dart';
@@ -158,11 +159,18 @@ class CommunitiesList extends ConsumerWidget {
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-                gText(c.name, 13.5, const Color(0xFF111015), weight: 600, wrap: true, maxLines: 1),
-                const SizedBox(height: 2),
-                gText('${c.membersLabel} · ${c.privacyLabel}', 10.5, grey, wrap: true, maxLines: 1),
-              ]),
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  ref.read(selectedCommunityProvider.notifier).select(c);
+                  GoRouter.of(context).push('/communaute');
+                },
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+                  gText(c.name, 13.5, const Color(0xFF111015), weight: 600, wrap: true, maxLines: 1),
+                  const SizedBox(height: 2),
+                  gText('${c.membersLabel} · ${c.privacyLabel}', 10.5, grey, wrap: true, maxLines: 1),
+                ]),
+              ),
             ),
             const SizedBox(width: 8),
             GestureDetector(
@@ -177,6 +185,112 @@ class CommunitiesList extends ConsumerWidget {
           ]);
         },
       ),
+    );
+  }
+}
+
+// ------------------------------------------------------------------ fil et publications d'une communauté
+
+final selectedCommunityProvider = NotifierProvider<SelectedCommunity, Community?>(SelectedCommunity.new);
+
+class SelectedCommunity extends Notifier<Community?> {
+  @override
+  Community? build() => null;
+  void select(Community? c) => state = c;
+}
+
+final communityFeedProvider = NotifierProvider<CommunityFeed, List<Map<String, dynamic>>?>(CommunityFeed.new);
+
+class CommunityFeed extends Notifier<List<Map<String, dynamic>>?> {
+  bool error = false;
+  @override
+  List<Map<String, dynamic>>? build() {
+    final c = ref.watch(selectedCommunityProvider);
+    if (!Backend.ready || c == null) return null;
+    Future.microtask(refresh);
+    return null;
+  }
+
+  Future<void> refresh() async {
+    final c = ref.read(selectedCommunityProvider);
+    if (c == null) return;
+    final r = await Backend.rpc('community_feed', {'p_community': c.id, 'p_limit': 50});
+    if (!ref.mounted) return;
+    error = r.error != null || r.data is! List;
+    state = error ? const [] : [for (final x in r.data as List) Map<String, dynamic>.from(x as Map)];
+  }
+}
+
+/// Fil d'une communauté : publications des membres, et zone de saisie pour les membres.
+class CommunityScreen extends ConsumerStatefulWidget {
+  const CommunityScreen({super.key});
+  @override
+  ConsumerState<CommunityScreen> createState() => _CommunityScreenState();
+}
+
+class _CommunityScreenState extends ConsumerState<CommunityScreen> {
+  final _text = TextEditingController();
+  bool _busy = false;
+
+  Future<void> _send() async {
+    final c = ref.read(selectedCommunityProvider);
+    if (c == null) return;
+    setState(() => _busy = true);
+    final r = await Backend.rpc('create_community_post', {'p_community': c.id, 'p_body': _text.text});
+    if (!mounted) return;
+    setState(() => _busy = false);
+    if (r.error != null) {
+      gToast(context, Backend.userMessage(r.error!));
+      return;
+    }
+    _text.clear();
+    await ref.read(communityFeedProvider.notifier).refresh();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = ref.watch(selectedCommunityProvider);
+    final feed = ref.watch(communityFeedProvider);
+    Widget body;
+    if (c == null) {
+      body = const Center(child: Text('Aucune communauté ouverte.'));
+    } else if (feed == null) {
+      body = const Center(child: CircularProgressIndicator());
+    } else if (ref.read(communityFeedProvider.notifier).error) {
+      body = const Center(child: Padding(padding: EdgeInsets.all(28), child: Text('Ce fil est réservé aux membres, ou indisponible pour le moment.', textAlign: TextAlign.center)));
+    } else {
+      body = Column(children: [
+        Expanded(
+          child: feed.isEmpty
+              ? const Center(child: Padding(padding: EdgeInsets.all(28), child: Text('Aucune publication pour le moment.', textAlign: TextAlign.center)))
+              : ListView.separated(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: feed.length,
+                  separatorBuilder: (_, _) => const SizedBox(height: 12),
+                  itemBuilder: (_, i) {
+                    final p = feed[i];
+                    return Container(padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18), border: Border.all(color: const Color(0xFFECE8F2))), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('${p['author']}', style: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w700)), const SizedBox(height: 6), Text('${p['body']}', style: const TextStyle(fontSize: 14, height: 1.5))]));
+                  },
+                ),
+        ),
+        if (c.isMember)
+          Container(
+            color: Colors.white,
+            padding: const EdgeInsets.fromLTRB(12, 10, 12, 14),
+            child: Row(children: [
+              Expanded(child: TextField(controller: _text, maxLength: 2000, decoration: InputDecoration(hintText: 'Écrire dans ${c.name}…', counterText: '', filled: true, fillColor: const Color(0xFFF2EFF6), border: OutlineInputBorder(borderRadius: BorderRadius.circular(22), borderSide: BorderSide.none), contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12)))),
+              const SizedBox(width: 8),
+              IconButton(onPressed: _busy ? null : _send, icon: const Icon(Icons.send_rounded)),
+            ]),
+          )
+        else
+          Container(width: double.infinity, color: Colors.white, padding: const EdgeInsets.all(16), child: const Text('Rejoignez la communauté pour publier.', textAlign: TextAlign.center)),
+      ]);
+    }
+    return Scaffold(
+      backgroundColor: const Color(0xFFF7F6F4),
+      appBar: AppBar(backgroundColor: Colors.white, elevation: 0, foregroundColor: const Color(0xFF111015), title: Text(c?.name ?? 'Communauté', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700))),
+      body: SafeArea(child: body),
     );
   }
 }

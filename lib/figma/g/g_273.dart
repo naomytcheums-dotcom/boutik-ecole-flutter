@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/decisions.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -57,6 +58,7 @@ class G_273 extends ConsumerWidget {
       gP(44, 598, 170, 40, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFC2410C), bw: 1.5, radii: [20, 20, 20, 20]), tap: () => requestAccountDeletion(context, ref)),
       gP(58, 610, 132, 16, gText('Supprimer le compte', 13, Color(0xFFC2410C), weight: 600)),
       gP(24, 690, 212, 15, gText('Dernier export : 12 mars 2026 · 4,2 Mo', 12, Color(0xFF57545F), weight: 500)),
+      if (!demoContent) gP(0, 100, 390, 700, const CmsPageOverlay(title: 'Mes données', height: 700)),
     ]);
   }
 }

@@ -405,3 +405,30 @@ class InstitutionLine extends ConsumerWidget {
 
 /// Réglages d'accessibilité mémorisés sur l'appareil (écran 149) : mêmes interrupteurs que l'écran 186.
 final accessProvider149 = accessPrefsProvider;
+
+// ------------------------------------------------------------------ pages de texte modifiables (contenus éditoriaux)
+
+final cmsPagesProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('cms_items', 'kind,title,body,active,updated_at', order: 'updated_at'));
+
+/// Page de texte fixe modifiable : si un contenu actif de type « page » porte ce titre (créé depuis la gestion des contenus, écran 264),
+/// il remplace le texte de la maquette ; sinon le texte d'origine reste affiché.
+class CmsPageOverlay extends ConsumerWidget {
+  const CmsPageOverlay({super.key, required this.title, this.width = 390, this.height = 700});
+  final String title;
+  final double width, height;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final all = ref.watch(cmsPagesProvider);
+    final hit = all?.where((r) => '${r['kind']}' == 'page' && r['active'] == true && '${r['title']}'.trim().toLowerCase() == title.toLowerCase()).toList() ?? const [];
+    if (hit.isEmpty) return const SizedBox.shrink();
+    final r = hit.first;
+    return Container(
+      width: width,
+      height: height,
+      color: const Color(0xFFF7F6F4),
+      padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
+      child: SingleChildScrollView(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('${r['title']}', style: _st(20, w: FontWeight.w800)), const SizedBox(height: 4), Text('Mis à jour le ${dateCourte(r['updated_at'])}', style: _st(11.5, c: _grey)), const SizedBox(height: 16), Text('${r['body']}', style: _st(14).copyWith(height: 1.6))])),
+    );
+  }
+}

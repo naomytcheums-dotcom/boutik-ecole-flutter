@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/decisions.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -76,6 +77,7 @@ class G_178 extends ConsumerWidget {
       gP(240.5, 778, 88, 18, gText('Commencer', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gTap(80, 459, 135, 33, () { gOpen(context, '167'); }), // lien métier 178 -> 167
+      if (!demoContent) gP(0, 100, 390, 700, const CmsPageOverlay(title: 'Bienvenue, jury', height: 700)),
     ]);
   }
 }

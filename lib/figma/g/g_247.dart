@@ -51,7 +51,7 @@ class G_247 extends ConsumerWidget {
       gP(28, 152, 76, 76, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [38, 38, 38, 38])),
       gP(44, 214, 44, 16, gBox(color: Color(0xFFFF2D55), radii: [8, 8, 8, 8])),
       gP(57.5, 217, 17, 10, gText('LIVE', 8, Color(0xFF111015), weight: 700), fx: 'pulse'),
-      gP(126, 150, 120, 23, gText('Aminata Bello', 18, Color(0xFF111015), weight: 600)),
+      gP(126, 150, 120, 23, gText('Aminata Bello', 18, Color(0xFF111015), weight: 600), show: demoContent),
       gP(255, 153, 14, 14, gBox(color: Color(0xFF2F7DF6), oval: true)),
       gP(256, 154.75, 12, 10.125, gImg('assets/figma/v/b3d82fb04f89ab.svg')),
       gP(126, 176, 153, 14, gText('Vidéaste · MMI · IUT de Douala', 11, Color(0xFF57545F))),

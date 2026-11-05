@@ -107,7 +107,7 @@ class Member {
 /// Équipe de l'utilisateur : membres invités (le capitaine, c'est le compte connecté).
 class TeamMembers extends Notifier<List<Member>> {
   @override
-  List<Member> build() => const [Member('Brice Ndoumbe', 'IoT · Invitation acceptée', confirmed: true)];
+  List<Member> build() => Backend.ready ? const <Member>[] : const [Member('Brice Ndoumbe', 'IoT · Invitation acceptée', confirmed: true)];
   bool has(String n) => state.any((m) => m.name == n);
   void invite(Mate m) => state = [...state, Member(m.name, '${m.cat} · Invitation envoyée')];
   void remove(String n) => state = [for (final m in state) if (m.name != n) m];
@@ -121,6 +121,7 @@ final mateQueryProvider = NotifierProvider<StrV, String>(StrV.new);
 final visibleMatesProvider = Provider<List<Mate>>((ref) {
   final cat = const ['Développeurs', 'Designers', 'Business', 'IA et data'][ref.watch(mateTabProvider).clamp(0, 3)];
   final q = normText(ref.watch(mateQueryProvider).trim());
+  if (Backend.ready) return const <Mate>[];
   return [for (final m in mates) if ((m.cat == cat) && (q.isEmpty || normText('${m.name} ${m.skills}').contains(q))) m];
 });
 

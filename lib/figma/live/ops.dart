@@ -331,7 +331,7 @@ const _seedOrderRows = [
 final orderRowsProvider = Provider<List<OrderRow>>((ref) {
   return [
     for (final o in ref.watch(ordersProvider)) OrderRow(o.id, 'M. Essono', 'Vendeurs', o.total, statusLabel(o.status), real: true),
-    ..._seedOrderRows,
+    if (!Backend.ready) ..._seedOrderRows,
   ];
 });
 

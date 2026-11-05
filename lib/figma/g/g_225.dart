@@ -58,7 +58,7 @@ class G_225 extends ConsumerWidget {
       gP(228.5, 630, 21, 13, gText('Dos', 10.5, Color(0xFF57545F))),
       gP(288, 546, 78, 78, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
       gP(312, 630, 30, 13, gText('Détail', 10.5, Color(0xFF57545F))),
-      gP(44, 674, 172, 20, gText('Lampe en bois recyclé', 16, Color(0xFF111015), weight: 600)),
+      gP(44, 674, 172, 20, gText('Lampe en bois recyclé', 16, Color(0xFF111015), weight: 600), show: demoContent),
       gP(44, 704, 69, 29, gBox(color: Color(0xFFF1EEFB), radii: [100, 100, 100, 100])),
       gP(58, 712, 41, 13, gText('H 42 cm', 10.5, Color(0xFF5A3FE0), weight: 600)),
       gP(126, 704, 70, 29, gBox(color: Color(0xFFF1EEFB), radii: [100, 100, 100, 100])),

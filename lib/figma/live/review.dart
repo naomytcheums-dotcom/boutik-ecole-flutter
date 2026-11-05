@@ -216,7 +216,7 @@ final flowRowsProvider = Provider<List<FlowRow>>((ref) {
   return [
     for (final o in orders)
       FlowRow('TX-${o.id.substring(o.id.length - 4)}${o.id.length}', '${o.date} · ${o.method}', 'Encaissement', o.paid ? 'Vérifié' : 'À vérifier', o.total, orderId: o.id),
-    ..._seedFlows,
+    if (!Backend.ready) ..._seedFlows,
   ];
 });
 

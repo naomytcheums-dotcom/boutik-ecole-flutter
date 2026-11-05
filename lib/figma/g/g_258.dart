@@ -40,7 +40,7 @@ class G_258 extends ConsumerWidget {
       gP(43.458, 83.458, 11.542, 17.083, gImg('assets/figma/v/7a21623fe0dfea.svg')),
       gP(43.458, 89, 17.083, 6, gImg('assets/figma/v/e130a05f3cf779.svg')),
       gP(156, 76, 78, 21, gText('Paiement', 17, Color(0xFF111015), weight: 500)),
-      gP(111.5, 100, 167, 15, gText('Commande #BE-2026-0142', 12, Color(0xFF57545F))),
+      gP(111.5, 100, 167, 15, gText('Commande #BE-2026-0142', 12, Color(0xFF57545F)), show: demoContent),
       gP(89.5, 300, 211, 25, gText('Le paiement a échoué', 20, Color(0xFF111015), weight: 600)),
       gP(46.5, 336, 297, 36, gText('Solde insuffisant ou code incorrect. Aucun montant n’a été débité.', 12, Color(0xFF57545F), lh: 18, align: TextAlign.center, wrap: true)),
       gP(44, 430, 30, 15, gText('Motif', 12, Color(0xFF57545F))),

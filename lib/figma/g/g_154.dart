@@ -176,7 +176,7 @@ class G_154 extends ConsumerWidget {
       gP(112.5, 790, 165, 18, gText('Compléter mon dossier', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 842, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       if (!demoContent) gP(24, 150, 342, 590, const DossierPanel(width: 342, height: 590)),
-      gTap(24, 775, 342, 54, () { gOpen(context, '73'); }),
+      if (!demoContent) gTap(24, 775, 342, 54, () { gOpen(context, '73'); }),
     ]);
   }
 }

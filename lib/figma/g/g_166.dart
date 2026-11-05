@@ -51,7 +51,7 @@ class G_166 extends ConsumerWidget {
       gP(24, 120, 342, 170, gBox(image: 'assets/figma/img/d26d49b962f8ef08068e61f071cd2e0f7f73c5be.png', fit: BoxFit.cover, radii: [24, 24, 24, 24])),
       gP(24, 120, 342, 170, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [24, 24, 24, 24])),
       gP(42, 228, 309, 23, Consumer(builder: (context, ref, _) => gText(ref.watch(rankingProvider).isEmpty ? '' : '${ref.watch(rankingProvider).first.team} · 1er prix', 18, Color(0xFFFFFFFF), weight: 700, wrap: true))),
-      gP(42, 256, 309, 15, gText('Orange Digital Challenge 2026', 12, Color(0xFFE3ECF7), wrap: true)),
+      gP(42, 256, 309, 15, gText('Orange Digital Challenge 2026', 12, Color(0xFFE3ECF7), wrap: true), show: demoContent),
       gP(24, 304, 87, 19, gText('Classement', 15, Color(0xFF111015), weight: 700)),
       gP(36, 355, 40, 40, gBox(color: Color(0xFFFDEFC8), radii: [13, 13, 13, 13])),
       gP(44.667, 365.333, 9.333, 10.167, gImg('assets/figma/v/ff038cff524fea.svg')),

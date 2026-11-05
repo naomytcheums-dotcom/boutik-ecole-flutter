@@ -49,7 +49,7 @@ class G_47 extends ConsumerWidget {
       gP(76, 70, 221, 26, gText('Annuler la commande', 21, Color(0xFF111015), weight: 700)),
       gP(36, 128, 50, 50, Consumer(builder: (context, ref, _) { final o = ref.watch(viewedOrderProvider); return gBox(image: demoContent || o.lines.isEmpty ? 'assets/figma/img/9803b1792923bb371cffd2d64272ebebf74ea2d4.png' : lineImage(o.lines.first, neutralProductImage), fit: BoxFit.cover, radii: [12, 12, 12, 12]); })),
       gP(98, 132, 109, 17, gText(demoContent ? '#BE-2026-0141' : ref.watch(viewedOrderProvider).id, 13.5, Color(0xFF111015), weight: 600)),
-      gP(98, 154, 138, 14, gText(demoContent || ref.watch(viewedOrderProvider).lines.isEmpty ? 'Sac à dos design · 25 00…' : '${ref.watch(viewedOrderProvider).lines.first.title} · ${fcfa(ref.watch(viewedOrderProvider).total)}', 11.5, Color(0xFF57545F), wrap: true, maxLines: 1)),
+      gP(98, 154, 138, 14, gText(demoContent ? 'Sac à dos design · 25 00…' : ref.watch(viewedOrderProvider).lines.isEmpty ? '—' : '${ref.watch(viewedOrderProvider).lines.first.title} · ${fcfa(ref.watch(viewedOrderProvider).total)}', 11.5, Color(0xFF57545F), wrap: true, maxLines: 1)),
       gP(242.4, 142, 109.6, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11])),
       gP(242.4, 146, 109.6, 14, Consumer(builder: (context, ref, _) => gText(orderStatusLabel(ref.watch(viewedOrderProvider)), 11, Color(0xFF8F5400), weight: 600, align: TextAlign.center))),
       gP(24, 200, 150, 19, gText('Motif de l’annulation', 15, Color(0xFF111015), weight: 700)),

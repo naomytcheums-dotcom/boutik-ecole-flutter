@@ -47,7 +47,7 @@ class G_88 extends ConsumerWidget {
       gP(24, 70, 185, 26, gText('Espace entreprise', 21, Color(0xFF111015), weight: 700)),
       gP(340.75, 69.833, 22.5, 19.75, gImg('assets/figma/v/c416ae6fb27d36.svg')),
       gP(347.442, 87.25, 9.117, 6.922, gImg('assets/figma/v/76ffe03c455014.svg')),
-      gP(24, 96, 208, 15, gText('Orange Cameroun · Partenaire vérifié', 12, Color(0xFF57545F))),
+      gP(24, 96, 208, 15, gText('Orange Cameroun · Partenaire vérifié', 12, Color(0xFF57545F)), show: demoContent),
       gP(38, 132, 87, 14, gText('Besoins publiés', 11.5, Color(0xFF57545F), weight: 500), show: demoContent),
       gP(38, 152, 13, 25, gText('6', 20, Color(0xFF111015), weight: 800), show: demoContent),
       gP(150, 132, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9]), show: demoContent),

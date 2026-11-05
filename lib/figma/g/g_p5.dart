@@ -61,7 +61,7 @@ class G_P5 extends ConsumerWidget {
       gP(41, 445, 50, 50, gImg('assets/figma/v/b366cd75bc5628.svg')),
       gP(56.033, 454.35, 20.3, 34.233, gImg('assets/figma/v/784715c5ef4b71.svg')),
       gP(100, 452, 67, 17, gText('Facebook', 13.5, Color(0xFF111015), weight: 600)),
-      gP(100, 472, 108, 14, gText('Aminata Bello Studio', 11, Color(0xFF126B49))),
+      gP(100, 472, 108, 14, gText('Aminata Bello Studio', 11, Color(0xFF126B49)), show: demoContent),
       gP(264, 457, 82, 28, gBox(color: Color(0xFFE8F7EE), radii: [14, 14, 14, 14])),
       gP(273.333, 465.25, 13.333, 11.042, gImg('assets/figma/v/9ad36130a811a4.svg')),
       gP(290, 464, 51, 13, gText('Connecté', 10.5, Color(0xFF126B49), weight: 600)),

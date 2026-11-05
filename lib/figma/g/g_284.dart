@@ -42,7 +42,7 @@ class G_284 extends ConsumerWidget {
       gP(43.458, 83.458, 11.542, 17.083, gImg('assets/figma/v/7a21623fe0dfea.svg')),
       gP(43.458, 89, 17.083, 6, gImg('assets/figma/v/e130a05f3cf779.svg')),
       gP(124, 76, 142, 21, gText('Registre financier', 17, Color(0xFF111015), weight: 500)),
-      gP(111.5, 102, 167, 15, gText('Commande #BE-2026-0142', 12, Color(0xFF57545F))),
+      gP(111.5, 102, 167, 15, gText('Commande #BE-2026-0142', 12, Color(0xFF57545F)), show: demoContent),
       gP(167, 132, 40, 40, gImg('assets/figma/r/209_883.png'), show: demoContent),
       gP(177.667, 140, 45.333, 40, gImg('assets/figma/r/209_884.png'), show: demoContent),
       gP(44, 232, 80, 16, gText('Montant brut', 13, Color(0xFF57545F)), show: demoContent),

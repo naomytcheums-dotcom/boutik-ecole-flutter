@@ -46,7 +46,7 @@ class G_217 extends ConsumerWidget {
       gP(31, 71, 22, 22, const SizedBox.expand(), tap: () => gBack(context)),
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
-      gP(76, 70, 227, 26, gText('Lampe en bois recyclé', 21, Color(0xFF111015), weight: 700)),
+      gP(76, 70, 227, 26, gText('Lampe en bois recyclé', 21, Color(0xFF111015), weight: 700), show: demoContent),
       gP(24, 120, 342, 190, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [26, 26, 26, 26]), show: demoContent),
       gP(24, 120, 342, 190, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x000B2340), Color(0xE00B2340)], stops: [0, 1]), radii: [26, 26, 26, 26]), show: demoContent),
       gP(42, 248, 309, 46, gText('Si 200 personnes la veulent, on la fabrique', 18, Color(0xFFFFFFFF), weight: 800, wrap: true), show: demoContent),

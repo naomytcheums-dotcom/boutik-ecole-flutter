@@ -41,7 +41,7 @@ class G_255 extends ConsumerWidget {
       gP(43.458, 83.458, 11.542, 17.083, gImg('assets/figma/v/7a21623fe0dfea.svg')),
       gP(43.458, 89, 17.083, 6, gImg('assets/figma/v/e130a05f3cf779.svg')),
       gP(116, 76, 158, 21, gText('Suivi de publication', 17, Color(0xFF111015), weight: 500)),
-      gP(131.5, 100, 127, 15, gText('Lampe en bois recyclé', 12, Color(0xFF57545F))),
+      gP(131.5, 100, 127, 15, gText('Lampe en bois recyclé', 12, Color(0xFF57545F)), show: demoContent),
       gP(36, 136, 60, 60, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [18, 18, 18, 18]), show: demoContent),
       gP(108, 140, 151, 18, gText('Lampe en bois recyclé', 14, Color(0xFF111015), weight: 600), show: demoContent),
       gP(108, 162, 147, 14, gText('Génie civil · soumis le 22 oct.', 11, Color(0xFF57545F)), show: demoContent),

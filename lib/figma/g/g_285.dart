@@ -43,7 +43,7 @@ class G_285 extends ConsumerWidget {
       gP(43.458, 83.458, 11.542, 17.083, gImg('assets/figma/v/7a21623fe0dfea.svg')),
       gP(43.458, 89, 17.083, 6, gImg('assets/figma/v/e130a05f3cf779.svg')),
       gP(138, 76, 114, 21, gText('Espace projet', 17, Color(0xFF111015), weight: 500)),
-      gP(87, 102, 216, 15, gText('Mission : Identité visuelle · Mbella SARL', 12, Color(0xFF57545F))),
+      gP(87, 102, 216, 15, gText('Mission : Identité visuelle · Mbella SARL', 12, Color(0xFF57545F)), show: demoContent),
       gP(167, 134.667, 56, 50.667, gImg('assets/figma/r/209_1004.png')),
       gP(44, 228, 127, 18, gText('Contrat de mission', 14, Color(0xFF111015), weight: 600), show: demoContent),
       gP(44, 258, 48, 15, gText('Montant', 12, Color(0xFF57545F)), show: demoContent),

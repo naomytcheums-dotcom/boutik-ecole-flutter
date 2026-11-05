@@ -98,7 +98,8 @@ final visibleTalentsProvider = Provider<List<Talent>>((ref) {
         if ((cat == 'Tous' || normText('${t.skills} ${t.department}').contains(normText(cat))) && (q.isEmpty || normText('${t.name} ${t.department} ${t.skills}').contains(q)))
           Talent(t.name, t.department, t.skills, cat, showStatus: false, avatarUrl: t.avatarUrl, userId: t.id),
     ];
-    // aucun profil réel : exemples de la maquette (affichés comme avant)
+    // aucun profil réel : liste vide (jamais d'exemples en mode connecté)
+    return const <Talent>[];
   }
   return [
     for (final t in talents)
@@ -147,7 +148,7 @@ class Project {
 
 class Projects extends Notifier<List<Project>> {
   @override
-  List<Project> build() => const [
+  List<Project> build() => Backend.ready ? const <Project>[] : const [
         Project('Système de filtration d’eau', 'Génie chimique', 72, 'En cours', desc: 'Un système de filtration low-cost pour les quartiers sans eau potable, testé avec des associations locales.'),
         Project('Serre intelligente', 'Agronomie', 45, 'Financement', lead: 'Aminata Bello', contributors: 5, milestones: 4, desc: 'Une serre pilotée par capteurs pour maraîchers urbains.'),
         Project('Application covoiturage', 'Informatique', 100, 'Terminé', lead: 'Éric Biyick', contributors: 3, milestones: 3, desc: 'Une application de covoiturage entre campus et quartiers de Douala.'),
@@ -175,6 +176,7 @@ final visibleProjectsProvider = Provider<List<Project>>((ref) {
 final currentProjectProvider = Provider<Project>((ref) {
   final all = ref.watch(projectsProvider);
   final t = ref.watch(selectedProjectProvider);
+  if (all.isEmpty) return const Project('Aucun projet', '', 0, '—', lead: '—');
   return all.firstWhere((p) => p.title == t, orElse: () => all.first);
 });
 
@@ -263,12 +265,14 @@ final oppHubTabProvider = NotifierProvider<IntV, int>(IntV.new); // écran 151 :
 
 final visibleOpportunities75 = Provider<List<Opportunity>>((ref) {
   final kind = const ['Stage', 'Emploi', 'Défi', 'Mission'][ref.watch(oppTabProvider).clamp(0, 3)];
+  if (Backend.ready) return const <Opportunity>[];
   return [for (final o in opportunities) if (o.kind == kind) o];
 });
 
 final visibleOpportunities151 = Provider<List<Opportunity>>((ref) {
   final tab = ref.watch(oppHubTabProvider).clamp(0, 5);
   final kind = const [null, 'Stage', 'Emploi', 'Projet', 'Défi', 'Hackathon'][tab];
+  if (Backend.ready) return const <Opportunity>[];
   return [for (final o in opportunities) if (kind == null || o.kind == kind) o];
 });
 

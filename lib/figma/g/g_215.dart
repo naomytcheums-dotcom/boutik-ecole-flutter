@@ -88,7 +88,7 @@ class G_215 extends ConsumerWidget {
       gP(318.7, 708, 21, 14, gText('Voir', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)),
       gP(98, 748, 256, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(36, 756, 50, 50, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
-      gP(98, 760, 96, 17, gText('Carine Mbarga', 13.5, Color(0xFF111015), weight: 600)),
+      gP(98, 760, 96, 17, gText('Carine Mbarga', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
       gP(98, 782, 93, 14, gText('IA, data · score 81', 11.5, Color(0xFF57545F))),
       gP(306.4, 770, 45.6, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
       gP(318.7, 774, 21, 14, gText('Voir', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)),

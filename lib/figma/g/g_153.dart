@@ -52,7 +52,7 @@ class G_153 extends ConsumerWidget {
       gP(44.667, 145.833, 22.667, 17.667, gImg('assets/figma/v/0b1915710c6b88.svg')),
       gP(49.667, 142.5, 12.667, 21, gImg('assets/figma/v/baf18a4f525e16.svg')),
       gP(88, 132, 157, 17, gText('Stage développeur web', 13.5, Color(0xFF111015), weight: 600)),
-      gP(88, 154, 190, 14, gText('Orange Cameroun · Douala · 3 mois', 11.5, Color(0xFF57545F))),
+      gP(88, 154, 190, 14, gText('Orange Cameroun · Douala · 3 mois', 11.5, Color(0xFF57545F)), show: demoContent),
       gP(32, 210, 100, 100, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF0E1A0B), Color(0xFF000000)], stops: [0, 1]), radii: [50, 50, 50, 50])),
       gP(32, 255, 100, 55, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x008DF03A), Color(0xBF8DF03A)], stops: [0, 1]))),
       gP(79, 208.5, 6, 14.5, gImg('assets/figma/v/bb3ffcce1ff37a.svg')),
@@ -167,7 +167,7 @@ class G_153 extends ConsumerWidget {
       gP(0, 744, 390, 100, gBox(color: Color(0x00FFFFFF))),
       gP(24, 760, 163, 54, gBox(color: Color(0x00FFFFFF), border: Color(0xFFD9D3E6), bw: 1.5, radii: [27, 27, 27, 27]), tap: () { gToast(context, 'Offre ignorée : elle ne vous sera plus proposée en priorité.'); gBack(context); }),
       gP(80, 778, 51, 18, gText('Ignorer', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
-      gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => engageOrManage(context, ref, 'application', 'offer:153', data: {'title': 'Stage développeur web', 'company': 'Orange Cameroun'}, success: 'Candidature enregistrée.', need: 'postuler', activeTitle: 'Vous avez déjà postulé', activeBody: 'Votre candidature « Stage développeur web » est en cours d’examen.', keepLabel: 'La garder', cancelLabel: 'Retirer ma candidature', cancelled: 'Candidature retirée.', onCreated: () => gOpen(context, '159'))),
+      gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => engageOrManage(context, ref, 'application', 'offer:153', data: {'title': 'Stage développeur web', 'company': 'Orange Cameroun'}, success: 'Candidature enregistrée.', need: 'postuler', activeTitle: 'Vous avez déjà postulé', activeBody: 'Votre candidature « Stage développeur web » est en cours d’examen.', keepLabel: 'La garder', cancelLabel: 'Retirer ma candidature', cancelled: 'Candidature retirée.', onCreated: () => gOpen(context, '159')), show: demoContent),
       if (isEngaged(ref, 'application|offer:153')) gP(203, 778, 163, 18, gText('Candidature ✓', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)) else gP(255, 778, 59, 18, gText('Postuler', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gTap(82, 583, 188, 32, () { gOpen(context, '72'); }), // audit 01/11 : « Ajouter un certificat de sc… » n'avait aucun effet

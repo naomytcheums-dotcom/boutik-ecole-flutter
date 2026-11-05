@@ -65,7 +65,7 @@ class G_185 extends ConsumerWidget {
       gP(58, 393.333, 9.333, 10.167, gImg('assets/figma/v/6d7d6e6c277316.svg')),
       gP(46.333, 408.333, 19.333, 6, gImg('assets/figma/v/3035c903f4ca6a.svg')),
       gP(48, 391.667, 16, 16.833, gImg('assets/figma/v/ddb12173c17b9f.svg')),
-      gP(88, 382, 163, 17, gText('Orange Digital Challenge', 13.5, Color(0xFF111015), weight: 600)),
+      gP(88, 382, 163, 17, gText('Orange Digital Challenge', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
       gP(88, 404, 143, 14, gText('Registration open · Douala', 11.5, Color(0xFF57545F))),
       gP(306.4, 392, 45.6, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
       gP(313.7, 396, 31, 14, gText('Open', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)),

@@ -42,7 +42,7 @@ class G_278 extends ConsumerWidget {
       gP(42.5, 82.5, 19, 19, const SizedBox.expand(), tap: () => gBack(context)),
       gP(43.458, 83.458, 11.542, 17.083, gImg('assets/figma/v/7a21623fe0dfea.svg')),
       gP(43.458, 89, 17.083, 6, gImg('assets/figma/v/e130a05f3cf779.svg')),
-      gP(104, 76, 182, 21, gText('Lampe en bois recyclé', 17, Color(0xFF111015), weight: 500)),
+      gP(104, 76, 182, 21, gText('Lampe en bois recyclé', 17, Color(0xFF111015), weight: 500), show: demoContent),
       gP(71.5, 102, 247, 15, gText('Fiche projet · liens et propriété intellectuelle', 12, Color(0xFF57545F))),
       gP(164.375, 139.375, 61.25, 61.25, gImg('assets/figma/r/209_113.png')),
       gP(44, 242, 99, 18, gText('Liens du projet', 14, Color(0xFF111015), weight: 600), show: demoContent),

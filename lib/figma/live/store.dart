@@ -80,7 +80,7 @@ String productPriceAndSeller(LiveProduct p) {
 
 class SelectedProduct extends Notifier<LiveProduct> {
   @override
-  LiveProduct build() => liveCatalog.first;
+  LiveProduct build() => Backend.ready ? (platformProducts.isNotEmpty ? platformProducts.first : const LiveProduct('Aucun produit choisi', '', 0, '', 'Choisissez un produit dans le catalogue.', neutralProductImage)) : liveCatalog.first;
   void select(String title) => state = productByTitle(title);
 }
 
@@ -259,6 +259,7 @@ bool redirectOrderDetail({required bool ready, required bool loaded, required Li
 final lastOrderProvider = Provider<Order>((ref) {
   final l = ref.watch(ordersProvider);
   if (l.isNotEmpty) return l.first;
+  if (Backend.ready) return const Order(id: '#----', date: '—', lines: [], subtotal: 0, fee: 0, method: '—', reference: '—');
   final lines = ref.watch(cartProvider);
   final t = ref.watch(totalsProvider);
   return Order(id: '#BE-2026-0142', date: '22 oct. 2026', lines: lines, subtotal: t.subtotal, fee: t.fee, method: 'Orange Money', reference: 'OM-7F3A-2210');

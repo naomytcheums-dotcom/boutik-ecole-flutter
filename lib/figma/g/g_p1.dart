@@ -47,7 +47,7 @@ class G_P1 extends ConsumerWidget {
       gP(138, 273, 114, 114, gBox(color: Color(0xFF111015), oval: true)),
       gP(143, 278, 104, 104, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x1A403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], oval: true)),
       gP(149, 284, 92, 92, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [46, 46, 46, 46])),
-      gP(119.5, 392, 151, 29, gText('Aminata Bello', 23, Color(0xFF111015), weight: 500, align: TextAlign.center)),
+      gP(119.5, 392, 151, 29, gText('Aminata Bello', 23, Color(0xFF111015), weight: 500, align: TextAlign.center), show: demoContent),
       gP(277, 396, 16, 16, gBox(color: Color(0xFF2F7DF6), oval: true)),
       gP(278.667, 398.5, 12.667, 10.583, gImg('assets/figma/v/ca53f14df8dcc8.svg')),
       gP(91, 426, 208, 16, gText('#Vidéaste   #Directrice   #Designer', 12.5, Color(0xFF57545F), align: TextAlign.center)),

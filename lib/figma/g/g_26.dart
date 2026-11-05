@@ -54,7 +54,7 @@ class G_26 extends ConsumerWidget {
       gP(228.363, 137.113, 127.124, 131.726, gBox(image: 'assets/figma/img/abbe1a61d7955c52cdd31224bc1569ab44582797.png', fit: BoxFit.cover, radii: [12.655, 12.655, 12.655, 12.655])),
       gP(169.115, 239.183, 50.619, 50.619, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x26122640), offset: Offset(0, 3), blurRadius: 10, spreadRadius: 0)], oval: true)),
       gP(182.425, 253.493, 24, 22, gText('VS', 17.257, Color(0xFF111015), weight: 700, align: TextAlign.center)),
-      gP(32.212, 293.438, 112, 17, gText('Sac à dos design', 13.805, Color(0xFF111015), weight: 700)),
+      gP(32.212, 293.438, 112, 17, gText('Sac à dos design', 13.805, Color(0xFF111015), weight: 700), show: demoContent),
       gP(32.212, 315.024, 95, 19, gText(demoContent ? '25 000 FCFA' : '—', 14.956, Color(0xFF111015), weight: 600)),
       gP(32.212, 340.299, 79, 16, gText('Design – MMI', 12.655, Color(0xFF5A3FE0))),
       gP(235.265, 293.438, 71, 17, gText('Sac urbain', 13.805, Color(0xFF111015), weight: 700)),

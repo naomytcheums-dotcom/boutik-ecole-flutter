@@ -146,7 +146,7 @@ class G_262 extends ConsumerWidget {
       gP(828, 794, 41, 14, gText('30 nov.', 11.5, Color(0xFF3D3B37), inter: true), show: demoContent),
       gP(988, 794, 38, 14, gText('Ouvert', 11.5, Color(0xFF3D3B37), inter: true), show: demoContent),
       gP(282, 820, 956, 1, gBox(color: Color(0xFFEEECE8)), show: demoContent),
-      gP(290, 838, 114, 14, gText('Borne solaire mobile', 11.5, Color(0xFF18181B), weight: 600, inter: true)),
+      gP(290, 838, 114, 14, gText('Borne solaire mobile', 11.5, Color(0xFF18181B), weight: 600, inter: true), show: demoContent),
       gP(668, 838, 54, 14, gText('4 équipes', 11.5, Color(0xFF3D3B37), inter: true)),
       gP(828, 838, 39, 14, gText('15 nov.', 11.5, Color(0xFF3D3B37), inter: true)),
       gP(988, 838, 38, 14, gText('Ouvert', 11.5, Color(0xFF3D3B37), inter: true)),

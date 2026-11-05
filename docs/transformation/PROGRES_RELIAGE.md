@@ -18,3 +18,6 @@
 ## Lot missions (écrans 154, 198, 199, 200)
 - 154 Mon dossier : checklist calculée sur les pièces réellement envoyées (CV, carte d'étudiant, certificat de scolarité, diplôme, photo, matricule). Test `dossier_test.dart`.
 - 198 Briefs reçus, 199 Attribution, 200 Missions : migration `20261105000600_console_missions.sql` (staff_missions, staff_mission_proposals), attribution réelle par `assign_mission`. Les montants de l'écran 200 sont ceux des jalons ; aucun séquestre réel n'existe en ligne. Tests SQL 4/4, `console_missions_test.dart` 8/8.
+
+## Lot opportunités (écrans 152, 157, 203, 204)
+- 152 offres ouvertes réelles (missions publiées) sans pourcentage ; 157 résumé calculé sur propositions et besoins de l'entreprise ; 203 compétences du profil, sans score inventé ; 204 projets réels. Aucune migration. Classement Kéla, scores, financement et mentors : non disponibles côté serveur, dit explicitement à l'écran. Test `opportunites_test.dart`.

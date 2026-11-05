@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/modules.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -31,38 +32,38 @@ class G_136 extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 1280, h: 890, radius: 16, color: Color(0xFFF7F6F4), children: [
-      gP(268, 134, 485, 264, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
-      gP(284, 146, 227, 16, gText('Double authentification obligatoire', 13.5, Color(0xFF111015), weight: 600, inter: true)),
-      gP(284, 168, 128, 14, gText('Pour les rôles sensibles', 11.5, Color(0xFF57545F), inter: true)),
-      gP(695, 155, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
-      gP(284, 200, 457, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(284, 212, 155, 16, gText('Expiration des sessions', 13.5, Color(0xFF111015), weight: 600, inter: true)),
-      gP(284, 234, 134, 14, gText('Après 30 min d’inactivité', 11.5, Color(0xFF57545F), inter: true)),
-      gP(695, 221, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
-      gP(284, 266, 457, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(284, 278, 156, 16, gText('Blocage après 5 échecs', 13.5, Color(0xFF111015), weight: 600, inter: true)),
-      gP(284, 300, 195, 14, gText('Connexion temporairement bloquée', 11.5, Color(0xFF57545F), inter: true)),
-      gP(695, 287, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
-      gP(284, 332, 457, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(284, 344, 168, 16, gText('Restriction par adresse IP', 13.5, Color(0xFF111015), weight: 600, inter: true)),
-      gP(284, 366, 134, 14, gText('Espaces administrateurs', 11.5, Color(0xFF57545F), inter: true)),
-      gP(695, 353, 42, 24, GToggle(on: false, onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18)),
-      gP(767, 134, 485, 172, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
-      gP(768, 135, 483, 39, gBox(color: Color(0xFFF4F1F8), radii: [15, 15, 15, 15])),
-      gP(783, 147, 55, 13, gText('Utilisateur', 11, Color(0xFF57545F), weight: 600, inter: true)),
-      gP(946.08, 147, 45, 13, gText('Appareil', 11, Color(0xFF57545F), weight: 600, inter: true)),
-      gP(1100.1, 147, 88, 13, gText('Dernière activité', 11, Color(0xFF57545F), weight: 600, inter: true)),
-      gP(783, 188, 74, 15, gText('Super admin', 12, Color(0xFF111015), weight: 600, inter: true)),
-      gP(946.08, 188, 107, 15, gText('Chrome · Windows', 12, Color(0xFF4A4854), inter: true)),
-      gP(1100.1, 188, 64, 15, gText('Maintenant', 12, Color(0xFF4A4854), inter: true)),
-      gP(779, 218, 461, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(783, 232, 53, 15, gText('Direction', 12, Color(0xFF111015), weight: 600, inter: true)),
-      gP(946.08, 232, 84, 15, gText('Safari · macOS', 12, Color(0xFF4A4854), inter: true)),
-      gP(1100.1, 232, 67, 15, gText('Il y a 12 min', 12, Color(0xFF4A4854), inter: true)),
-      gP(779, 262, 461, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(783, 276, 46, 15, gText('Finance', 12, Color(0xFF111015), weight: 600, inter: true)),
-      gP(946.08, 276, 107, 15, gText('Chrome · Windows', 12, Color(0xFF4A4854), inter: true)),
-      gP(1100.1, 276, 46, 15, gText('Il y a 1 h', 12, Color(0xFF4A4854), inter: true)),
+      gP(268, 134, 485, 264, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26]), show: demoContent),
+      gP(284, 146, 227, 16, gText('Double authentification obligatoire', 13.5, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(284, 168, 128, 14, gText('Pour les rôles sensibles', 11.5, Color(0xFF57545F), inter: true), show: demoContent),
+      gP(695, 155, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18), show: demoContent),
+      gP(284, 200, 457, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(284, 212, 155, 16, gText('Expiration des sessions', 13.5, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(284, 234, 134, 14, gText('Après 30 min d’inactivité', 11.5, Color(0xFF57545F), inter: true), show: demoContent),
+      gP(695, 221, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18), show: demoContent),
+      gP(284, 266, 457, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(284, 278, 156, 16, gText('Blocage après 5 échecs', 13.5, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(284, 300, 195, 14, gText('Connexion temporairement bloquée', 11.5, Color(0xFF57545F), inter: true), show: demoContent),
+      gP(695, 287, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18), show: demoContent),
+      gP(284, 332, 457, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(284, 344, 168, 16, gText('Restriction par adresse IP', 13.5, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(284, 366, 134, 14, gText('Espaces administrateurs', 11.5, Color(0xFF57545F), inter: true), show: demoContent),
+      gP(695, 353, 42, 24, GToggle(on: false, onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18), show: demoContent),
+      gP(767, 134, 485, 172, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26]), show: demoContent),
+      gP(768, 135, 483, 39, gBox(color: Color(0xFFF4F1F8), radii: [15, 15, 15, 15]), show: demoContent),
+      gP(783, 147, 55, 13, gText('Utilisateur', 11, Color(0xFF57545F), weight: 600, inter: true), show: demoContent),
+      gP(946.08, 147, 45, 13, gText('Appareil', 11, Color(0xFF57545F), weight: 600, inter: true), show: demoContent),
+      gP(1100.1, 147, 88, 13, gText('Dernière activité', 11, Color(0xFF57545F), weight: 600, inter: true), show: demoContent),
+      gP(783, 188, 74, 15, gText('Super admin', 12, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(946.08, 188, 107, 15, gText('Chrome · Windows', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(1100.1, 188, 64, 15, gText('Maintenant', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(779, 218, 461, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(783, 232, 53, 15, gText('Direction', 12, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(946.08, 232, 84, 15, gText('Safari · macOS', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(1100.1, 232, 67, 15, gText('Il y a 12 min', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(779, 262, 461, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(783, 276, 46, 15, gText('Finance', 12, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(946.08, 276, 107, 15, gText('Chrome · Windows', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(1100.1, 276, 46, 15, gText('Il y a 1 h', 12, Color(0xFF4A4854), inter: true), show: demoContent),
       gP(0, 0, 1280, 56, gBox(color: Color(0xFFFFFFFF))),
       gP(20, 10, 36, 34, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(62, 17, 107, 21, gText('Boutik-École', 17, Color(0xFF18181B), weight: 700, inter: true)),
@@ -154,6 +155,7 @@ class G_136 extends ConsumerWidget {
       gTap(12, 568, 216, 36, () => gOpen(context, '138')),
       gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
       gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
+      if (!demoContent) gP(268, 150, 984, 640, const SettingsToggles(defs: settings136)),
     ]);
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/modules.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -31,51 +32,51 @@ class G_125 extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 1280, h: 890, radius: 16, color: Color(0xFFF7F6F4), children: [
-      gP(268, 134, 318.667, 66, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
-      gP(280, 147, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
-      gP(290.333, 155.667, 19.333, 22.667, gImg('assets/figma/v/8a418070bfb100.svg')),
-      gP(298.667, 155.667, 11, 11, gImg('assets/figma/v/2e28e879cb0de7.svg')),
-      gP(332, 146, 155, 16, gText('Rapport mensuel global', 13.5, Color(0xFF111015), weight: 600, inter: true)),
-      gP(332, 168, 108, 14, gText('PDF · Octobre 2026', 11.5, Color(0xFF57545F), inter: true)),
-      gP(501.467, 156, 71.2, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
-      gP(513.567, 160, 47, 13, gText('Exporter', 11, Color(0xFF5A3FE0), weight: 600, inter: true, align: TextAlign.center)),
-      gP(600.667, 134, 318.667, 66, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
-      gP(612.667, 147, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
-      gP(623, 155.667, 19.333, 22.667, gImg('assets/figma/v/8a418070bfb100.svg')),
-      gP(631.333, 155.667, 11, 11, gImg('assets/figma/v/2e28e879cb0de7.svg')),
-      gP(664.667, 146, 159, 16, gText('Ventes par département', 13.5, Color(0xFF111015), weight: 600, inter: true)),
-      gP(664.667, 168, 80, 14, gText('Excel · 12 mois', 11.5, Color(0xFF57545F), inter: true)),
-      gP(834.133, 156, 71.2, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
-      gP(846.233, 160, 47, 13, gText('Exporter', 11, Color(0xFF5A3FE0), weight: 600, inter: true, align: TextAlign.center)),
-      gP(933.333, 134, 318.667, 66, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
-      gP(945.333, 147, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
-      gP(955.667, 155.667, 19.333, 22.667, gImg('assets/figma/v/8a418070bfb100.svg')),
-      gP(964, 155.667, 11, 11, gImg('assets/figma/v/2e28e879cb0de7.svg')),
-      gP(997.333, 146, 155, 16, gText('Validations et décisions', 13.5, Color(0xFF111015), weight: 600, inter: true)),
-      gP(997.333, 168, 75, 14, gText('CSV · 12 mois', 11.5, Color(0xFF57545F), inter: true)),
-      gP(1166.8, 156, 71.2, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
-      gP(1178.9, 160, 47, 13, gText('Exporter', 11, Color(0xFF5A3FE0), weight: 600, inter: true, align: TextAlign.center)),
-      gP(268, 214, 134, 18, gText('Rapports planifiés', 15, Color(0xFF111015), weight: 700, inter: true)),
-      gP(268, 252, 984, 172, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
-      gP(269, 253, 982, 39, gBox(color: Color(0xFFF4F1F8), radii: [15, 15, 15, 15])),
-      gP(284, 265, 43, 13, gText('Rapport', 11, Color(0xFF57545F), weight: 600, inter: true)),
-      gP(569.6, 265, 57, 13, gText('Fréquence', 11, Color(0xFF57545F), weight: 600, inter: true)),
-      gP(760, 265, 71, 13, gText('Destinataires', 11, Color(0xFF57545F), weight: 600, inter: true)),
-      gP(1026.56, 265, 79, 13, gText('Prochain envoi', 11, Color(0xFF57545F), weight: 600, inter: true)),
-      gP(284, 306, 118, 15, gText('Synthèse mensuelle', 12, Color(0xFF111015), weight: 600, inter: true)),
-      gP(569.6, 306, 58, 15, gText('Mensuelle', 12, Color(0xFF4A4854), inter: true)),
-      gP(760, 306, 138, 15, gText('Direction, départements', 12, Color(0xFF4A4854), inter: true)),
-      gP(1026.56, 306, 77, 15, gText('1er nov. 2026', 12, Color(0xFF4A4854), inter: true)),
-      gP(280, 336, 960, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(284, 350, 134, 15, gText('Ventes hebdomadaires', 12, Color(0xFF111015), weight: 600, inter: true)),
-      gP(569.6, 350, 84, 15, gText('Hebdomadaire', 12, Color(0xFF4A4854), inter: true)),
-      gP(760, 350, 79, 15, gText('Responsables', 12, Color(0xFF4A4854), inter: true)),
-      gP(1026.56, 350, 73, 15, gText('26 oct. 2026', 12, Color(0xFF4A4854), inter: true)),
-      gP(280, 380, 960, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(284, 394, 100, 15, gText('Audit de sécurité', 12, Color(0xFF111015), weight: 600, inter: true)),
-      gP(569.6, 394, 70, 15, gText('Trimestrielle', 12, Color(0xFF4A4854), inter: true)),
-      gP(760, 394, 51, 15, gText('Direction', 12, Color(0xFF4A4854), inter: true)),
-      gP(1026.56, 394, 79, 15, gText('1er janv. 2027', 12, Color(0xFF4A4854), inter: true)),
+      gP(268, 134, 318.667, 66, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26]), show: demoContent),
+      gP(280, 147, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13]), show: demoContent),
+      gP(290.333, 155.667, 19.333, 22.667, gImg('assets/figma/v/8a418070bfb100.svg'), show: demoContent),
+      gP(298.667, 155.667, 11, 11, gImg('assets/figma/v/2e28e879cb0de7.svg'), show: demoContent),
+      gP(332, 146, 155, 16, gText('Rapport mensuel global', 13.5, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(332, 168, 108, 14, gText('PDF · Octobre 2026', 11.5, Color(0xFF57545F), inter: true), show: demoContent),
+      gP(501.467, 156, 71.2, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(513.567, 160, 47, 13, gText('Exporter', 11, Color(0xFF5A3FE0), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
+      gP(600.667, 134, 318.667, 66, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26]), show: demoContent),
+      gP(612.667, 147, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13]), show: demoContent),
+      gP(623, 155.667, 19.333, 22.667, gImg('assets/figma/v/8a418070bfb100.svg'), show: demoContent),
+      gP(631.333, 155.667, 11, 11, gImg('assets/figma/v/2e28e879cb0de7.svg'), show: demoContent),
+      gP(664.667, 146, 159, 16, gText('Ventes par département', 13.5, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(664.667, 168, 80, 14, gText('Excel · 12 mois', 11.5, Color(0xFF57545F), inter: true), show: demoContent),
+      gP(834.133, 156, 71.2, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(846.233, 160, 47, 13, gText('Exporter', 11, Color(0xFF5A3FE0), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
+      gP(933.333, 134, 318.667, 66, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26]), show: demoContent),
+      gP(945.333, 147, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13]), show: demoContent),
+      gP(955.667, 155.667, 19.333, 22.667, gImg('assets/figma/v/8a418070bfb100.svg'), show: demoContent),
+      gP(964, 155.667, 11, 11, gImg('assets/figma/v/2e28e879cb0de7.svg'), show: demoContent),
+      gP(997.333, 146, 155, 16, gText('Validations et décisions', 13.5, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(997.333, 168, 75, 14, gText('CSV · 12 mois', 11.5, Color(0xFF57545F), inter: true), show: demoContent),
+      gP(1166.8, 156, 71.2, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(1178.9, 160, 47, 13, gText('Exporter', 11, Color(0xFF5A3FE0), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
+      gP(268, 214, 134, 18, gText('Rapports planifiés', 15, Color(0xFF111015), weight: 700, inter: true), show: demoContent),
+      gP(268, 252, 984, 172, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26]), show: demoContent),
+      gP(269, 253, 982, 39, gBox(color: Color(0xFFF4F1F8), radii: [15, 15, 15, 15]), show: demoContent),
+      gP(284, 265, 43, 13, gText('Rapport', 11, Color(0xFF57545F), weight: 600, inter: true), show: demoContent),
+      gP(569.6, 265, 57, 13, gText('Fréquence', 11, Color(0xFF57545F), weight: 600, inter: true), show: demoContent),
+      gP(760, 265, 71, 13, gText('Destinataires', 11, Color(0xFF57545F), weight: 600, inter: true), show: demoContent),
+      gP(1026.56, 265, 79, 13, gText('Prochain envoi', 11, Color(0xFF57545F), weight: 600, inter: true), show: demoContent),
+      gP(284, 306, 118, 15, gText('Synthèse mensuelle', 12, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(569.6, 306, 58, 15, gText('Mensuelle', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(760, 306, 138, 15, gText('Direction, départements', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(1026.56, 306, 77, 15, gText('1er nov. 2026', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(280, 336, 960, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(284, 350, 134, 15, gText('Ventes hebdomadaires', 12, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(569.6, 350, 84, 15, gText('Hebdomadaire', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(760, 350, 79, 15, gText('Responsables', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(1026.56, 350, 73, 15, gText('26 oct. 2026', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(280, 380, 960, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(284, 394, 100, 15, gText('Audit de sécurité', 12, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(569.6, 394, 70, 15, gText('Trimestrielle', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(760, 394, 51, 15, gText('Direction', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(1026.56, 394, 79, 15, gText('1er janv. 2027', 12, Color(0xFF4A4854), inter: true), show: demoContent),
       gP(0, 0, 1280, 56, gBox(color: Color(0xFFFFFFFF))),
       gP(20, 10, 36, 34, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(62, 17, 107, 21, gText('Boutik-École', 17, Color(0xFF18181B), weight: 700, inter: true)),
@@ -156,11 +157,12 @@ class G_125 extends ConsumerWidget {
       gTap(12, 368, 216, 36, () => gOpen(context, '123')),
       gTap(12, 408, 216, 36, () => gOpen(context, '124')),
       gTap(12, 488, 216, 36, () => gOpen(context, '126')),
-      gTap(501.467, 156, 71.2, 22, () { uiExport(context); }), // audit 01/11 : « Exporter » n'avait aucun effet
-      gTap(834.133, 156, 71.2, 22, () { uiExport(context); }), // audit 01/11 : « Exporter » n'avait aucun effet
-      gTap(1166.8, 156, 71.2, 22, () { uiExport(context); }), // audit 01/11 : « Exporter » n'avait aucun effet
+      if (demoContent) gTap(501.467, 156, 71.2, 22, () { uiExport(context); }), // audit 01/11 : « Exporter » n'avait aucun effet
+      if (demoContent) gTap(834.133, 156, 71.2, 22, () { uiExport(context); }), // audit 01/11 : « Exporter » n'avait aucun effet
+      if (demoContent) gTap(1166.8, 156, 71.2, 22, () { uiExport(context); }), // audit 01/11 : « Exporter » n'avait aucun effet
       gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
       gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
+      if (!demoContent) gP(268, 150, 984, 640, auditListing()),
     ]);
   }
 }

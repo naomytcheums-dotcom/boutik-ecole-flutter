@@ -45,3 +45,8 @@
 
 ## Deuxième lot de 20 écrans (33, 51, 74, 88, 93b, 94, 97, 101, 104, 127, 148_1, 158, 173, 244b, 248, 251, 25b, 263, 278, 285)
 - Paramètres (nom/e-mail du compte), boutique (annonces du vendeur), favoris, projets, besoins et propositions de l'entreprise, événements, établissements, catalogue de gestion, cercle, découverte, notifications. Aucune migration. Test `lot20b_test.dart` (42).
+
+## Lot de 30 écrans avec nouvelles tables (migration 20261105001000_modules_restants.sql, appliquée en production)
+- Nouvelles tables : platform_settings, cms_items, duels, duel_entries, duel_votes, live_comments, pickups. Fonctions : settings_all, setting_set, cms_save, cms_delete, duel_create, duel_enter, duel_vote, duels_list, live_set_state, live_comment, pickup_register, pickup_collect, pickups_list, my_referral_code, skills_radar. Tests SQL 25/25.
+- Écrans reliés : 18, 76, 82, 84b, 116, 122, 125, 136, 138, 144, 146_2, 195, 197, 219, 220, 221, 222, 233, 234, 235, 242, 254, 255, 264, 265, 266, 269, 280, l1, v1. Test `lot30_test.dart` (68).
+- Série quotidienne, défis et publications existaient déjà (migration 20261101000600) : non dupliqués. Les réglages sont enregistrés et journalisés ; certains modules ne les lisent pas encore. Création de retrait en casier : fonction prête, pas de formulaire à l'écran.

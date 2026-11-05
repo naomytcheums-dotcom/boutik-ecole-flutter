@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/modules.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -54,19 +55,20 @@ class G_280 extends ConsumerWidget {
       gP(44, 384, 121, 18, gText('Clés d’intégration', 14, Color(0xFF111015), weight: 600)),
       gP(44, 414, 115, 16, gText('Portail entreprises', 13, Color(0xFF111015), weight: 600)),
       gP(44, 431, 183, 14, gText('be_live_••••8F2A · Créée le 04/06', 11, Color(0xFF57545F))),
-      gP(300, 422, 56, 15, gText('Révoquer', 12, Color(0xFFB42318), weight: 600)),
+      gP(300, 422, 56, 15, gText('Révoquer', 12, Color(0xFFB42318), weight: 600), show: demoContent),
       gP(44, 460, 52, 16, gText('Kiosque', 13, Color(0xFF111015), weight: 600)),
       gP(44, 477, 178, 14, gText('be_live_••••19C0 · Créée le 12/07', 11, Color(0xFF57545F))),
-      gP(300, 468, 56, 15, gText('Révoquer', 12, Color(0xFFB42318), weight: 600)),
+      gP(300, 468, 56, 15, gText('Révoquer', 12, Color(0xFFB42318), weight: 600), show: demoContent),
       gP(44, 550, 74, 18, gText('Webhooks', 14, Color(0xFF111015), weight: 600)),
       gP(44, 580, 108, 15, gText('commande.payee', 12, Color(0xFF111015), weight: 600)),
       gP(44, 596, 168, 14, gText('https://erp.iut-douala.cm/hook', 11, Color(0xFF57545F))),
-      gP(320, 586, 27, 14, gText('Actif', 11, Color(0xFF0F7A52), weight: 700)),
+      gP(320, 586, 27, 14, gText('Actif', 11, Color(0xFF0F7A52), weight: 700), show: demoContent),
       gP(44, 618, 85, 15, gText('certificat.emis', 12, Color(0xFF111015), weight: 600)),
       gP(44, 634, 154, 14, gText('https://partenaire.cm/events', 11, Color(0xFF57545F))),
-      gP(320, 624, 27, 14, gText('Actif', 11, Color(0xFF0F7A52), weight: 700)),
+      gP(320, 624, 27, 14, gText('Actif', 11, Color(0xFF0F7A52), weight: 700), show: demoContent),
       gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => apiKeysDialog(context, ref)),
       gP(147.5, 788, 95, 19, gText('Créer une clé', 15, Color(0xFFFFFFFF), weight: 600)),
+      if (!demoContent) gP(268, 150, 984, 640, const SettingsToggles(defs: settings280)),
     ]);
   }
 }

@@ -174,3 +174,36 @@ class SelectedProductInfo extends ConsumerWidget {
     );
   }
 }
+
+/// Écrans 227 et 229 : carte de présentation construite sur le profil réel (nom, établissement, compétences, présentation, dernier CV envoyé).
+class MyProfileCard extends ConsumerWidget {
+  const MyProfileCard({super.key, this.width = 342});
+  final double width;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (ref.watch(authProvider.select((a) => a.current == null))) return _note(width, 'Connectez-vous pour voir votre profil.');
+    final a = ref.watch(profileAccountProvider);
+    final docs = ref.watch(myDocsProvider);
+    final cv = latestDoc(docs, 'cv');
+    final skills = [for (final s in a.skills.split(RegExp(r'[,;\n]'))) if (s.trim().isNotEmpty) s.trim()];
+    return SizedBox(
+      width: width,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(a.name, style: _st(22, w: FontWeight.w800)),
+        const SizedBox(height: 4),
+        Text([if (a.department.isNotEmpty) a.department, if (a.institution.isNotEmpty) a.institution].join(' · '), style: _st(12.5, c: _grey)),
+        const SizedBox(height: 16),
+        Text(a.bio.isEmpty ? 'Aucune présentation renseignée. Ajoutez-la depuis votre profil.' : a.bio, style: _st(13.5, c: a.bio.isEmpty ? _grey : _ink).copyWith(height: 1.55)),
+        const SizedBox(height: 18),
+        Text('Compétences', style: _st(15, w: FontWeight.w700)),
+        const SizedBox(height: 8),
+        if (skills.isEmpty) Text('Aucune compétence renseignée.', style: _st(13, c: _grey)) else Wrap(spacing: 8, runSpacing: 8, children: [for (final s in skills) Container(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7), decoration: BoxDecoration(color: const Color(0xFFEEE9FF), borderRadius: BorderRadius.circular(14)), child: Text(s, style: _st(12, w: FontWeight.w600, c: const Color(0xFF5A3FE0))))]),
+        const SizedBox(height: 18),
+        Text('CV envoyé', style: _st(15, w: FontWeight.w700)),
+        const SizedBox(height: 6),
+        Text(docs == null ? 'Chargement…' : (cv == null ? 'Aucun CV envoyé pour le moment.' : cv.name), style: _st(13, c: _grey)),
+      ]),
+    );
+  }
+}

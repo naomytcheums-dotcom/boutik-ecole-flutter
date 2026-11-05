@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/device_prefs.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -48,31 +49,32 @@ class G_184 extends ConsumerWidget {
       gP(76, 70, 227, 26, gText('Économie de données', 21, Color(0xFF111015), weight: 700)),
       gP(40, 132, 186, 17, gText('Mode économie de données', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 154, 133, 14, gText('Charger moins d’images', 11.5, Color(0xFF57545F))),
-      gP(308, 141, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
+      gP(308, 141, 42, 24, GToggle(on: ref.watch(dataPrefsProvider)['data_saver'] ?? true, onChanged: (v) => ref.read(dataPrefsProvider.notifier).set('data_saver', v), onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
       gP(40, 186, 314, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 198, 252, 17, gText('Images basse qualité sur réseau mobi…', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 220, 132, 14, gText('Réduit la consommation', 11.5, Color(0xFF57545F))),
-      gP(308, 207, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
+      gP(308, 207, 42, 24, GToggle(on: ref.watch(dataPrefsProvider)['low_images'] ?? true, onChanged: (v) => ref.read(dataPrefsProvider.notifier).set('low_images', v), onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
       gP(40, 252, 314, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 264, 256, 17, gText('Téléchargement des vidéos en Wi-Fi u…', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 286, 137, 14, gText('Évite les frais de données', 11.5, Color(0xFF57545F))),
-      gP(308, 273, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
+      gP(308, 273, 42, 24, GToggle(on: ref.watch(dataPrefsProvider)['wifi_video'] ?? true, onChanged: (v) => ref.read(dataPrefsProvider.notifier).set('wifi_video', v), onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
       gP(40, 318, 314, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 330, 205, 17, gText('Synchronisation en arrière-plan', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 352, 114, 14, gText('Uniquement en Wi-Fi', 11.5, Color(0xFF57545F))),
-      gP(308, 339, 42, 24, GToggle(on: false, onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18)),
-      gP(40, 412, 106, 18, gText('Consommation', 14, Color(0xFF111015), weight: 700)),
-      gP(40, 446, 136, 16, gText('Données utilisées (30 j)', 12.5, Color(0xFF57545F))),
-      gP(308, 446, 42, 16, gText('182 Mo', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
-      gP(40, 471, 310, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(40, 480, 173, 16, gText('Économisées grâce au mode', 12.5, Color(0xFF57545F))),
-      gP(312, 480, 38, 16, gText('64 Mo', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),
-      gP(24, 532, 342, 62, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
-      gP(36, 547, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
-      gP(43.318, 552.917, 18.057, 18.75, gImg('assets/figma/v/6b32e99463f5ba.svg')),
-      gP(41.917, 560, 13.792, 12.375, gImg('assets/figma/v/5a42605c735300.svg')),
-      gP(76, 546, 277, 34, gText('Le mode économie réduit la taille des images et reporte les contenus lourds.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
+      gP(308, 339, 42, 24, GToggle(on: ref.watch(dataPrefsProvider)['wifi_sync'] ?? false, onChanged: (v) => ref.read(dataPrefsProvider.notifier).set('wifi_sync', v), onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18)),
+      gP(40, 412, 106, 18, gText('Consommation', 14, Color(0xFF111015), weight: 700), show: demoContent),
+      gP(40, 446, 136, 16, gText('Données utilisées (30 j)', 12.5, Color(0xFF57545F)), show: demoContent),
+      gP(308, 446, 42, 16, gText('182 Mo', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right), show: demoContent),
+      gP(40, 471, 310, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(40, 480, 173, 16, gText('Économisées grâce au mode', 12.5, Color(0xFF57545F)), show: demoContent),
+      gP(312, 480, 38, 16, gText('64 Mo', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right), show: demoContent),
+      gP(24, 532, 342, 62, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20]), show: demoContent),
+      gP(36, 547, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11]), show: demoContent),
+      gP(43.318, 552.917, 18.057, 18.75, gImg('assets/figma/v/6b32e99463f5ba.svg'), show: demoContent),
+      gP(41.917, 560, 13.792, 12.375, gImg('assets/figma/v/5a42605c735300.svg'), show: demoContent),
+      gP(76, 546, 277, 34, gText('Le mode économie réduit la taille des images et reporte les contenus lourds.', 12, Color(0xFF4A4854), lh: 17, wrap: true), show: demoContent),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      if (!demoContent) gP(40, 412, 314, 120, const Text('La consommation de données n’est pas mesurée par l’application. Ces réglages sont mémorisés sur cet appareil.', style: TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 12.5, color: Color(0xFF57545F), height: 1.5))),
     ]);
   }
 }

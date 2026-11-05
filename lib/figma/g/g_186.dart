@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/device_prefs.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -49,19 +50,19 @@ class G_186 extends ConsumerWidget {
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 63, 34, 'Petit', 12.5, 500), GChip(95, 120, 70.4, 34, 'Normal', 12.5, 500), GChip(173.4, 120, 63, 34, 'Grand', 12.5, 600), GChip(244.4, 120, 100, 34, 'Très grand', 12.5, 500)], selected: 2, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
       gP(40, 180, 88, 17, gText('Texte agrandi', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 202, 94, 14, gText('Taille 18 px et plus', 11.5, Color(0xFF57545F))),
-      gP(308, 189, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
+      gP(308, 189, 42, 24, GToggle(on: ref.watch(accessPrefsProvider)['large_text'] ?? true, onChanged: (v) => ref.read(accessPrefsProvider.notifier).set('large_text', v), onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
       gP(40, 234, 314, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 246, 125, 17, gText('Contraste renforcé', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 268, 99, 14, gText('Textes plus lisibles', 11.5, Color(0xFF57545F))),
-      gP(308, 255, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
+      gP(308, 255, 42, 24, GToggle(on: ref.watch(accessPrefsProvider)['contrast'] ?? true, onChanged: (v) => ref.read(accessPrefsProvider.notifier).set('contrast', v), onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
       gP(40, 300, 314, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 312, 145, 17, gText('Réduire les animations', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 334, 129, 14, gText('Limiter les mouvements', 11.5, Color(0xFF57545F))),
-      gP(308, 321, 42, 24, GToggle(on: false, onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18)),
+      gP(308, 321, 42, 24, GToggle(on: ref.watch(accessPrefsProvider)['reduce_motion'] ?? false, onChanged: (v) => ref.read(accessPrefsProvider.notifier).set('reduce_motion', v), onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18)),
       gP(40, 366, 314, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 378, 104, 17, gText('Lecteur d’écran', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 400, 102, 14, gText('Étiquettes vocales', 11.5, Color(0xFF57545F))),
-      gP(308, 387, 42, 24, GToggle(on: false, onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18)),
+      gP(308, 387, 42, 24, GToggle(on: ref.watch(accessPrefsProvider)['screen_reader'] ?? false, onChanged: (v) => ref.read(accessPrefsProvider.notifier).set('screen_reader', v), onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18)),
       gP(40, 460, 132, 18, gText('Normes appliquées', 14, Color(0xFF111015), weight: 700)),
       gP(40, 494, 145, 16, gText('Zones tactiles minimales', 12.5, Color(0xFF57545F))),
       gP(287, 494, 63, 16, gText('44 × 44 px', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)),

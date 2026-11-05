@@ -36,3 +36,6 @@
 
 ## Lot réseau, vœux, lives, litiges (écrans 118, 129, 133, 134, 213, 214, 216, 223, 246, 261, 262, 267)
 - Listes réelles (établissements, départements publiés, vœux ouverts, lives programmés, réclamations, paiements déclarés, certificats) et résumé entreprise sur 261/262. Aucune migration. Test `lot_reseau_test.dart` (29).
+
+## Lot réglages et profil (écrans 184, 186, 211, 227, 229)
+- 184/186 : interrupteurs mémorisés sur l'appareil (valeurs par défaut de la maquette), consommation de données non mesurée donc non affichée. 227/229 : carte construite sur le profil et le dernier CV réels. 211 : produit choisi. Test `lot_profil_reglages_test.dart`.

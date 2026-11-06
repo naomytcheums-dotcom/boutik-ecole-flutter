@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import 'auth.dart';
+import 'premium_pub.dart';
 import 'backend.dart';
 import 'reels.dart';
 import 'store.dart' show nowProvider;
@@ -70,12 +71,20 @@ class CircleFeed extends ConsumerWidget {
       }
       return note(all.isEmpty ? 'Aucune publication pour le moment.\nSoyez le premier à partager une photo ou une vidéo.' : 'Aucune publication dans cette catégorie.', action: 'Publier', onTap: () => publishReel(context, ref));
     }
+    // publicités validées, toujours marquées « Sponsorisé » : une après la 2e publication, une après la 5e
+    final ads = tab == 0 ? ref.watch(adFeedProvider) : const <Map<String, dynamic>>[];
+    final items = <Object>[];
+    for (var k = 0; k < list.length; k++) {
+      items.add(list[k]);
+      if (k == 1 && ads.isNotEmpty) items.add(ads[0]);
+      if (k == 4 && ads.length > 1) items.add(ads[1]);
+    }
     return SizedBox(
       width: width,
       height: height,
       child: ListView.separated(
         padding: const EdgeInsets.only(bottom: 120),
-        itemCount: list.length + 1,
+        itemCount: items.length + 1,
         separatorBuilder: (_, _) => const SizedBox(height: 16),
         itemBuilder: (_, i) {
           if (i == 0) {
@@ -90,7 +99,10 @@ class CircleFeed extends ConsumerWidget {
               ),
             );
           }
-          return _Post(post: list[i - 1], now: now, index: all.indexWhere((r) => r.id == list[i - 1].id));
+          final it = items[i - 1];
+          if (it is Map<String, dynamic>) return SponsoredCard(key: ValueKey('ad-${it['id']}'), ad: it);
+          final post = it as Reel;
+          return _Post(post: post, now: now, index: all.indexWhere((r) => r.id == post.id));
         },
       ),
     );

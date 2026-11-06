@@ -6,6 +6,7 @@ import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/paiement_messagerie.dart';
+import '../live/premium_pub.dart';
 import 'package:go_router/go_router.dart';
 import '../live/opportunites.dart';
 import '../live/l06.dart';
@@ -103,9 +104,8 @@ class G_261 extends ConsumerWidget {
       if (demoContent) gTap(64, 740, 219, 48, () { gOpen(context, '30'); }), // parcours 261 -> 30
       if (demoContent) gTap(92, 444, 156, 32, () { gOpen(context, '252'); }), // parcours 261 -> 252
       if (demoContent) gTap(301, 744, 53, 25, () { reviewOrderDialog(context, ref); }), // audit 01/11 : « Noter » n'avait aucun effet
-      if (!demoContent) gP(24, 125, 342, 620, const CompanySummary(width: 342, height: 620)),
-      if (!demoContent) gP(24, 700, 342, 50, gBox(color: Color(0xFF111015), radii: [25, 25, 25, 25]), tap: () => GoRouter.of(context).push('/paiements')),
-      if (!demoContent) gP(24, 714, 342, 22, gText('Mes paiements', 13.5, Color(0xFFFFFFFF), weight: 700, align: TextAlign.center)),
+      if (!demoContent) gP(24, 125, 342, 620, const CompanySummary(width: 342, height: 480)),
+      if (!demoContent) gP(24, 620, 342, 130, const ShortcutsPanel(width: 342)),
     ]);
   }
 }

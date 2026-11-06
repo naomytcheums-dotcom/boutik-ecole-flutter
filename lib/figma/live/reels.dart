@@ -103,7 +103,18 @@ class ReelsNotifier extends Notifier<List<Reel>?> {
     }
 
     final reels = [for (final x in r.data as List) Reel.fromRow(x as Map, url)];
-    state = rankReels(reels, DateTime.now());
+    // signaux réels de la personne : créateurs suivis, centres d'intérêt et affinités déduits de ce qu'elle a aimé ou enregistré
+    final following = ref.read(followingIdsProvider) ?? const <String>{};
+    final interests = <String, double>{}, affinity = <String, double>{};
+    for (final r in reels) {
+      if (!(r.liked || r.saved)) continue;
+      for (final t in r.tags) {
+        final k = t.toLowerCase();
+        interests[k] = ((interests[k] ?? 0) + 0.25).clamp(0.0, 1.0);
+      }
+      if (r.authorId.isNotEmpty) affinity[r.authorId] = ((affinity[r.authorId] ?? 0) + 0.3).clamp(0.0, 1.0);
+    }
+    state = rankReels(reels, DateTime.now(), signals: FeedSignals(followed: following, interests: interests, affinity: affinity));
     ref.read(reelIndexProvider.notifier).clamp(reels.length);
   }
 }

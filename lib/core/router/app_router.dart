@@ -17,6 +17,7 @@ import '../widgets/primary_button.dart';
 import 'paths.dart';
 import 'screen_entry.dart';
 import '../../figma/live/paiement_messagerie.dart';
+import '../../figma/live/premium_pub.dart';
 import '../../figma/live/communities.dart' show CommunityScreen;
 
 final Map<String, ScreenEntry> screensById = {for (final s in allScreens) s.id: s};
@@ -38,6 +39,9 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/', redirect: (_, _) => screenPath('01')),
     GoRoute(path: '/catalogue', builder: (_, _) => const ScreenCatalogue()),
     GoRoute(path: '/espace', builder: (_, _) => const EspaceScreen()),
+    GoRoute(path: '/offres', builder: (_, _) => const PlansScreen()),
+    GoRoute(path: '/campagnes', builder: (_, _) => const AdsScreen()),
+    GoRoute(path: '/campagnes/validation', builder: (_, _) => const AdReviewScreen()),
     GoRoute(path: '/communaute', builder: (_, _) => const CommunityScreen()),
     GoRoute(path: '/paiement', builder: (_, _) => const PaymentChatScreen()),
     GoRoute(path: '/paiements', builder: (_, _) => const MyPaymentsScreen()),

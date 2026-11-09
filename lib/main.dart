@@ -11,12 +11,15 @@ import 'figma/live/native_push_stub.dart'
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Backend.init();
-  await native_push.initNativePush();
-  await Drafts.load();
-  final remembered = await loadRemembered();
+  // Démarrage borné : sur un réseau lent, aucune étape réseau ne doit retenir l'écran blanc plus de quelques secondes.
+  const limite = Duration(seconds: 8);
+  await Backend.init().timeout(limite, onTimeout: () {});
+  await native_push.initNativePush().timeout(limite, onTimeout: () {});
+  await Drafts.load().timeout(limite, onTimeout: () {});
+  final remembered = await loadRemembered().timeout(limite, onTimeout: () => null);
   if (remembered != null) {
-    await native_push.syncNativePushForCurrentUser();
+    // notifications natives : en arrière-plan, sans retarder l'ouverture
+    native_push.syncNativePushForCurrentUser().timeout(const Duration(seconds: 20), onTimeout: () {}).ignore();
   }
   runApp(AppRoot(remembered: remembered));
 }

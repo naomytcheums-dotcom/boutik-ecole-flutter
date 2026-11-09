@@ -56,7 +56,7 @@ class G_129 extends ConsumerWidget {
       gP(702.88, 211, 61, 13, gText('Utilisateurs', 11, Color(0xFF57545F), weight: 600, inter: true), show: demoContent),
       gP(855.2, 211, 89, 13, gText('Chiffre d’affaires', 11, Color(0xFF57545F), weight: 600, inter: true), show: demoContent),
       gP(1064.64, 211, 33, 13, gText('Statut', 11, Color(0xFF57545F), weight: 600, inter: true), show: demoContent),
-      gP(284, 252, 81, 15, gText('IUT de Douala', 12, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
+      gP(284, 252, 81, 15, gText(gSelfInst(ref, 'IUT de Douala'), 12, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
       gP(550.56, 252, 40, 15, gText('Douala', 12, Color(0xFF4A4854), inter: true), show: demoContent),
       gP(702.88, 252, 32, 15, gText(demoContent ? '1 240' : '—', 12, Color(0xFF4A4854), inter: true), show: demoContent),
       gP(855.2, 252, 67, 15, gText(demoContent ? '28 400 000' : '—', 12, Color(0xFF4A4854), inter: true), show: demoContent),

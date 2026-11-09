@@ -29,6 +29,7 @@ class G_11 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final modeMail = ref.watch(loginModeProvider) == 1; // onglet « E-mail » : champ d'adresse, sans préfixe +237
     return GScreen(w: 390, h: 900, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 147, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 624, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
@@ -47,13 +48,13 @@ class G_11 extends ConsumerWidget {
       gP(43, 223, 304, 18, gText('Connectez-vous pour accéder à votre espace', 14, Color(0xFF57545F), align: TextAlign.center)),
       gP(24, 262, 342, 50, gBox(color: Color(0xFFEFF1F4), radii: [25, 25, 25, 25])),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(28, 266, 168, 42, 'Téléphone', 14.5, 600), GChip(197, 266, 168, 42, 'E-mail', 14.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 21, onChanged: (i) { ref.read(loginModeProvider.notifier).set(i); })),
-      gP(24, 338, 137, 16, gText('Numéro de téléphone', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 362, 342, 52, GField(hint: '6 XX XX XX XX', size: 14.5, hintColor: Color(0xFF57545F), weight: 500, padL: 106, onChanged: (v) { ref.read(formProvider.notifier).put('li_id', v); })),
+      gP(24, 338, 160, 16, gText(modeMail ? 'Adresse e-mail' : 'Numéro de téléphone', 13, Color(0xFF111015), weight: 600)),
+      gP(24, 362, 342, 52, GField(key: ValueKey('li_id$modeMail'), hint: modeMail ? 'exemple@mail.com' : '6 XX XX XX XX', size: 14.5, hintColor: Color(0xFF57545F), weight: 500, padL: modeMail ? 52 : 106, onChanged: (v) { ref.read(formProvider.notifier).put('li_id', v); })),
       errorText('li_id', 28, 416),
       gP(41.458, 377.083, 17.083, 21.833, gImg('assets/figma/v/2660f7e30da185.svg')),
       gP(47, 389.75, 6.008, 6, gImg('assets/figma/v/964b38e3841185.svg')),
-      gP(74, 379, 35, 18, gText('+237', 14.5, Color(0xFF111015), weight: 600)),
-      gP(116, 376, 1.5, 24, gBox(color: Color(0xFFECE8F2))),
+      gP(74, 379, 35, 18, gText('+237', 14.5, Color(0xFF111015), weight: 600), show: !modeMail),
+      gP(116, 376, 1.5, 24, gBox(color: Color(0xFFECE8F2)), show: !modeMail),
       gP(24, 428, 84, 16, gText('Mot de passe', 13, Color(0xFF111015), weight: 600)),
       gP(24, 452, 342, 52, GField(hint: 'Mot de passe', size: 17, hintColor: Color(0xFF111015), weight: 500, padL: 52, obscure: true, onChanged: (v) { ref.read(formProvider.notifier).put('li_pw', v); }, onSubmitted: (v) { submitLogin(ref, context); })),
       errorText('li_pw', 28, 506),

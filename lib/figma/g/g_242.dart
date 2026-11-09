@@ -49,7 +49,7 @@ class G_242 extends ConsumerWidget {
       gP(24, 128, 166, 150, gBox(image: 'assets/figma/img/4ca68f79023605aecb4f83724629d508e921e885.png', fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 10), blurRadius: 20, spreadRadius: 0)], radii: [30, 30, 30, 30]), show: demoContent),
       gP(87, 183, 40, 40, gBox(color: Color(0x66FFFFFF), oval: true), show: demoContent),
       gP(101, 194, 15.333, 18, gImg('assets/figma/v/38181151ecb2ef.svg'), show: demoContent),
-      gP(38, 298, 143, 15, gText('Story en 30 s', 12, Color(0xFF111015), weight: 600, wrap: true), show: demoContent),
+      gP(38, 298, 143, 15, gText(gm('Story en 30 s', '—'), 12, Color(0xFF111015), weight: 600, wrap: true), show: demoContent),
       gP(38, 320, 61, 25, gBox(color: Color(0xFFEEE9FF), radii: [100, 100, 100, 100]), show: demoContent),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(43.5, 320, 50, 24, '+ 500 F', 10, 600), GChip(128, 320, 50, 24, 'Poster', 9.5, 600), GChip(219.5, 320, 50, 24, '+ 800 F', 10, 600), GChip(304, 320, 50, 24, 'Poster', 9.5, 600)], selected: 1, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF5A3FE0), radius: 12)),
       gP(200, 128, 166, 150, gBox(image: 'assets/figma/img/1574e42a325d3a4ac509841e7a5eb5a285a3d991.png', fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 10), blurRadius: 20, spreadRadius: 0)], radii: [30, 30, 30, 30]), show: demoContent),

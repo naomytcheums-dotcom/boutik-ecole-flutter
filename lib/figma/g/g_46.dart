@@ -61,7 +61,7 @@ class G_46 extends ConsumerWidget {
       gP(252, 146, 100, 14, Consumer(builder: (context, ref, _) => gText(orderStatusLabel(ref.watch(viewedOrderProvider)), 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center))),
       gP(24, 200, 340, 248, const OrderTimeline()),
       gP(40, 470, 87, 16, gText('Point de retrait', 12.5, Color(0xFF57545F))),
-      gP(228, 470, 122, 16, gText('Kiosque IUT – Bloc A', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
+      gP(228, 470, 122, 16, gText(gm('Kiosque IUT – Bloc A', ''), 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
       gP(40, 495, 310, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 504, 90, 16, gText('Code de retrait', 12.5, Color(0xFF57545F))),
       gP(303, 504, 47, 16, gText(demoContent ? '482 915' : '••• •••', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right)), // code réel : bouton ci-dessous
@@ -80,7 +80,7 @@ class G_46 extends ConsumerWidget {
       gP(194, 272, 73, 13, gText('Arrivée prévue', 10.5, Color(0xFF57545F), weight: 500), show: false),
       gP(194, 288, 117, 18, gText('Yaoundé · Centre', 14, Color(0xFF120F14), weight: 600), show: false),
       gP(194, 322, 150, 30, gBox(color: Color(0xFFEDE8FF), radii: [15, 15, 15, 15]), show: false),
-      gP(206, 330, 125, 13, gText('235 km · 4 h 30 restantes', 10.5, Color(0xFF5A3FE0), weight: 600), show: false),
+      gP(206, 330, 125, 13, gText(gm('235 km · 4 h 30 restantes', '—'), 10.5, Color(0xFF5A3FE0), weight: 600), show: false),
     ]);
   }
 }

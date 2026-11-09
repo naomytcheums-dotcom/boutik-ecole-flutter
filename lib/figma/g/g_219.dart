@@ -82,7 +82,7 @@ class G_219 extends ConsumerWidget {
       gP(270, 568, 80, 16, gText(demoContent ? '60 000 FCFA' : '—', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right), show: demoContent),
       gP(40, 593, 310, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
       gP(40, 602, 184, 16, gText('Prime de participation (chacun)', 12.5, Color(0xFF57545F)), show: demoContent),
-      gP(278, 602, 72, 16, gText('5 000 FCFA', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right), show: demoContent),
+      gP(278, 602, 72, 16, gText(gm('5 000 FCFA', '—'), 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right), show: demoContent),
       gP(40, 627, 310, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
       gP(40, 636, 153, 16, gText('Total bloqué en séquestre', 12.5, Color(0xFF57545F)), show: demoContent),
       gP(272, 636, 78, 16, gText(demoContent ? '75 000 FCFA' : '—', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right), show: demoContent),

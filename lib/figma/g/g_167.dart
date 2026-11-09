@@ -48,7 +48,7 @@ class G_167 extends ConsumerWidget {
       gP(76, 70, 248, 26, Consumer(builder: (context, ref, _) => gText('Noter : ${ref.watch(submissionProvider)?.title ?? (demoContent ? 'Serre intelligente' : '—')}', 21, Color(0xFF111015), weight: 700))),
       gP(36, 128, 50, 50, gBox(image: 'assets/figma/img/9803b1792923bb371cffd2d64272ebebf74ea2d4.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
       gP(98, 132, 111, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(submissionProvider)?.title ?? (demoContent ? 'Serre intelligente' : '—'), 13.5, Color(0xFF111015), weight: 600))),
-      gP(98, 154, 167, 14, gText('Équipe Agronomie · Pitch 5 min', 11.5, Color(0xFF57545F))),
+      gP(98, 154, 167, 14, gText(gm('Équipe Agronomie · Pitch 5 min', '—'), 11.5, Color(0xFF57545F))),
       gP(40, 214, 64, 16, gText('Innovation', 12.5, Color(0xFF111015), weight: 600)),
       gP(179, 214, 171, 15, Consumer(builder: (context, ref, _) => gText('${ref.watch(scoresProvider)[0]} / 10', 12, Color(0xFF57545F), weight: 600, wrap: true, align: TextAlign.right))),
       gP(40, 236, 310, 7, gBox(color: Color(0xFFF2EFF6), radii: [4, 4, 4, 4])),

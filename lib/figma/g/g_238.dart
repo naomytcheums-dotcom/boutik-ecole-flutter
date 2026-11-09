@@ -52,7 +52,7 @@ class G_238 extends ConsumerWidget {
       gP(178.5, 308, 33, 25, gText(demoContent ? '312' : '—', 20, Color(0xFF111015), weight: 800, align: TextAlign.center), show: demoContent),
       gP(151, 338, 88, 14, gText('Étudiants payés', 11.5, Color(0xFF57545F), align: TextAlign.center), show: demoContent),
       gP(138, 308, 1, 48, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
-      gP(296.5, 308, 25, 25, gText('86', 20, Color(0xFF111015), weight: 800, align: TextAlign.center), show: demoContent),
+      gP(296.5, 308, 25, 25, gText(gm('86', '—'), 20, Color(0xFF111015), weight: 800, align: TextAlign.center), show: demoContent),
       gP(270.5, 338, 77, 14, gText('Emplois créés', 11.5, Color(0xFF57545F), align: TextAlign.center), show: demoContent),
       gP(252, 308, 1, 48, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
       gP(24, 384, 74, 19, gText('Par région', 15, Color(0xFF111015), weight: 700), show: demoContent),

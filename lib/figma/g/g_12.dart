@@ -64,7 +64,7 @@ class G_12 extends ConsumerWidget {
       gP(39.083, 388.667, 21.833, 18.667, gImg('assets/figma/v/7e8276104a8e4f.svg')),
       gP(39.083, 391.042, 21.833, 11.542, gImg('assets/figma/v/904a4bba0b310b.svg')),
       gP(24, 438, 84, 16, gText('Mot de passe', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 462, 342, 52, GField(hint: '8 caractères minimum', size: 14.5, hintColor: Color(0xFF57545F), weight: 500, padL: 52, onChanged: (v) { ref.read(formProvider.notifier).put('su_pw', v); })),
+      gP(24, 462, 342, 52, GField(hint: '8 caractères minimum', size: 14.5, hintColor: Color(0xFF57545F), weight: 500, padL: 52, obscure: true, onChanged: (v) { ref.read(formProvider.notifier).put('su_pw', v); })),
       errorText('su_pw', 28, 516),
       gP(39.875, 484.208, 20.25, 14.708, gImg('assets/figma/v/32a45c6e5f0fcb.svg')),
       gP(43.042, 477.083, 13.917, 13.125, gImg('assets/figma/v/1fb86fed903268.svg')),

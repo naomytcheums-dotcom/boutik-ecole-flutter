@@ -55,7 +55,7 @@ class G_27 extends ConsumerWidget {
       gP(43.108, 162.066, 13.134, 13.134, gImg('assets/figma/v/d15dc14bdbcebc.svg'), show: demoContent),
       gP(79.797, 149.243, 123, 17, gText('Adresse par défaut', 13.211, Color(0xFF111015), weight: 700), show: demoContent),
       gP(79.797, 181.676, 199, 17, gText('IUT de Douala, Quartier Ndokoti', 13.211, Color(0xFF2B3F5C), weight: 500), show: demoContent),
-      gP(79.797, 211.161, 118, 17, gText('Douala, Cameroun', 13.211, Color(0xFF2B3F5C), weight: 500), show: demoContent),
+      gP(79.797, 211.161, 118, 17, gText(gm('Douala, Cameroun', ''), 13.211, Color(0xFF2B3F5C), weight: 500), show: demoContent),
       gP(302.276, 176.908, 58.13, 35.382, gBox(color: Color(0xFFF2EFF6), radii: [12.683, 12.683, 12.683, 12.683]), show: demoContent),
       gP(307.841, 187.099, 47, 15, gText('Modifier', 11.626, Color(0xFF111015), weight: 600, align: TextAlign.center), show: demoContent),
       gP(30.65, 291.981, 98, 19, gText('Mes adresses', 14.797, Color(0xFF111015), weight: 700), show: demoContent),

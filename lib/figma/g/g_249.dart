@@ -65,7 +65,7 @@ class G_249 extends ConsumerWidget {
       gP(51, 695, 12.75, 6, gImg('assets/figma/v/077154502d192d.svg')),
       gP(44.25, 682.159, 18.841, 18.841, gImg('assets/figma/v/80acba5fb06071.svg')),
       gP(82, 676, 63, 16, gText('Brouillons', 13, Color(0xFF111015), weight: 600)),
-      gP(82, 696, 143, 13, gText('2 publications non terminées', 10.5, Color(0xFF57545F))),
+      gP(82, 696, 143, 13, gText(gm('2 publications non terminées', '—'), 10.5, Color(0xFF57545F))),
       gP(272, 682, 78, 25, gBox(color: Color(0xFFEEE9FF), radii: [100, 100, 100, 100])),
       gP(284, 688, 54, 13, gText('Reprendre', 10.5, Color(0xFF5A3FE0), weight: 600)),
       gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),

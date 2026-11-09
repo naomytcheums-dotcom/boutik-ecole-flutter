@@ -51,7 +51,7 @@ class G_208 extends ConsumerWidget {
       gP(133, 807, 26, 25, gImg('assets/figma/v/56eb5ae66b4825.svg')),
       gP(161, 807, 26, 25, gImg('assets/figma/v/56eb5ae66b4825.svg')),
       gP(189, 807, 26, 25, gImg('assets/figma/v/56eb5ae66b4825.svg')),
-      gP(240, 810, 103, 25, gText('4,8 · 12 avis', 20, Color(0xFF57545F))),
+      gP(240, 810, 103, 25, gText(gm('4,8 · 12 avis', '—'), 20, Color(0xFF57545F))),
       gP(286, 792, 354, 43, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(kioskCurrentProvider).price), 34, Color(0xFF5A3FE0), weight: 700, wrap: true, align: TextAlign.right))),
       gP(80, 866, 560, 90, gBox(color: Color(0xFFF6F3FA), radii: [34, 34, 34, 34])),
       gP(92, 876, 70, 70, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [35, 35, 35, 35])),

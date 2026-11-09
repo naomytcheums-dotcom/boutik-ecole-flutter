@@ -66,7 +66,7 @@ class G_269 extends ConsumerWidget {
       gP(22, 824, 36, 36, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, oval: true)),
       gP(66, 827, 45, 14, gText('Compte', 11.5, Color(0xFF111015), weight: 600, inter: true)),
       gP(66, 844, 57, 11, gText('Boutik-École', 9.5, Color(0xFF57545F), inter: true)),
-      gP(268, 76, 194, 29, gText('Innovation Radar', 24, Color(0xFF18181B), weight: 500, inter: true)),
+      gP(268, 76, 194, 29, gText(gm('Innovation Radar', ''), 24, Color(0xFF18181B), weight: 500, inter: true)),
       gP(268, 110, 274, 15, gText('Compétences, tendances et besoins du marché.', 12, Color(0xFF6D6A64), inter: true)),
       gP(954, 78, 110, 34, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E3DE), bw: 1, radii: [17, 17, 17, 17])),
       gP(970.125, 90.125, 9.75, 9.75, gImg('assets/figma/r/190_866.png')),
@@ -111,7 +111,7 @@ class G_269 extends ConsumerWidget {
       gP(851, 232, 110, 14, gText('Application de suivi', 11.5, Color(0xFF18181B), weight: 600, inter: true), show: demoContent),
       gP(1129, 232, 15, 14, gText('23', 11.5, Color(0xFF3D3B37), inter: true), show: demoContent),
       gP(843, 258, 395, 1, gBox(color: Color(0xFFEEECE8)), show: demoContent),
-      gP(851, 276, 73, 14, gText('Borne solaire', 11.5, Color(0xFF18181B), weight: 600, inter: true), show: demoContent),
+      gP(851, 276, 73, 14, gText(gm('Borne solaire', ''), 11.5, Color(0xFF18181B), weight: 600, inter: true), show: demoContent),
       gP(1129, 276, 11, 14, gText('11', 11.5, Color(0xFF3D3B37), inter: true), show: demoContent),
       gP(843, 302, 395, 1, gBox(color: Color(0xFFEEECE8)), show: demoContent),
       gP(851, 320, 98, 14, gText('Charte graphique', 11.5, Color(0xFF18181B), weight: 600, inter: true), show: demoContent),
@@ -121,7 +121,7 @@ class G_269 extends ConsumerWidget {
       gP(1129, 364, 8, 14, gText('8', 11.5, Color(0xFF3D3B37), inter: true), show: demoContent),
       gP(829, 360, 423, 174, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26]), show: demoContent),
       gP(853, 380, 143, 16, gText('Tendance du trimestre', 13, Color(0xFF18181B), weight: 600, inter: true), show: demoContent),
-      gP(853, 408, 378, 34, gText('Les demandes en énergies renouvelables progressent de 22 % : renforcer l’offre du département ENR.', 11.5, Color(0xFF57545F), inter: true, lh: 17, wrap: true), show: demoContent),
+      gP(853, 408, 378, 34, gText(gm('Les demandes en énergies renouvelables progressent de 22 % : renforcer l’offre du département ENR.', '—'), 11.5, Color(0xFF57545F), inter: true, lh: 17, wrap: true), show: demoContent),
       gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
       gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
       if (!demoContent) gP(268, 150, 984, 640, const RadarPanel()),

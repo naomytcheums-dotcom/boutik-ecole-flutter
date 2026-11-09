@@ -7,9 +7,19 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'gsound.dart';
 import 'nav.dart';
+import 'live/backend.dart' show Backend;
 import 'live/lfav.dart' show GHeartLive;
 
 export 'gsound.dart';
+
+/// Visuels de marque ou décoratifs conservés connecté (logo, formes 3D, avion, logos de paiement, fonds d'accueil) ; toute autre
+/// image de `assets/figma/img/` est une photo de maquette (personnes, produits, lieux) : connecté, elle est remplacée par un aplat neutre.
+const _decorImg = {
+  '080dae98', '2b51b5d6', '2e8548b8', '73da21b1', '75d62324', 'aa1a076f', 'b896412c', 'c64e9a62', 'c7764301', 'dcc189ec',
+  '6baf8125', 'a30d4e56', 'e48f8827', 'neutre',
+};
+bool gIsMockPhoto(String a) =>
+    Backend.ready && a.startsWith('assets/figma/img/') && !_decorImg.any((k) => a.startsWith('assets/figma/img/$k'));
 
 /// Primitives utilisées par le code généré depuis Figma (tool/figma_export/convert.py).
 /// Ne pas éditer à la main les fichiers lib/figma/g/*.dart : ils sont régénérés.
@@ -631,6 +641,8 @@ Widget gBox({
     boxShadow: shadows,
     image: image == null || image == 'placeholder' ? null : DecorationImage(image: image.startsWith('http') ? NetworkImage(image) as ImageProvider : AssetImage(image), fit: fit, filterQuality: FilterQuality.high, onError: (_, _) {}),
   );
+  // Plus aucun fond « verre » (flou d'arrière-plan + voile translucide) : le texte et les icônes reposent directement sur le fond de la page.
+  if (backBlur > 0 && image == null) return const SizedBox.expand();
   Widget w = DecoratedBox(decoration: deco, child: const SizedBox.expand());
   if (backBlur > 0) {
     w = Stack(fit: StackFit.expand, children: [
@@ -715,7 +727,7 @@ Widget gRich(List<(String, double, int, Color)> runs,
   return IgnorePointer(child: OverflowBox(alignment: Alignment.topLeft, minWidth: 0, maxWidth: double.infinity, child: t));
 }
 
-Widget gImg(String asset, {BoxFit fit = BoxFit.fill}) => IgnorePointer(
+Widget gImg(String asset, {BoxFit fit = BoxFit.fill}) => gIsMockPhoto(asset) ? const IgnorePointer(child: ColoredBox(color: Color(0xFFEDE9F6))) : IgnorePointer(
       child: asset.endsWith('.svg')
           ? SvgPicture.asset(asset, fit: fit)
           : (asset.startsWith('http')

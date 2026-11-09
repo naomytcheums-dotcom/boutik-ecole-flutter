@@ -80,7 +80,7 @@ class G_A2 extends ConsumerWidget {
       gP(297.5, 609, 13, 6, gImg('assets/figma/v/4159f10924eea0.svg')),
       gP(301.5, 606, 9, 12, gImg('assets/figma/v/8fa5d9e08de732.svg')),
       gP(36, 666, 42, 42, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, radii: [21, 21, 21, 21])),
-      gP(90, 664, 239, 34, gText('2 talents de MMI correspondent à ton brief parfum.', 12, Color(0xFF111015), weight: 500, lh: 17, wrap: true)),
+      gP(90, 664, 239, 34, gText(gm('2 talents de MMI correspondent à ton brief parfum.', '—'), 12, Color(0xFF111015), weight: 500, lh: 17, wrap: true)),
       gP(90, 700, 70, 13, gText('Voir les profils', 10.5, Color(0xFF5A3FE0), weight: 600)),
       gP(164, 154, 24, 24, gBox(color: Color(0xFFF2F0EE), oval: true)),
       gP(169.208, 163, 13.583, 6, gImg('assets/figma/v/3b10dd3179a10e.svg')),

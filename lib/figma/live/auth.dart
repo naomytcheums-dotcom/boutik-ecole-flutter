@@ -609,9 +609,8 @@ Future<void> _serverLogin(
   String pw,
   bool isMail,
 ) async {
-  if (!isMail)
-    return _errors(ref, {'li_id': 'Connectez-vous avec votre adresse e-mail.'});
-  final r = await Backend.login(id, pw);
+  // Téléphone : identifiant dérivé du numéro (comptes créés avec le seul téléphone) ; e-mail : adresse saisie.
+  final r = await Backend.login(isMail ? id : '${normPhone(id)}@phone.boutik-ecole.cm', pw);
   final a = r.account;
   if (a == null) {
     _errors(ref, {
@@ -993,13 +992,14 @@ Widget errorText(String key, double x, double y) => gP(
   x,
   y,
   320,
-  13,
+  30,
   Consumer(
     builder: (context, ref, _) => gText(
       ref.watch(errorsProvider)[key] ?? '',
       10.5,
       const Color(0xFFC0261B),
       weight: 500,
+      wrap: true, // message d'erreur complet, sur deux lignes si besoin (jamais coupé)
     ),
   ),
 );
@@ -1008,6 +1008,26 @@ Widget errorText(String key, double x, double y) => gP(
 
 /// Vrai tant qu'aucun serveur n'est joint (tests, aperçu) : seuls ces modes affichent le contenu d'exemple de la maquette.
 bool get demoContent => !Backend.ready;
+
+/// Texte de maquette d'un écran : la valeur d'exemple n'est affichée qu'hors connexion au serveur ; connecté, [blank] (« — » ou vide).
+String gm(String demo, [String blank = '—']) => Backend.ready ? blank : demo;
+
+/// Nom du titulaire à la place du nom de maquette (« Mariam Essono », « Mariam E. », « Bonjour Mariam »…) ; vide tant qu'il n'est pas renseigné.
+String gSelf(WidgetRef ref, String demo) {
+  if (!Backend.ready) return demo;
+  final n = ref.watch(profileAccountProvider).name.trim();
+  if (n.isEmpty) return '';
+  final p = n.split(RegExp(r'\s+'));
+  if (demo.startsWith('Bonjour')) return 'Bonjour ${p.first}';
+  if (demo == 'Mariam') return p.first;
+  if (demo.endsWith('.pdf')) return '';
+  if (demo == 'Mariam E.') return p.length > 1 ? '${p.first} ${p.last[0]}.' : p.first;
+  if (demo == 'M. Essono') return p.length > 1 ? 'M. ${p.last}' : n;
+  return n;
+}
+
+/// Établissement du titulaire à la place de « IUT de Douala » (vide s'il n'en a pas choisi).
+String gSelfInst(WidgetRef ref, String demo) => Backend.ready ? ref.watch(profileAccountProvider).institution.trim() : demo;
 
 TextStyle _pt(double size, Color c, FontWeight w) => TextStyle(
   inherit: false,

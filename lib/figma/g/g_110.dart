@@ -88,7 +88,7 @@ class G_110 extends ConsumerWidget {
       gP(268, 452, 485, 154, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
       gP(284, 466, 169, 17, gText('Indicateurs de validation', 14, Color(0xFF111015), weight: 700, inter: true)),
       gP(284, 500, 152, 15, gText('Délai moyen de validation', 12.5, Color(0xFF57545F), inter: true)),
-      gP(692, 500, 45, 15, gText('1,4 jour', 12.5, Color(0xFF111015), weight: 600, inter: true, align: TextAlign.right)),
+      gP(692, 500, 45, 15, gText(gm('1,4 jour', '—'), 12.5, Color(0xFF111015), weight: 600, inter: true, align: TextAlign.right)),
       gP(284, 525, 453, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(284, 534, 111, 15, gText('Taux d’acceptation', 12.5, Color(0xFF57545F), inter: true)),
       gP(567, 534, 170, 15, Consumer(builder: (context, ref, _) => gText('${((23 + reviewCount(ref.watch(reviewDecisionsProvider), 1)) * 100 / (25 + reviewCount(ref.watch(reviewDecisionsProvider), 1) + reviewCount(ref.watch(reviewDecisionsProvider), 2))).round()} %', 12.5, Color(0xFF111015), weight: 600, inter: true, wrap: true, align: TextAlign.right))),

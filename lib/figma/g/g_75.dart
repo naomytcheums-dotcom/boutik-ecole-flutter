@@ -84,7 +84,7 @@ class G_75 extends ConsumerWidget {
       gP(222.36, 484, 143.64, 132, gBox(image: 'assets/figma/img/cbf050b9f90ddf4164a56ebd171cee79dfa21141.png', fit: BoxFit.cover, radii: [24, 24, 24, 24])),
       gP(195, 484, 68.4, 132, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xFF1B3F6E), Color(0x001B3F6E)], stops: [0, 1]))),
       gP(42, 500, 174, 20, gText('Profil à compléter', 15, Color(0xFFFFFFFF), weight: 700, lh: 20, wrap: true)),
-      gP(42, 546, 160.32, 30, gText('Un profil complet reçoit 3× plus de réponses.', 11, Color(0xFFE9E4F5), lh: 15, wrap: true)),
+      gP(42, 546, 160.32, 30, gText(gm('Un profil complet reçoit 3× plus de réponses.', '—'), 11, Color(0xFFE9E4F5), lh: 15, wrap: true)),
       gP(42, 576, 93, 28, gBox(color: Color(0xFF111015), radii: [14, 14, 14, 14])),
       gP(58, 582, 61, 14, gText('Compléter', 11.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 832, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),

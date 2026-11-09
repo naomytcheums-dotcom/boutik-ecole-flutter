@@ -57,7 +57,7 @@ class G_179 extends ConsumerWidget {
       gP(36, 243, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(48, 252.5, 17.667, 21, gImg('assets/figma/v/e8ee59089ca8c3.svg')),
       gP(88, 242, 194, 17, gText('Prendre en main Boutik-École', 13.5, Color(0xFF111015), weight: 600)),
-      gP(88, 264, 69, 14, gText('Vidéo · 2 min', 11.5, Color(0xFF57545F))),
+      gP(88, 264, 69, 14, gText(gm('Vidéo · 2 min', '—'), 11.5, Color(0xFF57545F))),
       gP(300, 252, 52, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
       gP(310, 256, 32, 14, gText('Vidéo', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)),
       gP(88, 296, 266, 1, gBox(color: Color(0xFFF2EFF6))),

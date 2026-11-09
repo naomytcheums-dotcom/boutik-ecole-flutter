@@ -62,7 +62,7 @@ class G_58 extends ConsumerWidget {
       gP(44.667, 211.333, 22.667, 19.333, gImg('assets/figma/v/b357168830edbf.svg')),
       gP(50.5, 216.333, 11, 11, gImg('assets/figma/v/3bae74da037db6.svg')),
       gP(88, 200, 124, 17, gText('Ajouter des photos', 13.5, Color(0xFF111015), weight: 600)),
-      gP(88, 222, 150, 14, gText('Jusqu’à 6 photos · JPG, PNG', 11.5, Color(0xFF57545F))),
+      gP(88, 222, 150, 14, gText(gm('Jusqu’à 6 photos · JPG, PNG', '—'), 11.5, Color(0xFF57545F))),
       gP(336.75, 213.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
       gP(24, 268, 92, 16, gText('Titre du produit', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 288, 342, 48, GField(hint: demoContent ? 'Ex. Lampe en bois recyclé' : 'Ex. Titre de votre produit', size: 13.5, hintColor: Color(0xFF57545F), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('np_title', v); })),

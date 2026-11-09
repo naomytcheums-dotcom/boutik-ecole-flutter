@@ -71,7 +71,7 @@ class G_144 extends ConsumerWidget {
       gP(1157, 182, 79, 15, gText('24 h ouvrées', 12.5, Color(0xFF111015), weight: 600, inter: true, align: TextAlign.right), show: demoContent),
       gP(783, 207, 453, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
       gP(783, 216, 165, 15, gText('Seuil de versement vendeur', 12.5, Color(0xFF57545F), inter: true), show: demoContent),
-      gP(1158, 216, 78, 15, gText('10 000 FCFA', 12.5, Color(0xFF111015), weight: 600, inter: true, align: TextAlign.right), show: demoContent),
+      gP(1158, 216, 78, 15, gText(gm('10 000 FCFA', '—'), 12.5, Color(0xFF111015), weight: 600, inter: true, align: TextAlign.right), show: demoContent),
       gP(783, 241, 453, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
       gP(783, 250, 161, 15, gText('Fréquence des versements', 12.5, Color(0xFF57545F), inter: true), show: demoContent),
       gP(1147, 250, 89, 15, gText('Hebdomadaire', 12.5, Color(0xFF111015), weight: 600, inter: true, align: TextAlign.right), show: demoContent),

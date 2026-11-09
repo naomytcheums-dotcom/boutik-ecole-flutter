@@ -55,7 +55,7 @@ class G_34 extends ConsumerWidget {
       gP(111.5, 384, 79.5, 70, gBox(image: 'assets/figma/img/a76e4a9cacb04ffda33cfd8133809ed5cc5c402c.png', fit: BoxFit.cover, radii: [16, 16, 16, 16])),
       gP(199, 384, 79.5, 70, gBox(image: 'assets/figma/img/787285568a50b7daa40a12adc3c3145d4743215c.png', fit: BoxFit.cover, radii: [16, 16, 16, 16])),
       gP(286.5, 384, 79.5, 70, gBox(image: 'assets/figma/img/752f5c71aed593a51d18b9662015d455f75b411b.png', fit: BoxFit.cover, radii: [16, 16, 16, 16])),
-      gP(24, 468, 81, 19, gText('Photos (12)', 15, Color(0xFF111015), weight: 700)),
+      gP(24, 468, 81, 19, gText(gm('Photos (12)', '—'), 15, Color(0xFF111015), weight: 700)),
       gP(301, 470, 49, 15, gText('Tout voir', 12, Color(0xFF5A3FE0), weight: 500, align: TextAlign.right)),
       gP(352.5, 475, 13, 6, gImg('assets/figma/v/4159f10924eea0.svg')),
       gP(356, 471.5, 9.5, 13, gImg('assets/figma/v/a365eb17b7a19f.svg')),
@@ -69,7 +69,7 @@ class G_34 extends ConsumerWidget {
       gP(24, 756, 342, 150, gBox(image: 'assets/figma/img/285ea8d512e6fd1079056dd514be7a2ebad70bf2.png', fit: BoxFit.cover, radii: [24, 24, 24, 24])),
       gP(24, 756, 342, 150, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [24, 24, 24, 24])),
       gP(42, 844, 309, 23, gText('Fabrication de la lampe', 18, Color(0xFFFFFFFF), weight: 700, wrap: true)),
-      gP(42, 872, 309, 15, gText('Vidéo · 1 min 24', 12, Color(0xFFE3ECF7), wrap: true)),
+      gP(42, 872, 309, 15, gText(gm('Vidéo · 1 min 24', '—'), 12, Color(0xFFE3ECF7), wrap: true)),
       gP(125, 936, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gTap(295.5, 462, 61, 32, () { uiAllShown(context); }), // audit 01/11 : « Tout voir » n'avait aucun effet
     ]);

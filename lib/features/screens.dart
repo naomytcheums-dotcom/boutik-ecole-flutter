@@ -1,4 +1,5 @@
 import '../core/router/screen_entry.dart';
+import '../figma/live/integrations_ui.dart';
 import '../figma/registry.dart';
 import 'a_demarrage/screens.dart';
 import 'b_auth/screens.dart';
@@ -66,9 +67,14 @@ final List<ScreenEntry> _baseScreens = [
 ];
 
 /// Les écrans générés fidèlement depuis Figma (lib/figma/g) remplacent la version écrite à la main.
+/// Rubrique « Applications connectées » : 271, 280, P3 et P5 sont quatre vues d'un même hub d'intégrations (mêmes données, mêmes composants).
+final _hubScreens = <String, IntMode>{'271': IntMode.links, '280': IntMode.admin, 'P3': IntMode.connected, 'P5': IntMode.hub};
+
 final List<ScreenEntry> allScreens = [
   for (final e in _baseScreens)
-    gBuilders.containsKey(e.id)
+    _hubScreens.containsKey(e.id)
+        ? ScreenEntry(e.id, e.title, (_) => IntegrationsHubScreen(mode: _hubScreens[e.id]!), section: e.section, node: e.node, format: ScreenFormat.mobile)
+        : gBuilders.containsKey(e.id)
         ? ScreenEntry(e.id, e.title, gBuilders[e.id]!, section: e.section, node: e.node, format: _formatOf(gWidths[e.id], e.format))
         : e,
 ];

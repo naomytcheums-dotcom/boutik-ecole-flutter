@@ -33,3 +33,10 @@ Défilement tactile (menu du bas transmet les glissements), barres de défilemen
 8. Application qui se fige après une action sur téléphone : cause non trouvée ; demander l'action exacte et lire la console du navigateur.
 9. Vérification sur Android réel ou émulateur (jamais faite).
 10. Environ 100 écrans ont encore des données de maquette sans source réelle (voir `ETAT_ECRANS.md`).
+
+## Hub d'intégrations (9 novembre 2026)
+
+Écrans 271, 280, P3, P5 = quatre vues d'un même hub (réseaux, productivité, collaboration, Mobile Money). Tout est décrit dans `docs/transformation/INTEGRATIONS_HUB.md`
+(architecture, fonctions à déployer, secrets que le propriétaire doit fournir, limites officielles des API). Tests : `test/integrations`, scénario SQL PGlite
+`supabase/tests/integrations_pglite/scenario.mjs` (voir son en-tête), tests Deno `supabase/functions/_shared/shared_test.ts`.
+Aucune clé développeur n'existe encore : aucun échange réel avec un fournisseur n'a été exécuté.

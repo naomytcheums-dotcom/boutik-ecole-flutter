@@ -44,6 +44,8 @@ void main() {
   });
 
   for (final s in screensById.values) {
+    // 271, 280, P3, P5 : remplacés par le hub d'intégrations (test/integrations), plus d'éléments à coordonnées fixes.
+    if (const {'271', '280', 'P3', 'P5'}.contains(s.id)) continue;
     final file = File('lib/figma/g/g_${s.id.replaceAll('-', '_')}.dart');
     if (!file.existsSync()) continue;
     final taps = <(double, double, String)>[];

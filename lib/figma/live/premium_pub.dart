@@ -365,12 +365,12 @@ class ShortcutsPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) => SizedBox(
         width: width,
-        child: Column(children: [
+        child: SingleChildScrollView(child: Column(children: [
           _btn('Mes paiements', () => GoRouter.of(context).push('/paiements'), w: width),
           const SizedBox(height: 8),
           _btn('Offres premium', () => GoRouter.of(context).push('/offres'), dark: false, w: width),
           const SizedBox(height: 8),
           _btn('Mes campagnes sponsorisées', () => GoRouter.of(context).push('/campagnes'), dark: false, w: width),
-        ]),
+        ])),
       );
 }

@@ -29,6 +29,8 @@ dependencies:
   share_plus: ^13.3.1
   speech_to_text: ^7.5.0
   web: 1.1.2
+  firebase_core: ^5.1.0
+  firebase_messaging: ^17.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

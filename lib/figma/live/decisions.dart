@@ -241,7 +241,7 @@ class ProductNoModel extends ConsumerWidget {
     final p = ref.watch(selectedProductProvider);
     return SizedBox(
       width: width,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      child: SingleChildScrollView(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         ClipRRect(borderRadius: BorderRadius.circular(22), child: Image.asset(p.image, width: width, height: 220, fit: BoxFit.cover, errorBuilder: (_, _, _) => Container(width: width, height: 220, color: const Color(0xFFF2EFF6)))),
         const SizedBox(height: 14),
         Text(p.title, style: _st(17, w: FontWeight.w800)),
@@ -249,7 +249,7 @@ class ProductNoModel extends ConsumerWidget {
         Text('Aucun modèle 3D ni aperçu en réalité augmentée n’est disponible pour ce produit pour le moment. Seule la photo de l’annonce est affichée.', style: _st(12.5, c: _grey).copyWith(height: 1.5)),
         const SizedBox(height: 14),
         _btn('Voir la fiche du produit', () => gOpen(context, '05'), dark: false, w: width),
-      ]),
+      ])),
     );
   }
 }
@@ -403,12 +403,12 @@ class LanguagePanel extends StatelessWidget {
     Widget row(String name, String state, bool on) => Container(width: width, margin: const EdgeInsets.only(bottom: 12), padding: const EdgeInsets.all(16), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20), border: Border.all(color: on ? _ink : const Color(0xFFECE8F2), width: on ? 1.5 : 1)), child: Row(children: [Expanded(child: Text(name, style: _st(14, w: FontWeight.w700))), Text(state, style: _st(12, w: FontWeight.w700, c: on ? const Color(0xFF0F7A52) : _grey))]));
     return SizedBox(
       width: width,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      child: SingleChildScrollView(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         row('Français', 'Actif', true),
         row('English', 'Bientôt disponible', false),
         const SizedBox(height: 4),
         Text('L’application est entièrement en français. L’anglais sera proposé quand les textes seront traduits.', style: _st(12, c: _grey).copyWith(height: 1.5)),
-      ]),
+      ])),
     );
   }
 }

@@ -5,12 +5,19 @@ import 'app.dart';
 import 'figma/live/auth.dart';
 import 'figma/live/backend.dart';
 import 'figma/live/drafts.dart';
+import 'figma/live/native_push_stub.dart'
+    if (dart.library.io) 'figma/live/native_push.dart'
+    as native_push;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Backend.init();
+  await native_push.initNativePush();
   await Drafts.load();
   final remembered = await loadRemembered();
+  if (remembered != null) {
+    await native_push.syncNativePushForCurrentUser();
+  }
   runApp(AppRoot(remembered: remembered));
 }
 
@@ -59,9 +66,14 @@ class _AppRootState extends State<AppRoot> {
 
   @override
   Widget build(BuildContext context) => ProviderScope(
-        key: ValueKey(_generation),
-        overrides: [if (!_loggedOut && widget.remembered != null) initialAccountProvider.overrideWithValue(widget.remembered!)],
-        // démarrage à froid sans adresse précise : écran de lancement S1, qui passe seul à l'accueil 01
-        child: BoutikEcoleApp(initialLocation: _expired ? '/s/150-2' : (_loggedOut ? '/s/03' : '/s/S1')),
-      );
+    key: ValueKey(_generation),
+    overrides: [
+      if (!_loggedOut && widget.remembered != null)
+        initialAccountProvider.overrideWithValue(widget.remembered!),
+    ],
+    // démarrage à froid sans adresse précise : écran de lancement S1, qui passe seul à l'accueil 01
+    child: BoutikEcoleApp(
+      initialLocation: _expired ? '/s/150-2' : (_loggedOut ? '/s/03' : '/s/S1'),
+    ),
+  );
 }

@@ -1,0 +1,316 @@
+id;nom;section;categorie;taille;echelle;zones_tactiles_trop_petites;exemples_zones;sans_etiquette_talkback;exemples_sans_etiquette;contraste_insuffisant;pire_contraste;debordement
+255;Suivi de publication;NOUVEAUX;mobile;412x915;1.0;4;43.9x43.9 / 43.9x43.9 / 312.9x43.9;0;;0;;non
+256;Contrôles de la fiche;NOUVEAUX;mobile;412x915;1.0;0;;0;;0;;non
+257;Paiement en attente de confirmation;NOUVEAUX;mobile;412x915;1.0;0;;0;;0;;non
+258;Paiement échoué;NOUVEAUX;mobile;412x915;1.0;0;;0;;0;;non
+259;Reçu;NOUVEAUX;mobile;412x915;1.0;0;;0;;0;;non
+260;Facture;NOUVEAUX;mobile;412x915;1.0;0;;0;;0;;non
+261;Mon espace client;NOUVEAUX;mobile;412x915;1.0;0;;0;;0;;non
+270;Showroom national;NOUVEAUX;mobile;412x915;1.0;0;;0;;0;;non
+271;Mes liens et réseaux;NOUVEAUX;mobile;412x915;1.0;0;;0;;0;;non
+272;Vérification en 2 étapes;NOUVEAUX;mobile;412x915;1.0;0;;0;;0;;non
+273;Mes données;NOUVEAUX;mobile;412x915;1.0;0;;0;;0;;non
+274;Conditions générales;NOUVEAUX;mobile;412x915;1.0;2;22.0x22.0 / 22.0x22.0;0;;0;;non
+275;Déposer un produit (erreurs);NOUVEAUX;mobile;412x915;1.0;3;312.0x18.0 / 312.0x18.0 / 312.0x18.0;0;;0;;non
+276;Borne hors ligne;NOUVEAUX;mobile;412x915;1.0;0;;0;;0;;non
+277;Supervision des bornes;NOUVEAUX;mobile;412x915;1.0;0;;0;;0;;non
+278;Fiche projet · liens et PI;NOUVEAUX;mobile;412x915;1.0;0;;0;;0;;non
+279;Ajouter des fichiers;NOUVEAUX;mobile;412x915;1.0;0;;0;;0;;non
+280;Intégrations;NOUVEAUX;mobile;412x915;1.0;0;;0;;0;;non
+281;Rôles et périmètres;NOUVEAUX;mobile;412x915;1.0;0;;0;;0;;non
+282;QR de transfert;NOUVEAUX;mobile;412x915;1.0;0;;0;;0;;non
+283;Registre des certificats;NOUVEAUX;mobile;412x915;1.0;0;;0;;0;;non
+284;Registre financier;NOUVEAUX;mobile;412x915;1.0;0;;0;;0;;non
+285;Espace projet;NOUVEAUX;mobile;412x915;1.0;0;;0;;0;;non
+286;Soumissions et équipe;NOUVEAUX;mobile;412x915;1.0;0;;0;;0;;non
+74;Talent Passport;NOUVEAUX;mobile;412x915;1.0;0;;0;;0;;non
+287;Catalogue département (tablette);NOUVEAUX;tablette;768x900;1.0;4;63.3x42.2 / 63.3x42.2 / 63.3x42.2;0;;0;;non
+262;Accueil B2B;NOUVEAUX;console web;1280x900;1.0;5;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+263;Médiathèque;NOUVEAUX;console web;1280x900;1.0;5;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+264;Pages éditoriales;NOUVEAUX;console web;1280x900;1.0;7;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+265;Modèles de notifications;NOUVEAUX;console web;1280x900;1.0;7;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+266;État technique;NOUVEAUX;console web;1280x900;1.0;5;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+267;Boutik-École Network;NOUVEAUX;console web;1280x900;1.0;6;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+268;Analytics de la borne;NOUVEAUX;console web;1280x900;1.0;5;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+269;Innovation Radar;NOUVEAUX;console web;1280x900;1.0;5;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+288;Catalogue département (web);NOUVEAUX;console web;1280x900;1.0;5;328.0x16.0 / 360.0x36.0 / 110.0x36.0;0;;0;;non
+250b;Nouvelle publication;NOUVEAUX;mobile;412x915;1.0;0;;0;;0;;non
+01;Bienvenue;A;mobile;412x915;1.0;0;;0;;0;;non
+02;Bienvenue (variante);A;mobile;412x915;1.0;0;;0;;0;;non
+03;Accueil;A;mobile;412x915;1.0;1;38.0x32.0;0;;0;;non
+04;Explorer;A;mobile;412x915;1.0;10;43.1x43.1 / 43.1x43.1 / 27.1x27.1;2;0.0, 0.0, 30.1, 30.1 / 0.0, 0.0, 30.1, 30.1;0;;non
+05;Fiche produit;A;mobile;412x915;1.0;12;43.8x43.8 / 32.9x32.9 / 314.9x43.8;1;0.0, 0.0, 36.1, 36.1;0;;non
+06;Mon panier;A;mobile;412x915;1.0;1;338.7x46.7;1;36.6, 755.9, 375.4, 802.6;0;;non
+07;Livraison;A;mobile;412x915;1.0;6;275.2x16.0 / 21.0x21.0 / 21.0x21.0;0;;0;;non
+08;Paiement;A;mobile;412x915;1.0;2;226.0x16.0 / 240.0x30.0;1;111.0, 363.5, 351.0, 393.5;0;;non
+09;Ma commande;A;mobile;412x915;1.0;0;;0;;0;;non
+10;Profil étudiant;A;mobile;412x915;1.0;8;390.0x15.0 / 48.0x37.0 / 48.0x40.0;0;;0;;non
+11;Connexion;B;mobile;412x915;1.0;3;222.0x18.0 / 234.0x21.0 / 150.0x18.0;1;0.0, 0.0, 342.0, 52.0;0;;non
+12;Créer un compte;B;mobile;412x915;1.0;6;276.0x18.0 / 276.0x18.0 / 276.0x18.0;1;0.0, 0.0, 342.0, 52.0;0;;non
+13;Choix du profil;B;mobile;412x915;1.0;0;;0;;0;;non
+14;Vérification du compte;B;mobile;412x915;1.0;1;328.0x25.0;0;;0;;non
+15;Mot de passe oublié;B;mobile;412x915;1.0;1;276.0x18.0;0;;0;;non
+16;Nouveau mot de passe;B;mobile;412x915;1.0;2;234.0x21.0 / 234.0x21.0;2;0.0, 0.0, 342.0, 52.0 / 0.0, 0.0, 342.0, 52.0;0;;non
+17;Conditions et confidentialité;B;mobile;412x915;1.0;0;;0;;0;;non
+18;État de validation;B;mobile;412x915;1.0;0;;0;;0;;non
+18b;Compléter mon profil;B;mobile;412x915;1.0;4;99.0x18.0 / 99.0x18.0 / 276.0x18.0;0;;0;;non
+18c;Vérification étudiant;B;mobile;412x915;1.0;1;276.0x18.0;0;;0;;non
+19;Découvrir;B;mobile;412x915;1.0;1;270.4x17.0;0;;0;;non
+20;Résultats de recherche;B;mobile;412x915;1.0;2;216.2x19.0 / 269.3x39.2;0;;0;;non
+21;Recherche avancée;C;mobile;412x915;1.0;12;46.4x46.4 / 272.8x16.4 / 330.8x46.4;0;;0;;non
+22;Catalogue de produits;C;mobile;412x915;1.0;0;;0;;0;;non
+22b;Services et prestations;C;mobile;412x915;1.0;0;;0;;0;;non
+22c;Tendances et nouveautés;C;mobile;412x915;1.0;0;;0;;0;;non
+22d;Pour vous;C;mobile;412x915;1.0;6;47.5x47.5 / 47.5x47.5 / 47.5x47.5;0;;0;;non
+23;Filtres;C;mobile;412x915;1.0;0;;0;;0;;non
+24;Profil vendeur;C;mobile;412x915;1.0;0;;0;;0;;non
+25;Mes favoris;C;mobile;412x915;1.0;0;;0;;0;;non
+25b;Mes collections;C;mobile;412x915;1.0;1;282.0x17.0;0;;0;;non
+26;Comparer des offres;C;mobile;412x915;1.0;0;;0;;0;;non
+27;Mes adresses;C;mobile;412x915;1.0;0;;0;;0;;non
+28;Mes commandes;C;mobile;412x915;1.0;0;;0;;0;;non
+29;Détail de la commande;C;mobile;412x915;1.0;0;;0;;0;;non
+30;Commande reçue;C;mobile;412x915;1.0;0;;0;;0;;non
+31;Avis et évaluations;C;mobile;412x915;1.0;0;;0;;0;;non
+127;Tableau de bord de la plateforme;N;console web;1272x900;1.0;21;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+128;Comptes, rôles et permissions;N;console web;1280x900;1.0;23;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+129;Institutions;N;console web;1280x900;1.0;16;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+130;Modération;N;console web;1280x900;1.0;16;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+131;Signalements;N;console web;1280x900;1.0;20;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+132;Commandes et incidents;N;console web;1280x900;1.0;20;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+133;Litiges et remboursements;N;console web;1280x900;1.0;16;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+134;Transactions et rapprochements;N;console web;1280x900;1.0;16;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+135;Commissions et règles économiques;N;console web;1280x900;1.0;18;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+136;Sécurité et accès;N;console web;1280x900;1.0;16;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+137;Journal d’audit global;N;console web;1280x900;1.0;18;667.5x16.0 / 19.0x19.0 / 280.0x14.0;0;;0;;non
+138;Configuration générale;N;console web;1280x900;1.0;16;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+139;Tableau de bord financier;O;console web;1272x900;1.0;17;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+140;Paiements déclarés;O;console web;1280x900;1.0;12;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+141;Journal financier;O;console web;1280x900;1.0;12;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+142;Rapports financiers;O;console web;1280x900;1.0;12;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+143;Versements et montants dus;O;console web;1280x900;1.0;13;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+144;Moyens de paiement et règles;O;console web;1280x900;1.0;13;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+145;Points de retrait et kiosques;P;console web;1280x900;1.0;12;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+146-1;Kiosque (gestionnaire);P;mobile;412x915;1.0;0;;0;;0;;non
+146-2;Remise d’une commande;P;mobile;412x915;1.0;0;;0;;0;;non
+147-1;Incidents et maintenance;P;console web;1280x900;1.0;12;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+147-2;Tickets de support;P;console web;1280x900;1.0;12;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+147-3;Interventions et résolutions;P;console web;1280x900;1.0;12;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+148-1;Paramètres;Q;mobile;412x915;1.0;0;;0;;0;;non
+148-2;Centre de sécurité;Q;mobile;412x915;1.0;0;;0;;0;;non
+149;Langue et affichage;Q;mobile;412x915;1.0;0;;0;;0;;non
+150-1;Synchronisation;Q;mobile;412x915;1.0;1;36.0x36.0;1;49.0, 463.5, 85.0, 499.5;0;;non
+150-2;Session expirée;Q;mobile;412x915;1.0;0;;0;;0;;non
+150-3;Connexion impossible;Q;mobile;412x915;1.0;0;;0;;0;;non
+150-4;Mes commandes (vide);Q;mobile;412x915;1.0;0;;0;;0;;non
+151;Opportunités;S;mobile;412x915;1.0;0;;0;;0;;non
+152;Kéla te recommande;S;mobile;412x915;1.0;0;;0;;0;;non
+153;Pourquoi cette offre ?;S;mobile;412x915;1.0;0;;0;;0;;non
+154;Mon dossier;S;mobile;412x915;1.0;0;;0;;0;;non
+155;Alertes;S;mobile;412x915;1.0;0;;0;;0;;non
+156;Préférences d’alertes;S;mobile;412x915;1.0;12;43.1x43.1 / 43.1x43.1 / 43.1x43.1;0;;0;;non
+157;Résumé de Kéla;S;mobile;412x915;1.0;0;;0;;0;;non
+158;Candidatures classées;S;mobile;412x915;1.0;0;;0;;0;;non
+159;Candidature envoyée;S;mobile;412x915;1.0;0;;0;;0;;non
+160;Hackathons et concours;T;mobile;412x915;1.0;0;;0;;0;;non
+161;Hackathon;T;mobile;412x915;1.0;0;;0;;0;;non
+162;Inscription;T;mobile;412x915;1.0;2;280.0x17.0 / 280.0x17.0;0;;0;;non
+163;Trouver des coéquipiers;T;mobile;412x915;1.0;1;282.0x17.0;0;;0;;non
+164;Espace d’équipe;T;mobile;412x915;1.0;0;;0;;0;;non
+165;Dépôt du projet;T;mobile;412x915;1.0;3;280.0x17.0 / 280.0x17.0 / 312.0x34.0;0;;0;;non
+166;Résultats;T;mobile;412x915;1.0;0;;0;;0;;non
+167;Noter un projet;T;mobile;412x915;1.0;3;312.0x34.0 / 342.0x44.0 / 342.0x44.0;0;;0;;non
+168;Publier un concours;T;console web;1280x900;1.0;12;423.0x16.0 / 423.0x16.0 / 423.0x16.0;0;;0;;non
+169;Modération des concours;T;console web;1280x900;1.0;5;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+170;Signaler une annonce;U;mobile;412x915;1.0;2;312.0x34.0 / 342.0x34.0;0;;0;;non
+171;Paiement sécurisé;U;mobile;412x915;1.0;0;;0;;0;;non
+172;Confiance du vendeur;U;mobile;412x915;1.0;0;;0;;0;;non
+173;Partager;U;mobile;412x915;1.0;0;;0;;0;;non
+174;Centre de confiance;U;mobile;412x915;1.0;0;;0;;0;;non
+211;Passeport du produit;U;mobile;412x915;1.0;1;47.2x47.2;0;;0;;non
+212;Vérifier un certificat;U;mobile;412x915;1.0;0;;0;;0;;non
+213;Registre des certificats;U;console web;1280x900;1.0;8;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+175;Bienvenue, étudiant;V;mobile;412x915;1.0;0;;0;;0;;non
+176;Bienvenue;V;mobile;412x915;1.0;0;;0;;0;;non
+177;Bienvenue, entreprise;V;mobile;412x915;1.0;0;;0;;0;;non
+178;Bienvenue, jury;V;mobile;412x915;1.0;0;;0;;0;;non
+179;Guide d’utilisation;V;mobile;412x915;1.0;1;282.0x17.0;0;;0;;non
+180;Rôles et permissions;V;console web;1280x900;1.0;5;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+181;Matrice des permissions;V;console web;1280x900;1.0;5;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+182;Explorer (chargement);W;mobile;412x915;1.0;1;282.0x17.0;0;;0;;non
+183;Mes commandes (hors ligne);W;mobile;412x915;1.0;0;;0;;0;;non
+184;Économie de données;W;mobile;412x915;1.0;0;;0;;0;;non
+185;Language;W;mobile;412x915;1.0;0;;0;;0;;non
+186;Accessibilité;W;mobile;412x915;1.0;0;;0;;0;;non
+41;Adresse de livraison;E;mobile;412x915;1.0;5;280.0x17.0 / 280.0x17.0 / 280.0x17.0;0;;0;;non
+42;Récapitulatif;E;mobile;412x915;1.0;0;;0;;0;;non
+43;Instructions de paiement;E;mobile;412x915;1.0;0;;0;;0;;non
+44;Commande confirmée;E;mobile;412x915;1.0;0;;0;;0;;non
+45;Mes commandes;E;mobile;412x915;1.0;1;282.0x17.0;0;;0;;non
+46;Suivi de livraison;E;mobile;412x915;1.0;0;;0;;0;;non
+47;Annuler la commande;E;mobile;412x915;1.0;2;350.0x32.0 / 350.0x32.0;0;;0;;non
+48;Réclamation;E;mobile;412x915;1.0;3;312.0x34.0 / 342.0x34.0 / 342.0x34.0;0;;0;;non
+49;Aide et support;E;mobile;412x915;1.0;1;282.0x17.0;0;;0;;non
+50;Notifications;F;mobile;412x915;1.0;0;;0;;0;;non
+51;Détail d’une notification;F;mobile;412x915;1.0;0;;0;;0;;non
+52;Messages;F;mobile;412x915;1.0;1;282.0x17.0;0;;0;;non
+53;Conversation;F;mobile;412x915;1.0;0;;0;;0;;non
+54;Conversation commande;F;mobile;412x915;1.0;0;;0;;0;;non
+55;Conversation entreprise;F;mobile;412x915;1.0;1;272.0x16.0;0;;0;;non
+56;Notifications et confidentialité;F;mobile;412x915;1.0;0;;0;;0;;non
+57;Tableau de bord vendeur;G;mobile;412x915;1.0;2;166.0x39.0 / 166.0x39.0;0;;0;;non
+58;Nouveau produit;G;mobile;412x915;1.0;6;280.0x17.0 / 280.0x17.0 / 280.0x17.0;0;;0;;non
+59;Nouveau service;G;mobile;412x915;1.0;6;280.0x17.0 / 280.0x17.0 / 280.0x17.0;0;;0;;non
+60;Modifier l’annonce;G;mobile;412x915;1.0;0;;0;;0;;non
+61;Mon catalogue;G;mobile;412x915;1.0;1;282.0x17.0;0;;0;;non
+62;Stocks;G;mobile;412x915;1.0;10;46.0x46.0 / 46.0x46.0 / 46.0x46.0;0;;0;;non
+63;Commandes reçues;G;mobile;412x915;1.0;0;;0;;0;;non
+64;Préparer une commande;G;mobile;412x915;1.0;0;;0;;0;;non
+65;Détail d’une vente;G;mobile;412x915;1.0;0;;0;;0;;non
+66;Revenus;G;mobile;412x915;1.0;0;;0;;0;;non
+67;Statistiques;G;mobile;412x915;1.0;0;;0;;0;;non
+69;Validations;G;mobile;412x915;1.0;0;;0;;0;;non
+70;Talents étudiants;H;mobile;412x915;1.0;1;282.0x17.0;0;;0;;non
+72;Ajouter à mon profil;H;mobile;412x915;1.0;4;280.0x17.0 / 280.0x17.0 / 280.0x17.0;0;;0;;non
+73;Mes documents;H;mobile;412x915;1.0;0;;0;;0;;non
+75;Opportunités;H;mobile;412x915;1.0;0;;0;;0;;non
+76;Ma candidature;H;mobile;412x915;1.0;0;;0;;0;;non
+77;Profil de mentor;H;mobile;412x915;1.0;0;;0;;0;;non
+78;Projets innovants;I;mobile;412x915;1.0;0;;0;;0;;non
+79;Projet;I;mobile;412x915;1.0;0;;0;;0;;non
+80;Soumettre un projet;I;mobile;412x915;1.0;4;280.0x17.0 / 280.0x17.0 / 280.0x17.0;0;;0;;non
+81;Équipe du projet;I;mobile;412x915;1.0;0;;0;;0;;non
+82;Journal du projet;I;mobile;412x915;1.0;0;;0;;0;;non
+83;Médias et preuves;I;mobile;412x915;1.0;0;;0;;0;;non
+84;Nouvelle campagne;I;mobile;412x915;1.0;5;280.0x17.0 / 280.0x17.0 / 280.0x17.0;0;;0;;non
+84b;Financement;I;mobile;412x915;1.0;0;;0;;0;;non
+85;Objectifs et jalons;I;mobile;412x915;1.0;0;;0;;0;;non
+86;Résultats de campagne;I;mobile;412x915;1.0;0;;0;;0;;non
+87;Registre des innovations;I;mobile;412x915;1.0;1;282.0x17.0;0;;0;;non
+100;Événements;K;mobile;412x915;1.0;0;;0;;0;;non
+101;Événement;K;mobile;412x915;1.0;0;;0;;0;;non
+102;Vitrine;K;mobile;412x915;1.0;1;45.3x45.3;0;;0;;non
+103;Communauté;K;mobile;412x915;1.0;0;;0;;0;;non
+104;Carte de l’innovation;K;mobile;412x915;1.0;0;;0;;0;;non
+105;Inter-établissements;K;mobile;412x915;1.0;0;;0;;0;;non
+106;Économie circulaire;K;mobile;412x915;1.0;0;;0;;0;;non
+107;Mon impact;K;mobile;412x915;1.0;0;;0;;0;;non
+237;Impact par territoire;K;console web;1280x900;1.0;1;232.0x36.0;0;;0;;non
+238;Impact de Boutik-École;K;mobile;412x915;1.0;0;;0;;0;;non
+239;Rapport sponsors;K;console web;1280x900;1.0;5;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+108;Tableau de bord du département;L;console web;1272x900;1.0;21;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+109;Étudiants et vendeurs;L;console web;1280x900;1.0;15;586.7x16.0 / 19.0x19.0 / 280.0x14.0;0;;0;;non
+110;Validation des annonces;L;console web;1280x900;1.0;22;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+111;Validation des projets;L;console web;1280x900;1.0;17;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+112;Statistiques du département;L;console web;1280x900;1.0;13;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+113;Suivi des productions;L;console web;1280x900;1.0;13;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+114;Mentors et encadreurs;L;console web;1280x900;1.0;15;586.7x16.0 / 19.0x19.0 / 280.0x14.0;0;;0;;non
+115;Événements et initiatives;L;console web;1280x900;1.0;13;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+116;Rapports et exports;L;console web;1280x900;1.0;13;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+214;Départements;L;mobile;412x915;1.0;0;;0;;0;;non
+215;Fiche département;L;mobile;412x915;1.0;2;46.8x46.8 / 125.8x46.8;0;;0;;non
+117;Tableau de bord institutionnel;M;console web;1272x900;1.0;17;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+118;Établissement et identité visuelle;M;console web;1280x900;1.0;14;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+119;Départements et filières;M;console web;1280x900;1.0;16;667.5x16.0 / 19.0x19.0 / 280.0x14.0;0;;0;;non
+120;Utilisateurs et affectations;M;console web;1280x900;1.0;16;667.5x16.0 / 19.0x19.0 / 280.0x14.0;0;;0;;non
+121;Responsables et encadreurs;M;console web;1280x900;1.0;14;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+122;Circuits de validation;M;console web;1280x900;1.0;14;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+123;Ventes et activité;M;console web;1280x900;1.0;14;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+124;Événements et campagnes;M;console web;1280x900;1.0;16;667.5x16.0 / 19.0x19.0 / 280.0x14.0;0;;0;;non
+125;Rapports consolidés;M;console web;1280x900;1.0;14;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+126;Journal d’audit;M;console web;1280x900;1.0;16;667.5x16.0 / 19.0x19.0 / 280.0x14.0;0;;0;;non
+32;Détail du produit;D;mobile;412x915;1.0;5;43.2x43.2 / 34.2x34.2 / 110.1x43.2;1;0.0, 0.0, 38.0, 38.0;0;;non
+33;Histoire du produit;D;mobile;412x915;1.0;2;41.7x41.7 / 297.2x46.9;0;;0;;non
+34;Galerie;D;mobile;412x915;1.0;2;46.2x46.2 / 58.8x46.2;0;;0;;non
+35;Disponibilité;D;mobile;412x915;1.0;0;;0;;0;;non
+36;Détail du service;D;mobile;412x915;1.0;3;45.9x45.9 / 45.9x45.9 / 69.9x45.9;0;;0;;non
+38;Réputation;D;mobile;412x915;1.0;1;46.8x46.8;0;;0;;non
+39;Demande de renseignements;D;mobile;412x915;1.0;2;312.0x34.0 / 280.0x17.0;0;;0;;non
+40;Demande de devis;D;mobile;412x915;1.0;4;280.0x17.0 / 312.0x34.0 / 280.0x17.0;0;;0;;non
+88;Espace entreprise;J;mobile;412x915;1.0;0;;0;;0;;non
+89;Profil de l’entreprise;J;mobile;412x915;1.0;0;;0;;0;;non
+90;Publier un besoin;J;mobile;412x915;1.0;5;280.0x17.0 / 280.0x17.0 / 312.0x34.0;0;;0;;non
+91;Rechercher des talents;J;mobile;412x915;1.0;1;282.0x17.0;0;;0;;non
+93;Propositions reçues;J;mobile;412x915;1.0;0;;0;;0;;non
+93b;Proposition;J;mobile;412x915;1.0;0;;0;;0;;non
+94;Comparer les propositions;J;mobile;412x915;1.0;0;;0;;0;;non
+95;Devis et négociations;J;mobile;412x915;1.0;0;;0;;0;;non
+95b;Demande de devis;J;mobile;412x915;1.0;5;280.0x17.0 / 312.0x34.0 / 280.0x17.0;0;;0;;non
+96;Défis d’innovation;J;mobile;412x915;1.0;0;;0;;0;;non
+97;Recrutement;J;mobile;412x915;1.0;0;;0;;0;;non
+98;Collaborations;J;mobile;412x915;1.0;0;;0;;0;;non
+99;Historique;J;mobile;412x915;1.0;0;;0;;0;;non
+240;Parrainer et gagner;AM;mobile;412x915;1.0;0;;0;;0;;non
+241;Mes contacts;AM;mobile;412x915;1.0;0;;0;;0;;non
+242;Kit à partager;AM;mobile;412x915;1.0;0;;0;;0;;non
+243;Mes gains;AM;mobile;412x915;1.0;0;;0;;0;;non
+244;Cercle;AM;mobile;412x915;1.0;1;36.0x36.0;1;27.0, 705.5, 63.0, 741.5;0;;non
+244b;Cercle · publication aimée;AM;mobile;412x915;1.0;0;;0;;0;;non
+245;Reels;AM;mobile;412x915;1.0;3;36.0x36.0 / 52.0x32.0 / 44.0x44.0;1;339.0, 347.5, 375.0, 383.5;0;;non
+246;Lives;AM;mobile;412x915;1.0;0;;0;;0;;non
+247;Profil créateur;AM;mobile;412x915;1.0;1;42.0x42.0;1;29.0, 53.5, 71.0, 95.5;0;;non
+248;Boutique du créateur;AM;mobile;412x915;1.0;0;;0;;0;;non
+249;Créer;AM;mobile;412x915;1.0;0;;0;;0;;non
+250;Nouvelle publication;AM;mobile;412x915;1.0;0;;0;;0;;non
+251;Découvrir;AM;mobile;412x915;1.0;3;280.0x16.0 / 44.0x48.0 / 44.0x48.0;0;;0;;non
+252;Commentaires et avis;AM;mobile;412x915;1.0;0;;0;;0;;non
+253;Défis et récompenses;AM;mobile;412x915;1.0;0;;0;;0;;non
+253b;Défis · récompense récupérée;AM;mobile;412x915;1.0;0;;0;;0;;non
+254;Activité;AM;mobile;412x915;1.0;0;;0;;0;;non
+216;Marché des vœux;AD;mobile;412x915;1.0;0;;0;;0;;non
+217;Fiche d’un vœu;AD;mobile;412x915;1.0;0;;0;;0;;non
+218;Publier un vœu;AD;mobile;412x915;1.0;5;280.0x17.0 / 312.0x34.0 / 280.0x17.0;0;;0;;non
+219;Nouveau duel;AD;mobile;412x915;1.0;1;342.0x38.0;0;;0;;non
+220;Duel de talents;AD;mobile;412x915;1.0;0;;0;;0;;non
+221;Résultat du duel;AD;mobile;412x915;1.0;0;;0;;0;;non
+222;Atelier en direct;AD;mobile;412x915;1.0;2;308.0x16.0 / 32.0x32.0;1;265.0, 818.5, 297.0, 850.5;0;;non
+223;Ateliers en direct;AD;mobile;412x915;1.0;0;;0;;0;;non
+224;Validation des vœux;AD;mobile;412x915;1.0;3;280.0x17.0 / 280.0x17.0 / 312.0x34.0;0;;0;;non
+225;Jumeau 3D;AD;mobile;412x915;1.0;0;;0;;0;;non
+226;Modération des duels;AD;mobile;412x915;1.0;0;;0;;0;;non
+227;Régie des ateliers en direct;AD;mobile;412x915;1.0;0;;0;;0;;non
+228;Partager mon CV;AD;mobile;412x915;1.0;0;;0;;0;;non
+229;CV vivant;AD;mobile;412x915;1.0;0;;0;;0;;non
+191;Votre besoin;Y;mobile;412x915;1.0;7;41.1x41.1 / 267.1x29.1 / 239.7x14.6;0;;0;;non
+192;Votre devis;Y;mobile;412x915;1.0;0;;0;;0;;non
+193;Paiement sécurisé;Y;mobile;412x915;1.0;0;;0;;0;;non
+194;Ma mission;Y;mobile;412x915;1.0;0;;0;;0;;non
+195;Ajouter une preuve;Y;mobile;412x915;1.0;0;;0;;0;;non
+196;Dossier;Y;mobile;412x915;1.0;0;;0;;0;;non
+197;Valider le jalon;Y;mobile;412x915;1.0;0;;0;;0;;non
+198;Briefs reçus;Y;console web;1280x900;1.0;6;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+199;Attribuer;Y;console web;1280x900;1.0;3;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+200;Missions et encaissement;Y;console web;1280x900;1.0;6;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+201;Mes missions;Y;mobile;412x915;1.0;0;;0;;0;;non
+202;Pack Lancement de marque;Y;mobile;412x915;1.0;1;46.3x46.3;0;;0;;non
+203;Mes compétences;Y;mobile;412x915;1.0;0;;0;;0;;non
+204;Coup de pouce startup;Y;mobile;412x915;1.0;0;;0;;0;;non
+205;Soumettre mon projet;Y;mobile;412x915;1.0;3;280.0x17.0 / 312.0x34.0 / 280.0x17.0;0;;0;;non
+206;Borne · Accueil;AA;tablette;720x900;1.0;3;47.8x33.8 / 47.8x33.8 / 182.8x30.9;0;;0;;non
+207;Borne · Explorer;AA;tablette;720x900;1.0;13;47.8x33.8 / 47.8x33.8 / 367.0x42.2;1;0.0, 0.0, 60.0, 60.0;0;;non
+208;Borne · Fiche article;AA;tablette;720x900;1.0;5;47.8x33.8 / 47.8x33.8 / 25.3x25.3;0;;0;;non
+209;Borne · QR téléphone;AA;tablette;720x900;1.0;2;47.8x33.8 / 47.8x33.8;0;;0;;non
+210;Borne · C’est envoyé;AA;tablette;720x900;1.0;2;47.8x33.8 / 47.8x33.8;0;;0;;non
+187;Tableau de bord entreprise;X;console web;1272x900;1.0;14;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+188;Recherche de talents et d’équipes;X;console web;1280x900;1.0;13;667.5x16.0 / 19.0x19.0 / 178.7x18.0;4;466.0, 260.0, 496.0, 290.0 / 715.0, 260.0, 745.0, 290.0 / 964.0, 260.0, 994.0, 290.0;0;;non
+189;Propositions reçues;X;console web;1280x900;1.0;6;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+190;Devis et négociations;X;console web;1280x900;1.0;6;280.0x14.0 / 330.0x34.0 / 15.0x15.0;0;;0;;non
+230;Assistante vocale Kéla;AI;mobile;412x915;1.0;0;;1;164.0, 739.5, 248.0, 823.5;0;;non
+231;Accueil Kéla;AI;mobile;412x915;1.0;0;;0;;0;;non
+232;Voix en texte;AI;mobile;412x915;1.0;2;282.0x16.0 / 44.0x44.0;1;325.0, 732.5, 369.0, 776.5;0;;non
+233;WhatsApp · suivi de mission;AI;mobile;412x915;1.0;2;262.0x18.0 / 300.0x46.0;0;;0;;non
+234;WhatsApp · validation de jalon;AI;mobile;412x915;1.0;2;262.0x18.0 / 300.0x46.0;0;;0;;non
+235;WhatsApp · paiement sécurisé;AI;mobile;412x915;1.0;2;262.0x18.0 / 300.0x46.0;0;;0;;non
+236;Canaux et notifications;AI;mobile;412x915;1.0;2;280.0x17.0 / 342.0x44.0;0;;0;;non
+A1;Assistante vocale Kéla;REF;mobile;412x915;1.0;0;;1;164.0, 739.5, 248.0, 823.5;0;;non
+A2;Accueil Kéla;REF;mobile;412x915;1.0;0;;0;;0;;non
+A3;Voix en texte;REF;mobile;412x915;1.0;2;282.0x16.0 / 44.0x44.0;1;325.0, 732.5, 369.0, 776.5;0;;non
+P1;Profil talent;REF;mobile;412x915;1.0;0;;0;;0;;non
+P2;Profil talent · abonnement;REF;mobile;412x915;1.0;1;34.0x34.0;1;315.0, 705.5, 349.0, 739.5;0;;non
+P3;Avis et outils connectés;REF;mobile;412x915;1.0;0;;0;;0;;non
+P4;Nouvelle publication;REF;mobile;412x915;1.0;0;;0;;0;;non
+V1;Vitrine;REF;mobile;412x915;1.0;1;35.0x35.0;1;41.5, 800.5, 76.5, 835.5;0;;non
+P5;Connecter mes outils;REF;mobile;412x915;1.0;1;280.0x16.0;0;;0;;non
+L1;Aller en direct;REF;mobile;412x915;1.0;0;;0;;0;;non
+S1;Démarrage animé;REF;mobile;412x915;1.0;0;;0;;0;;non
+D1;Tableau de bord du studio;REF;borne;1500x900;1.0;14;229.1x11.5 / 270.0x27.8 / 12.3x12.3;0;;0;;non

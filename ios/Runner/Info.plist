@@ -74,5 +74,9 @@
 	<string>Boutik-École utilise l’appareil photo pour photographier vos produits, preuves de mission et pièces jointes.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Boutik-École accède à vos photos pour illustrer vos annonces et joindre des images à vos messages.</string>
+        <key>FirebaseMessagingInstallationIdEnabled</key>
+        <true/>
+        <key>FirebaseMessagingAutoInitEnabled</key>
+        <false/>
 </dict>
 </plist>

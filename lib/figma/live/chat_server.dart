@@ -17,13 +17,14 @@ import 'share.dart';
 /// Conversation réelle (écrans 53 et 54) : messages texte, photos, fichiers et vocaux enregistrés sur le serveur.
 /// Les pièces jointes sont dans un stockage privé : seuls les deux participants obtiennent un lien temporaire.
 class SMsg {
-  const SMsg({required this.id, required this.mine, required this.time, required this.kind, required this.body, this.path, this.name, this.size, this.status = 'ok', this.retry});
+  const SMsg({required this.id, required this.mine, required this.time, required this.kind, required this.body, this.path, this.name, this.size, this.status = 'ok', this.retry, this.at});
   final String id, time, kind, body;
   final bool mine;
   final String? path, name;
   final int? size;
   final String status; // ok · sending · failed
   final VoidCallback? retry;
+  final DateTime? at;
 }
 
 TextStyle _st(double s, {FontWeight w = FontWeight.w400, Color c = const Color(0xFF111015)}) =>
@@ -56,6 +57,9 @@ class _ServerChatPanelState extends ConsumerState<ServerChatPanel> {
   Timer? _poll;
   String _cid = '';
   bool loading = true;
+  DateTime? _otherRead;
+  String _otherId = '';
+  bool _blocked = false;
   AudioRecorder? _rec;
   AudioRecorder get rec => _rec ??= AudioRecorder();
   bool recording = false;
@@ -92,8 +96,21 @@ class _ServerChatPanelState extends ConsumerState<ServerChatPanel> {
       return;
     }
     final rows = await Backend.messages(cid);
+    final parts = await Backend.rows('conversation_participants', 'user_id,last_read_at', eq: {'conversation_id': cid});
+    final bl = await Backend.rows('user_blocks', 'blocked_id');
     if (!mounted) return;
     final me = Backend.currentUserId;
+    DateTime? otherRead;
+    var otherId = '';
+    for (final x in parts.rows) {
+      if ('${x['user_id']}' == me) continue;
+      otherId = '${x['user_id']}';
+      final d = DateTime.tryParse('${x['last_read_at']}');
+      if (d != null && (otherRead == null || d.isAfter(otherRead))) otherRead = d;
+    }
+    _otherRead = otherRead;
+    _otherId = otherId;
+    _blocked = bl.rows.any((x) => '${x['blocked_id']}' == otherId);
     final grew = rows.length != msgs.length || cid != _cid;
     setState(() {
       _cid = cid;
@@ -109,12 +126,34 @@ class _ServerChatPanelState extends ConsumerState<ServerChatPanel> {
             path: r['attachment_path']?.toString(),
             name: r['attachment_name']?.toString(),
             size: (r['attachment_size'] as num?)?.toInt(),
+            at: DateTime.tryParse((r['created_at'] ?? '').toString()),
           ),
       ];
     });
     if (grew) {
       Backend.markConversationRead(cid).then((_) => ref.read(conversationsProvider.notifier).refresh());
       _toEnd();
+    }
+  }
+
+  Future<void> _menu(String v, String cid) async {
+    if (v == 'block') {
+      if (_otherId.isEmpty) return;
+      final r = await Backend.rpc('block_user', {'p_user': _otherId, 'p_block': !_blocked});
+      if (!mounted) return;
+      if (r.error != null) {
+        gToast(context, Backend.userMessage(r.error!));
+        return;
+      }
+      gToast(context, _blocked ? 'Personne débloquée.' : 'Personne bloquée.');
+      await _load();
+    } else {
+      final t = TextEditingController();
+      final ok = await showDialog<bool>(context: context, builder: (d) => AlertDialog(title: const Text('Signaler la conversation'), content: TextField(controller: t, maxLines: 3, decoration: const InputDecoration(hintText: 'Que s’est-il passé ?')), actions: [TextButton(onPressed: () => Navigator.pop(d, false), child: const Text('Annuler')), TextButton(onPressed: () => Navigator.pop(d, true), child: const Text('Signaler'))]));
+      if (ok != true || !mounted) return;
+      final r = await Backend.rpc('report_conversation', {'p_conversation': cid, 'p_reason': t.text});
+      if (!mounted) return;
+      gToast(context, r.error != null ? Backend.userMessage(r.error!) : 'Signalement transmis à la modération.');
     }
   }
 
@@ -299,7 +338,7 @@ class _ServerChatPanelState extends ConsumerState<ServerChatPanel> {
           if (failed)
             GestureDetector(onTap: m.retry, child: Text('Échec de l’envoi · Réessayer', style: _st(10.5, c: const Color(0xFFD64545), w: FontWeight.w600)))
           else
-            Text(sending ? 'Envoi…' : m.time, style: _st(10, c: const Color(0xFF8793A5))),
+            Text(sending ? 'Envoi…' : (m.mine && m.at != null ? '${m.time}  ${_otherRead != null && !_otherRead!.isBefore(m.at!) ? '✓✓ Lu' : '✓ Envoyé'}' : m.time), style: _st(10, c: (m.mine && m.at != null && _otherRead != null && !_otherRead!.isBefore(m.at!)) ? const Color(0xFF1F9D6B) : const Color(0xFF8793A5))),
         ]),
       ),
     );
@@ -317,6 +356,21 @@ class _ServerChatPanelState extends ConsumerState<ServerChatPanel> {
     final all = [...msgs, ...pending];
     final hasText = c.text.trim().isNotEmpty;
     return Stack(children: [
+      Positioned(
+        left: 330,
+        top: 60,
+        child: PopupMenuButton<String>(
+          icon: const Icon(Icons.more_vert, size: 22),
+          tooltip: 'Plus',
+          onSelected: (v) => _menu(v, cid),
+          itemBuilder: (_) => [
+            PopupMenuItem(value: 'block', child: Text(_blocked ? 'Débloquer cette personne' : 'Bloquer cette personne')),
+            const PopupMenuItem(value: 'report', child: Text('Signaler la conversation')),
+          ],
+        ),
+      ),
+      if (_blocked)
+        Positioned(left: 24, top: 150, width: 342, child: Text('Vous avez bloqué cette personne : elle ne peut plus vous écrire et vous ne pouvez plus lui écrire.', style: _st(11.5, c: const Color(0xFFD64545), w: FontWeight.w600))),
       Positioned(
         left: 0,
         top: 190,

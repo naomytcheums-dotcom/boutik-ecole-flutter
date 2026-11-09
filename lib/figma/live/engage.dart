@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import 'auth.dart';
+import 'notif_client.dart';
 import 'backend.dart';
 import 'messages.dart' show contactSeller;
 import 'share.dart';
@@ -157,7 +158,10 @@ final channelPrefsProvider = NotifierProvider<Prefs, Map<String, bool>>(() => Pr
 Future<void> savePrefs(BuildContext context, WidgetRef ref, NotifierProvider<Prefs, Map<String, bool>> p, {Map<String, dynamic> extra = const {}}) async {
   final kind = ref.read(p.notifier).kind;
   final ok = await engageAction(context, ref, kind, 'me', data: {...ref.read(p), ...extra}, success: 'Préférences enregistrées.', need: 'enregistrer vos préférences');
-  if (ok) ref.invalidate(engagementProvider('$kind|me'));
+  if (ok) {
+    ref.invalidate(engagementProvider('$kind|me'));
+    if (kind == 'channel_prefs' || kind == 'alert_prefs') syncChannelPrefs(ref.read(p));
+  }
 }
 
 /// Écran 72 : ajoute une réalisation au portfolio du compte (titre, catégorie, date, description saisis).

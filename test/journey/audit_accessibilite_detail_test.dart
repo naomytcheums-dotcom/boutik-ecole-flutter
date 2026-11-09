@@ -19,7 +19,8 @@ import '../helpers/render.dart';
 /// d'éléments de contraste insuffisant (WCAG AA) et pire rapport mesuré, débordement de rendu. Résultat : build/audit_accessibilite_detail.csv.
 /// Mesure seulement : ce test ne bloque pas.
 void main() {
-  final rows = <String>['id;nom;taille;echelle;zones_tactiles_trop_petites;exemples_zones;sans_etiquette_talkback;exemples_sans_etiquette;contraste_insuffisant;pire_contraste;debordement'];
+  final rows = <String>['id;nom;section;categorie;taille;echelle;zones_tactiles_trop_petites;exemples_zones;sans_etiquette_talkback;exemples_sans_etiquette;contraste_insuffisant;pire_contraste;debordement'];
+  String categorie(double w) => w == 390 ? 'mobile' : w >= 1500 ? 'borne' : w >= 1200 ? 'console web' : 'tablette';
   setUpAll(() async {
     await loadAppFonts();
     SharedPreferences.setMockInitialValues({});
@@ -30,7 +31,7 @@ void main() {
     Backend.ready = true;
   });
   tearDown(() => Backend.ready = false);
-  tearDownAll(() => File('build/audit_accessibilite_detail.csv').writeAsStringSync('${rows.join('\n')}\n'));
+  tearDownAll(() => File('build/audit_accessibilite_detail_APRES.csv').writeAsStringSync('${rows.join('\n')}\n'));
 
   Future<String> message(WidgetTester t, dynamic m) async {
     try {
@@ -46,12 +47,13 @@ void main() {
   String clean(String s) => s.replaceAll(RegExp(r'\s+'), ' ').replaceAll(';', ',');
 
   for (final s in screensById.values) {
-    if ((gWidths[s.id] ?? 390) != 390) continue;
+    final w = gWidths[s.id] ?? 390;
     testWidgets('a11y detail ${s.id}', (tester) async {
       final handle = tester.ensureSemantics();
-      const size = Size(412, 915);
-      tester.view.physicalSize = size;
-      tester.view.devicePixelRatio = 1;
+      final size = w == 390 ? const Size(412, 915) : Size(w, 900);
+      // Le contrôle de contraste de Flutter génère l'image à 1/ratio : un ratio de 1/3 donne 3 pixels par point (texte net comme sur téléphone).
+      tester.view.physicalSize = Size(size.width / 3, size.height / 3);
+      tester.view.devicePixelRatio = 1 / 3;
       addTearDown(tester.view.reset);
       var overflow = 'non';
       String tap = '', label = '', contrast = '';
@@ -72,7 +74,8 @@ void main() {
       final conMatches = RegExp(r'Expected contrast ratio of at least ([\d.]+) but found ([\d.]+)').allMatches(contrast).toList();
       final worst = conMatches.isEmpty ? '' : conMatches.map((m) => double.tryParse(m.group(2) ?? '') ?? 99).reduce((a, b) => a < b ? a : b).toStringAsFixed(2);
       final tapEx = RegExp(r'but found Size\(([\d.]+), ([\d.]+)\)').allMatches(tap).take(3).map((m) => '${m.group(1)}x${m.group(2)}').join(' / ');
-      rows.add('${s.id};${clean(s.title)};412x915;1.0;$tapN;$tapEx;$lblN;${lblN > 0 ? 'oui' : ''};${conMatches.length};$worst;$overflow');
+      final lblEx = RegExp(r'SemanticsNode#\d+\(Rect\.fromLTRB\(([^)]*)\)').allMatches(label).take(3).map((m) => m.group(1)).join(' / ');
+      rows.add('${s.id};${clean(s.title)};${clean(s.section)};${categorie(w)};${size.width.toInt()}x${size.height.toInt()};1.0;$tapN;$tapEx;$lblN;$lblEx;${conMatches.length};$worst;$overflow');
       handle.dispose();
       await tester.pumpWidget(const SizedBox());
       await tester.pump(const Duration(seconds: 3));

@@ -1,0 +1,316 @@
+id;nom;section;categorie;code;donnees_reelles_en_mode_connecte;interactions_testees;test_dedie;accessibilite_zones;accessibilite_libelles;contraste;police_150_200
+255;Suivi de publication;NOUVEAUX;mobile;oui;oui;oui;oui;partiel (4);conforme;conforme;conforme
+256;Contrôles de la fiche;NOUVEAUX;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+257;Paiement en attente de confirmation;NOUVEAUX;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+258;Paiement échoué;NOUVEAUX;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+259;Reçu;NOUVEAUX;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+260;Facture;NOUVEAUX;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+261;Mon espace client;NOUVEAUX;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+270;Showroom national;NOUVEAUX;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+271;Mes liens et réseaux;NOUVEAUX;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+272;Vérification en 2 étapes;NOUVEAUX;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+273;Mes données;NOUVEAUX;mobile;oui;oui;non;non;conforme;conforme;conforme;conforme
+274;Conditions générales;NOUVEAUX;mobile;oui;oui;non;non;partiel (2);conforme;conforme;conforme
+275;Déposer un produit (erreurs);NOUVEAUX;mobile;oui;oui;non;oui;partiel (3);conforme;conforme;conforme
+276;Borne hors ligne;NOUVEAUX;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+277;Supervision des bornes;NOUVEAUX;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+278;Fiche projet · liens et PI;NOUVEAUX;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+279;Ajouter des fichiers;NOUVEAUX;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+280;Intégrations;NOUVEAUX;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+281;Rôles et périmètres;NOUVEAUX;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+282;QR de transfert;NOUVEAUX;mobile;oui;oui;non;non;conforme;conforme;conforme;conforme
+283;Registre des certificats;NOUVEAUX;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+284;Registre financier;NOUVEAUX;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+285;Espace projet;NOUVEAUX;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+286;Soumissions et équipe;NOUVEAUX;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+74;Talent Passport;NOUVEAUX;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+287;Catalogue département (tablette);NOUVEAUX;tablette;oui;oui;oui;oui;partiel (4);conforme;conforme;conforme
+262;Accueil B2B;NOUVEAUX;console web;oui;oui;oui;oui;partiel (5);conforme;conforme;conforme
+263;Médiathèque;NOUVEAUX;console web;oui;oui;oui;oui;partiel (5);conforme;conforme;conforme
+264;Pages éditoriales;NOUVEAUX;console web;oui;oui;oui;oui;partiel (7);conforme;conforme;conforme
+265;Modèles de notifications;NOUVEAUX;console web;oui;oui;oui;non;partiel (7);conforme;conforme;conforme
+266;État technique;NOUVEAUX;console web;oui;oui;oui;oui;partiel (5);conforme;conforme;conforme
+267;Boutik-École Network;NOUVEAUX;console web;oui;oui;oui;oui;partiel (6);conforme;conforme;conforme
+268;Analytics de la borne;NOUVEAUX;console web;oui;oui;oui;oui;partiel (5);conforme;conforme;conforme
+269;Innovation Radar;NOUVEAUX;console web;oui;oui;oui;oui;partiel (5);conforme;conforme;conforme
+288;Catalogue département (web);NOUVEAUX;console web;oui;oui;oui;oui;partiel (5);conforme;conforme;conforme
+250b;Nouvelle publication;NOUVEAUX;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+01;Bienvenue;A;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+02;Bienvenue (variante);A;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+03;Accueil;A;mobile;oui;oui;oui;oui;partiel (1);conforme;conforme;conforme
+04;Explorer;A;mobile;oui;oui;oui;oui;partiel (10);partiel (2);conforme;conforme
+05;Fiche produit;A;mobile;oui;oui;oui;oui;partiel (12);partiel (1);conforme;conforme
+06;Mon panier;A;mobile;oui;oui;oui;oui;partiel (1);partiel (1);conforme;conforme
+07;Livraison;A;mobile;oui;oui;oui;oui;partiel (6);conforme;conforme;conforme
+08;Paiement;A;mobile;oui;oui;oui;oui;partiel (2);partiel (1);conforme;conforme
+09;Ma commande;A;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+10;Profil étudiant;A;mobile;oui;oui;oui;oui;partiel (8);conforme;conforme;conforme
+11;Connexion;B;mobile;oui;oui;oui;oui;partiel (3);partiel (1);conforme;conforme
+12;Créer un compte;B;mobile;oui;oui;oui;oui;partiel (6);partiel (1);conforme;conforme
+13;Choix du profil;B;mobile;oui;oui;non;non;conforme;conforme;conforme;conforme
+14;Vérification du compte;B;mobile;oui;oui;oui;non;partiel (1);conforme;conforme;conforme
+15;Mot de passe oublié;B;mobile;oui;oui;oui;oui;partiel (1);conforme;conforme;conforme
+16;Nouveau mot de passe;B;mobile;oui;oui;non;non;partiel (2);partiel (2);conforme;conforme
+17;Conditions et confidentialité;B;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+18;État de validation;B;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+18b;Compléter mon profil;B;mobile;oui;oui;non;non;partiel (4);conforme;conforme;conforme
+18c;Vérification étudiant;B;mobile;oui;oui;non;non;partiel (1);conforme;conforme;conforme
+19;Découvrir;B;mobile;oui;oui;oui;oui;partiel (1);conforme;conforme;conforme
+20;Résultats de recherche;B;mobile;oui;oui;oui;oui;partiel (2);conforme;conforme;conforme
+21;Recherche avancée;C;mobile;oui;oui;oui;non;partiel (12);conforme;conforme;conforme
+22;Catalogue de produits;C;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+22b;Services et prestations;C;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+22c;Tendances et nouveautés;C;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+22d;Pour vous;C;mobile;oui;oui;oui;non;partiel (6);conforme;conforme;conforme
+23;Filtres;C;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+24;Profil vendeur;C;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+25;Mes favoris;C;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+25b;Mes collections;C;mobile;oui;oui;oui;oui;partiel (1);conforme;conforme;conforme
+26;Comparer des offres;C;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+27;Mes adresses;C;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+28;Mes commandes;C;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+29;Détail de la commande;C;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+30;Commande reçue;C;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+31;Avis et évaluations;C;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+127;Tableau de bord de la plateforme;N;console web;oui;oui;oui;oui;partiel (21);conforme;conforme;conforme
+128;Comptes, rôles et permissions;N;console web;oui;oui;oui;oui;partiel (23);conforme;conforme;conforme
+129;Institutions;N;console web;oui;oui;oui;oui;partiel (16);conforme;conforme;conforme
+130;Modération;N;console web;oui;oui;oui;non;partiel (16);conforme;conforme;conforme
+131;Signalements;N;console web;oui;oui;oui;non;partiel (20);conforme;conforme;conforme
+132;Commandes et incidents;N;console web;oui;oui;oui;non;partiel (20);conforme;conforme;conforme
+133;Litiges et remboursements;N;console web;oui;oui;oui;oui;partiel (16);conforme;conforme;conforme
+134;Transactions et rapprochements;N;console web;oui;oui;oui;oui;partiel (16);conforme;conforme;conforme
+135;Commissions et règles économiques;N;console web;oui;oui;oui;oui;partiel (18);conforme;conforme;conforme
+136;Sécurité et accès;N;console web;oui;oui;oui;oui;partiel (16);conforme;conforme;conforme
+137;Journal d’audit global;N;console web;oui;oui;oui;oui;partiel (18);conforme;conforme;conforme
+138;Configuration générale;N;console web;oui;oui;oui;oui;partiel (16);conforme;conforme;conforme
+139;Tableau de bord financier;O;console web;oui;oui;oui;oui;partiel (17);conforme;conforme;conforme
+140;Paiements déclarés;O;console web;oui;oui;oui;oui;partiel (12);conforme;conforme;conforme
+141;Journal financier;O;console web;oui;oui;oui;oui;partiel (12);conforme;conforme;conforme
+142;Rapports financiers;O;console web;oui;oui;oui;oui;partiel (12);conforme;conforme;conforme
+143;Versements et montants dus;O;console web;oui;oui;oui;oui;partiel (13);conforme;conforme;conforme
+144;Moyens de paiement et règles;O;console web;oui;oui;oui;oui;partiel (13);conforme;conforme;conforme
+145;Points de retrait et kiosques;P;console web;oui;oui;oui;oui;partiel (12);conforme;conforme;conforme
+146-1;Kiosque (gestionnaire);P;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+146-2;Remise d’une commande;P;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+147-1;Incidents et maintenance;P;console web;oui;oui;oui;oui;partiel (12);conforme;conforme;conforme
+147-2;Tickets de support;P;console web;oui;oui;oui;oui;partiel (12);conforme;conforme;conforme
+147-3;Interventions et résolutions;P;console web;oui;oui;oui;oui;partiel (12);conforme;conforme;conforme
+148-1;Paramètres;Q;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+148-2;Centre de sécurité;Q;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+149;Langue et affichage;Q;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+150-1;Synchronisation;Q;mobile;oui;oui;oui;oui;partiel (1);partiel (1);conforme;conforme
+150-2;Session expirée;Q;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+150-3;Connexion impossible;Q;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+150-4;Mes commandes (vide);Q;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+151;Opportunités;S;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+152;Kéla te recommande;S;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+153;Pourquoi cette offre ?;S;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+154;Mon dossier;S;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+155;Alertes;S;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+156;Préférences d’alertes;S;mobile;oui;oui;non;oui;partiel (12);conforme;conforme;conforme
+157;Résumé de Kéla;S;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+158;Candidatures classées;S;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+159;Candidature envoyée;S;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+160;Hackathons et concours;T;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+161;Hackathon;T;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+162;Inscription;T;mobile;oui;oui;oui;oui;partiel (2);conforme;conforme;conforme
+163;Trouver des coéquipiers;T;mobile;oui;oui;oui;oui;partiel (1);conforme;conforme;conforme
+164;Espace d’équipe;T;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+165;Dépôt du projet;T;mobile;oui;oui;non;oui;partiel (3);conforme;conforme;conforme
+166;Résultats;T;mobile;oui;oui;non;non;conforme;conforme;conforme;conforme
+167;Noter un projet;T;mobile;oui;oui;non;oui;partiel (3);conforme;conforme;conforme
+168;Publier un concours;T;console web;oui;oui;oui;non;partiel (12);conforme;conforme;conforme
+169;Modération des concours;T;console web;oui;oui;oui;oui;partiel (5);conforme;conforme;conforme
+170;Signaler une annonce;U;mobile;oui;oui;non;non;partiel (2);conforme;conforme;conforme
+171;Paiement sécurisé;U;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+172;Confiance du vendeur;U;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+173;Partager;U;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+174;Centre de confiance;U;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+211;Passeport du produit;U;mobile;oui;oui;non;oui;partiel (1);conforme;conforme;conforme
+212;Vérifier un certificat;U;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+213;Registre des certificats;U;console web;oui;oui;oui;oui;partiel (8);conforme;conforme;conforme
+175;Bienvenue, étudiant;V;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+176;Bienvenue;V;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+177;Bienvenue, entreprise;V;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+178;Bienvenue, jury;V;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+179;Guide d’utilisation;V;mobile;oui;oui;oui;oui;partiel (1);conforme;conforme;conforme
+180;Rôles et permissions;V;console web;oui;oui;oui;oui;partiel (5);conforme;conforme;conforme
+181;Matrice des permissions;V;console web;oui;oui;oui;oui;partiel (5);conforme;conforme;conforme
+182;Explorer (chargement);W;mobile;oui;oui;oui;oui;partiel (1);conforme;conforme;conforme
+183;Mes commandes (hors ligne);W;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+184;Économie de données;W;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+185;Language;W;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+186;Accessibilité;W;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+41;Adresse de livraison;E;mobile;oui;oui;oui;oui;partiel (5);conforme;conforme;conforme
+42;Récapitulatif;E;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+43;Instructions de paiement;E;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+44;Commande confirmée;E;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+45;Mes commandes;E;mobile;oui;oui;oui;oui;partiel (1);conforme;conforme;conforme
+46;Suivi de livraison;E;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+47;Annuler la commande;E;mobile;oui;oui;non;oui;partiel (2);conforme;conforme;conforme
+48;Réclamation;E;mobile;oui;oui;non;non;partiel (3);conforme;conforme;conforme
+49;Aide et support;E;mobile;oui;oui;oui;non;partiel (1);conforme;conforme;conforme
+50;Notifications;F;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+51;Détail d’une notification;F;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+52;Messages;F;mobile;oui;oui;oui;oui;partiel (1);conforme;conforme;conforme
+53;Conversation;F;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+54;Conversation commande;F;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+55;Conversation entreprise;F;mobile;oui;oui;oui;non;partiel (1);conforme;conforme;conforme
+56;Notifications et confidentialité;F;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+57;Tableau de bord vendeur;G;mobile;oui;oui;oui;oui;partiel (2);conforme;conforme;conforme
+58;Nouveau produit;G;mobile;oui;oui;oui;oui;partiel (6);conforme;conforme;conforme
+59;Nouveau service;G;mobile;oui;oui;non;oui;partiel (6);conforme;conforme;conforme
+60;Modifier l’annonce;G;mobile;oui;oui;non;non;conforme;conforme;conforme;conforme
+61;Mon catalogue;G;mobile;oui;oui;oui;oui;partiel (1);conforme;conforme;conforme
+62;Stocks;G;mobile;oui;oui;oui;oui;partiel (10);conforme;conforme;conforme
+63;Commandes reçues;G;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+64;Préparer une commande;G;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+65;Détail d’une vente;G;mobile;oui;oui;non;non;conforme;conforme;conforme;conforme
+66;Revenus;G;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+67;Statistiques;G;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+69;Validations;G;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+70;Talents étudiants;H;mobile;oui;oui;oui;oui;partiel (1);conforme;conforme;conforme
+72;Ajouter à mon profil;H;mobile;oui;oui;non;non;partiel (4);conforme;conforme;conforme
+73;Mes documents;H;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+75;Opportunités;H;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+76;Ma candidature;H;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+77;Profil de mentor;H;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+78;Projets innovants;I;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+79;Projet;I;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+80;Soumettre un projet;I;mobile;oui;oui;oui;non;partiel (4);conforme;conforme;conforme
+81;Équipe du projet;I;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+82;Journal du projet;I;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+83;Médias et preuves;I;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+84;Nouvelle campagne;I;mobile;oui;oui;non;oui;partiel (5);conforme;conforme;conforme
+84b;Financement;I;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+85;Objectifs et jalons;I;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+86;Résultats de campagne;I;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+87;Registre des innovations;I;mobile;oui;oui;oui;oui;partiel (1);conforme;conforme;conforme
+100;Événements;K;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+101;Événement;K;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+102;Vitrine;K;mobile;oui;oui;oui;oui;partiel (1);conforme;conforme;conforme
+103;Communauté;K;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+104;Carte de l’innovation;K;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+105;Inter-établissements;K;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+106;Économie circulaire;K;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+107;Mon impact;K;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+237;Impact par territoire;K;console web;oui;oui;oui;oui;partiel (1);conforme;conforme;conforme
+238;Impact de Boutik-École;K;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+239;Rapport sponsors;K;console web;oui;oui;oui;oui;partiel (5);conforme;conforme;conforme
+108;Tableau de bord du département;L;console web;oui;oui;oui;oui;partiel (21);conforme;conforme;conforme
+109;Étudiants et vendeurs;L;console web;oui;oui;oui;oui;partiel (15);conforme;conforme;conforme
+110;Validation des annonces;L;console web;oui;oui;oui;oui;partiel (22);conforme;conforme;conforme
+111;Validation des projets;L;console web;oui;oui;oui;oui;partiel (17);conforme;conforme;conforme
+112;Statistiques du département;L;console web;oui;oui;oui;oui;partiel (13);conforme;conforme;conforme
+113;Suivi des productions;L;console web;oui;oui;oui;oui;partiel (13);conforme;conforme;conforme
+114;Mentors et encadreurs;L;console web;oui;oui;oui;oui;partiel (15);conforme;conforme;conforme
+115;Événements et initiatives;L;console web;oui;oui;oui;oui;partiel (13);conforme;conforme;conforme
+116;Rapports et exports;L;console web;oui;oui;oui;oui;partiel (13);conforme;conforme;conforme
+214;Départements;L;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+215;Fiche département;L;mobile;oui;oui;oui;non;partiel (2);conforme;conforme;conforme
+117;Tableau de bord institutionnel;M;console web;oui;oui;oui;oui;partiel (17);conforme;conforme;conforme
+118;Établissement et identité visuelle;M;console web;oui;oui;oui;oui;partiel (14);conforme;conforme;conforme
+119;Départements et filières;M;console web;oui;oui;oui;oui;partiel (16);conforme;conforme;conforme
+120;Utilisateurs et affectations;M;console web;oui;oui;oui;oui;partiel (16);conforme;conforme;conforme
+121;Responsables et encadreurs;M;console web;oui;oui;oui;oui;partiel (14);conforme;conforme;conforme
+122;Circuits de validation;M;console web;oui;oui;oui;oui;partiel (14);conforme;conforme;conforme
+123;Ventes et activité;M;console web;oui;oui;oui;oui;partiel (14);conforme;conforme;conforme
+124;Événements et campagnes;M;console web;oui;oui;oui;oui;partiel (16);conforme;conforme;conforme
+125;Rapports consolidés;M;console web;oui;oui;oui;oui;partiel (14);conforme;conforme;conforme
+126;Journal d’audit;M;console web;oui;oui;oui;oui;partiel (16);conforme;conforme;conforme
+32;Détail du produit;D;mobile;oui;oui;non;oui;partiel (5);partiel (1);conforme;conforme
+33;Histoire du produit;D;mobile;oui;oui;non;oui;partiel (2);conforme;conforme;conforme
+34;Galerie;D;mobile;oui;oui;non;oui;partiel (2);conforme;conforme;conforme
+35;Disponibilité;D;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+36;Détail du service;D;mobile;oui;oui;oui;non;partiel (3);conforme;conforme;conforme
+38;Réputation;D;mobile;oui;oui;non;oui;partiel (1);conforme;conforme;conforme
+39;Demande de renseignements;D;mobile;oui;oui;oui;oui;partiel (2);conforme;conforme;conforme
+40;Demande de devis;D;mobile;oui;oui;non;oui;partiel (4);conforme;conforme;conforme
+88;Espace entreprise;J;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+89;Profil de l’entreprise;J;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+90;Publier un besoin;J;mobile;oui;oui;non;oui;partiel (5);conforme;conforme;conforme
+91;Rechercher des talents;J;mobile;oui;oui;oui;oui;partiel (1);conforme;conforme;conforme
+93;Propositions reçues;J;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+93b;Proposition;J;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+94;Comparer les propositions;J;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+95;Devis et négociations;J;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+95b;Demande de devis;J;mobile;oui;oui;non;oui;partiel (5);conforme;conforme;conforme
+96;Défis d’innovation;J;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+97;Recrutement;J;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+98;Collaborations;J;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+99;Historique;J;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+240;Parrainer et gagner;AM;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+241;Mes contacts;AM;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+242;Kit à partager;AM;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+243;Mes gains;AM;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+244;Cercle;AM;mobile;oui;partiel (exemples résiduels);oui;oui;partiel (1);partiel (1);conforme;conforme
+244b;Cercle · publication aimée;AM;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+245;Reels;AM;mobile;oui;oui;oui;oui;partiel (3);partiel (1);conforme;conforme
+246;Lives;AM;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+247;Profil créateur;AM;mobile;oui;oui;oui;oui;partiel (1);partiel (1);conforme;conforme
+248;Boutique du créateur;AM;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+249;Créer;AM;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+250;Nouvelle publication;AM;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+251;Découvrir;AM;mobile;oui;oui;non;oui;partiel (3);conforme;conforme;conforme
+252;Commentaires et avis;AM;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+253;Défis et récompenses;AM;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+253b;Défis · récompense récupérée;AM;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+254;Activité;AM;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+216;Marché des vœux;AD;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+217;Fiche d’un vœu;AD;mobile;oui;partiel (exemples résiduels);non;oui;conforme;conforme;conforme;conforme
+218;Publier un vœu;AD;mobile;oui;oui;non;oui;partiel (5);conforme;conforme;conforme
+219;Nouveau duel;AD;mobile;oui;oui;non;oui;partiel (1);conforme;conforme;conforme
+220;Duel de talents;AD;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+221;Résultat du duel;AD;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+222;Atelier en direct;AD;mobile;oui;oui;non;oui;partiel (2);partiel (1);conforme;conforme
+223;Ateliers en direct;AD;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+224;Validation des vœux;AD;mobile;oui;oui;non;oui;partiel (3);conforme;conforme;conforme
+225;Jumeau 3D;AD;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+226;Modération des duels;AD;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+227;Régie des ateliers en direct;AD;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+228;Partager mon CV;AD;mobile;oui;oui;non;non;conforme;conforme;conforme;conforme
+229;CV vivant;AD;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+191;Votre besoin;Y;mobile;oui;oui;non;oui;partiel (7);conforme;conforme;conforme
+192;Votre devis;Y;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+193;Paiement sécurisé;Y;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+194;Ma mission;Y;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+195;Ajouter une preuve;Y;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+196;Dossier;Y;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+197;Valider le jalon;Y;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+198;Briefs reçus;Y;console web;oui;oui;oui;oui;partiel (6);conforme;conforme;conforme
+199;Attribuer;Y;console web;oui;oui;oui;oui;partiel (3);conforme;conforme;conforme
+200;Missions et encaissement;Y;console web;oui;oui;oui;oui;partiel (6);conforme;conforme;conforme
+201;Mes missions;Y;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+202;Pack Lancement de marque;Y;mobile;oui;oui;oui;non;partiel (1);conforme;conforme;conforme
+203;Mes compétences;Y;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+204;Coup de pouce startup;Y;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+205;Soumettre mon projet;Y;mobile;oui;oui;oui;oui;partiel (3);conforme;conforme;conforme
+206;Borne · Accueil;AA;tablette;oui;oui;oui;oui;partiel (3);conforme;conforme;conforme
+207;Borne · Explorer;AA;tablette;oui;oui;oui;oui;partiel (13);partiel (1);conforme;conforme
+208;Borne · Fiche article;AA;tablette;oui;oui;oui;oui;partiel (5);conforme;conforme;conforme
+209;Borne · QR téléphone;AA;tablette;oui;oui;oui;oui;partiel (2);conforme;conforme;conforme
+210;Borne · C’est envoyé;AA;tablette;oui;oui;oui;oui;partiel (2);conforme;conforme;conforme
+187;Tableau de bord entreprise;X;console web;oui;oui;oui;oui;partiel (14);conforme;conforme;conforme
+188;Recherche de talents et d’équipes;X;console web;oui;oui;oui;non;partiel (13);partiel (4);conforme;conforme
+189;Propositions reçues;X;console web;oui;oui;oui;oui;partiel (6);conforme;conforme;conforme
+190;Devis et négociations;X;console web;oui;oui;oui;oui;partiel (6);conforme;conforme;conforme
+230;Assistante vocale Kéla;AI;mobile;oui;oui;non;oui;conforme;partiel (1);conforme;conforme
+231;Accueil Kéla;AI;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+232;Voix en texte;AI;mobile;oui;oui;oui;oui;partiel (2);partiel (1);conforme;conforme
+233;WhatsApp · suivi de mission;AI;mobile;oui;oui;oui;oui;partiel (2);conforme;conforme;conforme
+234;WhatsApp · validation de jalon;AI;mobile;oui;oui;oui;oui;partiel (2);conforme;conforme;conforme
+235;WhatsApp · paiement sécurisé;AI;mobile;oui;oui;oui;oui;partiel (2);conforme;conforme;conforme
+236;Canaux et notifications;AI;mobile;oui;oui;oui;oui;partiel (2);conforme;conforme;conforme
+A1;Assistante vocale Kéla;REF;mobile;oui;oui;oui;non;conforme;partiel (1);conforme;conforme
+A2;Accueil Kéla;REF;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+A3;Voix en texte;REF;mobile;oui;oui;oui;non;partiel (2);partiel (1);conforme;conforme
+P1;Profil talent;REF;mobile;oui;oui;oui;non;conforme;conforme;conforme;conforme
+P2;Profil talent · abonnement;REF;mobile;oui;oui;oui;non;partiel (1);partiel (1);conforme;conforme
+P3;Avis et outils connectés;REF;mobile;oui;oui;oui;oui;conforme;conforme;conforme;conforme
+P4;Nouvelle publication;REF;mobile;oui;oui;non;non;conforme;conforme;conforme;conforme
+V1;Vitrine;REF;mobile;oui;oui;oui;oui;partiel (1);partiel (1);conforme;conforme
+P5;Connecter mes outils;REF;mobile;oui;oui;oui;oui;partiel (1);conforme;conforme;conforme
+L1;Aller en direct;REF;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+S1;Démarrage animé;REF;mobile;oui;oui;non;oui;conforme;conforme;conforme;conforme
+D1;Tableau de bord du studio;REF;borne;oui;oui;oui;non;partiel (14);conforme;conforme;conforme

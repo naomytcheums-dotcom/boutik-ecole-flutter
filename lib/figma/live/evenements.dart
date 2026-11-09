@@ -123,7 +123,7 @@ class EventsWeekStrip extends ConsumerWidget {
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () => ref.read(eventDayProvider.notifier).toggle(i),
-              child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              child: FittedBox(fit: BoxFit.scaleDown, child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Text(_initiales[i], style: _st(11, c: _grey)),
                 const SizedBox(height: 6),
                 Container(
@@ -135,7 +135,7 @@ class EventsWeekStrip extends ConsumerWidget {
                 ),
                 const SizedBox(height: 3),
                 Container(width: 4, height: 4, decoration: BoxDecoration(shape: BoxShape.circle, color: events.any((e) => e.startsAt.weekday == i + 1) ? const Color(0xFF5A3FE0) : Colors.transparent)),
-              ]),
+              ])),
             ),
           ),
       ]),

@@ -31,7 +31,7 @@ class GScreen extends StatelessWidget {
   static final _enhanced = Expando<List<Widget>>();
 
   /// Éléments de l'écran, avec l'accessibilité ajoutée pour les écrans de format mobile.
-  List<Widget> get children => _enhanced[this] ??= (a11y && w < 700 ? _withA11y(_source) : _source);
+  List<Widget> get children => _enhanced[this] ??= (a11y ? _withA11y(_source, w, h, rings: w < 700) : _source);
 
   static String _nearestLabel(Rect r, List<GPos> texts) {
     GPos? best;
@@ -50,45 +50,130 @@ class GScreen extends StatelessWidget {
     return (best?.label ?? '').trim();
   }
 
-  static List<Widget> _withA11y(List<Widget> src) {
+  /// Texte le plus proche dans un rayon plus large (carte, vignette, icône sans texte propre) : même ligne d'abord, puis au-dessus / en dessous.
+  static String _wideLabel(Rect r, List<GPos> texts) {
+    GPos? best;
+    var bestScore = 170.0;
+    for (final t in texts) {
+      final tr = t.rect;
+      final sameRow = (tr.center.dy - r.center.dy).abs() < math.max(24.0, r.height / 2 + 8);
+      final dx = tr.center.dx < r.left ? r.left - tr.center.dx : (tr.center.dx > r.right ? tr.center.dx - r.right : 0.0);
+      final dy = tr.center.dy < r.top ? r.top - tr.center.dy : (tr.center.dy > r.bottom ? tr.center.dy - r.bottom : 0.0);
+      final score = sameRow ? dx : dx + dy * 1.4 + 30;
+      if (score < bestScore) {
+        bestScore = score;
+        best = t;
+      }
+    }
+    return (best?.label ?? '').trim();
+  }
+
+  /// Rôle d'une zone d'après sa place dans l'écran (en-tête, barre du bas) quand aucun texte ne la décrit.
+  static String _roleLabel(Rect r, double w, double h, List<Rect> bottomTaps) {
+    if (r.top < 120 && r.left < 90) return 'Retour';
+    if (r.top < 120 && r.right > w - 90) return r.width < 60 ? 'Options de l’écran' : 'Action de l’en-tête';
+    if (r.top > h - 120) {
+      final i = bottomTaps.indexWhere((q) => q == r);
+      return 'Onglet de navigation ${i + 1} sur ${bottomTaps.length}';
+    }
+    return '';
+  }
+
+  static List<Widget> _withA11y(List<Widget> src, double w, double h, {bool rings = true}) {
     final texts = <GPos>[
       for (final c in src)
-        if (c is GPos && !c.tap && (c.label ?? '').trim().isNotEmpty) c
+        if (c is GPos && !c.tap && c.kind == null && RegExp(r'[A-Za-zÀ-ÿ0-9]{2}').hasMatch(c.label ?? '')) c
     ];
-    final out = <Widget>[];
-    final earlierTaps = <Rect>[];
+    final taps = [for (final c in src) if (c is GPos && c.tap) c.rect];
+    final bottomTaps = [for (final r in taps) if (r.top > h - 120) r]..sort((a, b) => a.left.compareTo(b.left));
+    // Libellés précis : texte de la zone, texte voisin, rôle selon la place, texte le plus proche ; jamais un « Bouton » générique.
+    final labels = <String>[];
     for (final c in src) {
+      if (c is! GPos || !c.tap) continue;
+      final r = c.rect;
+      var l = (c.label ?? '').trim();
+      if (l.isEmpty) l = _nearestLabel(r, texts);
+      if (l.isEmpty) l = _roleLabel(r, w, h, bottomTaps);
+      if (l.isEmpty) {
+        final near = _wideLabel(r, texts);
+        l = near.isEmpty ? 'Zone interactive de l’écran' : 'Ouvrir : $near';
+      }
+      labels.add(l);
+    }
+    // Libellés identiques sur un même écran : numérotés pour que TalkBack les distingue.
+    final totals = <String, int>{};
+    for (final l in labels) {
+      totals[l] = (totals[l] ?? 0) + 1;
+    }
+    final seen = <String, int>{};
+    for (var i = 0; i < labels.length; i++) {
+      final l = labels[i];
+      if ((totals[l] ?? 0) > 1 && !l.startsWith('Onglet de navigation')) {
+        seen[l] = (seen[l] ?? 0) + 1;
+        labels[i] = '$l, ${seen[l]} sur ${totals[l]}';
+      }
+    }
+    final out = <Widget>[];
+    var k = 0;
+    for (final c in src) {
+      if (c is GPos && c.kind != null && !c.tap) {
+        // Interrupteur, case ou champ : libellé TalkBack = texte voisin (ou intitulé du champ).
+        var l = (c.label ?? '').trim();
+        if (l.isEmpty) l = _nearestLabel(c.rect.inflate(30), texts);
+        if (l.isEmpty) l = _wideLabel(c.rect, texts);
+        if (l.isEmpty) l = c.kind == 'field' ? 'Champ de saisie' : c.kind == 'toggle' ? 'Interrupteur' : 'Case à cocher';
+        out.add(GPos(x: c.left!, y: c.top!, gw: c.gw, gh: c.gh, label: c.label, kind: c.kind, child: c.kind == 'field' ? Semantics(label: l, child: c.child) : MergeSemantics(child: Semantics(label: l, child: c.child))));
+        continue;
+      }
       if (c is! GPos || !c.tap) {
         out.add(c);
         continue;
       }
       final r = c.rect;
-      final own = (c.label ?? '').trim();
-      final label = own.isNotEmpty ? own : _nearestLabel(r, texts);
+      final label = labels[k++];
+      var e = r;
+      if (rings && c.onTap != null) {
+        final needW = math.max(0.0, minTarget - r.width), needH = math.max(0.0, minTarget - r.height);
+        if (needW > 0 || needH > 0) {
+          bool nested(Rect q) => (q.left <= r.left + 0.5 && q.top <= r.top + 0.5 && q.right >= r.right - 0.5 && q.bottom >= r.bottom - 0.5) || (r.left <= q.left + 0.5 && r.top <= q.top + 0.5 && r.right >= q.right - 0.5 && r.bottom >= q.bottom - 0.5);
+          bool free(Rect q0) => !taps.any((q) => q != r && !nested(q) && q.overlaps(q0)); // jamais au-dessus d'une autre zone tactile distincte ; une zone imbriquée (icône dans son cercle) fait partie du même bouton
+          // Agrandissement par côté : à parts égales si possible, sinon du seul côté libre (jamais au-dessus d'une autre zone tactile).
+          final hs = needW > 0 ? [(needW / 2, needW / 2), (0.0, needW), (needW, 0.0), (needW / 2, 0.0), (0.0, needW / 2), (0.0, 0.0)] : [(0.0, 0.0)];
+          final vs = needH > 0 ? [(needH / 2, needH / 2), (0.0, needH), (needH, 0.0), (needH / 2, 0.0), (0.0, needH / 2), (0.0, 0.0)] : [(0.0, 0.0)];
+          var bestGain = 0.0;
+          for (final hh in hs) {
+            for (final vv in vs) {
+              final q0 = Rect.fromLTRB(r.left - hh.$1, r.top - vv.$1, r.right + hh.$2, r.bottom + vv.$2);
+              final gain = (hh.$1 + hh.$2) + (vv.$1 + vv.$2);
+              if (gain > bestGain && free(q0)) {
+                bestGain = gain;
+                e = q0;
+              }
+            }
+          }
+        }
+      }
+      // Le nœud TalkBack « bouton » couvre toute la zone de toucher (au moins 48 × 48 dp quand la place le permet) ; la zone dessinée reste au centre, intacte.
+      final inner = e == r
+          ? c.child
+          : SizedBox(
+              width: e.width,
+              height: e.height,
+              child: Stack(clipBehavior: Clip.none, children: [
+                Positioned.fill(child: _ring(r, e, c.onTap!)),
+                Positioned(left: r.left - e.left, top: r.top - e.top, width: r.width, height: r.height, child: c.child),
+              ]),
+            );
       out.add(GPos(
-        x: r.left,
-        y: r.top,
-        gw: r.width,
-        gh: r.height,
+        x: e.left,
+        y: e.top,
+        gw: e.width,
+        gh: e.height,
         tap: true,
         onTap: c.onTap,
         label: c.label,
-        child: Semantics(container: true, button: true, enabled: true, label: label.isEmpty ? 'Bouton' : label, onTap: c.onTap, child: ExcludeSemantics(child: c.child)),
+        child: Semantics(container: true, button: true, enabled: true, label: label, onTap: c.onTap, child: ExcludeSemantics(child: inner)),
       ));
-      final needW = math.max(0.0, minTarget - r.width), needH = math.max(0.0, minTarget - r.height);
-      if (c.onTap != null && (needW > 0 || needH > 0)) {
-        bool free(Rect e) => !earlierTaps.any((q) => q.overlaps(e) && !q.contains(r.topLeft) && !q.contains(r.bottomRight) && !r.contains(q.topLeft) && !r.contains(q.bottomRight));
-        var e = Rect.fromLTRB(r.left - needW / 2, r.top - needH / 2, r.right + needW / 2, r.bottom + needH / 2);
-        if (!free(e)) {
-          e = Rect.fromLTRB(r.left - needW / 2, r.top, r.right + needW / 2, r.bottom);
-          if (!free(e)) {
-            e = Rect.fromLTRB(r.left, r.top - needH / 2, r.right, r.bottom + needH / 2);
-            if (!free(e)) e = r;
-          }
-        }
-        if (e != r) out.add(GPos(x: e.left, y: e.top, gw: e.width, gh: e.height, child: ExcludeSemantics(child: SizedBox(width: e.width, height: e.height, child: _ring(r, e, c.onTap!)))));
-      }
-      earlierTaps.add(r);
     }
     return out;
   }
@@ -463,13 +548,20 @@ class _PhoneBodyState extends State<_PhoneBody> {
 Widget gP(double x, double y, double w, double h, Widget child,
     {double rot = 0, double op = 1, VoidCallback? tap, String? fx, String sound = 'click', bool show = true}) {
   if (!show) return const Positioned(left: 0, top: 0, width: 0, height: 0, child: SizedBox.shrink());
+  final kind = child is GToggle ? 'toggle' : child is GField ? 'field' : child is GCheck ? 'check' : child is GChoiceGroup ? 'chips' : null;
+  if (child is GToggle && GScreen.a11y && child.padX == 0 && child.padY == 0 && (w < GScreen.minTarget || h < GScreen.minTarget)) {
+    final px = math.max(0.0, (GScreen.minTarget - w) / 2), py = math.max(0.0, (GScreen.minTarget - h) / 2);
+    return gP(x - px, y - py, w + 2 * px, h + 2 * py,
+        GToggle(on: child.on, onColor: child.onColor, offColor: child.offColor, knob: child.knob, knobColor: child.knobColor, onChanged: child.onChanged, padX: px, padY: py),
+        rot: rot, op: op, tap: tap, fx: fx, sound: sound);
+  }
   Widget c = SizedBox(width: w, height: h, child: child);
   if (fx != null && GAnim.enabled) c = GFx(kind: fx, seed: x * 7 + y, child: c);
   if (rot != 0) c = Transform.rotate(angle: rot, alignment: Alignment.topLeft, child: c);
   if (op < 1) c = Opacity(opacity: op, child: c);
   if (tap != null) c = GPress(onTap: tap, sound: sound, child: c);
   if (GAnim.enabled && w * h < 140000) c = GEnter(delay: Duration(milliseconds: (y * 0.5).clamp(0, 520).round()), child: c);
-  return GPos(x: x, y: y, gw: w, gh: h, tap: tap != null, onTap: tap, label: child is GTextBox ? child.label : null, child: c);
+  return GPos(x: x, y: y, gw: w, gh: h, tap: tap != null, onTap: tap, label: child is GTextBox ? child.label : (child is GField && child.hint.isNotEmpty ? child.hint : null), kind: kind, child: c);
 }
 
 Widget gTap(double x, double y, double w, double h, VoidCallback tap) =>
@@ -477,10 +569,13 @@ Widget gTap(double x, double y, double w, double h, VoidCallback tap) =>
 
 /// Élément positionné de la maquette qui connaît son rectangle (pour l'adaptation plein écran des téléphones).
 class GPos extends Positioned {
-  const GPos({super.key, required double x, required double y, required this.gw, required this.gh, this.tap = false, this.onTap, this.label, required super.child})
+  const GPos({super.key, required double x, required double y, required this.gw, required this.gh, this.tap = false, this.onTap, this.label, this.kind, required super.child})
       : super(left: x, top: y);
   final double gw, gh;
   final bool tap;
+
+  /// Composant interactif sans zone tactile générique (interrupteur, champ, case, pastilles) : libellé TalkBack ajouté par l'écran.
+  final String? kind;
 
   /// Action de la zone cliquable et libellé du texte, pour reconstruire les menus latéraux (consoles web).
   final VoidCallback? onTap;
@@ -548,13 +643,22 @@ class _ShapeClipper extends CustomClipper<Path> {
   bool shouldReclip(covariant CustomClipper<Path> old) => false;
 }
 
+/// Contraste (WCAG 2.2 AA, 4,5:1) des petits textes : même teinte que la maquette, un cran plus foncée quand la taille est petite
+/// (gris secondaire 57545F -> 4A4854 ; rouge d'état E5484D -> B42318). Les grands textes et les couleurs de marque ne bougent pas.
+Color _legible(Color c, double size) {
+  if (size > 14) return c;
+  if (c.toARGB32() == 0xFF57545F) return const Color(0xFF4A4854);
+  if (c.toARGB32() == 0xFFE5484D) return const Color(0xFFB42318);
+  return c;
+}
+
 TextStyle _ts(double size, Color color, int weight, bool inter, double? lh, double? ls, [TextDecoration? deco]) => TextStyle(
       inherit: false,
       textBaseline: TextBaseline.alphabetic,
       fontFamily: inter ? _inter : _jakarta,
       fontSize: size,
       fontWeight: FontWeight.values[((weight ~/ 100).clamp(1, 9)) - 1],
-      color: color,
+      color: _legible(color, size),
       height: lh == null ? null : lh / size,
       letterSpacing: ls,
       decoration: deco ?? TextDecoration.none,
@@ -659,8 +763,10 @@ Future<void> gAlert(BuildContext context, String title, String message, {String 
 
 /// Interrupteur animé (cliquable).
 class GToggle extends StatefulWidget {
-  const GToggle({super.key, required this.on, required this.onColor, required this.offColor, required this.knob, this.knobColor = Colors.white, this.onChanged});
+  const GToggle({super.key, required this.on, required this.onColor, required this.offColor, required this.knob, this.knobColor = Colors.white, this.onChanged, this.padX = 0, this.padY = 0});
   final bool on;
+  /// Marge de toucher invisible autour de l'interrupteur (zone de 48 dp minimum) : l'interrupteur dessiné ne bouge pas.
+  final double padX, padY;
   final Color onColor, offColor, knobColor;
   final double knob;
   final ValueChanged<bool>? onChanged;
@@ -678,7 +784,8 @@ class _GToggleState extends State<GToggle> {
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(builder: (context, c) {
-        final pad = (c.maxHeight - widget.knob) / 2;
+        final bh = c.maxHeight - 2 * widget.padY;
+        final pad = (bh - widget.knob) / 2;
         return GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () {
@@ -686,15 +793,18 @@ class _GToggleState extends State<GToggle> {
             setState(() => on = !on);
             widget.onChanged?.call(on);
           },
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 180),
-            decoration: BoxDecoration(color: on ? widget.onColor : widget.offColor, borderRadius: BorderRadius.circular(c.maxHeight / 2)),
-            child: AnimatedAlign(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: widget.padX, vertical: widget.padY),
+            child: AnimatedContainer(
               duration: const Duration(milliseconds: 180),
-              alignment: on ? Alignment.centerRight : Alignment.centerLeft,
-              child: Padding(
-                padding: EdgeInsets.all(pad),
-                child: Container(width: widget.knob, height: widget.knob, decoration: BoxDecoration(color: widget.knobColor, shape: BoxShape.circle)),
+              decoration: BoxDecoration(color: on ? widget.onColor : widget.offColor, borderRadius: BorderRadius.circular(bh / 2)),
+              child: AnimatedAlign(
+                duration: const Duration(milliseconds: 180),
+                alignment: on ? Alignment.centerRight : Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.all(pad),
+                  child: Container(width: widget.knob, height: widget.knob, decoration: BoxDecoration(color: widget.knobColor, shape: BoxShape.circle)),
+                ),
               ),
             ),
           ),
@@ -876,17 +986,27 @@ class _GChoiceGroupState extends State<GChoiceGroup> {
         for (var i = 0; i < widget.chips.length; i++)
           Positioned(
             left: widget.chips[i].x,
-            top: widget.chips[i].y - dy,
+            top: widget.chips[i].y - dy - _padY(widget.chips[i]),
             width: widget.chips[i].w,
-            height: widget.chips[i].h,
-            child: GestureDetector(
+            height: widget.chips[i].h + 2 * _padY(widget.chips[i]),
+            child: Semantics(
+              button: true,
+              selected: i == sel,
+              label: widget.chips[i].label,
+              excludeSemantics: true,
+              onTap: () {
+                GSound.play('tick');
+                setState(() => sel = i);
+                widget.onChanged?.call(i);
+              },
+              child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () {
                 GSound.play('tick');
                 setState(() => sel = i);
                 widget.onChanged?.call(i);
               },
-              child: AnimatedContainer(
+              child: Padding(padding: EdgeInsets.symmetric(vertical: _padY(widget.chips[i])), child: AnimatedContainer(
                 duration: const Duration(milliseconds: 160),
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
@@ -900,10 +1020,13 @@ class _GChoiceGroupState extends State<GChoiceGroup> {
                       softWrap: false,
                       style: _ts(widget.chips[i].size, i == sel ? widget.selText : widget.unselText, widget.chips[i].weight, widget.inter, null, null)),
                 ),
-              ),
-            ),
+              )),
+            )),
           ),
       ];
+
+  /// Marge de toucher verticale invisible : la pastille reste dessinée à l'identique, sa zone de toucher fait au moins 48 dp de haut.
+  double _padY(GChip c) => GScreen.a11y ? math.max(0.0, (GScreen.minTarget - c.h) / 2) : 0.0;
 
   /// Les pastilles qui dépassent la largeur de l'écran défilent horizontalement (la dernière est atteignable).
   @override
@@ -911,8 +1034,8 @@ class _GChoiceGroupState extends State<GChoiceGroup> {
         if (widget.chips.isEmpty) return const SizedBox.shrink();
         final maxX = widget.chips.map((c) => c.x + c.w).reduce(math.max);
         if (!box.hasBoundedWidth || maxX <= box.maxWidth + 0.5) return Stack(clipBehavior: Clip.none, children: _chips(0));
-        final minY = widget.chips.map((c) => c.y).reduce(math.min);
-        final maxY = widget.chips.map((c) => c.y + c.h).reduce(math.max);
+        final minY = widget.chips.map((c) => c.y - _padY(c)).reduce(math.min);
+        final maxY = widget.chips.map((c) => c.y + c.h + _padY(c)).reduce(math.max);
         return Stack(children: [
           Positioned(
             left: 0,

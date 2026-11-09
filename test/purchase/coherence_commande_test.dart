@@ -133,9 +133,10 @@ void main() {
     await pumpScreen(t, '03');
     final router = GoRouter.of(t.element(find.byType(G_03)));
     // l'icône de messagerie du menu du bas : zone de 21 × 21 à x = 113,5 dans la maquette
-    final chat = find.byWidgetPredicate((w) => w is GPos && w.tap && w.gw == 21 && w.left == 113.5);
-    expect(chat, findsOneWidget);
-    await t.tap(chat);
+    // (la zone de toucher de 21 × 21 est agrandie à 48 × 48 dp autour de l'icône : on cherche la zone qui recouvre le centre de l'icône)
+    final chat = find.byWidgetPredicate((w) => w is GPos && w.tap && w.gw < 60 && w.rect.top > 700 && w.rect.left <= 124 && w.rect.right >= 124);
+    expect(chat, findsWidgets);
+    await t.tap(chat.last);
     await t.pumpAndSettle();
     expect(router.state.uri.path, '/s/52');
   });

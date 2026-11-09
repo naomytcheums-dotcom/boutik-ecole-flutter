@@ -1,0 +1,245 @@
+id;nom;zones_avant;zones_apres;sans_libelle_avant;sans_libelle_apres;contraste_avant;contraste_apres;debordement_apres
+255;Suivi de publication;4;4;4;0;1;0;non
+256;Contrôles de la fiche;2;0;4;0;0;0;non
+257;Paiement en attente de confirmation;2;0;5;0;0;0;non
+258;Paiement échoué;2;0;4;0;0;0;non
+259;Reçu;2;0;5;0;0;0;non
+260;Facture;3;0;4;0;0;0;non
+261;Mon espace client;8;0;6;0;0;0;non
+270;Showroom national;0;0;0;0;0;0;non
+271;Mes liens et réseaux;12;0;16;0;0;0;non
+272;Vérification en 2 étapes;2;0;3;0;0;0;non
+273;Mes données;4;0;4;0;0;0;non
+274;Conditions générales;4;2;5;0;0;0;non
+275;Déposer un produit (erreurs);5;3;6;0;0;0;non
+276;Borne hors ligne;2;0;3;0;0;0;non
+277;Supervision des bornes;2;0;3;0;0;0;non
+278;Fiche projet · liens et PI;2;0;3;0;0;0;non
+279;Ajouter des fichiers;2;0;3;0;0;0;non
+280;Intégrations;2;0;3;0;0;0;non
+281;Rôles et périmètres;2;0;2;0;0;0;non
+282;QR de transfert;2;0;3;0;0;0;non
+283;Registre des certificats;2;0;3;0;0;0;non
+284;Registre financier;2;0;3;0;0;0;non
+285;Espace projet;2;0;3;0;0;0;non
+286;Soumissions et équipe;9;0;4;0;0;0;non
+74;Talent Passport;3;0;4;0;0;0;non
+250b;Nouvelle publication;13;0;9;0;4;0;non
+01;Bienvenue;0;0;1;0;0;0;non
+02;Bienvenue (variante);2;0;2;0;0;0;non
+03;Accueil;7;1;13;0;0;0;non
+04;Explorer;10;10;12;2;2;0;non
+05;Fiche produit;12;12;12;1;0;0;non
+06;Mon panier;8;1;9;1;1;0;non
+07;Livraison;9;6;14;0;0;0;non
+08;Paiement;9;2;13;1;0;0;non
+09;Ma commande;9;0;10;0;0;0;non
+10;Profil étudiant;19;8;20;0;1;0;non
+11;Connexion;6;3;5;1;1;0;non
+12;Créer un compte;9;6;11;1;0;0;non
+13;Choix du profil;1;0;6;0;0;0;non
+14;Vérification du compte;4;1;5;0;0;0;non
+15;Mot de passe oublié;3;1;4;0;0;0;non
+16;Nouveau mot de passe;3;2;4;2;0;0;non
+17;Conditions et confidentialité;4;0;5;0;0;0;non
+18;État de validation;1;0;2;0;4;0;non
+18b;Compléter mon profil;6;4;8;0;0;0;non
+18c;Vérification étudiant;2;1;5;0;0;0;non
+19;Découvrir;6;1;10;0;0;0;non
+20;Résultats de recherche;10;2;4;0;0;0;non
+21;Recherche avancée;12;12;10;0;0;0;non
+22;Catalogue de produits;7;0;20;0;2;0;non
+22b;Services et prestations;8;0;14;0;1;0;non
+22c;Tendances et nouveautés;6;0;3;0;1;0;non
+22d;Pour vous;6;6;7;0;0;0;non
+23;Filtres;7;0;3;0;0;0;non
+24;Profil vendeur;5;0;1;0;0;0;non
+25;Mes favoris;12;0;12;0;0;0;non
+25b;Mes collections;8;1;9;0;0;0;non
+26;Comparer des offres;2;0;3;0;0;0;non
+27;Mes adresses;7;0;8;0;0;0;non
+28;Mes commandes;6;0;11;0;0;0;non
+29;Détail de la commande;2;0;4;0;0;0;non
+30;Commande reçue;1;0;4;0;0;0;non
+31;Avis et évaluations;6;0;7;0;0;0;non
+146-1;Kiosque (gestionnaire);5;0;6;0;4;0;non
+146-2;Remise d’une commande;6;0;7;0;0;0;non
+148-1;Paramètres;13;0;14;0;0;0;non
+148-2;Centre de sécurité;7;0;9;0;0;0;non
+149;Langue et affichage;8;0;5;0;1;0;non
+150-1;Synchronisation;4;1;5;1;0;0;non
+150-2;Session expirée;1;0;2;0;0;0;non
+150-3;Connexion impossible;5;0;8;0;0;0;non
+150-4;Mes commandes (vide);9;0;7;0;2;0;non
+151;Opportunités;9;0;13;0;2;0;non
+152;Kéla te recommande;10;0;7;0;0;0;non
+153;Pourquoi cette offre ?;3;0;4;0;0;0;non
+154;Mon dossier;1;0;3;0;4;0;non
+155;Alertes;9;0;6;0;2;0;non
+156;Préférences d’alertes;12;12;11;0;1;0;non
+157;Résumé de Kéla;5;0;6;0;0;0;non
+158;Candidatures classées;1;0;2;0;1;0;non
+159;Candidature envoyée;1;0;3;0;0;0;non
+160;Hackathons et concours;10;0;15;0;2;0;non
+161;Hackathon;2;0;5;0;0;0;non
+162;Inscription;6;2;11;0;1;0;non
+163;Trouver des coéquipiers;3;1;7;0;1;0;non
+164;Espace d’équipe;2;0;4;0;0;0;non
+165;Dépôt du projet;4;3;6;0;0;0;non
+166;Résultats;1;0;2;0;0;0;non
+167;Noter un projet;6;3;8;0;0;0;non
+170;Signaler une annonce;6;2;9;0;0;0;non
+171;Paiement sécurisé;1;0;3;0;0;0;non
+172;Confiance du vendeur;1;0;1;0;0;0;non
+173;Partager;5;0;6;0;0;0;non
+174;Centre de confiance;6;0;7;0;0;0;non
+211;Passeport du produit;1;1;2;0;0;0;non
+212;Vérifier un certificat;0;0;1;0;0;0;non
+175;Bienvenue, étudiant;0;0;2;0;0;0;non
+176;Bienvenue;0;0;2;0;0;0;non
+177;Bienvenue, entreprise;0;0;2;0;0;0;non
+178;Bienvenue, jury;2;0;4;0;0;0;non
+179;Guide d’utilisation;9;1;10;0;1;0;non
+182;Explorer (chargement);11;1;8;0;2;0;non
+183;Mes commandes (hors ligne);5;0;6;0;0;0;non
+184;Économie de données;5;0;5;0;0;0;non
+185;Language;6;0;7;0;0;0;non
+186;Accessibilité;9;0;5;0;2;0;non
+41;Adresse de livraison;8;5;9;0;0;0;non
+42;Récapitulatif;1;0;2;0;0;0;non
+43;Instructions de paiement;1;0;4;0;0;0;non
+44;Commande confirmée;2;0;3;0;0;0;non
+45;Mes commandes;12;1;13;0;2;0;non
+46;Suivi de livraison;1;0;3;0;0;0;non
+47;Annuler la commande;5;2;7;0;0;0;non
+48;Réclamation;7;3;8;0;0;0;non
+49;Aide et support;9;1;10;0;0;0;non
+50;Notifications;13;0;14;0;2;0;non
+51;Détail d’une notification;1;0;3;0;0;0;non
+52;Messages;8;1;9;0;0;0;non
+53;Conversation;2;0;2;0;0;0;non
+54;Conversation commande;2;0;2;0;0;0;non
+55;Conversation entreprise;3;1;3;0;0;0;non
+56;Notifications et confidentialité;8;0;9;0;0;0;non
+57;Tableau de bord vendeur;8;2;10;0;0;0;non
+58;Nouveau produit;7;6;9;0;1;0;non
+59;Nouveau service;7;6;9;0;1;0;non
+60;Modifier l’annonce;1;0;3;0;0;0;non
+61;Mon catalogue;8;1;14;0;2;0;non
+62;Stocks;10;10;13;0;1;0;non
+63;Commandes reçues;5;0;10;0;2;0;non
+64;Préparer une commande;1;0;3;0;0;0;non
+65;Détail d’une vente;1;0;2;0;0;0;non
+66;Revenus;5;0;6;0;5;0;non
+67;Statistiques;8;0;6;0;4;0;non
+69;Validations;1;0;2;0;5;0;non
+70;Talents étudiants;9;1;15;0;1;0;non
+72;Ajouter à mon profil;6;4;7;0;0;0;non
+73;Mes documents;1;0;2;0;1;0;non
+75;Opportunités;11;0;12;0;2;0;non
+76;Ma candidature;1;0;3;0;0;0;non
+77;Profil de mentor;9;0;10;0;0;0;non
+78;Projets innovants;7;0;8;0;1;0;non
+79;Projet;2;0;3;0;0;0;non
+80;Soumettre un projet;9;4;10;0;0;0;non
+81;Équipe du projet;2;0;2;0;0;0;non
+82;Journal du projet;1;0;2;0;0;0;non
+83;Médias et preuves;2;0;3;0;0;0;non
+84;Nouvelle campagne;7;5;9;0;1;0;non
+84b;Financement;1;0;2;0;0;0;non
+85;Objectifs et jalons;1;0;1;0;0;0;non
+86;Résultats de campagne;1;0;1;0;0;0;non
+87;Registre des innovations;3;1;4;0;0;0;non
+100;Événements;7;0;8;0;3;0;non
+101;Événement;1;0;2;0;0;0;non
+102;Vitrine;1;1;3;0;1;0;non
+103;Communauté;12;0;10;0;1;0;non
+104;Carte de l’innovation;10;0;7;0;0;0;non
+105;Inter-établissements;7;0;8;0;2;0;non
+106;Économie circulaire;10;0;8;0;1;0;non
+107;Mon impact;6;0;7;0;0;0;non
+238;Impact de Boutik-École;5;0;6;0;0;0;non
+214;Départements;6;0;2;0;0;0;non
+215;Fiche département;2;2;3;0;0;0;non
+32;Détail du produit;5;5;3;1;1;0;non
+33;Histoire du produit;2;2;2;0;2;0;non
+34;Galerie;2;2;2;0;0;0;non
+35;Disponibilité;2;0;4;0;0;0;non
+36;Détail du service;3;3;5;0;0;0;non
+38;Réputation;1;1;1;0;0;0;non
+39;Demande de renseignements;4;2;5;0;1;0;non
+40;Demande de devis;5;4;6;0;0;0;non
+88;Espace entreprise;5;0;6;0;0;0;non
+89;Profil de l’entreprise;11;0;12;0;0;0;non
+90;Publier un besoin;6;5;8;0;0;0;non
+91;Rechercher des talents;8;1;9;0;1;0;non
+93;Propositions reçues;4;0;2;0;1;0;non
+93b;Proposition;1;0;3;0;0;0;non
+94;Comparer les propositions;5;0;2;0;0;0;non
+95;Devis et négociations;5;0;6;0;0;0;non
+95b;Demande de devis;6;5;7;0;0;0;non
+96;Défis d’innovation;10;0;8;0;0;0;non
+97;Recrutement;9;0;7;0;0;0;non
+98;Collaborations;5;0;6;0;0;0;non
+99;Historique;9;0;6;0;3;0;non
+240;Parrainer et gagner;12;0;13;0;0;0;non
+241;Mes contacts;7;0;4;0;0;0;non
+242;Kit à partager;16;0;9;0;0;0;non
+243;Mes gains;9;0;10;0;1;0;non
+244;Cercle;24;1;23;1;3;0;non
+244b;Cercle · publication aimée;6;0;6;0;0;0;non
+245;Reels;15;3;16;1;0;0;non
+246;Lives;9;0;10;0;0;0;non
+247;Profil créateur;15;1;16;1;1;0;non
+248;Boutique du créateur;12;0;10;0;2;0;non
+249;Créer;8;0;14;0;0;0;non
+250;Nouvelle publication;13;0;9;0;3;0;non
+251;Découvrir;8;3;2;0;5;0;non
+252;Commentaires et avis;4;0;5;0;0;0;non
+253;Défis et récompenses;10;0;11;0;0;0;non
+253b;Défis · récompense récupérée;8;0;9;0;0;0;non
+254;Activité;10;0;7;0;4;0;non
+216;Marché des vœux;6;0;7;0;0;0;non
+217;Fiche d’un vœu;1;0;1;0;0;0;non
+218;Publier un vœu;6;5;8;0;1;0;non
+219;Nouveau duel;5;1;2;0;0;0;non
+220;Duel de talents;8;0;9;0;0;0;non
+221;Résultat du duel;1;0;2;0;0;0;non
+222;Atelier en direct;5;2;5;1;0;0;non
+223;Ateliers en direct;8;0;6;0;0;0;non
+224;Validation des vœux;4;3;6;0;1;0;non
+225;Jumeau 3D;5;0;4;0;0;0;non
+226;Modération des duels;4;0;3;0;1;0;non
+227;Régie des ateliers en direct;6;0;7;0;0;0;non
+228;Partager mon CV;4;0;5;0;0;0;non
+229;CV vivant;0;0;2;0;0;0;non
+191;Votre besoin;7;7;11;0;1;0;non
+192;Votre devis;2;0;4;0;0;0;non
+193;Paiement sécurisé;3;0;4;0;0;0;non
+194;Ma mission;4;0;6;0;0;0;non
+195;Ajouter une preuve;1;0;3;0;0;0;non
+196;Dossier;5;0;3;0;1;0;non
+197;Valider le jalon;1;0;3;0;0;0;non
+201;Mes missions;8;0;7;0;2;0;non
+202;Pack Lancement de marque;1;1;3;0;0;0;non
+203;Mes compétences;6;0;7;0;0;0;non
+204;Coup de pouce startup;5;0;6;0;1;0;non
+205;Soumettre mon projet;5;3;7;0;2;0;non
+230;Assistante vocale Kéla;6;0;6;1;0;0;non
+231;Accueil Kéla;10;0;7;0;3;0;non
+232;Voix en texte;9;2;10;1;0;0;non
+233;WhatsApp · suivi de mission;4;2;3;0;0;0;non
+234;WhatsApp · validation de jalon;4;2;3;0;0;0;non
+235;WhatsApp · paiement sécurisé;4;2;3;0;0;0;non
+236;Canaux et notifications;9;2;9;0;0;0;non
+A1;Assistante vocale Kéla;6;0;6;1;0;0;non
+A2;Accueil Kéla;10;0;7;0;3;0;non
+A3;Voix en texte;9;2;10;1;0;0;non
+P1;Profil talent;7;0;9;0;0;0;non
+P2;Profil talent · abonnement;10;1;8;1;0;0;non
+P3;Avis et outils connectés;4;0;4;0;0;0;non
+P4;Nouvelle publication;10;0;8;0;0;0;non
+V1;Vitrine;7;1;7;1;0;0;non
+P5;Connecter mes outils;6;1;6;0;3;0;non
+L1;Aller en direct;4;0;4;0;0;0;non
+S1;Démarrage animé;0;0;0;0;0;0;non

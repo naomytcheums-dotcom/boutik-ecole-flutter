@@ -30,11 +30,11 @@ class AccountHeader extends ConsumerWidget {
     if (a == null) return SizedBox(width: width, child: Text('Non connecté', style: _st(14, c: _grey)));
     return SizedBox(
       width: width,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      child: SingleChildScrollView(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(a.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(17, w: FontWeight.w700)),
         const SizedBox(height: 4),
         Text(a.email, maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(12.5, c: _grey)),
-      ]),
+      ])),
     );
   }
 }
@@ -47,7 +47,7 @@ class ProductLine extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final p = ref.watch(selectedProductProvider);
-    return SizedBox(width: width, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(p.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(15, w: FontWeight.w700)), const SizedBox(height: 4), Text(fcfa(p.price), style: _st(12.5, c: _grey))]));
+    return SizedBox(width: width, child: SingleChildScrollView(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(p.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(15, w: FontWeight.w700)), const SizedBox(height: 4), Text(fcfa(p.price), style: _st(12.5, c: _grey))])));
   }
 }
 

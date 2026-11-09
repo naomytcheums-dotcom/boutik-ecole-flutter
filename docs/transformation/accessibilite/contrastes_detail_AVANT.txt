@@ -1,0 +1,2316 @@
+=== 255 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#17(Rect.fromLTRB(0.0, 0.0, 279.7, 19.0) with transform [[0.915,0.0,0.0,78.05468269348144]; [0.0,0.915,0.0,204.5025]; [0.0,0.0,1.0,0.0]; [0.0,0.0,0.0,1.0]], label: "Vous n’avez encore publié aucune annonce.", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.95 for a font size of 13.0.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9451, green: 0.9255, blue: 0.9255, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6863, green: 0.6667, blue: 0.6863, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+
+=== 250b ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#12(Rect.fromLTRB(35.0, 469.5, 144.6, 499.5), actions: [tap], label: "Publication", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 2.56 for a font size of 11.0.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.3412, green: 0.3294, blue: 0.3725, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.0667, green: 0.0627, blue: 0.0824, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#13(Rect.fromLTRB(150.6, 469.5, 207.0, 499.5), actions: [tap], label: "Reel", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 2.32 for a font size of 11.0.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6667, green: 0.6667, blue: 0.6706, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#14(Rect.fromLTRB(213.0, 469.5, 269.4, 499.5), actions: [tap], label: "Live", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 2.32 for a font size of 11.0.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6667, green: 0.6667, blue: 0.6706, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#15(Rect.fromLTRB(275.4, 469.5, 362.2, 499.5), actions: [tap], label: "Boutique", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 4.45 for a font size of 11.0.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.4706, green: 0.4667, blue: 0.4784, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 04 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#22(Rect.fromLTRB(86.9, 0.0, 162.5, 33.9), actions: [tap], label: "Produits", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.96 for a font size of 13.424.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6863, green: 0.6745, blue: 0.7098, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          SemanticsNode#24(Rect.fromLTRB(252.2, 0.0, 318.6, 33.9), actions: [tap], label: "Talents", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.96 for a font size of 13.424.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6863, green: 0.6745, blue: 0.7098, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 06 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#4(Rect.fromLTRB(138.6, 376.0, 273.4, 394.0), label: "Votre panier est vide", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.93 for a font size of 14.0.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9373, green: 0.9137, blue: 0.9451, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6784, green: 0.6627, blue: 0.6980, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 10 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#18(Rect.fromLTRB(119.5, 461.5, 292.5, 475.5), label: "Génie informatique · Plateforme", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.06 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9333, green: 0.9059, blue: 0.9490, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5294, green: 0.5137, blue: 0.5569, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 11 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#30(Rect.fromLTRB(35.0, 526.5, 185.0, 544.5), actions: [tap], label: "Se souvenir de moi", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 4.20 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9412, green: 0.9059, blue: 0.9255, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.4431, green: 0.4275, blue: 0.4471, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 18 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#25(Rect.fromLTRB(35.0, 222.5, 102.5, 238.5), label: "Non envoyé", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.12 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9294, blue: 0.9294, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5373, green: 0.5216, blue: 0.5529, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          SemanticsNode#28(Rect.fromLTRB(35.0, 279.5, 102.5, 295.5), label: "Non envoyé", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.11 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9255, blue: 0.9373, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5373, green: 0.5216, blue: 0.5529, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          SemanticsNode#31(Rect.fromLTRB(35.0, 336.5, 102.5, 352.5), label: "Non envoyé", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.08 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9451, green: 0.9216, blue: 0.9412, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5373, green: 0.5216, blue: 0.5569, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          SemanticsNode#34(Rect.fromLTRB(35.0, 393.5, 117.6, 409.5), label: "Non renseigné", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.09 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9412, green: 0.9176, blue: 0.9451, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5333, green: 0.5176, blue: 0.5569, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+
+=== 22 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#25(Rect.fromLTRB(229.6, 0.0, 285.2, 34.0), actions: [tap], label: "Tech", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.35 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8235, green: 0.8118, blue: 0.8431, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#26(Rect.fromLTRB(293.2, 0.0, 347.2, 34.0), actions: [tap], label: "Art", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.35 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8235, green: 0.8118, blue: 0.8431, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 22b ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#24(Rect.fromLTRB(296.2, 0.0, 374.0, 34.0), actions: [tap], label: "Tutorat", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.14 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5373, green: 0.5255, blue: 0.5647, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 22c ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#22(Rect.fromLTRB(135.6, 120.0, 235.6, 154.0), actions: [tap], label: "Nouveautés", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.96 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6863, green: 0.6745, blue: 0.7098, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 146-1 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#34(Rect.fromLTRB(52.0, 175.5, 96.4, 191.5), label: "En ligne", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.38 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8627, green: 0.8588, blue: 0.8706, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          SemanticsNode#36(Rect.fromLTRB(229.0, 175.5, 351.0, 191.5), label: "Hors ligne ou secours", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.38 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8627, green: 0.8588, blue: 0.8706, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          SemanticsNode#38(Rect.fromLTRB(52.0, 270.5, 143.0, 286.5), label: "En maintenance", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.38 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8627, green: 0.8588, blue: 0.8706, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          SemanticsNode#40(Rect.fromLTRB(229.0, 270.5, 328.2, 286.5), label: "Incidents ouverts", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.38 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8627, green: 0.8588, blue: 0.8706, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+
+=== 149 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#30(Rect.fromLTRB(35.0, 693.5, 98.0, 727.5), actions: [tap], label: "Petit", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.14 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5373, green: 0.5255, blue: 0.5647, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+
+=== 150-4 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#15(Rect.fromLTRB(113.4, 155.5, 198.6, 189.5), actions: [tap], label: "En cours", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.35 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8235, green: 0.8118, blue: 0.8431, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          SemanticsNode#17(Rect.fromLTRB(292.4, 155.5, 377.6, 189.5), actions: [tap], label: "Annulées", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.14 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5373, green: 0.5255, blue: 0.5647, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 151 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#27(Rect.fromLTRB(87.6, 0.0, 158.0, 34.0), actions: [tap], label: "Stages", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.96 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6863, green: 0.6745, blue: 0.7098, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          SemanticsNode#29(Rect.fromLTRB(251.8, 0.0, 329.6, 34.0), actions: [tap], label: "Projets", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.96 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6863, green: 0.6745, blue: 0.7098, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 154 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#52(Rect.fromLTRB(295.3, 144.5, 342.0, 160.5), label: "À fournir", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 4.35 for a font size of 11.0.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.8706, green: 0.8000, blue: 0.9451, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.3529, green: 0.2471, blue: 0.8784, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          SemanticsNode#57(Rect.fromLTRB(34.0, 265.0, 154.7, 281.0), label: "Document manquant", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.94 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9333, green: 0.9098, blue: 0.9529, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6784, green: 0.6588, blue: 0.7020, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          SemanticsNode#60(Rect.fromLTRB(34.0, 320.0, 154.7, 336.0), label: "Document manquant", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.94 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9373, green: 0.9098, blue: 0.9412, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6784, green: 0.6588, blue: 0.6941, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          SemanticsNode#66(Rect.fromLTRB(34.0, 430.0, 116.6, 446.0), label: "Non renseigné", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.05 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9451, green: 0.9059, blue: 0.9098, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5373, green: 0.5137, blue: 0.5451, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+
+=== 155 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#18(Rect.fromLTRB(199.2, 155.5, 269.6, 189.5), actions: [tap], label: "Offres", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.96 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6863, green: 0.6745, blue: 0.7098, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#19(Rect.fromLTRB(277.6, 155.5, 399.8, 189.5), actions: [tap], label: "Dates limites", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.14 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5373, green: 0.5255, blue: 0.5647, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 156 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#45(Rect.fromLTRB(48.0, 15.5, 328.0, 32.5), actions: [focus, tap], flags: [isTextField, hasEnabledState, isEnabled, isFocusable], value: "Quotidienne", textDirection: ltr, currentValueLength: 11, inputType: text):
+          Expected contrast ratio of at least 4.5 but found 1.10 for a font size of 13.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9529, green: 0.9059, blue: 0.8902, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.9686, green: 0.8549, blue: 0.7608, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 158 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#20(Rect.fromLTRB(299.2, 0.0, 390.0, 34.0), actions: [tap], label: "À relancer (4)", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.35 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8235, green: 0.8118, blue: 0.8431, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+
+=== 160 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#22(Rect.fromLTRB(87.6, 0.0, 172.8, 34.0), actions: [tap], label: "En ligne", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.35 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8235, green: 0.8118, blue: 0.8431, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          SemanticsNode#25(Rect.fromLTRB(345.0, 0.0, 390.0, 34.0), actions: [tap], label: "Gratuits", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.35 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8235, green: 0.8118, blue: 0.8431, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 162 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#26(Rect.fromLTRB(48.0, 15.5, 328.0, 32.5), actions: [focus, tap], flags: [isTextField, hasEnabledState, isEnabled, isFocusable], value: "Team Innov’", textDirection: ltr, currentValueLength: 11, inputType: text):
+          Expected contrast ratio of at least 4.5 but found 1.25 for a font size of 13.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9373, green: 0.9137, blue: 0.9373, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8706, green: 0.8000, blue: 0.9451, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 163 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#34(Rect.fromLTRB(247.4, 0.0, 332.6, 34.0), actions: [tap], label: "Business", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.35 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8235, green: 0.8118, blue: 0.8431, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 179 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#26(Rect.fromLTRB(274.0, 0.0, 388.8, 34.0), actions: [tap], label: "Opportunités", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.96 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6863, green: 0.6745, blue: 0.7098, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 182 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#30(Rect.fromLTRB(191.8, 217.5, 277.0, 251.5), actions: [tap], label: "Services", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.96 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6863, green: 0.6745, blue: 0.7098, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#31(Rect.fromLTRB(285.0, 217.5, 362.8, 251.5), actions: [tap], label: "Talents", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.14 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5373, green: 0.5255, blue: 0.5647, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 186 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#17(Rect.fromLTRB(35.0, 155.5, 98.0, 189.5), actions: [tap], label: "Petit", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.14 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5373, green: 0.5255, blue: 0.5647, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          SemanticsNode#20(Rect.fromLTRB(255.4, 155.5, 355.4, 189.5), actions: [tap], label: "Très grand", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.14 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5373, green: 0.5255, blue: 0.5647, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 45 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#32(Rect.fromLTRB(113.4, 217.5, 198.6, 251.5), actions: [tap], label: "En cours", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.35 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8235, green: 0.8118, blue: 0.8431, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          SemanticsNode#34(Rect.fromLTRB(292.4, 217.5, 377.6, 251.5), actions: [tap], label: "Annulées", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.14 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5373, green: 0.5255, blue: 0.5647, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 50 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#21(Rect.fromLTRB(102.4, 0.0, 195.0, 34.0), actions: [tap], label: "Commandes", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.35 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8235, green: 0.8118, blue: 0.8431, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          SemanticsNode#23(Rect.fromLTRB(296.2, 0.0, 390.0, 34.0), actions: [tap], label: "Promotions", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.14 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5373, green: 0.5255, blue: 0.5647, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 58 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#46(Rect.fromLTRB(48.0, 15.5, 328.0, 32.5), actions: [focus, tap], flags: [isTextField, hasEnabledState, isEnabled, isFocusable], value: "15", textDirection: ltr, currentValueLength: 2, inputType: text):
+          Expected contrast ratio of at least 4.5 but found 1.03 for a font size of 13.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9451, green: 0.9059, blue: 0.9137, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.9529, green: 0.8902, blue: 0.8706, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 59 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#35(Rect.fromLTRB(48.0, 15.5, 328.0, 32.5), actions: [focus, tap], flags: [isTextField, hasEnabledState, isEnabled, isFocusable], value: "30 000", textDirection: ltr, currentValueLength: 6, inputType: text):
+          Expected contrast ratio of at least 4.5 but found 1.14 for a font size of 13.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9333, green: 0.9098, blue: 0.9490, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8941, green: 0.8431, blue: 0.9490, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 61 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#33(Rect.fromLTRB(210.4, 0.0, 310.4, 34.0), actions: [tap], label: "Brouillons", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.35 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8235, green: 0.8118, blue: 0.8431, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#34(Rect.fromLTRB(318.4, 0.0, 390.0, 34.0), actions: [tap], label: "Rupture", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.14 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5373, green: 0.5255, blue: 0.5647, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 62 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#48(Rect.fromLTRB(48.0, 15.5, 328.0, 32.5), actions: [focus, tap], flags: [isTextField, hasEnabledState, isEnabled, isFocusable], value: "5 unités", textDirection: ltr, currentValueLength: 8, inputType: text):
+          Expected contrast ratio of at least 4.5 but found 1.12 for a font size of 13.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9569, green: 0.9020, blue: 0.8706, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.9765, green: 0.8392, blue: 0.7176, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 63 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#16(Rect.fromLTRB(161.6, 0.0, 246.8, 34.0), actions: [tap], label: "En cours", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.35 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8235, green: 0.8118, blue: 0.8431, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#17(Rect.fromLTRB(254.8, 0.0, 325.2, 34.0), actions: [tap], label: "Prêtes", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.96 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6863, green: 0.6745, blue: 0.7098, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 66 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#30(Rect.fromLTRB(50.0, 188.5, 111.7, 204.5), label: "Disponible", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.37 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5529, green: 0.5451, blue: 0.5725, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          SemanticsNode#32(Rect.fromLTRB(227.0, 180.5, 285.7, 196.5), label: "En attente", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.38 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8627, green: 0.8588, blue: 0.8706, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          SemanticsNode#34(Rect.fromLTRB(227.0, 225.5, 289.9, 241.5), label: "0 paiement", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 2.03 for a font size of 11.0.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.7176, green: 0.7098, blue: 0.7294, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#35(Rect.fromLTRB(50.0, 283.5, 120.9, 299.5), label: "Déjà reversé", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.38 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8627, green: 0.8588, blue: 0.8706, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          SemanticsNode#37(Rect.fromLTRB(227.0, 283.5, 337.6, 299.5), label: "Reversement prévu", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.38 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8627, green: 0.8588, blue: 0.8706, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+
+=== 67 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#14(Rect.fromLTRB(35.0, 155.5, 112.8, 189.5), actions: [tap], label: "7 jours", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.35 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8235, green: 0.8118, blue: 0.8431, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          SemanticsNode#16(Rect.fromLTRB(214.0, 155.5, 291.8, 189.5), actions: [tap], label: "12 mois", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.14 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5373, green: 0.5255, blue: 0.5647, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          SemanticsNode#33(Rect.fromLTRB(50.0, 220.5, 133.9, 236.5), label: "Ventes payées", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.38 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8627, green: 0.8588, blue: 0.8706, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          SemanticsNode#35(Rect.fromLTRB(227.0, 220.5, 324.6, 236.5), label: "Chiffre d’affaires", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.38 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8627, green: 0.8588, blue: 0.8706, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+
+=== 69 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#21(Rect.fromLTRB(35.0, 192.5, 182.4, 210.5), label: "0 justificatif vérifié sur 4", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.09 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9451, green: 0.9255, blue: 0.9216, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5373, green: 0.5216, blue: 0.5490, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          SemanticsNode#23(Rect.fromLTRB(35.0, 255.5, 102.5, 271.5), label: "Non envoyé", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.35 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9451, green: 0.9216, blue: 0.9294, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8196, green: 0.8000, blue: 0.8118, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          SemanticsNode#26(Rect.fromLTRB(35.0, 312.5, 102.5, 328.5), label: "Non envoyé", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.35 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9412, green: 0.9176, blue: 0.9373, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8157, green: 0.7961, blue: 0.8196, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          SemanticsNode#29(Rect.fromLTRB(35.0, 369.5, 102.5, 385.5), label: "Non envoyé", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.06 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9373, green: 0.9137, blue: 0.9412, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5333, green: 0.5176, blue: 0.5569, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          SemanticsNode#32(Rect.fromLTRB(35.0, 426.5, 117.6, 442.5), label: "Non renseigné", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.04 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9333, green: 0.9098, blue: 0.9490, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5333, green: 0.5176, blue: 0.5569, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+
+=== 70 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#37(Rect.fromLTRB(217.8, 0.0, 288.2, 34.0), actions: [tap], label: "Design", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.35 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8235, green: 0.8118, blue: 0.8431, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 73 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#22(Rect.fromLTRB(149.6, 0.0, 234.8, 34.0), actions: [tap], label: "Diplômes", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.35 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8235, green: 0.8118, blue: 0.8431, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 75 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#19(Rect.fromLTRB(113.4, 155.5, 191.2, 189.5), actions: [tap], label: "Emplois", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.14 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5373, green: 0.5255, blue: 0.5647, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          SemanticsNode#21(Rect.fromLTRB(270.2, 155.5, 355.4, 189.5), actions: [tap], label: "Missions", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.35 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8235, green: 0.8118, blue: 0.8431, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 78 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#23(Rect.fromLTRB(195.6, 0.0, 288.2, 34.0), actions: [tap], label: "Recherche", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.96 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6863, green: 0.6745, blue: 0.7098, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 84 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#38(Rect.fromLTRB(48.0, 15.5, 328.0, 32.5), actions: [focus, tap], flags: [isTextField, hasEnabledState, isEnabled, isFocusable], value: "2 000 000", textDirection: ltr, currentValueLength: 9, inputType: text):
+          Expected contrast ratio of at least 4.5 but found 1.17 for a font size of 13.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9333, green: 0.9098, blue: 0.9490, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8863, green: 0.8314, blue: 0.9490, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 100 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#22(Rect.fromLTRB(87.6, 0.0, 195.0, 34.0), actions: [tap], label: "Expositions", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.96 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6863, green: 0.6745, blue: 0.7098, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#23(Rect.fromLTRB(203.0, 0.0, 288.2, 34.0), actions: [tap], label: "Ateliers", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.35 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8235, green: 0.8118, blue: 0.8431, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#24(Rect.fromLTRB(296.2, 0.0, 390.0, 34.0), actions: [tap], label: "Conférences", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.96 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6863, green: 0.6745, blue: 0.7098, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 102 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#31(Rect.fromLTRB(0.0, 0.0, 292.0, 57.0) with transform [[0.9442724458204335,0.0,0.0,68.13622291021672]; [0.0,0.9442724458204335,0.0,597.2523219814242]; [0.0,0.0,1.0,0.0]; [0.0,0.0,0.0,1.0]], label: "Aucun produit publié pour le moment.\nLes créations des étudiants apparaîtront ici dès leur publication.", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.20 for a font size of 13.0.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9686, green: 0.9451, blue: 0.9451, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5412, green: 0.5255, blue: 0.5569, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+
+=== 103 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#21(Rect.fromLTRB(120.8, 155.5, 198.6, 189.5), actions: [tap], label: "Mentors", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.96 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6863, green: 0.6745, blue: 0.7098, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 105 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#22(Rect.fromLTRB(87.6, 0.0, 187.6, 34.0), actions: [tap], label: "IUT Douala", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.35 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8235, green: 0.8118, blue: 0.8431, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#23(Rect.fromLTRB(195.6, 0.0, 310.4, 34.0), actions: [tap], label: "IUT Bandjoun", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.35 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8235, green: 0.8118, blue: 0.8431, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 106 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#22(Rect.fromLTRB(128.2, 120.0, 228.2, 154.0), actions: [tap], label: "Réparables", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.14 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5373, green: 0.5255, blue: 0.5647, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 32 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#23(Rect.fromLTRB(0.0, 0.0, 63.0, 34.0) with transform [[0.9005905511811024,0.0,0.0,169.25590551181102]; [0.0,0.9005905511811023,0.0,518.7401574803149]; [0.0,0.0,1.0,0.0]; [0.0,0.0,0.0,1.0]], actions: [tap], label: "Noyer", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.14 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5373, green: 0.5255, blue: 0.5647, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 33 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#26(Rect.fromLTRB(0.0, 0.0, 267.1, 21.0) with transform [[0.8689458689458689,0.0,0.0,57.41025641025642]; [0.0,0.8689458689458689,0.0,177.26495726495727]; [0.0,0.0,1.0,0.0]; [0.0,0.0,0.0,1.0]], label: "Choisissez un produit dans le catalogue.", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.46 for a font size of 13.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9451, green: 0.9255, blue: 0.9216, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5020, green: 0.4902, blue: 0.5216, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          SemanticsNode#28(Rect.fromLTRB(0.0, 0.0, 88.9, 17.0) with transform [[0.8689458689458689,0.0,0.0,57.41025641025642]; [0.0,0.8689458689458689,0.0,235.48433048433048]; [0.0,0.0,1.0,0.0]; [0.0,0.0,0.0,1.0]], label: "Département : ", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.08 for a font size of 12.0.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9451, green: 0.9216, blue: 0.9294, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5373, green: 0.5216, blue: 0.5529, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+
+=== 39 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#21(Rect.fromLTRB(154.2, 0.0, 217.2, 34.0), actions: [tap], label: "Délai", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.35 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8235, green: 0.8118, blue: 0.8431, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 91 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#35(Rect.fromLTRB(217.8, 0.0, 288.2, 34.0), actions: [tap], label: "Design", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.35 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8235, green: 0.8118, blue: 0.8431, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 93 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#18(Rect.fromLTRB(150.4, 155.5, 294.8, 189.5), actions: [tap], label: "Présélection (4)", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.14 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5373, green: 0.5255, blue: 0.5647, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+
+=== 99 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#15(Rect.fromLTRB(120.8, 155.5, 183.8, 189.5), actions: [tap], label: "Devis", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.35 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8235, green: 0.8118, blue: 0.8431, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#16(Rect.fromLTRB(191.8, 155.5, 269.6, 189.5), actions: [tap], label: "Projets", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.96 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6863, green: 0.6745, blue: 0.7098, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#17(Rect.fromLTRB(277.6, 155.5, 348.0, 189.5), actions: [tap], label: "Stages", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.96 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6863, green: 0.6745, blue: 0.7098, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 243 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#25(Rect.fromLTRB(51.0, 467.5, 361.0, 767.5), label: "Aucun filleul pour le moment. Partagez votre code depuis « Parrainer et gagner ».", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.13 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9451, green: 0.9059, blue: 0.9137, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.9765, green: 0.8392, blue: 0.7176, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 244 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#23(Rect.fromLTRB(116.8, 0.0, 228.4, 32.0), actions: [tap], label: "Abonnements", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 2.32 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6667, green: 0.6667, blue: 0.6706, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#24(Rect.fromLTRB(236.4, 0.0, 310.0, 32.0), actions: [tap], label: "Vidéos", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.45 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8392, green: 0.8392, blue: 0.8431, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#25(Rect.fromLTRB(318.0, 0.0, 390.0, 32.0), actions: [tap], label: "Boutiques", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.23 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.9137, green: 0.9020, blue: 0.9333, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 247 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#83(Rect.fromLTRB(44.7, 449.5, 367.3, 463.5), label: "Connectez-vous pour voir votre profil et vos publications.", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.23 for a font size of 12.0.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9686, green: 0.9608, blue: 0.9804, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5412, green: 0.5333, blue: 0.5686, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+
+=== 248 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#13(Rect.fromLTRB(135.4, 165.5, 227.8, 199.5), actions: [tap], label: "Services", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 4.45 for a font size of 12.0.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.4706, green: 0.4667, blue: 0.4784, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#14(Rect.fromLTRB(235.8, 165.5, 398.4, 199.5), actions: [tap], label: "Offres de clients", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 2.32 for a font size of 12.0.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6667, green: 0.6667, blue: 0.6706, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 250 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#13(Rect.fromLTRB(150.6, 469.5, 207.0, 499.5), actions: [tap], label: "Reel", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 2.32 for a font size of 11.0.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6667, green: 0.6667, blue: 0.6706, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#14(Rect.fromLTRB(213.0, 469.5, 269.4, 499.5), actions: [tap], label: "Live", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 2.32 for a font size of 11.0.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6667, green: 0.6667, blue: 0.6706, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#15(Rect.fromLTRB(275.4, 469.5, 362.2, 499.5), actions: [tap], label: "Boutique", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 4.45 for a font size of 11.0.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.4706, green: 0.4667, blue: 0.4784, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 251 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#12(Rect.fromLTRB(103.0, 201.5, 155.0, 233.5), actions: [tap], label: "MMI", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 2.32 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6667, green: 0.6667, blue: 0.6706, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#13(Rect.fromLTRB(163.0, 201.5, 207.0, 233.5), actions: [tap], label: "GI", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 4.45 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.4706, green: 0.4667, blue: 0.4784, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#14(Rect.fromLTRB(215.0, 201.5, 259.0, 233.5), actions: [tap], label: "GC", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 2.32 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6667, green: 0.6667, blue: 0.6706, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#15(Rect.fromLTRB(267.0, 201.5, 319.0, 233.5), actions: [tap], label: "TCO", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.45 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8392, green: 0.8392, blue: 0.8431, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#16(Rect.fromLTRB(327.0, 201.5, 387.0, 233.5), actions: [tap], label: "GEII", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 4.45 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.4706, green: 0.4667, blue: 0.4784, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+
+=== 254 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#8(Rect.fromLTRB(35.0, 141.5, 95.0, 173.5), actions: [tap], label: "Tout", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.84 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.4392, green: 0.4392, blue: 0.4510, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.0667, green: 0.0627, blue: 0.0824, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#9(Rect.fromLTRB(103.0, 141.5, 187.0, 173.5), actions: [tap], label: "Abonnés", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 4.45 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.4706, green: 0.4667, blue: 0.4784, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#10(Rect.fromLTRB(195.0, 141.5, 295.0, 173.5), actions: [tap], label: "Commandes", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 4.45 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.4706, green: 0.4667, blue: 0.4784, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#11(Rect.fromLTRB(303.0, 141.5, 371.0, 173.5), actions: [tap], label: "Lives", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 4.45 for a font size of 11.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.4706, green: 0.4667, blue: 0.4784, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 218 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#44(Rect.fromLTRB(48.0, 15.5, 328.0, 32.5), actions: [focus, tap], flags: [isTextField, hasEnabledState, isEnabled, isFocusable], value: "30 jours", textDirection: ltr, currentValueLength: 8, inputType: text):
+          Expected contrast ratio of at least 4.5 but found 1.06 for a font size of 13.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9059, blue: 0.9020, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.9608, green: 0.8745, blue: 0.8196, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 224 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#22(Rect.fromLTRB(48.0, 15.5, 328.0, 32.5), actions: [focus, tap], flags: [isTextField, hasEnabledState, isEnabled, isFocusable], value: "Jeudi 29 oct. · 16 h", textDirection: ltr, currentValueLength: 20, inputType: text):
+          Expected contrast ratio of at least 4.5 but found 1.00 for a font size of 13.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.8706, green: 0.8039, blue: 0.9412, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8706, green: 0.8039, blue: 0.9373, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 226 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#17(Rect.fromLTRB(35.0, 424.5, 377.0, 481.5), label: "Aucun modèle 3D ni aperçu en réalité augmentée n’est disponible pour ce produit pour le moment. Seule la photo de l’annonce est affichée.", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 2.51 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.6392, green: 0.5804, blue: 0.5176, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.3412, green: 0.3294, blue: 0.3725, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+
+=== 191 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#46(Rect.fromLTRB(48.0, 15.5, 328.0, 32.5), actions: [focus, tap], flags: [isTextField, hasEnabledState, isEnabled, isFocusable], value: "30 novembre 2026", textDirection: ltr, currentValueLength: 16, inputType: text):
+          Expected contrast ratio of at least 4.5 but found 1.10 for a font size of 13.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9529, green: 0.9059, blue: 0.8902, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.9686, green: 0.8549, blue: 0.7608, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 196 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#17(Rect.fromLTRB(97.0, 155.5, 182.2, 189.5), actions: [tap], label: "Fichiers", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 3.14 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.5373, green: 0.5255, blue: 0.5647, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+
+=== 201 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#20(Rect.fromLTRB(128.2, 245.5, 220.8, 279.5), actions: [tap], label: "À valider", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.96 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6863, green: 0.6745, blue: 0.7098, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#21(Rect.fromLTRB(228.8, 245.5, 321.4, 279.5), actions: [tap], label: "Terminées", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.35 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8235, green: 0.8118, blue: 0.8431, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 204 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#29(Rect.fromLTRB(35.0, 304.5, 377.0, 342.5), label: "Le suivi du financement et des mentors n’est pas encore disponible en ligne.", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.33 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.4157, green: 0.4039, blue: 0.4235, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.3412, green: 0.3294, blue: 0.3725, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+
+=== 205 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#33(Rect.fromLTRB(203.0, 0.0, 310.4, 34.0), actions: [tap], label: "Financement", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.35 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8235, green: 0.8118, blue: 0.8431, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#34(Rect.fromLTRB(318.4, 0.0, 390.0, 34.0), actions: [tap], label: "Juridique", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.96 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 0.9490, green: 0.9373, blue: 0.9647, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6863, green: 0.6745, blue: 0.7098, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== 231 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#29(Rect.fromLTRB(126.0, 0.0, 204.0, 36.0), actions: [tap], label: "Design", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 4.45 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.4706, green: 0.4667, blue: 0.4784, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#30(Rect.fromLTRB(212.0, 0.0, 282.0, 36.0), actions: [tap], label: "Vidéo", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 2.32 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6667, green: 0.6667, blue: 0.6706, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#31(Rect.fromLTRB(290.0, 0.0, 384.0, 36.0), actions: [tap], label: "Commerce", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 2.32 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6667, green: 0.6667, blue: 0.6706, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== A2 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#29(Rect.fromLTRB(126.0, 0.0, 204.0, 36.0), actions: [tap], label: "Design", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 4.45 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.4706, green: 0.4667, blue: 0.4784, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#30(Rect.fromLTRB(212.0, 0.0, 282.0, 36.0), actions: [tap], label: "Vidéo", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 2.32 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6667, green: 0.6667, blue: 0.6706, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#31(Rect.fromLTRB(290.0, 0.0, 384.0, 36.0), actions: [tap], label: "Commerce", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 2.32 for a font size of 12.5.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.6667, green: 0.6667, blue: 0.6706, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+
+=== P5 ===
+Expected: Text contrast should follow WCAG guidelines
+  Actual: <Instance of 'WidgetTester'>
+   Which: SemanticsNode#24(Rect.fromLTRB(92.0, 0.0, 176.0, 34.0), actions: [tap], label: "Réseaux", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 4.45 for a font size of 12.0.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.4706, green: 0.4667, blue: 0.4784, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#25(Rect.fromLTRB(184.0, 0.0, 284.0, 34.0), actions: [tap], label: "Portfolio", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 1.45 for a font size of 12.0.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.8392, green: 0.8392, blue: 0.8431, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          SemanticsNode#26(Rect.fromLTRB(292.0, 0.0, 376.0, 34.0), actions: [tap], label: "Gestion", textDirection: ltr):
+          Expected contrast ratio of at least 4.5 but found 4.45 for a font size of 12.0.
+          The computed colors was:
+          light - Color(alpha: 1.0000, red: 1.0000, green: 1.0000, blue: 1.0000, colorSpace: ColorSpace.sRGB), dark - Color(alpha: 1.0000, red: 0.4706, green: 0.4667, blue: 0.4784, colorSpace: ColorSpace.sRGB)
+          See also: https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+

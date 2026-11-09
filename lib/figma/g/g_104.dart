@@ -57,7 +57,7 @@ class G_104 extends ConsumerWidget {
       gP(36, 557, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13]), show: demoContent),
       gP(46.333, 565.667, 19.333, 22.667, gImg('assets/figma/v/e25472574b704c.svg'), show: demoContent),
       gP(50.5, 569.833, 11, 11, gImg('assets/figma/v/3bae74da037db6.svg'), show: demoContent),
-      gP(88, 556, 112, 17, gText('Atelier Génie civil', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(88, 556, 112, 17, gText(gm('Atelier Génie civil', ''), 13.5, Color(0xFF111015), weight: 600), show: demoContent),
       gP(88, 578, 139, 14, gText(gm('IUT Douala · Bloc B · 120 m', '—'), 11.5, Color(0xFF57545F)), show: demoContent),
       gP(293.6, 566, 58.4, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: demoContent),
       gP(303.8, 570, 38, 14, gText('Ouvert', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center), show: demoContent),

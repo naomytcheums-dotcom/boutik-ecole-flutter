@@ -63,7 +63,7 @@ class G_227 extends ConsumerWidget {
       gP(33, 350, 2, 40, gBox(color: Color(0xFFBFE8D6), radii: [1, 1, 1, 1]), show: demoContent),
       gP(24, 329, 20, 20, gBox(color: Color(0xFF1F9D6B), oval: true), show: demoContent),
       gP(27.333, 333.25, 13.333, 11.042, gImg('assets/figma/v/23149818a3337a.svg'), show: demoContent),
-      gP(56, 328, 305, 17, gText('Mission livrée · Site Mairie', 13.5, Color(0xFF111015), weight: 600, wrap: true), show: demoContent),
+      gP(56, 328, 305, 17, gText(gm('Mission livrée · Site Mairie', ''), 13.5, Color(0xFF111015), weight: 600, wrap: true), show: demoContent),
       gP(56, 348, 305, 14, gText(gm('Il y a 2 h · +1 mission, +1 avis', '—'), 11.5, Color(0xFF57545F), wrap: true), show: demoContent),
       gP(33, 412, 2, 40, gBox(color: Color(0xFFBFE8D6), radii: [1, 1, 1, 1]), show: demoContent),
       gP(24, 391, 20, 20, gBox(color: Color(0xFF1F9D6B), oval: true), show: demoContent),

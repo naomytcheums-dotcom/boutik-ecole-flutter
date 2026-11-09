@@ -92,7 +92,7 @@ class G_V1 extends ConsumerWidget {
       gP(86, 689, 70, 17, gText(gm('Yannick M.', ''), 13.5, Color(0xFF111015), weight: 600), show: demoContent),
       gP(160, 690, 16, 16, gBox(color: Color(0xFF2F7DF6), oval: true), show: demoContent),
       gP(161.667, 692.5, 12.667, 10.583, gImg('assets/figma/v/ca53f14df8dcc8.svg'), show: demoContent),
-      gP(86, 709, 107, 14, gText('Génie civil · Atelier GI', 11, Color(0xFF57545F)), show: demoContent),
+      gP(86, 709, 107, 14, gText(gm('Génie civil · Atelier GI', ''), 11, Color(0xFF57545F)), show: demoContent),
       gP(276, 692, 80, 32, gBox(color: Color(0xFF111015), radii: [16, 16, 16, 16]), show: demoContent),
       gP(287, 700, 58, 14, gText('S’abonner', 11.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center), show: demoContent),
       gP(36, 744, 183, 21, gText(gm('Lampe en bois recyclé', ''), 17, Color(0xFF111015), weight: 600), show: demoContent),

@@ -67,7 +67,7 @@ class G_98 extends ConsumerWidget {
       gP(36, 305, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13]), show: demoContent),
       gP(46.333, 313.667, 19.333, 22.667, gImg('assets/figma/v/8a418070bfb100.svg'), show: demoContent),
       gP(54.667, 313.667, 11, 11, gImg('assets/figma/v/2e28e879cb0de7.svg'), show: demoContent),
-      gP(88, 304, 182, 17, gText('Application CRM · Mariam E.', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(88, 304, 182, 17, gText(gm('Application CRM · Mariam E.', ''), 13.5, Color(0xFF111015), weight: 600), show: demoContent),
       gP(88, 326, 102, 14, gText(gm('Livraison le 02 nov.', '—'), 11.5, Color(0xFF57545F)), show: demoContent),
       gP(280.8, 314, 71.2, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11]), show: demoContent),
       gP(293.9, 318, 45, 14, gText('En cours', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center), show: demoContent),

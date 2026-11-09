@@ -33,7 +33,7 @@ class G_244 extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // l'ancienne présentation (fil et histoires de la maquette) reste affichée tant qu'aucune publication réelle n'existe
-    final demoFeed = demoContent || (ref.watch(reelsProvider) ?? const <Reel>[]).isEmpty;
+    final demoFeed = demoContent; // connecté : jamais de publication de maquette ; sans publication réelle, l'état vide du fil s'affiche
     return GScreen(w: 390, h: 844, radius: 46, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(-110, 580, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo', show: demoFeed),
       gP(200, 140, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo', show: demoFeed),

@@ -64,7 +64,7 @@ class G_222 extends ConsumerWidget {
       gP(322, 222, 32, 32, GHeart(), show: demoContent),
       gP(38, 504, 48, 48, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [24, 24, 24, 24]), show: demoContent),
       gP(96, 507, 72, 18, gText(gm('Yannick M.', ''), 14, Color(0xFF111015), weight: 600), show: demoContent),
-      gP(96, 528, 107, 14, gText('Génie civil · Atelier GI', 11, Color(0xFF57545F)), show: demoContent),
+      gP(96, 528, 107, 14, gText(gm('Génie civil · Atelier GI', ''), 11, Color(0xFF57545F)), show: demoContent),
       gP(270, 515, 82, 26, gBox(color: Color(0xFF111015), radii: [100, 100, 100, 100]), show: demoContent),
       gP(282, 521, 58, 14, gText('S’abonner', 11.5, Color(0xFFFFFFFF), weight: 600), show: demoContent),
       gP(36, 588, 80, 80, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [22, 22, 22, 22]), show: demoContent),

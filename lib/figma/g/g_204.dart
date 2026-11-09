@@ -43,7 +43,7 @@ class G_204 extends ConsumerWidget {
       gP(312.4, 27.8, 9.2, 9.2, gImg('assets/figma/v/415c542d2adf04.svg')),
       gP(331.5, 19.5, 28, 17, gImg('assets/figma/v/6a818f3296df50.svg')),
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
-      gP(24, 70, 236, 26, gText('Coup de pouce startup', 21, Color(0xFF111015), weight: 700)),
+      gP(24, 70, 236, 26, gText(gm('Coup de pouce startup', ''), 21, Color(0xFF111015), weight: 700)),
       gP(24, 120, 342, 190, gBox(image: 'assets/figma/img/f3ac8a23af167606e6a405e8e1f7c01f5a723e60.png', fit: BoxFit.cover, radii: [26, 26, 26, 26])),
       gP(24, 120, 342, 190, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [26, 26, 26, 26])),
       gP(42, 248, 309, 23, gText('Lancez votre projet avec l’IUT', 18, Color(0xFFFFFFFF), weight: 800, wrap: true), show: demoContent),

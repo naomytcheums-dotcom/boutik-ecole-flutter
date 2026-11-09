@@ -71,7 +71,7 @@ class G_50 extends ConsumerWidget {
       gP(46, 295, 20, 20, const SizedBox.expand(), tap: () => gTab(context, '53'), show: demoContent),
       gP(44.667, 294.493, 21.84, 21.84, gImg('assets/figma/v/c011934b9b1395.svg'), show: demoContent),
       gP(88, 284, 193, 17, gText(gm('Nouveau message de Yannick', ''), 13.5, Color(0xFF111015), weight: 600), show: demoContent),
-      gP(88, 306, 178, 14, gText('La lampe est prête pour le retrai…', 11.5, Color(0xFF57545F)), show: demoContent),
+      gP(88, 306, 178, 14, gText(gm('La lampe est prête pour le retrai…', ''), 11.5, Color(0xFF57545F)), show: demoContent),
       gP(287.2, 294, 64.8, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11]), show: demoContent),
       gP(295.6, 298, 48, 14, gText('Nouveau', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center), show: demoContent),
       gP(88, 338, 266, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),

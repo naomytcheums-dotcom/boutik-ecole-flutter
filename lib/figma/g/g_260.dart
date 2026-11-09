@@ -42,7 +42,7 @@ class G_260 extends ConsumerWidget {
       gP(163.5, 76, 63, 21, gText('Facture', 17, Color(0xFF111015), weight: 500)),
       gP(147.5, 100, 95, 15, gText(gm('FA-2026-00391', '—'), 12, Color(0xFF57545F))),
       gP(44, 144, 98, 19, gText('Boutik-École', 15, Color(0xFF111015), weight: 700)),
-      gP(44, 166, 127, 13, gText('IUT de Douala · Cameroun', 10.5, Color(0xFF57545F))),
+      gP(44, 166, 127, 13, gText(gm('IUT de Douala · Cameroun', ''), 10.5, Color(0xFF57545F))),
       gP(201, 144, 145, 14, Consumer(builder: (context, ref, _) => gText('Facture n° FA-2026-' + ref.watch(lastOrderProvider).id.substring(ref.watch(lastOrderProvider).id.length - 4), 11, Color(0xFF111015), weight: 600))),
       gP(143, 164, 203, 13, Consumer(builder: (context, ref, _) => gText(ref.watch(lastOrderProvider).date, 10.5, Color(0xFF57545F), wrap: true, align: TextAlign.right))),
       gP(44, 200, 302, 30, gBox(color: Color(0xFFF4F1F8), radii: [10, 10, 10, 10])),

@@ -53,7 +53,7 @@ class G_36 extends ConsumerWidget {
       gP(24, 120, 342, 170, gBox(image: 'assets/figma/img/a30d4e56acc9216d03ba2d7972f7dfac533b78bf.png', fit: BoxFit.cover, radii: [24, 24, 24, 24]), show: demoContent),
       gP(24, 120, 342, 170, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [24, 24, 24, 24])),
       gP(42, 228, 309, 23, gText(gm('Développement web sur mesure', ''), 18, Color(0xFFFFFFFF), weight: 700, wrap: true), show: demoContent),
-      gP(42, 256, 309, 15, gText('Par Mariam Essono · Génie informatique', 12, Color(0xFFE3ECF7), wrap: true), show: demoContent),
+      gP(42, 256, 309, 15, gText(gm('Par Mariam Essono · Génie informatique', ''), 12, Color(0xFFE3ECF7), wrap: true), show: demoContent),
       gP(64, 318, 34, 25, gText(gm('4.9', '—'), 20, Color(0xFF111015), weight: 800, align: TextAlign.center), show: demoContent),
       gP(67, 348, 28, 14, gText('Note', 11.5, Color(0xFF57545F), align: TextAlign.center), show: demoContent),
       gP(182.5, 318, 25, 25, gText(gm('38', '—'), 20, Color(0xFF111015), weight: 800, align: TextAlign.center), show: demoContent),

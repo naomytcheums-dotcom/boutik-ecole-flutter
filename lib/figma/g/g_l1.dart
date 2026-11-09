@@ -61,7 +61,7 @@ class G_L1 extends ConsumerWidget {
       gP(192, 421.75, 6, 9.167, gImg('assets/figma/v/6c8704a6160690.svg'), show: demoContent),
       gP(246.271, 409.083, 19.458, 19.062, gImg('assets/figma/v/0397ee56e7c9a4.svg'), show: demoContent),
       gP(24, 470, 342, 50, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x0D403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], radii: [24, 24, 24, 24]), show: demoContent),
-      gP(40, 486, 315, 16, gText('Atelier : fabrication de la lampe en bois recyclé', 12.5, Color(0xFF111015), weight: 500, wrap: true), show: demoContent),
+      gP(40, 486, 315, 16, gText(gm('Atelier : fabrication de la lampe en bois recyclé', ''), 12.5, Color(0xFF111015), weight: 500, wrap: true), show: demoContent),
       gP(44, 548, 146, 18, gText('Tu peux lancer ce live', 14.5, Color(0xFF111015), weight: 600), show: demoContent),
       gP(299, 544, 47, 26, gBox(color: Color(0xFFE8F7EE), radii: [100, 100, 100, 100]), show: demoContent),
       gP(311, 550, 23, 14, gText(gm('3 / 4', '—'), 11, Color(0xFF126B49), weight: 600), show: demoContent),

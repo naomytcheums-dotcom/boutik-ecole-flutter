@@ -62,7 +62,7 @@ class G_73 extends ConsumerWidget {
       gP(36, 247, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13]), show: demoContent),
       gP(48, 255.667, 16, 16, gImg('assets/figma/v/3a82c8c513bd84.svg'), show: demoContent),
       gP(48.833, 264.742, 14.333, 13.592, gImg('assets/figma/v/9253f57ddf05f2.svg'), show: demoContent),
-      gP(88, 246, 183, 17, gText('Diplôme DUT – Informatique', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(88, 246, 183, 17, gText(gm('Diplôme DUT – Informatique', ''), 13.5, Color(0xFF111015), weight: 600), show: demoContent),
       gP(88, 268, 75, 14, gText(gm('Session 2025', '—'), 11.5, Color(0xFF57545F)), show: demoContent),
       gP(287.2, 256, 64.8, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: demoContent),
       gP(302.6, 260, 34, 14, gText('Vérifié', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center), show: demoContent),

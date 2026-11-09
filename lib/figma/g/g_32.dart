@@ -63,7 +63,7 @@ class G_32 extends ConsumerWidget {
       gP(295.75, 439, 55, 16, gText('Livraison', 13, Color(0xFF57545F), weight: 500, align: TextAlign.center), show: demoContent),
       gP(24, 483, 345, 41, gText(gm('Lampe décorative fabriquée à partir de bois recyclé. Écologique, design et idéale pour un intérieur moderne.', ''), 13, Color(0xFF4A4854), lh: 20.15, wrap: true), show: demoContent),
       gP(24, 538, 69, 19, gText('Variantes', 15, Color(0xFF111015), weight: 700), show: demoContent),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 576, 122.2, 34, 'Chêne naturel', 12.5, 600), GChip(154.2, 576, 63, 34, 'Noyer', 12.5, 500), GChip(225.2, 576, 70.4, 34, 'Bambou', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
+      if (demoContent) Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 576, 122.2, 34, 'Chêne naturel', 12.5, 600), GChip(154.2, 576, 63, 34, 'Noyer', 12.5, 500), GChip(225.2, 576, 70.4, 34, 'Bambou', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
       gP(40, 638, 114, 18, gText('Caractéristiques', 14, Color(0xFF111015), weight: 700), show: demoContent),
       gP(40, 672, 52, 16, gText('Matériau', 12.5, Color(0xFF57545F)), show: demoContent),
       gP(276, 672, 74, 16, gText(gm('Bois recyclé', ''), 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right), show: demoContent),

@@ -5,7 +5,7 @@ import '../nav.dart';
 import 'backend.dart';
 import 'seller.dart' show allProductsProvider;
 import 'store.dart';
-import 'talents.dart' show talents, visibleTalentsProvider;
+import 'talents.dart' show visibleTalentsProvider;
 
 /// Accueil (03), connecté au serveur : produits publiés et talents réels. Aucun produit ni profil de maquette n'est affiché ;
 /// sans donnée, un état vide explicite prend la place. Hors connexion au serveur, la maquette reste affichée comme démonstration.
@@ -85,9 +85,9 @@ class HomeTalents extends ConsumerWidget {
     if (list == null) return note('Chargement des talents…');
     final failed = ref.read(liveTalentsProvider.notifier).error;
     if (list.isEmpty && failed) return note('Les talents ne peuvent pas être chargés pour le moment.');
-    // aucun profil réel pour l'instant : cartes d'exemple de la maquette, clairement marquées « Exemple »
-    final sample = list.isEmpty;
-    final items = sample ? [for (final t in talents) LiveTalent(id: '', name: t.name, department: t.dept, skills: t.skills, avatarUrl: '', certified: false)] : list;
+    // aucun profil réel : état vide explicite (jamais de profil d'exemple en mode connecté)
+    if (list.isEmpty) return note('Aucun talent à présenter pour le moment.\nLes étudiants qui complètent leur profil apparaissent ici.');
+    final items = list;
     return SizedBox(
       width: width,
       height: height,
@@ -106,7 +106,7 @@ class HomeTalents extends ConsumerWidget {
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(22), border: Border.all(color: const Color(0xFFECE8F2))),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Row(children: [_Avatar(t), const Spacer(), if (sample) Container(padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3), decoration: BoxDecoration(color: const Color(0xFFEEE9FF), borderRadius: BorderRadius.circular(8)), child: Text('Exemple', style: _st(9.5, w: FontWeight.w600, c: const Color(0xFF5A3FE0))))]),
+                Row(children: [_Avatar(t), const Spacer()]),
                 const SizedBox(height: 10),
                 Row(children: [
                   Flexible(child: Text(t.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(13, w: FontWeight.w700))),
@@ -198,7 +198,7 @@ class TalentAvatar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final list = ref.watch(liveTalentsProvider) ?? const <LiveTalent>[];
-    if (!Backend.ready || list.isEmpty) return ClipOval(child: Image.asset('assets/figma/img/${_demo[index % 2]}.png', fit: BoxFit.cover));
+    if (!Backend.ready) return ClipOval(child: Image.asset('assets/figma/img/${_demo[index % 2]}.png', fit: BoxFit.cover));
     // les lignes suivent la liste filtrée ; on retrouve la personne par son rang parmi les talents visibles
     final shown = ref.watch(visibleTalentsProvider);
     if (index >= shown.length) return const SizedBox.shrink();

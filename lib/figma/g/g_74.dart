@@ -41,7 +41,7 @@ class G_74 extends ConsumerWidget {
       gP(43.458, 83.458, 11.542, 17.083, gImg('assets/figma/v/7a21623fe0dfea.svg')),
       gP(43.458, 89, 17.083, 6, gImg('assets/figma/v/e130a05f3cf779.svg')),
       gP(132.5, 76, 125, 21, gText('Talent Passport', 17, Color(0xFF111015), weight: 500)),
-      gP(93.5, 102, 203, 15, gText('Mariam Essono · Génie informatique', 12, Color(0xFF57545F))),
+      gP(93.5, 102, 203, 15, gText(gm('Mariam Essono · Génie informatique', ''), 12, Color(0xFF57545F))),
       gP(42.5, 143.5, 35, 35, gImg('assets/figma/r/213_217.png'), show: demoContent),
       gP(44.833, 169.166, 30.334, 25.668, gImg('assets/figma/r/213_218.png'), show: demoContent),
       gP(100, 146, 145, 23, gText('Niveau Confirmé', 18, Color(0xFF111015), weight: 700), show: demoContent),

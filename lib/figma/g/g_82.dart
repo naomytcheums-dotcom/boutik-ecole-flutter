@@ -67,7 +67,7 @@ class G_82 extends ConsumerWidget {
       gP(33, 328, 2, 40, gBox(color: Color(0xFFE4E8EE), radii: [1, 1, 1, 1]), show: demoContent),
       gP(24, 307, 20, 20, gBox(color: Color(0xFF111015), oval: true), show: demoContent),
       gP(56, 306, 305, 17, gText('Tests terrain', 13.5, Color(0xFF111015), weight: 600, wrap: true), show: demoContent),
-      gP(56, 326, 305, 14, gText('En cours · Quartier Ndokoti', 11.5, Color(0xFF57545F), wrap: true), show: demoContent),
+      gP(56, 326, 305, 14, gText(gm('En cours · Quartier Ndokoti', ''), 11.5, Color(0xFF57545F), wrap: true), show: demoContent),
       gP(24, 369, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true), show: demoContent),
       gP(56, 368, 305, 17, gText('Présentation au jury', 13.5, Color(0xFF111015), weight: 600, wrap: true), show: demoContent),
       gP(56, 388, 305, 14, gText(gm('Prévu le 20 nov. 2026', '—'), 11.5, Color(0xFF57545F), wrap: true), show: demoContent),

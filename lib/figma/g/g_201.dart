@@ -64,7 +64,7 @@ class G_201 extends ConsumerWidget {
       gP(293.9, 350, 45, 14, gText('En cours', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center), show: demoContent),
       gP(98, 390, 256, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
       gP(36, 398, 50, 50, gBox(image: 'assets/figma/img/1574e42a325d3a4ac509841e7a5eb5a285a3d991.png', fit: BoxFit.cover, radii: [12, 12, 12, 12]), show: demoContent),
-      gP(98, 402, 136, 17, gText('Spot promo parfums', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(98, 402, 136, 17, gText(gm('Spot promo parfums', ''), 13.5, Color(0xFF111015), weight: 600), show: demoContent),
       gP(98, 424, 114, 14, gText('Attribuée aujourd’hui', 11.5, Color(0xFF57545F)), show: demoContent),
       gP(287.2, 412, 64.8, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: demoContent),
       gP(295.6, 416, 48, 14, gText('Nouveau', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center), show: demoContent),

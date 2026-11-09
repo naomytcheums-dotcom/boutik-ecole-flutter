@@ -63,7 +63,7 @@ class G_24 extends ConsumerWidget {
       gP(131.711, 236.634, 153, 23, gText(gm('Atelier Krea’Tech', ''), 18.474, Color(0xFF111015), weight: 700), show: demoContent),
       gP(289.223, 239.629, 21.209, 21.203, gImg('assets/figma/v/29ca001164ff33.svg'), show: demoContent),
       gP(294.553, 245.708, 10.561, 9.041, gImg('assets/figma/v/3f3aa7e88e58a9.svg'), show: demoContent),
-      gP(131.711, 271.946, 227, 15, gText('Étudiant · Génie informatique · IUT Douala', 11.54, Color(0xFF5A3FE0), weight: 500), show: demoContent),
+      gP(131.711, 271.946, 227, 15, gText(gm('Étudiant · Génie informatique · IUT Douala', ''), 11.54, Color(0xFF5A3FE0), weight: 500), show: demoContent),
       gP(51.219, 321.317, 23, 29, gText(gm('12', '—'), 22.807, Color(0xFF111015), weight: 700, align: TextAlign.center), show: demoContent),
       gP(35.219, 353.469, 55, 17, gText('Produits', 13.684, Color(0xFF57545F), align: TextAlign.center), show: demoContent),
       gP(137.254, 321.317, 14, 29, gText(gm('3', '—'), 22.807, Color(0xFF111015), weight: 700, align: TextAlign.center), show: demoContent),

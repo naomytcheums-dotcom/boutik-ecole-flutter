@@ -55,7 +55,7 @@ class G_212 extends ConsumerWidget {
       gP(24, 200, 342, 150, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [26, 26, 26, 26]), show: demoContent),
       gP(24, 200, 342, 150, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [26, 26, 26, 26]), show: demoContent),
       gP(42, 288, 309, 23, gText(gm('Lampe en bois recyclé', ''), 18, Color(0xFFFFFFFF), weight: 800, wrap: true), show: demoContent),
-      gP(42, 318, 309, 15, gText('Émis par l’IUT de Douala · GC', 12, Color(0xD9FFFFFF), weight: 500, wrap: true), show: demoContent),
+      gP(42, 318, 309, 15, gText(gm('Émis par l’IUT de Douala · GC', ''), 12, Color(0xD9FFFFFF), weight: 500, wrap: true), show: demoContent),
       gP(40, 378, 171, 18, gText('Résultat de la vérification', 14, Color(0xFF111015), weight: 700), show: demoContent),
       gP(40, 412, 37, 16, gText('Statut', 12.5, Color(0xFF57545F)), show: demoContent),
       gP(274, 412, 76, 16, gText('Émis · vérifié', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right), show: demoContent),

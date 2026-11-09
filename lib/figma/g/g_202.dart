@@ -47,7 +47,7 @@ class G_202 extends ConsumerWidget {
       gP(31, 71, 22, 22, const SizedBox.expand(), tap: () => gBack(context)),
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
-      gP(76, 70, 283, 26, gText('Pack Lancement de marque', 21, Color(0xFF111015), weight: 700)),
+      gP(76, 70, 283, 26, gText(gm('Pack Lancement de marque', ''), 21, Color(0xFF111015), weight: 700)),
       gP(24, 120, 342, 180, gBox(image: 'assets/figma/img/4ca68f79023605aecb4f83724629d508e921e885.png', fit: BoxFit.cover, radii: [26, 26, 26, 26])),
       gP(24, 120, 342, 180, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [26, 26, 26, 26])),
       gP(42, 238, 309, 23, gText('Votre marque, de l’idée au produit', 18, Color(0xFFFFFFFF), weight: 800, wrap: true)),

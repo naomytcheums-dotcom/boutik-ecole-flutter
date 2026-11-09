@@ -61,7 +61,7 @@ class G_216 extends ConsumerWidget {
       gP(270, 365, 80, 13, gText('Précommander', 10.5, Color(0xFFFFFFFF), weight: 800, align: TextAlign.center), show: demoContent),
       gP(34, 423, 112, 120, gBox(image: 'assets/figma/img/4ca68f79023605aecb4f83724629d508e921e885.png', fit: BoxFit.cover, radii: [20, 20, 20, 20]), show: demoContent),
       gP(158, 427, 199, 18, gText(gm('Jus de bissap bio', ''), 14, Color(0xFF111015), weight: 800, wrap: true), show: demoContent),
-      gP(158, 447, 79, 14, gText('par Équipe BTA', 11, Color(0xFF57545F), weight: 500), show: demoContent),
+      gP(158, 447, 79, 14, gText(gm('par Équipe BTA', ''), 11, Color(0xFF57545F), weight: 500), show: demoContent),
       gP(158, 473, 192, 8, gBox(color: Color(0xFFF2EFF6), radii: [4, 4, 4, 4]), show: demoContent),
       gP(158, 473, 81.92, 8, gBox(color: Color(0xFF6A4DFF), radii: [4, 4, 4, 4]), show: demoContent),
       gP(158, 487, 129, 14, gText(gm('64 / 150 précommandes', '—'), 11, Color(0xFF111015), weight: 600), show: demoContent),

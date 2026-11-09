@@ -69,7 +69,7 @@ class G_211 extends ConsumerWidget {
       gP(24, 545, 20, 20, gBox(color: Color(0xFF1F9D6B), oval: true), show: demoContent),
       gP(27.333, 549.25, 13.333, 11.042, gImg('assets/figma/v/23149818a3337a.svg'), show: demoContent),
       gP(56, 544, 175, 17, gText('Récupération des chutes', 13.5, Color(0xFF111015), weight: 600, wrap: true), show: demoContent),
-      gP(56, 564, 175, 14, gText('Ateliers GC', 11.5, Color(0xFF57545F), wrap: true), show: demoContent),
+      gP(56, 564, 175, 14, gText(gm('Ateliers GC', ''), 11.5, Color(0xFF57545F), wrap: true), show: demoContent),
       gP(33, 628, 2, 40, gBox(color: Color(0xFFBFE8D6), radii: [1, 1, 1, 1]), show: demoContent),
       gP(24, 607, 20, 20, gBox(color: Color(0xFF1F9D6B), oval: true), show: demoContent),
       gP(27.333, 611.25, 13.333, 11.042, gImg('assets/figma/v/23149818a3337a.svg'), show: demoContent),

@@ -52,7 +52,7 @@ class G_96 extends ConsumerWidget {
       gP(353.308, 83.308, 9.942, 9.942, gImg('assets/figma/v/34172806399cca.svg')),
       gP(24, 120, 342, 170, gBox(image: 'assets/figma/img/fbb2092962d6dc7886c56df2e6f5a1cfb07c25bb.png', fit: BoxFit.cover, radii: [24, 24, 24, 24])),
       gP(24, 120, 342, 170, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [24, 24, 24, 24])),
-      gP(42, 228, 309, 46, gText('Défi Orange : paiement mobile inclusif', 18, Color(0xFFFFFFFF), weight: 700, wrap: true), show: demoContent),
+      gP(42, 228, 309, 46, gText(gm('Défi Orange : paiement mobile inclusif', ''), 18, Color(0xFFFFFFFF), weight: 700, wrap: true), show: demoContent),
       gP(42, 256, 309, 15, gText(gm('Prix de 500 000 FCFA · Clôture le 30 nov.', '—'), 12, Color(0xFFE3ECF7), wrap: true), show: demoContent),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 304, 77.8, 34, 'Ouverts', 12.5, 600), GChip(109.8, 304, 85.2, 34, 'En cours', 12.5, 500), GChip(203, 304, 85.2, 34, 'Terminés', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
       gP(36, 365, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13]), show: demoContent),

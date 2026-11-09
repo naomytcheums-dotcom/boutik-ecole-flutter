@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'gsound.dart';
 import 'nav.dart';
 import 'live/backend.dart' show Backend;
+import 'live/geo_stub.dart' if (dart.library.js_interop) 'live/geo_web.dart' as geo;
 import 'live/lfav.dart' show GHeartLive;
 
 export 'gsound.dart';
@@ -18,6 +19,10 @@ const _decorImg = {
   '080dae98', '2b51b5d6', '2e8548b8', '73da21b1', '75d62324', 'aa1a076f', 'b896412c', 'c64e9a62', 'c7764301', 'dcc189ec',
   '6baf8125', 'a30d4e56', 'e48f8827', 'neutre',
 };
+/// Photo du compte connecté : elle remplace la photo de maquette de « Mariam » partout où l'écran dessine l'avatar du titulaire.
+String gSelfAvatarUrl = '';
+const _selfMockPhoto = 'assets/figma/img/d902a4aa';
+String _selfPhoto(String a) => Backend.ready && gSelfAvatarUrl.isNotEmpty && a.startsWith(_selfMockPhoto) ? gSelfAvatarUrl : a;
 bool gIsMockPhoto(String a) =>
     Backend.ready && a.startsWith('assets/figma/img/') && !_decorImg.any((k) => a.startsWith('assets/figma/img/$k'));
 
@@ -632,6 +637,8 @@ Widget gBox({
   double layerBlur = 0,
   double backBlur = 0,
 }) {
+  if (image != null) image = _selfPhoto(image);
+  if (image != null && gIsMockPhoto(image)) image = 'placeholder';
   final deco = BoxDecoration(
     color: color ?? (image == 'placeholder' ? const Color(0xFFEDE9F6) : null),
     gradient: gradient,
@@ -727,7 +734,9 @@ Widget gRich(List<(String, double, int, Color)> runs,
   return IgnorePointer(child: OverflowBox(alignment: Alignment.topLeft, minWidth: 0, maxWidth: double.infinity, child: t));
 }
 
-Widget gImg(String asset, {BoxFit fit = BoxFit.fill}) => gIsMockPhoto(asset) ? const IgnorePointer(child: ColoredBox(color: Color(0xFFEDE9F6))) : IgnorePointer(
+Widget gImg(String raw, {BoxFit fit = BoxFit.fill}) => _gImg(_selfPhoto(raw), fit);
+
+Widget _gImg(String asset, BoxFit fit) => gIsMockPhoto(asset) ? const IgnorePointer(child: ColoredBox(color: Color(0xFFEDE9F6))) : IgnorePointer(
       child: asset.endsWith('.svg')
           ? SvgPicture.asset(asset, fit: fit)
           : (asset.startsWith('http')
@@ -859,8 +868,14 @@ class GField extends StatefulWidget {
     this.numeric = false,
     this.maxLength,
     this.padT = 0,
+    this.dateMask = false,
+    this.autoLocate = false,
   });
   final double padT;
+  /// Date « JJ/MM/AAAA » : les barres « / » sont ajoutées automatiquement pendant la frappe.
+  final bool dateMask;
+  /// Ville détectée automatiquement (position du navigateur, avec autorisation) si le champ est vide ; reste modifiable.
+  final bool autoLocate;
   final bool numeric;
   final int? maxLength;
   final ValueChanged<String>? onChanged, onSubmitted;
@@ -879,6 +894,18 @@ class _GFieldState extends State<GField> {
   /// Champ de mot de passe : masqué par défaut, l'œil de la maquette (à droite) l'affiche ou le masque.
   late bool hide = widget.obscure;
   final FocusNode f = FocusNode();
+  @override
+  void initState() {
+    super.initState();
+    if (widget.autoLocate && Backend.ready && widget.initial.trim().isEmpty) {
+      geo.detectCity().then((v) {
+        if (!mounted || v == null || c.text.trim().isNotEmpty) return;
+        c.text = v;
+        widget.onChanged?.call(v);
+      });
+    }
+  }
+
   @override
   void dispose() {
     c.dispose();
@@ -910,8 +937,9 @@ class _GFieldState extends State<GField> {
             focusNode: f,
             style: st,
             obscureText: hide,
-            keyboardType: widget.numeric ? TextInputType.number : null,
+            keyboardType: widget.numeric || widget.dateMask ? TextInputType.number : null,
             inputFormatters: [
+              if (widget.dateMask) const _DateSlashFormatter(),
               if (widget.numeric) FilteringTextInputFormatter.digitsOnly,
               if (widget.maxLength != null) LengthLimitingTextInputFormatter(widget.maxLength),
             ],
@@ -1161,4 +1189,22 @@ class _GSplashBarState extends State<GSplashBar> with SingleTickerProviderStateM
           ),
         ),
       );
+}
+
+
+/// Saisie d'une date : n'accepte que des chiffres (8 au plus) et insère les barres « / » après le jour et le mois.
+class _DateSlashFormatter extends TextInputFormatter {
+  const _DateSlashFormatter();
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    final d = newValue.text.replaceAll(RegExp(r'\D'), '');
+    final t = d.length > 8 ? d.substring(0, 8) : d;
+    final b = StringBuffer();
+    for (var i = 0; i < t.length; i++) {
+      if (i == 2 || i == 4) b.write('/');
+      b.write(t[i]);
+    }
+    final out = b.toString();
+    return TextEditingValue(text: out, selection: TextSelection.collapsed(offset: out.length));
+  }
 }

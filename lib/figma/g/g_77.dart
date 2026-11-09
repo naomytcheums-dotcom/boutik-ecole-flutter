@@ -55,7 +55,7 @@ class G_77 extends ConsumerWidget {
       gP(138, 392, 114, 29, Consumer(builder: (context, ref, _) { final a = ref.watch(profileAccountProvider); return gText(demoContent ? 'Dr Mbarga' : a.name, 23, Color(0xFF111015), weight: 500); })),
       gP(258, 396, 16, 16, gBox(color: Color(0xFF2F7DF6), oval: true)),
       gP(259.667, 398.5, 12.667, 10.583, gImg('assets/figma/v/ca53f14df8dcc8.svg')),
-      gP(103, 426, 184, 14, gText('Responsable · Génie informatique', 11.5, Color(0xFF57545F))),
+      gP(103, 426, 184, 14, gText(gm('Responsable · Génie informatique', ''), 11.5, Color(0xFF57545F))),
       gP(112, 446, 166, 15, gText('#Mentorat   #IA   #Recherche', 12, Color(0xFF57545F))),
       gP(28.5, 470, 333, 34, gText('J’accompagne les étudiants dans leurs projets, de l’idée au prototype.', 11.5, Color(0xFF6F6D77), lh: 17, align: TextAlign.center, wrap: true)),
       gP(34, 512, 104, 30, gBox(color: Color(0xFFF4F3F6), radii: [15, 15, 15, 15])),

@@ -82,7 +82,7 @@ class G_84b extends ConsumerWidget {
       gP(48, 699.667, 16, 16, gImg('assets/figma/v/3a82c8c513bd84.svg'), show: demoContent),
       gP(48.833, 708.742, 14.333, 13.592, gImg('assets/figma/v/9253f57ddf05f2.svg'), show: demoContent),
       gP(88, 690, 107, 17, gText('Parrain du projet', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
-      gP(88, 712, 116, 14, gText('Votre nom sur la serre', 11.5, Color(0xFF57545F)), show: demoContent),
+      gP(88, 712, 116, 14, gText(gm('Votre nom sur la serre', ''), 11.5, Color(0xFF57545F)), show: demoContent),
       gP(301, 702, 49, 17, gText(demoContent ? '50 000' : '—', 13.5, Color(0xFF111015), weight: 700, align: TextAlign.right), show: demoContent),
       gP(0, 768, 390, 100, gBox(color: Color(0x00FFFFFF))),
       gP(24, 784, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => unavailableAction(context, 'Contribution indisponible', 'Les contributions à une campagne passent par le paiement sécurisé, qui sera activé en production.')),

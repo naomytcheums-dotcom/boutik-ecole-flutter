@@ -249,7 +249,7 @@ final platformProductsProvider = Provider<List<LiveProduct>>((ref) {
     return i < 0 ? liveCatalog.length : i;
   }
 
-  final sorted = [for (final l in rows) if (l.published && l.stock > 0) l]..sort((a, b) => rank(a).compareTo(rank(b)));
+  final sorted = [for (final l in rows) if (l.published && l.stock > 0 && !l.showcase) l]..sort((a, b) => rank(a).compareTo(rank(b)));
   return [for (final l in sorted) platformProduct(l)];
 });
 

@@ -99,7 +99,7 @@ class G_88 extends ConsumerWidget {
       gP(48, 611.667, 16, 16, gImg('assets/figma/v/f44e883cdba29a.svg'), show: demoContent),
       gP(50.5, 625, 11, 6, gImg('assets/figma/v/c4124addb3c439.svg'), show: demoContent),
       gP(51.333, 628.333, 9.333, 6, gImg('assets/figma/v/df31b3079c9886.svg'), show: demoContent),
-      gP(88, 602, 191, 17, gText('Défi : application de paieme…', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(88, 602, 191, 17, gText(gm('Défi : application de paieme…', ''), 13.5, Color(0xFF111015), weight: 600), show: demoContent),
       gP(88, 624, 106, 14, gText(demoContent ? '12 équipes inscrites' : '—', 11.5, Color(0xFF57545F)), show: demoContent),
       gP(293.6, 612, 58.4, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: demoContent),
       gP(303.8, 616, 38, 14, gText('Ouvert', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center), show: demoContent),

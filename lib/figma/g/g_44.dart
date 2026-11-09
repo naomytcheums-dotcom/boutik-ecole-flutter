@@ -54,7 +54,7 @@ class G_44 extends ConsumerWidget {
       gP(122, 490, 228, 16, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(lastOrderProvider).total), 12.5, Color(0xFF111015), weight: 700, wrap: true, align: TextAlign.right))),
       gP(40, 515, 310, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(-100, 524, 180, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(homeDeliveryProvider) ? 'Livraison' : 'Retrait', 12.5, Color(0xFF57545F), wrap: true, align: TextAlign.right))),
-      gP(88, 524, 262, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(homeDeliveryProvider) ? 'Douala, Cameroun' : 'Kiosque IUT – Bloc A', 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
+      gP(88, 524, 262, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(homeDeliveryProvider) ? (demoContent ? 'Douala, Cameroun' : 'Livraison à domicile') : (demoContent ? 'Kiosque IUT – Bloc A' : 'Point de retrait sur le campus'), 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(24, 576, 342, 62, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
       gP(36, 591, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(42.625, 596.917, 18.75, 16.625, gImg('assets/figma/v/b2ae09d0fd46bb.svg')),

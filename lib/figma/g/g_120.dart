@@ -49,7 +49,7 @@ class G_120 extends ConsumerWidget {
       gP(1072.75, 150, 140, 18, gText('Inviter un utilisateur', 14.5, Color(0xFFFFFFFF), weight: 600, inter: true, align: TextAlign.center)),
       gP(1051.292, 156, 15.917, 6, gImg('assets/figma/v/53a47ecfc209e9.svg')),
       gP(1056.25, 151.042, 6, 15.917, gImg('assets/figma/v/8e0fc17de3058a.svg')),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(268, 198, 114.8, 34, 'Tous (1 240)', 12.5, 600), GChip(390.8, 198, 92.6, 34, 'Étudiants', 12.5, 500), GChip(491.4, 198, 85.2, 34, 'Vendeurs', 12.5, 500), GChip(584.6, 198, 114.8, 34, 'Responsables', 12.5, 500), GChip(707.4, 198, 92.6, 34, 'Suspendus', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17, inter: true)),
+      if (demoContent) Positioned.fill(child: GChoiceGroup(chips: [GChip(268, 198, 114.8, 34, 'Tous (1 240)', 12.5, 600), GChip(390.8, 198, 92.6, 34, 'Étudiants', 12.5, 500), GChip(491.4, 198, 85.2, 34, 'Vendeurs', 12.5, 500), GChip(584.6, 198, 114.8, 34, 'Responsables', 12.5, 500), GChip(707.4, 198, 92.6, 34, 'Suspendus', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17, inter: true)),
       gP(268, 246, 984, 260, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
       gP(269, 247, 982, 39, gBox(color: Color(0xFFF4F1F8), radii: [15, 15, 15, 15])),
       gP(284, 259, 25, 13, gText('Nom', 11, Color(0xFF57545F), weight: 600, inter: true)),

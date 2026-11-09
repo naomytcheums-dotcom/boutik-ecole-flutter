@@ -49,7 +49,7 @@ class G_172 extends ConsumerWidget {
       gP(76, 70, 224, 26, gText('Confiance du vendeur', 21, Color(0xFF111015), weight: 700)),
       gP(159, 136, 72, 72, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [36, 36, 36, 36])),
       gP(22.5, 218, 345, 21, gText(gm('Yannick Mouanga', ''), 17, Color(0xFF111015), weight: 700, align: TextAlign.center, wrap: true), show: demoContent),
-      gP(22.5, 242, 345, 15, gText('Génie civil · IUT de Douala', 12, Color(0xFF57545F), align: TextAlign.center, wrap: true), show: demoContent),
+      gP(22.5, 242, 345, 15, gText(gm('Génie civil · IUT de Douala', ''), 12, Color(0xFF57545F), align: TextAlign.center, wrap: true), show: demoContent),
       gP(137, 268, 116, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: demoContent),
       gP(155, 272, 80, 14, gText('Vendeur vérifié', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center), show: demoContent),
       gP(24, 316, 154, 19, gText('Badges de confiance', 15, Color(0xFF111015), weight: 700), show: demoContent),

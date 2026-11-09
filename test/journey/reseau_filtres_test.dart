@@ -69,7 +69,7 @@ void main() {
     expect(choisi, 4);
   });
 
-  testWidgets('réseau social 244 connecté sans publication réelle : l’ancienne présentation reste affichée', (t) async {
+  testWidgets('réseau social 244 connecté sans publication réelle : état vide, jamais de publication de maquette', (t) async {
     Backend.ready = true;
     GAnim.enabled = false;
     t.view.physicalSize = const Size(393, 852);
@@ -77,8 +77,8 @@ void main() {
     addTearDown(t.view.reset);
     await t.pumpWidget(ProviderScope(overrides: [reelsProvider.overrideWith(() => _Reels(const []))], child: MaterialApp(home: G_244())));
     await t.pumpAndSettle();
-    expect(find.text('Yannick M.'), findsOneWidget);
-    expect(find.text('Cercle'), findsNothing);
+    expect(find.text('Yannick M.'), findsNothing);
+    expect(find.textContaining('Aucune publication'), findsWidgets);
   });
 
   testWidgets('profil 10 connecté : trois emplacements de vidéos phares, jamais de photo de maquette', (t) async {
@@ -145,7 +145,7 @@ void main() {
     expect(find.text('Alice'), findsNothing);
   });
 
-  testWidgets('accueil connecté sans profil réel : cartes d’exemple marquées « Exemple »', (t) async {
+  testWidgets('accueil connecté sans profil réel : état vide, jamais de carte d’exemple', (t) async {
     Backend.ready = true;
     GAnim.enabled = false;
     t.view.physicalSize = const Size(393, 852);
@@ -156,6 +156,7 @@ void main() {
     final scroll = t.state<ScrollableState>(find.descendant(of: find.byType(SingleChildScrollView).first, matching: find.byType(Scrollable)).first);
     scroll.position.jumpTo(scroll.position.maxScrollExtent);
     await t.pumpAndSettle();
-    expect(find.text('Exemple'), findsWidgets);
+    expect(find.text('Exemple'), findsNothing);
+    expect(find.textContaining('Aucun talent à présenter'), findsOneWidget);
   });
 }

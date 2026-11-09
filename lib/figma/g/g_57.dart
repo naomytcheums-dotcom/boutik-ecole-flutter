@@ -49,7 +49,7 @@ class G_57 extends ConsumerWidget {
       gP(24, 70, 164, 26, gText('Tableau de bord', 21, Color(0xFF111015), weight: 700)),
       gP(340.75, 69.833, 22.5, 19.75, gImg('assets/figma/v/c416ae6fb27d36.svg')),
       gP(347.442, 87.25, 9.117, 6.922, gImg('assets/figma/v/76ffe03c455014.svg')),
-      gP(24, 96, 197, 15, gText('Bonjour Mariam, voici votre activité', 12, Color(0xFF57545F))),
+      gP(24, 96, 197, 15, gText(gm('Bonjour Mariam, voici votre activité', ''), 12, Color(0xFF57545F))),
       gP(38, 132, 84, 14, gText('Ventes du mois', 11.5, Color(0xFF57545F), weight: 500)),
       gP(38, 152, 95, 25, Consumer(builder: (context, ref, _) => gText(fcfa(1245000 + ref.watch(ordersProvider).fold<int>(0, (a, o) => a + o.total)).replaceAll(' FCFA', ''), 20, Color(0xFF111015), weight: 800))),
       gP(38, 184, 75, 14, gText(gm('+12 % vs sept.', '—'), 11, Color(0xFF0F7A52), weight: 600)),

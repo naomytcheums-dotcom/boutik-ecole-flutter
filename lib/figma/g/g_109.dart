@@ -50,7 +50,7 @@ class G_109 extends ConsumerWidget {
       gP(1022.958, 158.125, 18.75, 10.25, gImg('assets/figma/v/e0834926a737bf.svg')),
       gP(1025.792, 154.583, 13.083, 9.542, gImg('assets/figma/v/3ee7d7ad9e826a.svg')),
       gP(1029.333, 149.625, 6, 14.5, gImg('assets/figma/v/c6f78b73bf1246.svg')),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(268, 198, 100, 34, 'Tous (248)', 12.5, 600), GChip(376, 198, 122.2, 34, 'Vendeurs (64)', 12.5, 500), GChip(506.2, 198, 137, 34, 'Étudiants (184)', 12.5, 500), GChip(651.2, 198, 129.6, 34, 'En attente (6)', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17, inter: true)),
+      if (demoContent) Positioned.fill(child: GChoiceGroup(chips: [GChip(268, 198, 100, 34, 'Tous (248)', 12.5, 600), GChip(376, 198, 122.2, 34, 'Vendeurs (64)', 12.5, 500), GChip(506.2, 198, 137, 34, 'Étudiants (184)', 12.5, 500), GChip(651.2, 198, 129.6, 34, 'En attente (6)', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17, inter: true)),
       gP(268, 246, 984, 304, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
       gP(269, 247, 982, 39, gBox(color: Color(0xFFF4F1F8), radii: [15, 15, 15, 15])),
       gP(284, 259, 25, 13, gText('Nom', 11, Color(0xFF57545F), weight: 600, inter: true)),

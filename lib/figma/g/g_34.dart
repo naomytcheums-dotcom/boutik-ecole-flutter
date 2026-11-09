@@ -68,7 +68,7 @@ class G_34 extends ConsumerWidget {
       gP(24, 718, 162, 19, gText('Vidéo de présentation', 15, Color(0xFF111015), weight: 700)),
       gP(24, 756, 342, 150, gBox(image: 'assets/figma/img/285ea8d512e6fd1079056dd514be7a2ebad70bf2.png', fit: BoxFit.cover, radii: [24, 24, 24, 24])),
       gP(24, 756, 342, 150, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [24, 24, 24, 24])),
-      gP(42, 844, 309, 23, gText('Fabrication de la lampe', 18, Color(0xFFFFFFFF), weight: 700, wrap: true)),
+      gP(42, 844, 309, 23, gText(gm('Fabrication de la lampe', ''), 18, Color(0xFFFFFFFF), weight: 700, wrap: true)),
       gP(42, 872, 309, 15, gText(gm('Vidéo · 1 min 24', '—'), 12, Color(0xFFE3ECF7), wrap: true)),
       gP(125, 936, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gTap(295.5, 462, 61, 32, () { uiAllShown(context); }), // audit 01/11 : « Tout voir » n'avait aucun effet

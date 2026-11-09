@@ -87,7 +87,7 @@ class G_252 extends ConsumerWidget {
       gP(24, 578, 38, 38, gBox(image: 'assets/figma/img/8d2db59994dcfe0c5b9851845e0b9f6aec49d36d.png', fit: BoxFit.cover, radii: [19, 19, 19, 19]), show: demoContent),
       gP(74, 579, 86, 16, gText(gm('Kouassi Tagne', ''), 12.5, Color(0xFF111015), weight: 600), show: demoContent),
       gP(177.6, 581, 33, 13, gText(gm('20 min', '—'), 10, Color(0xFF57545F)), show: demoContent),
-      gP(74, 598, 253, 17, gText('Bravo l’équipe Génie civil 👏', 12, Color(0xFF5B5963), lh: 17, wrap: true), show: demoContent),
+      gP(74, 598, 253, 17, gText(gm('Bravo l’équipe Génie civil 👏', ''), 12, Color(0xFF5B5963), lh: 17, wrap: true), show: demoContent),
       gP(338.75, 577.375, 18.5, 17.25, gImg('assets/figma/v/dbb07b49642bdc.svg'), show: demoContent),
       gP(332.5, 570.5, 31, 31, GHeart(), show: demoContent),
       gP(346, 600, 4, 12, gText('1', 9.5, Color(0xFF57545F), weight: 500), show: demoContent),

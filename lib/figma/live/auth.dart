@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -216,9 +217,14 @@ class AuthState {
 
 class AuthNotifier extends Notifier<AuthState> {
   @override
-  AuthState build() => AuthState(current: ref.read(initialAccountProvider));
+  AuthState build() {
+    final a = ref.read(initialAccountProvider);
+    gSelfAvatarUrl = a?.avatarUrl ?? '';
+    return AuthState(current: a);
+  }
 
   void login(Account a) {
+    gSelfAvatarUrl = a.avatarUrl;
     state = state.copy(current: a);
     unawaited(native_push.syncNativePushForCurrentUser());
   }
@@ -227,6 +233,7 @@ class AuthNotifier extends Notifier<AuthState> {
     saveRemembered(null);
     Drafts.clearAll(); // brouillons de cet appareil : jamais visibles par l'utilisateur suivant
     Backend.signOut();
+    gSelfAvatarUrl = '';
     state = state.copy(clearCurrent: true);
     appReset?.call(); // aucun état du compte précédent ne survit (formulaires, annonces, panier, commandes…)
   }
@@ -235,6 +242,7 @@ class AuthNotifier extends Notifier<AuthState> {
       state = state.copy(accounts: [...state.accounts, a], pending: a);
 
   void update(Account a) {
+    if (state.current?.email == a.email) gSelfAvatarUrl = a.avatarUrl;
     state = state.copy(
       accounts: [for (final x in state.accounts) x.email == a.email ? a : x],
       current: state.current?.email == a.email ? a : state.current,
@@ -1025,6 +1033,40 @@ String gSelf(WidgetRef ref, String demo) {
   if (demo == 'M. Essono') return p.length > 1 ? 'M. ${p.last}' : n;
   return n;
 }
+
+/// Numéro enregistré, masqué (« +237 6•• •• •• 42 ») ; message neutre s'il n'y en a pas.
+String maskedPhone(String raw) {
+  final d = normPhone(raw);
+  if (d.length < 9) return 'Aucun numéro enregistré';
+  return '+237 ${d[0]}•• •• •• ${d.substring(d.length - 2)}';
+}
+
+/// Appareil courant (le seul que l'application connaît avec certitude).
+String currentDeviceLabel() {
+  if (kIsWeb) return 'Navigateur web • Cet appareil';
+  return switch (defaultTargetPlatform) {
+    TargetPlatform.android => 'Android • Cet appareil',
+    TargetPlatform.iOS => 'iPhone • Cet appareil',
+    _ => 'Cet appareil',
+  };
+}
+
+/// Centre de sécurité : envoie le lien de changement de mot de passe à l'adresse e-mail du compte.
+Future<void> sendPasswordResetLink(WidgetRef ref, BuildContext context) async {
+  final email = ref.read(profileAccountProvider).email.trim();
+  if (email.isEmpty) {
+    await gAlert(context, 'Mot de passe', 'Aucune adresse e-mail n’est enregistrée sur ce compte.');
+    return;
+  }
+  final err = await Backend.resetPassword(email);
+  if (!context.mounted) return;
+  if (err != null) {
+    await gAlert(context, 'Envoi impossible', err);
+    return;
+  }
+  gToast(context, 'Lien envoyé à $email');
+}
+
 
 /// Établissement du titulaire à la place de « IUT de Douala » (vide s'il n'en a pas choisi).
 String gSelfInst(WidgetRef ref, String demo) => Backend.ready ? ref.watch(profileAccountProvider).institution.trim() : demo;

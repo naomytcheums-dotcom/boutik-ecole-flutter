@@ -42,7 +42,7 @@ class G_272 extends ConsumerWidget {
       gP(43.458, 83.458, 11.542, 17.083, gImg('assets/figma/v/7a21623fe0dfea.svg')),
       gP(43.458, 89, 17.083, 6, gImg('assets/figma/v/e130a05f3cf779.svg')),
       gP(100, 76, 190, 21, gText(gm('Vérification en 2 étapes', '—'), 17, Color(0xFF111015), weight: 500)),
-      gP(86.5, 102, 217, 15, gText('Compte administrateur · IUT de Douala', 12, Color(0xFF57545F))),
+      gP(86.5, 102, 217, 15, gText(gm('Compte administrateur · IUT de Douala', ''), 12, Color(0xFF57545F))),
       gP(157, 144, 76, 91.999, gImg('assets/figma/r/200_114.png'), show: demoContent),
       gP(175, 174, 40, 32, gImg('assets/figma/r/200_115.png'), show: demoContent),
       gP(79.5, 262, 231, 28, gText('Saisissez le code reçu', 22, Color(0xFF111015), weight: 700), show: demoContent),

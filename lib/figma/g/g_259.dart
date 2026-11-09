@@ -54,7 +54,7 @@ class G_259 extends ConsumerWidget {
       gP(44, 460, 48, 15, gText('Vendeur', 12, Color(0xFF57545F))),
       gP(212, 460, 134, 16, gText(gm('Yannick Mouanga · GC', ''), 12.5, Color(0xFF111015), weight: 600), show: demoContent),
       gP(44, 496, 38, 15, gText('Retrait', 12, Color(0xFF57545F))),
-      gP(88, 496, 258, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(homeDeliveryProvider) ? 'Domicile · Douala' : 'Kiosque IUT · Bloc A', 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
+      gP(88, 496, 258, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(homeDeliveryProvider) ? (demoContent ? 'Domicile · Douala' : 'Livraison à domicile') : (demoContent ? 'Kiosque IUT · Bloc A' : 'Point de retrait sur le campus'), 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(44, 540, 302, 1, gBox(color: Color(0xFFEEECF1))),
       gP(44, 556, 65, 16, gText('Total payé', 13, Color(0xFF111015), weight: 600)),
       gP(107, 555, 239, 18, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(lastOrderProvider).total), 14, Color(0xFF111015), weight: 700, wrap: true, align: TextAlign.right))),

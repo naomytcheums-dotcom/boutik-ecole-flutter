@@ -32,7 +32,7 @@ class G_189 extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 1280, h: 890, radius: 16, color: Color(0xFFF7F6F4), children: [
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(268, 134, 107.4, 34, 'Toutes (23)', 12.5, 600), GChip(383.4, 134, 144.4, 34, 'Présélection (4)', 12.5, 500), GChip(535.8, 134, 85.2, 34, 'Refusées', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17, inter: true)),
+      if (demoContent) Positioned.fill(child: GChoiceGroup(chips: [GChip(268, 134, 107.4, 34, 'Toutes (23)', 12.5, 600), GChip(383.4, 134, 144.4, 34, 'Présélection (4)', 12.5, 500), GChip(535.8, 134, 85.2, 34, 'Refusées', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17, inter: true)),
       gP(268, 182, 582, 216, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26]), show: demoContent),
       gP(269, 183, 580, 39, gBox(color: Color(0xFFF4F1F8), radii: [15, 15, 15, 15]), show: demoContent),
       gP(284, 195, 34, 13, gText('Talent', 11, Color(0xFF57545F), weight: 600, inter: true), show: demoContent),
@@ -72,7 +72,7 @@ class G_189 extends ConsumerWidget {
       gP(888.625, 205.5, 18.75, 18.375, gImg('assets/figma/v/d177b28382093d.svg'), show: demoContent),
       gP(898, 215.25, 10.5, 10.5, gImg('assets/figma/v/6fd6a3c35cbbc1.svg'), show: demoContent),
       gP(924, 199, 315, 17, gText('Analyse IA', 14, Color(0xFFFFFFFF), weight: 700, inter: true, wrap: true), show: demoContent),
-      gP(924, 222, 315, 32, gText('Mariam E. offre le meilleur équilibre prix, délai et compétences.', 11.5, Color(0xFFE9E4F5), inter: true, lh: 16, wrap: true), show: demoContent),
+      gP(924, 222, 315, 32, gText(gm('Mariam E. offre le meilleur équilibre prix, délai et compétences.', ''), 11.5, Color(0xFFE9E4F5), inter: true, lh: 16, wrap: true), show: demoContent),
       gP(886.667, 267.75, 14.667, 11.958, gImg('assets/figma/v/ac006383c9ee5c.svg'), show: demoContent),
       gP(910, 266, 329, 15, gText('Dossier complet', 12, Color(0xFFFFFFFF), weight: 500, inter: true, wrap: true), show: demoContent),
       gP(886.667, 291.75, 14.667, 11.958, gImg('assets/figma/v/ac006383c9ee5c.svg'), show: demoContent),

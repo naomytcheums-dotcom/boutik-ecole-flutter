@@ -47,7 +47,7 @@ class G_93 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 204, 26, gText('Propositions reçues', 21, Color(0xFF111015), weight: 700)),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 107.4, 34, 'Toutes (23)', 12.5, 600), GChip(139.4, 120, 144.4, 34, 'Présélection (4)', 12.5, 500), GChip(291.8, 120, 85.2, 34, 'Refusées', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
+      if (demoContent) Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 107.4, 34, 'Toutes (23)', 12.5, 600), GChip(139.4, 120, 144.4, 34, 'Présélection (4)', 12.5, 500), GChip(291.8, 120, 85.2, 34, 'Refusées', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
       gP(36, 176, 50, 50, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, radii: [25, 25, 25, 25]), show: demoContent),
       gP(98, 180, 98, 17, gText(gSelf(ref, 'Mariam Essono'), 13.5, Color(0xFF111015), weight: 600), show: demoContent),
       gP(98, 202, 116, 14, gText(gm('80 000 FCFA · 7 jours', '—'), 11.5, Color(0xFF57545F)), show: demoContent),

@@ -69,7 +69,7 @@ class G_41 extends ConsumerWidget {
       gP(39.75, 303.5, 16.5, 21, gImg('assets/figma/v/f88bf1acb4da04.svg')),
       gP(45, 315.5, 6.008, 6, gImg('assets/figma/v/f943396fb20219.svg')),
       gP(24, 352, 91, 16, gText('Ville et quartier', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 372, 342, 48, GField(hint: demoContent ? '' : 'Douala · Ndokoti', initial: demoContent ? 'Douala · Ndokoti' : '', size: 13.5, hintColor: demoContent ? Color(0xFF111015) : Color(0xFF57545F), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('ad_place', v); })),
+      gP(24, 372, 342, 48, GField(hint: demoContent ? '' : 'Ville · quartier', initial: demoContent ? 'Douala · Ndokoti' : '', size: 13.5, hintColor: demoContent ? Color(0xFF111015) : Color(0xFF57545F), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('ad_place', v); })),
       gP(39, 385.5, 18, 21, gImg('assets/figma/v/32cd8858f7ce88.svg')),
       gP(42.75, 389.25, 10.5, 10.5, gImg('assets/figma/v/f34fbbf4909aff.svg')),
       gP(334.5, 390.75, 15, 10.5, gImg('assets/figma/v/7abbf201b36418.svg')),

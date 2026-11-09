@@ -165,7 +165,7 @@ class G_38 extends ConsumerWidget {
       gP(98, 828, 256, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(36, 836, 50, 50, gBox(image: 'assets/figma/img/c15478a4e0a5cc1be462d8179ed1a24390853242.png', fit: BoxFit.cover, radii: [25, 25, 25, 25])),
       gP(98, 840, 64, 17, gText(gm('Kouassi T.', ''), 13.5, Color(0xFF111015), weight: 600)),
-      gP(98, 862, 192, 14, gText('Très beau produit, livraison un peu …', 11.5, Color(0xFF57545F))),
+      gP(98, 862, 192, 14, gText(gm('Très beau produit, livraison un peu …', ''), 11.5, Color(0xFF57545F))),
       gP(312.8, 850, 39.2, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11])),
       gP(322.9, 854, 19, 14, gText(demoContent ? '4.0' : '—', 11, Color(0xFF8F5400), weight: 600, align: TextAlign.center)),
       gP(125, 924, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),

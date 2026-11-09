@@ -53,7 +53,7 @@ class G_35 extends ConsumerWidget {
       gP(280.8, 142, 71.2, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
       gP(293.4, 146, 46, 14, gText('En stock', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
       gP(24, 200, 69, 19, gText('Variantes', 15, Color(0xFF111015), weight: 700)),
-      gP(40, 250, 91, 17, gText('Chêne naturel', 13.5, Color(0xFF111015), weight: 600)),
+      gP(40, 250, 91, 17, gText(gm('Chêne naturel', ''), 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 272, 66, 14, gText(gm('SKU LB-001', '—'), 11.5, Color(0xFF57545F))),
       gP(261.6, 260, 90.4, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
       gP(277.8, 264, 58, 14, gText(gm('12 en stock', '—'), 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),

@@ -54,7 +54,7 @@ class G_282 extends ConsumerWidget {
       gP(184, 476, 162, 15, gText('Panier + identifiant de borne', 12, Color(0xFF111015), weight: 600)),
       gP(44, 550, 223, 18, gText('Mode événement programmable', 14, Color(0xFF111015), weight: 600)),
       gP(44, 580, 65, 15, gText('Événement', 12, Color(0xFF57545F))),
-      gP(213, 580, 133, 15, gText('Journée de l’innovation', 12, Color(0xFF111015), weight: 600)),
+      gP(213, 580, 133, 15, gText(gm('Journée de l’innovation', ''), 12, Color(0xFF111015), weight: 600)),
       gP(44, 606, 36, 15, gText('Début', 12, Color(0xFF57545F))),
       gP(237, 606, 109, 15, gText(gm('12/11/2026 · 08:00', '—'), 12, Color(0xFF111015), weight: 600)),
       gP(44, 632, 17, 15, gText('Fin', 12, Color(0xFF57545F))),

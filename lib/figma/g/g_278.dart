@@ -62,7 +62,7 @@ class G_278 extends ConsumerWidget {
       gP(44, 484, 44, 15, gText('Auteurs', 12, Color(0xFF57545F)), show: demoContent),
       gP(219, 484, 127, 15, gText(gm('Mariam E. · Yannick M.', ''), 12, Color(0xFF111015), weight: 600), show: demoContent),
       gP(44, 510, 59, 15, gText('Encadrant', 12, Color(0xFF57545F)), show: demoContent),
-      gP(223, 510, 123, 15, gText('Dr Ngono · Génie civil', 12, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(223, 510, 123, 15, gText(gm('Dr Ngono · Génie civil', ''), 12, Color(0xFF111015), weight: 600), show: demoContent),
       gP(44, 536, 46, 15, gText('Licence', 12, Color(0xFF57545F)), show: demoContent),
       gP(262, 536, 84, 15, gText(gm('CC BY-NC 4.0', '—'), 12, Color(0xFF111015), weight: 600), show: demoContent),
       gP(44, 562, 35, 15, gText('Droits', 12, Color(0xFF57545F)), show: demoContent),

@@ -52,7 +52,7 @@ class G_A1 extends ConsumerWidget {
       gP(328.767, 83, 18.467, 18.233, gImg('assets/figma/v/menu3.svg')), gTap(316, 70, 44, 44, () => gOpen(context, '231')),
       gP(95, 240, 200, 200, gBox(color: Color(0x59FFB36B), layerBlur: 90, oval: true), fx: 'halo'),
       gP(70, 205, 250, 250, kelaOrb(image: 'assets/figma/img/2b51b5d6469cca917952ac344a2ddf9cc1440830.png', fit: BoxFit.contain, shadows: [BoxShadow(color: Color(0x47FF731A), offset: Offset(0, 18), blurRadius: 28, spreadRadius: 0)])),
-      gP(34, 484, 329, 68, gText('Peux-tu m’aider à créer un logo et une affiche', 26, Color(0x52111015), weight: 500, lh: 34, wrap: true)),
+      gP(34, 484, 329, 68, gText(gm('Peux-tu m’aider à créer un logo et une affiche', ''), 26, Color(0x52111015), weight: 500, lh: 34, wrap: true)),
       gP(34, 552, 329, 68, gText('pour mon parfum, avant fin novembre ?', 26, Color(0xFF111015), weight: 500, lh: 34, wrap: true)),
       gP(168, 655, 4, 10, gBox(color: Color(0xFF8E7BFF), radii: [2, 2, 2, 2]), fx: 'wave'),
       gP(178, 651, 4, 18, gBox(color: Color(0xFF8E7BFF), radii: [2, 2, 2, 2]), fx: 'wave'),

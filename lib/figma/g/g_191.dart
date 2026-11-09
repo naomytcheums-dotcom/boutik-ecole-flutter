@@ -71,7 +71,7 @@ class G_191 extends ConsumerWidget {
       gP(24, 340, 166, 104, gBox(image: 'assets/figma/img/1574e42a325d3a4ac509841e7a5eb5a285a3d991.png', fit: BoxFit.cover, radii: [24, 24, 24, 24])),
       gP(24, 340, 166, 104, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x1A111015), Color(0xB2111015)], stops: [0, 1]), radii: [24, 24, 24, 24])),
       gP(38, 400, 95, 16, gText('Vidéo et photo', 13, Color(0xFFFFFFFF), weight: 800)),
-      gP(38, 420, 75, 13, gText('Spot, shooting', 10.5, Color(0xCCFFFFFF), weight: 500)),
+      gP(38, 420, 75, 13, gText(gm('Spot, shooting', ''), 10.5, Color(0xCCFFFFFF), weight: 500)),
       gP(200, 340, 166, 104, gBox(image: 'assets/figma/img/768cf16e6d8103ad4296d6cc0fdf1af309f03817.png', fit: BoxFit.cover, radii: [24, 24, 24, 24])),
       gP(200, 340, 166, 104, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x1A111015), Color(0xB2111015)], stops: [0, 1]), radii: [24, 24, 24, 24])),
       gP(214, 400, 119, 16, gText('Site ou application', 13, Color(0xFFFFFFFF), weight: 800)),

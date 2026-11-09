@@ -80,7 +80,7 @@ class G_198 extends ConsumerWidget {
       gP(268, 680, 984, 116, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26]), show: demoContent),
       gP(282, 692, 140, 92, gBox(image: 'assets/figma/img/e3a1b5107e8b2a5b3a542598c9ff80a2e1376935.png', fit: BoxFit.cover, radii: [20, 20, 20, 20]), show: demoContent),
       gP(442, 698, 125, 19, gText(gm('Atelier Tchoupo', ''), 16, Color(0xFF111015), weight: 700, inter: true), show: demoContent),
-      gP(442, 724, 100, 16, gText('Prototype métal', 13, Color(0xFF44546A), weight: 500, inter: true), show: demoContent),
+      gP(442, 724, 100, 16, gText(gm('Prototype métal', ''), 13, Color(0xFF44546A), weight: 500, inter: true), show: demoContent),
       gP(442, 750, 308, 15, gText(gm('Budget 90–110 k FCFA · filières suggérées : GMP · GIM', '—'), 12, Color(0xFF57545F), inter: true), show: demoContent),
       gP(1171.2, 696, 64.8, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11]), show: demoContent),
       gP(1179.6, 700, 48, 13, gText('Nouveau', 11, Color(0xFF5A3FE0), weight: 600, inter: true, align: TextAlign.center), show: demoContent),

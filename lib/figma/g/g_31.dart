@@ -95,7 +95,7 @@ class G_31 extends ConsumerWidget {
       gP(91.556, 659.816, 59, 13, gText(gm('15 oct. 2026', '—'), 10.117, Color(0xFF57545F)), show: demoContent),
       gP(330.817, 636.702, 22.257, 22.211, gBox(color: Color(0xFFFDF0D5), radii: [7.588, 7.588, 7.588, 7.588]), show: demoContent),
       gP(332.946, 641.307, 18, 13, gText(demoContent ? '4.0' : '—', 10.117, Color(0xFF8F5400), weight: 600, align: TextAlign.center), show: demoContent),
-      gP(38.444, 694.419, 277, 43, gText('Très beau produit, mais la livraison a pris un peu\nplus de temps que prévu.', 12.646, Color(0xFF4A4854), lh: 21.245), show: demoContent),
+      gP(38.444, 694.419, 277, 43, gText(gm('Très beau produit, mais la livraison a pris un peu\nplus de temps que prévu.', ''), 12.646, Color(0xFF4A4854), lh: 21.245), show: demoContent),
       gP(125, 832, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32]), show: demoContent),
       gP(47.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '19')),

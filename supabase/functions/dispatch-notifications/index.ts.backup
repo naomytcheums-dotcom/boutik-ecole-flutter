@@ -1,0 +1,77 @@
+// Edge Function « dispatch-notifications » : envoie les notifications mises en file (table notification_outbox, statut « queued »).
+// Elle ne prend AUCUNE entrée : elle n'envoie que ce que la base a mis en file, pour des personnes qui ont donné leur consentement.
+// Appelée chaque minute par la planification de la base (pg_cron + pg_net). Déployée sans vérification JWT (voir la procédure).
+// Secrets par canal (Supabase > Edge Functions > Secrets) ; un canal sans ses secrets laisse la file intacte (rien n'est perdu ni inventé) :
+//   e-mail   : RESEND_API_KEY, RESEND_FROM                                   (resend.com)
+//   SMS      : TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_SMS_FROM          (twilio.com)
+//   WhatsApp : TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_WHATSAPP_FROM     (numéro WhatsApp approuvé, ex. whatsapp:+1…)
+//   push web : VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY, VAPID_SUBJECT              (clés générées par « npx web-push generate-vapid-keys »)
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import webpush from "npm:web-push@3.6.7";
+
+const MAX = 40;
+
+Deno.serve(async () => {
+  const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+  const env = (k: string) => Deno.env.get(k) ?? "";
+  const ready = {
+    email: !!env("RESEND_API_KEY") && !!env("RESEND_FROM"),
+    sms: !!env("TWILIO_ACCOUNT_SID") && !!env("TWILIO_AUTH_TOKEN") && !!env("TWILIO_SMS_FROM"),
+    whatsapp: !!env("TWILIO_ACCOUNT_SID") && !!env("TWILIO_AUTH_TOKEN") && !!env("TWILIO_WHATSAPP_FROM"),
+    push: !!env("VAPID_PUBLIC_KEY") && !!env("VAPID_PRIVATE_KEY") && !!env("VAPID_SUBJECT"),
+  } as Record<string, boolean>;
+  const channels = Object.keys(ready).filter((c) => ready[c]);
+  if (channels.length === 0) return Response.json({ sent: 0, note: "aucun canal configuré" });
+
+  // les notifications vieilles de plus de 24 h ne sont plus envoyées (évite une rafale à l'activation d'un canal)
+  await admin.from("notification_outbox").update({ status: "skipped", last_error: "périmée" }).eq("status", "queued").lt("created_at", new Date(Date.now() - 86400_000).toISOString());
+  const { data: rows } = await admin.from("notification_outbox").select("*").eq("status", "queued").in("channel", channels).order("created_at").limit(MAX);
+  if (!rows?.length) return Response.json({ sent: 0 });
+
+  if (ready.push) webpush.setVapidDetails(env("VAPID_SUBJECT"), env("VAPID_PUBLIC_KEY"), env("VAPID_PRIVATE_KEY"));
+  let sent = 0;
+  for (const r of rows) {
+    let error: string | null = null;
+    try {
+      const { data: p } = await admin.from("profiles").select("email, phone, name").eq("id", r.user_id).maybeSingle();
+      const text = `${r.title}${r.body ? "\n" + r.body : ""}`;
+      if (r.channel === "email") {
+        if (!p?.email) throw new Error("pas d'adresse e-mail");
+        const res = await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${env("RESEND_API_KEY")}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ from: env("RESEND_FROM"), to: [p.email], subject: r.title, text: r.body ?? r.title }),
+        });
+        if (!res.ok) throw new Error(`e-mail refusé (${res.status})`);
+      } else if (r.channel === "sms" || r.channel === "whatsapp") {
+        if (!p?.phone) throw new Error("pas de numéro");
+        const wa = r.channel === "whatsapp";
+        const to = (wa ? "whatsapp:" : "") + p.phone.replace(/\s/g, "");
+        const res = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${env("TWILIO_ACCOUNT_SID")}/Messages.json`, {
+          method: "POST",
+          headers: { Authorization: "Basic " + btoa(`${env("TWILIO_ACCOUNT_SID")}:${env("TWILIO_AUTH_TOKEN")}`), "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams({ To: to, From: wa ? env("TWILIO_WHATSAPP_FROM") : env("TWILIO_SMS_FROM"), Body: text.slice(0, 1500) }),
+        });
+        if (!res.ok) throw new Error(`${r.channel} refusé (${res.status})`);
+      } else if (r.channel === "push") {
+        const { data: devs } = await admin.from("device_tokens").select("token").eq("user_id", r.user_id).eq("platform", "web");
+        if (!devs?.length) throw new Error("aucun appareil");
+        let ok = 0;
+        for (const d of devs) {
+          try {
+            await webpush.sendNotification(JSON.parse(d.token), JSON.stringify({ title: r.title, body: r.body ?? "" }));
+            ok++;
+          } catch (e: any) {
+            if (e?.statusCode === 404 || e?.statusCode === 410) await admin.from("device_tokens").delete().eq("token", d.token);
+          }
+        }
+        if (ok === 0) throw new Error("push non remis");
+      }
+    } catch (e: any) {
+      error = String(e?.message ?? e).slice(0, 200);
+    }
+    await admin.from("notification_outbox").update({ status: error ? "failed" : "sent", last_error: error, attempts: (r.attempts ?? 0) + 1, sent_at: error ? null : new Date().toISOString() }).eq("id", r.id);
+    if (!error) sent++;
+  }
+  return Response.json({ sent, examined: rows.length });
+});

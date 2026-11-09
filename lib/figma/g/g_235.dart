@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
-import '../live/modules.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -32,7 +31,7 @@ class G_235 extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
-      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo', show: demoContent),
+      gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(0, 0, 390, 110, gBox(color: Color(0xFF111015))),
       gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFFFFFFFF), weight: 700)),
@@ -53,28 +52,27 @@ class G_235 extends ConsumerWidget {
       gP(106, 87, 165, 14, gText('Compte professionnel · en ligne', 11, Color(0xBFFFFFFF))),
       gP(340, 72, 20, 20, const SizedBox.expand(), tap: () => gTab(context, '53')),
       gP(338.667, 71.493, 21.84, 21.84, gImg('assets/figma/v/7a51bb41235e6d.svg')),
-      gP(28, 140, 289, 38, gText('Pour démarrer la mission, payez le jalon 1 : 54 000 FCFA par Orange Money.', 13, Color(0xFF111111), lh: 19, wrap: true), show: demoContent),
-      gP(286, 180, 30, 13, gText('09:40', 10, Color(0xFF57545F), align: TextAlign.right), show: demoContent),
-      gP(16, 208, 310, 48, gBox(color: Color(0xFFFFF3E6), radii: [14, 14, 14, 14]), show: demoContent),
-      gP(30, 223, 116, 16, gText('Paiement sécurisé', 13, Color(0xFF111015), weight: 800), show: demoContent),
-      gP(291, 228.333, 18, 13.333, gImg('assets/figma/v/4b620eedcc4d0b.svg'), show: demoContent),
-      gP(293.667, 222.333, 12.667, 12, gImg('assets/figma/v/85f602a8445644.svg'), show: demoContent),
-      gP(30, 270, 46, 14, gText('Montant', 11.5, Color(0xFF57545F)), show: demoContent),
-      gP(30, 288, 140, 28, gText(demoContent ? '54 000 FCFA' : '—', 22, Color(0xFF111015), weight: 800), show: demoContent),
-      gP(30, 320, 126, 14, gText('Séquestre · jalon 1 sur 3', 11.5, Color(0xFF57545F), weight: 500), show: demoContent),
-      gP(30, 342, 282, 32, gBox(color: Color(0xFFFF7900), radii: [16, 16, 16, 16]), show: demoContent),
-      gP(91, 349, 160, 16, gText('Payer avec Orange Money', 12.5, Color(0xFFFFFFFF), weight: 800, align: TextAlign.center), show: demoContent),
-      gP(74, 398, 300, 49, gBox(color: Color(0xFFD9FDD3), shadows: [BoxShadow(color: Color(0x1A122640), offset: Offset(0, 1), blurRadius: 2, spreadRadius: 0)], radii: [14, 14, 14, 14]), show: demoContent),
-      gP(86, 408, 279, 19, gText('Paiement effectué ✓', 13, Color(0xFF111111), lh: 19, wrap: true), show: demoContent),
-      gP(335, 429, 29, 13, gText('09:42', 10, Color(0xFF57545F), align: TextAlign.right), show: demoContent),
-      gP(28, 467, 289, 38, gText('Merci ! 54 000 FCFA reçus et bloqués en séquestre. Reçu : boutik-ecole.cm/r/8841', 13, Color(0xFF111111), lh: 19, wrap: true), show: demoContent),
-      gP(287, 507, 29, 13, gText('09:42', 10, Color(0xFF57545F), align: TextAlign.right), show: demoContent),
+      gP(28, 140, 289, 38, gText('Pour démarrer la mission, payez le jalon 1 : 54 000 FCFA par Orange Money.', 13, Color(0xFF111111), lh: 19, wrap: true)),
+      gP(286, 180, 30, 13, gText('09:40', 10, Color(0xFF57545F), align: TextAlign.right)),
+      gP(16, 208, 310, 48, gBox(color: Color(0xFFFFF3E6), radii: [14, 14, 14, 14])),
+      gP(30, 223, 116, 16, gText('Paiement sécurisé', 13, Color(0xFF111015), weight: 800)),
+      gP(291, 228.333, 18, 13.333, gImg('assets/figma/v/4b620eedcc4d0b.svg')),
+      gP(293.667, 222.333, 12.667, 12, gImg('assets/figma/v/85f602a8445644.svg')),
+      gP(30, 270, 46, 14, gText('Montant', 11.5, Color(0xFF57545F))),
+      gP(30, 288, 140, 28, gText(demoContent ? '54 000 FCFA' : '—', 22, Color(0xFF111015), weight: 800)),
+      gP(30, 320, 126, 14, gText('Séquestre · jalon 1 sur 3', 11.5, Color(0xFF57545F), weight: 500)),
+      gP(30, 342, 282, 32, gBox(color: Color(0xFFFF7900), radii: [16, 16, 16, 16])),
+      gP(91, 349, 160, 16, gText('Payer avec Orange Money', 12.5, Color(0xFFFFFFFF), weight: 800, align: TextAlign.center)),
+      gP(74, 398, 300, 49, gBox(color: Color(0xFFD9FDD3), shadows: [BoxShadow(color: Color(0x1A122640), offset: Offset(0, 1), blurRadius: 2, spreadRadius: 0)], radii: [14, 14, 14, 14])),
+      gP(86, 408, 279, 19, gText('Paiement effectué ✓', 13, Color(0xFF111111), lh: 19, wrap: true)),
+      gP(335, 429, 29, 13, gText('09:42', 10, Color(0xFF57545F), align: TextAlign.right)),
+      gP(28, 467, 289, 38, gText('Merci ! 54 000 FCFA reçus et bloqués en séquestre. Reçu : boutik-ecole.cm/r/8841', 13, Color(0xFF111111), lh: 19, wrap: true)),
+      gP(287, 507, 29, 13, gText('09:42', 10, Color(0xFF57545F), align: TextAlign.right)),
       gP(10, 780, 300, 46, GField(hint: 'Message', size: 14, hintColor: Color(0xFF57545F), weight: 400, padL: 24)),
       gP(320, 780, 46, 46, gBox(color: Color(0xFF128C7E), oval: true)),
       gP(331.667, 791.667, 22.667, 22.667, gImg('assets/figma/v/37684f95055729.svg')),
       gP(339.167, 791.667, 15.167, 15.167, gImg('assets/figma/v/850ac0825ae325.svg')),
-      if (demoContent) gTap(30, 342, 282, 32, () { uiSoon(context, 'Le paiement par WhatsApp', 'Payez votre commande dans l’application, à l’étape Paiement.'); }), // audit 01/11 : « Payer avec Orange Money » n'avait aucun effet
-      if (!demoContent) gP(24, 125, 342, 620, threadsListing(height: 620)),
+      gTap(30, 342, 282, 32, () { uiSoon(context, 'Le paiement par WhatsApp', 'Payez votre commande dans l’application, à l’étape Paiement.'); }), // audit 01/11 : « Payer avec Orange Money » n'avait aucun effet
     ]);
   }
 }

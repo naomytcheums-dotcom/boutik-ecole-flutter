@@ -375,7 +375,7 @@ Deno.serve(async () => {
             body: new URLSearchParams({
               To: to,
               From: whatsapp
-                ? env("TWILIO_WHATSAPP_FROM")
+                ? "whatsapp:" + env("TWILIO_WHATSAPP_FROM").replace(/^whatsapp:/, "").replace(/\s/g, "")
                 : env("TWILIO_SMS_FROM"),
               Body: messageText.slice(0, 1500),
             }),

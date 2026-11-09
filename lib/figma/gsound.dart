@@ -233,7 +233,10 @@ class _GMicState extends State<GMic> with SingleTickerProviderStateMixin {
 
 /// Cœur « favori » : rebond, rouge plein, son.
 class GHeart extends StatefulWidget {
-  const GHeart({super.key});
+  const GHeart({super.key, this.pad = EdgeInsets.zero});
+
+  /// Marge de toucher invisible (zone de 48 dp au moins) autour du cœur dessiné.
+  final EdgeInsets pad;
   @override
   State<GHeart> createState() => _GHeartState();
 }
@@ -248,7 +251,18 @@ class _GHeartState extends State<GHeart> with SingleTickerProviderStateMixin {
   }
 
   @override
-  Widget build(BuildContext context) => GestureDetector(
+  Widget build(BuildContext context) => Semantics(
+        button: true,
+        toggled: on,
+        label: on ? 'Retirer des favoris' : 'Ajouter aux favoris',
+        excludeSemantics: true,
+        onTap: () {
+          setState(() => on = !on);
+          GSound.play(on ? 'pop' : 'tick');
+          HapticFeedback.lightImpact();
+          if (GAnim.enabled) c.forward(from: 0);
+        },
+        child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
           setState(() => on = !on);
@@ -256,7 +270,7 @@ class _GHeartState extends State<GHeart> with SingleTickerProviderStateMixin {
           HapticFeedback.lightImpact();
           if (GAnim.enabled) c.forward(from: 0);
         },
-        child: AnimatedBuilder(
+        child: Padding(padding: widget.pad, child: AnimatedBuilder(
           animation: c,
           builder: (_, _) {
             final s = on ? 1 + 0.45 * math.sin(c.value * math.pi) : 1.0;
@@ -266,6 +280,6 @@ class _GHeartState extends State<GHeart> with SingleTickerProviderStateMixin {
                   : const SizedBox.expand(),
             );
           },
-        ),
-      );
+        )),
+      ));
 }

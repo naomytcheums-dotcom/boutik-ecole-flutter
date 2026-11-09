@@ -391,6 +391,25 @@ Deno.serve(async () => {
           }
           throw new Error(`${r.channel} refusé (${response.status}${code ? ` Twilio ${code}` : ""})`);
         }
+
+        // Statut réel après quelques secondes : un message accepté peut encore échouer (undelivered / failed).
+        try {
+          const sid = (await response.json())?.sid;
+          if (sid) {
+            await new Promise((res) => setTimeout(res, 5000));
+            const st = await fetch(
+              `https://api.twilio.com/2010-04-01/Accounts/${env("TWILIO_ACCOUNT_SID")}/Messages/${sid}.json`,
+              { headers: { Authorization: "Basic " + btoa(`${env("TWILIO_ACCOUNT_SID")}:${env("TWILIO_AUTH_TOKEN")}`) } },
+            );
+            const j = await st.json();
+            if (j?.status === "failed" || j?.status === "undelivered") {
+              throw new Error(`${r.channel} ${j.status} (Twilio ${j.error_code ?? "?"})`);
+            }
+            console.log(`twilio ${r.channel} statut ${j?.status}`);
+          }
+        } catch (e) {
+          if (e instanceof Error && /Twilio/.test(e.message)) throw e;
+        }
       } else if (r.channel === "push") {
         const { data: devices, error: devicesError } = await admin
           .from("device_tokens")

@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'gsound.dart';
 import 'nav.dart';
+import 'live/lfav.dart' show GHeartLive;
 
 export 'gsound.dart';
 
@@ -136,20 +137,24 @@ class GScreen extends StatelessWidget {
         final needW = math.max(0.0, minTarget - r.width), needH = math.max(0.0, minTarget - r.height);
         if (needW > 0 || needH > 0) {
           bool nested(Rect q) => (q.left <= r.left + 0.5 && q.top <= r.top + 0.5 && q.right >= r.right - 0.5 && q.bottom >= r.bottom - 0.5) || (r.left <= q.left + 0.5 && r.top <= q.top + 0.5 && r.right >= q.right - 0.5 && r.bottom >= q.bottom - 0.5);
-          bool free(Rect q0) => !taps.any((q) => q != r && !nested(q) && q.overlaps(q0)); // jamais au-dessus d'une autre zone tactile distincte ; une zone imbriquée (icône dans son cercle) fait partie du même bouton
-          // Agrandissement par côté : à parts égales si possible, sinon du seul côté libre (jamais au-dessus d'une autre zone tactile).
+          // Une zone distincte n'est jamais recouverte en son centre ; entre rangées collées, un chevauchement de bord (5, puis 10, puis 16 dp) est toléré
+          // pour atteindre 48 dp. Une zone imbriquée (icône dans son cercle) fait partie du même bouton.
+          bool free(Rect q0, double tol) => !taps.any((q) => q != r && !nested(q) && (q.overlaps(q0.deflate(tol)) || (tol > 5 && q0.contains(q.center))));
           final hs = needW > 0 ? [(needW / 2, needW / 2), (0.0, needW), (needW, 0.0), (needW / 2, 0.0), (0.0, needW / 2), (0.0, 0.0)] : [(0.0, 0.0)];
           final vs = needH > 0 ? [(needH / 2, needH / 2), (0.0, needH), (needH, 0.0), (needH / 2, 0.0), (0.0, needH / 2), (0.0, 0.0)] : [(0.0, 0.0)];
-          var bestGain = 0.0;
-          for (final hh in hs) {
-            for (final vv in vs) {
-              final q0 = Rect.fromLTRB(r.left - hh.$1, r.top - vv.$1, r.right + hh.$2, r.bottom + vv.$2);
-              final gain = (hh.$1 + hh.$2) + (vv.$1 + vv.$2);
-              if (gain > bestGain && free(q0)) {
-                bestGain = gain;
-                e = q0;
+          for (final tol in const [5.0, 10.0, 16.0]) {
+            var bestGain = 0.0;
+            for (final hh in hs) {
+              for (final vv in vs) {
+                final q0 = Rect.fromLTRB(r.left - hh.$1, r.top - vv.$1, r.right + hh.$2, r.bottom + vv.$2);
+                final gain = (hh.$1 + hh.$2) + (vv.$1 + vv.$2);
+                if (gain > bestGain && free(q0, tol)) {
+                  bestGain = gain;
+                  e = q0;
+                }
               }
             }
+            if (e.width >= minTarget - 0.5 && e.height >= minTarget - 0.5) break;
           }
         }
       }
@@ -553,6 +558,17 @@ Widget gP(double x, double y, double w, double h, Widget child,
     final px = math.max(0.0, (GScreen.minTarget - w) / 2), py = math.max(0.0, (GScreen.minTarget - h) / 2);
     return gP(x - px, y - py, w + 2 * px, h + 2 * py,
         GToggle(on: child.on, onColor: child.onColor, offColor: child.offColor, knob: child.knob, knobColor: child.knobColor, onChanged: child.onChanged, padX: px, padY: py),
+        rot: rot, op: op, tap: tap, fx: fx, sound: sound);
+  }
+  if ((child is GHeart || child is GHeartLive) && GScreen.a11y && (w < GScreen.minTarget || h < GScreen.minTarget)) {
+    final px = math.max(0.0, (GScreen.minTarget - w) / 2), py = math.max(0.0, (GScreen.minTarget - h) / 2);
+    final pad = EdgeInsets.symmetric(horizontal: px, vertical: py);
+    return gP(x - px, y - py, w + 2 * px, h + 2 * py, child is GHeart ? GHeart(pad: pad) : GHeartLive(title: (child as GHeartLive).title, pad: pad), rot: rot, op: op, tap: tap, fx: fx, sound: sound);
+  }
+  if (child is GCheck && GScreen.a11y && child.padX == 0 && child.padY == 0 && (w < GScreen.minTarget || h < GScreen.minTarget)) {
+    final px = math.max(0.0, (GScreen.minTarget - w) / 2), py = math.max(0.0, (GScreen.minTarget - h) / 2);
+    return gP(x - px, y - py, w + 2 * px, h + 2 * py,
+        GCheck(on: child.on, onColor: child.onColor, offColor: child.offColor, radius: child.radius, border: child.border, padX: px, padY: py),
         rot: rot, op: op, tap: tap, fx: fx, sound: sound);
   }
   Widget c = SizedBox(width: w, height: h, child: child);
@@ -990,9 +1006,9 @@ class _GChoiceGroupState extends State<GChoiceGroup> {
   List<Widget> _chips(double dy) => [
         for (var i = 0; i < widget.chips.length; i++)
           Positioned(
-            left: widget.chips[i].x,
+            left: widget.chips[i].x - _padX(widget.chips[i]),
             top: widget.chips[i].y - dy - _padY(widget.chips[i]),
-            width: widget.chips[i].w,
+            width: widget.chips[i].w + 2 * _padX(widget.chips[i]),
             height: widget.chips[i].h + 2 * _padY(widget.chips[i]),
             child: Semantics(
               button: true,
@@ -1011,7 +1027,7 @@ class _GChoiceGroupState extends State<GChoiceGroup> {
                 setState(() => sel = i);
                 widget.onChanged?.call(i);
               },
-              child: Padding(padding: EdgeInsets.symmetric(vertical: _padY(widget.chips[i])), child: AnimatedContainer(
+              child: Padding(padding: EdgeInsets.symmetric(vertical: _padY(widget.chips[i]), horizontal: _padX(widget.chips[i])), child: AnimatedContainer(
                 duration: const Duration(milliseconds: 160),
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
@@ -1033,11 +1049,14 @@ class _GChoiceGroupState extends State<GChoiceGroup> {
   /// Marge de toucher verticale invisible : la pastille reste dessinée à l'identique, sa zone de toucher fait au moins 48 dp de haut.
   double _padY(GChip c) => GScreen.a11y ? math.max(0.0, (GScreen.minTarget - c.h) / 2) : 0.0;
 
+  /// Marge de toucher horizontale invisible pour les pastilles plus étroites que 48 dp.
+  double _padX(GChip c) => GScreen.a11y ? math.max(0.0, (GScreen.minTarget - c.w) / 2) : 0.0;
+
   /// Les pastilles qui dépassent la largeur de l'écran défilent horizontalement (la dernière est atteignable).
   @override
   Widget build(BuildContext context) => LayoutBuilder(builder: (context, box) {
         if (widget.chips.isEmpty) return const SizedBox.shrink();
-        final maxX = widget.chips.map((c) => c.x + c.w).reduce(math.max);
+        final maxX = widget.chips.map((c) => c.x + c.w + _padX(c)).reduce(math.max);
         if (!box.hasBoundedWidth || maxX <= box.maxWidth + 0.5) return Stack(clipBehavior: Clip.none, children: _chips(0));
         final minY = widget.chips.map((c) => c.y - _padY(c)).reduce(math.min);
         final maxY = widget.chips.map((c) => c.y + c.h + _padY(c)).reduce(math.max);
@@ -1058,7 +1077,8 @@ class _GChoiceGroupState extends State<GChoiceGroup> {
 
 /// Case à cocher.
 class GCheck extends StatefulWidget {
-  const GCheck({super.key, required this.on, required this.onColor, required this.offColor, required this.radius, this.border});
+  const GCheck({super.key, required this.on, required this.onColor, required this.offColor, required this.radius, this.border, this.padX = 0, this.padY = 0});
+  final double padX, padY;
   final bool on;
   final Color onColor, offColor;
   final Color? border;
@@ -1076,14 +1096,17 @@ class _GCheckState extends State<GCheck> {
           GSound.play('pop');
           setState(() => on = !on);
         },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 140),
-          decoration: BoxDecoration(
-            color: on ? widget.onColor : widget.offColor,
-            borderRadius: BorderRadius.circular(widget.radius),
-            border: widget.border == null || on ? null : Border.all(color: widget.border!, width: 1.5),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: widget.padX, vertical: widget.padY),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 140),
+            decoration: BoxDecoration(
+              color: on ? widget.onColor : widget.offColor,
+              borderRadius: BorderRadius.circular(widget.radius),
+              border: widget.border == null || on ? null : Border.all(color: widget.border!, width: 1.5),
+            ),
+            child: on ? Padding(padding: const EdgeInsets.all(1), child: FittedBox(child: SizedBox(width: 14.667, height: 11.958, child: gImg('assets/figma/v/w_check.svg')))) : null,
           ),
-          child: on ? Padding(padding: const EdgeInsets.all(1), child: FittedBox(child: SizedBox(width: 14.667, height: 11.958, child: gImg('assets/figma/v/w_check.svg')))) : null,
         ),
       );
 }

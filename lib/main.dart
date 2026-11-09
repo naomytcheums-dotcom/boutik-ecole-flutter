@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app.dart';
@@ -11,6 +13,20 @@ import 'figma/live/native_push_stub.dart'
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  if (!kIsWeb) {
+    // Android : plein écran « bord à bord » ; la barre système (boutons ou gestes) devient transparente et laisse voir le fond de l'application,
+    // sans second menu noir ou blanc. Le menu de Boutik-École se place au-dessus de la zone réservée (MediaQuery.padding.bottom).
+    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      statusBarBrightness: Brightness.light,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarDividerColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.dark,
+      systemNavigationBarContrastEnforced: false,
+    ));
+  }
   // Démarrage borné : sur un réseau lent, aucune étape réseau ne doit retenir l'écran blanc plus de quelques secondes.
   const limite = Duration(seconds: 8);
   await Backend.init().timeout(limite, onTimeout: () {});

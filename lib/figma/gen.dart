@@ -221,6 +221,15 @@ class GScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var id = '';
+    try {
+      id = GoRouterState.of(context).uri.path;
+    } catch (_) {}
+    final off = id.startsWith('/s/') && kSansVerre.contains(id.substring(3));
+    return _GlassPolicy(off: off, child: _buildScreen(context));
+  }
+
+  Widget _buildScreen(BuildContext context) {
     final canvas = SizedBox(
       width: w,
       height: h,
@@ -624,7 +633,60 @@ BorderRadius _br(List<double>? r) => r == null
       );
 
 /// Rectangle / ellipse / carte, avec dégradé, image, ombres, flous.
+/// Un fond « verre » (flou d'arrière-plan) est conservé par défaut (menu du bas, boutons, cartes validés) ; il est retiré uniquement
+/// sur les écrans de [kSansVerre], où le texte et les icônes reposent directement sur le fond de la page.
 Widget gBox({
+  Color? color,
+  Gradient? gradient,
+  List<double>? radii,
+  Color? border,
+  double bw = 1,
+  List<BoxShadow>? shadows,
+  bool oval = false,
+  String? image,
+  BoxFit fit = BoxFit.cover,
+  double layerBlur = 0,
+  double backBlur = 0,
+}) {
+  if (backBlur > 0 && image == null) {
+    return _GGlassBox(make: () => _gBoxBuild(color: color, gradient: gradient, radii: radii, border: border, bw: bw, shadows: shadows, oval: oval, image: image, fit: fit, layerBlur: layerBlur, backBlur: backBlur));
+  }
+  return _gBoxBuild(color: color, gradient: gradient, radii: radii, border: border, bw: bw, shadows: shadows, oval: oval, image: image, fit: fit, layerBlur: layerBlur, backBlur: backBlur);
+}
+
+/// Écrans (maquette) sans fond verre : pages ouvertes depuis le profil étudiant et les espaces réseau, communauté, talents,
+/// ateliers, alertes, départements, accueils et intégrations. Le menu du bas (pastille 330–360 × 54–74) garde toujours son verre.
+const kSansVerre = <String>{
+  '01', '02', '10', '13', '18b', '18c', '19', '72', '73', '74', '77', '100', '101', '103', '104', '105', '106', '107', '148-1', '148-2', '149', '150-1',
+  '151', '152', '153', '155', '156', '157', '158', '159', '160', '161', '162', '163', '164', '165', '166', '167', '175', '176', '177', '178', '179',
+  '203', '204', '205', '214', '215', '216', '217', '218', '219', '220', '221', '222', '223', '224', '225', '226', '227', '228', '229', '236', '240',
+  '241', '242', '243', '244', '244b', '245', '246', '247', '248', '249', '250', '250b', '251', '252', '253', '253b', '254', '271', '272', '273', '274',
+  '280', 'P1', 'P2', 'P3', 'P4', 'P5', 'V1', 'L1',
+};
+
+/// Politique « verre » de l'écran affiché, fournie par [GScreen].
+class _GlassPolicy extends InheritedWidget {
+  const _GlassPolicy({required this.off, required super.child});
+  final bool off;
+  @override
+  bool updateShouldNotify(_GlassPolicy old) => off != old.off;
+}
+
+class _GGlassBox extends StatelessWidget {
+  const _GGlassBox({required this.make});
+  final Widget Function() make;
+  @override
+  Widget build(BuildContext context) {
+    final off = context.dependOnInheritedWidgetOfExactType<_GlassPolicy>()?.off ?? false;
+    if (!off) return make();
+    return LayoutBuilder(builder: (context, c) {
+      final menu = c.maxWidth >= 330 && c.maxWidth <= 360 && c.maxHeight >= 54 && c.maxHeight <= 74;
+      return menu ? make() : const SizedBox.expand();
+    });
+  }
+}
+
+Widget _gBoxBuild({
   Color? color,
   Gradient? gradient,
   List<double>? radii,
@@ -648,8 +710,6 @@ Widget gBox({
     boxShadow: shadows,
     image: image == null || image == 'placeholder' ? null : DecorationImage(image: image.startsWith('http') ? NetworkImage(image) as ImageProvider : AssetImage(image), fit: fit, filterQuality: FilterQuality.high, onError: (_, _) {}),
   );
-  // Plus aucun fond « verre » (flou d'arrière-plan + voile translucide) : le texte et les icônes reposent directement sur le fond de la page.
-  if (backBlur > 0 && image == null) return const SizedBox.expand();
   Widget w = DecoratedBox(decoration: deco, child: const SizedBox.expand());
   if (backBlur > 0) {
     w = Stack(fit: StackFit.expand, children: [

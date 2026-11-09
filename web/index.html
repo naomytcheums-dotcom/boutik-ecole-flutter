@@ -59,21 +59,6 @@
     For more details:
     * https://docs.flutter.dev/platform-integration/web/initialization
   -->
-  <!-- Écran d'attente affiché dès l'ouverture, retiré dès que l'application dessine sa première image. -->
-  <div id="boot" style="position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#F7F6F4;font-family:system-ui,sans-serif;color:#111015;z-index:1">
-    <div style="width:44px;height:44px;border:4px solid #E3E0EA;border-top-color:#111015;border-radius:50%;animation:bs 0.9s linear infinite"></div>
-    <p style="margin-top:18px;font-size:15px;font-weight:600">Boutik-École</p>
-    <p style="margin-top:4px;font-size:12.5px;color:#4A4854">Chargement…</p>
-  </div>
-  <style>@keyframes bs{to{transform:rotate(360deg)}}</style>
-  <script>
-    new MutationObserver(function (m, o) {
-      if (document.querySelector('flutter-view, flt-glass-pane')) {
-        setTimeout(function () { var b = document.getElementById('boot'); if (b) b.remove(); }, 400);
-        o.disconnect();
-      }
-    }).observe(document.documentElement, { childList: true, subtree: true });
-  </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

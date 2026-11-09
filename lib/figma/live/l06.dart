@@ -6,6 +6,7 @@ import '../../data/repositories/repositories.dart' show cartProvider, CartNotifi
 import '../gen.dart';
 import '../nav.dart';
 import 'auth.dart' show demoContent;
+import 'marche/marche_widgets.dart' show MarcheLink;
 import 'store.dart';
 
 /// 06 · Panier — partie vivante : lignes du panier (quantités, suppression) et totaux.
@@ -56,6 +57,7 @@ class _Cart extends StatelessWidget {
                 ),
               ),
       ),
+      if (!demoContent && lines.isNotEmpty) gP(150, 92, 216, 40, const MarcheLink('Par boutique · code promo', '/marche/panier')),
       // Totaux (positions fixes de la maquette)
       gP(25.64, 625.94, 337.37, 0.677, gBox(color: const Color(0xFFF2EFF6))),
       gP(28.339, 642.624, 59, 14, gText('Sous-total', 11.471, _grey)),
@@ -103,7 +105,7 @@ class _Cart extends StatelessWidget {
         tap: () => gOpen(context, '05'),
       ),
       gP(144.4, y + 22.6, 180, 21, gText(l.title, 14.17, _ink, weight: 700, lh: 20.242, wrap: true, maxLines: 1)),
-      gP(144.4, y + 49.8, 180, 14, gText(l.department.startsWith('Département') ? l.department : 'Département : ${l.department}', 10.796, _grey)),
+      gP(144.4, y + 49.8, 180, 14, gText(l.department.startsWith('Département') || l.department.startsWith('Boutique') ? l.department : 'Département : ${l.department}', 10.796, _grey)),
       gP(144.4, y + 77.3, 160, 16, gText(fcfa(l.price * l.qty), 12.82, _violet, weight: 600)),
       gP(144.4, y + 111, 107.284, 27.068, gBox(color: const Color(0xFFF2EFF6), radii: const [13.495, 13.495, 13.495, 13.495])),
       gP(147.093, y + 113.1, 22.941, 22.941, gBox(color: const Color(0xFFE4E8EE), oval: true), tap: () => cart.setQty(i, l.qty - 1), sound: 'tick'),

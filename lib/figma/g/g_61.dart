@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
+import '../live/marche/marche_widgets.dart' show MarcheLink;
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/l06.dart';
@@ -43,6 +44,7 @@ class G_61 extends ConsumerWidget {
       gP(331.5, 19.5, 28, 17, gImg('assets/figma/v/6a818f3296df50.svg')),
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
+      if (!demoContent) gP(214, 62, 152, 48, const MarcheLink('Ma boutique', '/marche/ma-boutique')),
       gP(24, 70, 153, 26, gText('Mon catalogue', 21, Color(0xFF111015), weight: 700)),
       gP(342.583, 79, 18.833, 6, gImg('assets/figma/v/6fe571ab77e960.svg')),
       gP(349, 72.583, 6, 18.833, gImg('assets/figma/v/87cbf4a9a18b64.svg')),

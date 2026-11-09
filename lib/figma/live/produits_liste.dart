@@ -16,8 +16,11 @@ TextStyle _st(double size, {FontWeight w = FontWeight.w500, Color c = _ink}) => 
 bool isRecycled(LiveProduct p) => RegExp(r'recycl|récup|recup|upcycl|seconde vie|réemploi|reemploi', caseSensitive: false).hasMatch('${p.title} ${p.description}');
 
 class ProductCards extends ConsumerWidget {
-  const ProductCards({super.key, this.width = 342, this.rows = 2, this.filter, this.emptyText = 'Aucun produit publié pour le moment.'});
+  const ProductCards({super.key, this.width = 342, this.rows = 2, this.filter, this.height, this.emptyText = 'Aucun produit publié pour le moment.'});
   final double width;
+
+  /// Hauteur du cadre défilant (défaut : 390, ou 590 pour 3 rangées). Les cartes sont plus grandes : le cadre défile au besoin.
+  final double? height;
   final int rows;
   final bool Function(LiveProduct)? filter;
   final String emptyText;
@@ -42,34 +45,49 @@ class ProductCards extends ConsumerWidget {
       return p.image.startsWith('http') ? Image.network(p.image, fit: BoxFit.cover, errorBuilder: (_, _, _) => neutral()) : Image.asset(p.image, fit: BoxFit.cover);
     }
 
-    Widget card(LiveProduct p) => GestureDetector(
-          behavior: HitTestBehavior.opaque,
+    // Cadre de produit de la première maquette : grande photo (4:5), coins arrondis modérés, texte HORS du cadre.
+    Widget card(LiveProduct p) => Semantics(
+          button: true,
+          label: '${p.title}, ${fcfa(p.price)}',
+          excludeSemantics: true,
           onTap: () {
             ref.read(selectedProductProvider.notifier).select(p.title);
             gOpen(context, '05');
           },
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            SizedBox(height: 115, width: double.infinity, child: ClipRRect(borderRadius: BorderRadius.circular(18), child: image(p))),
-            const SizedBox(height: 8),
-            Text(p.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(12.5, w: FontWeight.w700)),
-            const SizedBox(height: 2),
-            Text(fcfa(p.price), style: _st(12, w: FontWeight.w600)),
-            const SizedBox(height: 2),
-            Text(p.department.isEmpty ? p.category : p.department, maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(10.5, c: const Color(0xFF5A3FE0))),
-          ]),
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              ref.read(selectedProductProvider.notifier).select(p.title);
+              gOpen(context, '05');
+            },
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              AspectRatio(aspectRatio: 4 / 5, child: ClipRRect(borderRadius: BorderRadius.circular(14), child: image(p))),
+              const SizedBox(height: 8),
+              Text(p.title, maxLines: 2, overflow: TextOverflow.ellipsis, style: _st(12.5, w: FontWeight.w700)),
+              const SizedBox(height: 2),
+              Text(fcfa(p.price), style: _st(12, w: FontWeight.w600)),
+              const SizedBox(height: 2),
+              Text(p.department.isEmpty ? p.category : p.department, maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(10.5, c: const Color(0xFF5A3FE0))),
+            ]),
+          ),
         );
+    final h = height ?? (rows >= 3 ? 590.0 : 390.0);
     return SizedBox(
       width: width,
-      child: Column(children: [
-        for (var r = 0; r < (list.length + 1) ~/ 2; r++) ...[
-          if (r > 0) const SizedBox(height: 18),
-          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Expanded(child: card(list[r * 2])),
-            const SizedBox(width: 18),
-            Expanded(child: r * 2 + 1 < list.length ? card(list[r * 2 + 1]) : const SizedBox.shrink()),
-          ]),
-        ],
-      ]),
+      height: h,
+      child: SingleChildScrollView(
+        padding: EdgeInsets.zero,
+        child: Column(children: [
+          for (var r = 0; r < (list.length + 1) ~/ 2; r++) ...[
+            if (r > 0) const SizedBox(height: 18),
+            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Expanded(child: card(list[r * 2])),
+              const SizedBox(width: 14),
+              Expanded(child: r * 2 + 1 < list.length ? card(list[r * 2 + 1]) : const SizedBox.shrink()),
+            ]),
+          ],
+        ]),
+      ),
     );
   }
 }

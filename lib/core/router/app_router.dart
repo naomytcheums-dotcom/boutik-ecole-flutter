@@ -7,6 +7,7 @@ import '../../features/screens.dart';
 import '../../features/design_lab/design_lab_screen.dart';
 import '../../figma/gsound.dart' show GAnim;
 import '../../figma/live/access.dart';
+import '../../figma/g/g_280.dart';
 import '../../figma/live/espace.dart';
 import '../../figma/live/shared_cv.dart';
 import '../theme/app_colors.dart';
@@ -19,6 +20,8 @@ import 'screen_entry.dart';
 import '../../figma/live/paiement_messagerie.dart';
 import '../../figma/live/premium_pub.dart';
 import '../../figma/live/communities.dart' show CommunityScreen;
+import '../../figma/live/marche/marche_screens.dart';
+import '../../figma/live/marche/marche_vendeur.dart';
 
 final Map<String, ScreenEntry> screensById = {for (final s in allScreens) s.id: s};
 
@@ -43,8 +46,19 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/campagnes', builder: (_, _) => const AdsScreen()),
     GoRoute(path: '/campagnes/validation', builder: (_, _) => const AdReviewScreen()),
     GoRoute(path: '/communaute', builder: (_, _) => const CommunityScreen()),
+    GoRoute(path: '/marche', builder: (_, _) => const MarketplaceScreen()),
+    GoRoute(path: '/marche/boutique/:slug', builder: (_, state) => ShopPageScreen(slug: state.pathParameters['slug'] ?? '')),
+    GoRoute(path: '/marche/ventes-flash', builder: (_, _) => const FlashSalesScreen()),
+    GoRoute(path: '/marche/produit/:id', builder: (_, state) => ProductPageScreen(id: state.pathParameters['id'] ?? '')),
+    GoRoute(path: '/marche/comparer', builder: (_, _) => const CompareScreen()),
+    GoRoute(path: '/marche/suivies', builder: (_, _) => const FollowedShopsScreen()),
+    GoRoute(path: '/marche/panier', builder: (_, _) => const CartByShopScreen()),
+    GoRoute(path: '/marche/ma-boutique', builder: (_, _) => const ShopEditorScreen()),
+    GoRoute(path: '/marche/vendeur', builder: (_, _) => const SellerHubScreen()),
+    GoRoute(path: '/marche/moderation', builder: (_, _) => const ModerationScreen()),
     GoRoute(path: '/paiement', builder: (_, _) => const PaymentChatScreen()),
     GoRoute(path: '/paiements', builder: (_, _) => const MyPaymentsScreen()),
+    GoRoute(path: '/integrations/api', builder: (_, _) => const G_280()),
     GoRoute(path: '/design', builder: (_, _) => const DesignLabScreen()),
     GoRoute(path: '/cv/:token', builder: (_, state) => SharedCvScreen(token: state.pathParameters['token'] ?? '')),
     GoRoute(

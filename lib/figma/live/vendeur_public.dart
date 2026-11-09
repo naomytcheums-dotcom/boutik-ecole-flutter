@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'backend.dart';
+import 'marche/marche_widgets.dart' show MarcheLink;
 import 'produits_liste.dart';
 import 'store.dart' show selectedProductProvider;
 
@@ -64,6 +65,7 @@ class SellerProfileBlock extends ConsumerWidget {
         Text([if ('${d['department']}'.isNotEmpty) '${d['department']}', if ('${d['institution']}'.isNotEmpty) '${d['institution']}', _since(d['since'])].where((e) => e.isNotEmpty).join(' · '), style: _st(12.5, c: _grey)),
         const SizedBox(height: 16),
         Row(children: [_tile('Produits', '${_i(d['products'])}'), const SizedBox(width: 10), _tile('Services', '${_i(d['services'])}'), const SizedBox(width: 10), _tile('Ventes', '${_i(d['sales'])}')]),
+        if ('${d['shop_slug'] ?? ''}'.isNotEmpty) ...[const SizedBox(height: 14), SizedBox(width: width, height: 48, child: MarcheLink('Voir sa boutique : ${d['shop_name']}', '/marche/boutique/${d['shop_slug']}'))],
         const SizedBox(height: 22),
         Text('Ses produits', style: _st(16, w: FontWeight.w700)),
         const SizedBox(height: 10),
@@ -128,15 +130,15 @@ class SellerTrustBlock extends ConsumerWidget {
     final g = _gate(d, width, seller);
     if (g != null) return SizedBox(width: width, child: g);
     final n = _i(d!['rating_count']);
-    Widget row(String t, String sub, bool ok) => Padding(padding: const EdgeInsets.symmetric(vertical: 10), child: Row(children: [Icon(ok ? Icons.check_circle : Icons.radio_button_unchecked, size: 22, color: ok ? const Color(0xFF1F9D6B) : const Color(0xFFB9B4C7)), const SizedBox(width: 12), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(t, style: _st(13.5, w: FontWeight.w600)), Text(sub, style: _st(11.5, c: _grey))]))]));
+    Widget row(IconData icon, String t, String sub, bool ok) => Padding(padding: const EdgeInsets.symmetric(vertical: 10), child: Row(children: [Icon(icon, size: 24, color: ok ? const Color(0xFF1F9D6B) : const Color(0xFFB9B4C7)), const SizedBox(width: 12), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(t, style: _st(13.5, w: FontWeight.w600)), Text(sub, style: _st(11.5, c: _grey))]))]));
     return SizedBox(
       width: width,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text('${d['name']}', style: _st(20, w: FontWeight.w800)),
         const SizedBox(height: 14),
-        row('Identité vérifiée', d['verified'] == true ? 'Vérifiée par l’administration' : 'Pas encore vérifiée', d['verified'] == true),
-        row('Ventes réalisées', '${_i(d['sales'])} commande${_i(d['sales']) > 1 ? 's' : ''} payée${_i(d['sales']) > 1 ? 's' : ''}', _i(d['sales']) > 0),
-        row('Avis clients', n == 0 ? 'Aucun avis pour le moment' : '${d['rating_avg']} / 5 · $n avis', n > 0),
+        row(Icons.verified_user_rounded, 'Identité vérifiée', d['verified'] == true ? 'Vérifiée par l’administration' : 'Pas encore vérifiée', d['verified'] == true),
+        row(Icons.shopping_bag_rounded, 'Ventes réalisées', '${_i(d['sales'])} commande${_i(d['sales']) > 1 ? 's' : ''} payée${_i(d['sales']) > 1 ? 's' : ''}', _i(d['sales']) > 0),
+        row(Icons.star_rounded, 'Avis clients', n == 0 ? 'Aucun avis pour le moment' : '${d['rating_avg']} / 5 · $n avis', n > 0),
         const SizedBox(height: 10),
         Text('Ces éléments sont calculés sur l’activité réelle du vendeur.', style: _st(11.5, c: _grey)),
       ]),

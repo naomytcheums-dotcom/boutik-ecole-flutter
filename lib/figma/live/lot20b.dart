@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'marche/marche_widgets.dart' show MarcheLink;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'auth.dart';
@@ -68,7 +69,7 @@ class MyListings extends ConsumerWidget {
       width: width,
       height: height,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text('${mine.length} annonce${mine.length > 1 ? 's' : ''}', style: _st(15, w: FontWeight.w700)),
+        Row(children: [Expanded(child: Text('${mine.length} annonce${mine.length > 1 ? 's' : ''}', style: _st(15, w: FontWeight.w700))), const SizedBox(width: 180, height: 48, child: MarcheLink('Ma boutique marketplace', '/marche/ma-boutique'))]),
         const SizedBox(height: 12),
         if (mine.isEmpty)
           note('Vous n’avez encore publié aucune annonce.')

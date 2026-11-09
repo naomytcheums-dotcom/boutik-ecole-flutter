@@ -1121,17 +1121,71 @@ class Backend {
     } catch (_) {}
   }
 
-  /// Création de commande côté serveur : le serveur recalcule les prix, le client n'envoie que des titres et des quantités.
-  /// Retourne {number, subtotal, fee} ou {error: message}.
+  /// Dépôt d'une image de boutique/produit ou d'une vidéo dans un compartiment public, dossier du compte ; renvoie l'URL publique.
+  static Future<({String? error, String? url})> uploadPublic(String bucket, String folder, Uint8List bytes, String name, String mime) async {
+    final c = _c;
+    final uid = c?.auth.currentUser?.id;
+    if (c == null || uid == null) return (error: 'Connexion requise.', url: null);
+    final safe = name.replaceAll(RegExp(r'[^A-Za-z0-9._-]'), '_');
+    final path = '$uid/$folder/${DateTime.now().microsecondsSinceEpoch}-$safe';
+    try {
+      await c.storage.from(bucket).uploadBinary(path, bytes, fileOptions: FileOptions(contentType: mime));
+      return (error: null, url: c.storage.from(bucket).getPublicUrl(path));
+    } catch (e) {
+      final m = e.toString();
+      if (m.contains('mime') || m.contains('415')) return (error: bucket == 'listing-videos' ? 'Format accepté : MP4 ou WebM.' : 'Format accepté : JPEG, PNG ou WebP.', url: null);
+      if (m.contains('413') || m.contains('too large')) return (error: bucket == 'listing-videos' ? 'Vidéo trop lourde (30 Mo maximum).' : 'Image trop lourde (5 Mo maximum).', url: null);
+      return (error: 'Envoi impossible pour le moment.', url: null);
+    }
+  }
+
+  /// Code promo saisi au panier et packs ajoutés au panier (titre de la ligne -> identifiant du pack) : transmis à la commande.
+  static String promoCode = '';
+  static final Map<String, String> packLines = {};
+
+  /// URL publique d'un fichier d'un compartiment en lecture publique.
+  static String publicUrl(String bucket, String path) {
+    try {
+      return _c?.storage.from(bucket).getPublicUrl(path) ?? '';
+    } catch (_) {
+      return '';
+    }
+  }
+
+  /// Création de commande côté serveur : le serveur recalcule les prix (prix figé à la commande, vente flash, code promo), décrémente le
+  /// stock sans survente et sépare les lignes par boutique. Le client n'envoie que des titres, des quantités et un code.
+  /// Une clé d'idempotence (même panier, même quart d'heure) évite deux commandes si la réponse se perd et que l'on réessaie.
+  /// Retourne {number, subtotal, fee, discount} ou {error: message}.
   static Future<Map<String, dynamic>> createOrder(List<CartLine> lines, bool home, String method, {String? address}) async {
     final c = _c;
     if (c == null || c.auth.currentUser == null) return {'error': 'Connexion requise pour passer commande.'};
+    final items = [
+      for (final l in lines)
+        packLines.containsKey(l.title) ? {'pack': packLines[l.title], 'qty': l.qty} : {'title': l.title, 'qty': l.qty}
+    ];
+    final sig = '${c.auth.currentUser!.id}|${items.map((e) => '${e['pack'] ?? e['title']}x${e['qty']}').join(',')}|$home|$promoCode|${DateTime.now().millisecondsSinceEpoch ~/ 900000}';
+    final key = sig.hashCode.toRadixString(16).padLeft(8, '0') + sig.length.toRadixString(16).padLeft(2, '0');
+    try {
+      final r = await c.rpc('marketplace_checkout', params: {
+        'p_items': items,
+        'p_home': home,
+        'p_method': method,
+        if (home && address != null && address.isNotEmpty) 'p_address': address,
+        if (promoCode.isNotEmpty) 'p_code': promoCode,
+        'p_key': 'k$key',
+      });
+      return Map<String, dynamic>.from(r as Map);
+    } on PostgrestException catch (e) {
+      if (e.code != 'PGRST202' && e.code != '42883') return {'error': e.message};
+    } catch (_) {
+      return {'error': 'Connexion impossible au serveur.'};
+    }
+    // Serveur sans marketplace (migration non appliquée) : ancienne fonction, mêmes règles de stock et de prix.
     try {
       final r = await c.rpc('create_order', params: {
         'p_items': [for (final l in lines) {'title': l.title, 'qty': l.qty}],
         'p_home': home,
         'p_method': method,
-        // livraison à domicile : adresse du carnet (migration 20261101000300) ; retrait sur campus : signature d'origine
         if (home && address != null && address.isNotEmpty) 'p_address': address,
       });
       return Map<String, dynamic>.from(r as Map);

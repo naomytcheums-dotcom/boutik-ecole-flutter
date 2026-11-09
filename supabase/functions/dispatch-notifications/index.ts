@@ -383,7 +383,13 @@ Deno.serve(async () => {
         );
 
         if (!response.ok) {
-          throw new Error(`${r.channel} refusé (${response.status})`);
+          let code = "";
+          try {
+            code = String((await response.json())?.code ?? "");
+          } catch {
+            // corps illisible : on garde le seul statut HTTP
+          }
+          throw new Error(`${r.channel} refusé (${response.status}${code ? ` Twilio ${code}` : ""})`);
         }
       } else if (r.channel === "push") {
         const { data: devices, error: devicesError } = await admin

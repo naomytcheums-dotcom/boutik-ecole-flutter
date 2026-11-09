@@ -873,8 +873,9 @@ class _GFieldState extends State<GField> {
       onTap: f.requestFocus,
       child: Padding(
         padding: EdgeInsets.only(left: widget.padL, right: widget.obscure ? 56 : 14, top: widget.multiline ? widget.padT : 0),
+        // Le champ occupe toute la hauteur du cadre (≥ 48 dp) : la zone tactile annoncée à TalkBack est celle du cadre entier.
         child: Align(
-          alignment: widget.multiline ? Alignment.topLeft : Alignment.centerLeft,
+          alignment: Alignment.center,
           child: TextField(
             controller: c,
             focusNode: f,
@@ -887,8 +888,10 @@ class _GFieldState extends State<GField> {
             ],
             onChanged: widget.onChanged,
             onSubmitted: widget.onSubmitted,
-            minLines: widget.multiline ? 2 : 1,
-            maxLines: widget.multiline ? 6 : 1,
+            expands: !widget.obscure,
+            minLines: widget.obscure ? 1 : null,
+            maxLines: widget.obscure ? 1 : null,
+            textAlignVertical: widget.multiline ? TextAlignVertical.top : TextAlignVertical.center,
             cursorColor: const Color(0xFF6A4DFF),
             decoration: InputDecoration(
               isCollapsed: true,
@@ -899,7 +902,8 @@ class _GFieldState extends State<GField> {
               filled: false,
               hintText: widget.hint,
               hintStyle: st.copyWith(color: widget.hintColor),
-              contentPadding: EdgeInsets.zero,
+              // Champ masqué : une seule ligne obligatoire ; le remplissage vertical donne une zone tactile de 48 dp.
+              contentPadding: widget.obscure ? const EdgeInsets.symmetric(vertical: 16) : EdgeInsets.zero,
             ),
           ),
         ),

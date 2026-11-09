@@ -4,5 +4,5 @@ Avant toute chose, lis `docs/transformation/REPRISE_OPENCODE.md` : règles du pr
 
 Résumé des règles :
 - Mobile d'abord. Ne jamais supprimer de contenu existant sans le dire.
-- Aucune clé ni secret poussé ; ne jamais lire ni modifier les clés Notch Pay ; aucun paiement réel.
+- Aucune clé ni secret poussé ; ne jamais lire ni modifier les clés Notch Pay.
 - Chaque correction terminée : tests, commit, push, build (`flutter build web --release --pwa-strategy=none`), déploiement Vercel, vérification de la version servie. Un push GitHub seul ne met pas le site à jour.

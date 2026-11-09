@@ -6,7 +6,7 @@ Projet : application Flutter Boutik-École (mobile d'abord, web et tablette adap
 
 - Mobile d'abord ; fond de l'écran jusqu'aux bords, jamais de cadre de téléphone ; boutons posés directement sur le fond.
 - Ne jamais supprimer de contenu existant sans le dire. Données de maquette : conservées en démonstration (hors connexion au serveur) ; connecté, un vrai contenu remplace la maquette, et la maquette reste affichée tant qu'aucune donnée réelle n'existe (talents, fil du réseau social).
-- Aucune clé ni secret poussé. Ne jamais lire ni modifier les clés Notch Pay. Aucun paiement réel.
+- Aucune clé ni secret poussé. Ne jamais lire ni modifier les clés Notch Pay.
 - Chaque correction terminée : tests, commit, push, build, déploiement, vérification de la version servie.
 
 ## Procédures

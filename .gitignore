@@ -54,3 +54,12 @@ supabase/.temp/
 
 # images de comparaison générées par les tests de rendu (régénérables)
 test/golden/failures/
+
+# Secrets et clés (qualification Release Candidate)
+android/key.properties
+*.jks
+*.keystore
+*.p12
+.env
+.env.*
+!.env.example

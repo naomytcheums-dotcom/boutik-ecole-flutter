@@ -1,0 +1,5 @@
+# Modèle : copier en android/key.properties (fichier ignoré par git) et remplir avec VOTRE clé de signature. Ne jamais versionner ce fichier rempli.
+storePassword=<mot de passe du fichier de clés>
+keyPassword=<mot de passe de la clé>
+keyAlias=<alias de la clé, par exemple boutik-ecole>
+storeFile=<chemin du fichier .jks, par exemple C:/Users/vous/boutik-ecole-upload.jks>

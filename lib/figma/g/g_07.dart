@@ -100,7 +100,7 @@ class G_07 extends ConsumerWidget {
       gP(183.75, 831.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       gTap(26, 66, 22, 22, () => gOpen(context, '06')),
       gTap(26, 723, 342, 51, () => gOpen(context, '08')),
-      gTap(20, 790, 350, 50, () => gOpen(context, '08')),
+      gTap(20, 790, 350, 40, () => gOpen(context, '08')),
       gTap(25, 166, 346, 104, () { ref.read(homeDeliveryProvider.notifier).set(false); gToast(context, 'Retrait sur campus · gratuit'); }),
       gTap(25, 279, 346, 105, () { chooseHomeDelivery(context, ref); }), // domicile seulement si activé par l'administrateur (20261101000300)
       gTap(18.2, 410.2, 163, 35, () { gOpen(context, '41'); }), // parcours 07 -> 41

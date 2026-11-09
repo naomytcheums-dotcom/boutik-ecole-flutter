@@ -870,6 +870,7 @@ class _GFieldState extends State<GField> {
     );
     final field = GestureDetector(
       behavior: HitTestBehavior.opaque,
+      excludeFromSemantics: true, // le TextField porte déjà l'action et le libellé : pas de nœud tactile vide en plus
       onTap: f.requestFocus,
       child: Padding(
         padding: EdgeInsets.only(left: widget.padL, right: widget.obscure ? 56 : 14, top: widget.multiline ? widget.padT : 0),

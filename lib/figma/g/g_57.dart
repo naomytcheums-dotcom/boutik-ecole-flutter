@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
+import '../live/marche/marche_widgets.dart' show MarcheLink;
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/l06.dart';
@@ -44,6 +45,7 @@ class G_57 extends ConsumerWidget {
       gP(331.5, 19.5, 28, 17, gImg('assets/figma/v/6a818f3296df50.svg')),
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
+      if (!demoContent) gP(230, 60, 136, 44, const MarcheLink('Ma boutique', '/marche/vendeur')),
       gP(24, 70, 164, 26, gText('Tableau de bord', 21, Color(0xFF111015), weight: 700)),
       gP(340.75, 69.833, 22.5, 19.75, gImg('assets/figma/v/c416ae6fb27d36.svg')),
       gP(347.442, 87.25, 9.117, 6.922, gImg('assets/figma/v/76ffe03c455014.svg')),

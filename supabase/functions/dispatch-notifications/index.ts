@@ -192,7 +192,7 @@ async function sendFcm(
       },
       body: JSON.stringify({
         message: {
-          fid: token,
+          token,
           notification: {
             title: notification.title,
             body: notification.body,

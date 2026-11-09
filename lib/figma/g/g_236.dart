@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/notif_client.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -115,6 +116,7 @@ class G_236 extends ConsumerWidget {
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(44.667, 245.667, 22.667, 22.667, gImg('assets/figma/v/37684f95055729.svg')),
       gP(52.167, 245.667, 15.167, 15.167, gImg('assets/figma/v/850ac0825ae325.svg')),
+      if (!demoContent) gP(24, 700, 342, 44, const EnablePushButton(width: 342)),
     ]);
   }
 }

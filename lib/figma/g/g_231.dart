@@ -46,7 +46,7 @@ class G_231 extends ConsumerWidget {
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(140, 10, 110, 30, gBox(color: Color(0xFF000000), radii: [15, 15, 15, 15])),
       gP(24, 66, 46, 46, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, radii: [23, 23, 23, 23])),
-      gP(80, 70, 92, 16, gText('Bonjour Mariam', 12.5, Color(0xFF57545F))),
+      gP(80, 70, 200, 16, Consumer(builder: (context, ref, _) { final n = ref.watch(authProvider.select((a) => a.current?.name ?? '')).trim().split(' ').first; return gText(demoContent || n.isEmpty ? 'Bonjour Mariam' : 'Bonjour $n', 12.5, Color(0xFF57545F)); })),
       gP(80, 88, 181, 19, gText('Que fait-on aujourd’hui ?', 15, Color(0xFF111015), weight: 600)),
       gP(317, 68, 42, 42, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
       gP(328.306, 78.562, 19.388, 17.156, gImg('assets/figma/v/fc3055d1ee19d1.svg')),

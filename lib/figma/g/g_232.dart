@@ -71,14 +71,14 @@ class G_232 extends ConsumerWidget {
       gP(341, 202, 25, 13, gText('16:43', 10, Color(0xFF57545F), align: TextAlign.right)),
       gP(22, 232, 36, 36, gBox(color: Color(0xFF111015), oval: true)),
       gP(24, 234, 32, 32, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, radii: [16, 16, 16, 16])),
-      gP(88, 240, 245, 76, gText('Décris-moi ton parfum : cible, style et budget. Je prépare le brief et je contacte les étudiants de MMI et de TCO.', 13, Color(0xFF111015), weight: 500, lh: 19, wrap: true)),
+      gP(88, 240, 245, 76, gText(demoContent ? 'Décris-moi ton parfum : cible, style et budget. Je prépare le brief et je contacte les étudiants de MMI et de TCO.' : 'Décris-moi ton besoin : ce que tu veux, ton style et ton budget. Je prépare le brief.', 13, Color(0xFF111015), weight: 500, lh: 19, wrap: true)),
       gP(70, 334, 25, 13, gText('16:43', 10, Color(0xFF57545F))),
       gP(226, 364, 140, 120, gBox(image: 'assets/figma/img/4ca68f79023605aecb4f83724629d508e921e885.png', fit: BoxFit.cover, border: Color(0xFFFFFFFF), bw: 2, radii: [20, 20, 20, 20])),
       gP(340, 490, 26, 13, gText('16:44', 10, Color(0xFF57545F), align: TextAlign.right)),
       gP(214, 514, 152, 46, gBox(color: Color(0xFF111015), radii: [23, 23, 23, 23])),
       gP(232, 520, 120, 34, Consumer(builder: (context, ref, _) => gText(ref.watch(kelaTextProvider).isEmpty ? 'Crée la mission pour moi' : ref.watch(kelaTextProvider), 12.5, Color(0xFFFFFFFF), weight: 500, lh: 17, wrap: true, maxLines: 2))),
       gP(24, 590, 32, 32, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, radii: [16, 16, 16, 16])),
-      gP(88, 594, 245, 57, gText('Compris ! Je lance ton brief : logo + affiche, budget d’environ 200 000 FCFA. Veux-tu aussi une vidéo teaser ?', 13, Color(0xFF111015), weight: 500, lh: 19, wrap: true)),
+      gP(88, 594, 245, 57, Consumer(builder: (context, ref, _) { final k = ref.watch(kelaReplyProvider); return gText(demoContent ? 'Compris ! Je lance ton brief : logo + affiche, budget d’environ 200 000 FCFA. Veux-tu aussi une vidéo teaser ?' : (k.busy ? 'Kéla réfléchit…' : (k.text.isEmpty ? 'Parle à Kéla depuis l’écran d’écoute : sa réponse apparaîtra ici.' : k.text)), 13, Color(0xFF111015), weight: 500, lh: 19, wrap: true, maxLines: 4); })),
       gP(20, 688, 350, 62, GField(hint: 'Écris ou parle à Kéla…', size: 13, hintColor: Color(0xFF57545F), weight: 400, padL: 54)),
       gP(41.167, 716, 17.667, 6, gImg('assets/figma/v/a601ae14f144f2.svg')),
       gP(47, 710.167, 6, 17.667, gImg('assets/figma/v/148ccb346e3d02.svg')),
@@ -103,6 +103,7 @@ class G_232 extends ConsumerWidget {
       gP(169, 768, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gTab(context, '03')),
       gP(184, 783, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 781.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
+      if (!demoContent) gTap(214, 514, 152, 46, () { kelaCreateDraft(context, ref); }),
     ]);
   }
 }

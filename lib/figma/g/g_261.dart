@@ -104,8 +104,8 @@ class G_261 extends ConsumerWidget {
       if (demoContent) gTap(64, 740, 219, 48, () { gOpen(context, '30'); }), // parcours 261 -> 30
       if (demoContent) gTap(92, 444, 156, 32, () { gOpen(context, '252'); }), // parcours 261 -> 252
       if (demoContent) gTap(301, 744, 53, 25, () { reviewOrderDialog(context, ref); }), // audit 01/11 : « Noter » n'avait aucun effet
-      if (!demoContent) gP(24, 125, 342, 620, const CompanySummary(width: 342, height: 480)),
-      if (!demoContent) gP(24, 620, 342, 130, const ShortcutsPanel(width: 342)),
+      if (!demoContent) gP(24, 125, 342, 620, const CompanySummary(width: 342, height: 440)),
+      if (!demoContent) gP(24, 580, 342, 170, const ShortcutsPanel(width: 342)),
     ]);
   }
 }

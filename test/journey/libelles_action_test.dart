@@ -32,7 +32,7 @@ void main() {
     '16>Nouveau mot de passe', '22c>Nouveau', '173>Partager', '174>Payer en sécurité par Mobile Money', '176>Payer en sécurité',
     '41>Enregistrer cette adresse dans mon carnet', '50>Nouveau', '58>Nouveau produit', '59>Nouveau service', '60>Modifier',
     '72>Ajouter à mon profil', '84>Nouvelle campagne', '249>Créer', '250>Nouvelle publication', '219>Nouveau duel',
-    '195>Ajouter une preuve', '198>Nouveau', 'P4>Nouvelle publication',
+    '195>Ajouter une preuve', '198>Nouveau', 'P4>Nouvelle publication', '43>Payer par messagerie (WhatsApp, Dikalo)',
   };
   final rows = <String>['ecran;libelle;x;y;effet'];
   var actifs = 0, inertes = 0;

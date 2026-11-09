@@ -16,11 +16,94 @@ const _jakarta = 'PlusJakartaSans';
 const _inter = 'Inter';
 
 class GScreen extends StatelessWidget {
-  const GScreen({super.key, required this.w, required this.h, required this.children, this.radius = 0, this.bg, this.color});
+  const GScreen({super.key, required this.w, required this.h, required List<Widget> children, this.radius = 0, this.bg, this.color}) : _source = children;
   final double w, h, radius;
   final Gradient? bg;
   final Color? color;
-  final List<Widget> children;
+  final List<Widget> _source;
+
+  /// Accessibilité des écrans de format mobile (qualification Android / WCAG 2.2 AA) : chaque zone tactile reçoit un nœud TalkBack
+  /// « bouton » dont le libellé est le texte qu'elle recouvre ou qui la jouxte, et une zone de toucher d'au moins 48 × 48 dp
+  /// (anneau invisible autour de la zone dessinée, jamais au-dessus d'une autre zone tactile située plus bas dans la pile).
+  /// L'apparence ne change pas. Désactivable pour comparer avant / après.
+  static bool a11y = true;
+  static const minTarget = 48.0;
+  static final _enhanced = Expando<List<Widget>>();
+
+  /// Éléments de l'écran, avec l'accessibilité ajoutée pour les écrans de format mobile.
+  List<Widget> get children => _enhanced[this] ??= (a11y && w < 700 ? _withA11y(_source) : _source);
+
+  static String _nearestLabel(Rect r, List<GPos> texts) {
+    GPos? best;
+    var bestScore = double.infinity;
+    for (final t in texts) {
+      final tr = t.rect;
+      final inside = r.contains(tr.center);
+      final near = r.inflate(10).overlaps(tr);
+      if (!inside && !near) continue;
+      final score = (tr.center - r.center).distance + (inside ? 0 : 40);
+      if (score < bestScore) {
+        bestScore = score;
+        best = t;
+      }
+    }
+    return (best?.label ?? '').trim();
+  }
+
+  static List<Widget> _withA11y(List<Widget> src) {
+    final texts = <GPos>[
+      for (final c in src)
+        if (c is GPos && !c.tap && (c.label ?? '').trim().isNotEmpty) c
+    ];
+    final out = <Widget>[];
+    final earlierTaps = <Rect>[];
+    for (final c in src) {
+      if (c is! GPos || !c.tap) {
+        out.add(c);
+        continue;
+      }
+      final r = c.rect;
+      final own = (c.label ?? '').trim();
+      final label = own.isNotEmpty ? own : _nearestLabel(r, texts);
+      out.add(GPos(
+        x: r.left,
+        y: r.top,
+        gw: r.width,
+        gh: r.height,
+        tap: true,
+        onTap: c.onTap,
+        label: c.label,
+        child: Semantics(container: true, button: true, enabled: true, label: label.isEmpty ? 'Bouton' : label, onTap: c.onTap, child: ExcludeSemantics(child: c.child)),
+      ));
+      final needW = math.max(0.0, minTarget - r.width), needH = math.max(0.0, minTarget - r.height);
+      if (c.onTap != null && (needW > 0 || needH > 0)) {
+        bool free(Rect e) => !earlierTaps.any((q) => q.overlaps(e) && !q.contains(r.topLeft) && !q.contains(r.bottomRight) && !r.contains(q.topLeft) && !r.contains(q.bottomRight));
+        var e = Rect.fromLTRB(r.left - needW / 2, r.top - needH / 2, r.right + needW / 2, r.bottom + needH / 2);
+        if (!free(e)) {
+          e = Rect.fromLTRB(r.left - needW / 2, r.top, r.right + needW / 2, r.bottom);
+          if (!free(e)) {
+            e = Rect.fromLTRB(r.left, r.top - needH / 2, r.right, r.bottom + needH / 2);
+            if (!free(e)) e = r;
+          }
+        }
+        if (e != r) out.add(GPos(x: e.left, y: e.top, gw: e.width, gh: e.height, child: ExcludeSemantics(child: SizedBox(width: e.width, height: e.height, child: _ring(r, e, c.onTap!)))));
+      }
+      earlierTaps.add(r);
+    }
+    return out;
+  }
+
+  /// Anneau invisible autour de la zone dessinée : prolonge la zone de toucher sans toucher à l'apparence.
+  static Widget _ring(Rect r, Rect e, VoidCallback onTap) {
+    Widget strip(double l, double t, double w, double h) => w <= 0 || h <= 0 ? const SizedBox.shrink() : Positioned(left: l, top: t, width: w, height: h, child: GestureDetector(behavior: HitTestBehavior.opaque, onTap: onTap, child: const SizedBox.expand()));
+    final lw = r.left - e.left, rw = e.right - r.right, th = r.top - e.top, bh = e.bottom - r.bottom;
+    return Stack(clipBehavior: Clip.none, children: [
+      strip(0, 0, lw, e.height),
+      strip(e.width - rw, 0, rw, e.height),
+      strip(lw, 0, r.width, th),
+      strip(lw, e.height - bh, r.width, bh),
+    ]);
+  }
 
   /// Rendu « cadre de maquette » (taille Figma exacte) : réservé aux rendus de référence et aux tests de coordonnées.
   static bool mockupFrame = false;

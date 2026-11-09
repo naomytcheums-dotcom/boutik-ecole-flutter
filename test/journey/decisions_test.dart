@@ -57,22 +57,25 @@ void main() {
     }
   }
 
-  testWidgets('230 connecté : brief écrit, plus de dialogue de maquette', (t) async {
+  testWidgets('230 connecté : l’interface Figma d’écoute est conservée', (t) async {
     await monter(t, const G_230(), connecte: true);
-    expect(find.text('Décrivez votre besoin'), findsOneWidget);
-    expect(find.text('Créer le brouillon'), findsOneWidget);
+    expect(find.text('Assistante vocale Kéla'), findsOneWidget);
+    expect(find.text('Touche le micro et parle…'), findsOneWidget);
   });
 
-  testWidgets('232 connecté : briefs réels, aucun message de maquette', (t) async {
-    await monter(t, const G_232(), connecte: true, overrides: [myMissionDraftsProvider.overrideWith(() => _Rows('table:missions', const []))]);
-    expect(find.textContaining('Aucun brief'), findsOneWidget);
+  testWidgets('232 connecté : fil Figma conservé, réponse de l’IA à la place de l’exemple', (t) async {
+    await monter(t, const G_232(), connecte: true);
+    expect(find.text('Voix en texte'), findsOneWidget);
     expect(find.textContaining('Compris ! Je lance ton brief'), findsNothing);
+    expect(find.textContaining('Parle à Kéla depuis l’écran d’écoute'), findsOneWidget);
+    expect(find.textContaining('parfum'), findsNothing);
   });
 
-  testWidgets('231 connecté : menu avec le prénom du compte', (t) async {
+  testWidgets('231 connecté : menu Figma conservé avec le prénom du compte', (t) async {
     await monter(t, const G_231(), connecte: true);
-    expect(find.textContaining('Bonjour'), findsWidgets);
-    expect(find.text('Écrire mon besoin à Kéla'), findsOneWidget);
+    expect(find.text('Brief express'), findsOneWidget);
+    expect(find.text('Voix en texte'), findsOneWidget);
+    expect(find.text('Bonjour Mariam'), findsOneWidget);
   });
 
   testWidgets('225 connecté : pas de faux modèle 3D', (t) async {

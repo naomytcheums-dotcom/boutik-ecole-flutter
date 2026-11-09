@@ -8,6 +8,7 @@ import 'auth.dart';
 import 'backend.dart';
 import 'console.dart';
 import 'device_prefs.dart';
+import 'dictation_stub.dart' if (dart.library.js_interop) 'dictation_web.dart';
 import 'entreprise.dart';
 import 'store.dart';
 
@@ -25,61 +26,141 @@ bool _out(WidgetRef ref) => ref.watch(authProvider.select((a) => a.current == nu
 // ------------------------------------------------------------------ Kéla : brief par écrit
 
 class KelaBrief extends ConsumerStatefulWidget {
-  const KelaBrief({super.key, this.width = 342});
-  final double width;
+  const KelaBrief({super.key, this.width = 342, this.height = 620});
+  final double width, height;
   @override
   ConsumerState<KelaBrief> createState() => _KelaBriefState();
 }
 
+/// Discussion avec Kéla : le texte écrit ou dicté au micro est envoyé tel quel à l'IA (fonction Edge « kela-chat »), qui répond et, s'il y a un
+/// besoin à confier à des étudiants, propose un brouillon de besoin à créer. Sans clé d'IA côté serveur, Kéla le dit : aucune réponse inventée.
 class _KelaBriefState extends ConsumerState<KelaBrief> {
-  final _text = TextEditingController(), _budget = TextEditingController();
-  bool _busy = false;
+  final _text = TextEditingController();
+  final _scroll = ScrollController();
+  final _dict = Dictation();
+  final List<({bool mine, String text})> _msgs = [];
+  Map<String, dynamic>? _brief;
+  bool _busy = false, _listening = false;
 
-  Future<void> _send() async {
-    final t = _text.text.trim();
-    if (t.length < 10) {
-      gToast(context, 'Décrivez votre besoin en au moins une phrase.');
-      return;
-    }
-    setState(() => _busy = true);
-    final b = int.tryParse(_budget.text.replaceAll(RegExp(r'\D'), ''));
-    final r = await Backend.rpc('save_mission', {
-      'p_id': null,
-      'p_title': t.length > 60 ? t.substring(0, 60) : t,
-      'p_description': t,
-      'p_budget_min': b,
-      'p_budget_max': b,
-      'p_deadline': null,
-      'p_publish': false,
-      'p_kind': 'besoin',
+  @override
+  void dispose() {
+    _dict.stop();
+    _text.dispose();
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  Future<void> _send([String? override]) async {
+    final t = (override ?? _text.text).trim();
+    if (t.length < 2 || _busy) return;
+    setState(() {
+      _msgs.add((mine: true, text: t));
+      _text.clear();
+      _busy = true;
+      _brief = null;
     });
+    _toEnd();
+    String reply;
+    try {
+      final history = [for (final m in _msgs.take(_msgs.length - 1)) {'role': m.mine ? 'user' : 'assistant', 'content': m.text}];
+      final r = await Supabase.instance.client.functions.invoke('kela-chat', body: {'message': t, 'history': history});
+      final d = r.data;
+      reply = d is Map && d['reply'] is String ? d['reply'] as String : 'Kéla n’a pas pu répondre pour le moment.';
+      if (d is Map && d['brief'] is Map) _brief = Map<String, dynamic>.from(d['brief'] as Map);
+    } on FunctionException catch (e) {
+      final d = e.details;
+      reply = d is Map && d['message'] is String ? d['message'] as String : 'Kéla est momentanément indisponible.';
+    } catch (_) {
+      reply = 'Kéla est momentanément indisponible. Vérifiez votre connexion.';
+    }
     if (!mounted) return;
-    setState(() => _busy = false);
-    if (r.error != null) {
-      gToast(context, '${r.error}');
+    setState(() {
+      _msgs.add((mine: false, text: reply));
+      _busy = false;
+    });
+    _toEnd();
+  }
+
+  void _toEnd() => WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_scroll.hasClients) _scroll.animateTo(_scroll.position.maxScrollExtent + 120, duration: const Duration(milliseconds: 200), curve: Curves.easeOut);
+      });
+
+  void _mic() {
+    if (_listening) {
+      _dict.stop();
       return;
     }
-    _text.clear();
-    _budget.clear();
-    gToast(context, 'Brouillon de besoin créé. Retrouvez-le dans vos besoins pour le publier.');
+    if (!_dict.supported) {
+      gToast(context, 'La dictée vocale n’est pas disponible sur ce navigateur. Écrivez votre message.');
+      return;
+    }
+    setState(() => _listening = true);
+    _dict.start(
+      onText: (t, fin) {
+        if (!mounted) return;
+        setState(() => _text.text = t);
+        // le texte dicté est traité directement par l'IA dès que la phrase est terminée
+        if (fin && t.isNotEmpty) _send(t);
+      },
+      onEnd: () {
+        if (mounted) setState(() => _listening = false);
+      },
+      onError: (e) {
+        if (!mounted) return;
+        setState(() => _listening = false);
+        gToast(context, e == 'not-allowed' ? 'Autorisez le micro dans votre navigateur pour dicter.' : e == 'no-speech' ? 'Aucune voix détectée.' : 'La dictée n’a pas fonctionné.');
+      },
+    );
+  }
+
+  Future<void> _createDraft() async {
+    final b = _brief;
+    if (b == null) return;
+    final budget = (b['budget'] as num?)?.toInt();
+    final r = await Backend.rpc('save_mission', {'p_id': null, 'p_title': '${b['title'] ?? 'Besoin'}', 'p_description': '${b['description'] ?? ''}', 'p_budget_min': budget, 'p_budget_max': budget, 'p_deadline': null, 'p_publish': false, 'p_kind': 'besoin'});
+    if (!mounted) return;
+    if (r.error != null) {
+      gToast(context, Backend.userMessage(r.error!));
+      return;
+    }
+    setState(() => _brief = null);
+    gToast(context, 'Brouillon de besoin créé. Retrouvez-le dans vos briefs pour le publier.');
     await ref.read(myMissionDraftsProvider.notifier).refresh();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_out(ref)) return _note(widget.width, 'Connectez-vous pour écrire votre besoin à Kéla.');
+    final w = widget.width;
+    if (_out(ref)) return _note(w, 'Connectez-vous pour parler à Kéla.');
     return SizedBox(
-      width: widget.width,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text('Décrivez votre besoin', style: _st(17, w: FontWeight.w800)),
-        const SizedBox(height: 6),
-        Text('La dictée vocale n’est pas disponible : écrivez votre besoin, un brouillon est créé et vous le publiez quand vous voulez.', style: _st(12.5, c: _grey).copyWith(height: 1.5)),
-        const SizedBox(height: 14),
-        TextField(controller: _text, minLines: 4, maxLines: 6, decoration: const InputDecoration(hintText: 'Ex. un logo et une affiche pour mon produit, avant fin du mois', border: OutlineInputBorder())),
-        const SizedBox(height: 10),
-        TextField(controller: _budget, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'Budget en FCFA (facultatif)', border: OutlineInputBorder())),
-        const SizedBox(height: 14),
-        _btn(_busy ? 'Création…' : 'Créer le brouillon', _busy ? () {} : _send, w: widget.width),
+      width: w,
+      height: widget.height,
+      child: Column(children: [
+        Expanded(
+          child: _msgs.isEmpty
+              ? Center(child: Padding(padding: const EdgeInsets.symmetric(horizontal: 12), child: Text('Parlez ou écrivez à Kéla : décrivez votre besoin (logo, affiche, vidéo…), posez une question sur une commande ou une mission.', textAlign: TextAlign.center, style: _st(13, c: _grey).copyWith(height: 1.5))))
+              : ListView.builder(
+                  controller: _scroll,
+                  itemCount: _msgs.length + (_busy ? 1 : 0) + (_brief != null ? 1 : 0),
+                  itemBuilder: (_, i) {
+                    if (i < _msgs.length) {
+                      final m = _msgs[i];
+                      return Align(alignment: m.mine ? Alignment.centerRight : Alignment.centerLeft, child: Container(constraints: BoxConstraints(maxWidth: w * 0.82), margin: const EdgeInsets.symmetric(vertical: 4), padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10), decoration: BoxDecoration(color: m.mine ? _ink : Colors.white, borderRadius: BorderRadius.circular(18), border: m.mine ? null : Border.all(color: const Color(0xFFECE8F2))), child: Text(m.text, style: _st(13.5, c: m.mine ? Colors.white : _ink).copyWith(height: 1.45))));
+                    }
+                    if (_busy && i == _msgs.length) return Align(alignment: Alignment.centerLeft, child: Padding(padding: const EdgeInsets.all(8), child: Text('Kéla réfléchit…', style: _st(12, c: _grey))));
+                    final b = _brief!;
+                    return Container(margin: const EdgeInsets.symmetric(vertical: 8), padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: const Color(0xFFEEE9FF), borderRadius: BorderRadius.circular(18)), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('Brief proposé', style: _st(12, w: FontWeight.w800, c: const Color(0xFF5A3FE0))), const SizedBox(height: 4), Text('${b['title']}', style: _st(14, w: FontWeight.w700)), Text('${b['description']}${b['budget'] == null ? '' : '\nBudget : ${b['budget']} FCFA'}', style: _st(12.5, c: _grey)), const SizedBox(height: 10), _btn('Créer le brouillon de besoin', _createDraft)]));
+                  },
+                ),
+        ),
+        const SizedBox(height: 8),
+        Row(children: [
+          Expanded(child: TextField(controller: _text, minLines: 1, maxLines: 3, onSubmitted: (_) => _send(), decoration: InputDecoration(hintText: _listening ? 'Je vous écoute…' : 'Écrivez ou parlez à Kéla', filled: true, fillColor: Colors.white, border: OutlineInputBorder(borderRadius: BorderRadius.circular(22), borderSide: BorderSide.none), contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12)))),
+          const SizedBox(width: 6),
+          GestureDetector(onTap: _mic, child: Container(width: 44, height: 44, decoration: BoxDecoration(shape: BoxShape.circle, color: _listening ? const Color(0xFFE5484D) : Colors.white, border: Border.all(color: const Color(0xFFE6E1EE))), child: Icon(_listening ? Icons.stop_rounded : Icons.mic_none_rounded, color: _listening ? Colors.white : _ink))),
+          const SizedBox(width: 6),
+          GestureDetector(onTap: () => _send(), child: Container(width: 44, height: 44, decoration: const BoxDecoration(shape: BoxShape.circle, color: _ink), child: const Icon(Icons.arrow_upward_rounded, color: Colors.white))),
+        ]),
       ]),
     );
   }

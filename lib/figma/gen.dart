@@ -387,7 +387,7 @@ class GScreen extends StatelessWidget {
   Widget _phone(BuildContext context, BoxConstraints c) {
     final pad = MediaQuery.paddingOf(context);
     final keyboard = MediaQuery.viewInsetsOf(context).bottom;
-    final s = c.maxWidth / w;
+    var s = c.maxWidth / w;
     final rects = [for (final ch in children) ch is GPos ? ch.rect : null];
     final taps = [for (final ch in children) ch is GPos && ch.tap];
 
@@ -421,6 +421,17 @@ class GScreen extends StatelessWidget {
     for (final j in band) {
       bandTop = math.min(bandTop, rects[j]!.top);
       bandBottom = math.max(bandBottom, math.min(h, rects[j]!.bottom));
+    }
+
+    // Écran d'une page (hauteur de maquette ≤ 900) : il tient en entier dans la fenêtre, sans défilement. L'échelle est réduite au besoin
+    // (barres du navigateur, petit téléphone) et la maquette reste centrée ; le contenu s'arrête au menu, qui reste fixe en bas.
+    final single = h <= 900;
+    final bandExtent = band.isEmpty ? 0.0 : (bandBottom - bandTop + 8);
+    final contentTo = single && band.isNotEmpty ? bandTop : h;
+    if (single) {
+      final unit = (contentTo - statusBand) + bandExtent;
+      final avail = c.maxHeight - pad.top - pad.bottom - keyboard;
+      if (unit > 0 && avail > 0) s = math.min(s, avail / unit);
     }
 
     Widget layer(List<Widget> kids, double from, double to) => SizedBox(
@@ -507,7 +518,7 @@ class GScreen extends StatelessWidget {
     // défile derrière est masqué par le même fond, aligné sur le dégradé de l'écran entier (aucun aplat visible).
     Decoration? backing;
     double backingH = 0;
-    if (hasBar && band.isNotEmpty) {
+    if (hasBar && band.isNotEmpty && !single) {
       backingH = (bandBottom - bandTop) * s + pad.bottom + 8;
       final g = bg;
       if (g != null && g.colors.length >= 2) {
@@ -522,7 +533,7 @@ class GScreen extends StatelessWidget {
       decoration: BoxDecoration(gradient: bg, color: color ?? (bg == null ? const Color(0xFFFFFFFF) : null)),
       child: _PhoneBody(
         padding: EdgeInsets.only(top: pad.top, bottom: pad.bottom + bandH + keyboard),
-        content: layer(content, statusBand, h),
+        content: layer(content, statusBand, contentTo),
         fixed: band.isEmpty ? null : layer(fixed, bandTop, bandBottom),
         bottom: pad.bottom,
         backing: backing,
@@ -565,10 +576,10 @@ class _PhoneBodyState extends State<_PhoneBody> {
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
-      Positioned.fill(child: SingleChildScrollView(controller: _controller, padding: widget.padding, child: widget.content)),
+      Positioned.fill(child: SingleChildScrollView(controller: _controller, padding: widget.padding, child: Align(alignment: Alignment.topCenter, child: widget.content))),
       if (widget.backing != null) Positioned(left: 0, right: 0, bottom: 0, height: widget.backingHeight, child: IgnorePointer(child: DecoratedBox(decoration: widget.backing!))),
       if (widget.fixed != null)
-        Positioned(left: 0, right: 0, bottom: widget.bottom, child: GestureDetector(onVerticalDragUpdate: _drag, child: widget.fixed)),
+        Positioned(left: 0, right: 0, bottom: widget.bottom, child: Center(child: GestureDetector(onVerticalDragUpdate: _drag, child: widget.fixed))),
     ]);
   }
 }

@@ -36,7 +36,7 @@ class G_254 extends ConsumerWidget {
       gP(30, 14, 28, 18, gText('9:41', 14, Color(0xFF111015), weight: 600)),
       gP(140, 10, 110, 30, gBox(color: Color(0xFF000000), radii: [15, 15, 15, 15])),
       gP(22, 38, 34, 32, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
-      gP(62, 42, 90, 30, gText('Activité', 24, Color(0xFF111015), weight: 600)),
+      gP(62, 42, 90, 30, gText('Activité', 24, Color(0xFF111015), weight: 600), show: false),
       gP(330, 36, 40, 40, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
       gP(340.625, 45.917, 18.75, 16.625, gImg('assets/figma/v/b2ae09d0fd46bb.svg')),
       gP(345.796, 59.375, 8.408, 6.712, gImg('assets/figma/v/f59da0513c0b4c.svg')),

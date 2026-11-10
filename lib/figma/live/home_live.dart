@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../nav.dart';
@@ -15,8 +16,9 @@ const _grey = Color(0xFF57545F);
 TextStyle _st(double size, {FontWeight w = FontWeight.w500, Color c = _ink}) => TextStyle(fontFamily: 'PlusJakartaSans', fontSize: size, fontWeight: w, color: c);
 
 class LiveTalent {
-  const LiveTalent({required this.id, required this.name, required this.department, required this.skills, required this.avatarUrl, required this.certified});
-  final String id, name, department, skills, avatarUrl;
+  const LiveTalent({required this.id, required this.name, required this.department, required this.skills, required this.avatarUrl, required this.certified, this.coverUrl = '', this.coverVideo = false});
+  final String id, name, department, skills, avatarUrl, coverUrl;
+  final bool coverVideo;
   final bool certified;
 
   static LiveTalent fromRow(Map x) => LiveTalent(
@@ -26,6 +28,8 @@ class LiveTalent {
         skills: '${x['skills'] ?? ''}',
         avatarUrl: '${x['avatar_url'] ?? ''}',
         certified: x['certified'] == true,
+        coverUrl: (x['cover_path'] ?? '').toString().isEmpty ? '' : Backend.postMediaUrl('${x['cover_path']}'),
+        coverVideo: x['cover_kind'] == 'video',
       );
 
   String get initials {
@@ -119,39 +123,77 @@ class _TalentStory extends StatelessWidget {
     const ring = LinearGradient(begin: Alignment.topRight, end: Alignment.bottomLeft, colors: [Color(0xFFFFB400), Color(0xFFFF2D87), Color(0xFFB026FF)]);
     final hasPhoto = t.avatarUrl.isNotEmpty;
     return SizedBox(
-      width: 150,
+      width: 172,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(12),
         child: Stack(fit: StackFit.expand, children: [
-          if (hasPhoto)
-            Image.network(t.avatarUrl, fit: BoxFit.cover, errorBuilder: (_, _, _) => const ColoredBox(color: Color(0xFFD9D2E6)))
+          if (t.coverUrl.isNotEmpty && t.coverVideo)
+            _CoverVideo(url: t.coverUrl)
+          else if (t.coverUrl.isNotEmpty || hasPhoto)
+            Image.network(t.coverUrl.isNotEmpty ? t.coverUrl : t.avatarUrl, fit: BoxFit.cover, alignment: Alignment.topCenter, errorBuilder: (_, _, _) => const ColoredBox(color: Color(0xFFD9D2E6)))
           else
             const DecoratedBox(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0xFFEDE3F6), Color(0xFFD9C9EC)]))),
-          const DecoratedBox(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0x00000000), Color(0x00000000), Color(0xB3000000)], stops: [0, .45, 1]))),
+          const DecoratedBox(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0x00000000), Color(0x00000000), Color(0xCC000000)], stops: [0, .5, 1]))),
           Positioned(
             left: 8,
             right: 8,
-            bottom: 12,
+            bottom: 16,
             child: Column(mainAxisSize: MainAxisSize.min, children: [
               Container(
-                width: 62,
-                height: 62,
+                width: 56,
+                height: 56,
                 padding: const EdgeInsets.all(2.5),
-                decoration: BoxDecoration(shape: BoxShape.circle, gradient: t.certified ? ring : null, color: t.certified ? null : const Color(0xFFE4E0EC)),
-                child: Container(padding: const EdgeInsets.all(2), decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white), child: _Avatar(t, size: 52)),
+                decoration: BoxDecoration(shape: BoxShape.circle, gradient: ring),
+                child: Container(padding: const EdgeInsets.all(2), decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white), child: _Avatar(t, size: 46)),
               ),
               const SizedBox(height: 8),
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Flexible(child: Text(t.name, maxLines: 1, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center, style: _st(13, w: FontWeight.w700, c: Colors.white))),
                 if (t.certified) const Padding(padding: EdgeInsets.only(left: 4), child: Icon(Icons.verified, size: 14, color: Color(0xFF4DA3FF))),
               ]),
-              if (t.skills.isNotEmpty || t.department.isNotEmpty)
-                Padding(padding: const EdgeInsets.only(top: 2), child: Text(t.skills.isNotEmpty ? t.skills : t.department, maxLines: 1, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center, style: _st(10.5, c: const Color(0xE6FFFFFF)))),
             ]),
           ),
         ]),
       ),
     );
+  }
+}
+
+/// Vidéo de couverture : lecture automatique, sans son, en boucle, derrière le nom de la personne.
+class _CoverVideo extends StatefulWidget {
+  const _CoverVideo({required this.url});
+  final String url;
+  @override
+  State<_CoverVideo> createState() => _CoverVideoState();
+}
+
+class _CoverVideoState extends State<_CoverVideo> {
+  VideoPlayerController? _c;
+
+  @override
+  void initState() {
+    super.initState();
+    final c = VideoPlayerController.networkUrl(Uri.parse(widget.url), videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true));
+    _c = c;
+    c.initialize().then((_) {
+      c.setVolume(0);
+      c.setLooping(true);
+      c.play();
+      if (mounted) setState(() {});
+    }).catchError((_) {});
+  }
+
+  @override
+  void dispose() {
+    _c?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = _c;
+    if (c == null || !c.value.isInitialized) return const ColoredBox(color: Color(0xFFD9D2E6));
+    return FittedBox(fit: BoxFit.cover, clipBehavior: Clip.hardEdge, child: SizedBox(width: c.value.size.width, height: c.value.size.height, child: VideoPlayer(c)));
   }
 }
 

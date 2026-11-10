@@ -158,7 +158,7 @@ class G_03 extends ConsumerWidget {
       gTap(303, 523, 56, 32, () { gOpen(context, '22'); }), // audit 01/11 : « Voir tout » n'avait aucun effet
       gTap(303, 797, 56, 32, () { gOpen(context, '70'); }), // audit 01/11 : « Voir tout » n'avait aucun effet
       if (!demoContent) gP(14.444, 558.819, 368.333, 229, const HomeProducts(width: 368.333, height: 229)),
-      if (!demoContent) gP(14.444, 836, 368.333, 200, const HomeTalents(width: 368.333, height: 200)),
+      if (!demoContent) gP(14.444, 836, 368.333, 270, const HomeTalents(width: 368.333, height: 270)),
     ]);
   }
 }

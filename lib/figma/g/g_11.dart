@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/tp_ui.dart' show GlassBack;
 import '../live/store.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
@@ -31,6 +32,7 @@ class G_11 extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final modeMail = ref.watch(loginModeProvider) == 1; // onglet « E-mail » : champ d'adresse, sans préfixe +237
     return GScreen(w: 390, h: 900, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
+      gP(16, 52, 44, 44, GlassBack(onTap: () => gBack(context))),
       gP(200, 147, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 624, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(30, 19, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
@@ -47,7 +49,7 @@ class G_11 extends ConsumerWidget {
       gP(117, 183, 156, 34, gText('Bon retour !', 27, Color(0xFF111015), weight: 800, align: TextAlign.center)),
       gP(43, 223, 304, 18, gText('Connectez-vous pour accéder à votre espace', 14, Color(0xFF57545F), align: TextAlign.center)),
       gP(24, 262, 342, 50, gBox(color: Color(0xFFEFF1F4), radii: [25, 25, 25, 25])),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(28, 266, 168, 42, 'Téléphone', 14.5, 600), GChip(197, 266, 168, 42, 'E-mail', 14.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 21, onChanged: (i) { ref.read(loginModeProvider.notifier).set(i); })),
+      Positioned.fill(child: GChoiceGroup(key: ValueKey('li_tab$modeMail'), chips: [GChip(28, 266, 168, 42, 'Téléphone', 14.5, 600), GChip(197, 266, 168, 42, 'E-mail', 14.5, 500)], selected: modeMail ? 1 : 0, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 21, onChanged: (i) { ref.read(loginModeProvider.notifier).set(i); })),
       gP(24, 338, 160, 16, gText(modeMail ? 'Adresse e-mail' : 'Numéro de téléphone', 13, Color(0xFF111015), weight: 600)),
       gP(24, 362, 342, 52, GField(key: ValueKey('li_id$modeMail'), hint: modeMail ? 'exemple@mail.com' : '6 XX XX XX XX', size: 14.5, hintColor: Color(0xFF57545F), weight: 500, padL: modeMail ? 52 : 106, onChanged: (v) { ref.read(formProvider.notifier).put('li_id', v); })),
       errorText('li_id', 28, 416),

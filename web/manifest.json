@@ -3,6 +3,7 @@
     "short_name": "Boutik-École",
     "start_url": ".",
     "display": "standalone",
+    "display_override": ["fullscreen", "standalone"],
     "background_color": "#F4EFE6",
     "theme_color": "#111015",
     "description": "La marketplace des créations, services et talents des étudiants de l’IUT de Douala.",

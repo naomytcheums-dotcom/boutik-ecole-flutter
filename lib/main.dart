@@ -16,7 +16,8 @@ Future<void> main() async {
   if (!kIsWeb) {
     // Android : plein écran « bord à bord » ; la barre système (boutons ou gestes) devient transparente et laisse voir le fond de l'application,
     // sans second menu noir ou blanc. Le menu de Boutik-École se place au-dessus de la zone réservée (MediaQuery.padding.bottom).
-    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    // Barre de navigation du téléphone masquée (comme Facebook) : un balayage depuis le bas la fait réapparaître un instant.
+    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,

@@ -8,7 +8,6 @@ import '../../features/design_lab/design_lab_screen.dart';
 import '../../figma/gsound.dart' show GAnim;
 import '../../figma/live/access.dart';
 import '../../figma/g/g_280.dart';
-import '../../figma/g/g_280.dart';
 import '../../figma/live/espace.dart';
 import '../../figma/live/shared_cv.dart';
 import '../theme/app_colors.dart';
@@ -59,7 +58,6 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/marche/moderation', builder: (_, _) => const ModerationScreen()),
     GoRoute(path: '/paiement', builder: (_, _) => const PaymentChatScreen()),
     GoRoute(path: '/paiements', builder: (_, _) => const MyPaymentsScreen()),
-    GoRoute(path: '/integrations/api', builder: (_, _) => const G_280()),
     GoRoute(path: '/integrations/api', builder: (_, _) => const G_280()),
     GoRoute(path: '/design', builder: (_, _) => const DesignLabScreen()),
     GoRoute(path: '/cv/:token', builder: (_, state) => SharedCvScreen(token: state.pathParameters['token'] ?? '')),

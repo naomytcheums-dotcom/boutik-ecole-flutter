@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'home_live.dart' show liveTalentsProvider;
+import 'tp_ui.dart' show TpRound, tpPickFile, tpUpload;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gen.dart';
@@ -128,10 +130,9 @@ class SocialProfilePanel extends ConsumerWidget {
 
     return Container(
       key: const Key('social-profile-panel'),
-      color: const Color(0xFFF7F5FA),
-      child: Column(
+        child: Column(
         children: [
-          _topBar(context, own),
+          _topBar(context, own, ref),
           Expanded(
             child: profile.when(
               loading: () => const Center(child: CircularProgressIndicator()),
@@ -144,7 +145,7 @@ class SocialProfilePanel extends ConsumerWidget {
     );
   }
 
-  Widget _topBar(BuildContext context, bool own) => Padding(
+  Widget _topBar(BuildContext context, bool own, WidgetRef ref) => Padding(
     padding: const EdgeInsets.fromLTRB(18, 18, 18, 6),
     child: Row(
       children: [
@@ -158,9 +159,23 @@ class SocialProfilePanel extends ConsumerWidget {
             style: _t(18, FontWeight.w700),
           ),
         ),
+        if (own) TpRound(icon: Icons.photo_camera_outlined, label: 'Ajouter une photo ou une vidéo de couverture', onTap: () => _chooseCover(context, ref)),
       ],
     ),
   );
+
+  /// Couverture du profil : photo ou vidéo (50 Mo au plus), affichée en fond de la carte dans « Talents à découvrir ».
+  Future<void> _chooseCover(BuildContext context, WidgetRef ref) async {
+    final f = await tpPickFile(context, images: true, videos: true, maxMb: 50);
+    if (f == null || !context.mounted) return;
+    final path = await tpUpload(context, 'post-media', 'cover', f);
+    if (path == null || !context.mounted) return;
+    final r = await Backend.rpc('set_my_cover', {'p_path': path, 'p_kind': f.mime.startsWith('video/') ? 'video' : 'image'});
+    if (!context.mounted) return;
+    if (r.error != null) return gToast(context, Backend.userMessage(r.error!));
+    await ref.read(liveTalentsProvider.notifier).refresh();
+    if (context.mounted) gToast(context, 'Couverture enregistrée.');
+  }
 
   Widget _body(
     BuildContext context,
@@ -515,10 +530,9 @@ class SocialProfilePanel extends ConsumerWidget {
 
   Widget _signedOut(BuildContext context, WidgetRef ref) => Container(
     key: const Key('social-profile-signed-out'),
-    color: const Color(0xFFF7F5FA),
     child: Column(
       children: [
-        _topBar(context, true),
+        _topBar(context, true, ref),
         Expanded(
           child: Center(
             child: Padding(
@@ -554,20 +568,7 @@ class SocialProfilePanel extends ConsumerWidget {
     ),
   );
 
-  Widget _roundButton(IconData icon, VoidCallback onTap) => GestureDetector(
-    behavior: HitTestBehavior.opaque,
-    onTap: onTap,
-    child: Container(
-      width: 42,
-      height: 42,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        shape: BoxShape.circle,
-        border: Border.all(color: const Color(0xFFE9E5EF)),
-      ),
-      child: Icon(icon, size: 21, color: const Color(0xFF111015)),
-    ),
-  );
+  Widget _roundButton(IconData icon, VoidCallback onTap) => TpRound(icon: icon, onTap: onTap, label: 'Retour');
 
   Widget _pill(Key key, String label, Color bg, Color fg) => Container(
     key: key,

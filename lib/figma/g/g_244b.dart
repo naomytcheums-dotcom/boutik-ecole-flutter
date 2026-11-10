@@ -112,7 +112,7 @@ class G_244b extends ConsumerWidget {
       gP(231, 674, 137, 25, gBox(color: Color(0xFFEEE9FF), radii: [100, 100, 100, 100]), show: demoContent),
       gP(231, 674, 137, 25, const SizedBox.expand(), tap: () => gOpen(context, '248'), show: demoContent),
       gP(243, 680, 113, 13, gText(gm('Voir l’article · 25 000 F', '—'), 10.5, Color(0xFF5A3FE0), weight: 600), show: demoContent),
-      gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32]), show: demoContent),
+      gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
       gP(47.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '251'), show: demoContent),
       gP(47.125, 777.125, 20, 20, gImg('assets/figma/v/96285515fb0e14.svg'), show: demoContent),
       gP(59.113, 789.113, 9.762, 9.762, gImg('assets/figma/v/524f40fa464a05.svg')),

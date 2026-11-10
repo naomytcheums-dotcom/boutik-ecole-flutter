@@ -76,7 +76,7 @@ class G_251 extends ConsumerWidget {
       gP(297, 690, 50, 13, gText(gm('Kouassi T.', ''), 10.5, Color(0xFF111015), weight: 600), show: demoContent),
       gP(294, 712, 56, 20, gBox(color: Color(0xFF111015), radii: [10, 10, 10, 10]), show: demoContent),
       gP(308, 716, 28, 11, gText('Suivre', 9, Color(0xFFFFFFFF), weight: 600), show: demoContent),
-      gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32]), show: demoContent),
+      gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
       gP(47.125, 777.125, 20, 20, gImg('assets/figma/v/96285515fb0e14.svg'), show: demoContent),
       gP(59.113, 789.113, 9.762, 9.762, gImg('assets/figma/v/524f40fa464a05.svg')),
       gP(113.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '52'), show: demoContent),

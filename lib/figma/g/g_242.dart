@@ -71,7 +71,7 @@ class G_242 extends ConsumerWidget {
       gP(44, 636, 303, 45, gText('Poste le visuel sur tes réseaux, ajoute ton lien de parrainage, puis envoie la preuve. Le paiement arrive sur ton Mobile Money.', 10.5, Color(0xFFFFFFFF), lh: 15, wrap: true), show: demoContent),
       gP(44, 686, 220, 25, gBox(color: Color(0x2EFFFFFF), radii: [100, 100, 100, 100]), show: demoContent),
       gP(56, 692, 196, 13, gText('Preuve = capture ou lien de la publication', 10, Color(0xFFFFFFFF), weight: 600), show: demoContent),
-      gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32]), show: demoContent),
+      gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
       gP(47.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(47.125, 777.125, 20, 20, gImg('assets/figma/v/96285515fb0e14.svg')),
       gP(59.113, 789.113, 9.762, 9.762, gImg('assets/figma/v/524f40fa464a05.svg')),

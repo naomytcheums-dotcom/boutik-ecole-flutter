@@ -52,7 +52,13 @@ if (import.meta.main) {
       return jsonResponse(req, { error: "ended", message: "Ce live est terminé." }, 409);
     }
     const { data: prof } = await admin.from("profiles").select("name").eq("id", uid).maybeSingle();
-    const token = await livekitToken(key, secret, uid, String(prof?.name ?? "Membre"), live.room_name, isHost);
-    return jsonResponse(req, { url, token, role: isHost ? "host" : "viewer", room: live.room_name });
+    // Invité accepté par l'hôte (co-diffusion) : il peut publier sa caméra et son micro.
+    let isCo = false;
+    if (!isHost) {
+      const { data: co } = await admin.from("live_cohosts").select("status").eq("live_id", liveId).eq("user_id", uid).maybeSingle();
+      isCo = co?.status === "approved";
+    }
+    const token = await livekitToken(key, secret, uid, String(prof?.name ?? "Membre"), live.room_name, isHost || isCo);
+    return jsonResponse(req, { url, token, role: isHost ? "host" : (isCo ? "cohost" : "viewer"), room: live.room_name });
   });
 }

@@ -72,18 +72,18 @@ final myLivesProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((
 });
 
 /// Jeton LiveKit émis par l'Edge Function (rôle hôte ou spectateur). Erreur lisible sinon.
-Future<({String? url, String? token, String? error})> fetchLiveToken(String liveId) async {
+Future<({String? url, String? token, String? error, String role})> fetchLiveToken(String liveId) async {
   try {
     final r = await Supabase.instance.client.functions.invoke('live-token', body: {'live_id': liveId});
     final d = r.data;
-    if (d is Map && d['token'] != null) return (url: '${d['url']}', token: '${d['token']}', error: null);
-    return (url: null, token: null, error: d is Map ? '${d['message'] ?? 'La diffusion est indisponible.'}' : 'La diffusion est indisponible.');
+    if (d is Map && d['token'] != null) return (url: '${d['url']}', token: '${d['token']}', error: null, role: '${d['role'] ?? 'viewer'}');
+    return (url: null, token: null, error: d is Map ? '${d['message'] ?? 'La diffusion est indisponible.'}' : 'La diffusion est indisponible.', role: 'viewer');
   } on FunctionException catch (e) {
     final d = e.details;
-    if (e.status == 503) return (url: null, token: null, error: 'La diffusion en direct n’est pas encore activée sur ce serveur (clés du fournisseur vidéo à configurer).');
-    return (url: null, token: null, error: d is Map && d['message'] != null ? '${d['message']}' : 'La connexion au direct a échoué (code ${e.status}).');
+    if (e.status == 503) return (url: null, token: null, error: 'La diffusion en direct n’est pas encore activée sur ce serveur (clés du fournisseur vidéo à configurer).', role: 'viewer');
+    return (url: null, token: null, error: d is Map && d['message'] != null ? '${d['message']}' : 'La connexion au direct a échoué (code ${e.status}).', role: 'viewer');
   } catch (_) {
-    return (url: null, token: null, error: 'Connexion impossible. Vérifiez votre réseau puis réessayez.');
+    return (url: null, token: null, error: 'Connexion impossible. Vérifiez votre réseau puis réessayez.', role: 'viewer');
   }
 }
 
@@ -501,6 +501,71 @@ class _LiveHostConsoleState extends ConsumerState<LiveHostConsole> {
   String _conn = 'idle';
   bool _starting = false, _cam = true, _mic = true, _ended = false;
   int _viewers = 0;
+  List<Map<String, dynamic>> _guests = [];
+  Timer? _guestPoll;
+
+  @override
+  void initState() {
+    super.initState();
+    _guestPoll = Timer.periodic(const Duration(seconds: 6), (_) => _refreshGuests());
+  }
+
+  Future<void> _refreshGuests() async {
+    final id = _id;
+    if (id == null || !mounted || _ended) return;
+    final r = await Backend.rpc('list_cohost_requests', {'p_live': id});
+    if (!mounted || r.error != null || r.data is! List) return;
+    setState(() => _guests = [for (final x in r.data as List) Map<String, dynamic>.from(x as Map)]);
+  }
+
+  Future<void> _answerGuest(String uid, bool ok) async {
+    final r = await Backend.rpc('respond_cohost', {'p_live': _id, 'p_user': uid, 'p_approve': ok});
+    if (!mounted) return;
+    if (r.error != null) gToast(context, Backend.userMessage(r.error!));
+    await _refreshGuests();
+  }
+
+  Future<void> _removeGuest(String uid) async {
+    await Backend.rpc('remove_cohost', {'p_live': _id, 'p_user': uid});
+    await _refreshGuests();
+  }
+
+  /// Invités : demandes de participation des spectateurs ; l'hôte accepte (3 invités au plus), refuse ou retire.
+  Future<void> _showGuests() async {
+    await _refreshGuests();
+    if (!mounted) return;
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, set) => Container(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
+          decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+          child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('Invités du direct', style: sty(17, w: FontWeight.w800)),
+            const SizedBox(height: 4),
+            Text('Un invité accepté diffuse avec vous (3 au plus).', style: sty(12, c: kGrey)),
+            const SizedBox(height: 12),
+            if (_guests.isEmpty) Padding(padding: const EdgeInsets.symmetric(vertical: 18), child: Text('Aucune demande pour le moment.', style: sty(13, c: kGrey))),
+            for (final g in _guests)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Row(children: [
+                  socialAvatar('${g['avatar'] ?? ''}', '${g['name']}', 38),
+                  const SizedBox(width: 10),
+                  Expanded(child: Text('${g['name']}', maxLines: 1, overflow: TextOverflow.ellipsis, style: sty(13.5, w: FontWeight.w700))),
+                  if (g['status'] == 'requested') ...[
+                    TextButton(onPressed: () async { await _answerGuest('${g['user_id']}', false); set(() {}); }, child: Text('Refuser', style: sty(12.5, c: kGrey))),
+                    FilledButton(onPressed: () async { await _answerGuest('${g['user_id']}', true); set(() {}); }, style: FilledButton.styleFrom(backgroundColor: kInk), child: Text('Accepter', style: sty(12.5, w: FontWeight.w700, c: Colors.white))),
+                  ] else
+                    TextButton(onPressed: () async { await _removeGuest('${g['user_id']}'); set(() {}); }, child: Text('Retirer', style: sty(12.5, w: FontWeight.w700, c: kLike))),
+                ]),
+              ),
+          ]),
+        ),
+      ),
+    );
+  }
 
   @override
   void didChangeDependencies() {
@@ -514,6 +579,7 @@ class _LiveHostConsoleState extends ConsumerState<LiveHostConsole> {
 
   @override
   void dispose() {
+    _guestPoll?.cancel();
     _feed?.dispose();
     _transport.disconnect();
     super.dispose();
@@ -706,6 +772,11 @@ class _LiveHostConsoleState extends ConsumerState<LiveHostConsole> {
           ])),
           Positioned(left: 16, right: 90, bottom: 24, height: 200, child: _feed == null ? const SizedBox.shrink() : _ChatList(feed: _feed!, onLongPress: _moderate)),
           Positioned(right: 14, bottom: 24, child: Column(children: [
+            Stack(clipBehavior: Clip.none, children: [
+              _round(Icons.group_add_outlined, _showGuests, 'Invités'),
+              if (_guests.any((g) => g['status'] == 'requested')) Positioned(right: -2, top: -2, child: Container(width: 14, height: 14, decoration: const BoxDecoration(color: Color(0xFFFF2D55), shape: BoxShape.circle))),
+            ]),
+            const SizedBox(height: 10),
             _round(_cam ? Icons.videocam : Icons.videocam_off, () async {
               setState(() => _cam = !_cam);
               await _transport.setCamera(_cam);
@@ -754,8 +825,64 @@ class _LiveViewerState extends ConsumerState<LiveViewer> {
   Map<String, dynamic>? _live;
   String? _error, _id;
   String _conn = 'idle';
-  bool _ended = false, _joining = false;
-  Timer? _beat;
+  bool _ended = false, _joining = false, _publishing = false;
+  String _co = 'none'; // demande de co-diffusion : none, requested, approved, refused, removed
+  Timer? _beat, _coPoll;
+
+  /// Co-diffusion : l'hôte peut inviter un spectateur à diffuser avec lui (caméra et micro), puis le retirer.
+  void _startCoPoll() {
+    _coPoll?.cancel();
+    _coPoll = Timer.periodic(const Duration(seconds: 5), (_) async {
+      final id = _id;
+      if (id == null || !mounted || _ended) return;
+      final r = await Backend.rpc('my_cohost_status', {'p_live': id});
+      if (!mounted || r.error != null) return;
+      final st = '${r.data}';
+      if (st == _co) return;
+      final was = _co;
+      setState(() => _co = st);
+      if (st == 'approved' && !_publishing) {
+        gToast(context, 'L’hôte vous a accepté : vous passez en direct.');
+        _switchRole(true);
+      } else if (was == 'approved' && st != 'approved' && _publishing) {
+        gToast(context, 'Vous ne diffusez plus avec l’hôte.');
+        _switchRole(false);
+      } else if (st == 'refused') {
+        gToast(context, 'L’hôte n’a pas accepté votre demande.');
+      }
+    });
+  }
+
+  Future<void> _switchRole(bool publish) async {
+    final id = _id;
+    if (id == null) return;
+    await _transport.disconnect();
+    final t = await fetchLiveToken(id);
+    if (!mounted) return;
+    if (t.token == null) return gToast(context, t.error ?? 'Connexion impossible.');
+    String? failure;
+    await _transport.connect(url: t.url!, token: t.token!, publish: publish && t.role == 'cohost', onState: (s) {
+      if (mounted) setState(() => _conn = s);
+    }, onParticipants: (_) {}, onError: (e) => failure = e);
+    if (!mounted) return;
+    setState(() => _publishing = publish && t.role == 'cohost');
+    if (failure != null) gToast(context, liveErrorMessage(failure!));
+  }
+
+  Future<void> _askCohost() async {
+    final id = _id;
+    if (id == null) return;
+    if (_publishing) {
+      await Backend.rpc('remove_cohost', {'p_live': id, 'p_user': ref.read(authProvider).current?.serverId ?? ''});
+      setState(() => _co = 'removed');
+      return _switchRole(false);
+    }
+    final r = await Backend.rpc('request_cohost', {'p_live': id});
+    if (!mounted) return;
+    if (r.error != null) return gToast(context, Backend.userMessage(r.error!));
+    setState(() => _co = 'requested');
+    gToast(context, 'Demande envoyée à l’hôte.');
+  }
 
   @override
   void didChangeDependencies() {
@@ -769,6 +896,7 @@ class _LiveViewerState extends ConsumerState<LiveViewer> {
 
   @override
   void dispose() {
+    _coPoll?.cancel();
     _beat?.cancel();
     _feed?.dispose();
     _transport.disconnect();
@@ -829,10 +957,12 @@ class _LiveViewerState extends ConsumerState<LiveViewer> {
       return setState(() => _error = liveErrorMessage('unsupported'));
     }
     String? failure;
-    await _transport.connect(url: t.url!, token: t.token!, publish: false, onState: (s) {
+    await _transport.connect(url: t.url!, token: t.token!, publish: t.role == 'cohost', onState: (s) {
       if (!mounted) return;
       setState(() => _conn = s);
     }, onParticipants: (_) {}, onError: (e) => failure = e);
+    _publishing = t.role == 'cohost';
+    _startCoPoll();
     _joining = false;
     if (mounted && failure != null) setState(() => _error = liveErrorMessage(failure!));
   }
@@ -947,6 +1077,8 @@ class _LiveViewerState extends ConsumerState<LiveViewer> {
           Positioned(right: 10, bottom: 70, child: Column(children: [
             for (final k in const ['heart', 'fire', 'clap']) GestureDetector(onTap: () => _react(k), child: Container(width: 46, height: 46, alignment: Alignment.center, child: Text(_emoji[k]!, style: const TextStyle(fontSize: 28)))),
             _round(Icons.card_giftcard, () => showGiftSheet(context, _id!, '${live['host_id']}'), 'Offrir un cadeau'),
+            const SizedBox(height: 10),
+            _round(_publishing ? Icons.call_end : (_co == 'requested' ? Icons.hourglass_top : Icons.video_call_outlined), _co == 'requested' && !_publishing ? () => gToast(context, 'Demande en attente de la réponse de l’hôte.') : _askCohost, _publishing ? 'Quitter la diffusion' : 'Demander à participer', color: _publishing ? kLike : Colors.white),
           ])),
           Positioned(left: 12, right: 12, bottom: 16, child: Row(children: [
             Expanded(child: GestureDetector(onTap: _write, child: Container(height: 44, alignment: Alignment.centerLeft, padding: const EdgeInsets.symmetric(horizontal: 16), decoration: BoxDecoration(color: const Color(0x80111015), borderRadius: BorderRadius.circular(22)), child: Text('Écrire un message…', style: sty(13, c: const Color(0xCCFFFFFF)))))),

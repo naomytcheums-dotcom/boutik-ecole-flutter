@@ -36,14 +36,29 @@
         var room = new L.Room({ adaptiveStream: true, dynacast: true, reconnectPolicy: undefined });
         var el = document.getElementById(elementId);
         function clear() { if (el) el.innerHTML = ''; }
+        // Plusieurs diffuseurs (hôte + invités) : leurs vidéos se partagent l'écran en grille.
+        var vids = {};
+        function relayout() {
+          var keys = Object.keys(vids), n = keys.length;
+          if (!el) return;
+          el.style.display = 'flex'; el.style.flexWrap = 'wrap';
+          keys.forEach(function (k) {
+            vids[k].style.cssText = 'background:#000;object-fit:' + (n > 1 ? 'cover' : 'contain') + ';width:' + (n > 1 ? '50%' : '100%') + ';height:' + (n > 2 ? '50%' : '100%');
+          });
+        }
         function attach(track) {
           if (!el || track.kind !== 'video') return;
-          clear();
+          if (vids[track.sid]) return;
           var v = track.attach();
-          v.style.cssText = 'width:100%;height:100%;object-fit:contain;background:#000';
           v.setAttribute('playsinline', ''); v.muted = !publish ? false : true;
+          vids[track.sid] = v;
           el.appendChild(v);
+          relayout();
         }
+        room.on(L.RoomEvent.TrackUnsubscribed, function (track) {
+          var v = vids[track.sid];
+          if (v) { try { track.detach(v); } catch (e) {} if (v.parentNode) v.parentNode.removeChild(v); delete vids[track.sid]; relayout(); }
+        });
         function count() { cb.participants(Math.max(0, room.numParticipants - (publish ? 0 : 0))); }
         room.on(L.RoomEvent.TrackSubscribed, function (track) { attach(track); if (track.kind === 'audio' && el) { var a = track.attach(); el.appendChild(a); } });
         room.on(L.RoomEvent.TrackUnsubscribed, function (track) { track.detach(); if (track.kind === 'video') clear(); });

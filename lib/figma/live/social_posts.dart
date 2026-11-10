@@ -123,6 +123,148 @@ class _LikeHeartState extends State<LikeHeart> with SingleTickerProviderStateMix
   }
 }
 
+// ------------------------------------------------------------------ duo et remix
+
+/// Vidéo verticale : 3 min au plus ; vidéo horizontale : 5 min au plus. Renvoie un message si la durée est dépassée.
+Future<String?> videoLimitError(String path) async {
+  final c = VideoPlayerController.networkUrl(Uri.parse(Backend.postMediaUrl(path)));
+  try {
+    await c.initialize().timeout(const Duration(seconds: 20));
+    final vertical = c.value.size.height > c.value.size.width;
+    final secs = c.value.duration.inSeconds;
+    if (secs > (vertical ? 180 : 300)) {
+      final m = secs ~/ 60, r = secs % 60;
+      return vertical ? 'Une vidéo verticale dure 3 min au plus (la vôtre : $m min $r s).' : 'Une vidéo horizontale dure 5 min au plus (la vôtre : $m min $r s).';
+    }
+  } catch (_) {
+    // durée illisible : on laisse passer, le serveur reste juge
+  } finally {
+    await c.dispose();
+  }
+  return null;
+}
+
+/// Duo (côte à côte avec l'originale) ou remix (réponse qui renvoie vers l'originale) : on choisit ou on filme sa vidéo, puis on publie.
+Future<void> createRemix(BuildContext context, WidgetRef ref, Reel original, String kind) async {
+  if (!original.video) return gToast(context, 'Le duo et le remix se font à partir d’une vidéo.');
+  if (!await requireLogin(context, ref, kind == 'duet' ? 'faire un duo' : 'faire un remix') || !context.mounted) return;
+  final p = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: const ['mp4', 'mov']);
+  if (p.isEmpty || !context.mounted) return;
+  final up = await uploadPostMedia(context, p.first);
+  if (up == null || !context.mounted) return;
+  final err = await videoLimitError(up.path);
+  if (err != null) {
+    try {
+      await Supabase.instance.client.storage.from('post-media').remove([up.path]);
+    } catch (_) {}
+    if (context.mounted) gToast(context, err);
+    return;
+  }
+  final res = await Backend.rpc('create_remix', {'p_original': original.id, 'p_kind': kind, 'p_path': up.path, 'p_caption': ''});
+  if (!context.mounted) return;
+  if (res.error != null) {
+    try {
+      await Supabase.instance.client.storage.from('post-media').remove([up.path]);
+    } catch (_) {}
+    return gAlert(context, kind == 'duet' ? 'Duo impossible' : 'Remix impossible', Backend.userMessage(res.error!));
+  }
+  ref.invalidate(remixesProvider);
+  await ref.read(reelsProvider.notifier).refresh();
+  if (context.mounted) gToast(context, kind == 'duet' ? 'Votre duo est publié.' : 'Votre remix est publié.');
+}
+
+/// Publications qui sont un duo ou un remix : { identifiant → (originale, type) }.
+final remixesProvider = FutureProvider.autoDispose<Map<String, ({String of, String kind})>>((ref) async {
+  if (!Backend.ready) return const {};
+  try {
+    final rows = await Supabase.instance.client.from('posts').select('id,remix_of,remix_kind').not('remix_of', 'is', null).limit(300);
+    return {for (final x in rows) '${x['id']}': (of: '${x['remix_of']}', kind: '${x['remix_kind']}')};
+  } catch (_) {
+    return const {};
+  }
+});
+
+/// Média de la vidéo d'origine d'un duo : { chemin public, auteur }.
+final originalVideoProvider = FutureProvider.autoDispose.family<({String url, String author})?, String>((ref, id) async {
+  try {
+    final row = await Supabase.instance.client.from('posts').select('media_path,author_id,profiles(name)').eq('id', id).maybeSingle();
+    if (row == null) return null;
+    final name = (row['profiles'] is Map ? (row['profiles'] as Map)['name'] : null) ?? '';
+    return (url: Backend.postMediaUrl('${row['media_path']}'), author: '$name');
+  } catch (_) {
+    return null;
+  }
+});
+
+class _DuoPlayer extends StatefulWidget {
+  const _DuoPlayer({super.key, required this.url, this.sound = false});
+  final String url;
+  final bool sound;
+  @override
+  State<_DuoPlayer> createState() => _DuoPlayerState();
+}
+
+class _DuoPlayerState extends State<_DuoPlayer> {
+  VideoPlayerController? _c;
+  bool _on = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final c = VideoPlayerController.networkUrl(Uri.parse(widget.url), videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true));
+    _c = c;
+    c.initialize().then((_) {
+      c.setVolume(0);
+      c.setLooping(true);
+      c.play();
+      if (mounted) setState(() {});
+    }).catchError((_) {});
+  }
+
+  @override
+  void dispose() {
+    _c?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = _c;
+    if (c == null || !c.value.isInitialized) return const ColoredBox(color: Color(0xFF18171F));
+    return GestureDetector(
+      onTap: () {
+        _on = !_on;
+        c.setVolume(_on ? 1 : 0);
+        setState(() {});
+      },
+      child: Stack(fit: StackFit.expand, children: [
+        FittedBox(fit: BoxFit.cover, clipBehavior: Clip.hardEdge, child: SizedBox(width: c.value.size.width, height: c.value.size.height, child: VideoPlayer(c))),
+        if (widget.sound) Positioned(right: 8, bottom: 8, child: Icon(_on ? Icons.volume_up : Icons.volume_off, color: Colors.white, size: 20)),
+      ]),
+    );
+  }
+}
+
+/// Duo : la vidéo d'origine à gauche, la réponse à droite, lues ensemble.
+class DuetView extends ConsumerWidget {
+  const DuetView({super.key, required this.originalId, required this.url});
+  final String originalId, url;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final o = ref.watch(originalVideoProvider(originalId)).value;
+    return ClipRRect(
+      child: AspectRatio(
+        aspectRatio: 16 / 10,
+        child: Row(children: [
+          Expanded(child: o == null ? const ColoredBox(color: Color(0xFF18171F)) : _DuoPlayer(key: ValueKey('o$originalId'), url: o.url)),
+          const SizedBox(width: 2),
+          Expanded(child: _DuoPlayer(key: ValueKey(url), url: url, sound: true)),
+        ]),
+      ),
+    );
+  }
+}
+
 // ------------------------------------------------------------------ réactions
 
 const kReactions = {'like': '👍', 'love': '❤️', 'haha': '😂', 'wow': '😮', 'sad': '😢', 'fire': '🔥', 'clap': '👏'};
@@ -179,7 +321,7 @@ Future<void> showReactionPicker(BuildContext context, WidgetRef ref, Reel post) 
 /// Dépose un fichier choisi dans le dossier de la personne (`post-media/<uid>/…`) et renvoie son chemin ; null si refusé (message affiché).
 Future<({String path, String kind, String mime})?> uploadPostMedia(BuildContext context, PlatformFile f) async {
   final ext = f.name.split('.').last.toLowerCase();
-  const mimes = {'mp4': 'video/mp4', 'mov': 'video/quicktime', 'jpg': 'image/jpeg', 'jpeg': 'image/jpeg', 'png': 'image/png', 'webp': 'image/webp'};
+  const mimes = {'mp4': 'video/mp4', 'mov': 'video/quicktime', 'jpg': 'image/jpeg', 'jpeg': 'image/jpeg', 'png': 'image/png', 'webp': 'image/webp', 'gif': 'image/gif'};
   final mime = mimes[ext];
   if (mime == null) {
     await gAlert(context, 'Format refusé', 'Vidéo MP4 ou MOV, ou image JPG, PNG, WebP.');
@@ -270,7 +412,7 @@ class _CommentsSheetState extends ConsumerState<_CommentsSheet> {
   }
 
   Future<void> _pick() async {
-    final p = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: const ['jpg', 'jpeg', 'png', 'webp']);
+    final p = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: const ['jpg', 'jpeg', 'png', 'webp', 'gif']);
     if (p.isEmpty || !mounted) return;
     setState(() => _file = p.first);
   }
@@ -600,6 +742,8 @@ Future<void> showPostMenu(BuildContext context, WidgetRef ref, Reel r) {
         const SizedBox(height: 4),
         item(ctx, r.saved ? Icons.bookmark : Icons.bookmark_border, r.saved ? 'Retirer des enregistrements' : 'Enregistrer', () => toggleSavePost(context, ref, r)),
         item(ctx, Icons.repeat, 'Republier', () => repostPost(context, ref, r)),
+        if (r.video) item(ctx, Icons.splitscreen_outlined, 'Faire un duo', () => createRemix(context, ref, r, 'duet')),
+        if (r.video) item(ctx, Icons.auto_awesome_motion_outlined, 'Faire un remix', () => createRemix(context, ref, r, 'remix')),
         item(ctx, Icons.ios_share, 'Partager', () => sharePost(context, ref, r)),
         item(ctx, Icons.link, 'Copier le lien', () => copyPostLink(context, r)),
         if (r.authorId.isNotEmpty) item(ctx, Icons.person_outline, 'Voir le profil', () => gOpenProfile(context, r.authorId)),
@@ -837,7 +981,18 @@ class _PostCardState extends ConsumerState<PostCard> {
               ]),
             ),
           ),
-        if (post.allMedia.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 10), child: MediaCarousel(media: post.allMedia, onOpenReels: _openReels)),
+        if (post.allMedia.isNotEmpty)
+          Builder(builder: (context) {
+            final rx = ref.watch(remixesProvider).value?[post.id];
+            final orig = rx == null ? null : ref.watch(originalVideoProvider(rx.of)).value;
+            return Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                if (rx != null) Padding(padding: const EdgeInsets.only(bottom: 6), child: Text(rx.kind == 'duet' ? 'Duo${orig == null || orig.author.isEmpty ? '' : ' avec ${orig.author}'}' : 'Remix${orig == null || orig.author.isEmpty ? '' : ' de ${orig.author}'}', style: sty(12, w: FontWeight.w700, c: const Color(0xFF5A3FE0)))),
+                if (rx != null && rx.kind == 'duet' && post.allMedia.first.video) DuetView(originalId: rx.of, url: post.allMedia.first.url) else MediaCarousel(media: post.allMedia, onOpenReels: _openReels),
+              ]),
+            );
+          }),
         Padding(
           padding: const EdgeInsets.fromLTRB(6, 2, 8, 4),
           child: Row(children: [
@@ -901,7 +1056,7 @@ class _ComposerSheetState extends ConsumerState<_ComposerSheet> {
   }
 
   Future<void> _pick() async {
-    final p = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: const ['mp4', 'mov', 'jpg', 'jpeg', 'png', 'webp']);
+    final p = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: const ['mp4', 'mov', 'jpg', 'jpeg', 'png', 'webp', 'gif']);
     if (p.isEmpty || !mounted) return;
     setState(() {
       for (final f in p) {
@@ -926,27 +1081,6 @@ class _ComposerSheetState extends ConsumerState<_ComposerSheet> {
     setState(() => _at = at);
   }
 
-  /// Vidéo verticale : 3 min au plus ; vidéo horizontale : 5 min au plus. Renvoie un message si la durée est dépassée.
-  Future<String?> _videoLimitError(String path) async {
-    final c = VideoPlayerController.networkUrl(Uri.parse(Backend.postMediaUrl(path)));
-    try {
-      await c.initialize().timeout(const Duration(seconds: 20));
-      final size = c.value.size;
-      final secs = c.value.duration.inSeconds;
-      final vertical = size.height > size.width;
-      final cap = vertical ? 180 : 300;
-      if (secs > cap) {
-        final m = secs ~/ 60, r = secs % 60;
-        return vertical ? 'Une vidéo verticale dure 3 min au plus (la vôtre : $m min $r s).' : 'Une vidéo horizontale dure 5 min au plus (la vôtre : $m min $r s).';
-      }
-    } catch (_) {
-      // durée illisible : on laisse passer, le serveur reste juge
-    } finally {
-      await c.dispose();
-    }
-    return null;
-  }
-
   Future<void> _publish() async {
     final txt = _text.text.trim(), link = _link.text.trim();
     if (txt.isEmpty && link.isEmpty && _files.isEmpty) return gToast(context, 'Écrivez un texte ou ajoutez un média ou un lien.');
@@ -968,7 +1102,7 @@ class _ComposerSheetState extends ConsumerState<_ComposerSheet> {
       }
       if (up.kind == 'video') {
         setState(() => _step = 'Vérification de la vidéo…');
-        final err = await _videoLimitError(up.path);
+        final err = await videoLimitError(up.path);
         if (err != null) {
           try {
             await Supabase.instance.client.storage.from('post-media').remove([up.path, for (final u in uploaded) '${u['path']}']);
@@ -1061,6 +1195,7 @@ class _ComposerSheetState extends ConsumerState<_ComposerSheet> {
               ),
             Row(children: [
               TextButton.icon(onPressed: _busy ? null : _pick, icon: const Icon(Icons.add_photo_alternate_outlined), label: Text(_files.isEmpty ? 'Photos ou vidéos' : 'Ajouter', style: sty(13, w: FontWeight.w600))),
+              TextButton(onPressed: _busy ? null : () => showScheduledSheet(context), child: Text('Programmées', style: sty(12.5, c: kGrey))),
               TextButton.icon(onPressed: _busy ? null : _pickSchedule, icon: Icon(_at == null ? Icons.schedule : Icons.event_available, size: 20), label: Text(_at == null ? 'Programmer' : _fmt(_at!), style: sty(13, w: FontWeight.w600))),
               const Spacer(),
               FilledButton(
@@ -1075,4 +1210,56 @@ class _ComposerSheetState extends ConsumerState<_ComposerSheet> {
       ),
     );
   }
+}
+
+/// Mes publications programmées : liste des publications en attente, avec annulation.
+Future<void> showScheduledSheet(BuildContext context) async {
+  final rows = ValueNotifier<List<Map<String, dynamic>>?>(null);
+  Future<void> load() async {
+    final r = await Backend.rows('scheduled_posts', 'id,caption,publish_at,status,error', order: 'publish_at', ascending: true, limit: 100);
+    rows.value = [for (final x in r.rows) if (x['status'] == 'pending' || x['status'] == 'failed') x];
+  }
+
+  load();
+  const mois = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+  await showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (ctx) => Container(
+      constraints: BoxConstraints(maxHeight: MediaQuery.of(ctx).size.height * .7),
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+      decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      child: ValueListenableBuilder<List<Map<String, dynamic>>?>(
+        valueListenable: rows,
+        builder: (ctx, list, _) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text('Publications programmées', style: sty(17, w: FontWeight.w800)),
+          const SizedBox(height: 10),
+          if (list == null) const Padding(padding: EdgeInsets.all(24), child: Center(child: CircularProgressIndicator()))
+          else if (list.isEmpty) Padding(padding: const EdgeInsets.symmetric(vertical: 24), child: Text('Aucune publication programmée.', style: sty(13, c: kGrey)))
+          else
+            Flexible(
+              child: ListView(shrinkWrap: true, children: [
+                for (final x in list)
+                  Builder(builder: (_) {
+                    final d = DateTime.tryParse('${x['publish_at']}')?.toLocal();
+                    final failed = x['status'] == 'failed';
+                    return ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text('${x['caption']}'.isEmpty ? '(sans texte)' : '${x['caption']}', maxLines: 2, overflow: TextOverflow.ellipsis, style: sty(13.5, w: FontWeight.w600)),
+                      subtitle: Text(failed ? 'Échec : ${x['error'] ?? 'publication refusée'}' : (d == null ? '' : '${d.day} ${mois[d.month - 1]} ${d.year} à ${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}'), style: sty(12, c: failed ? kLike : kGrey)),
+                      trailing: failed ? null : IconButton(tooltip: 'Annuler', icon: const Icon(Icons.delete_outline), onPressed: () async {
+                        final r = await Backend.rpc('cancel_scheduled_post', {'p_id': x['id']});
+                        if (r.error != null && ctx.mounted) gToast(ctx, Backend.userMessage(r.error!));
+                        await load();
+                      }),
+                    );
+                  }),
+              ]),
+            ),
+        ]),
+      ),
+    ),
+  );
+  rows.dispose();
 }

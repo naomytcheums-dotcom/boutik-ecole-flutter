@@ -14,6 +14,7 @@ import 'package:boutik_ecole/figma/live/auth.dart';
 import 'package:boutik_ecole/figma/live/backend.dart';
 import 'package:boutik_ecole/figma/live/console.dart';
 import 'package:boutik_ecole/figma/live/entreprise.dart';
+import 'package:boutik_ecole/figma/live/project_cards.dart';
 import 'package:boutik_ecole/figma/live/home_live.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -125,7 +126,7 @@ void main() {
 
   testWidgets('78 connecté : projets validés réels, aucun projet de maquette', (t) async {
     await monter(t, const G_78(), connecte: true, overrides: [
-      projectsCatalogProvider.overrideWith(() => _Rows('table:projects', [{'title': 'Projet réel', 'department': 'Informatique', 'summary': 'Une application', 'status': 'approved'}]))
+      projectsFeedProvider.overrideWith(() => _Rows('table:projects', [{'id': '1', 'kind': 'project', 'title': 'Projet réel', 'department': 'Informatique', 'summary': 'Une application', 'status': 'approved', 'media': const [], 'details': const {}}]))
     ]);
     expect(find.text('Projet réel'), findsOneWidget);
     expect(find.text('Validé'), findsOneWidget);

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/project_cards.dart';
 import '../live/project_pages.dart';
 import '../live/tp_ui.dart';
 import '../live/store.dart';
@@ -109,7 +110,7 @@ class G_78 extends ConsumerWidget {
       if (demoContent) gTap(24, 524, 342, 62, () { final l = ref.read(visibleProjectsProvider); if (l.length > 2) { ref.read(selectedProjectProvider.notifier).set(l[2].title); gOpen(context, '79'); } }),
       if (demoContent) gTap(24, 590, 342, 62, () { final l = ref.read(visibleProjectsProvider); if (l.length > 3) { ref.read(selectedProjectProvider.notifier).set(l[3].title); gOpen(context, '79'); } }),
       if (demoContent) gTap(295.5, 346, 61, 32, () { gOpen(context, '87'); }), // audit 01/11 : « Voir tout » n'avait aucun effet
-      if (!demoContent) gP(24, 156, 342, 540, projectsCatalogList()),
+      if (!demoContent) gP(24, 156, 342, 540, const ProjectCards(width: 342, height: 540)),
       if (!demoContent) gP(24, 700, 342, 44, TpButton('Soumettre un projet ou une innovation', () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const MyProjectsPage())), compact: true, icon: Icons.add_rounded)),
     ]);
   }

@@ -61,7 +61,7 @@ class IntPage extends StatelessWidget {
                           width: 48,
                           height: 48,
                           decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle, border: Border.all(color: kLine)),
-                          child: const Icon(Icons.arrow_back_ios_new_rounded, size: 18, color: kInk),
+                          child: const Icon(Icons.arrow_back, size: 18, color: kInk),
                         ),
                       ),
                     ),

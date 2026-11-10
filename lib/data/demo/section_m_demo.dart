@@ -54,7 +54,6 @@ class SectionMData {
     ('Couleur principale', '#12253F · Bleu marine'),
     ('Couleur d’accent', '#FBB52B · Doré'),
     ('Police', 'Sans-serif professionnelle'),
-    ('Mode sombre', 'Non disponible'),
   ];
   final brandFiles = const [('Logo de l’établissement', 'PNG ou SVG · 2 Mo max'), ('Bannière d’accueil', '1600 × 600 px')];
 

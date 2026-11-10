@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../nav.dart';
+import 'product_card.dart';
 import 'seller.dart' show allProductsProvider;
 import 'store.dart';
 
@@ -45,31 +46,17 @@ class ProductCards extends ConsumerWidget {
       return p.image.startsWith('http') ? Image.network(p.image, fit: BoxFit.cover, errorBuilder: (_, _, _) => neutral()) : Image.asset(p.image, fit: BoxFit.cover);
     }
 
-    // Cadre de produit de la première maquette : grande photo (4:5), coins arrondis modérés, texte HORS du cadre.
-    Widget card(LiveProduct p) => Semantics(
-          button: true,
-          label: '${p.title}, ${fcfa(p.price)}',
-          excludeSemantics: true,
+    // Carte produit unique (photo 4:5, titre, prix, boutique, bouton) : voir product_card.dart.
+    Widget card(LiveProduct p) => ProductCardView(
+          photo: image(p),
+          title: p.title,
+          price: fcfa(p.price),
+          shop: p.seller,
+          extra: p.department.isEmpty ? p.category : p.department,
           onTap: () {
             ref.read(selectedProductProvider.notifier).select(p.title);
             gOpen(context, '05');
           },
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () {
-              ref.read(selectedProductProvider.notifier).select(p.title);
-              gOpen(context, '05');
-            },
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              AspectRatio(aspectRatio: 4 / 5, child: ClipRRect(borderRadius: BorderRadius.circular(14), child: image(p))),
-              const SizedBox(height: 8),
-              Text(p.title, maxLines: 2, overflow: TextOverflow.ellipsis, style: _st(12.5, w: FontWeight.w700)),
-              const SizedBox(height: 2),
-              Text(fcfa(p.price), style: _st(12, w: FontWeight.w600)),
-              const SizedBox(height: 2),
-              Text(p.department.isEmpty ? p.category : p.department, maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(10.5, c: const Color(0xFF5A3FE0))),
-            ]),
-          ),
         );
     final h = height ?? (rows >= 3 ? 590.0 : 390.0);
     return SizedBox(

@@ -13,7 +13,7 @@ import 'marche_data.dart';
 import 'marche_widgets.dart';
 
 /// Espace vendeur de la marketplace : ma boutique (création, personnalisation, statuts), tableau de bord, commandes par boutique,
-/// produits (3 photos + 1 vidéo, variantes, caractéristiques) et promotions (codes, ventes flash, campagnes, packs).
+/// produits (4 photos + 1 vidéo, variantes, caractéristiques) et promotions (codes, ventes flash, campagnes, packs).
 
 const publicShopBase = 'https://boutik-ecole.vercel.app/#/marche/boutique/';
 
@@ -410,7 +410,7 @@ class _ProductsTab extends ConsumerWidget {
               child: Row(children: [
                 ClipRRect(borderRadius: BorderRadius.circular(12), child: SizedBox(width: 64, height: 80, child: MImage(mImageUrl((p['images'] as List?)?.isNotEmpty == true ? (p['images'] as List).first : '')))),
                 const SizedBox(width: 12),
-                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('${p['title']}', maxLines: 2, overflow: TextOverflow.ellipsis, style: mst(13.5, w: FontWeight.w700)), Text('${mFcfa(p['price'])} · stock ${mInt(p['stock'])} · ${p['status']}', style: mst(12, c: kGrey)), Text('${(p['images'] as List?)?.length ?? 0}/3 photos · ${'${p['video_url'] ?? ''}'.isEmpty ? 'pas de vidéo' : '1 vidéo'}', style: mst(12, c: kViolet))])),
+                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('${p['title']}', maxLines: 2, overflow: TextOverflow.ellipsis, style: mst(13.5, w: FontWeight.w700)), Text('${mFcfa(p['price'])} · stock ${mInt(p['stock'])} · ${p['status']}', style: mst(12, c: kGrey)), Text('${(p['images'] as List?)?.length ?? 0}/4 photos · ${'${p['video_url'] ?? ''}'.isEmpty ? 'pas de vidéo' : '1 vidéo'}', style: mst(12, c: kViolet))])),
                 mButton('Éditer', () async {
                   await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ProductMediaEditor(listing: p)));
                   ref.invalidate(_myListingsProvider);
@@ -444,7 +444,7 @@ class _ProductMediaEditorState extends State<ProductMediaEditor> {
   String get id => '${widget.listing['id']}';
 
   Future<void> _addImage() async {
-    if (images.length >= 3) return setState(() => error = '3 photos au maximum par produit.');
+    if (images.length >= 4) return setState(() => error = '4 photos au maximum par produit.');
     final p = await _pickImage();
     if (p == null) return;
     if (p.bytes.length > 5 * 1024 * 1024) return setState(() => error = 'Photo trop lourde (5 Mo maximum).');
@@ -531,7 +531,7 @@ class _ProductMediaEditorState extends State<ProductMediaEditor> {
           Text('${widget.listing['title']}', style: mst(16, w: FontWeight.w800)),
           Text('Prix actuel : ${mFcfa(widget.listing['price'])}. Pour afficher une promotion, saisissez ci-dessous le prix normal (supérieur au prix actuel).', style: mst(12.5, c: kGrey)),
           const SizedBox(height: 14),
-          Text('Photos (${images.length}/3)', style: mst(15, w: FontWeight.w800)),
+          Text('Photos (${images.length}/4)', style: mst(15, w: FontWeight.w800)),
           const SizedBox(height: 8),
           Wrap(spacing: 10, runSpacing: 10, children: [
             for (final p in images)
@@ -539,7 +539,7 @@ class _ProductMediaEditorState extends State<ProductMediaEditor> {
                 ClipRRect(borderRadius: BorderRadius.circular(12), child: SizedBox(width: 96, height: 120, child: MImage(mImageUrl(p)))),
                 Positioned(right: 0, top: 0, child: Semantics(button: true, label: 'Retirer la photo', excludeSemantics: true, child: GestureDetector(onTap: busy ? null : () => _removeImage(p), child: Container(width: 32, height: 32, decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle), child: const Icon(Icons.close, size: 18))))),
               ]),
-            if (images.length < 3) Semantics(button: true, label: 'Ajouter une photo', excludeSemantics: true, child: GestureDetector(onTap: busy ? null : _addImage, child: Container(width: 96, height: 120, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: kLine)), child: const Icon(Icons.add_a_photo_outlined)))),
+            if (images.length < 4) Semantics(button: true, label: 'Ajouter une photo', excludeSemantics: true, child: GestureDetector(onTap: busy ? null : _addImage, child: Container(width: 96, height: 120, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: kLine)), child: const Icon(Icons.add_a_photo_outlined)))),
           ]),
           const SizedBox(height: 18),
           Text('Vidéo (1 maximum, MP4 ou WebM, 30 Mo)', style: mst(15, w: FontWeight.w800)),

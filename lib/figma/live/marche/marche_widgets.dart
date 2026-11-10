@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../gsound.dart' show GAnim;
+import '../product_card.dart';
 import 'marche_data.dart';
 
 /// Éléments communs de la marketplace : cadre de produit (grande photo, coins modérés, texte hors du cadre), défilement automatique des
@@ -65,7 +66,7 @@ class MarchePage extends StatelessWidget {
                   button: true,
                   label: 'Retour',
                   excludeSemantics: true,
-                  child: SizedBox(width: 48, height: 48, child: IconButton(icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20), onPressed: () => context.canPop() ? context.pop() : context.go('/s/03'))),
+                  child: SizedBox(width: 48, height: 48, child: IconButton(icon: const Icon(Icons.arrow_back, size: 20), onPressed: () => context.canPop() ? context.pop() : context.go('/s/03'))),
                 ),
                 Expanded(child: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis, style: mst(20, w: FontWeight.w800))),
                 ...actions,
@@ -110,56 +111,39 @@ class MarcheProductTile extends ConsumerWidget {
     final rating = card['rating_avg'];
     final inCompare = ref.watch(marcheCompareProvider).contains('${card['id']}');
     final soldOut = mInt(card['stock']) <= 0;
-    return Semantics(
-      button: true,
-      label: '${card['title']}, ${mFcfa(shown)}',
-      excludeSemantics: true,
-      onTap: onTap ?? () => context.push('/marche/produit/${card['id']}'),
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap ?? () => context.push('/marche/produit/${card['id']}'),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          AspectRatio(
-            aspectRatio: 4 / 5,
-            child: Stack(fit: StackFit.expand, children: [
-              ClipRRect(borderRadius: BorderRadius.circular(14), child: MImage(mImageUrl(card['image']))),
-              if (off > 0 || flash != null)
-                Positioned(
-                  left: 8,
-                  top: 8,
-                  child: Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4), decoration: BoxDecoration(color: flash != null ? kRed : kInk, borderRadius: BorderRadius.circular(10)), child: Text(flash != null ? 'Flash −$off %' : '−$off %', style: mst(11, w: FontWeight.w700, c: Colors.white))),
-                ),
-              if (soldOut) Positioned(left: 8, bottom: 8, child: Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)), child: Text('Épuisé', style: mst(11, w: FontWeight.w700)))),
-              Positioned(
-                right: 2,
-                top: 2,
-                child: Semantics(
-                  button: true,
-                  toggled: inCompare,
-                  label: inCompare ? 'Retirer de la comparaison : ${card['title']}' : 'Comparer : ${card['title']}',
-                  excludeSemantics: true,
-                  onTap: () => _toggleCompare(context, ref),
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () => _toggleCompare(context, ref),
-                    child: SizedBox(width: 48, height: 48, child: Center(child: Container(width: 30, height: 30, decoration: BoxDecoration(color: inCompare ? kInk : Colors.white, shape: BoxShape.circle), child: Icon(Icons.compare_arrows_rounded, size: 18, color: inCompare ? Colors.white : kInk)))),
-                  ),
-                ),
-              ),
-            ]),
+    final open = onTap ?? () => context.push('/marche/produit/${card['id']}');
+    final shop = [if ('${card['shop_name'] ?? ''}'.isNotEmpty) '${card['shop_name']}', if ('${card['city'] ?? ''}'.isNotEmpty) '${card['city']}'].join(' · ');
+    return ProductCardView(
+      photo: MImage(mImageUrl(card['image'])),
+      title: '${card['title']}',
+      price: mFcfa(shown),
+      oldPrice: ref0 != null && ref0 > shown ? mFcfa(ref0) : null,
+      priceColor: flash != null ? kRed : kInk,
+      shop: shop,
+      extra: rating != null ? '★ $rating · ${mInt(card['rating_count'])} avis' : '',
+      buttonLabel: soldOut ? 'Épuisé' : 'Voir le produit',
+      onTap: open,
+      overlays: [
+        if (off > 0 || flash != null)
+          Positioned(left: 8, top: 8, child: Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4), decoration: BoxDecoration(color: flash != null ? kRed : kInk, borderRadius: BorderRadius.circular(10)), child: Text(flash != null ? 'Flash −$off %' : '−$off %', style: mst(11, w: FontWeight.w700, c: Colors.white)))),
+        if (soldOut) Positioned(left: 8, bottom: 8, child: Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)), child: Text('Épuisé', style: mst(11, w: FontWeight.w700)))),
+        Positioned(
+          right: 2,
+          top: 2,
+          child: Semantics(
+            button: true,
+            toggled: inCompare,
+            label: inCompare ? 'Retirer de la comparaison : ${card['title']}' : 'Comparer : ${card['title']}',
+            excludeSemantics: true,
+            onTap: () => _toggleCompare(context, ref),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => _toggleCompare(context, ref),
+              child: SizedBox(width: 48, height: 48, child: Center(child: Container(width: 30, height: 30, decoration: BoxDecoration(color: inCompare ? kInk : Colors.white, shape: BoxShape.circle), child: Icon(Icons.compare_arrows_rounded, size: 18, color: inCompare ? Colors.white : kInk)))),
+            ),
           ),
-          const SizedBox(height: 8),
-          Text('${card['title']}', maxLines: 2, overflow: TextOverflow.ellipsis, style: mst(13, w: FontWeight.w700)),
-          const SizedBox(height: 2),
-          Row(children: [
-            Text(mFcfa(shown), style: mst(13, w: FontWeight.w800, c: flash != null ? kRed : kInk)),
-            if (ref0 != null && ref0 > shown) ...[const SizedBox(width: 6), Flexible(child: Text(mFcfa(ref0), overflow: TextOverflow.ellipsis, style: mst(11, c: kGrey).copyWith(decoration: TextDecoration.lineThrough)))],
-          ]),
-          const SizedBox(height: 2),
-          Text([if ('${card['shop_name'] ?? ''}'.isNotEmpty) '${card['shop_name']}', if ('${card['city'] ?? ''}'.isNotEmpty) '${card['city']}'].join(' · '), maxLines: 1, overflow: TextOverflow.ellipsis, style: mst(11, c: kViolet)),
-          if (rating != null) Text('★ $rating · ${mInt(card['rating_count'])} avis', style: mst(11, c: kGrey)),
-        ]),
-      ),
+        ),
+      ],
     );
   }
 
@@ -183,7 +167,7 @@ class MarcheGrid extends StatelessWidget {
           physics: shrink ? const NeverScrollableScrollPhysics() : null,
           padding: const EdgeInsets.symmetric(horizontal: 16),
           itemCount: cards.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: cols, crossAxisSpacing: 12, mainAxisSpacing: 16, childAspectRatio: 0.5),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: cols, crossAxisSpacing: 12, mainAxisSpacing: 16, childAspectRatio: productCardAspect((c.maxWidth - 32 - 12 * (cols - 1)) / cols)),
           itemBuilder: (_, i) => MarcheProductTile(card: cards[i]),
         );
       });
@@ -197,7 +181,7 @@ class MarcheRail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SizedBox(
-        height: width * 5 / 4 + 100,
+        height: width * 5 / 4 + kProductCardBodyHeight + 6,
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -208,7 +192,7 @@ class MarcheRail extends StatelessWidget {
       );
 }
 
-/// Photos d'un produit (3 au plus) qui défilent seules toutes les 3 secondes ; un doigt posé sur la galerie suspend le défilement.
+/// Photos d’un produit (4 au plus) qui défilent seules toutes les 3 secondes ; un doigt posé sur la galerie suspend le défilement.
 class AutoCarousel extends StatefulWidget {
   const AutoCarousel({super.key, required this.urls, this.aspect = 1.0, this.radius = 14, this.interval = kCarouselInterval, this.autoplay});
   final List<String> urls;
@@ -235,7 +219,7 @@ class _AutoCarouselState extends State<AutoCarousel> {
   }
 
   void _next() {
-    final count = widget.urls.length.clamp(0, 3);
+    final count = widget.urls.length.clamp(0, 4);
     if (!mounted || _held || count < 2 || !_ctrl.hasClients) return;
     final n = (_page + 1) % count;
     _ctrl.animateToPage(n, duration: const Duration(milliseconds: 350), curve: Curves.easeOut);
@@ -250,7 +234,7 @@ class _AutoCarouselState extends State<AutoCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    final urls = widget.urls.take(3).toList();
+    final urls = widget.urls.take(4).toList();
     return AspectRatio(
       aspectRatio: widget.aspect,
       child: Stack(children: [

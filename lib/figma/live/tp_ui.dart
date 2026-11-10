@@ -48,7 +48,7 @@ class TpPage extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),
                   child: Row(children: [
-                    TpRound(icon: Icons.arrow_back_ios_new_rounded, label: 'Retour', onTap: () => Navigator.of(context).maybePop()),
+                    TpRound(icon: Icons.arrow_back, label: 'Retour', onTap: () => Navigator.of(context).maybePop()),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

@@ -148,7 +148,7 @@ class SocialProfilePanel extends ConsumerWidget {
     padding: const EdgeInsets.fromLTRB(18, 18, 18, 6),
     child: Row(
       children: [
-        _roundButton(Icons.arrow_back_rounded, () => gBack(context)),
+        _roundButton(Icons.arrow_back, () => gBack(context)),
         const SizedBox(width: 12),
         Expanded(
           child: Text(

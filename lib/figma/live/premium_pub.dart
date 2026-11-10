@@ -127,7 +127,7 @@ class PlansScreen extends ConsumerWidget {
         ],
       ]);
     }
-    return Scaffold(backgroundColor: const Color(0xFFF7F6F4), appBar: AppBar(backgroundColor: Colors.white, elevation: 0, foregroundColor: _ink, leading: IconButton(icon: const Icon(Icons.arrow_back_ios_new, size: 18), onPressed: () => gBack(context)), title: Text('Offres', style: _st(16, w: FontWeight.w700))), body: SafeArea(child: body));
+    return Scaffold(backgroundColor: const Color(0xFFF7F6F4), appBar: AppBar(backgroundColor: Colors.white, elevation: 0, foregroundColor: _ink, leading: IconButton(icon: const Icon(Icons.arrow_back, size: 18), onPressed: () => gBack(context)), title: Text('Offres', style: _st(16, w: FontWeight.w700))), body: SafeArea(child: body));
   }
 
   static String _status(String s) => switch (s) { 'pending' => 'paiement en attente', 'active' => 'actif', 'cancel_at_period_end' => 'se termine à l’échéance', _ => 'expiré' };
@@ -212,7 +212,7 @@ class AdsScreen extends ConsumerWidget {
         if (admin) ...[const SizedBox(height: 12), _btn('Campagnes à valider', () => GoRouter.of(context).push('/campagnes/validation'), dark: false)],
       ]);
     }
-    return Scaffold(backgroundColor: const Color(0xFFF7F6F4), appBar: AppBar(backgroundColor: Colors.white, elevation: 0, foregroundColor: _ink, leading: IconButton(icon: const Icon(Icons.arrow_back_ios_new, size: 18), onPressed: () => gBack(context)), title: Text('Campagnes sponsorisées', style: _st(16, w: FontWeight.w700))), body: SafeArea(child: body));
+    return Scaffold(backgroundColor: const Color(0xFFF7F6F4), appBar: AppBar(backgroundColor: Colors.white, elevation: 0, foregroundColor: _ink, leading: IconButton(icon: const Icon(Icons.arrow_back, size: 18), onPressed: () => gBack(context)), title: Text('Campagnes sponsorisées', style: _st(16, w: FontWeight.w700))), body: SafeArea(child: body));
   }
 }
 
@@ -303,7 +303,7 @@ class AdReviewScreen extends ConsumerWidget {
           ),
       ]);
     }
-    return Scaffold(backgroundColor: const Color(0xFFF7F6F4), appBar: AppBar(backgroundColor: Colors.white, elevation: 0, foregroundColor: _ink, leading: IconButton(icon: const Icon(Icons.arrow_back_ios_new, size: 18), onPressed: () => gBack(context)), title: Text('Campagnes à valider', style: _st(16, w: FontWeight.w700))), body: SafeArea(child: body));
+    return Scaffold(backgroundColor: const Color(0xFFF7F6F4), appBar: AppBar(backgroundColor: Colors.white, elevation: 0, foregroundColor: _ink, leading: IconButton(icon: const Icon(Icons.arrow_back, size: 18), onPressed: () => gBack(context)), title: Text('Campagnes à valider', style: _st(16, w: FontWeight.w700))), body: SafeArea(child: body));
   }
 }
 

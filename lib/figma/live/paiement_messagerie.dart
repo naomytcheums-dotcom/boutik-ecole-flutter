@@ -168,7 +168,7 @@ class _PaymentChatState extends ConsumerState<PaymentChatScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         foregroundColor: _ink,
-        leading: IconButton(icon: const Icon(Icons.arrow_back_ios_new, size: 18), onPressed: () => gBack(context)),
+        leading: IconButton(icon: const Icon(Icons.arrow_back, size: 18), onPressed: () => gBack(context)),
         title: Row(children: [
           Container(width: 34, height: 34, alignment: Alignment.center, decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFF1F9D6B)), child: const Icon(Icons.verified, size: 18, color: Colors.white)),
           const SizedBox(width: 10),
@@ -218,7 +218,7 @@ class MyPaymentsScreen extends ConsumerWidget {
     }
     return Scaffold(
       backgroundColor: const Color(0xFFF7F6F4),
-      appBar: AppBar(backgroundColor: Colors.white, elevation: 0, foregroundColor: _ink, leading: IconButton(icon: const Icon(Icons.arrow_back_ios_new, size: 18), onPressed: () => gBack(context)), title: Text('Mes paiements', style: _st(16, w: FontWeight.w700))),
+      appBar: AppBar(backgroundColor: Colors.white, elevation: 0, foregroundColor: _ink, leading: IconButton(icon: const Icon(Icons.arrow_back, size: 18), onPressed: () => gBack(context)), title: Text('Mes paiements', style: _st(16, w: FontWeight.w700))),
       body: SafeArea(child: body),
     );
   }

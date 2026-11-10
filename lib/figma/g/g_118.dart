@@ -60,8 +60,6 @@ class G_118 extends ConsumerWidget {
       gP(783, 250, 36, 15, gText('Police', 12.5, Color(0xFF57545F), inter: true), show: demoContent),
       gP(1076, 250, 160, 15, gText('Sans-serif professionnelle', 12.5, Color(0xFF111015), weight: 600, inter: true, align: TextAlign.right), show: demoContent),
       gP(783, 275, 453, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
-      gP(783, 284, 82, 15, gText('Mode sombre', 12.5, Color(0xFF57545F), inter: true), show: demoContent),
-      gP(1145, 284, 91, 15, gText('Non disponible', 12.5, Color(0xFF111015), weight: 600, inter: true, align: TextAlign.right), show: demoContent),
       gP(268, 370, 485, 132, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26]), show: demoContent),
       gP(280, 383, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13]), show: demoContent),
       gP(289.5, 392.5, 21, 21, gImg('assets/figma/v/ffe808ced2c9ec.svg'), show: demoContent),

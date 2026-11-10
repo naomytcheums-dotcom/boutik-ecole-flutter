@@ -124,7 +124,7 @@ class StudioDashboard extends ConsumerWidget {
     WebNavItem('Équipe studio', AppIcons.users, target: 'P1', section: 'Contacts'),
     WebNavItem('Messages', AppIcons.messageCircle, target: 'A3', section: 'Autres'),
     WebNavItem('Insights de performance', AppIcons.chartColumn, target: 'D1', section: 'Autres'),
-    WebNavItem('Paramètres', AppIcons.sun, target: 'P5', section: 'Compte'),
+    WebNavItem('Paramètres', AppIcons.settings, target: 'P5', section: 'Compte'),
     WebNavItem('Aide et retours', AppIcons.circleHelp, target: 'A1', section: 'Compte'),
   ];
 

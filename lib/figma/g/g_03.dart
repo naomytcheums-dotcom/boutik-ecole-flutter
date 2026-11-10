@@ -54,8 +54,6 @@ class G_03 extends ConsumerWidget {
       gP(303.38, 68.696, 21.573, 18.977, gImg('assets/figma/v/a20eafbb9e4256.svg')),
       gP(309.696, 85.134, 8.942, 6.87, gImg('assets/figma/v/a629a5aabb9ce8.svg')),
       gP(319.583, 67.708, 9.028, 9.028, gBox(color: Color(0xFFF04438), border: Color(0xFFFCFCFD), bw: 1.5, radii: [4.514, 4.514, 4.514, 4.514])),
-      if (demoContent) gP(346.667, 63.194, 34.306, 34.306, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [17.153, 17.153, 17.153, 17.153])),
-      if (!demoContent) profileAvatar(346.667, 63.194, 34.306),
       gP(18.056, 115.097, 117, 28, gText('Bienvenue', 22.569, Color(0xFF111015), weight: 800)),
       gP(18.056, 146.778, 165, 17, gText('Explorez le talent étudiant', 13.542, Color(0xFF4A4854))),
       gP(18.056, 181.458, 362.917, 41.528, gBox(color: Color(0xFFEFF1F4), radii: [20.764, 20.764, 20.764, 20.764])),

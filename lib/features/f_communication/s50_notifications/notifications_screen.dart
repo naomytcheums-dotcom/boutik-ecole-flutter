@@ -56,7 +56,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
       title: 'Notifications',
       showNav: true,
       trailing: FHeaderButton(
-        AppIcons.sun,
+        AppIcons.settings,
         label: 'Paramètres des notifications',
         onTap: () => context.openScreen('56'),
       ),

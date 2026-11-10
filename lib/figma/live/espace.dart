@@ -172,7 +172,7 @@ class _EspaceScreenState extends ConsumerState<EspaceScreen> {
                                   iconColor: const Color(0xFF111015),
                                   collapsedIconColor: const Color(0xFF111015),
                                   title: Text(r.titre, style: _t(14.5, FontWeight.w700)),
-                                  subtitle: Text('${data[r]!.length} écran${data[r]!.length > 1 ? 's' : ''}', style: _t(11.5, FontWeight.w500, const Color(0xFF57545F))),
+                                  subtitle: Text(r.titre.isEmpty ? '' : 'Voir les pages', style: _t(11.5, FontWeight.w500, const Color(0xFF57545F))),
                                   children: [
                                     for (final (id, titre) in data[r]!)
                                       InkWell(

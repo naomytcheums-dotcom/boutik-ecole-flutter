@@ -163,7 +163,6 @@ class ScreenCatalogue extends StatelessWidget {
       showNav: false,
       header: const ScreenHeader(title: 'Catalogue des écrans', showBack: false),
       children: [
-        Text('${allScreens.length} écrans', style: AppText.secondary),
         for (final e in bySection.entries) ...[
           const SizedBox(height: 16),
           Text('Section ${e.key}', style: AppText.h3),

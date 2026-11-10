@@ -57,7 +57,7 @@ class _DesignLabScreenState extends State<DesignLabScreen> {
         SliverToBoxAdapter(
           child: HeroBanner(
             title: 'Nouvelle direction visuelle',
-            subtitle: 'Bannières et pieds de page plus vifs pour les ${sections.length} sections et les ${allScreens.length} écrans · proposition à valider',
+            subtitle: 'Bannières et pieds de page plus vifs pour toutes les sections · proposition à valider',
             colors: const [Peps.violet, Peps.corail, Peps.orange],
             cta: 'Revenir à l’application',
             onCta: () => context.go(screenPath('03')),
@@ -81,7 +81,7 @@ class _DesignLabScreenState extends State<DesignLabScreen> {
             return Padding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
               child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                Text('${i + 1}. $name · ${screens.length} écran${screens.length > 1 ? 's' : ''}',
+                Text('${i + 1}. $name',
                     style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF4A4854))),
                 const SizedBox(height: 8),
                 if (_compare) ...[

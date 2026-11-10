@@ -80,12 +80,11 @@ void main() {
     expect(find.byType(MarcheProductTile), findsNothing);
   });
 
-  testWidgets('cadre de produit : photo 4:5 en coins modérés, texte HORS du cadre, prix barré et badge promo', (tester) async {
+  testWidgets('carte produit : photo 4:5, texte sous la photo, bouton, prix barré et badge promo', (tester) async {
     await pump(tester, Scaffold(body: SizedBox(width: 180, child: MarcheProductTile(card: card(price: 18000, before: 25000)))));
     final photo = tester.getRect(find.byType(AspectRatio).first);
     expect(photo.width / photo.height, closeTo(0.8, 0.01));
-    final clip = tester.widget<ClipRRect>(find.descendant(of: find.byType(AspectRatio), matching: find.byType(ClipRRect)).first);
-    expect(clip.borderRadius, BorderRadius.circular(14));
+    expect(find.text('Voir le produit'), findsOneWidget, reason: 'carte : bouton d’action');
     expect(tester.getTopLeft(find.text('Lampe en bois')).dy, greaterThanOrEqualTo(photo.bottom), reason: 'le titre est sous la photo');
     expect(find.text('−28 %'), findsOneWidget);
     expect(find.text(mFcfa(25000)), findsOneWidget);
@@ -98,11 +97,11 @@ void main() {
     expect(find.text(mFcfa(15000)), findsOneWidget);
   });
 
-  testWidgets('galerie : les photos défilent seules toutes les 3 secondes (3 photos au plus)', (tester) async {
+  testWidgets('galerie : les photos défilent seules toutes les 3 secondes (4 photos au plus)', (tester) async {
     await pump(tester, const Scaffold(body: SizedBox(width: 300, child: AutoCarousel(urls: ['a', 'b', 'c', 'd'], autoplay: true))));
     double activeIndex() {
       final dots = tester.widgetList<AnimatedContainer>(find.byType(AnimatedContainer)).toList();
-      expect(dots.length, 3, reason: '4 URL données, 3 photos affichées');
+      expect(dots.length, 4, reason: '4 URL données, 4 photos affichées');
       return dots.indexWhere((d) => (d.constraints?.maxWidth ?? 0) == 18).toDouble();
     }
 
@@ -113,6 +112,9 @@ void main() {
     await tester.pump(const Duration(seconds: 3));
     await tester.pump(const Duration(milliseconds: 500));
     expect(activeIndex(), 2);
+    await tester.pump(const Duration(seconds: 3));
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(activeIndex(), 3);
     await tester.pump(const Duration(seconds: 3));
     await tester.pump(const Duration(milliseconds: 500));
     expect(activeIndex(), 0, reason: 'retour à la première photo');

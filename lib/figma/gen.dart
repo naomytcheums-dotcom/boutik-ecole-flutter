@@ -434,7 +434,7 @@ class GScreen extends StatelessWidget {
       if (unit > 0 && avail > 0) s = math.min(s, avail / unit);
     }
 
-    Widget layer(List<Widget> kids, double from, double to) => SizedBox(
+    Widget layer(List<Widget> kids, double from, double to, {Clip clip = Clip.hardEdge}) => SizedBox(
           width: w * s,
           height: (to - from) * s,
           child: FittedBox(
@@ -443,7 +443,7 @@ class GScreen extends StatelessWidget {
             child: SizedBox(
               width: w,
               height: to - from,
-              child: Stack(clipBehavior: Clip.hardEdge, children: [
+              child: Stack(clipBehavior: clip, children: [
                 Positioned(left: 0, top: -from, width: w, height: h, child: Stack(clipBehavior: Clip.none, children: kids)),
               ]),
             ),
@@ -518,7 +518,8 @@ class GScreen extends StatelessWidget {
     // défile derrière est masqué par le même fond, aligné sur le dégradé de l'écran entier (aucun aplat visible).
     Decoration? backing;
     double backingH = 0;
-    if (hasBar && band.isNotEmpty && !single) {
+    // Aucun aplat derrière les boutons (Continuer, Passer…) : ils reposent directement sur le fond de la page.
+    if (false && hasBar && band.isNotEmpty && !single) {
       backingH = (bandBottom - bandTop) * s + pad.bottom + 8;
       final g = bg;
       if (g != null && g.colors.length >= 2) {
@@ -533,7 +534,7 @@ class GScreen extends StatelessWidget {
       decoration: BoxDecoration(gradient: bg, color: color ?? (bg == null ? const Color(0xFFFFFFFF) : null)),
       child: _PhoneBody(
         padding: EdgeInsets.only(top: pad.top, bottom: pad.bottom + bandH + keyboard),
-        content: layer(content, statusBand, contentTo),
+        content: layer(content, statusBand, contentTo, clip: single ? Clip.none : Clip.hardEdge),
         fixed: band.isEmpty ? null : layer(fixed, bandTop, bandBottom),
         bottom: pad.bottom,
         backing: backing,

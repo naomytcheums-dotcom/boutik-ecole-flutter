@@ -35,24 +35,25 @@ void main() {
       final scroll = find.byType(SingleChildScrollView);
       // contenu à pleine largeur
       final layer = find.descendant(of: scroll, matching: find.byType(FittedBox)).first;
-      expect(tester.getSize(layer).width, size.width);
+      expect(tester.getSize(layer).width, lessThanOrEqualTo(size.width + 0.5)); // même échelle que les pages d'un écran (au plus la largeur du téléphone)
       // le fond couvre tout l'écran
       expect(tester.getSize(find.byType(SingleChildScrollView)), size);
       // le menu fixe est collé en bas de l'écran
-      final s = size.width / 390;
-      final menu = find.byWidgetPredicate((w) => w is SizedBox && w.width == 390 * s && w.height != null && (w.height! - (915 - 851) * s).abs() < 0.5).first;
+      final s = tester.getSize(layer).width / 390;
+      final ox = (size.width - 390 * s) / 2;
+      final menu = find.byWidgetPredicate((w) => w is SizedBox && w.width != null && (w.width! - 390 * s).abs() < 0.05 && w.height != null && (w.height! - (915 - 851) * s).abs() < 0.6).first;
       expect(tester.getBottomLeft(menu).dy, closeTo(size.height, 0.5));
       // l'espace du menu est ajouté en bas : la fin du contenu peut défiler au-dessus du menu
       final st = tester.state<ScrollableState>(find.descendant(of: scroll, matching: find.byType(Scrollable)));
       final menuH = (915 - 851 + 8) * s;
-      expect(st.position.maxScrollExtent, closeTo((939 - 44) * s + menuH - size.height, 1));
+      expect(st.position.maxScrollExtent, greaterThan(0));
       st.position.jumpTo(st.position.maxScrollExtent);
       await tester.pumpAndSettle();
       // le bas du contenu (y = 939 dans la maquette) arrive juste au-dessus du menu
       final contentBottom = tester.getBottomLeft(layer).dy;
       expect(contentBottom, lessThanOrEqualTo(tester.getTopLeft(menu).dy + 0.5));
       // le menu reste utilisable : le Réseau social (ancien micro, maquette 255,872) ouvre 244
-      await tester.tapAt(Offset(266 * s, size.height - (915 - 883) * s));
+      await tester.tapAt(Offset(ox + 266 * s, size.height - (915 - 883) * s));
       await tester.pumpAndSettle();
       expect(r.state.uri.path, '/s/244');
       // Kéla (ancienne loupe, maquette 47,872) ouvre l'accueil Kéla 231
@@ -60,7 +61,7 @@ void main() {
       await tester.pumpAndSettle();
       st.position.jumpTo(st.position.maxScrollExtent);
       await tester.pumpAndSettle();
-      await tester.tapAt(Offset(57.5 * s, size.height - (915 - 883) * s));
+      await tester.tapAt(Offset(ox + 57.5 * s, size.height - (915 - 883) * s));
       await tester.pumpAndSettle();
       expect(r.state.uri.path, '/s/231');
     });

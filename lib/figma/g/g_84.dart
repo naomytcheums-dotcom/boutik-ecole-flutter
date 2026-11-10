@@ -46,6 +46,7 @@ class G_84 extends ConsumerWidget {
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
       gP(31, 71, 22, 22, const SizedBox.expand(), tap: () => gBack(context)),
+      gP(21.98, 61.98, 40, 40, const GGlassCircle()),
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 204, 26, gText('Nouvelle campagne', 21, Color(0xFF111015), weight: 700)),

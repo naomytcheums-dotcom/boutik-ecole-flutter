@@ -441,6 +441,11 @@ class GScreen extends StatelessWidget {
       final unit = (contentTo - contentFrom) + bandExtent;
       final avail = c.maxHeight - pad.top - pad.bottom - keyboard;
       if (unit > 0 && avail > 0) s = math.min(s, avail / unit);
+    } else {
+      // Page longue (accueil…) : même échelle que les pages d'un écran, pour un format identique ; le reste se parcourt en défilant.
+      final avail = c.maxHeight - pad.top - pad.bottom - keyboard;
+      final unit = 844 - contentFrom;
+      if (unit > 0 && avail > 0) s = math.min(s, avail / unit);
     }
 
     Widget layer(List<Widget> kids, double from, double to, {Clip clip = Clip.hardEdge}) => SizedBox(
@@ -668,11 +673,27 @@ Widget gBox({
   BoxFit fit = BoxFit.cover,
   double layerBlur = 0,
   double backBlur = 0,
+  bool decor = false,
 }) {
   if (backBlur > 0 && image == null) {
     return _GGlassBox(make: () => _gBoxBuild(color: color, gradient: gradient, radii: radii, border: border, bw: bw, shadows: shadows, oval: oval, image: image, fit: fit, layerBlur: layerBlur, backBlur: backBlur));
   }
-  return _gBoxBuild(color: color, gradient: gradient, radii: radii, border: border, bw: bw, shadows: shadows, oval: oval, image: image, fit: fit, layerBlur: layerBlur, backBlur: backBlur);
+  return _gBoxBuild(color: color, gradient: gradient, radii: radii, border: border, bw: bw, shadows: shadows, oval: oval, image: image, fit: fit, layerBlur: layerBlur, backBlur: backBlur, decor: decor);
+}
+
+/// Rond en verre dépoli derrière la flèche de retour (même dessin que la flèche des pages « Mes projets »). Il garde toujours son verre,
+/// y compris sur les écrans sans fond verre : seules les surfaces de contenu en sont privées.
+class GGlassCircle extends StatelessWidget {
+  const GGlassCircle({super.key});
+  @override
+  Widget build(BuildContext context) => IgnorePointer(
+        child: ClipOval(
+          child: BackdropFilter(
+            filter: ui.ImageFilter.blur(sigmaX: 13, sigmaY: 13),
+            child: DecoratedBox(decoration: BoxDecoration(color: const Color(0x6BFFFFFF), shape: BoxShape.circle, border: Border.all(color: const Color(0xFFFFFFFF), width: 1.5))),
+          ),
+        ),
+      );
 }
 
 /// Écrans (maquette) sans fond verre : pages ouvertes depuis le profil étudiant et les espaces réseau, communauté, talents,
@@ -719,9 +740,10 @@ Widget _gBoxBuild({
   BoxFit fit = BoxFit.cover,
   double layerBlur = 0,
   double backBlur = 0,
+  bool decor = false,
 }) {
   if (image != null) image = _selfPhoto(image);
-  if (image != null && gIsMockPhoto(image)) image = 'placeholder';
+  if (image != null && !decor && gIsMockPhoto(image)) image = 'placeholder';
   final deco = BoxDecoration(
     color: color ?? (image == 'placeholder' ? const Color(0xFFEDE9F6) : null),
     gradient: gradient,

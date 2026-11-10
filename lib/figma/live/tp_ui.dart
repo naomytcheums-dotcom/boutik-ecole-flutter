@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:ui' show ImageFilter;
 
 import 'package:file_picker/file_picker.dart';
@@ -26,6 +27,26 @@ const tpBackground = BoxDecoration(
   gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, .5, 1]),
 );
 
+/// Cadre commun des pages « réelles » : la page est composée à la largeur d'un téléphone (390) puis mise à l'échelle comme les autres
+/// écrans, pour que sa taille, ses polices et ses marges soient identiques et qu'elle tienne dans la fenêtre.
+class TpFrame extends StatelessWidget {
+  const TpFrame({super.key, required this.child});
+  final Widget child;
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(builder: (context, c) {
+        if (!c.hasBoundedWidth || !c.hasBoundedHeight || c.maxWidth <= 0 || c.maxHeight <= 0) return child;
+        final s = math.min(c.maxWidth / 390, c.maxHeight / 844);
+        return Align(
+          alignment: Alignment.topCenter,
+          child: SizedBox(
+            width: 390 * s,
+            height: c.maxHeight,
+            child: FittedBox(fit: BoxFit.fill, alignment: Alignment.topLeft, child: SizedBox(width: 390, height: c.maxHeight / s, child: child)),
+          ),
+        );
+      });
+}
+
 /// Page plein écran : fond du site, flèche retour fonctionnelle, titre, contenu défilant et barre d'action fixe optionnelle.
 class TpPage extends StatelessWidget {
   const TpPage({super.key, required this.title, required this.children, this.bottom, this.actions = const [], this.subtitle});
@@ -43,10 +64,8 @@ class TpPage extends StatelessWidget {
       body: DecoratedBox(
         decoration: tpBackground,
         child: SafeArea(
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 640),
-              child: Column(children: [
+          child: TpFrame(
+            child: Column(children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),
                   child: Row(children: [
@@ -63,9 +82,7 @@ class TpPage extends StatelessWidget {
                 ),
                 Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(20, 10, 20, 28), keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag, children: children)),
                 if (bottom != null) Padding(padding: const EdgeInsets.fromLTRB(20, 6, 20, 14), child: bottom),
-              ]),
-            ),
-          ),
+              ]),)
         ),
       ),
     );

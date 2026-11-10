@@ -45,6 +45,7 @@ class G_202 extends ConsumerWidget {
       gP(331.5, 19.5, 28, 17, gImg('assets/figma/v/6a818f3296df50.svg')),
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gTap(14, 56, 60, 56, () => gBack(context)),
+      gP(21.98, 61.98, 40, 40, const GGlassCircle()),
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 283, 26, gText(gm('Pack Lancement de marque', ''), 21, Color(0xFF111015), weight: 700)),

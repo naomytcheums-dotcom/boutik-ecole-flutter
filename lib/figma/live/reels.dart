@@ -156,6 +156,8 @@ class ReelsNotifier extends Notifier<List<Reel>?> {
   }
 
   Future<void> refresh() async {
+    // publie d'abord les publications programmées arrivées à échéance (sans attendre la minute suivante du planificateur)
+    if (ref.read(authProvider).current != null) await Backend.rpc('publish_due_posts', const {});
     var r = await Backend.rpc('circle_feed', {'p_limit': 30});
     // serveur pas encore migré (migration 20261110000000) : repli sur l'ancien fil de médias
     if (r.error != null || r.data is! List) r = await Backend.rpc('reels_feed', {'p_limit': 20});

@@ -65,9 +65,11 @@ Widget socialAvatar(String url, String name, double size) {
 
 /// Cœur animé : l'icône ne rétrécit jamais (impulsion 1 → 1,3 → 1), un appui enregistre ou retire la réaction sans quitter l'écran.
 class LikeHeart extends StatefulWidget {
-  const LikeHeart({super.key, required this.liked, required this.onTap, this.size = 24, this.idleColor = kInk});
+  const LikeHeart({super.key, required this.liked, required this.onTap, this.size = 24, this.idleColor = kInk, this.emoji, this.onLongPress});
   final bool liked;
   final VoidCallback onTap;
+  final VoidCallback? onLongPress;
+  final String? emoji; // réaction choisie autre que le cœur
   final double size;
   final Color idleColor;
   @override
@@ -97,13 +99,17 @@ class _LikeHeartState extends State<LikeHeart> with SingleTickerProviderStateMix
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: _tap,
+          onLongPress: widget.onLongPress == null ? null : () {
+            HapticFeedback.mediumImpact();
+            widget.onLongPress!();
+          },
           child: SizedBox(
             width: math.max(44, widget.size + 16),
             height: math.max(44, widget.size + 16),
             child: Center(
               child: ScaleTransition(
                 scale: _scale,
-                child: Icon(widget.liked ? Icons.favorite : Icons.favorite_border, size: widget.size, color: widget.liked ? kLike : widget.idleColor),
+                child: widget.emoji != null ? Text(widget.emoji!, style: TextStyle(inherit: false, fontSize: widget.size * .92, height: 1)) : Icon(widget.liked ? Icons.favorite : Icons.favorite_border, size: widget.size, color: widget.liked ? kLike : widget.idleColor),
               ),
             ),
           ),
@@ -115,6 +121,57 @@ class _LikeHeartState extends State<LikeHeart> with SingleTickerProviderStateMix
     _c.forward(from: 0);
     widget.onTap();
   }
+}
+
+// ------------------------------------------------------------------ réactions
+
+const kReactions = {'like': '👍', 'love': '❤️', 'haha': '😂', 'wow': '😮', 'sad': '😢', 'fire': '🔥', 'clap': '👏'};
+
+/// Ma réaction (autre que le simple cœur) sur chaque publication : { identifiant de publication → type de réaction }.
+final myReactionsProvider = FutureProvider.autoDispose<Map<String, String>>((ref) async {
+  if (!Backend.ready) return const {};
+  final me = ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
+  if (me.isEmpty) return const {};
+  final r = await Backend.rows('post_reactions', 'post_id,kind', limit: 1000);
+  return {for (final x in r.rows) '${x['post_id']}': '${x['kind']}'};
+});
+
+/// Enregistre (ou retire, si c'est la même) une réaction sur une publication.
+Future<void> reactTo(BuildContext context, WidgetRef ref, Reel post, String kind) async {
+  if (!await requireLogin(context, ref, 'réagir à une publication') || !context.mounted) return;
+  final res = await Backend.rpc('react_post', {'p_post': post.id, 'p_kind': kind});
+  if (!context.mounted) return;
+  if (res.error != null) return gAlert(context, 'Réaction impossible', Backend.userMessage(res.error!));
+  ref.invalidate(myReactionsProvider);
+  await ref.read(reelsProvider.notifier).refresh();
+}
+
+/// Appui long sur le cœur : choix d'une réaction parmi sept.
+Future<void> showReactionPicker(BuildContext context, WidgetRef ref, Reel post) {
+  return showModalBottomSheet<void>(
+    context: context,
+    backgroundColor: Colors.transparent,
+    builder: (ctx) => Container(
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(28)),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+        for (final e in kReactions.entries)
+          Semantics(
+            button: true,
+            label: 'Réagir : ${e.key}',
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                Navigator.of(ctx).pop();
+                reactTo(context, ref, post, e.key);
+              },
+              child: Padding(padding: const EdgeInsets.all(8), child: Text(e.value, style: const TextStyle(inherit: false, fontSize: 30, height: 1))),
+            ),
+          ),
+      ]),
+    ),
+  );
 }
 
 // ------------------------------------------------------------------ envoi de médias
@@ -784,7 +841,16 @@ class _PostCardState extends ConsumerState<PostCard> {
         Padding(
           padding: const EdgeInsets.fromLTRB(6, 2, 8, 4),
           child: Row(children: [
-            LikeHeart(liked: post.liked, onTap: () => toggleLike(context, ref, post), size: 23),
+            LikeHeart(
+              liked: post.liked,
+              emoji: kReactions[ref.watch(myReactionsProvider).value?[post.id]],
+              onTap: () {
+                final k = ref.read(myReactionsProvider).value?[post.id];
+                k == null ? toggleLike(context, ref, post) : reactTo(context, ref, post, k);
+              },
+              onLongPress: () => showReactionPicker(context, ref, post),
+              size: 23,
+            ),
             Transform.translate(offset: const Offset(-8, 0), child: Padding(padding: const EdgeInsets.only(right: 4), child: Text(compactCount(post.likes), style: sty(12)))),
             action(const Icon(Icons.chat_bubble_outline, size: 21, color: kInk), compactCount(post.comments), () => showCommentsSheet(context, post.id)),
             action(const Icon(Icons.repeat, size: 22, color: kInk), post.reposts == 0 ? '' : compactCount(post.reposts), () => repostPost(context, ref, post)),
@@ -823,6 +889,7 @@ class _ComposerSheet extends ConsumerStatefulWidget {
 class _ComposerSheetState extends ConsumerState<_ComposerSheet> {
   final _text = TextEditingController(), _link = TextEditingController();
   final List<PlatformFile> _files = [];
+  DateTime? _at; // publication programmée (jusqu'à 6 mois)
   bool _busy = false;
   String _step = '';
 
@@ -841,6 +908,43 @@ class _ComposerSheetState extends ConsumerState<_ComposerSheet> {
         _files.add(f);
       }
     });
+  }
+
+  static const _mois = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+  String _fmt(DateTime d) => '${d.day} ${_mois[d.month - 1]} ${d.year} à ${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}';
+
+  /// Choix de la date et de l'heure de publication (de dans 5 minutes à 6 mois) ; un second appui annule la programmation.
+  Future<void> _pickSchedule() async {
+    if (_at != null) return setState(() => _at = null);
+    final now = DateTime.now();
+    final d = await showDatePicker(context: context, initialDate: now.add(const Duration(days: 1)), firstDate: now, lastDate: now.add(const Duration(days: 183)), helpText: 'Date de publication');
+    if (d == null || !mounted) return;
+    final t = await showTimePicker(context: context, initialTime: const TimeOfDay(hour: 9, minute: 0), helpText: 'Heure de publication');
+    if (t == null || !mounted) return;
+    final at = DateTime(d.year, d.month, d.day, t.hour, t.minute);
+    if (at.isBefore(now.add(const Duration(minutes: 2)))) return gToast(context, 'Choisissez une date et une heure à venir.');
+    setState(() => _at = at);
+  }
+
+  /// Vidéo verticale : 3 min au plus ; vidéo horizontale : 5 min au plus. Renvoie un message si la durée est dépassée.
+  Future<String?> _videoLimitError(String path) async {
+    final c = VideoPlayerController.networkUrl(Uri.parse(Backend.postMediaUrl(path)));
+    try {
+      await c.initialize().timeout(const Duration(seconds: 20));
+      final size = c.value.size;
+      final secs = c.value.duration.inSeconds;
+      final vertical = size.height > size.width;
+      final cap = vertical ? 180 : 300;
+      if (secs > cap) {
+        final m = secs ~/ 60, r = secs % 60;
+        return vertical ? 'Une vidéo verticale dure 3 min au plus (la vôtre : $m min $r s).' : 'Une vidéo horizontale dure 5 min au plus (la vôtre : $m min $r s).';
+      }
+    } catch (_) {
+      // durée illisible : on laisse passer, le serveur reste juge
+    } finally {
+      await c.dispose();
+    }
+    return null;
   }
 
   Future<void> _publish() async {
@@ -862,7 +966,41 @@ class _ComposerSheetState extends ConsumerState<_ComposerSheet> {
         }
         return;
       }
+      if (up.kind == 'video') {
+        setState(() => _step = 'Vérification de la vidéo…');
+        final err = await _videoLimitError(up.path);
+        if (err != null) {
+          try {
+            await Supabase.instance.client.storage.from('post-media').remove([up.path, for (final u in uploaded) '${u['path']}']);
+          } catch (_) {}
+          if (mounted) {
+            setState(() => _busy = false);
+            gToast(context, err);
+          }
+          return;
+        }
+      }
       uploaded.add({'path': up.path, 'kind': up.kind});
+    }
+    if (_at != null) {
+      setState(() => _step = 'Programmation…');
+      final tagsS = [for (final m in RegExp(r'#([\p{L}\p{N}_-]{2,30})', unicode: true).allMatches(txt)) m.group(1)!];
+      final r = await Backend.rpc('schedule_post', {'p_caption': txt, 'p_media': uploaded, 'p_link': link.isEmpty ? null : link, 'p_tags': tagsS, 'p_at': _at!.toUtc().toIso8601String()});
+      if (!mounted) return;
+      if (r.error != null) {
+        try {
+          if (uploaded.isNotEmpty) await Supabase.instance.client.storage.from('post-media').remove([for (final u in uploaded) '${u['path']}']);
+        } catch (_) {}
+        setState(() => _busy = false);
+        gToast(context, Backend.userMessage(r.error!));
+        return;
+      }
+      final nav = Navigator.of(context);
+      final messenger = ScaffoldMessenger.maybeOf(context);
+      final when = _at!;
+      nav.pop();
+      messenger?.showSnackBar(SnackBar(content: Text('Publication programmée le ${_fmt(when)}'), behavior: SnackBarBehavior.floating));
+      return;
     }
     setState(() => _step = 'Publication…');
     final tags = [for (final m in RegExp(r'#([\p{L}\p{N}_-]{2,30})', unicode: true).allMatches(txt)) m.group(1)!];
@@ -923,11 +1061,12 @@ class _ComposerSheetState extends ConsumerState<_ComposerSheet> {
               ),
             Row(children: [
               TextButton.icon(onPressed: _busy ? null : _pick, icon: const Icon(Icons.add_photo_alternate_outlined), label: Text(_files.isEmpty ? 'Photos ou vidéos' : 'Ajouter', style: sty(13, w: FontWeight.w600))),
+              TextButton.icon(onPressed: _busy ? null : _pickSchedule, icon: Icon(_at == null ? Icons.schedule : Icons.event_available, size: 20), label: Text(_at == null ? 'Programmer' : _fmt(_at!), style: sty(13, w: FontWeight.w600))),
               const Spacer(),
               FilledButton(
                 onPressed: _busy ? null : _publish,
                 style: FilledButton.styleFrom(backgroundColor: kInk, shape: const StadiumBorder(), padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12)),
-                child: _busy ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)) : Text('Publier', style: sty(14, w: FontWeight.w700, c: Colors.white)),
+                child: _busy ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)) : Text(_at == null ? 'Publier' : 'Programmer', style: sty(14, w: FontWeight.w700, c: Colors.white)),
               ),
             ]),
             if (_busy) Padding(padding: const EdgeInsets.only(top: 6), child: Text(_step, style: sty(12, c: kGrey))),

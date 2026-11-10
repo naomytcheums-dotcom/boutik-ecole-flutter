@@ -16,10 +16,14 @@ import 'social_posts.dart';
 /// passage à l'histoire suivante, retour, pause, et accès au profil du créateur (ses publications).
 
 class Story {
-  const Story({required this.id, required this.authorId, required this.author, required this.avatar, required this.verified, required this.mediaUrl, required this.video, required this.caption, required this.createdAt, required this.seen});
+  const Story({required this.id, required this.authorId, required this.author, required this.avatar, required this.verified, required this.mediaUrl, required this.video, required this.caption, required this.createdAt, this.sticker, this.expiresAt, this.myChoice, this.myAnswer, required this.seen});
   final String id, authorId, author, avatar, mediaUrl, caption;
   final bool verified, video, seen;
   final DateTime createdAt;
+  final Map<String, dynamic>? sticker; // {type: poll|question, text, options}
+  final DateTime? expiresAt;
+  final int? myChoice;
+  final String? myAnswer;
 
   static Story fromRow(Map x) => Story(
         id: '${x['id']}',
@@ -32,6 +36,10 @@ class Story {
         caption: '${x['caption'] ?? ''}',
         createdAt: DateTime.tryParse('${x['created_at']}')?.toLocal() ?? DateTime.now(),
         seen: x['seen'] == true,
+        sticker: x['sticker'] is Map ? Map<String, dynamic>.from(x['sticker'] as Map) : null,
+        expiresAt: DateTime.tryParse('${x['expires_at']}')?.toLocal(),
+        myChoice: x['my_choice'] is num ? (x['my_choice'] as num).toInt() : null,
+        myAnswer: x['my_answer'] == null ? null : '${x['my_answer']}',
       );
 }
 
@@ -60,16 +68,95 @@ final storiesProvider = FutureProvider.autoDispose<List<StoryGroup>>((ref) async
   return groups;
 });
 
+/// Réglages d'une histoire avant publication : durée (24, 48 ou 72 h) et, au choix, une question ou un sondage.
+class _StoryOptions {
+  _StoryOptions(this.hours, this.sticker);
+  final int hours;
+  final Map<String, dynamic>? sticker;
+}
+
+Future<_StoryOptions?> _askStoryOptions(BuildContext context, int count) {
+  var hours = 24;
+  var kind = 'none';
+  final text = TextEditingController();
+  final opts = [TextEditingController(), TextEditingController(), TextEditingController(), TextEditingController()];
+  return showModalBottomSheet<_StoryOptions>(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (ctx) => StatefulBuilder(
+      builder: (ctx, set) {
+        Widget chip(String label, bool on, VoidCallback tap) => GestureDetector(
+              onTap: tap,
+              child: Container(padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9), decoration: BoxDecoration(color: on ? kInk : const Color(0xFFF1EDF7), borderRadius: BorderRadius.circular(20)), child: Text(label, style: sty(12.5, w: FontWeight.w600, c: on ? Colors.white : kInk))),
+            );
+        InputDecoration dec(String hint) => InputDecoration(hintText: hint, isDense: true, filled: true, fillColor: const Color(0xFFF7F4FB), border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none));
+        return Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+            decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+            child: SingleChildScrollView(
+              child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(count > 1 ? 'Publier $count histoires' : 'Publier une histoire', style: sty(17, w: FontWeight.w800)),
+                const SizedBox(height: 14),
+                Text('Durée de visibilité', style: sty(13, w: FontWeight.w700)),
+                const SizedBox(height: 8),
+                Wrap(spacing: 8, children: [for (final h in const [24, 48, 72]) chip('$h h', hours == h, () => set(() => hours = h))]),
+                const SizedBox(height: 16),
+                Text('Interaction (facultatif)', style: sty(13, w: FontWeight.w700)),
+                const SizedBox(height: 8),
+                Wrap(spacing: 8, children: [chip('Aucune', kind == 'none', () => set(() => kind = 'none')), chip('Question', kind == 'question', () => set(() => kind = 'question')), chip('Sondage', kind == 'poll', () => set(() => kind = 'poll'))]),
+                if (kind != 'none') ...[
+                  const SizedBox(height: 12),
+                  TextField(controller: text, maxLength: 120, decoration: dec(kind == 'poll' ? 'Votre question' : 'Posez une question à vos abonnés')),
+                ],
+                if (kind == 'poll') ...[
+                  for (var i = 0; i < 4; i++) Padding(padding: const EdgeInsets.only(top: 8), child: TextField(controller: opts[i], maxLength: 40, decoration: dec(i < 2 ? 'Choix ${i + 1}' : 'Choix ${i + 1} (facultatif)'))),
+                ],
+                const SizedBox(height: 18),
+                SizedBox(
+                  width: double.infinity,
+                  child: GestureDetector(
+                    onTap: () {
+                      Map<String, dynamic>? st;
+                      if (kind == 'question' || kind == 'poll') {
+                        final q = text.text.trim();
+                        if (q.isEmpty) return gToast(ctx, 'Écrivez la question.');
+                        if (kind == 'poll') {
+                          final o = [for (final c in opts) if (c.text.trim().isNotEmpty) c.text.trim()];
+                          if (o.length < 2) return gToast(ctx, 'Un sondage propose au moins 2 choix.');
+                          st = {'type': 'poll', 'text': q, 'options': o};
+                        } else {
+                          st = {'type': 'question', 'text': q};
+                        }
+                      }
+                      Navigator.of(ctx).pop(_StoryOptions(hours, st));
+                    },
+                    child: Container(height: 50, alignment: Alignment.center, decoration: BoxDecoration(color: kInk, borderRadius: BorderRadius.circular(25)), child: Text('Publier', style: sty(15, w: FontWeight.w700, c: Colors.white))),
+                  ),
+                ),
+              ]),
+            ),
+          ),
+        );
+      },
+    ),
+  );
+}
+
 Future<void> addStory(BuildContext context, WidgetRef ref) async {
   if (!await requireLogin(context, ref, 'publier une histoire') || !context.mounted) return;
   // Plusieurs histoires à la fois : chaque photo ou vidéo choisie devient une histoire.
   final p = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: const ['jpg', 'jpeg', 'png', 'webp', 'mp4', 'mov']);
   if (p.isEmpty || !context.mounted) return;
+  final o = await _askStoryOptions(context, p.length);
+  if (o == null || !context.mounted) return;
   var ok = 0;
   for (final f in p) {
     final up = await uploadPostMedia(context, f);
     if (up == null || !context.mounted) continue;
-    final res = await Backend.rpc('create_story', {'p_path': up.path, 'p_kind': up.kind, 'p_caption': ''});
+    final res = await Backend.rpc('create_story', {'p_path': up.path, 'p_kind': up.kind, 'p_caption': '', 'p_hours': o.hours, 'p_sticker': o.sticker});
     if (!context.mounted) return;
     if (res.error != null) {
       await gAlert(context, 'Histoire non publiée', Backend.userMessage(res.error!));
@@ -78,7 +165,7 @@ Future<void> addStory(BuildContext context, WidgetRef ref) async {
     ok++;
   }
   ref.invalidate(storiesProvider);
-  if (ok > 0 && context.mounted) gToast(context, ok == 1 ? 'Votre histoire est en ligne pour 24 heures' : '$ok histoires en ligne pour 24 heures');
+  if (ok > 0 && context.mounted) gToast(context, ok == 1 ? 'Votre histoire est en ligne pour ${o.hours} heures' : '$ok histoires en ligne pour ${o.hours} heures');
 }
 
 Future<void> openStories(BuildContext context, List<StoryGroup> groups, int start) {
@@ -286,6 +373,8 @@ class _StoryViewerState extends ConsumerState<StoryViewer> with SingleTickerProv
             (_video != null && _video!.value.isInitialized) ? Center(child: AspectRatio(aspectRatio: _video!.value.aspectRatio, child: VideoPlayer(_video!))) : const Center(child: CircularProgressIndicator(color: Colors.white))
           else
             ColoredBox(color: Colors.white, child: Image.network(s.mediaUrl, fit: BoxFit.contain, errorBuilder: (_, _, _) => const Center(child: Icon(Icons.broken_image_outlined, color: Colors.white54, size: 44)), loadingBuilder: (_, c, p) => p == null ? c : const Center(child: CircularProgressIndicator(color: Colors.white)))),
+          if (s.sticker != null)
+            Positioned(left: 20, right: 20, bottom: mq.padding.bottom + 90, child: _StickerPanel(key: ValueKey('sticker-${s.id}'), story: s, mine: s.authorId == me, onBusy: (b) { if (b) { _timer.stop(); _video?.pause(); } else { _timer.forward(); _video?.play(); } })),
           const Positioned(top: 0, left: 0, right: 0, height: 130, child: IgnorePointer(child: DecoratedBox(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0x99000000), Color(0x00000000)]))))),
           Positioned(
             top: mq.padding.top + 8,
@@ -340,6 +429,136 @@ class _StoryViewerState extends ConsumerState<StoryViewer> with SingleTickerProv
           ),
         ]),
       ),
+    );
+  }
+}
+
+
+/// Question ou sondage posé sur une histoire : on répond sans quitter l'histoire ; l'auteur voit les résultats.
+class _StickerPanel extends ConsumerStatefulWidget {
+  const _StickerPanel({super.key, required this.story, required this.mine, required this.onBusy});
+  final Story story;
+  final bool mine;
+  final void Function(bool busy) onBusy;
+  @override
+  ConsumerState<_StickerPanel> createState() => _StickerPanelState();
+}
+
+class _StickerPanelState extends ConsumerState<_StickerPanel> {
+  final _text = TextEditingController();
+  late int? _choice = widget.story.myChoice;
+  late bool _sent = widget.story.myAnswer != null;
+  List<int>? _counts;
+  bool _busy = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.mine && widget.story.sticker?['type'] == 'poll') _load();
+  }
+
+  @override
+  void dispose() {
+    _text.dispose();
+    super.dispose();
+  }
+
+  Future<void> _load() async {
+    final r = await Backend.rpc('story_results', {'p_story': widget.story.id});
+    if (!mounted || r.error != null || r.data is! Map) return;
+    final c = (r.data as Map)['counts'];
+    if (c is List) setState(() => _counts = [for (final x in c) (x as num).toInt()]);
+  }
+
+  Future<void> _answer({int? choice, String? text}) async {
+    if (!await requireLogin(context, ref, 'répondre à une histoire') || !mounted) return;
+    setState(() => _busy = true);
+    final r = await Backend.rpc('answer_story', {'p_story': widget.story.id, 'p_choice': choice, 'p_answer': text});
+    if (!mounted) return;
+    setState(() => _busy = false);
+    if (r.error != null) return gAlert(context, 'Réponse impossible', Backend.userMessage(r.error!));
+    widget.onBusy(false);
+    FocusScope.of(context).unfocus();
+    setState(() {
+      if (choice != null) _choice = choice;
+      if (text != null) _sent = true;
+    });
+  }
+
+  Future<void> _showAnswers() async {
+    widget.onBusy(true);
+    final r = await Backend.rpc('story_results', {'p_story': widget.story.id});
+    if (!mounted) return;
+    final list = r.data is Map && (r.data as Map)['answers'] is List ? (r.data as Map)['answers'] as List : const [];
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Réponses (${list.length})', style: sty(16, w: FontWeight.w800)),
+        content: SizedBox(
+          width: 320,
+          child: list.isEmpty
+              ? Text('Aucune réponse pour le moment.', style: sty(13, c: kGrey))
+              : ListView(shrinkWrap: true, children: [for (final a in list) Padding(padding: const EdgeInsets.only(bottom: 10), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('${(a as Map)['name']}', style: sty(12, w: FontWeight.w700)), Text('${a['answer']}', style: sty(13))]))]),
+        ),
+        actions: [TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text('Fermer'))],
+      ),
+    );
+    if (mounted) widget.onBusy(false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final st = widget.story.sticker!;
+    final poll = st['type'] == 'poll';
+    final opts = poll ? [for (final o in (st['options'] as List)) '$o'] : const <String>[];
+    final showResults = poll && (widget.mine || _choice != null);
+    final total = (_counts ?? const <int>[]).fold<int>(0, (a, b) => a + b);
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(color: const Color(0xE6FFFFFF), borderRadius: BorderRadius.circular(18)),
+      child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text('${st['text']}', style: sty(14, w: FontWeight.w800)),
+        const SizedBox(height: 10),
+        if (poll)
+          for (var i = 0; i < opts.length; i++)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 6),
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: widget.mine || _choice != null || _busy ? null : () => _answer(choice: i),
+                child: Container(
+                  height: 40,
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  alignment: Alignment.centerLeft,
+                  decoration: BoxDecoration(color: _choice == i ? kInk : const Color(0xFFF1EDF7), borderRadius: BorderRadius.circular(12)),
+                  child: Row(children: [
+                    Expanded(child: Text(opts[i], style: sty(13, w: FontWeight.w600, c: _choice == i ? Colors.white : kInk))),
+                    if (showResults && widget.mine && _counts != null && i < _counts!.length) Text(total == 0 ? '0' : '${_counts![i]} · ${(100 * _counts![i] / total).round()} %', style: sty(11.5, w: FontWeight.w700, c: kGrey)),
+                  ]),
+                ),
+              ),
+            )
+        else if (widget.mine)
+          GestureDetector(onTap: _showAnswers, child: Text('Voir les réponses', style: sty(13, w: FontWeight.w700, c: const Color(0xFF5A3FE0))))
+        else if (_sent)
+          Text('Réponse envoyée. Merci !', style: sty(13, c: kGrey))
+        else
+          Row(children: [
+            Expanded(
+              child: TextField(
+                controller: _text,
+                maxLength: 300,
+                onTap: () => widget.onBusy(true),
+                decoration: InputDecoration(hintText: 'Votre réponse', counterText: '', isDense: true, filled: true, fillColor: const Color(0xFFF7F4FB), border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none)),
+              ),
+            ),
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: _busy ? null : () => _text.text.trim().isEmpty ? gToast(context, 'Écrivez votre réponse.') : _answer(text: _text.text.trim()),
+              child: Container(padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11), decoration: BoxDecoration(color: kInk, borderRadius: BorderRadius.circular(12)), child: Text('Envoyer', style: sty(12.5, w: FontWeight.w700, c: Colors.white))),
+            ),
+          ]),
+      ]),
     );
   }
 }

@@ -155,7 +155,18 @@ class ReelActions extends ConsumerWidget {
         );
     return Column(mainAxisAlignment: MainAxisAlignment.start, children: [
       Stack(alignment: Alignment.center, children: [
-        LikeHeart(liked: r?.liked ?? false, size: 32, idleColor: Colors.white, onTap: () => r == null ? null : toggleLike(context, ref, r)),
+        LikeHeart(
+          liked: r?.liked ?? false,
+          size: 32,
+          idleColor: Colors.white,
+          emoji: r == null ? null : kReactions[ref.watch(myReactionsProvider).value?[r.id]],
+          onTap: () {
+            if (r == null) return;
+            final k = ref.read(myReactionsProvider).value?[r.id];
+            k == null ? toggleLike(context, ref, r) : reactTo(context, ref, r, k);
+          },
+          onLongPress: r == null ? null : () => showReactionPicker(context, ref, r),
+        ),
       ]),
       Text(compactCount(r?.likes ?? 0), style: _w(10.5)),
       const SizedBox(height: 6),

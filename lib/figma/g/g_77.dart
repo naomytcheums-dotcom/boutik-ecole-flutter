@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/talent_pages.dart';
 import '../live/store.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
@@ -99,6 +100,7 @@ class G_77 extends ConsumerWidget {
       gP(197.333, 568.667, 10.667, 7.707, gImg('assets/figma/v/4b0531a4484979.svg')),
       gP(232, 556, 82, 26, gBox(color: Color(0xCCFFFFFF), border: Color(0xFFFFFFFF), bw: 1, radii: [100, 100, 100, 100])),
       gP(245, 562, 56, 14, gText('Portfolio ↗', 11, Color(0xFF120F14), weight: 600)),
+      if (!demoContent) gTap(232, 552, 82, 34, () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => PortfolioPage(userId: gProfileUserId(context))))),
     ]);
   }
 }

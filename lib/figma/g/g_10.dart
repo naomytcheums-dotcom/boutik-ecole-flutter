@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/talent_pages.dart';
 import '../live/store.dart';
 import '../live/circle_feed.dart';
 import '../live/l06.dart';
@@ -118,6 +119,7 @@ class G_10 extends ConsumerWidget {
       gTap(143, 513, 100, 28, () { gOpen(context, '22b'); }),
       gTap(252, 513, 104, 28, () { gOpen(context, '78'); }),
       gTap(24, 592, 342, 30, () => gOpen(context, '74')),
+      if (!demoContent) gTap(232, 552, 82, 34, () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PortfolioPage()))),
     ]);
   }
 }

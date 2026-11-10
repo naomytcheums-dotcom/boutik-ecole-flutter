@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/profile_data.dart';
 import '../live/store.dart';
 import '../live/lot20b.dart';
 import '../live/l06.dart';
@@ -43,11 +44,13 @@ class G_148_1 extends ConsumerWidget {
       gP(331.5, 19.5, 28, 17, gImg('assets/figma/v/6a818f3296df50.svg')),
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
-      gP(31, 71, 22, 22, const SizedBox.expand(), tap: () => gBack(context)),
+      gTap(14, 56, 60, 56, () => gBack(context)),
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 118, 26, gText('Paramètres', 21, Color(0xFF111015), weight: 700)),
-      gP(159, 136, 72, 72, gBox(image: 'assets/figma/img/c15478a4e0a5cc1be462d8179ed1a24390853242.png', fit: BoxFit.cover, radii: [36, 36, 36, 36])),
+      gP(159, 136, 72, 72, gBox(image: 'assets/figma/img/c15478a4e0a5cc1be462d8179ed1a24390853242.png', fit: BoxFit.cover, radii: [36, 36, 36, 36]), show: demoContent),
+      if (!demoContent) profileAvatar(159, 136, 72),
+      if (!demoContent) gTap(159, 136, 72, 72, () { changeProfilePhoto(context, ref); }),
       gP(22.5, 216, 345, 21, gText(gSelf(ref, 'Mariam Essono'), 17, Color(0xFF111015), weight: 700, align: TextAlign.center, wrap: true), show: demoContent),
       gP(22.5, 240, 345, 15, gText(gm('mariam@iut-douala.cm', ''), 12, Color(0xFF57545F), align: TextAlign.center, wrap: true), show: demoContent),
       gP(36, 290, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
@@ -110,12 +113,12 @@ class G_148_1 extends ConsumerWidget {
       gP(169, 762, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gTab(context, '03')),
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
-      gTap(80, 449, 100, 33, () { gOpen(context, '56'); }), // parcours 148_1 -> 56
-      gTap(80, 293, 186, 33, () { gOpen(context, '273'); }), // parcours 148_1 -> 273
-      gTap(80, 345, 77, 33, () { gOpen(context, '27'); }), // parcours 148_1 -> 27
-      gTap(80, 501, 145, 33, () { gOpen(context, '149'); }), // parcours 148_1 -> 149
-      gTap(80, 553, 117, 33, () { gOpen(context, '49'); }), // parcours 148_1 -> 49
-      gTap(80, 397, 152, 33, () { gOpen(context, '144'); }), // parcours 148_1 -> 144
+      gTap(80, 441, 274, 48, () { gOpen(context, '56'); }), // parcours 148_1 -> 56
+      gTap(80, 285, 274, 48, () { gOpen(context, '273'); }), // parcours 148_1 -> 273
+      gTap(80, 337, 274, 48, () { gOpen(context, '27'); }), // parcours 148_1 -> 27
+      gTap(80, 493, 274, 48, () { gOpen(context, '149'); }), // parcours 148_1 -> 149
+      gTap(80, 545, 274, 48, () { gOpen(context, '49'); }), // parcours 148_1 -> 49
+      gTap(80, 389, 274, 48, () { gOpen(context, '144'); }), // parcours 148_1 -> 144
       if (!demoContent) gP(22, 212, 300, 50, const AccountHeader(width: 300)),
     ]);
   }

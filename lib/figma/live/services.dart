@@ -1,3 +1,4 @@
+import 'tp_ui.dart' show tpPick;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -41,7 +42,7 @@ String _photo(Listing l) {
 
 String servicePhoto(Listing? l) => l == null ? 'placeholder' : _photo(l);
 
-String servicePriceLine(Listing l) => 'À partir de ${_fcfa(l.price)}';
+String servicePriceLine(Listing l) => l.price <= 0 ? 'Sur devis' : 'À partir de ${_fcfa(l.price)}';
 
 String _fcfa(int v) {
   final s = v.toString();
@@ -244,4 +245,16 @@ Future<void> _answer(BuildContext context, String id, int? current) async {
   amount.dispose();
   days.dispose();
   msg.dispose();
+}
+
+
+/// Bandeau « Un service sur mesure ? » : choisit un service de la liste puis ouvre la demande de devis ; sans service publié, le dit.
+Future<void> askGeneralQuoteFromList(BuildContext context, WidgetRef ref) async {
+  if (!Backend.ready) return gAlert(context, 'Hors connexion', 'La demande de devis nécessite la connexion au serveur.');
+  final l = ref.read(servicesProvider);
+  if (l.isEmpty) return gAlert(context, 'Aucun service publié', 'Aucun prestataire n’a encore publié de service. Revenez bientôt ou contactez directement un talent depuis son profil.');
+  final v = await tpPick(context, 'Pour quel service ?', [for (final x in l) x.title], allowCustom: false);
+  if (v == null || !context.mounted) return;
+  ref.read(selectedServiceProvider.notifier).set(v);
+  await askQuote(context, ref);
 }

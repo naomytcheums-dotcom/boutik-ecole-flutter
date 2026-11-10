@@ -1,3 +1,5 @@
+import 'talent_pages.dart';
+import 'tp_ui.dart' show TpButton;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -203,6 +205,12 @@ class MyProfileCard extends ConsumerWidget {
         Text('CV envoyé', style: _st(15, w: FontWeight.w700)),
         const SizedBox(height: 6),
         Text(docs == null ? 'Chargement…' : (cv == null ? 'Aucun CV envoyé pour le moment.' : cv.name), style: _st(13, c: _grey)),
+        const SizedBox(height: 18),
+        Wrap(spacing: 8, runSpacing: 8, children: [
+          TpButton('Mes compétences', () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SkillsPage())), dark: false, compact: true),
+          TpButton(cv == null ? 'Ajouter un CV' : 'Gérer mes documents', () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const DocumentsPage())), dark: false, compact: true),
+          TpButton('Mon portfolio', () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PortfolioPage())), dark: false, compact: true),
+        ]),
       ]),
     );
   }

@@ -91,7 +91,7 @@ class PlansScreen extends ConsumerWidget {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(22), border: Border.all(color: const Color(0xFFECE8F2))),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(children: [Expanded(child: Text('${p['name']}', style: _st(16, w: FontWeight.w800))), Text(p['price_xaf'] == null ? 'Prix à définir' : (p['price_xaf'] == 0 ? 'Gratuit' : '${fcfa((p['price_xaf'] as num).toInt())} / ${p['period_days']} j'), style: _st(13, w: FontWeight.w700, c: const Color(0xFF5A3FE0)))]),
+              Row(children: [Expanded(child: Text('${p['name']}', style: _st(16, w: FontWeight.w800))), Text(p['price_xaf'] == null ? 'Tarif non défini' : (p['price_xaf'] == 0 ? 'Gratuit' : '${fcfa((p['price_xaf'] as num).toInt())} / ${p['period_days']} j'), style: _st(13, w: FontWeight.w700, c: const Color(0xFF5A3FE0)))]),
               if ('${p['audience']}'.isNotEmpty) Text('${p['audience']}', style: _st(12, c: _grey)),
               const SizedBox(height: 10),
               for (final f in (p['features'] as List? ?? const [])) Padding(padding: const EdgeInsets.symmetric(vertical: 2), child: Row(children: [const Icon(Icons.check, size: 16, color: Color(0xFF1F9D6B)), const SizedBox(width: 8), Text(featureLabels['$f'] ?? '$f', style: _st(12.5))])),
@@ -99,7 +99,11 @@ class PlansScreen extends ConsumerWidget {
               const SizedBox(height: 12),
               Row(children: [
                 if (p['code'] != 'gratuit')
-                  _btn(mine.any((s) => s['plan'] == p['code'] && '${s['status']}' != 'expired') ? 'Déjà souscrit ou en attente' : 'Souscrire', () async {
+                  _btn(p['price_xaf'] == null ? 'Tarif non défini' : (mine.any((s) => s['plan'] == p['code'] && '${s['status']}' != 'expired') ? 'Déjà souscrit ou en attente' : 'Souscrire'), () async {
+                    if (p['price_xaf'] == null) {
+                      gToast(context, 'Le tarif de cette offre n’est pas encore fixé par l’administration : souscription impossible pour le moment.');
+                      return;
+                    }
                     final r = await Backend.rpc('subscription_start', {'p_plan': '${p['code']}'});
                     if (!context.mounted) return;
                     if (r.error != null) {

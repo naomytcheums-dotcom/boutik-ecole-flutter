@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/talent_pages.dart';
 import '../live/store.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
@@ -101,6 +102,7 @@ class G_89 extends ConsumerWidget {
       gP(245, 562, 56, 14, gText('Portfolio ↗', 11, Color(0xFF120F14), weight: 600)),
       gTap(143.5, 511, 103, 32, () { gOpen(context, '94'); }), // parcours 89 -> 94
       gTap(250.5, 511, 107, 32, () { gOpen(context, '98'); }), // parcours 89 -> 98
+      if (!demoContent) gTap(232, 552, 82, 34, () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => PortfolioPage(userId: gProfileUserId(context))))),
     ]);
   }
 }

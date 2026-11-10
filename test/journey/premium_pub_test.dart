@@ -53,7 +53,7 @@ void main() {
 
   testWidgets('offres : prix à définir tant que non fixé, jamais de prix inventé', (t) async {
     await monter(t, const PlansScreen(), overrides: [plansProvider.overrideWith(() => _Rows('table:plans', plans)), entitlementsProvider.overrideWith(() => _Ent(const {'subscriptions': [], 'features': []}))]);
-    expect(find.text('Prix à définir'), findsOneWidget);
+    expect(find.text('Tarif non défini'), findsWidgets);
     expect(find.text('Gratuit'), findsWidgets);
     expect(find.textContaining('15'), findsWidgets);
     expect(find.text('Campagnes sponsorisées'), findsOneWidget);

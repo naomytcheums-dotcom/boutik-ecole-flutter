@@ -43,7 +43,7 @@ class G_36 extends ConsumerWidget {
       gP(331.5, 19.5, 28, 17, gImg('assets/figma/v/6a818f3296df50.svg')),
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
-      gP(31, 71, 22, 22, const SizedBox.expand(), tap: () => gBack(context)),
+      gTap(14, 56, 60, 56, () => gBack(context)),
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 169, 26, gText('Détail du service', 21, Color(0xFF111015), weight: 700)),
@@ -96,8 +96,8 @@ class G_36 extends ConsumerWidget {
       gP(40, 794, 57, 16, gText('Paiement', 12.5, Color(0xFF57545F)), show: demoContent),
       gP(265, 794, 85, 16, gText('Mobile Money', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right), show: demoContent),
       gP(24, 120, 342, 170, Consumer(builder: (context, ref, _) => gBox(image: servicePhoto(currentService(ref)), fit: BoxFit.cover, radii: [24, 24, 24, 24])), show: !demoContent),
-      gP(42, 228, 309, 23, Consumer(builder: (context, ref, _) => gText(currentService(ref)?.title ?? 'Service', 18, Color(0xFF111015), weight: 700, wrap: true)), show: !demoContent),
-      gP(42, 256, 309, 15, gText('Prestataire : étudiant de l’IUT de Douala', 12, Color(0xFF57545F), wrap: true), show: !demoContent),
+      gP(42, 228, 309, 23, Consumer(builder: (context, ref, _) => gText(currentService(ref)?.title ?? 'Service', 18, Color(0xFFFFFFFF), weight: 700, wrap: true)), show: !demoContent),
+      gP(42, 256, 309, 15, gText('Prestataire : étudiant de l’IUT de Douala', 12, Color(0xFFE3ECF7), wrap: true), show: !demoContent),
       gP(24, 320, 342, 24, Consumer(builder: (context, ref, _) { final l = currentService(ref); return gText(l == null ? '' : servicePriceLine(l), 18, Color(0xFF111015), weight: 800); }), show: !demoContent),
       gP(24, 360, 342, 120, Consumer(builder: (context, ref, _) { final l = currentService(ref); return gText(l == null || l.description.isEmpty ? 'Demandez un devis pour préciser votre besoin, le délai et le tarif final avec le prestataire.' : l.description, 13.5, Color(0xFF4A4854), lh: 21, wrap: true); }), show: !demoContent),
       gP(24, 500, 342, 60, gText('Le tarif final est fixé par devis : le prestataire vous répond avec un montant et un délai, vous acceptez ou refusez.', 12, Color(0xFF57545F), lh: 17, wrap: true), show: !demoContent),
@@ -108,6 +108,7 @@ class G_36 extends ConsumerWidget {
       gP(240.5, 890, 88, 18, gText('Commander', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 942, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gTap(59, 340, 44, 32, () { gOpen(context, '31'); }), // parcours 36 -> 31
+      gTap(318, 56, 60, 56, () { final l = currentService(ref); shareText(context, (l == null ? 'Découvrez les services de Boutik-École' : 'Service « ' + l.title + ' » sur Boutik-École') + ' : ' + siteUrl); }),
       gTap(32, 786, 73, 32, () { gOpen(context, '171'); }), // parcours 36 -> 171
     ]);
   }

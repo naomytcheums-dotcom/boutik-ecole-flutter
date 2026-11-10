@@ -81,7 +81,9 @@ void main() {
 
   testWidgets('203 connecté : compétences du profil, aucun score inventé', (t) async {
     await monter(t, const G_203(), connecte: true);
-    expect(find.text('Domaines déclarés'), findsOneWidget);
+    await t.pumpAndSettle();
+    expect(find.text('Mes compétences'), findsOneWidget);
+    expect(find.text('Aucune compétence'), findsOneWidget);
     expect(find.text('Community management'), findsNothing);
     expect(find.text('Score global'), findsNothing);
   });

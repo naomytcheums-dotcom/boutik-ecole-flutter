@@ -324,7 +324,9 @@ void _afterLogin(WidgetRef ref, BuildContext context) {
     ref.read(returnAfterAuthProvider.notifier).set(false);
     gBack(context);
   } else {
-    gOpen(context, '03');
+    // Un étudiant arrive directement sur son profil ; les autres comptes sur l'accueil.
+    final a = ref.read(authProvider).current;
+    gOpen(context, a != null && a.role == 1 && a.staff.isEmpty ? '10' : '03');
   }
 }
 
@@ -446,7 +448,7 @@ void _errors(WidgetRef ref, Map<String, String?> m) =>
 /// Case « Se souvenir de moi » : garde le compte connecté entre deux visites.
 class RememberV extends Notifier<bool> {
   @override
-  bool build() => false;
+  bool build() => true; // active par défaut : on reste connecté d'une visite à l'autre
   void set(bool v) => state = v;
 }
 
@@ -1044,7 +1046,6 @@ Future<void> _serverResetByCode(
   if (!context.mounted) return;
   if (err != null) {
     _errors(ref, {'rs_code': err});
-    await gAlert(context, 'Mot de passe non modifié', err);
     return;
   }
   ref.read(errorsProvider.notifier).clear();
@@ -1076,19 +1077,27 @@ Future<void> _serverReset(
 }
 
 /// Message d'erreur rouge sous un champ.
+DateTime _lastErrorPopup = DateTime.fromMillisecondsSinceEpoch(0);
+
+/// Erreur d'un champ : affichée dans une fenêtre (pop-up) lisible par tous, jamais en petits caractères rouges sous le champ.
+/// Une seule fenêtre à la fois, même si plusieurs champs sont en erreur ; le message reste disponible pour les lecteurs d'écran.
 Widget errorText(String key, double x, double y) => gP(
   x,
   y,
   320,
-  30,
+  1,
   Consumer(
-    builder: (context, ref, _) => gText(
-      ref.watch(errorsProvider)[key] ?? '',
-      10.5,
-      const Color(0xFFC0261B),
-      weight: 500,
-      wrap: true, // message d'erreur complet, sur deux lignes si besoin (jamais coupé)
-    ),
+    builder: (context, ref, _) {
+      ref.listen(errorsProvider, (prev, next) {
+        final e = next[key];
+        if (e == null || e.isEmpty || !context.mounted) return;
+        final now = DateTime.now();
+        if (now.difference(_lastErrorPopup).inMilliseconds < 500) return;
+        _lastErrorPopup = now;
+        gAlert(context, 'À corriger', e);
+      });
+      return const SizedBox.shrink();
+    },
   ),
 );
 

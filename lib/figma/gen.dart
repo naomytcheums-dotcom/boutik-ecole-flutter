@@ -395,7 +395,7 @@ class GScreen extends StatelessWidget {
     for (var i = 0; i < children.length; i++) {
       final r = rects[i];
       if (r == null || taps[i]) continue;
-      final status = r.bottom <= statusBand + 2 && r.height < 30 && r.width < 120;
+      final status = r.bottom <= statusBand + 2 && r.height <= 30.5 && r.width < 120;
       final homeBar = r.height <= 6 && r.width >= 100 && r.width <= 150 && (r.center.dx - w / 2).abs() < 12 && r.top >= h - 80;
       if (status || homeBar) hidden.add(i);
     }
@@ -440,12 +440,12 @@ class GScreen extends StatelessWidget {
     if (single) {
       final unit = (contentTo - contentFrom) + bandExtent;
       final avail = c.maxHeight - pad.top - pad.bottom - keyboard;
-      if (unit > 0 && avail > 0) s = math.min(s, avail / unit);
+      if (unit > 0 && avail > 0) s = math.max(math.min(s, avail / unit), s * 0.88);
     } else {
       // Page longue (accueil…) : même échelle que les pages d'un écran, pour un format identique ; le reste se parcourt en défilant.
       final avail = c.maxHeight - pad.top - pad.bottom - keyboard;
       final unit = 844 - contentFrom;
-      if (unit > 0 && avail > 0) s = math.min(s, avail / unit);
+      if (unit > 0 && avail > 0) s = math.max(math.min(s, avail / unit), s * 0.88);
     }
 
     Widget layer(List<Widget> kids, double from, double to, {Clip clip = Clip.hardEdge}) => SizedBox(

@@ -54,6 +54,8 @@ class G_16 extends ConsumerWidget {
       gP(24, 318, 300, 16, gText(forgotChannel(ref.watch(formProvider)) == 'whatsapp' ? 'Code reçu sur WhatsApp' : 'Code reçu par SMS', 13, Color(0xFF111015), weight: 600), show: codeMode),
       gP(24, 340, 342, 52, GField(hint: '6 chiffres', size: 17, hintColor: Color(0xFF57545F), weight: 500, padL: 20, onChanged: (v) { ref.read(formProvider.notifier).put('rs_code', v); }), show: codeMode),
       errorText('rs_code', 28, 394),
+      gP(166.5, 172.167, 69, 42.167, gImg('assets/figma/r/173_46.png')),
+      gP(178.833, 134.667, 44.333, 40.5, gImg('assets/figma/v/9a0bdefbfa5dbf.svg')),
       ...gShift(codeMode ? 92 : 0, [
         gP(24, 322, 143, 16, gText('Nouveau mot de passe', 13, Color(0xFF111015), weight: 600)),
         gP(24, 346, 342, 52, GField(hint: 'Mot de passe', size: 17, hintColor: Color(0xFF111015), weight: 500, padL: 52, obscure: true, onChanged: (v) { ref.read(formProvider.notifier).put('rs_pw', v); })),
@@ -73,8 +75,6 @@ class G_16 extends ConsumerWidget {
         gP(24, 724, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x29122640), offset: Offset(0, 5), blurRadius: 12, spreadRadius: 0)], radii: [27, 27, 27, 27])),
         gP(89, 741, 212, 20, gText('Réinitialiser le mot de passe', 16, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
         gP(125, 884, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
-        gP(166.5, 172.167, 69, 42.167, gImg('assets/figma/r/173_46.png')),
-        gP(178.833, 134.667, 44.333, 40.5, gImg('assets/figma/v/9a0bdefbfa5dbf.svg')),
         gTap(24, 724, 342, 54, () { submitReset(ref, context); }),
       ]),
     ]);

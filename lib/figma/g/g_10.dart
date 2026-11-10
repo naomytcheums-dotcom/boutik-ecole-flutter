@@ -42,7 +42,7 @@ class G_10 extends ConsumerWidget {
       if (!demoContent) gP(140, 92, 124, 244, const FeaturedVideo(slot: 1)),
       gP(272, 92, 114, 244, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [26, 26, 26, 26]), show: demoContent),
       if (!demoContent) gP(272, 92, 114, 244, const FeaturedVideo(slot: 2)),
-      gP(0, 92, 390, 250, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00F2EBF0), Color(0x00F2EBF0), Color(0xD9F2EBF0)], stops: [0, 0.78, 1]))),
+      gP(0, 92, 390, 250, IgnorePointer(child: gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00F2EBF0), Color(0x00F2EBF0), Color(0xD9F2EBF0)], stops: [0, 0.78, 1])))),
       gP(30, 14, 28, 18, gText('9:41', 14, Color(0xFF111015), weight: 600)),
       gP(140, 10, 110, 30, gBox(color: Color(0xFF000000), radii: [15, 15, 15, 15])),
       gP(22, 38, 34, 32, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),

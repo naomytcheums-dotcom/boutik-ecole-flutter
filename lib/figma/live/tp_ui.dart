@@ -35,7 +35,8 @@ class TpFrame extends StatelessWidget {
   @override
   Widget build(BuildContext context) => LayoutBuilder(builder: (context, c) {
         if (!c.hasBoundedWidth || !c.hasBoundedHeight || c.maxWidth <= 0 || c.maxHeight <= 0) return child;
-        final s = math.min(c.maxWidth / 390, c.maxHeight / 844);
+        final w = math.min(c.maxWidth, 480.0) / 390;
+        final s = math.max(math.min(w, c.maxHeight / 844), w * 0.88);
         return Align(
           alignment: Alignment.topCenter,
           child: SizedBox(

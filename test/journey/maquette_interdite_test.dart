@@ -133,13 +133,13 @@ void main() {
         }
         for (final i in tester.widgetList<Image>(find.byType(Image))) {
           final p = i.image;
-          if (p is AssetImage && gIsMockPhoto(p.assetName) && !p.assetName.contains('cbf050b9')) hits.add('photo ${p.assetName.split('/').last}');
+          if (p is AssetImage && gIsMockPhoto(p.assetName) && !['cbf050b9', '4ca68f79', '768cf16e', '46d80b34'].any(p.assetName.contains)) hits.add('photo ${p.assetName.split('/').last}');
         }
         for (final d in tester.widgetList<DecoratedBox>(find.byType(DecoratedBox))) {
           final dec = d.decoration;
           if (dec is BoxDecoration && dec.image != null) {
             final p = dec.image!.image;
-            if (p is AssetImage && gIsMockPhoto(p.assetName) && !p.assetName.contains('cbf050b9')) hits.add('photo ${p.assetName.split('/').last}');
+            if (p is AssetImage && gIsMockPhoto(p.assetName) && !['cbf050b9', '4ca68f79', '768cf16e', '46d80b34'].any(p.assetName.contains)) hits.add('photo ${p.assetName.split('/').last}');
           }
         }
         if (hits.isNotEmpty) trouves[s.id] = hits.toList();

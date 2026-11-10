@@ -6,6 +6,7 @@ import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/reels.dart';
+import '../live/stories.dart';
 import '../live/circle_feed.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
@@ -142,6 +143,7 @@ class G_244 extends ConsumerWidget {
       if (demoFeed) gTap(231, 674, 137, 25, () => gOpen(context, '248')),
       if (demoFeed) gTap(288, 566, 80, 26, () { uiFollow(context); }), // audit 01/11 : « S’abonner » n'avait aucun effet
       if (demoFeed) gTap(16.5, 639, 59, 32, () { gOpen(context, '252'); }), // audit 01/11 : « Voir plus » n'avait aucun effet
+      if (!demoFeed) gP(0, 100, 390, 92, const StoriesBar()),
       if (!demoFeed) gP(20, 248, 350, 520, const CircleFeed(width: 350, height: 520)),
     ]);
   }

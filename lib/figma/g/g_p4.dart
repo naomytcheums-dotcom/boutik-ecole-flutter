@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../live/reels.dart';
+import '../live/social_posts.dart';
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/l06.dart';
@@ -97,8 +98,8 @@ class G_P4 extends ConsumerWidget {
       gP(47, 803, 8.667, 11.333, gImg('assets/figma/v/92fb5f1c9637a7.svg')),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(9, 790, 166, 40, 'Planifier', 12.5, 500), GChip(200, 790, 166, 40, 'Propulser ce post', 12.5, 600)], selected: 1, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 20)),
       gP(22, 38, 34, 32, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
-      if (!demoContent) gTap(297.5, 78, 65, 27, () { publishReel(context, ref); }), // publication réelle (20261101000600)
-      gTap(296, 76, 68, 32, () { publishReel(context, ref); }), // audit 01/11 : « Publier » n'avait aucun effet
+      if (!demoContent) gTap(297.5, 78, 65, 27, () { publishPost(context, ref); }), // publication réelle (20261101000600)
+      gTap(296, 76, 68, 32, () { publishPost(context, ref); }), // audit 01/11 : « Publier » n'avait aucun effet
     ]);
   }
 }

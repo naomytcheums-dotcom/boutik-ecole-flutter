@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../live/reels.dart';
+import '../live/social_posts.dart';
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/l06.dart';
@@ -103,7 +104,7 @@ class G_250 extends ConsumerWidget {
       gP(304, 390, 13, 18, gText('#', 14, Color(0xFF5A3FE0), weight: 700)),
       gP(326, 386, 26, 26, gBox(color: Color(0xFFEDE7FF), oval: true)),
       gP(332, 390, 13, 18, gText('@', 14, Color(0xFF5A3FE0), weight: 700)),
-      gTap(301, 78, 65, 27, () => demoContent ? gOpen(context, '244') : publishReel(context, ref)),
+      gTap(301, 78, 65, 27, () => demoContent ? gOpen(context, '244') : publishPost(context, ref)),
       gTap(40, 144, 67, 25, () { uploadMedia(context, ref); }), // audit 01/11 : « Modifier » n'avait aucun effet
     ]);
   }

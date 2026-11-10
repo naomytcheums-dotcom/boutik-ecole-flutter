@@ -7,6 +7,8 @@ import 'auth.dart';
 import 'backend.dart';
 import 'messages.dart';
 import 'reels.dart';
+import 'social_posts.dart' show VerifiedBadge;
+import 'stories.dart' show ProfileStoryRing;
 import 'talents.dart' show askText;
 
 /// Profil public (écran 247) : identité, compteurs et publications lus sur le serveur.
@@ -180,7 +182,7 @@ class SocialProfilePanel extends ConsumerWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _avatar(p, 86),
+                    ProfileStoryRing(userId: p.id, child: _avatar(p, 86)),
                     const SizedBox(width: 16),
                     Expanded(
                       child: Column(
@@ -198,11 +200,7 @@ class SocialProfilePanel extends ConsumerWidget {
                               ),
                               if (p.certified) ...[
                                 const SizedBox(width: 6),
-                                const Icon(
-                                  Icons.verified,
-                                  size: 18,
-                                  color: Color(0xFF2F7DF6),
-                                ),
+                                const VerifiedBadge(size: 18),
                               ],
                             ],
                           ),
@@ -344,7 +342,7 @@ class SocialProfilePanel extends ConsumerWidget {
                           crossAxisSpacing: 6,
                         ),
                     itemCount: list.length,
-                    itemBuilder: (_, i) => _tile(list[i]),
+                    itemBuilder: (_, i) => _tile(context, ref, list[i]),
                   ),
           ),
         ),
@@ -401,7 +399,19 @@ class SocialProfilePanel extends ConsumerWidget {
     ),
   );
 
-  Widget _tile(Reel r) => ClipRRect(
+  /// Vignette d'une publication du profil : un appui ouvre la publication dans l'écran Reels (lecture, cœur, commentaires, partage).
+  Widget _tile(BuildContext context, WidgetRef ref, Reel r) => GestureDetector(
+    behavior: HitTestBehavior.opaque,
+    onTap: () {
+      ref.read(reelsProvider.notifier).ensure(r);
+      final all = ref.read(reelsProvider) ?? const <Reel>[];
+      ref.read(reelIndexProvider.notifier).set(all.indexWhere((x) => x.id == r.id).clamp(0, all.length));
+      gOpen(context, '245');
+    },
+    child: _tileBody(r),
+  );
+
+  Widget _tileBody(Reel r) => ClipRRect(
     borderRadius: BorderRadius.circular(14),
     child: Stack(
       fit: StackFit.expand,

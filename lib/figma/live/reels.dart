@@ -211,11 +211,14 @@ final currentReelProvider = Provider<Reel?>((ref) {
 void moveReel(WidgetRef ref, int delta) {
   final list = ref.read(reelsProvider) ?? const <Reel>[];
   if (list.isEmpty) return;
-  var i = ref.read(reelIndexProvider);
+  final i = ref.read(reelIndexProvider);
   final step = delta >= 0 ? 1 : -1;
   var j = i + step;
-  while (j >= 0 && j < list.length && !list[j].hasMedia) {
-    j += step;
+  // les publications sans média (texte seul) ne s'ouvrent pas dans les Reels : on les saute
+  if (list.any((r) => r.hasMedia)) {
+    while (j >= 0 && j < list.length && !list[j].hasMedia) {
+      j += step;
+    }
   }
   if (j < 0 || j >= list.length) return;
   ref.read(reelIndexProvider.notifier).set(j);

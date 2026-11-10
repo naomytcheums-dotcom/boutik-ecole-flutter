@@ -104,7 +104,7 @@ void main() {
     expect(find.text('Alice Test'), findsOneWidget);
     expect(find.text('Mon premier projet'), findsOneWidget);
     expect(find.text('3'), findsOneWidget);
-    expect(find.text('Publier une photo ou une vidéo'), findsOneWidget);
+    expect(find.text('Nouvelle publication'), findsOneWidget);
   });
 
   testWidgets('onglet Abonnements : ne montre que les publications des créateurs suivis', (t) async {

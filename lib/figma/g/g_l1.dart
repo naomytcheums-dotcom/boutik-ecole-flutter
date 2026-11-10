@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
+import '../live/lives.dart';
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/modules.dart';
@@ -94,7 +95,7 @@ class G_L1 extends ConsumerWidget {
       gP(334.708, 738.417, 10.583, 10.125, gImg('assets/figma/v/ba7c6cc74be2bd.svg'), show: demoContent),
       gP(24, 792, 342, 44, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x40403366), offset: Offset(0, 8), blurRadius: 18, spreadRadius: 0)], radii: [22, 22, 22, 22]), tap: () => unavailableAction(context, 'Diffusion indisponible', 'La diffusion vidéo en direct nécessite un service de streaming qui n’est pas encore raccordé. Programmez votre live depuis « Programmer un live ».')),
       gP(153.5, 804, 83, 17, gText('Lancer le live', 13.5, Color(0xFFFFFFFF), weight: 600)),
-      if (!demoContent) gP(24, 125, 342, 620, const LiveRoom(mine: true, width: 342, height: 620)),
+      if (!demoContent) gP(0, 0, 390, 844, const LiveHostEntry()),
     ]);
   }
 }

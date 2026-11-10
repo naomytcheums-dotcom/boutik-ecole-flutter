@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
+import '../live/lives.dart';
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/modules.dart';
@@ -100,7 +101,7 @@ class G_222 extends ConsumerWidget {
       gP(335, 80.667, 6, 16.833, gImg('assets/figma/v/5bb53be308dfb1.svg')),
       if (demoContent) gTap(270, 515, 82, 26, () { uiFollow(context); }), // audit 01/11 : « S’abonner » n'avait aucun effet
       if (demoContent) gTap(258, 628, 94, 26, () { gOpen(context, '05'); }), // audit 01/11 : « Commander » n'avait aucun effet
-      if (!demoContent) gP(24, 125, 342, 620, const LiveRoom(width: 342, height: 620)),
+      if (!demoContent) gP(0, 0, 390, 844, const LiveViewerEntry()),
     ]);
   }
 }

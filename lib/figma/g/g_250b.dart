@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../live/reels.dart';
+import '../live/social_posts.dart';
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/l06.dart';
@@ -116,7 +117,7 @@ class G_250b extends ConsumerWidget {
       gP(55, 581, 14, 19, gText('M', 15, Color(0xFF111015), weight: 700)),
       gP(92, 575, 113, 18, gText(gm('@mbarga.carine', ''), 14, Color(0xFF111015), weight: 600)),
       gP(92, 593, 137, 14, gText(gm('Carine Mbarga · Génie civil', ''), 11, Color(0xFF57545F)), show: demoContent),
-      gTap(301, 78, 65, 27, () => demoContent ? gOpen(context, '244') : publishReel(context, ref)),
+      gTap(301, 78, 65, 27, () => demoContent ? gOpen(context, '244') : publishPost(context, ref)),
       gTap(40, 144, 67, 25, () { uploadMedia(context, ref); }), // audit 01/11 : « Modifier » n'avait aucun effet
     ]);
   }

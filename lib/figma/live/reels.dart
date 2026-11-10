@@ -12,6 +12,17 @@ import 'talents.dart' show askText;
 /// Reels et défis (migration 20261101000600, règles § 2.1 et § 4). Avec le serveur : vraies publications, vrais points ;
 /// rien n'est inventé. Hors serveur : maquette inchangée.
 
+/// Un média d'une publication (photo ou vidéo), avec ses proportions quand elles sont connues.
+class ReelMedia {
+  const ReelMedia({required this.url, required this.video, this.width, this.height});
+  final String url;
+  final bool video;
+  final int? width, height;
+
+  /// Largeur / hauteur ; null si inconnues.
+  double? get ratio => (width != null && height != null && width! > 0 && height! > 0) ? width! / height! : null;
+}
+
 class Reel {
   const Reel({
     required this.id,
@@ -30,19 +41,45 @@ class Reel {
     this.boosted = false,
     this.tags = const [],
     this.publishedAt,
+    this.authorAvatar = '',
+    this.authorVerified = false,
+    this.linkUrl = '',
+    this.reposts = 0,
+    this.media = const [],
+    this.repostId = '',
+    this.repostAuthor = '',
+    this.repostCaption = '',
+    this.repostMediaUrl = '',
+    this.repostMediaVideo = false,
   });
-  final String id, author, caption, mediaUrl, listing, authorId;
-  final bool video, liked, saved, boosted;
-  final int likes, comments, saves, shares;
+  final String id, author, caption, mediaUrl, listing, authorId, authorAvatar, linkUrl, repostId, repostAuthor, repostCaption, repostMediaUrl;
+  final bool video, liked, saved, boosted, authorVerified, repostMediaVideo;
+  final int likes, comments, saves, shares, reposts;
   final List<String> tags;
+  final List<ReelMedia> media;
   final DateTime? publishedAt;
 
+  /// Publication avec au moins un média (photo ou vidéo) : seules celles-ci s'ouvrent dans l'écran Reels.
+  bool get hasMedia => media.isNotEmpty || mediaUrl.isNotEmpty;
+
+  /// Tous les médias, dans l'ordre ; à défaut de liste détaillée, le média principal.
+  List<ReelMedia> get allMedia => media.isNotEmpty ? media : (mediaUrl.isEmpty ? const [] : [ReelMedia(url: mediaUrl, video: video)]);
+
+  Reel copyWith({bool? liked, int? likes, bool? saved, int? saves, int? comments, int? shares, int? reposts}) => Reel(
+        id: id, author: author, caption: caption, mediaUrl: mediaUrl, video: video, likes: likes ?? this.likes, liked: liked ?? this.liked,
+        listing: listing, authorId: authorId, comments: comments ?? this.comments, saves: saves ?? this.saves, shares: shares ?? this.shares,
+        saved: saved ?? this.saved, boosted: boosted, tags: tags, publishedAt: publishedAt, authorAvatar: authorAvatar, authorVerified: authorVerified,
+        linkUrl: linkUrl, reposts: reposts ?? this.reposts, media: media, repostId: repostId, repostAuthor: repostAuthor, repostCaption: repostCaption,
+        repostMediaUrl: repostMediaUrl, repostMediaVideo: repostMediaVideo,
+      );
+
   /// Compteurs lus sur le serveur. Les champs absents (serveur non migré) valent 0 : rien n'est inventé.
+  /// Le badge « certifié » n'est affiché que si le serveur le confirme (`author_verified`).
   static Reel fromRow(Map x, String Function(String) url) => Reel(
         id: '${x['id']}',
         author: '${x['author']}',
         caption: '${x['caption'] ?? ''}',
-        mediaUrl: url('${x['media_path']}'),
+        mediaUrl: (x['media_path'] == null || '${x['media_path']}'.isEmpty) ? '' : url('${x['media_path']}'),
         video: x['media_kind'] == 'video',
         likes: (x['likes'] as num?)?.toInt() ?? 0,
         liked: x['liked'] == true,
@@ -55,6 +92,19 @@ class Reel {
         boosted: x['boosted'] == true,
         tags: [for (final t in (x['tags'] as List? ?? const [])) '$t'],
         publishedAt: DateTime.tryParse('${x['published_at'] ?? ''}'),
+        authorAvatar: '${x['author_avatar'] ?? ''}',
+        authorVerified: x['author_verified'] == true,
+        linkUrl: '${x['link_url'] ?? ''}',
+        reposts: (x['reposts'] as num?)?.toInt() ?? 0,
+        media: [
+          for (final m in (x['media'] as List? ?? const []))
+            if (m is Map && '${m['path'] ?? ''}'.isNotEmpty) ReelMedia(url: url('${m['path']}'), video: m['kind'] == 'video', width: (m['w'] as num?)?.toInt(), height: (m['h'] as num?)?.toInt()),
+        ],
+        repostId: '${x['repost_id'] ?? ''}',
+        repostAuthor: '${x['repost_author'] ?? ''}',
+        repostCaption: '${x['repost_caption'] ?? ''}',
+        repostMediaUrl: (x['repost_media_path'] == null || '${x['repost_media_path']}'.isEmpty) ? '' : url('${x['repost_media_path']}'),
+        repostMediaVideo: x['repost_media_kind'] == 'video',
       );
 }
 
@@ -68,7 +118,7 @@ List<Reel> rankReels(List<Reel> reels, DateTime now, {FeedSignals signals = cons
         authorId: r.authorId.isEmpty ? r.author : r.authorId,
         createdAt: r.publishedAt ?? now,
         category: r.tags.isEmpty ? '' : r.tags.first.toLowerCase(),
-        format: r.video ? 'video' : 'image',
+        format: r.video ? 'video' : (r.hasMedia ? 'image' : 'text'),
         likes: r.likes,
         comments: r.comments,
         saves: r.saves,
@@ -84,6 +134,20 @@ List<Reel> rankReels(List<Reel> reels, DateTime now, {FeedSignals signals = cons
 String compactCount(int n) => n >= 1000 ? '${(n / 1000).toStringAsFixed(1).replaceAll('.0', '').replaceAll('.', ',')} k' : '$n';
 
 class ReelsNotifier extends Notifier<List<Reel>?> {
+  /// Met à jour une publication du fil sans le recharger (cœur, enregistrement : réponse immédiate).
+  void patch(String id, Reel Function(Reel) change) {
+    final l = state;
+    if (l == null) return;
+    state = [for (final r in l) r.id == id ? change(r) : r];
+  }
+
+  /// Ajoute une publication absente du fil (ouverte depuis un profil) pour qu'elle s'affiche dans l'écran Reels.
+  void ensure(Reel r) {
+    final l = state ?? const <Reel>[];
+    if (l.any((x) => x.id == r.id)) return;
+    state = [...l, r];
+  }
+
   @override
   List<Reel>? build() {
     if (!Backend.ready) return null;
@@ -92,7 +156,9 @@ class ReelsNotifier extends Notifier<List<Reel>?> {
   }
 
   Future<void> refresh() async {
-    final r = await Backend.rpc('reels_feed', {'p_limit': 20});
+    var r = await Backend.rpc('circle_feed', {'p_limit': 30});
+    // serveur pas encore migré (migration 20261110000000) : repli sur l'ancien fil de médias
+    if (r.error != null || r.data is! List) r = await Backend.rpc('reels_feed', {'p_limit': 20});
     if (r.error != null || r.data is! List || !ref.mounted) return;
     String url(String p) {
       try {
@@ -143,9 +209,16 @@ final currentReelProvider = Provider<Reel?>((ref) {
 
 /// Balayage : `delta` = +1 reel suivant, -1 reel précédent (borné au fil).
 void moveReel(WidgetRef ref, int delta) {
-  final n = ref.read(reelsProvider)?.length ?? 0;
-  if (n == 0) return;
-  ref.read(reelIndexProvider.notifier).set((ref.read(reelIndexProvider) + delta).clamp(0, n - 1));
+  final list = ref.read(reelsProvider) ?? const <Reel>[];
+  if (list.isEmpty) return;
+  var i = ref.read(reelIndexProvider);
+  final step = delta >= 0 ? 1 : -1;
+  var j = i + step;
+  while (j >= 0 && j < list.length && !list[j].hasMedia) {
+    j += step;
+  }
+  if (j < 0 || j >= list.length) return;
+  ref.read(reelIndexProvider.notifier).set(j);
 }
 
 /// Personnes suivies par la personne connectée (`engagements` de type `follow`), lues sur le serveur.
@@ -291,14 +364,30 @@ Future<void> deleteReelComment(BuildContext context, WidgetRef ref, String id) a
   await ref.read(reelsProvider.notifier).refresh();
 }
 
+/// Cœur : un appui enregistre ou retire la réaction, tout de suite (mise à jour optimiste), sans jamais quitter l'écran.
+/// Sans compte, un message bref explique comment réagir : aucune redirection. Si le serveur refuse, l'état précédent est rétabli.
+Future<void> toggleLike(BuildContext context, WidgetRef ref, Reel r) async {
+  if (!Backend.ready) {
+    ref.read(reelsProvider.notifier).patch(r.id, (x) => x.copyWith(liked: !x.liked, likes: x.liked ? (x.likes - 1).clamp(0, 1 << 30) : x.likes + 1));
+    return;
+  }
+  if (ref.read(authProvider).current == null) return gToast(context, 'Connectez-vous pour réagir à une publication.');
+  final before = ref.read(reelsProvider)?.where((x) => x.id == r.id).firstOrNull ?? r;
+  final nowLiked = !before.liked;
+  ref.read(reelsProvider.notifier).patch(r.id, (x) => x.copyWith(liked: nowLiked, likes: nowLiked ? x.likes + 1 : (x.likes - 1).clamp(0, 1 << 30)));
+  final res = await Backend.rpc('toggle_post_like', {'p_post': r.id});
+  if (res.error != null) {
+    ref.read(reelsProvider.notifier).patch(r.id, (x) => x.copyWith(liked: before.liked, likes: before.likes));
+    if (context.mounted) gToast(context, Backend.userMessage(res.error!));
+  } else if (res.data is bool && res.data != nowLiked) {
+    ref.read(reelsProvider.notifier).patch(r.id, (x) => x.copyWith(liked: res.data as bool));
+  }
+}
+
 Future<void> likeCurrentReel(BuildContext context, WidgetRef ref) async {
   final r = ref.read(currentReelProvider);
   if (r == null) return;
-  if (!await requireLogin(context, ref, 'aimer une publication') || !context.mounted) return;
-  final res = await Backend.rpc('toggle_post_like', {'p_post': r.id});
-  if (!context.mounted) return;
-  if (res.error != null) return gAlert(context, 'Action impossible', Backend.userMessage(res.error!));
-  await ref.read(reelsProvider.notifier).refresh();
+  await toggleLike(context, ref, r);
 }
 
 Future<void> reportCurrentReel(BuildContext context, WidgetRef ref) async {
@@ -314,7 +403,7 @@ Future<void> reportCurrentReel(BuildContext context, WidgetRef ref) async {
 /// 250 « Publier » : choix d'une vidéo (60 s, 50 Mo, MP4/MOV) ou d'une image, légende, dépôt dans son dossier, puis create_post.
 Future<void> publishReel(BuildContext context, WidgetRef ref) async {
   if (!Backend.ready) return gToast(context, 'Publication envoyée');
-  if (!await requireLogin(context, ref, 'publier') || !context.mounted) return;
+  if (!await requireCertified(context, ref, 'publier') || !context.mounted) return;
   final picked = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: const ['mp4', 'mov', 'jpg', 'jpeg', 'png', 'webp']);
   if (picked.isEmpty || !context.mounted) return;
   final f = picked.first;

@@ -10,6 +10,8 @@ import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
 import '../live/auth.dart';
+import '../live/backend.dart';
+import '../live/data_export.dart';
 import '../live/seller.dart';
 import '../live/review.dart';
 import '../live/audit.dart';
@@ -49,10 +51,10 @@ class G_273 extends ConsumerWidget {
       gP(81.5, 250, 227, 25, gText('Vous gardez le contrôle', 20, Color(0xFF111015), weight: 700)),
       gP(26.5, 280, 337, 16, gText('Téléchargez ou supprimez vos données à tout moment.', 13, Color(0xFF57545F))),
       gP(44, 338, 163, 19, gText('Exporter mes données', 15, Color(0xFF111015), weight: 600)),
-      gP(44, 362, 286, 15, gText('Profil, projets, commandes, messages · ZIP + JSON', 12, Color(0xFF57545F))),
-      gP(44, 382, 209, 15, gText('Prêt sous 24 h · lien envoyé par e-mail', 12, Color(0xFF57545F))),
-      gP(44, 412, 160, 40, gBox(color: Color(0xFF111015), radii: [20, 20, 20, 20]), tap: () => engageAction(context, ref, 'data_export_request', 'me', success: 'Demande d’export envoyée. Vous recevrez vos données par e-mail.', need: 'demander l’export de vos données', already: 'Une demande d’export est déjà en cours.')),
-      gP(60, 424, 118, 16, gText('Demander l’export', 13, Color(0xFFFFFFFF), weight: 600)),
+      gP(44, 362, 286, 15, gText(gm('Profil, projets, commandes, messages · ZIP + JSON', 'Profil, annonces, commandes, notifications · fichier JSON'), 12, Color(0xFF57545F))),
+      gP(44, 382, 209, 15, gText(gm('Prêt sous 24 h · lien envoyé par e-mail', 'Téléchargé aussitôt sur votre appareil'), 12, Color(0xFF57545F))),
+      gP(44, 412, 160, 40, gBox(color: Color(0xFF111015), radii: [20, 20, 20, 20]), tap: () => Backend.ready ? exportMyData(context, ref) : engageAction(context, ref, 'data_export_request', 'me', success: 'Demande d’export envoyée. Vous recevrez vos données par e-mail.', need: 'demander l’export de vos données', already: 'Une demande d’export est déjà en cours.')),
+      gP(60, 424, 118, 16, gText(gm('Demander l’export', 'Télécharger'), 13, Color(0xFFFFFFFF), weight: 600)),
       gP(44, 508, 172, 19, gText('Supprimer mon compte', 15, Color(0xFFC2410C), weight: 600)),
       gP(44, 532, 302, 20, gText(gm('Délai de rétractation de 30 jours. Les certificats émis et les factures sont conservés (obligation légale).', '—'), 12, Color(0xFF57545F))),
       gP(44, 598, 170, 40, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFC2410C), bw: 1.5, radii: [20, 20, 20, 20]), tap: () => requestAccountDeletion(context, ref)),

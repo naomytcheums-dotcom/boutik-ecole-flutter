@@ -9,6 +9,7 @@ import '../gen.dart';
 import 'audit.dart';
 import 'backend.dart';
 import 'profile_data.dart' show saveAcademic;
+import 'lots.dart' show formDialog;
 import 'drafts.dart';
 import 'native_push_stub.dart'
     if (dart.library.io) 'native_push.dart'
@@ -618,7 +619,11 @@ Future<void> _serverLogin(
   bool isMail,
 ) async {
   // Téléphone : identifiant dérivé du numéro (comptes créés avec le seul téléphone) ; e-mail : adresse saisie.
-  final r = await Backend.login(isMail ? id : '${normPhone(id)}@phone.boutik-ecole.cm', pw);
+  final r = await Backend.login(
+    isMail ? id : '${normPhone(id)}@phone.boutik-ecole.cm',
+    pw,
+    phone: isMail ? null : normPhone(id),
+  );
   final a = r.account;
   if (a == null) {
     _errors(ref, {
@@ -886,26 +891,56 @@ Future<void> submitProfile(WidgetRef ref, BuildContext context) async {
   gOpen(context, '18c');
 }
 
+/// Canal choisi sur l'écran 15 : « email », « sms » ou « whatsapp » (par défaut l'e-mail).
+String forgotChannel(Map<String, String> f) => const {'email', 'sms', 'whatsapp'}.contains(f['fg_channel']) ? f['fg_channel']! : 'email';
+
+/// Canaux réellement disponibles côté serveur (secrets Twilio présents) ; hors connexion (démonstration) : e-mail et SMS simulés.
+final recoveryChannelsProvider = FutureProvider<Map<String, bool>>((ref) async {
+  if (!Backend.ready) return {'email': true, 'sms': true, 'whatsapp': false};
+  return Backend.recoveryChannels();
+});
+
+/// Choix du canal : le champ de saisie est vidé (e-mail et téléphone ne se mélangent pas).
+void pickForgotChannel(WidgetRef ref, String channel) {
+  final n = ref.read(formProvider.notifier);
+  n.put('fg_channel', channel);
+  n.clear(const ['fg_id']);
+  ref.read(errorsProvider.notifier).clear();
+}
+
+/// Déplace vers le bas des éléments positionnés d'un écran généré (ex. : champ « code » inséré sur l'écran 16).
+List<Widget> gShift(double dy, List<Widget> ws) => [
+  for (final w in ws)
+    if (w is GPos)
+      GPos(x: w.left!, y: w.top! + dy, gw: w.gw, gh: w.gh, tap: w.tap, onTap: w.onTap, label: w.label, kind: w.kind, child: w.child)
+    else
+      w,
+];
+
 void submitForgot(WidgetRef ref, BuildContext context) {
-  final id = (ref.read(formProvider)['fg_id'] ?? '').trim();
+  final f = ref.read(formProvider);
+  final id = (f['fg_id'] ?? '').trim();
+  final channel = forgotChannel(f);
+  final byMail = channel == 'email';
   final err = id.isEmpty
-      ? 'Saisissez votre téléphone ou votre e-mail.'
-      : (id.contains('@') ? validEmail(id) : validPhone(id));
+      ? (byMail ? 'Saisissez l’adresse e-mail de votre compte.' : 'Saisissez le numéro de téléphone de votre compte.')
+      : (byMail ? validEmail(id) : validPhone(id));
   if (err != null) return _errors(ref, {'fg_id': err});
   if (Backend.ready) {
-    _serverForgot(ref, context, id);
+    _serverForgot(ref, context, id, channel);
     return;
   }
   final exists = ref
       .read(authProvider)
       .accounts
       .any(
-        (a) => id.contains('@')
+        (a) => byMail
             ? a.email.toLowerCase() == id.toLowerCase()
             : a.phone == normPhone(id),
       );
   ref.read(errorsProvider.notifier).clear();
   ref.read(formProvider.notifier).put('fg_target', id);
+  ref.read(formProvider.notifier).put('fg_mode', '');
   gToast(
     context,
     exists
@@ -915,20 +950,37 @@ void submitForgot(WidgetRef ref, BuildContext context) {
   gOpen(context, '16');
 }
 
-/// Avec le serveur : lien de réinitialisation envoyé par Supabase Auth. Rien n'est annoncé comme envoyé sans réponse du serveur ;
-/// la réponse est identique que le compte existe ou non.
+/// Avec le serveur : e-mail = lien Supabase Auth ; SMS / WhatsApp = code à usage unique (Edge Function « auth-recovery »).
+/// Rien n'est annoncé comme envoyé sans réponse du serveur ; la réponse est identique que le compte existe ou non.
 Future<void> _serverForgot(
   WidgetRef ref,
   BuildContext context,
   String id,
+  String channel,
 ) async {
-  if (!id.contains('@')) {
-    _errors(ref, {
-      'fg_id': 'Saisissez l’adresse e-mail du compte : la réinitialisation par SMS n’est pas disponible.',
-    });
+  ref.read(errorsProvider.notifier).clear();
+  final form = ref.read(formProvider.notifier);
+  if (channel != 'email') {
+    final phone = normPhone(id);
+    final err = await Backend.requestRecoveryCode(channel, phone);
+    if (!context.mounted) return;
+    if (err != null) {
+      await gAlert(context, 'Envoi impossible', err);
+      return;
+    }
+    form.put('fg_target', phone);
+    form.put('fg_mode', 'code');
+    form.clear(const ['rs_code', 'rs_pw', 'rs_pw2']);
+    await gAlert(
+      context,
+      channel == 'sms' ? 'Vérifiez vos SMS' : 'Vérifiez WhatsApp',
+      'Si un compte existe pour le numéro +237 $phone, un code à 6 chiffres vient d’être envoyé. Il est valable 10 minutes.\n\nSaisissez-le à l’écran suivant, avec votre nouveau mot de passe.',
+      button: 'Saisir le code',
+    );
+    if (context.mounted) gOpen(context, '16');
     return;
   }
-  ref.read(errorsProvider.notifier).clear();
+  form.put('fg_mode', '');
   final err = await Backend.resetPassword(id);
   if (!context.mounted) return;
   if (err != null) {
@@ -938,7 +990,7 @@ Future<void> _serverForgot(
   await gAlert(
     context,
     'Vérifiez votre boîte e-mail',
-    'Si un compte existe pour $id, un lien de réinitialisation vient d’être envoyé.\n\nOuvrez-le dans ce navigateur : vous pourrez alors choisir un nouveau mot de passe.',
+    'Si un compte existe pour $id, un lien de réinitialisation vient d’être envoyé (pensez aux courriers indésirables).\n\nOuvrez-le dans ce navigateur : vous pourrez alors choisir un nouveau mot de passe.',
     button: 'Retour à la connexion',
   );
   if (context.mounted) gOpen(context, '11');
@@ -946,7 +998,12 @@ Future<void> _serverForgot(
 
 void submitReset(WidgetRef ref, BuildContext context) {
   final f = ref.read(formProvider);
+  final codeMode = Backend.ready && f['fg_mode'] == 'code' && !Backend.recovery.value;
   final errs = <String, String?>{
+    if (codeMode)
+      'rs_code': RegExp(r'^\d{6}$').hasMatch((f['rs_code'] ?? '').trim())
+          ? null
+          : 'Saisissez le code à 6 chiffres reçu.',
     'rs_pw': validPassword(f['rs_pw'] ?? ''),
     'rs_pw2':
         (f['rs_pw'] ?? '') == (f['rs_pw2'] ?? '') &&
@@ -955,6 +1012,10 @@ void submitReset(WidgetRef ref, BuildContext context) {
         : 'Les mots de passe ne correspondent pas.',
   };
   if (errs.values.any((e) => e != null)) return _errors(ref, errs);
+  if (codeMode) {
+    _serverResetByCode(ref, context, f['fg_target'] ?? '', (f['rs_code'] ?? '').trim(), f['rs_pw']!);
+    return;
+  }
   if (Backend.ready) {
     _serverReset(ref, context, f['rs_pw']!);
     return;
@@ -970,6 +1031,27 @@ void submitReset(WidgetRef ref, BuildContext context) {
   }
   ref.read(errorsProvider.notifier).clear();
   gToast(context, 'Mot de passe modifié. Connectez-vous.');
+  gOpen(context, '11');
+}
+
+/// Réinitialisation par code (SMS / WhatsApp) : le mot de passe n'est annoncé comme modifié qu'après confirmation du serveur.
+Future<void> _serverResetByCode(
+  WidgetRef ref,
+  BuildContext context,
+  String phone,
+  String code,
+  String password,
+) async {
+  final err = await Backend.confirmRecoveryCode(phone, code, password);
+  if (!context.mounted) return;
+  if (err != null) {
+    _errors(ref, {'rs_code': err});
+    await gAlert(context, 'Mot de passe non modifié', err);
+    return;
+  }
+  ref.read(errorsProvider.notifier).clear();
+  ref.read(formProvider.notifier).clear(const ['rs_pw', 'rs_pw2', 'rs_code', 'fg_mode']);
+  gToast(context, 'Mot de passe modifié. Connectez-vous avec le nouveau mot de passe.');
   gOpen(context, '11');
 }
 
@@ -1234,6 +1316,40 @@ Widget profileSkillsOrCert(double y) => gP(
   ),
 );
 
+/// Publication réservée aux comptes certifiés (annonces, publications). Retourne vrai si la personne peut publier ;
+/// sinon explique pourquoi et propose la certification. Ne bloque jamais la consultation (visiteurs). Hors serveur : toujours vrai.
+Future<bool> requireCertified(BuildContext context, WidgetRef ref, String action) async {
+  if (!Backend.ready) return true;
+  if (!await requireLogin(context, ref, action) || !context.mounted) return false;
+  final a = ref.read(authProvider).current;
+  if (a == null) return false;
+  const staff = {'Resp. département', 'Direction', 'Finance', 'Support', 'Admin global'};
+  if (a.certified || staff.contains(a.staff)) return true;
+  final state = switch (a.certification) {
+    'pending' => 'Votre demande de certification est en attente d’examen.',
+    'review' => 'Votre demande de certification est en cours d’examen.',
+    'rejected' => 'Votre dernière demande a été refusée : complétez votre dossier et refaites une demande.',
+    'revoked' => 'Le badge de certification de votre compte a été retiré.',
+    _ => 'Votre compte n’est pas encore certifié.',
+  };
+  final ask = a.certification == 'none' || a.certification == 'rejected';
+  final go = await gDialog<bool>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+      title: const Text('Publication réservée aux comptes certifiés', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700, color: Color(0xFF111015))),
+      content: Text('Pour $action, votre compte doit être certifié. $state\n\nVous pouvez continuer à parcourir, rechercher et acheter normalement.', style: const TextStyle(fontSize: 14, height: 1.45, color: Color(0xFF4A4854))),
+      actions: [
+        TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Plus tard', style: TextStyle(color: Color(0xFF57545F)))),
+        if (ask) TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: const Text('Demander la certification', style: TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF111015)))),
+      ],
+    ),
+  );
+  if (go == true && context.mounted) await requestCertificationFlow(ref, context);
+  return false;
+}
+
 Future<void> requestCertificationFlow(
   WidgetRef ref,
   BuildContext context,
@@ -1247,9 +1363,22 @@ Future<void> requestCertificationFlow(
   // Visiteur : on propose la connexion au lieu d'envoyer une demande que le serveur refuserait (D-024).
   if (!await requireLogin(context, ref, 'demander la certification')) return;
   if (!context.mounted) return;
-  final err = await Backend.requestCertification();
+  final v = await formDialog(
+    context,
+    'Demande de certification',
+    [('Pourquoi demandez-vous la certification ? (20 caractères minimum)', ''), ('Liens utiles (portfolio, LinkedIn…) — facultatif', '')],
+    submit: 'Envoyer la demande',
+    intro: 'Le département examine votre dossier. Les justificatifs (carte d’étudiant, certificat de scolarité, diplôme…) se déposent dans votre dossier de profil.',
+  );
+  if (v == null || !context.mounted) return;
+  final err = await Backend.requestCertification(motive: v[0], links: v[1]);
   if (!context.mounted) return;
-  if (err != null) return gAlert(context, 'Demande impossible', err);
+  if (err != null) {
+    await gAlert(context, 'Demande impossible', err);
+    // justificatif manquant : on ouvre directement le dossier pour en déposer un
+    if (context.mounted && err.toLowerCase().contains('justificatif')) gOpen(context, '154');
+    return;
+  }
   final fresh = await Backend.restore();
   if (fresh != null) ref.read(authProvider.notifier).login(fresh);
   if (context.mounted) {
@@ -1481,4 +1610,37 @@ DateTime? parseBirth(String v) {
   final now = DateTime.now();
   if (dt.isAfter(now) || y < 1920) return null;
   return dt;
+}
+
+
+/// Force du mot de passe et liste des règles de l'écran 16 : calculées sur la saisie réelle (rien de figé).
+class ResetStrength extends ConsumerWidget {
+  const ResetStrength({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pw = ref.watch(formProvider.select((m) => m['rs_pw'] ?? ''));
+    final rules = [
+      pw.length >= 8,
+      RegExp('[A-Z]').hasMatch(pw),
+      RegExp('[0-9]').hasMatch(pw),
+      RegExp('[^A-Za-z0-9]').hasMatch(pw),
+    ];
+    const labels = ['8 caractères minimum', 'Une lettre majuscule', 'Un chiffre', 'Un caractère spécial (! @ # …)'];
+    final n = rules.where((e) => e).length;
+    const green = Color(0xFF1F9D6B);
+    final level = pw.isEmpty ? '' : (n <= 1 ? 'Faible' : (n == 2 ? 'Moyen' : (n == 3 ? 'Bon' : 'Fort')));
+    final levelColor = n <= 1 ? const Color(0xFFC0261B) : (n == 2 ? const Color(0xFFB36B00) : const Color(0xFF0F7A52));
+    return Stack(children: [
+      for (var i = 0; i < 4; i++)
+        gP(24.0 + 87 * i, 4, 80, 6, gBox(color: i < n ? green : const Color(0xFFE4E8EE), radii: const [3, 3, 3, 3])),
+      gP(24, 22, 200, 16, gText('Force du mot de passe', 12.5, const Color(0xFF57545F))),
+      gP(266, 22, 100, 16, gText(level, 12.5, levelColor, weight: 700, align: TextAlign.right)),
+      for (var i = 0; i < 4; i++) ...[
+        gP(24, 62.0 + 30 * i, 20, 20, gBox(color: rules[i] ? green : Colors.white, border: rules[i] ? null : const Color(0xFFDAD5E4), bw: 1.5, oval: true)),
+        gP(27, 66.0 + 30 * i, 14, 11.5, gImg('assets/figma/v/d9758b2cc9e4ca.svg'), show: rules[i]),
+        gP(56, 63.5 + 30 * i, 280, 17, gText(labels[i], 13.5, rules[i] ? const Color(0xFF111015) : const Color(0xFF57545F), weight: 500)),
+      ],
+    ]);
+  }
 }

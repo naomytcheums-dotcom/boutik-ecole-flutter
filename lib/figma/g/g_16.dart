@@ -9,6 +9,7 @@ import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
 import '../live/auth.dart';
+import '../live/backend.dart';
 import '../live/seller.dart';
 import '../live/review.dart';
 import '../live/audit.dart';
@@ -29,6 +30,7 @@ class G_16 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final codeMode = Backend.ready && ref.watch(formProvider.select((m) => m['fg_mode'] == 'code')) && !Backend.recovery.value;
     return GScreen(w: 390, h: 900, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 147, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 624, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
@@ -48,43 +50,32 @@ class G_16 extends ConsumerWidget {
       gP(76, 71, 232, 26, gText('Nouveau mot de passe', 21, Color(0xFF111015), weight: 700)),
       gP(33.5, 233, 323, 26, gText('Créez un nouveau mot de passe', 21, Color(0xFF111015), weight: 800, align: TextAlign.center)),
       gP(64.5, 264, 261, 40, gText('Choisissez un mot de passe fort que vous\nn’utilisez pas ailleurs.', 13.5, Color(0xFF57545F), lh: 20, align: TextAlign.center)),
-      gP(24, 322, 143, 16, gText('Nouveau mot de passe', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 346, 342, 52, GField(hint: 'Mot de passe', size: 17, hintColor: Color(0xFF111015), weight: 500, padL: 52, obscure: true, onChanged: (v) { ref.read(formProvider.notifier).put('rs_pw', v); })),
-      errorText('rs_pw', 28, 400),
-      gP(39.875, 368.208, 20.25, 14.708, gImg('assets/figma/v/32a45c6e5f0fcb.svg')),
-      gP(43.042, 361.083, 13.917, 13.125, gImg('assets/figma/v/1fb86fed903268.svg')),
-      gP(327.083, 363.458, 21.833, 17.083, gImg('assets/figma/v/abcfc4162eb13b.svg')),
-      gP(332.625, 366.625, 10.75, 10.75, gImg('assets/figma/v/e4edba8fd4f28c.svg')),
-      gP(24, 424, 80, 6, gBox(color: Color(0xFF1F9D6B), radii: [3, 3, 3, 3])),
-      gP(111, 424, 80, 6, gBox(color: Color(0xFF1F9D6B), radii: [3, 3, 3, 3])),
-      gP(198, 424, 80, 6, gBox(color: Color(0xFF1F9D6B), radii: [3, 3, 3, 3])),
-      gP(285, 424, 80, 6, gBox(color: Color(0xFFE4E8EE), radii: [3, 3, 3, 3])),
-      gP(24, 442, 135, 16, gText('Force du mot de passe', 12.5, Color(0xFF57545F))),
-      gP(340, 442, 26, 16, gText('Fort', 12.5, Color(0xFF0F7A52), weight: 700, align: TextAlign.right)),
-      gP(24, 482, 20, 20, gBox(color: Color(0xFF1F9D6B), oval: true)),
-      gP(27, 486, 14, 11.5, gImg('assets/figma/v/d9758b2cc9e4ca.svg')),
-      gP(56, 483.5, 142, 17, gText('8 caractères minimum', 13.5, Color(0xFF111015), weight: 500)),
-      gP(24, 512, 20, 20, gBox(color: Color(0xFF1F9D6B), oval: true)),
-      gP(27, 516, 14, 11.5, gImg('assets/figma/v/d9758b2cc9e4ca.svg')),
-      gP(56, 513.5, 132, 17, gText('Une lettre majuscule', 13.5, Color(0xFF111015), weight: 500)),
-      gP(24, 542, 20, 20, gBox(color: Color(0xFF1F9D6B), oval: true)),
-      gP(27, 546, 14, 11.5, gImg('assets/figma/v/d9758b2cc9e4ca.svg')),
-      gP(56, 543.5, 63, 17, gText('Un chiffre', 13.5, Color(0xFF111015), weight: 500)),
-      gP(24, 572, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFDAD5E4), bw: 1.5, oval: true)),
-      gP(56, 573.5, 188, 17, gText('Un caractère spécial (! @ # …)', 13.5, Color(0xFF57545F), weight: 500)),
-      gP(24, 618, 164, 16, gText('Confirmer le mot de passe', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 642, 342, 52, GField(hint: 'Mot de passe', size: 17, hintColor: Color(0xFF111015), weight: 500, padL: 52, obscure: true, onChanged: (v) { ref.read(formProvider.notifier).put('rs_pw2', v); }, onSubmitted: (v) { submitReset(ref, context); })),
-      errorText('rs_pw2', 28, 696),
-      gP(39.875, 664.208, 20.25, 14.708, gImg('assets/figma/v/32a45c6e5f0fcb.svg')),
-      gP(43.042, 657.083, 13.917, 13.125, gImg('assets/figma/v/1fb86fed903268.svg')),
-      gP(327.083, 659.458, 21.833, 17.083, gImg('assets/figma/v/abcfc4162eb13b.svg')),
-      gP(332.625, 662.625, 10.75, 10.75, gImg('assets/figma/v/e4edba8fd4f28c.svg')),
-      gP(24, 724, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x29122640), offset: Offset(0, 5), blurRadius: 12, spreadRadius: 0)], radii: [27, 27, 27, 27])),
-      gP(89, 741, 212, 20, gText('Réinitialiser le mot de passe', 16, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
-      gP(125, 884, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
-      gP(166.5, 172.167, 69, 42.167, gImg('assets/figma/r/173_46.png')),
-      gP(178.833, 134.667, 44.333, 40.5, gImg('assets/figma/v/9a0bdefbfa5dbf.svg')),
-      gTap(24, 724, 342, 54, () { submitReset(ref, context); }),
+      gP(24, 318, 300, 16, gText(forgotChannel(ref.watch(formProvider)) == 'whatsapp' ? 'Code reçu sur WhatsApp' : 'Code reçu par SMS', 13, Color(0xFF111015), weight: 600), show: codeMode),
+      gP(24, 340, 342, 52, GField(hint: '6 chiffres', size: 17, hintColor: Color(0xFF57545F), weight: 500, padL: 20, onChanged: (v) { ref.read(formProvider.notifier).put('rs_code', v); }), show: codeMode),
+      errorText('rs_code', 28, 394),
+      ...gShift(codeMode ? 92 : 0, [
+        gP(24, 322, 143, 16, gText('Nouveau mot de passe', 13, Color(0xFF111015), weight: 600)),
+        gP(24, 346, 342, 52, GField(hint: 'Mot de passe', size: 17, hintColor: Color(0xFF111015), weight: 500, padL: 52, obscure: true, onChanged: (v) { ref.read(formProvider.notifier).put('rs_pw', v); })),
+        errorText('rs_pw', 28, 400),
+        gP(39.875, 368.208, 20.25, 14.708, gImg('assets/figma/v/32a45c6e5f0fcb.svg')),
+        gP(43.042, 361.083, 13.917, 13.125, gImg('assets/figma/v/1fb86fed903268.svg')),
+        gP(327.083, 363.458, 21.833, 17.083, gImg('assets/figma/v/abcfc4162eb13b.svg')),
+        gP(332.625, 366.625, 10.75, 10.75, gImg('assets/figma/v/e4edba8fd4f28c.svg')),
+        gP(0, 420, 390, 180, const ResetStrength()),
+        gP(24, 618, 164, 16, gText('Confirmer le mot de passe', 13, Color(0xFF111015), weight: 600)),
+        gP(24, 642, 342, 52, GField(hint: 'Mot de passe', size: 17, hintColor: Color(0xFF111015), weight: 500, padL: 52, obscure: true, onChanged: (v) { ref.read(formProvider.notifier).put('rs_pw2', v); }, onSubmitted: (v) { submitReset(ref, context); })),
+        errorText('rs_pw2', 28, 696),
+        gP(39.875, 664.208, 20.25, 14.708, gImg('assets/figma/v/32a45c6e5f0fcb.svg')),
+        gP(43.042, 657.083, 13.917, 13.125, gImg('assets/figma/v/1fb86fed903268.svg')),
+        gP(327.083, 659.458, 21.833, 17.083, gImg('assets/figma/v/abcfc4162eb13b.svg')),
+        gP(332.625, 662.625, 10.75, 10.75, gImg('assets/figma/v/e4edba8fd4f28c.svg')),
+        gP(24, 724, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x29122640), offset: Offset(0, 5), blurRadius: 12, spreadRadius: 0)], radii: [27, 27, 27, 27])),
+        gP(89, 741, 212, 20, gText('Réinitialiser le mot de passe', 16, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
+        gP(125, 884, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+        gP(166.5, 172.167, 69, 42.167, gImg('assets/figma/r/173_46.png')),
+        gP(178.833, 134.667, 44.333, 40.5, gImg('assets/figma/v/9a0bdefbfa5dbf.svg')),
+        gTap(24, 724, 342, 54, () { submitReset(ref, context); }),
+      ]),
     ]);
   }
 }

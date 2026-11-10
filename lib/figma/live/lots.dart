@@ -609,10 +609,25 @@ Future<void> certificationRequestsDialog(BuildContext context, WidgetRef ref) as
   if (!context.mounted) return;
   final rows = await _load(context, 'profiles', 'id,name,department,certification');
   if (rows == null || !context.mounted) return;
+  final reqs = await _load(context, 'certification_requests', 'user_id,motive,links,documents,created_at', order: 'created_at');
+  if (!context.mounted) return;
+  // dernière demande de chaque personne : motif, liens et justificatifs fournis
+  final last = <String, Map<String, dynamic>>{};
+  for (final r in (reqs ?? const <Map<String, dynamic>>[])) {
+    last.putIfAbsent('${r['user_id']}', () => r);
+  }
   const labels = {'pending': 'Demande reçue', 'review': 'En examen', 'approved': 'Certifié'};
+  const kinds = {'student_card': 'carte d’étudiant', 'enrollment_certificate': 'certificat de scolarité', 'diploma': 'diplôme', 'certificate': 'certificat', 'cv': 'CV', 'other': 'autre'};
   final todo = [for (final p in rows) if (labels.containsKey(p['certification'])) p];
+  String detail(Map<String, dynamic> p) {
+    final q = last['${p['id']}'];
+    if (q == null) return '';
+    final docs = [for (final d in (q['documents'] as List? ?? const [])) '${kinds[(d as Map)['kind']] ?? d['kind']}'];
+    return ' · « ${q['motive']} »${'${q['links']}'.isEmpty ? '' : ' · ${q['links']}'} · justificatifs : ${docs.isEmpty ? 'aucun' : docs.join(', ')}';
+  }
+
   await _listDialog(context, 'Demandes de certification', todo, (p) => '${p['name'] ?? ''}',
-      sub: (p) => [p['department'] ?? '', labels[p['certification']] ?? ''].where((x) => '$x'.isNotEmpty).join(' · '),
+      sub: (p) => [p['department'] ?? '', labels[p['certification']] ?? ''].where((x) => '$x'.isNotEmpty).join(' · ') + detail(p),
       empty: 'Aucune demande en attente.',
       actions: (p) => [
             for (final (label, status) in switch (p['certification']) {
@@ -623,8 +638,14 @@ Future<void> certificationRequestsDialog(BuildContext context, WidgetRef ref) as
               (
                 label,
                 (x) async {
-                  final r = await _run(context, 'decide_certification', {'p_user': x['id'], 'p_status': status}, title: 'Décision non enregistrée');
-                  if (r.ok && context.mounted) gToast(context, 'Décision enregistrée par le serveur.');
+                  String? note;
+                  if (status == 'rejected' || status == 'revoked') {
+                    final v = await formDialog(context, status == 'rejected' ? 'Motif du refus' : 'Motif du retrait', [('Motif (visible par la personne)', '')], submit: 'Confirmer');
+                    if (v == null || !context.mounted) return false;
+                    note = v.first;
+                  }
+                  final r = await _run(context, 'decide_certification', {'p_user': x['id'], 'p_status': status, 'p_note': note}, title: 'Décision non enregistrée');
+                  if (r.ok && context.mounted) gToast(context, 'Décision enregistrée ; la personne est notifiée.');
                   return r.ok;
                 }
               ),

@@ -11,6 +11,7 @@ import 'backend.dart';
 import 'drafts.dart';
 import 'engage.dart' show unavailableAction;
 import 'lots.dart' show publishMissionBrief, myNeedsDialog, myMissionsDialog;
+import 'qr.dart';
 import 'seller.dart';
 import 'store.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
@@ -50,6 +51,13 @@ class KioskSession extends Notifier<QrSession?> {
   void start(LiveProduct p) {
     final now = DateTime.now();
     state = QrSession(signToken(p.title, now), p, now);
+    if (Backend.ready) {
+      // connecté : le code est créé et signé par le serveur (jeton aléatoire unique, 5 minutes, usage unique)
+      Future<void>(() async {
+        final r = await issueQr('kiosk_transfer', p.title, label: p.title, ttlSeconds: 300);
+        if (r.token != null && ref.mounted && state?.product.title == p.title && state?.createdAt == now) state = QrSession(r.token!, p, now);
+      });
+    }
   }
 
   void clear() => state = null;
@@ -112,6 +120,11 @@ void startPhoneTransfer(WidgetRef ref, BuildContext context) {
 
 /// Le téléphone scanne le code : vérifie la validité, l'usage unique et envoie l'article dans le panier.
 void scanQr(WidgetRef ref, BuildContext context) {
+  if (Backend.ready) {
+    // connecté : lecture réelle par la caméra ; le serveur valide le code (expiration, usage unique)
+    scanAndHandleQr(context, ref);
+    return;
+  }
   var s = ref.read(kioskSessionProvider);
   if (s == null) {
     // Accès direct à l'écran 209 : on génère le code du produit courant (comme l'écran 208 l'aurait fait).
@@ -314,7 +327,8 @@ void submitBrief(WidgetRef ref, BuildContext context) {
   ref.read(errorsProvider.notifier).clear();
   final kind = missionKinds[ref.read(missionKindProvider).clamp(0, 5)];
   if (Backend.ready) {
-    _serverBrief(context, ref, kind, desc);
+    final bud = (f['ms_budget'] ?? '').trim(), when = (f['ms_date'] ?? '').trim();
+    _serverBrief(context, ref, kind, [desc, if (bud.isNotEmpty) 'Budget estimé : $bud', if (when.isNotEmpty) 'Date souhaitée : $when'].join('\n'));
     return;
   }
   final id = '#BR-${(413 + DateTime.now().second).toString().padLeft(4, '0')}';
@@ -328,7 +342,7 @@ void submitBrief(WidgetRef ref, BuildContext context) {
 /// la mission d'exemple de la maquette n'est jamais modifiée ni présentée comme réelle, et aucun paiement n'est simulé.
 Future<void> _serverBrief(BuildContext context, WidgetRef ref, String kind, String desc) async {
   if (!await publishMissionBrief(context, ref, kind, desc) || !context.mounted) return;
-  ref.read(formProvider.notifier).clear(const ['ms_desc']);
+  ref.read(formProvider.notifier).clear(const ['ms_desc', 'ms_budget', 'ms_date']);
   gToast(context, 'Besoin envoyé : le département qualifie les équipes et vous transmet les propositions.');
   await myNeedsDialog(context, ref);
 }

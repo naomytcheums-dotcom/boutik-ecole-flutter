@@ -176,13 +176,17 @@ class EventsList extends ConsumerWidget {
           final label = e.mine ? 'Inscrit(e)' : (e.full ? 'Complet' : 'Inscription');
           return Row(children: [
             Expanded(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              child: GestureDetector(
+               behavior: HitTestBehavior.opaque,
+               onTap: () => eventDetail(context, ref, e),
+               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text(e.title, maxLines: 2, overflow: TextOverflow.ellipsis, style: _st(13.5, w: FontWeight.w600)),
                 const SizedBox(height: 3),
                 Text(e.when, maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(11.5, c: _grey)),
                 const SizedBox(height: 3),
                 Text([e.price == 0 ? 'Gratuit' : fcfa(e.price), if (e.left != null) '${e.left} place${e.left == 1 ? '' : 's'}'].join(' · '), style: _st(11, w: FontWeight.w600, c: const Color(0xFF0F7A52))),
               ]),
+              ),
             ),
             const SizedBox(width: 10),
             GestureDetector(
@@ -279,4 +283,39 @@ class AdminEventsTable extends ConsumerWidget {
       ),
     );
   }
+}
+
+
+/// Détail d'un événement (touché dans la liste) : type, date, lieu, tarif, places restantes et inscription / désinscription.
+Future<void> eventDetail(BuildContext context, WidgetRef ref, AppEvent e) async {
+  const kinds = {'exposition': 'Exposition', 'atelier': 'Atelier', 'conference': 'Conférence'};
+  final soon = e.startsAt.isAfter(DateTime.now()) && e.startsAt.difference(DateTime.now()).inDays < 7;
+  await gDialog<void>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+      title: Text(e.title, style: _st(17, w: FontWeight.w700)),
+      content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(kinds[e.kind] ?? e.kind, style: _st(12, w: FontWeight.w600, c: const Color(0xFF5A3FE0))),
+        const SizedBox(height: 8),
+        Text(e.when, style: _st(13.5)),
+        const SizedBox(height: 6),
+        Text(e.price == 0 ? 'Entrée gratuite' : 'Tarif : ${fcfa(e.price)}', style: _st(13)),
+        if (e.left != null) Text(e.full ? 'Complet' : '${e.left} place${e.left == 1 ? '' : 's'} restante${e.left == 1 ? '' : 's'}', style: _st(13)),
+        if (soon) Padding(padding: const EdgeInsets.only(top: 8), child: Text('Bientôt : cet événement a lieu dans moins de 7 jours.', style: _st(12, c: const Color(0xFF8F5400)))),
+      ]),
+      actions: [
+        TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text('Fermer', style: _st(14, w: FontWeight.w600, c: _grey))),
+        if (e.mine || !e.full)
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              toggleRegistration(context, ref, e);
+            },
+            child: Text(e.mine ? 'Annuler mon inscription' : 'M’inscrire', style: _st(14, w: FontWeight.w700)),
+          ),
+      ],
+    ),
+  );
 }

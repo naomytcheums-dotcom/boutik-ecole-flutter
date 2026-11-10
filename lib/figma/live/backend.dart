@@ -41,7 +41,7 @@ class Backend {
     final c = _c;
     if (c == null) return 'Connexion au serveur impossible.';
     try {
-      await c.auth.resetPasswordForEmail(email, redirectTo: kIsWeb ? '${Uri.base.origin}/' : null);
+      await c.auth.resetPasswordForEmail(email, redirectTo: recoveryRedirect());
       return null;
     } on AuthException catch (e) {
       final m = e.message.toLowerCase();
@@ -51,6 +51,65 @@ class Backend {
       return 'Envoi impossible : ${e.message}';
     } catch (_) {
       return 'Connexion au serveur impossible. Réessayez.';
+    }
+  }
+
+  /// Adresse de retour du lien de réinitialisation : le site en production, jamais un localhost (le lien serait inutilisable
+  /// pour le destinataire). Elle doit figurer dans les « Redirect URLs » de Supabase Auth (https://boutik-ecole.vercel.app/**).
+  static String recoveryRedirect() {
+    const prod = 'https://boutik-ecole.vercel.app/';
+    if (!kIsWeb) return prod;
+    final o = Uri.base;
+    final local = o.host == 'localhost' || o.host == '127.0.0.1' || o.host == '::1' || o.host.endsWith('.localhost');
+    return local || o.scheme != 'https' ? prod : '${o.origin}/';
+  }
+
+  /// Canaux réellement disponibles pour « mot de passe oublié » (secrets Twilio présents côté serveur). L'e-mail passe par Supabase Auth.
+  static Future<Map<String, bool>> recoveryChannels() async {
+    final r = await _recoveryCall({'action': 'channels'});
+    if (r.error != null) return {'email': true, 'sms': false, 'whatsapp': false};
+    return {
+      'email': true,
+      'sms': r.data['sms'] == true,
+      'whatsapp': r.data['whatsapp'] == true,
+    };
+  }
+
+  /// Demande l'envoi d'un code à usage unique. La réponse est la même que le compte existe ou non. Retourne un message d'erreur, ou null.
+  static Future<String?> requestRecoveryCode(String channel, String phone) async =>
+      (await _recoveryCall({'action': 'request', 'channel': channel, 'phone': phone})).error;
+
+  /// Vérifie le code et change le mot de passe côté serveur. Retourne un message d'erreur, ou null si le serveur a confirmé.
+  static Future<String?> confirmRecoveryCode(String phone, String code, String password) async =>
+      (await _recoveryCall({'action': 'confirm', 'phone': phone, 'code': code, 'password': password})).error;
+
+  /// Connexion par téléphone pour un compte dont l'identifiant d'authentification est une adresse e-mail.
+  static Future<bool> sessionFromPhone(String phone, String password) async {
+    final r = await _recoveryCall({'action': 'login_phone', 'phone': phone, 'password': password});
+    final t = r.data['refresh_token'];
+    final c = _c;
+    if (r.error != null || t is! String || c == null) return false;
+    try {
+      await c.auth.setSession(t);
+      return c.auth.currentUser != null;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  static Future<({Map<String, dynamic> data, String? error})> _recoveryCall(Map<String, dynamic> body) async {
+    final c = _c;
+    if (c == null) return (data: const <String, dynamic>{}, error: 'Connexion au serveur impossible.');
+    try {
+      final r = await c.functions.invoke('auth-recovery', body: body);
+      final d = r.data;
+      return (data: d is Map ? Map<String, dynamic>.from(d) : <String, dynamic>{}, error: null);
+    } on FunctionException catch (e) {
+      final d = e.details;
+      final m = d is Map ? d['message'] : null;
+      return (data: const <String, dynamic>{}, error: m is String && m.isNotEmpty ? m : 'Le service a répondu avec une erreur (${e.status}). Réessayez.');
+    } catch (_) {
+      return (data: const <String, dynamic>{}, error: 'Connexion au serveur impossible. Réessayez.');
     }
   }
 
@@ -142,12 +201,20 @@ class Backend {
   }
 
   /// Connexion réelle : le profil est chargé exclusivement avec l'identifiant de la session ouverte.
-  static Future<({Account? account, String? error})> login(String email, String password) async {
+  /// [phone] : si l'identifiant dérivé du téléphone échoue (compte créé avec e-mail ET téléphone), le serveur retrouve le compte par son numéro.
+  static Future<({Account? account, String? error})> login(String email, String password, {String? phone}) async {
     final c = _c;
     if (c == null) return (account: null, error: 'Connexion au serveur impossible.');
     try {
-      final r = await c.auth.signInWithPassword(email: email, password: password);
-      final user = r.user;
+      User? user;
+      try {
+        user = (await c.auth.signInWithPassword(email: email, password: password)).user;
+      } on AuthException catch (e) {
+        final bad = e.code == 'invalid_credentials' || e.message.toLowerCase().contains('invalid login');
+        if (phone == null || !bad || !await sessionFromPhone(phone, password)) rethrow;
+        user = c.auth.currentUser;
+        email = user?.email ?? email;
+      }
       if (user == null) return (account: null, error: 'Identifiant ou mot de passe incorrect.');
       var row = await c.from('profiles').select().eq('id', user.id).maybeSingle();
       if (row == null) {
@@ -1017,11 +1084,11 @@ class Backend {
   }
 
   /// Dépose une demande de certification (état « en attente ») ; la décision appartient au département.
-  static Future<String?> requestCertification() async {
+  static Future<String?> requestCertification({String motive = '', String links = ''}) async {
     final c = _c;
     if (c == null) return 'Connexion au serveur impossible.';
     try {
-      await c.rpc('request_certification');
+      await c.rpc('submit_certification_request', params: {'p_motive': motive, 'p_links': links});
       return null;
     } on PostgrestException catch (e) {
       return userMessage(e.message);

@@ -462,6 +462,7 @@ String newProductErrorsSummary(Map<String, String> errs) {
 }
 
 Future<void> submitListing(WidgetRef ref, BuildContext context, {required bool publish}) async {
+  if (publish && !await requireCertified(context, ref, 'publier une annonce') || !context.mounted) return;
   final f = ref.read(formProvider);
   final title = (f['np_title'] ?? '').trim();
   final cat = (f['np_cat'] ?? 'Maison et déco').trim();

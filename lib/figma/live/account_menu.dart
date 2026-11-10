@@ -7,6 +7,7 @@ import 'auth.dart';
 import 'delivery.dart' show homeDeliverySettingsDialog;
 import 'feedback.dart';
 import 'lots.dart';
+import 'qr.dart' show myQrDialog;
 import 'referral.dart';
 import 'services.dart';
 
@@ -141,6 +142,7 @@ final _groups = <_Group>[
     _Entry('Dossiers de mission', action: missionDossierDialog),
     _Entry('Vérification en 2 étapes (application)', action: twoFactorDialog),
     _Entry('Mes certificats', action: myCertificatesDialog),
+    _Entry('Mon QR personnel', action: myQrDialog),
     _Entry('Mon espace client', screen: '261'),
     _Entry('Mes données et confidentialité', screen: '273'),
     _Entry('Vérification en 2 étapes', screen: '272'),

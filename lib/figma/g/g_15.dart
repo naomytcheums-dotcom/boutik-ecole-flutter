@@ -29,6 +29,12 @@ class G_15 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final f = ref.watch(formProvider);
+    final ch = forgotChannel(f);
+    final byMail = ch == 'email';
+    final avail = ref.watch(recoveryChannelsProvider).maybeWhen(data: (m) => m, orElse: () => const {'email': true, 'sms': false, 'whatsapp': false});
+    final keys = [for (final k in const ['email', 'sms', 'whatsapp']) if (avail[k] == true) k];
+    const names = {'email': 'E-mail', 'sms': 'SMS', 'whatsapp': 'WhatsApp'};
     return GScreen(w: 390, h: 900, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 147, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 624, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
@@ -47,23 +53,24 @@ class G_15 extends ConsumerWidget {
       gP(32.583, 81, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 71, 204, 26, gText('Mot de passe oublié', 21, Color(0xFF111015), weight: 700)),
       gP(27.5, 282, 335, 28, gText('Réinitialiser votre mot de passe', 22, Color(0xFF111015), weight: 800, align: TextAlign.center)),
-      gP(50.5, 332.5, 289, 63, gText('Saisissez votre numéro de téléphone ou votre\ne-mail. Nous vous enverrons un code pour\nréinitialiser votre mot de passe.', 13.5, Color(0xFF57545F), lh: 21, align: TextAlign.center)),
-      gP(24, 438, 128, 16, gText('Téléphone ou e-mail', 13, Color(0xFF111015), weight: 600)),
-      gP(24, 462, 342, 52, GField(hint: 'Ex. +237 6 XX XX XX XX', size: 14.5, hintColor: Color(0xFF57545F), weight: 500, padL: 52, onChanged: (v) { ref.read(formProvider.notifier).put('fg_id', v); }, onSubmitted: (v) { submitForgot(ref, context); })),
+      gP(40, 332.5, 310, 63, gText(byMail ? 'Saisissez l’adresse e-mail de votre compte.'+'\n'+'Nous vous enverrons un lien pour'+'\n'+'réinitialiser votre mot de passe.' : 'Choisissez le canal, puis saisissez le numéro'+'\n'+'de votre compte. Nous vous enverrons un code'+'\n'+'à 6 chiffres pour réinitialiser votre mot de passe.', 13.5, Color(0xFF57545F), lh: 21, align: TextAlign.center)),
+      gP(24, 438, 240, 16, gText(byMail ? 'Adresse e-mail' : 'Numéro de téléphone', 13, Color(0xFF111015), weight: 600)),
+      gP(24, 462, 342, 52, GField(key: ValueKey('fg_id$ch'), hint: byMail ? 'exemple@mail.com' : 'Ex. 6 XX XX XX XX', size: 14.5, hintColor: Color(0xFF57545F), weight: 500, padL: 52, onChanged: (v) { ref.read(formProvider.notifier).put('fg_id', v); }, onSubmitted: (v) { submitForgot(ref, context); })),
       errorText('fg_id', 28, 516),
       gP(39.083, 478.667, 21.833, 18.667, gImg('assets/figma/v/7e8276104a8e4f.svg')),
       gP(39.083, 481.042, 21.833, 11.542, gImg('assets/figma/v/904a4bba0b310b.svg')),
       gP(40.75, 578.083, 22.5, 16.083, gImg('assets/figma/v/28a0764538148f.svg')),
       gP(44.417, 569.833, 15.167, 14.25, gImg('assets/figma/v/857bfb88ff06e0.svg')),
-      gP(76, 564, 207, 36, gText('Pour votre sécurité, le code envoyé\nest valable pendant 10 minutes.', 12.5, Color(0xFF57545F), lh: 18)),
+      gP(76, 564, 270, 36, gText(byMail ? 'Pour votre sécurité, le lien envoyé'+'\n'+'n’est valable que pendant une durée limitée.' : 'Pour votre sécurité, le code envoyé'+'\n'+'est valable pendant 10 minutes.', 12.5, Color(0xFF57545F), lh: 18)),
       gP(24, 656, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x29122640), offset: Offset(0, 5), blurRadius: 12, spreadRadius: 0)], radii: [27, 27, 27, 27])),
-      gP(119.5, 673, 123, 20, gText('Envoyer le code', 16, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
+      gP(119.5, 673, 123, 20, gText(byMail ? 'Envoyer le lien' : 'Envoyer le code', 16, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(253.25, 680, 16.5, 6, gImg('assets/figma/v/2d30ecf6147fbb.svg')),
       gP(258.5, 674.75, 11.25, 16.5, gImg('assets/figma/v/996965d4e56708.svg')),
       gP(123, 747, 144, 18, gText('Retour à la connexion', 14, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)),
       gP(125, 884, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(156.417, 190.75, 51.666, 51.666, gImg('assets/figma/r/178_28.png')),
       gP(188.5, 155.333, 55, 55, gImg('assets/figma/r/178_29.png')),
+      gP(24, 612, 342, 36, GChoiceGroup(key: ValueKey('fg_ch${keys.join()}'), chips: [for (var i = 0; i < keys.length; i++) GChip(i * 342 / keys.length, 0, 342 / keys.length - 6, 36, names[keys[i]]!, 13.5, 600)], selected: keys.indexOf(ch).clamp(0, keys.length - 1), selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 18, border: Color(0xFFD9D3E6), onChanged: (i) { pickForgotChannel(ref, keys[i]); }), show: keys.length > 1),
       gTap(24, 656, 342, 54, () { submitForgot(ref, context); }),
       gTap(123, 747, 144, 18, () { gOpen(context, '11'); }),
     ]);

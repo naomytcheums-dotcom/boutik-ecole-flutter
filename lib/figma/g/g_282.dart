@@ -9,6 +9,8 @@ import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
 import '../live/auth.dart';
+import '../live/qr.dart';
+import '../live/missions.dart';
 import '../live/seller.dart';
 import '../live/review.dart';
 import '../live/audit.dart';
@@ -16,7 +18,6 @@ import '../live/admin.dart';
 import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
-import '../live/missions.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
@@ -43,8 +44,9 @@ class G_282 extends ConsumerWidget {
       gP(43.458, 89, 17.083, 6, gImg('assets/figma/v/e130a05f3cf779.svg')),
       gP(132.5, 76, 125, 21, gText('QR de transfert', 17, Color(0xFF111015), weight: 500)),
       gP(126.5, 102, 137, 15, gText(gm('Borne n°2 · Hall principal', '—'), 12, Color(0xFF57545F))),
-      gP(138.125, 173.125, 113.75, 113.75, gImg('assets/figma/r/209_638.png')),
-      gP(125, 344, 140, 20, gText(gm('Expire dans 04:32', '—'), 16, Color(0xFF111015), weight: 700)),
+      gP(138.125, 173.125, 113.75, 113.75, gImg('assets/figma/r/209_638.png'), show: demoContent),
+      if (!demoContent) gP(125, 160, 140, 140, Consumer(builder: (context, r, _) { final s = r.watch(kioskSessionProvider); return s == null ? Center(child: gText('Aucun code actif', 12, Color(0xFF57545F), align: TextAlign.center)) : QrView(data: qrPayload(s.token), size: 140); })),
+      gP(125, 344, 140, 20, gText(demoContent ? 'Expire dans 04:32' : (ref.watch(kioskSessionProvider) == null ? '—' : 'Expire dans ${countdown(ref)}'), 16, Color(0xFF111015), weight: 700)),
       gP(83, 370, 224, 15, gText(gm('Signé · valable 5 minutes · usage unique', '—'), 12, Color(0xFF57545F), weight: 500)),
       gP(44, 424, 56, 15, gText('Signature', 12, Color(0xFF57545F))),
       gP(210, 424, 136, 15, gText(gm('HMAC-SHA256 vérifiée', '—'), 12, Color(0xFF111015), weight: 600)),

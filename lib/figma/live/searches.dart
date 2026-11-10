@@ -96,3 +96,68 @@ void innovationMapSearch(BuildContext context, WidgetRef ref, String q) {
   ref.read(talentQueryProvider.notifier).set(q.trim());
   gOpen(context, '70');
 }
+
+
+/// Catégories du guide (179) : chaque onglet filtre les articles d'aide réels ; chaque article ouvre l'écran concerné.
+const guideCategories = <String, List<String>>{
+  'Débuter': ['Compléter mon dossier', 'Changer mon mot de passe', 'Parrainer un ami', 'Contacter le support'],
+  'Acheter': ['Suivre ma commande', 'Annuler une commande', 'Retirer ma commande au kiosque', 'Payer par Mobile Money'],
+  'Vendre': ['Créer et publier une annonce', 'Publier un reel'],
+  'Opportunités': ['Déposer un besoin de mission'],
+  'Hackathons': ['S’inscrire à un hackathon'],
+};
+
+class GuideBrowser extends StatefulWidget {
+  const GuideBrowser({super.key});
+  @override
+  State<GuideBrowser> createState() => _GuideBrowserState();
+}
+
+class _GuideBrowserState extends State<GuideBrowser> {
+  String _cat = guideCategories.keys.first;
+
+  @override
+  Widget build(BuildContext context) {
+    final rows = [for (final t in guideCategories[_cat]!) helpArticles.firstWhere((a) => a.$1 == t)];
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      SizedBox(
+        height: 42,
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          children: [
+            for (final c in guideCategories.keys)
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: ChoiceChip(
+                  label: Text(c, style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600, color: _cat == c ? Colors.white : const Color(0xFF57545F))),
+                  selected: _cat == c,
+                  showCheckmark: false,
+                  selectedColor: const Color(0xFF111015),
+                  backgroundColor: const Color(0xFFF2EFF6),
+                  side: BorderSide.none,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
+                  onSelected: (_) => setState(() => _cat = c),
+                ),
+              ),
+          ],
+        ),
+      ),
+      Expanded(
+        child: ListView.separated(
+          padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
+          itemCount: rows.length,
+          separatorBuilder: (_, _) => const Divider(height: 1, color: Color(0xFFF2EFF6)),
+          itemBuilder: (_, i) => ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+            leading: Container(width: 40, height: 40, decoration: BoxDecoration(color: const Color(0xFFF1EEFB), borderRadius: BorderRadius.circular(13)), child: const Icon(Icons.menu_book_outlined, size: 20, color: Color(0xFF5A3FE0))),
+            title: Text(rows[i].$1, style: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w600, color: Color(0xFF111015))),
+            subtitle: const Text('Guide pas à pas', style: TextStyle(fontSize: 11.5, color: Color(0xFF57545F))),
+            trailing: const Icon(Icons.chevron_right, color: Color(0xFF57545F)),
+            onTap: () => gOpen(context, rows[i].$3),
+          ),
+        ),
+      ),
+    ]);
+  }
+}

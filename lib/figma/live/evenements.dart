@@ -157,7 +157,6 @@ class EventsList extends ConsumerWidget {
           height: 200,
           alignment: Alignment.center,
           padding: const EdgeInsets.symmetric(horizontal: 24),
-          decoration: BoxDecoration(color: const Color(0x66FFFFFF), borderRadius: BorderRadius.circular(22), border: Border.all(color: const Color(0xFFECE8F2))),
           child: Text(t, textAlign: TextAlign.center, style: _st(13, c: _grey).copyWith(height: 1.5)),
         );
     if (all == null) return note('Chargement des événements…');

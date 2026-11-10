@@ -61,7 +61,7 @@ String budgetLabel(Map<String, dynamic> r) {
   return 'Budget ${fcfa(_i(a))} – ${fcfa(_i(b))}';
 }
 
-Widget _note(double w, String t, {double h = 130}) => Container(width: w, height: h, alignment: Alignment.center, padding: const EdgeInsets.symmetric(horizontal: 24), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(22), border: Border.all(color: const Color(0xFFECE8F2))), child: Text(t, textAlign: TextAlign.center, style: _st(13, c: _grey).copyWith(height: 1.5)));
+Widget _note(double w, String t, {double h = 130}) => Container(width: w, height: h, alignment: Alignment.center, padding: const EdgeInsets.symmetric(horizontal: 24), child: Text(t, textAlign: TextAlign.center, style: _st(13, c: _grey).copyWith(height: 1.5)));
 
 Widget _kpi(String label, String value, double w) => Container(
       width: w,

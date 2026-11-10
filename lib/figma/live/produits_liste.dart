@@ -36,7 +36,6 @@ class ProductCards extends ConsumerWidget {
         height: 200,
         alignment: Alignment.center,
         padding: const EdgeInsets.symmetric(horizontal: 24),
-        decoration: BoxDecoration(color: const Color(0x66FFFFFF), borderRadius: BorderRadius.circular(22), border: Border.all(color: const Color(0xFFECE8F2))),
         child: Text(emptyText, textAlign: TextAlign.center, style: _st(13, c: _grey).copyWith(height: 1.5)),
       );
     }
@@ -109,7 +108,6 @@ class NoSource extends StatelessWidget {
         height: height,
         alignment: Alignment.center,
         padding: const EdgeInsets.symmetric(horizontal: 28),
-        decoration: BoxDecoration(color: const Color(0x66FFFFFF), borderRadius: BorderRadius.circular(22), border: Border.all(color: const Color(0xFFECE8F2))),
         child: Text('$what\n\nCes indicateurs seront affichés dès que leur source de données sera disponible.', textAlign: TextAlign.center, style: _st(13, c: _grey).copyWith(height: 1.5)),
       );
 }

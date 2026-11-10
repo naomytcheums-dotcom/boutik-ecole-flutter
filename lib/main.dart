@@ -32,7 +32,7 @@ Future<void> main() async {
   await Backend.init().timeout(limite, onTimeout: () {});
   await native_push.initNativePush().timeout(limite, onTimeout: () {});
   await Drafts.load().timeout(limite, onTimeout: () {});
-  final remembered = await loadRemembered().timeout(limite, onTimeout: () => null);
+  final remembered = await loadRemembered().timeout(const Duration(seconds: 25), onTimeout: () => null);
   if (remembered != null) {
     // notifications natives : en arrière-plan, sans retarder l'ouverture
     native_push.syncNativePushForCurrentUser().timeout(const Duration(seconds: 20), onTimeout: () {}).ignore();

@@ -474,10 +474,8 @@ Future<Account?> loadRemembered() async {
       if (live == null) return null;
       // Session ouverte par un lien de réinitialisation : conservée (sans connecter le compte) jusqu'au nouveau mot de passe (écran 16).
       if (Backend.recovery.value) return null;
-      if (e == null || e.toLowerCase() != live.toLowerCase()) {
-        await Backend.signOut();
-        return null;
-      }
+      // La session reste ouverte tant que la personne ne se déconnecte pas elle-même (plus de déconnexion à chaque rechargement).
+      if (e == null || e.toLowerCase() != live.toLowerCase()) await saveRemembered(live);
       return await Backend.restore();
     }
     if (e == null) return null;

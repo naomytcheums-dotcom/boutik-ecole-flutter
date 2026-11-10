@@ -99,7 +99,6 @@ Widget _note(String t, double width, {double height = 200}) => Container(
       height: height,
       alignment: Alignment.center,
       padding: const EdgeInsets.symmetric(horizontal: 24),
-      decoration: BoxDecoration(color: const Color(0x66FFFFFF), borderRadius: BorderRadius.circular(22), border: Border.all(color: const Color(0xFFECE8F2))),
       child: Text(t, textAlign: TextAlign.center, style: _st(13, c: _grey).copyWith(height: 1.5)),
     );
 

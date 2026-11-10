@@ -195,13 +195,13 @@ void main() {
       expect((k.open, k.work, k.done), (1, 1, 0));
     });
 
-    testWidgets('mot de passe oublié : un numéro de téléphone est refusé (réinitialisation par e-mail uniquement)', (tester) async {
+    testWidgets('mot de passe oublié : un numéro saisi sur le canal e-mail est refusé', (tester) async {
       Backend.ready = true;
       final c = await pumpAction(tester, (ref, context) {
         ref.read(formProvider.notifier).put('fg_id', '+237 699 99 99 99');
         submitForgot(ref, context);
       });
-      expect(c.read(errorsProvider)['fg_id'], contains('réinitialisation par SMS'));
+      expect(c.read(errorsProvider)['fg_id'], contains('Adresse e-mail invalide'));
       expect(find.textContaining('démonstration'), findsNothing);
     });
 

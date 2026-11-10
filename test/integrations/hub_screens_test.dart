@@ -102,7 +102,7 @@ void main() {
     await t.tap(find.text('Mes contenus connectés'));
     await t.pumpAndSettle();
     expect(find.textContaining('Rien n’est importé'), findsOneWidget);
-    await t.tap(find.byIcon(Icons.arrow_back_ios_new_rounded));
+    await t.tap(find.byIcon(Icons.arrow_back));
     await t.pumpAndSettle();
     await t.tap(find.text('Publier sur mes réseaux'));
     await t.pumpAndSettle();

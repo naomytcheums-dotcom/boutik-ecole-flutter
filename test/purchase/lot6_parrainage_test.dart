@@ -28,10 +28,10 @@ void main() {
     });
     expect(s.total, 1110);
     expect(s.tierLabel, 'Niveau Argent');
-    expect(s.nextLabel, 'Plus que 15 filleuls pour passer Or');
+    expect(s.nextLabel, 'Récompense non définie');
     expect(s.referees.single.name, 'Brice N.');
     expect(const ReferralSummary().tierLabel, 'Aucun filleul actif');
-    expect(const ReferralSummary(tier: 'Bronze', active: 4).nextLabel, 'Plus que 1 filleul pour passer Argent');
+    expect(const ReferralSummary(tier: 'Bronze', active: 4).nextLabel, 'Récompense non définie');
     expect(refereeStatus('pending'), 'En attente');
     expect(invitationText(''), contains('Connectez-vous'));
     expect(invitationText('ABCD2345'), 'Code de parrainage : ABCD2345');

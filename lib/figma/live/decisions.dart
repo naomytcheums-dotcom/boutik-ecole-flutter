@@ -19,7 +19,7 @@ const _ink = Color(0xFF111015);
 const _grey = Color(0xFF57545F);
 TextStyle _st(double size, {FontWeight w = FontWeight.w500, Color c = _ink}) => TextStyle(fontFamily: 'PlusJakartaSans', fontSize: size, fontWeight: w, color: c);
 
-Widget _note(double w, String t, {double h = 120}) => Container(width: w, height: h, alignment: Alignment.center, padding: const EdgeInsets.symmetric(horizontal: 24), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(22), border: Border.all(color: const Color(0xFFECE8F2))), child: Text(t, textAlign: TextAlign.center, style: _st(13, c: _grey).copyWith(height: 1.5)));
+Widget _note(double w, String t, {double h = 120}) => Container(width: w, height: h, alignment: Alignment.center, padding: const EdgeInsets.symmetric(horizontal: 24), child: Text(t, textAlign: TextAlign.center, style: _st(13, c: _grey).copyWith(height: 1.5)));
 Widget _btn(String t, VoidCallback f, {bool dark = true, double? w}) => GestureDetector(onTap: f, child: Container(width: w, padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 13), alignment: Alignment.center, decoration: BoxDecoration(color: dark ? _ink : Colors.white, borderRadius: BorderRadius.circular(24), border: dark ? null : Border.all(color: const Color(0xFFE6E1EE))), child: Text(t, style: _st(13.5, w: FontWeight.w700, c: dark ? Colors.white : _ink))));
 bool _out(WidgetRef ref) => ref.watch(authProvider.select((a) => a.current == null));
 

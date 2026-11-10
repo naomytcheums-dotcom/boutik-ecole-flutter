@@ -68,7 +68,6 @@ class HomeTalents extends ConsumerWidget {
           height: height,
           alignment: Alignment.center,
           padding: const EdgeInsets.symmetric(horizontal: 24),
-          decoration: BoxDecoration(color: const Color(0x66FFFFFF), borderRadius: BorderRadius.circular(22), border: Border.all(color: const Color(0xFFECE8F2))),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             Text(t, textAlign: TextAlign.center, style: _st(12.5, c: _grey).copyWith(height: 1.5)),
             if (action != null) ...[
@@ -151,7 +150,6 @@ class HomeProducts extends ConsumerWidget {
         height: height,
         alignment: Alignment.center,
         padding: const EdgeInsets.symmetric(horizontal: 24),
-        decoration: BoxDecoration(color: const Color(0x66FFFFFF), borderRadius: BorderRadius.circular(22), border: Border.all(color: const Color(0xFFECE8F2))),
         child: Text('Aucun produit publié pour le moment.\nLes créations des étudiants apparaîtront ici dès leur publication.', textAlign: TextAlign.center, style: _st(12.5, c: _grey).copyWith(height: 1.5)),
       );
     }
@@ -222,7 +220,6 @@ class CommunityMembers extends ConsumerWidget {
           height: height,
           alignment: Alignment.center,
           padding: const EdgeInsets.symmetric(horizontal: 24),
-          decoration: BoxDecoration(color: const Color(0x66FFFFFF), borderRadius: BorderRadius.circular(22), border: Border.all(color: const Color(0xFFECE8F2))),
           child: Text(t, textAlign: TextAlign.center, style: _st(12.5, c: _grey).copyWith(height: 1.5)),
         );
     if (list == null) return note('Chargement des membres…');

@@ -46,7 +46,6 @@ class CircleFeed extends ConsumerWidget {
           height: 260,
           alignment: Alignment.center,
           padding: const EdgeInsets.symmetric(horizontal: 24),
-          decoration: BoxDecoration(color: const Color(0x66FFFFFF), border: Border.all(color: const Color(0xFFECE8F2))),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             Text(t, textAlign: TextAlign.center, style: _st(13, c: _grey).copyWith(height: 1.5)),
             if (action != null) ...[

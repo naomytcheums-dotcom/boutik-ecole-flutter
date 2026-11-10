@@ -18,7 +18,7 @@ final staffProductionsProvider = NotifierProvider<RpcRows, List<Map<String, dyna
 
 String productionStatus(Object? s) => switch ('$s') { 'terminee' => 'Terminée', 'en_retard' => 'En retard', 'annulee' => 'Annulée', _ => 'En cours' };
 
-Widget _note(double w, String t, {double h = 130}) => Container(width: w, height: h, alignment: Alignment.center, padding: const EdgeInsets.symmetric(horizontal: 24), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(22), border: Border.all(color: const Color(0xFFECE8F2))), child: Text(t, textAlign: TextAlign.center, style: _st(13, c: _grey).copyWith(height: 1.5)));
+Widget _note(double w, String t, {double h = 130}) => Container(width: w, height: h, alignment: Alignment.center, padding: const EdgeInsets.symmetric(horizontal: 24), child: Text(t, textAlign: TextAlign.center, style: _st(13, c: _grey).copyWith(height: 1.5)));
 
 Widget? _guard(WidgetRef ref, List<Map<String, dynamic>>? rows, bool Function() error, double width) {
   if (ref.watch(authProvider.select((a) => a.current == null))) return _note(width, 'Connectez-vous avec un compte de gestion pour voir cette liste.');

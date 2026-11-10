@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/notifs.dart' show NotifBadge;
 import '../live/store.dart';
 import '../live/circle_feed.dart';
 import '../live/l06.dart';
@@ -44,7 +45,7 @@ class G_244b extends ConsumerWidget {
       gP(330, 36, 40, 40, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
       gP(340.625, 45.917, 18.75, 16.625, gImg('assets/figma/v/b2ae09d0fd46bb.svg')),
       gP(345.796, 59.375, 8.408, 6.712, gImg('assets/figma/v/f59da0513c0b4c.svg')),
-      gP(356, 39, 10, 10, gBox(color: Color(0xFFE5484D), oval: true)),
+      gP(354, 34, 22, 18, const NotifBadge()),
       gP(14, 104, 56, 56, gBox(color: Color(0xFFDAD6E2), oval: true)),
       gP(17, 107, 50, 50, gBox(color: Color(0xFFFFFFFF), oval: true)),
       gP(19, 109, 46, 46, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [23, 23, 23, 23])),

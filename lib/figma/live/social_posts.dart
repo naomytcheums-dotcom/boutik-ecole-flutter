@@ -838,10 +838,9 @@ class _ComposerSheetState extends ConsumerState<_ComposerSheet> {
     if (p.isEmpty || !mounted) return;
     setState(() {
       for (final f in p) {
-        if (_files.length < 10) _files.add(f);
+        _files.add(f);
       }
     });
-    if (_files.length >= 10) gToast(context, '10 médias au plus par publication.');
   }
 
   Future<void> _publish() async {
@@ -923,7 +922,7 @@ class _ComposerSheetState extends ConsumerState<_ComposerSheet> {
                 ),
               ),
             Row(children: [
-              TextButton.icon(onPressed: _busy ? null : _pick, icon: const Icon(Icons.add_photo_alternate_outlined), label: Text(_files.isEmpty ? 'Photos ou vidéos' : 'Ajouter (${_files.length}/10)', style: sty(13, w: FontWeight.w600))),
+              TextButton.icon(onPressed: _busy ? null : _pick, icon: const Icon(Icons.add_photo_alternate_outlined), label: Text(_files.isEmpty ? 'Photos ou vidéos' : 'Ajouter', style: sty(13, w: FontWeight.w600))),
               const Spacer(),
               FilledButton(
                 onPressed: _busy ? null : _publish,

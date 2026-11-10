@@ -357,7 +357,7 @@ class _MyProjectsPageState extends ConsumerState<MyProjectsPage> {
         if (l == null) const Padding(padding: EdgeInsets.all(40), child: Center(child: CircularProgressIndicator()))
         else if (error != null) TpEmpty(title: 'Lecture impossible', text: error!, icon: Icons.cloud_off_rounded)
         else if (l.isEmpty)
-          TpEmpty(title: 'Aucun projet', text: 'Décrivez votre projet ou votre innovation : vous pouvez enregistrer un brouillon et le publier quand il est prêt.', action: 'Nouveau projet', onAction: () => _open(null, 'projet'), icon: Icons.lightbulb_outline_rounded)
+          TpEmpty(title: 'Aucun projet', text: 'Décrivez votre projet ou votre innovation : vous pouvez enregistrer un brouillon et le publier quand il est prêt.', icon: Icons.lightbulb_outline_rounded)
         else
           for (final p in l)
             TpCard(

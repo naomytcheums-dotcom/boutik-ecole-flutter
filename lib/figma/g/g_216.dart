@@ -44,6 +44,7 @@ class G_216 extends ConsumerWidget {
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(24, 70, 181, 26, gText('Marché des vœux', 21, Color(0xFF111015), weight: 700)),
       gP(341, 71, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '19')),
+      gP(331.5, 61.5, 40, 40, const GGlassCircle()),
       gP(340.75, 70.75, 20.667, 20.667, gImg('assets/figma/v/eeff0eb6fd6e24.svg')),
       gP(353.308, 83.308, 9.942, 9.942, gImg('assets/figma/v/34172806399cca.svg')),
       gP(36, 143.5, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11]), show: demoContent),

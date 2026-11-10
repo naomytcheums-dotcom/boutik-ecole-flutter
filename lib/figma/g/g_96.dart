@@ -49,6 +49,7 @@ class G_96 extends ConsumerWidget {
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 185, 26, gText('Défis d’innovation', 21, Color(0xFF111015), weight: 700)),
       gP(341, 71, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '19')),
+      gP(331.5, 61.5, 40, 40, const GGlassCircle()),
       gP(340.75, 70.75, 20.667, 20.667, gImg('assets/figma/v/eeff0eb6fd6e24.svg')),
       gP(353.308, 83.308, 9.942, 9.942, gImg('assets/figma/v/34172806399cca.svg')),
       gP(24, 120, 342, 170, gBox(image: 'assets/figma/img/fbb2092962d6dc7886c56df2e6f5a1cfb07c25bb.png', fit: BoxFit.cover, radii: [24, 24, 24, 24])),

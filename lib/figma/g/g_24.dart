@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/notifs.dart' show NotifBadge;
 import '../live/store.dart';
 import '../live/vendeur_public.dart';
 import '../live/l06.dart';
@@ -51,7 +52,7 @@ class G_24 extends ConsumerWidget {
       gP(290.816, 77.834, 19.333, 14.333, gImg('assets/figma/v/9c92298f9fd6b2.svg')),
       gP(294.149, 69.5, 12.667, 9.333, gImg('assets/figma/v/bb8ad3c4792df6.svg')),
       gP(297.482, 69.5, 6, 16.833, gImg('assets/figma/v/5bb53be308dfb1.svg')),
-      gP(311.886, 58.393, 6.842, 6.842, gBox(color: Color(0xFFF04438), oval: true)),
+      gP(310, 53, 22, 18, const NotifBadge()),
       gP(335.263, 64.869, 31.93, 31.93, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x1F122640), offset: Offset(0, 2), blurRadius: 8, spreadRadius: 0)], oval: true)),
       gP(342.099, 76.693, 8.281, 8.281, gImg('assets/figma/v/cbc01f1ce0d6b1.svg')),
       gP(347.088, 76.693, 8.281, 8.281, gImg('assets/figma/v/31cb1f2be4b685.svg')),

@@ -50,6 +50,7 @@ class G_100 extends ConsumerWidget {
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 127, 26, gText('Événements', 21, Color(0xFF111015), weight: 700)),
       gP(341, 71, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '19')),
+      gP(331.5, 61.5, 40, 40, const GGlassCircle()),
       gP(340.75, 70.75, 20.667, 20.667, gImg('assets/figma/v/eeff0eb6fd6e24.svg')),
       gP(353.308, 83.308, 9.942, 9.942, gImg('assets/figma/v/34172806399cca.svg')),
       gP(26, 120, 44.857, 58, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1, radii: [16, 16, 16, 16]), show: demoContent),

@@ -432,22 +432,11 @@ class GScreen extends StatelessWidget {
       if (r.top - 4 < contentFrom) contentFrom = math.max(0.0, r.top - 4);
     }
 
-    // Écran d'une page (hauteur de maquette ≤ 900) : il tient en entier dans la fenêtre, sans défilement. L'échelle est réduite au besoin
-    // (barres du navigateur, petit téléphone) et la maquette reste centrée ; le contenu s'arrête au menu, qui reste fixe en bas.
+    // Écran d'une page (hauteur de maquette ≤ 900) : pleine largeur de l'écran, quelle que soit la taille du téléphone ; le contenu s'arrête
+    // au menu, qui reste fixe en bas (aucun fond ajouté).
     final single = h <= 900;
     final bandExtent = band.isEmpty ? 0.0 : (bandBottom - bandTop + 8);
     final contentTo = single && band.isNotEmpty ? bandTop : h;
-    if (single) {
-      final unit = (contentTo - contentFrom) + bandExtent;
-      final avail = c.maxHeight - pad.top - pad.bottom - keyboard;
-      if (unit > 0 && avail > 0) s = math.max(math.min(s, avail / unit), s * 0.88);
-    } else {
-      // Page longue (accueil…) : même échelle que les pages d'un écran, pour un format identique ; le reste se parcourt en défilant.
-      final avail = c.maxHeight - pad.top - pad.bottom - keyboard;
-      final unit = 844 - contentFrom;
-      if (unit > 0 && avail > 0) s = math.max(math.min(s, avail / unit), s * 0.88);
-    }
-
     Widget layer(List<Widget> kids, double from, double to, {Clip clip = Clip.hardEdge}) => SizedBox(
           width: w * s,
           height: (to - from) * s,
@@ -690,7 +679,7 @@ class GGlassCircle extends StatelessWidget {
         child: ClipOval(
           child: BackdropFilter(
             filter: ui.ImageFilter.blur(sigmaX: 13, sigmaY: 13),
-            child: DecoratedBox(decoration: BoxDecoration(color: const Color(0x6BFFFFFF), shape: BoxShape.circle, border: Border.all(color: const Color(0xFFFFFFFF), width: 1.5))),
+            child: DecoratedBox(decoration: BoxDecoration(color: const Color(0x99FFFFFF), shape: BoxShape.circle, border: Border.all(color: const Color(0xFFFFFFFF), width: 1.5), boxShadow: const [BoxShadow(color: Color(0x24403366), offset: Offset(0, 3), blurRadius: 8)])),
           ),
         ),
       );
@@ -723,7 +712,9 @@ class _GGlassBox extends StatelessWidget {
     if (!off) return make();
     return LayoutBuilder(builder: (context, c) {
       final menu = c.maxWidth >= 330 && c.maxWidth <= 360 && c.maxHeight >= 54 && c.maxHeight <= 74;
-      return menu ? make() : const SizedBox.expand();
+      // Les ronds de bouton (retour, recherche, trois points, cloche…) gardent toujours leur verre : seules les grandes surfaces en sont privées.
+      final bouton = c.maxWidth <= 64 && c.maxHeight <= 64;
+      return menu || bouton ? make() : const SizedBox.expand();
     });
   }
 }

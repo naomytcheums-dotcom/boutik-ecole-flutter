@@ -57,8 +57,33 @@ final notifsProvider = NotifierProvider<Notifs, List<NotificationItem>>(Notifs.n
 /// Compteurs de non-lus (notifications, messages) lus sur le serveur.
 final unreadProvider = FutureProvider<({int notifications, int messages})>((ref) async {
   ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
+  // Mise à jour automatique : le chiffre suit les nouvelles notifications sans recharger la page.
+  final t = Timer(const Duration(seconds: 25), ref.invalidateSelf);
+  ref.onDispose(t.cancel);
   return Backend.unreadCounts();
 });
+
+/// Pastille de la cloche : le nombre de notifications non lues, mis à jour à chaque nouvelle notification ; rien quand il n'y en a plus.
+/// Hors connexion au serveur (aperçu), le point de la maquette est conservé.
+class NotifBadge extends ConsumerWidget {
+  const NotifBadge({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (!Backend.ready) return const Align(alignment: Alignment.topLeft, child: SizedBox(width: 9, height: 9, child: DecoratedBox(decoration: BoxDecoration(color: Color(0xFFE5484D), shape: BoxShape.circle))));
+    final n = ref.watch(unreadProvider).value?.notifications ?? 0;
+    if (n <= 0) return const SizedBox.shrink();
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Container(
+        constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(color: const Color(0xFFE5484D), borderRadius: BorderRadius.circular(8), border: Border.all(color: Colors.white, width: 1.2)),
+        child: Text(n > 99 ? '99+' : '$n', style: const TextStyle(inherit: false, fontFamily: 'PlusJakartaSans', fontSize: 9, fontWeight: FontWeight.w700, color: Colors.white, height: 1.1)),
+      ),
+    );
+  }
+}
 
 /// Filtre de l'écran : 0 toutes · 1 commandes · 2 messages · 3 autres.
 class NotifFilter extends Notifier<int> {

@@ -81,7 +81,7 @@ void main() {
     expect(find.textContaining('Aucune publication'), findsWidgets);
   });
 
-  testWidgets('profil 10 connecté : trois emplacements de vidéos phares, jamais de photo de maquette', (t) async {
+  testWidgets('profil 10 connecté : trois cases de couverture, jamais de photo de maquette', (t) async {
     Backend.ready = true;
     GAnim.enabled = false;
     t.view.physicalSize = const Size(393, 852);
@@ -89,7 +89,7 @@ void main() {
     addTearDown(t.view.reset);
     await t.pumpWidget(ProviderScope(overrides: [reelsProvider.overrideWith(() => _Reels(const []))], child: MaterialApp(home: G_10())));
     await t.pumpAndSettle();
-    expect(find.text('Vidéo phare'), findsNWidgets(3));
+    expect(find.byIcon(Icons.add_circle_outline), findsNWidgets(3)); // trois cases vides : un « + » chacune, sans texte
   });
 
   testWidgets('réseau social 244 connecté : les publications réelles s’affichent avec leurs compteurs', (t) async {

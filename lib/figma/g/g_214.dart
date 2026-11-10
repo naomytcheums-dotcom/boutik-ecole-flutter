@@ -48,6 +48,7 @@ class G_214 extends ConsumerWidget {
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 149, 26, gText('Départements', 21, Color(0xFF111015), weight: 700)),
       gP(341, 71, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '19')),
+      gP(331.5, 61.5, 40, 40, const GGlassCircle()),
       gP(340.75, 70.75, 20.667, 20.667, gImg('assets/figma/v/eeff0eb6fd6e24.svg')),
       gP(353.308, 83.308, 9.942, 9.942, gImg('assets/figma/v/34172806399cca.svg')),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 55.6, 34, 'Tous', 12.5, 600), GChip(87.6, 120, 92.6, 34, 'Tertiaire', 12.5, 500), GChip(188.2, 120, 92.6, 34, 'Industrie', 12.5, 500), GChip(288.8, 120, 92.6, 34, 'Numérique', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),

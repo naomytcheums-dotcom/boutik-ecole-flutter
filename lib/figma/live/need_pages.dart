@@ -165,7 +165,7 @@ class _MyNeedsPageState extends ConsumerState<MyNeedsPage> {
         if (l == null) const Padding(padding: EdgeInsets.all(40), child: Center(child: CircularProgressIndicator()))
         else if (error != null) TpEmpty(title: 'Lecture impossible', text: error!, icon: Icons.cloud_off_rounded)
         else if (l.isEmpty)
-          TpEmpty(title: 'Aucun besoin publié', text: 'Décrivez ce que vous cherchez : les talents qualifiés vous font des propositions que vous comparez ici.', action: 'Publier un besoin', onAction: () => _open(), icon: Icons.assignment_outlined)
+          TpEmpty(title: 'Aucun besoin publié', text: 'Décrivez ce que vous cherchez : les talents qualifiés vous font des propositions que vous comparez ici.', icon: Icons.assignment_outlined)
         else
           for (final m in l)
             TpCard(

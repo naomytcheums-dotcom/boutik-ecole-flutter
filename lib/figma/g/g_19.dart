@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/notifs.dart' show NotifBadge;
 import '../live/store.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
@@ -47,7 +48,7 @@ class G_19 extends ConsumerWidget {
       gP(14.219, 58.33, 47.227, 43.45, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(312.225, 70, 23.52, 20.6, gImg('assets/figma/v/fd807ff2facf81.svg')),
       gP(319.33, 88.493, 9.309, 6.978, gImg('assets/figma/v/3fde3cb38434ae.svg')),
-      gP(325.508, 66.854, 9.141, 9.141, gBox(color: Color(0xFFF04438), oval: true)),
+      gP(324, 61, 22, 18, const NotifBadge()),
       gP(350.391, 66.571, 34.023, 33.516, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [16.758, 16.758, 16.758, 16.758])),
       gP(25.898, 280.03, 216, 78, gRich([('Trouvez ce qui\n', 31.484, 700, Color(0xFFFFFFFF)), ('vous', 31.484, 700, Color(0xFFFFC72C)), (' inspire', 31.484, 700, Color(0xFFFFFFFF))], lh: 38.594)),
       gP(26.914, 370.834, 221, 69, gText('Produits, services, talents,\nprojets... explorez tout l’univers\nétudiant de l’IUT de Douala.', 14.727, Color(0xFFFFFFFF), weight: 500, lh: 22.852)),

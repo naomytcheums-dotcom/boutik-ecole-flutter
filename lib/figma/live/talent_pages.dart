@@ -97,7 +97,7 @@ class _SkillsPageState extends ConsumerState<SkillsPage> {
         if (l == null) const Padding(padding: EdgeInsets.all(40), child: Center(child: CircularProgressIndicator()))
         else if (error != null) TpEmpty(title: 'Lecture impossible', text: error!, icon: Icons.cloud_off_rounded)
         else if (l.isEmpty)
-          TpEmpty(title: 'Aucune compétence', text: 'Ajoutez votre première compétence : domaine, métier, niveau et expérience. Un justificatif est facultatif.', action: 'Ajouter une compétence', onAction: () => _edit())
+          TpEmpty(title: 'Aucune compétence', text: 'Ajoutez votre première compétence : domaine, métier, niveau et expérience. Un justificatif est facultatif.')
         else
           for (final s in l)
             TpCard(

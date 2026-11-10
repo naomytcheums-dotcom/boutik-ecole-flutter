@@ -1,7 +1,10 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../gen.dart' show gAlert;
 import '../nav.dart';
+import 'backend.dart';
 import 'auth.dart';
 import 'premium_pub.dart';
 import 'reels.dart';
@@ -107,6 +110,20 @@ class CircleFeed extends ConsumerWidget {
 
 /// Les trois vidéos phares du profil (écran 10, derrière la photo) : les trois dernières vidéos publiées par la personne connectée.
 /// Un emplacement libre invite à publier une vidéo ; rien n'est inventé.
+/// Ajoute une photo ou une vidéo à la couverture du profil : ouvre directement la galerie ou le sélecteur de fichiers, sans texte ni lien.
+Future<void> _addCover(BuildContext context, WidgetRef ref) async {
+  if (!Backend.ready) return;
+  if (!await requireLogin(context, ref, 'ajouter une couverture') || !context.mounted) return;
+  final p = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: const ['jpg', 'jpeg', 'png', 'webp', 'mp4', 'mov']);
+  if (p.isEmpty || !context.mounted) return;
+  final up = await uploadPostMedia(context, p.first);
+  if (up == null || !context.mounted) return;
+  final res = await Backend.rpc('create_post_v2', {'p_caption': '', 'p_media': [{'path': up.path, 'kind': up.kind}], 'p_link': null, 'p_tags': const <String>[], 'p_listing': null, 'p_repost_of': null});
+  if (!context.mounted) return;
+  if (res.error != null) return gAlert(context, 'Ajout impossible', Backend.userMessage(res.error!));
+  await ref.read(reelsProvider.notifier).refresh();
+}
+
 class FeaturedVideo extends ConsumerWidget {
   const FeaturedVideo({super.key, required this.slot});
   final int slot;
@@ -115,21 +132,17 @@ class FeaturedVideo extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final me = ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
     final all = ref.watch(reelsProvider) ?? const <Reel>[];
-    final mine = [for (final r in all) if (r.video && me.isNotEmpty && r.authorId == me) r];
+    final mine = [for (final r in all) if (r.mediaUrl.isNotEmpty && me.isNotEmpty && r.authorId == me) r];
     final v = slot < mine.length ? mine[slot] : null;
     const radius = BorderRadius.all(Radius.circular(26));
     if (v == null) {
       return GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: () => publishPost(context, ref),
+        onTap: () => _addCover(context, ref),
         child: Container(
           decoration: BoxDecoration(color: const Color(0x66FFFFFF), borderRadius: radius, border: Border.all(color: const Color(0xCCFFFFFF), width: 1.2)),
           alignment: Alignment.center,
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            const Icon(Icons.add_circle_outline, size: 30, color: _grey),
-            const SizedBox(height: 8),
-            Padding(padding: const EdgeInsets.symmetric(horizontal: 10), child: Text('Vidéo phare', textAlign: TextAlign.center, style: _st(12, c: _grey))),
-          ]),
+          child: const Icon(Icons.add_circle_outline, size: 34, color: _grey, semanticLabel: 'Ajouter une photo ou une vidéo'),
         ),
       );
     }
@@ -139,13 +152,14 @@ class FeaturedVideo extends ConsumerWidget {
         ref.read(reelIndexProvider.notifier).set(all.indexWhere((r) => r.id == v.id).clamp(0, all.length - 1));
         gOpen(context, '245');
       },
-      child: Container(
-        decoration: const BoxDecoration(borderRadius: radius, gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0xFF2A2833), Color(0xFF0E0F14)])),
-        alignment: Alignment.bottomLeft,
-        padding: const EdgeInsets.all(12),
-        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Icon(Icons.play_circle_fill, color: Colors.white, size: 34),
-          if (v.caption.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 6), child: Text(v.caption, maxLines: 2, overflow: TextOverflow.ellipsis, style: _st(11, c: Colors.white))),
+      child: ClipRRect(
+        borderRadius: radius,
+        child: Stack(fit: StackFit.expand, children: [
+          if (v.video)
+            const DecoratedBox(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0xFF2A2833), Color(0xFF0E0F14)])))
+          else
+            Image.network(v.mediaUrl, fit: BoxFit.cover, errorBuilder: (_, _, _) => const ColoredBox(color: Color(0xFFEDE9F6))),
+          if (v.video) const Center(child: Icon(Icons.play_circle_fill, color: Colors.white, size: 40)),
         ]),
       ),
     );

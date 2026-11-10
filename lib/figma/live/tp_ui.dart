@@ -36,7 +36,7 @@ class TpFrame extends StatelessWidget {
   Widget build(BuildContext context) => LayoutBuilder(builder: (context, c) {
         if (!c.hasBoundedWidth || !c.hasBoundedHeight || c.maxWidth <= 0 || c.maxHeight <= 0) return child;
         final w = math.min(c.maxWidth, 480.0) / 390;
-        final s = math.max(math.min(w, c.maxHeight / 844), w * 0.88);
+        final s = w; // pleine largeur du téléphone, comme les autres écrans (jamais plus étroit)
         return Align(
           alignment: Alignment.topCenter,
           child: SizedBox(
@@ -108,7 +108,7 @@ class TpRound extends StatelessWidget {
               child: Container(
                 width: 44,
                 height: 44,
-                decoration: BoxDecoration(color: const Color(0x6BFFFFFF), shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 1.5)),
+                decoration: BoxDecoration(color: const Color(0x99FFFFFF), shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 1.5), boxShadow: const [BoxShadow(color: Color(0x24403366), offset: Offset(0, 3), blurRadius: 8)]),
                 child: Icon(icon, size: 18, color: tpInk),
               ),
             ),

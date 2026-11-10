@@ -62,15 +62,23 @@ final storiesProvider = FutureProvider.autoDispose<List<StoryGroup>>((ref) async
 
 Future<void> addStory(BuildContext context, WidgetRef ref) async {
   if (!await requireLogin(context, ref, 'publier une histoire') || !context.mounted) return;
+  // Plusieurs histoires à la fois : chaque photo ou vidéo choisie devient une histoire.
   final p = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: const ['jpg', 'jpeg', 'png', 'webp', 'mp4', 'mov']);
   if (p.isEmpty || !context.mounted) return;
-  final up = await uploadPostMedia(context, p.first);
-  if (up == null || !context.mounted) return;
-  final res = await Backend.rpc('create_story', {'p_path': up.path, 'p_kind': up.kind, 'p_caption': ''});
-  if (!context.mounted) return;
-  if (res.error != null) return gAlert(context, 'Histoire non publiée', Backend.userMessage(res.error!));
+  var ok = 0;
+  for (final f in p) {
+    final up = await uploadPostMedia(context, f);
+    if (up == null || !context.mounted) continue;
+    final res = await Backend.rpc('create_story', {'p_path': up.path, 'p_kind': up.kind, 'p_caption': ''});
+    if (!context.mounted) return;
+    if (res.error != null) {
+      await gAlert(context, 'Histoire non publiée', Backend.userMessage(res.error!));
+      continue;
+    }
+    ok++;
+  }
   ref.invalidate(storiesProvider);
-  gToast(context, 'Votre histoire est en ligne pour 24 heures');
+  if (ok > 0 && context.mounted) gToast(context, ok == 1 ? 'Votre histoire est en ligne pour 24 heures' : '$ok histoires en ligne pour 24 heures');
 }
 
 Future<void> openStories(BuildContext context, List<StoryGroup> groups, int start) {
@@ -110,7 +118,7 @@ class StoriesBar extends ConsumerWidget {
         item(
           Stack(clipBehavior: Clip.none, children: [
             ring(socialAvatar(me.isEmpty ? '' : (mine?.avatar ?? ''), 'Moi', 52), mine?.hasUnseen ?? false),
-            Positioned(right: 0, bottom: 0, child: Container(width: 20, height: 20, decoration: BoxDecoration(color: kInk, shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 2)), child: const Icon(Icons.add, size: 13, color: Colors.white))),
+            Positioned(right: -8, bottom: -8, child: Semantics(button: true, label: 'Ajouter une histoire', child: GestureDetector(behavior: HitTestBehavior.opaque, onTap: () => addStory(context, ref), child: Padding(padding: const EdgeInsets.all(8), child: Container(width: 22, height: 22, decoration: BoxDecoration(color: kInk, shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 2)), child: const Icon(Icons.add, size: 14, color: Colors.white)))))),
           ]),
           'Votre histoire',
           () => mine == null ? addStory(context, ref) : openStories(context, groups, groups.indexOf(mine)),
@@ -277,7 +285,8 @@ class _StoryViewerState extends ConsumerState<StoryViewer> with SingleTickerProv
           if (s.video)
             (_video != null && _video!.value.isInitialized) ? Center(child: AspectRatio(aspectRatio: _video!.value.aspectRatio, child: VideoPlayer(_video!))) : const Center(child: CircularProgressIndicator(color: Colors.white))
           else
-            Image.network(s.mediaUrl, fit: BoxFit.contain, errorBuilder: (_, _, _) => const Center(child: Icon(Icons.broken_image_outlined, color: Colors.white54, size: 44)), loadingBuilder: (_, c, p) => p == null ? c : const Center(child: CircularProgressIndicator(color: Colors.white))),
+            ColoredBox(color: Colors.white, child: Image.network(s.mediaUrl, fit: BoxFit.contain, errorBuilder: (_, _, _) => const Center(child: Icon(Icons.broken_image_outlined, color: Colors.white54, size: 44)), loadingBuilder: (_, c, p) => p == null ? c : const Center(child: CircularProgressIndicator(color: Colors.white)))),
+          const Positioned(top: 0, left: 0, right: 0, height: 130, child: IgnorePointer(child: DecoratedBox(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0x99000000), Color(0x00000000)]))))),
           Positioned(
             top: mq.padding.top + 8,
             left: 12,

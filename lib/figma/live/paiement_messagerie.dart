@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'tp_ui.dart' show tpBackground, GlassBack;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -162,13 +163,13 @@ class _PaymentChatState extends ConsumerState<PaymentChatScreen> {
           Container(width: double.infinity, color: Colors.white, padding: const EdgeInsets.fromLTRB(18, 14, 18, 18), child: Text(status == 'pending' ? 'Votre paiement est en cours de vérification par la finance.' : status == 'confirmed' ? 'Paiement confirmé.' : 'Paiement annulé.', textAlign: TextAlign.center, style: _st(12.5, c: _grey))),
       ]);
     }
-    return Scaffold(
-      backgroundColor: _bg,
+    return DecoratedBox(decoration: tpBackground, child: Scaffold(backgroundColor: Colors.transparent, 
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
+        leadingWidth: 64,
         foregroundColor: _ink,
-        leading: IconButton(icon: const Icon(Icons.arrow_back, size: 18), onPressed: () => gBack(context)),
+        leading: Padding(padding: const EdgeInsets.only(left: 12, top: 4, bottom: 4), child: GlassBack(onTap: () => gBack(context))),
         title: Row(children: [
           Container(width: 34, height: 34, alignment: Alignment.center, decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFF1F9D6B)), child: const Icon(Icons.verified, size: 18, color: Colors.white)),
           const SizedBox(width: 10),
@@ -176,7 +177,7 @@ class _PaymentChatState extends ConsumerState<PaymentChatScreen> {
         ]),
       ),
       body: SafeArea(child: body),
-    );
+    ));
   }
 }
 
@@ -216,10 +217,9 @@ class MyPaymentsScreen extends ConsumerWidget {
         },
       );
     }
-    return Scaffold(
-      backgroundColor: const Color(0xFFF7F6F4),
-      appBar: AppBar(backgroundColor: Colors.white, elevation: 0, foregroundColor: _ink, leading: IconButton(icon: const Icon(Icons.arrow_back, size: 18), onPressed: () => gBack(context)), title: Text('Mes paiements', style: _st(16, w: FontWeight.w700))),
+    return DecoratedBox(decoration: tpBackground, child: Scaffold(backgroundColor: Colors.transparent, 
+      appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0, scrolledUnderElevation: 0, leadingWidth: 64, foregroundColor: _ink, leading: Padding(padding: const EdgeInsets.only(left: 12, top: 4, bottom: 4), child: GlassBack(onTap: () => gBack(context))), title: Text('Mes paiements', style: _st(16, w: FontWeight.w700))),
       body: SafeArea(child: body),
-    );
+    ));
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'tp_ui.dart' show tpBackground, GlassBack;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -127,7 +128,7 @@ class PlansScreen extends ConsumerWidget {
         ],
       ]);
     }
-    return Scaffold(backgroundColor: const Color(0xFFF7F6F4), appBar: AppBar(backgroundColor: Colors.white, elevation: 0, foregroundColor: _ink, leading: IconButton(icon: const Icon(Icons.arrow_back, size: 18), onPressed: () => gBack(context)), title: Text('Offres', style: _st(16, w: FontWeight.w700))), body: SafeArea(child: body));
+    return DecoratedBox(decoration: tpBackground, child: Scaffold(backgroundColor: Colors.transparent, appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0, scrolledUnderElevation: 0, leadingWidth: 64, foregroundColor: _ink, leading: Padding(padding: const EdgeInsets.only(left: 12, top: 4, bottom: 4), child: GlassBack(onTap: () => gBack(context))), title: Text('Offres', style: _st(16, w: FontWeight.w700))), body: SafeArea(child: body)));
   }
 
   static String _status(String s) => switch (s) { 'pending' => 'paiement en attente', 'active' => 'actif', 'cancel_at_period_end' => 'se termine à l’échéance', _ => 'expiré' };
@@ -212,7 +213,7 @@ class AdsScreen extends ConsumerWidget {
         if (admin) ...[const SizedBox(height: 12), _btn('Campagnes à valider', () => GoRouter.of(context).push('/campagnes/validation'), dark: false)],
       ]);
     }
-    return Scaffold(backgroundColor: const Color(0xFFF7F6F4), appBar: AppBar(backgroundColor: Colors.white, elevation: 0, foregroundColor: _ink, leading: IconButton(icon: const Icon(Icons.arrow_back, size: 18), onPressed: () => gBack(context)), title: Text('Campagnes sponsorisées', style: _st(16, w: FontWeight.w700))), body: SafeArea(child: body));
+    return DecoratedBox(decoration: tpBackground, child: Scaffold(backgroundColor: Colors.transparent, appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0, scrolledUnderElevation: 0, leadingWidth: 64, foregroundColor: _ink, leading: Padding(padding: const EdgeInsets.only(left: 12, top: 4, bottom: 4), child: GlassBack(onTap: () => gBack(context))), title: Text('Campagnes sponsorisées', style: _st(16, w: FontWeight.w700))), body: SafeArea(child: body)));
   }
 }
 
@@ -303,7 +304,7 @@ class AdReviewScreen extends ConsumerWidget {
           ),
       ]);
     }
-    return Scaffold(backgroundColor: const Color(0xFFF7F6F4), appBar: AppBar(backgroundColor: Colors.white, elevation: 0, foregroundColor: _ink, leading: IconButton(icon: const Icon(Icons.arrow_back, size: 18), onPressed: () => gBack(context)), title: Text('Campagnes à valider', style: _st(16, w: FontWeight.w700))), body: SafeArea(child: body));
+    return DecoratedBox(decoration: tpBackground, child: Scaffold(backgroundColor: Colors.transparent, appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0, scrolledUnderElevation: 0, leadingWidth: 64, foregroundColor: _ink, leading: Padding(padding: const EdgeInsets.only(left: 12, top: 4, bottom: 4), child: GlassBack(onTap: () => gBack(context))), title: Text('Campagnes à valider', style: _st(16, w: FontWeight.w700))), body: SafeArea(child: body)));
   }
 }
 

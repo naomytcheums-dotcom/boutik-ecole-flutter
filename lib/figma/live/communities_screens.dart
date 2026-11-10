@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'tp_ui.dart' show tpBackground, GlassBack;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gen.dart';
@@ -28,11 +29,11 @@ int wordCount(String text) {
 TextStyle _st(double size, {FontWeight w = FontWeight.w500, Color c = _ink}) => TextStyle(fontFamily: 'PlusJakartaSans', fontSize: size, fontWeight: w, color: c);
 
 PreferredSizeWidget _bar(BuildContext context, String title) => AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       elevation: 0,
       scrolledUnderElevation: 0,
       foregroundColor: _ink,
-      leading: IconButton(tooltip: 'Retour', icon: const Icon(Icons.arrow_back), onPressed: () => Navigator.of(context).maybePop()),
+      leadingWidth: 64, leading: Padding(padding: const EdgeInsets.only(left: 12, top: 4, bottom: 4), child: const GlassBack()),
       title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(17, w: FontWeight.w700)),
     );
 
@@ -132,8 +133,7 @@ class _CommunityCreateState extends ConsumerState<CommunityCreateScreen> {
             ]),
           ),
         );
-    return Scaffold(
-      backgroundColor: _bg,
+    return DecoratedBox(decoration: tpBackground, child: Scaffold(backgroundColor: Colors.transparent, 
       appBar: _bar(context, 'Nouvelle communauté'),
       body: SafeArea(
         child: ListView(padding: const EdgeInsets.fromLTRB(16, 4, 16, 32), children: [
@@ -174,7 +174,7 @@ class _CommunityCreateState extends ConsumerState<CommunityCreateScreen> {
           _button('Envoyer pour validation', over ? null : _submit, busy: _busy),
         ]),
       ),
-    );
+    ));
   }
 }
 
@@ -386,15 +386,14 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
     final c = ref.watch(selectedCommunityProvider);
     final feed = ref.watch(communityFeedProvider);
     if (c == null) {
-      return Scaffold(backgroundColor: _bg, appBar: _bar(context, 'Communauté'), body: const Center(child: Text('Aucune communauté ouverte.')));
+      return DecoratedBox(decoration: tpBackground, child: Scaffold(backgroundColor: Colors.transparent, appBar: _bar(context, 'Communauté'), body: const Center(child: Text('Aucune communauté ouverte.'))));
     }
     final Widget body = switch (_tab) {
       1 => _members(c, mentorsOnly: false),
       2 => _members(c, mentorsOnly: true),
       _ => _posts(c, feed),
     };
-    return Scaffold(
-      backgroundColor: _bg,
+    return DecoratedBox(decoration: tpBackground, child: Scaffold(backgroundColor: Colors.transparent, 
       appBar: _bar(context, c.name),
       body: SafeArea(
         child: Column(children: [
@@ -415,7 +414,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                 : Container(width: double.infinity, color: Colors.white, padding: const EdgeInsets.all(16), child: Text('Rejoignez la communauté pour publier.', textAlign: TextAlign.center, style: _st(13, c: _grey))),
         ]),
       ),
-    );
+    ));
   }
 }
 
@@ -442,8 +441,7 @@ class CommunityPendingScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final async = ref.watch(communitiesPendingProvider);
-    return Scaffold(
-      backgroundColor: _bg,
+    return DecoratedBox(decoration: tpBackground, child: Scaffold(backgroundColor: Colors.transparent, 
       appBar: _bar(context, 'Communautés à valider'),
       body: SafeArea(
         child: async.when(
@@ -478,6 +476,6 @@ class CommunityPendingScreen extends ConsumerWidget {
                 ),
         ),
       ),
-    );
+    ));
   }
 }

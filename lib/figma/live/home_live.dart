@@ -100,24 +100,56 @@ class HomeTalents extends ConsumerWidget {
           return GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () => gOpen(context, '70'),
-            child: Container(
-              width: 156,
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(22), border: Border.all(color: const Color(0xFFECE8F2))),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Row(children: [_Avatar(t), const Spacer()]),
-                const SizedBox(height: 10),
-                Row(children: [
-                  Flexible(child: Text(t.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(13, w: FontWeight.w700))),
-                  if (t.certified) const Padding(padding: EdgeInsets.only(left: 4), child: Icon(Icons.verified, size: 14, color: Color(0xFF2F6BFF))),
-                ]),
-                if (t.department.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 2), child: Text(t.department, maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(11, c: _grey))),
-                const SizedBox(height: 6),
-                Expanded(child: Text(t.skills, maxLines: 3, overflow: TextOverflow.ellipsis, style: _st(11.5, c: const Color(0xFF4A4854)).copyWith(height: 1.4))),
-              ]),
-            ),
+            child: _TalentStory(t: t),
           );
         },
+      ),
+    );
+  }
+}
+
+/// Carte « story » d'un talent : fond plein cadre (photo du profil, à défaut un dégradé doux), coins arrondis, rond de profil
+/// cerclé en bas, puis le nom et le domaine en blanc. Format vertical, comme les stories des réseaux sociaux.
+class _TalentStory extends StatelessWidget {
+  const _TalentStory({required this.t});
+  final LiveTalent t;
+
+  @override
+  Widget build(BuildContext context) {
+    const ring = LinearGradient(begin: Alignment.topRight, end: Alignment.bottomLeft, colors: [Color(0xFFFFB400), Color(0xFFFF2D87), Color(0xFFB026FF)]);
+    final hasPhoto = t.avatarUrl.isNotEmpty;
+    return SizedBox(
+      width: 150,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(22),
+        child: Stack(fit: StackFit.expand, children: [
+          if (hasPhoto)
+            Image.network(t.avatarUrl, fit: BoxFit.cover, errorBuilder: (_, _, _) => const ColoredBox(color: Color(0xFFD9D2E6)))
+          else
+            const DecoratedBox(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0xFFEDE3F6), Color(0xFFD9C9EC)]))),
+          const DecoratedBox(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0x00000000), Color(0x00000000), Color(0xB3000000)], stops: [0, .45, 1]))),
+          Positioned(
+            left: 8,
+            right: 8,
+            bottom: 12,
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              Container(
+                width: 62,
+                height: 62,
+                padding: const EdgeInsets.all(2.5),
+                decoration: BoxDecoration(shape: BoxShape.circle, gradient: t.certified ? ring : null, color: t.certified ? null : const Color(0xFFE4E0EC)),
+                child: Container(padding: const EdgeInsets.all(2), decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white), child: _Avatar(t, size: 52)),
+              ),
+              const SizedBox(height: 8),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Flexible(child: Text(t.name, maxLines: 1, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center, style: _st(13, w: FontWeight.w700, c: Colors.white))),
+                if (t.certified) const Padding(padding: EdgeInsets.only(left: 4), child: Icon(Icons.verified, size: 14, color: Color(0xFF4DA3FF))),
+              ]),
+              if (t.skills.isNotEmpty || t.department.isNotEmpty)
+                Padding(padding: const EdgeInsets.only(top: 2), child: Text(t.skills.isNotEmpty ? t.skills : t.department, maxLines: 1, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center, style: _st(10.5, c: const Color(0xE6FFFFFF)))),
+            ]),
+          ),
+        ]),
       ),
     );
   }

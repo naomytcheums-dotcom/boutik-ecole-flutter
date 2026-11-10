@@ -1,3 +1,5 @@
+import 'dart:ui' show ImageFilter;
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -82,14 +84,27 @@ class TpRound extends StatelessWidget {
         label: label,
         child: GestureDetector(
           onTap: onTap,
-          child: Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(color: const Color(0x8CFFFFFF), shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 1.5)),
-            child: Icon(icon, size: 18, color: tpInk),
+          child: ClipOval(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 13, sigmaY: 13),
+              child: Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(color: const Color(0x6BFFFFFF), shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 1.5)),
+                child: Icon(icon, size: 18, color: tpInk),
+              ),
+            ),
           ),
         ),
       );
+}
+
+/// Flèche de retour commune : rond en verre dépoli, comme sur les maquettes.
+class GlassBack extends StatelessWidget {
+  const GlassBack({super.key, this.onTap});
+  final VoidCallback? onTap;
+  @override
+  Widget build(BuildContext context) => TpRound(icon: Icons.arrow_back, label: 'Retour', onTap: onTap ?? () => Navigator.of(context).maybePop());
 }
 
 class TpButton extends StatelessWidget {

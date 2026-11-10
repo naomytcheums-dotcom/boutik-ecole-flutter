@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import '../tp_ui.dart' show GlassBack;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:video_player/video_player.dart';
@@ -66,7 +67,7 @@ class MarchePage extends StatelessWidget {
                   button: true,
                   label: 'Retour',
                   excludeSemantics: true,
-                  child: SizedBox(width: 48, height: 48, child: IconButton(icon: const Icon(Icons.arrow_back, size: 20), onPressed: () => context.canPop() ? context.pop() : context.go('/s/03'))),
+                  child: GlassBack(onTap: () => context.canPop() ? context.pop() : context.go('/s/03')),
                 ),
                 Expanded(child: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis, style: mst(20, w: FontWeight.w800))),
                 ...actions,

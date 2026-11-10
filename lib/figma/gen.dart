@@ -423,13 +423,22 @@ class GScreen extends StatelessWidget {
       bandBottom = math.max(bandBottom, math.min(h, rects[j]!.bottom));
     }
 
+    // Début du contenu : sous la fausse barre d'état, mais jamais au milieu d'une icône (logo, cloche et son point rouge dépassent
+    // la ligne de 44) : on remonte jusqu'au sommet du plus haut élément visible qui la franchit, pour qu'aucune icône ne soit coupée.
+    var contentFrom = statusBand;
+    for (var i = 0; i < children.length; i++) {
+      final r = rects[i];
+      if (r == null || hidden.contains(i) || band.contains(i) || r.bottom <= statusBand || r.top < 8 || r.height > 140 || r.width > 340) continue;
+      if (r.top - 4 < contentFrom) contentFrom = math.max(0.0, r.top - 4);
+    }
+
     // Écran d'une page (hauteur de maquette ≤ 900) : il tient en entier dans la fenêtre, sans défilement. L'échelle est réduite au besoin
     // (barres du navigateur, petit téléphone) et la maquette reste centrée ; le contenu s'arrête au menu, qui reste fixe en bas.
     final single = h <= 900;
     final bandExtent = band.isEmpty ? 0.0 : (bandBottom - bandTop + 8);
     final contentTo = single && band.isNotEmpty ? bandTop : h;
     if (single) {
-      final unit = (contentTo - statusBand) + bandExtent;
+      final unit = (contentTo - contentFrom) + bandExtent;
       final avail = c.maxHeight - pad.top - pad.bottom - keyboard;
       if (unit > 0 && avail > 0) s = math.min(s, avail / unit);
     }
@@ -534,7 +543,7 @@ class GScreen extends StatelessWidget {
       decoration: BoxDecoration(gradient: bg, color: color ?? (bg == null ? const Color(0xFFFFFFFF) : null)),
       child: _PhoneBody(
         padding: EdgeInsets.only(top: pad.top, bottom: pad.bottom + bandH + keyboard),
-        content: layer(content, statusBand, contentTo, clip: single ? Clip.none : Clip.hardEdge),
+        content: layer(content, contentFrom, contentTo, clip: single ? Clip.none : Clip.hardEdge),
         fixed: band.isEmpty ? null : layer(fixed, bandTop, bandBottom),
         bottom: pad.bottom,
         backing: backing,

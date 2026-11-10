@@ -78,7 +78,7 @@ class G_244b extends ConsumerWidget {
       gP(327, 107, 50, 50, gBox(color: Color(0xFFFFFFFF), oval: true)),
       gP(329, 109, 46, 46, gBox(image: 'assets/figma/img/2bbb6fbaae9e6d864765beabd4e677ca34d5a95e.png', fit: BoxFit.cover, radii: [23, 23, 23, 23])),
       gP(335.5, 172, 33, 12, gText('Équipe', 9.5, Color(0xFF111015), weight: 500), show: demoContent),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(20, 200, 88.8, 32, 'Pour toi', 11.5, 500), GChip(116.8, 200, 111.6, 32, 'Abonnements', 11.5, 400), GChip(236.4, 200, 73.6, 32, 'Vidéos', 11.5, 400), GChip(318, 200, 96.4, 32, 'Boutiques', 11.5, 400)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFFFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 16)),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(20, 200, 74, 32, 'Pour toi', 11.5, 500), GChip(102, 200, 100, 32, 'Abonnements', 11.5, 400), GChip(210, 200, 64, 32, 'Vidéos', 11.5, 400), GChip(282, 200, 84, 32, 'Boutiques', 11.5, 400)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFFFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 16)),
       gP(20, 246, 350, 300, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 14), blurRadius: 26, spreadRadius: 0)], radii: [38, 38, 38, 38]), show: demoContent),
       gP(34, 260, 76, 25, gBox(color: Color(0xD1FFFFFF), radii: [100, 100, 100, 100]), show: demoContent),
       gP(46, 266, 52, 13, gText('Génie civil', 10.5, Color(0xFF111015), weight: 600), show: demoContent),

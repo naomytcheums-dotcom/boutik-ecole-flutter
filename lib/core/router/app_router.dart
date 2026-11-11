@@ -21,6 +21,7 @@ import '../../figma/live/paiement_messagerie.dart';
 import '../../figma/live/premium_pub.dart';
 import '../../figma/live/communities.dart' show CommunityScreen;
 import '../../figma/live/marche/marche_appels.dart';
+import '../../figma/live/marche/marche_compare.dart';
 import '../../figma/live/marche/marche_livraison.dart';
 import '../../figma/live/marche/marche_promotions.dart';
 import '../../figma/live/marche/marche_screens.dart';

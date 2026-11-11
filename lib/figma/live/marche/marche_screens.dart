@@ -644,52 +644,6 @@ class _ProductBodyState extends ConsumerState<_ProductBody> {
   }
 }
 
-// ------------------------------------------------------------------ comparaison
-
-class CompareScreen extends ConsumerWidget {
-  const CompareScreen({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final ids = ref.watch(marcheCompareProvider);
-    return MarchePage(
-      title: 'Comparer',
-      actions: [if (ids.isNotEmpty) TextButton(onPressed: () => ref.read(marcheCompareProvider.notifier).clear(), child: const Text('Vider'))],
-      child: ids.length < 2
-          ? mNote('Choisissez au moins deux produits à comparer avec le bouton de comparaison de leur photo.')
-          : ListView(scrollDirection: Axis.horizontal, padding: const EdgeInsets.all(16), children: [for (final id in ids) _CompareColumn(id: id)]),
-    );
-  }
-}
-
-class _CompareColumn extends ConsumerWidget {
-  const _CompareColumn({required this.id});
-  final String id;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) => SizedBox(
-        width: 190,
-        child: Padding(
-          padding: const EdgeInsets.only(right: 12),
-          child: mAsync<Map<String, dynamic>>(ref.watch(marcheProductProvider(id)), (d) {
-            if (d['found'] != true) return mNote('Indisponible');
-            final card = Map<String, dynamic>.from(d['card'] as Map);
-            final specs = Map<String, dynamic>.from((d['specs'] as Map?) ?? const {});
-            return SingleChildScrollView(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                MarcheProductTile(card: card),
-                const SizedBox(height: 10),
-                Text('Boutique : ${card['shop_name'] ?? 'Boutik-École'}', style: mst(12, c: kGrey)),
-                Text('Stock : ${mInt(card['stock'])}', style: mst(12, c: kGrey)),
-                Text(card['rating_avg'] == null ? 'Pas encore noté' : 'Note : ★ ${card['rating_avg']}', style: mst(12, c: kGrey)),
-                for (final e in specs.entries) Text('${e.key} : ${e.value}', style: mst(12)),
-              ]),
-            );
-          }),
-        ),
-      );
-}
-
 // ------------------------------------------------------------------ boutiques suivies
 
 class FollowedShopsScreen extends ConsumerWidget {

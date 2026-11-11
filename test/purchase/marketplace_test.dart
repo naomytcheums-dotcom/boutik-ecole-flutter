@@ -61,16 +61,17 @@ void main() {
       expect(const MarcheFilters().productParams, {'p_sort': 'popular'});
       expect(f.copy(min: null).min, isNull);
     });
-    test('comparaison limitée à 4 produits', () {
+    test('comparaison limitée à 2 offres', () {
       final c = ProviderContainer();
       addTearDown(c.dispose);
       final n = c.read(marcheCompareProvider.notifier);
-      for (final id in ['a', 'b', 'c', 'd']) {
-        expect(n.toggle(id), isTrue);
-      }
-      expect(n.toggle('e'), isFalse);
       expect(n.toggle('a'), isTrue);
-      expect(c.read(marcheCompareProvider), ['b', 'c', 'd']);
+      expect(n.toggle('b'), isTrue);
+      expect(n.toggle('c'), isFalse, reason: 'une troisième offre est refusée');
+      expect(n.toggle('a'), isTrue, reason: 'retirer une offre libère une place');
+      expect(c.read(marcheCompareProvider), ['b']);
+      expect(n.toggle('c'), isTrue);
+      expect(c.read(marcheCompareProvider), ['b', 'c']);
     });
   });
 

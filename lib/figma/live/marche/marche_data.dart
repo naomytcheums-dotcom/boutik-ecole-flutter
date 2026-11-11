@@ -149,18 +149,18 @@ final marcheDashboardProvider = FutureProvider.autoDispose.family<Map<String, dy
 final marcheModerationProvider = FutureProvider.autoDispose<Map<String, dynamic>>((ref) => _map('marketplace_moderation', const {}));
 final marcheFollowedProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) => _list('my_followed_shops', const {}));
 
-/// Produits choisis pour la comparaison (4 au maximum, identifiants d'annonces).
+/// Offres choisies pour la comparaison (2 au maximum, identifiants d'annonces).
 class CompareNotifier extends Notifier<List<String>> {
   @override
   List<String> build() => const [];
 
-  /// Renvoie faux si la limite de 4 produits est atteinte.
+  /// Renvoie faux si la limite de 2 offres est atteinte.
   bool toggle(String id) {
     if (state.contains(id)) {
       state = [for (final x in state) if (x != id) x];
       return true;
     }
-    if (state.length >= 4) return false;
+    if (state.length >= 2) return false;
     state = [...state, id];
     return true;
   }

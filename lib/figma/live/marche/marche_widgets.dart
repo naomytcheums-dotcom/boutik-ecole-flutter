@@ -155,7 +155,7 @@ class MarcheProductTile extends ConsumerWidget {
 
   void _toggleCompare(BuildContext context, WidgetRef ref) {
     final ok = ref.read(marcheCompareProvider.notifier).toggle('${card['id']}');
-    if (!ok) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Comparaison limitée à 4 produits.')));
+    if (!ok) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Comparaison limitée à 2 offres : retirez-en une pour en choisir une autre.')));
   }
 }
 

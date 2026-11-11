@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../auth.dart';
 import '../backend.dart';
+import 'decouverte.dart';
 
 /// Données de la marketplace multi-boutiques (migration 20261107000000). Tout vient du serveur : hors connexion, ou si la fonction
 /// serveur n'est pas encore installée, les écrans l'indiquent et n'affichent aucun produit ni boutique inventés.
@@ -59,8 +60,11 @@ Future<Map<String, dynamic>> _map(String fn, Map<String, dynamic> p) async {
 const marcheSorts = {'popular': 'Popularité', 'recent': 'Nouveautés', 'price_asc': 'Prix croissant', 'price_desc': 'Prix décroissant', 'rating': 'Mieux notés'};
 
 class MarcheFilters {
-  const MarcheFilters({this.q = '', this.category = '', this.city = '', this.min, this.max, this.sort = 'popular', this.shops = false, this.offerType = ''});
+  const MarcheFilters({this.q = '', this.category = '', this.city = '', this.min, this.max, this.sort = 'popular', this.shops = false, this.offerType = '', this.department = '', this.need = ''});
   final String q, category, city, sort;
+
+  /// Filière (mot recherché, voir [marcheFilieres]) et besoin (clé de [marcheBesoins]) ; vides : aucun filtre.
+  final String department, need;
 
   /// Type d'offre : vide (tous), product, tech, service ou project.
   final String offerType;
@@ -69,7 +73,7 @@ class MarcheFilters {
   /// Vrai : l'onglet « Boutiques » est affiché à la place des produits.
   final bool shops;
 
-  MarcheFilters copy({String? q, String? category, String? city, Object? min = _keep, Object? max = _keep, String? sort, bool? shops, String? offerType}) => MarcheFilters(
+  MarcheFilters copy({String? q, String? category, String? city, Object? min = _keep, Object? max = _keep, String? sort, bool? shops, String? offerType, String? department, String? need}) => MarcheFilters(
         q: q ?? this.q,
         category: category ?? this.category,
         city: city ?? this.city,
@@ -78,10 +82,17 @@ class MarcheFilters {
         sort: sort ?? this.sort,
         shops: shops ?? this.shops,
         offerType: offerType ?? this.offerType,
+        department: department ?? this.department,
+        need: need ?? this.need,
       );
 
+  /// Mots recherchés par problème : ceux du besoin choisi, sinon ceux d'une phrase de plusieurs mots.
+  List<String> get terms => need.isNotEmpty ? besoinTerms(need) : problemTerms(q);
+
   Map<String, dynamic> get productParams => {
-        if (q.trim().isNotEmpty) 'p_q': q.trim(),
+        if (q.trim().isNotEmpty && terms.isEmpty) 'p_q': q.trim(),
+        if (terms.isNotEmpty) 'p_terms': terms,
+        if (department.isNotEmpty) 'p_department': department,
         if (category.isNotEmpty) 'p_category': category,
         if (offerType.isNotEmpty) 'p_offer_type': offerType,
         if (city.isNotEmpty) 'p_city': city,
@@ -90,7 +101,7 @@ class MarcheFilters {
         'p_sort': sort,
       };
 
-  bool get active => category.isNotEmpty || offerType.isNotEmpty || city.isNotEmpty || min != null || max != null;
+  bool get active => category.isNotEmpty || offerType.isNotEmpty || department.isNotEmpty || need.isNotEmpty || city.isNotEmpty || min != null || max != null;
 }
 
 const _keep = Object();
@@ -121,6 +132,11 @@ final marcheShopsProvider = FutureProvider.autoDispose<List<Map<String, dynamic>
 });
 
 final marcheTrendingProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) => _list('trending_products', const {'p_limit': 10}));
+final marcheNewProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) => _list('marketplace_search', const {'p_sort': 'recent', 'p_limit': 10}));
+final marcheRecoProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) {
+  ref.watch(authProvider.select((a) => a.current?.serverId));
+  return _list('recommended_offers', const {'p_limit': 10});
+});
 final marcheFlashProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) => _list('flash_sales_active', const {}));
 final marcheShopProvider = FutureProvider.autoDispose.family<Map<String, dynamic>, String>((ref, slug) => _map('shop_public', {'p_slug': slug}));
 final marcheProductProvider = FutureProvider.autoDispose.family<Map<String, dynamic>, String>((ref, id) => _map('product_detail', {'p_id': id}));

@@ -42,6 +42,7 @@ export async function run(db) {
     ('${A}','Prototype irrigation','Genie civil','Projets et licences',500000,1,'approved','{}')`);
   await db.exec(`update listings set supervisor='M. Nkoulou', reviewed_by='${M}' where title='Prototype irrigation'`);
   await db.exec(`update profiles set study_level='Licence 2', department='Génie civil' where id='${A}'`);
+  await db.exec(`update profiles set department='Génie civil' where id='${B}'`);
   await as(null, 'anon');
   let res = (await q(`select marketplace_search(null,null,null,null,null,'price_asc') r`))[0].r;
   check('recherche publique triee par prix croissant, mes 3 produits presents', res.every((x, i) => i === 0 || res[i - 1].price <= x.price) && ['Lampe en bois', 'Table basse', 'Sac direct'].every(t => res.some(x => x.title === t)));
@@ -66,6 +67,14 @@ export async function run(db) {
   check('fiche : vendeur avec filiere et annee, encadrant, badge valide par l IUT', pd.seller && pd.seller.study_level === 'Licence 2' && pd.seller.department === 'Génie civil' && pd.supervisor === 'M. Nkoulou' && pd.validated === true && pd.card.validated === true);
   const pd2 = (await q(`select product_detail('${lamp.id}') d`))[0].d;
   check('annonce non relue : pas de badge valide', pd2.validated === false && pd2.supervisor === null);
+  res = (await q(`select marketplace_search(null,null,null,null,null,'popular',null,24,0,null,'civil') r`))[0].r;
+  check('filtre par filiere : uniquement le genie civil', ['Lampe en bois', 'Table basse', 'Prototype irrigation'].every(t => res.some(x => x.title === t)) && !res.some(x => ['Gestion de stock web', 'Creation de logo', 'Sac direct'].includes(x.title)));
+  res = (await q(`select marketplace_search(null,null,null,null,null,'popular',null,24,0,null,null,array['stock','inventaire']) r`))[0].r;
+  check('recherche par probleme : la solution de gestion de stock en premier', res.length >= 1 && res[0].title === 'Gestion de stock web');
+  res = (await q(`select marketplace_search(null,null,null,null,null,'popular',null,24,0,null,null,array['zzzzz']) r`))[0].r;
+  check('recherche par probleme : rien d inventé quand rien ne correspond', res.length === 0);
+  res = (await q(`select marketplace_search(null,null,null,null,null,'popular',null,1,0,null,null,array['logo','stock']) r`))[0].r;
+  check('pagination apres classement', res.length === 1);
   check('boutiques actives visibles', (await q(`select marketplace_shops() s`))[0].s.length === 1);
   const det = (await q(`select product_detail('${lamp.id}') d`))[0].d;
   check('fiche produit : 3 images', det.found && det.images.length === 3);
@@ -152,6 +161,8 @@ export async function run(db) {
   check('devis : l acheteur accepte', (await q(`select decide_quote('${dq}', true) s`))[0].s === 'accepted');
   const qr = (await q(`select status, quote_amount, quote_delay_days from quote_requests where id='${dq}'`))[0];
   check('devis : etat final accepte avec prix et delai', qr.status === 'accepted' && qr.quote_amount === 22000 && qr.quote_delay_days === 7);
+  const reco = (await q(`select recommended_offers(10) r`))[0].r;
+  check('recommandes : offres de ma filiere en premier, jamais les miennes', ['Lampe en bois', 'Table basse'].every(t => reco.some(x => x.title === t)) && !reco.some(x => ['Sac direct', 'Creation de logo'].includes(x.title)), JSON.stringify(reco.map(x => x.title)));
   // --- paiement a la livraison
   const tbl = (await q(`select id from listings where title='Table basse'`))[0];
   const cod = (await q(`select marketplace_checkout('[{"id":"${tbl.id}","qty":1}]'::jsonb,false,'Paiement à la livraison') o`))[0].o;

@@ -11,6 +11,7 @@ import '../backend.dart';
 import '../messages.dart' show contactSeller;
 import '../../nav.dart' show gOpenProfile;
 import '../offer_types.dart' show offerTypeLabels;
+import 'decouverte.dart';
 import 'marche_data.dart';
 import 'marche_widgets.dart';
 
@@ -99,8 +100,8 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
               child: TextField(
                 controller: _q,
                 textInputAction: TextInputAction.search,
-                onSubmitted: (v) => _set(f.copy(q: v)),
-                decoration: InputDecoration(hintText: f.shops ? 'Rechercher une boutique' : 'Rechercher un produit, une boutique', prefixIcon: const Icon(Icons.search), filled: true, fillColor: Colors.white, border: OutlineInputBorder(borderRadius: BorderRadius.circular(4), borderSide: BorderSide.none), contentPadding: const EdgeInsets.symmetric(vertical: 14)),
+                onSubmitted: (v) => _set(f.copy(q: v, need: '')),
+                decoration: InputDecoration(hintText: f.shops ? 'Rechercher une boutique' : 'Un produit, ou votre problème : « mon stock se perd »', prefixIcon: const Icon(Icons.search), filled: true, fillColor: Colors.white, border: OutlineInputBorder(borderRadius: BorderRadius.circular(4), borderSide: BorderSide.none), contentPadding: const EdgeInsets.symmetric(vertical: 14)),
               ),
             ),
             const SizedBox(width: 8),
@@ -111,6 +112,12 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
           child: Column(children: [
             MDropdown(label: 'Type d’offre', value: f.offerType, items: {'': 'Tous les types d’offres', ...offerTypeLabels}, onChanged: (v) => _set(f.copy(offerType: v, shops: false))),
+            const SizedBox(height: 10),
+            Row(children: [
+              Expanded(child: MDropdown(label: 'Filière', value: f.department, items: marcheFilieres, onChanged: (v) => _set(f.copy(department: v, shops: false)))),
+              const SizedBox(width: 10),
+              Expanded(child: MDropdown(label: 'Besoin', value: f.need, items: marcheBesoins, onChanged: (v) => _set(f.copy(need: v, q: '', shops: false)))),
+            ]),
             const SizedBox(height: 10),
             Row(children: [
               Expanded(child: MDropdown(label: 'Afficher', value: f.shops ? 'shops' : 'products', items: const {'products': 'Produits', 'shops': 'Boutiques'}, onChanged: (v) => _set(f.copy(shops: v == 'shops')))),
@@ -124,6 +131,14 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
         if (browsing) ...[
           mSectionTitle('Produits tendance'),
           mAsyncList(ref.watch(marcheTrendingProvider), (l) => l.isEmpty ? Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: Text('Les tendances apparaîtront dès les premières ventes.', style: mst(13, c: kGrey))) : MarcheRail(cards: l)),
+        ],
+        if (browsing && !f.active) ...[
+          mSectionTitle('Nouveautés'),
+          mAsyncList(ref.watch(marcheNewProvider), (l) => l.isEmpty ? const SizedBox.shrink() : MarcheRail(cards: l)),
+          if (ref.watch(authProvider.select((a) => a.current != null))) ...[
+            mSectionTitle('Recommandés pour toi'),
+            mAsyncList(ref.watch(marcheRecoProvider), (l) => l.isEmpty ? Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: Text('Des offres de votre filière apparaîtront ici dès qu’elles seront publiées.', style: mst(13, c: kGrey))) : MarcheRail(cards: l)),
+          ],
         ],
         mSectionTitle(f.shops ? 'Boutiques' : (browsing ? 'Tous les produits' : 'Résultats')),
         if (f.shops)

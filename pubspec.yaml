@@ -51,6 +51,7 @@ flutter:
     - assets/images/
     - assets/figma/img/
     - assets/sounds/
+    - assets/i18n/
     - assets/figma/v/
     - assets/figma/r/
   fonts:

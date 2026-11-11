@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app.dart';
+import 'figma/i18n.dart' show I18n;
 import 'figma/live/auth.dart';
 import 'figma/live/backend.dart';
 import 'figma/live/drafts.dart';
@@ -33,6 +34,7 @@ Future<void> main() async {
   await Backend.init().timeout(limite, onTimeout: () {});
   await native_push.initNativePush().timeout(limite, onTimeout: () {});
   await Drafts.load().timeout(limite, onTimeout: () {});
+  await I18n.init();
   final remembered = await loadRemembered().timeout(const Duration(seconds: 25), onTimeout: () => null);
   if (remembered != null) {
     // notifications natives : en arrière-plan, sans retarder l'ouverture

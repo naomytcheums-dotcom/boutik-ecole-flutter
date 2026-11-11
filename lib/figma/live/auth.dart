@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform, TargetPlatform;
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Text;
+import '../i18n.dart' show Text;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' show FactorStatus;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gen.dart';
@@ -640,6 +642,13 @@ Future<void> _serverLogin(
         );
     return;
   }
+  // Vérification en 2 étapes : si elle est activée sur ce compte, le code de l'application d'authentification est exigé avant l'ouverture.
+  if (context.mounted && !await _askSecondFactor(context)) {
+    await Backend.signOut();
+    if (context.mounted) await gAlert(context, 'Connexion refusée', 'Le code de vérification en 2 étapes est requis pour ouvrir ce compte.');
+    return;
+  }
+  if (!context.mounted) return;
   ref.read(errorsProvider.notifier).clear();
   ref.read(authProvider.notifier).login(a);
   saveRemembered(ref.read(rememberProvider) ? a.email : null);
@@ -652,6 +661,21 @@ Future<void> _serverLogin(
     a.name.isEmpty ? 'Bienvenue !' : 'Bienvenue, ${a.firstName} !',
   );
   _afterLogin(ref, context);
+}
+
+/// Second facteur : demande le code à 6 chiffres de l'application d'authentification (3 essais) quand la protection est active.
+Future<bool> _askSecondFactor(BuildContext context) async {
+  final factors = (await Backend.totpFactors()).where((f) => f.status == FactorStatus.verified).toList();
+  if (factors.isEmpty || !context.mounted) return true;
+  for (var essai = 0; essai < 3; essai++) {
+    final f = await formDialog(context, 'Vérification en 2 étapes', [('Code à 6 chiffres', '')], intro: 'Saisissez le code affiché par votre application d’authentification.', submit: 'Vérifier');
+    if (f == null || !context.mounted) return false;
+    final err = await Backend.verifyTotp(factors.first.id, f.first.replaceAll(' ', ''));
+    if (err == null) return true;
+    if (!context.mounted) return false;
+    gToast(context, err);
+  }
+  return false;
 }
 
 Future<void> _serverSignup(
@@ -1107,7 +1131,7 @@ Widget errorText(String key, double x, double y) => gP(
 bool get demoContent => !Backend.ready;
 
 /// Texte de maquette d'un écran : la valeur d'exemple n'est affichée qu'hors connexion au serveur ; connecté, [blank] (« — » ou vide).
-String gm(String demo, [String blank = '—']) => Backend.ready ? blank : demo;
+String gm(String demo, [String blank = '']) => Backend.ready ? blank : demo;
 
 /// Nom du titulaire à la place du nom de maquette (« Mariam Essono », « Mariam E. », « Bonjour Mariam »…) ; vide tant qu'il n'est pas renseigné.
 String gSelf(WidgetRef ref, String demo) {

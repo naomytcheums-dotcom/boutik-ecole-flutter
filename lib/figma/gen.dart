@@ -1,11 +1,14 @@
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Text;
+import 'i18n.dart' show Text;
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'gsound.dart';
+import 'gaccess.dart';
+import 'i18n.dart' show I18n;
 import 'nav.dart';
 import 'live/backend.dart' show Backend;
 import 'live/geo_stub.dart' if (dart.library.js_interop) 'live/geo_web.dart' as geo;
@@ -797,13 +800,13 @@ TextStyle _ts(double size, Color color, int weight, bool inter, double? lh, doub
 /// Texte d'un seul style. [wrap] = boîte de largeur fixe (retour à la ligne) ; sinon une ligne.
 Widget gText(String s, double size, Color color,
     {int weight = 400, bool inter = false, double? lh, double? ls, TextAlign align = TextAlign.left, bool wrap = false, TextDecoration? deco, int? maxLines}) {
-  final t = Text(s,
-      style: _ts(size, color, weight, inter, lh, ls, deco),
+  final t = Builder(builder: (ctx) => Text(s,
+      style: _ts(size, (MediaQuery.maybeHighContrastOf(ctx) ?? false) ? GAccess.contrast(color) : color, weight, inter, lh, ls, deco),
       textAlign: align,
       softWrap: wrap,
       maxLines: maxLines,
       overflow: maxLines != null ? TextOverflow.ellipsis : TextOverflow.visible,
-      textHeightBehavior: const TextHeightBehavior(leadingDistribution: TextLeadingDistribution.even));
+      textHeightBehavior: const TextHeightBehavior(leadingDistribution: TextLeadingDistribution.even)));
   if (wrap) return GTextBox(label: s, child: t);
   return GTextBox(label: s, child: OverflowBox(alignment: Alignment.topLeft, minWidth: 0, maxWidth: double.infinity, child: t));
 }
@@ -830,6 +833,9 @@ Widget gRich(List<(String, double, int, Color)> runs,
 
 Widget gImg(String raw, {BoxFit fit = BoxFit.fill}) => _gImg(_selfPhoto(raw), fit);
 
+/// Pictogramme vectoriel recoloré (ex. coches blanches sur un bandeau sombre).
+Widget gImgTint(String asset, Color color, {BoxFit fit = BoxFit.fill}) => IgnorePointer(child: SvgPicture.asset(asset, fit: fit, colorFilter: ColorFilter.mode(color, BlendMode.srcIn)));
+
 Widget _gImg(String asset, BoxFit fit) => gIsMockPhoto(asset) ? const IgnorePointer(child: ColoredBox(color: Color(0xFFEDE9F6))) : IgnorePointer(
       child: asset.endsWith('.svg')
           ? SvgPicture.asset(asset, fit: fit)
@@ -855,6 +861,7 @@ Widget gClip(double x, double y, double w, double h, List<double>? radii, List<W
 void gToast(BuildContext context, String message) {
   final m = ScaffoldMessenger.maybeOf(context);
   GSound.play('success');
+  GAccess.speak(I18n.tr(message));
   final w = math.min(320.0, MediaQuery.sizeOf(context).width - 32);
   m?.hideCurrentSnackBar();
   m?.showSnackBar(SnackBar(
@@ -879,6 +886,7 @@ Future<T?> gDialog<T>({required BuildContext context, required WidgetBuilder bui
 
 /// Fenêtre d'information (titre, message, un bouton) : pour les erreurs importantes qui ne doivent pas se réduire à une ligne de texte.
 Future<void> gAlert(BuildContext context, String title, String message, {String button = 'Compris'}) {
+  GAccess.speak('${I18n.tr(title)}. ${I18n.tr(message)}');
   const st = TextStyle(inherit: false, fontFamily: 'PlusJakartaSans', fontSize: 14, height: 1.45, color: Color(0xFF4A4854), textBaseline: TextBaseline.alphabetic);
   return gDialog<void>(
     context: context,

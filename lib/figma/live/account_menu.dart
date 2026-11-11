@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Text;
+import '../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../nav.dart';
@@ -6,6 +7,7 @@ import 'access.dart';
 import 'auth.dart';
 import 'delivery.dart' show homeDeliverySettingsDialog;
 import 'feedback.dart';
+import 'certificates_page.dart';
 import 'lots.dart';
 import 'qr.dart' show myQrDialog;
 import 'referral.dart';
@@ -29,6 +31,7 @@ class _Group {
 }
 
 Future<void> _devis(BuildContext c, WidgetRef r) => quotesDialog(c, r);
+Future<void> _certificats(BuildContext c, WidgetRef r) => Navigator.of(c).push(MaterialPageRoute<void>(builder: (_) => const CertificatesPage()));
 Future<void> _parrain(BuildContext c, WidgetRef r) => claimReferralDialog(c, r);
 Future<void> _reclamations(BuildContext c, WidgetRef r) => claimsDialog(c, r);
 Future<void> _assign(BuildContext c, WidgetRef r) => assignNeedDialog(c, r);
@@ -140,8 +143,7 @@ final _groups = <_Group>[
     _Entry('Préférences d’alertes', screen: '156'),
     _Entry('Mes besoins publiés', action: myNeedsDialog),
     _Entry('Dossiers de mission', action: missionDossierDialog),
-    _Entry('Vérification en 2 étapes (application)', action: twoFactorDialog),
-    _Entry('Mes certificats', action: myCertificatesDialog),
+    _Entry('Mes certificats', action: _certificats),
     _Entry('Mon QR personnel', action: myQrDialog),
     _Entry('Mon espace client', screen: '261'),
     _Entry('Mes données et confidentialité', screen: '273'),

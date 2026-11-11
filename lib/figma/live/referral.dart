@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Text;
+import '../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gen.dart';
@@ -191,12 +192,10 @@ Future<void> shareInvitation(BuildContext context, WidgetRef ref, String via) as
     case 'facebook':
       return openUrl(context, 'https://www.facebook.com/sharer/sharer.php?u=${Uri.encodeComponent(siteUrl)}&quote=$q');
     case 'sms':
-      return openUrl(context, 'sms:?body=$q');
-    case 'system':
-      return shareText(context, msg, subject: 'Invitation Boutik-École');
+      return openUrl(context, 'sms:?&body=$q');
     default:
-      final ok = await copyText(msg);
-      if (context.mounted) gToast(context, ok ? 'Message copié : collez-le dans ${via == 'tiktok' ? 'TikTok' : 'Instagram'}.' : 'Copie impossible : autorisez l’accès au presse-papiers.');
+      // Instagram, TikTok et le reste : la feuille de partage du téléphone propose toutes les applications installées.
+      return shareText(context, msg, subject: 'Invitation Boutik-École');
   }
 }
 

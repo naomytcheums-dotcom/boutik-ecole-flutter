@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/decisions.dart' show mfaActiveProvider;
 import '../live/store.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
@@ -85,7 +86,8 @@ class G_148_2 extends ConsumerWidget {
       gP(40, 340, 306, 17, gText('Téléphone', 13.5, Color(0xFF111015), weight: 600), show: !demoContent),
       gP(40, 361, 306, 14, gText(maskedPhone(ref.watch(profileAccountProvider).phone), 11.5, Color(0xFF57545F)), show: !demoContent),
       gP(40, 400, 306, 17, gText('Authentification à deux facteurs', 13.5, Color(0xFF111015), weight: 600), show: !demoContent),
-      gP(40, 421, 306, 14, gText('Pas encore disponible', 11.5, Color(0xFF57545F)), show: !demoContent),
+      gP(40, 421, 306, 14, Consumer(builder: (context, ref, _) { final on = ref.watch(mfaActiveProvider).value; return gText(on == null ? '' : (on ? 'Activée sur ce compte' : 'Désactivée · toucher pour activer'), 11.5, on == true ? Color(0xFF0F7A52) : Color(0xFF57545F)); }), show: !demoContent),
+      if (!demoContent) gTap(24, 392, 342, 52, () { gOpen(context, '272'); }),
       gP(40, 512, 250, 17, gText(currentDeviceLabel(), 13.5, Color(0xFF111015), weight: 600), show: !demoContent),
       gP(40, 533, 250, 14, gText('Session active maintenant', 11.5, Color(0xFF57545F)), show: !demoContent),
       gP(341, 525, 10, 10, gBox(color: Color(0xFF1F9D6B), oval: true), show: !demoContent),

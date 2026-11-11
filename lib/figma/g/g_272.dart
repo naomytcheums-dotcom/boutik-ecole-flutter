@@ -41,7 +41,7 @@ class G_272 extends ConsumerWidget {
       gP(42.5, 82.5, 19, 19, const SizedBox.expand(), tap: () => gBack(context)),
       gP(43.458, 83.458, 11.542, 17.083, gImg('assets/figma/v/7a21623fe0dfea.svg')),
       gP(43.458, 89, 17.083, 6, gImg('assets/figma/v/e130a05f3cf779.svg')),
-      gP(100, 76, 190, 21, gText(gm('Vérification en 2 étapes', '—'), 17, Color(0xFF111015), weight: 500)),
+      gP(100, 76, 190, 21, gText(gm('Vérification en 2 étapes', 'Vérification en 2 étapes'), 17, Color(0xFF111015), weight: 500)),
       gP(86.5, 102, 217, 15, gText(gm('Compte administrateur · IUT de Douala', ''), 12, Color(0xFF57545F))),
       gP(157, 144, 76, 91.999, gImg('assets/figma/r/200_114.png'), show: demoContent),
       gP(175, 174, 40, 32, gImg('assets/figma/r/200_115.png'), show: demoContent),
@@ -63,8 +63,8 @@ class G_272 extends ConsumerWidget {
       gP(44, 536, 147, 16, gText(gm('Codes de secours (10)  ›', '—'), 13, Color(0xFF57545F), weight: 500), show: demoContent),
       gP(24, 590, 22, 22, GCheck(on: false, onColor: Color(0xFF111015), offColor: Color(0xFFFFFFFF), border: Color(0xFFCFCBD6), radius: 7), show: demoContent),
       gP(56, 592, 289, 16, gText(gm('Faire confiance à cet appareil pendant 30 jours', '—'), 13, Color(0xFF111015), weight: 500), show: demoContent),
-      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => twoFactorDialog(context, ref)),
-      gP(169, 788, 52, 19, gText('Vérifier', 15, Color(0xFFFFFFFF), weight: 600)),
+      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => twoFactorDialog(context, ref), show: demoContent),
+      gP(169, 788, 52, 19, gText('Vérifier', 15, Color(0xFFFFFFFF), weight: 600), show: demoContent),
       if (!demoContent) gP(24, 125, 342, 620, const MfaPanel(width: 342)),
     ]);
   }

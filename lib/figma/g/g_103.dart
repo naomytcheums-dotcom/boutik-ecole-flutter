@@ -1,6 +1,7 @@
 // GÉNÉRÉ par tool/figma_export/convert.py — écran 103 (nœud Figma 40:242). Ne pas éditer à la main.
 // ignore_for_file: camel_case_types, prefer_is_empty, prefer_interpolation_to_compose_strings, unnecessary_string_interpolations, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Text;
+import '../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
@@ -74,7 +75,7 @@ class G_103 extends ConsumerWidget {
       gP(289.4, 326, 54, 14, gText('Connecté', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center), show: demoContent),
       gP(24, 380, 342, 132, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xFF0F2E4E), Color(0xFF1E4A80)], stops: [0, 1]), radii: [24, 24, 24, 24])),
       gP(222.36, 380, 143.64, 132, gBox(image: 'assets/figma/img/b49b6a241d16c8c01f026ab4fe2980adaae1b6f4.png', fit: BoxFit.cover, radii: [24, 24, 24, 24])),
-      gP(195, 380, 68.4, 132, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xFF1B3F6E), Color(0x001B3F6E)], stops: [0, 1]))),
+      gP(190, 380, 110, 132, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xFF163B66), Color(0xBF163B66), Color(0x4D163B66), Color(0x00163B66)], stops: [0, 0.35, 0.7, 1]))),
       gP(42, 396, 174, 20, gText('Rejoignez un groupe', 15, Color(0xFFFFFFFF), weight: 700, lh: 20, wrap: true)),
       gP(42, 442, 160.32, 30, gText('Échangez avec les anciens de votre filière.', 11, Color(0xFFE9E4F5), lh: 15, wrap: true)),
       gP(42, 472, 86, 28, gBox(color: Color(0xFF111015), radii: [14, 14, 14, 14])),

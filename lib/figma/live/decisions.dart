@@ -1,4 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Text;
+import '../i18n.dart' show I18n;
+import '../i18n.dart' show Text;
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -256,6 +259,9 @@ class ProductNoModel extends ConsumerWidget {
 
 // ------------------------------------------------------------------ double authentification (application)
 
+/// Vrai si la vérification en 2 étapes (application d'authentification) est active sur le compte connecté.
+final mfaActiveProvider = FutureProvider.autoDispose<bool>((ref) async => (await Backend.totpFactors()).any((f) => f.status == FactorStatus.verified));
+
 class MfaPanel extends ConsumerStatefulWidget {
   const MfaPanel({super.key, this.width = 342});
   final double width;
@@ -266,7 +272,7 @@ class MfaPanel extends ConsumerStatefulWidget {
 class _MfaPanelState extends ConsumerState<MfaPanel> {
   final _code = TextEditingController();
   bool? _active;
-  String? _factorId, _secret, _uri, _error;
+  String? _factorId, _secret, _uri, _error, _qr;
   bool _busy = false;
 
   @override
@@ -312,6 +318,7 @@ class _MfaPanelState extends ConsumerState<MfaPanel> {
         _factorId = r.id;
         _secret = r.totp?.secret;
         _uri = r.totp?.uri;
+        _qr = r.totp?.qrCode;
       });
     } catch (e) {
       if (mounted) setState(() => _error = 'Activation impossible : $e');
@@ -373,7 +380,8 @@ class _MfaPanelState extends ConsumerState<MfaPanel> {
         Text('Un code à 6 chiffres, généré par une application d’authentification (Google Authenticator, Authy…), est demandé en plus du mot de passe.', style: _st(12.5, c: _grey).copyWith(height: 1.5)),
         const SizedBox(height: 16),
         if (_factorId != null) ...[
-          Text('1. Dans votre application, ajoutez un compte avec cette clé :', style: _st(13, w: FontWeight.w600)),
+          if (_qr != null && _qr!.isNotEmpty) Center(child: Padding(padding: const EdgeInsets.only(bottom: 12), child: SizedBox(width: 170, height: 170, child: SvgPicture.string(_qr!)))),
+          Text('1. Scannez ce code avec votre application, ou ajoutez un compte avec la clé personnelle de votre compte :', style: _st(13, w: FontWeight.w600)),
           const SizedBox(height: 6),
           Container(width: w, padding: const EdgeInsets.all(12), decoration: BoxDecoration(color: const Color(0xFFF2EFF6), borderRadius: BorderRadius.circular(14)), child: SelectableText(_secret ?? _uri ?? '', style: _st(13, w: FontWeight.w700))),
           const SizedBox(height: 12),
@@ -394,20 +402,74 @@ class _MfaPanelState extends ConsumerState<MfaPanel> {
 
 // ------------------------------------------------------------------ langue
 
-class LanguagePanel extends StatelessWidget {
+class LanguagePanel extends StatefulWidget {
   const LanguagePanel({super.key, this.width = 342});
   final double width;
 
   @override
+  State<LanguagePanel> createState() => _LanguagePanelState();
+}
+
+class _LanguagePanelState extends State<LanguagePanel> {
+  bool _enReady = false;
+
+  @override
+  void initState() {
+    super.initState();
+    I18n.notifier.addListener(_on);
+    I18n.available().then((v) {
+      if (mounted) setState(() => _enReady = v);
+    });
+  }
+
+  @override
+  void dispose() {
+    I18n.notifier.removeListener(_on);
+    super.dispose();
+  }
+
+  void _on() {
+    if (mounted) setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
-    Widget row(String name, String state, bool on) => Container(width: width, margin: const EdgeInsets.only(bottom: 12), padding: const EdgeInsets.all(16), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20), border: Border.all(color: on ? _ink : const Color(0xFFECE8F2), width: on ? 1.5 : 1)), child: Row(children: [Expanded(child: Text(name, style: _st(14, w: FontWeight.w700))), Text(state, style: _st(12, w: FontWeight.w700, c: on ? const Color(0xFF0F7A52) : _grey))]));
+    final width = widget.width;
+    final lang = I18n.lang;
+    Widget row(String code, String name, String state) {
+      final on = lang == code;
+      return Semantics(
+        button: true,
+        selected: on,
+        label: name,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () async {
+            if (code == 'en' && !_enReady) return gToast(context, 'La traduction anglaise est en cours de finalisation : elle sera disponible très bientôt.');
+            await I18n.setLang(code);
+            if (context.mounted) gToast(context, code == 'en' ? 'Language changed: English.' : 'Langue modifiée : français.');
+          },
+          child: Container(
+            width: width,
+            margin: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18), border: Border.all(color: on ? _ink : const Color(0xFFECE8F2), width: on ? 2 : 1)),
+            child: Row(children: [
+              Expanded(child: Text(name, style: _st(15, w: FontWeight.w700))),
+              Text(on || (code == 'en' && !_enReady) ? state : '', style: _st(12, w: FontWeight.w700, c: on ? const Color(0xFF0F7A52) : _grey)),
+            ]),
+          ),
+        ),
+      );
+    }
+
     return SizedBox(
       width: width,
       child: SingleChildScrollView(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        row('Français', 'Actif', true),
-        row('English', 'Bientôt disponible', false),
+        row('fr', 'Français', 'Actif'),
+        row('en', 'English', _enReady ? 'Active' : 'Bientôt disponible'),
         const SizedBox(height: 4),
-        Text('L’application est entièrement en français. L’anglais sera proposé quand les textes seront traduits.', style: _st(12, c: _grey).copyWith(height: 1.5)),
+        Text('Le changement s’applique tout de suite à toute l’application. Les textes traduits sont enregistrés dans l’application : aucune connexion n’est nécessaire.', style: _st(12, c: _grey).copyWith(height: 1.5)),
       ])),
     );
   }

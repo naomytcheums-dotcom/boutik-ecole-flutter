@@ -56,7 +56,7 @@ class G_273 extends ConsumerWidget {
       gP(44, 412, 160, 40, gBox(color: Color(0xFF111015), radii: [20, 20, 20, 20]), tap: () => Backend.ready ? exportMyData(context, ref) : engageAction(context, ref, 'data_export_request', 'me', success: 'Demande d’export envoyée. Vous recevrez vos données par e-mail.', need: 'demander l’export de vos données', already: 'Une demande d’export est déjà en cours.')),
       gP(60, 424, 118, 16, gText(gm('Demander l’export', 'Télécharger'), 13, Color(0xFFFFFFFF), weight: 600)),
       gP(44, 508, 172, 19, gText('Supprimer mon compte', 15, Color(0xFFC2410C), weight: 600)),
-      gP(44, 532, 302, 20, gText(gm('Délai de rétractation de 30 jours. Les certificats émis et les factures sont conservés (obligation légale).', '—'), 12, Color(0xFF57545F))),
+      gP(44, 532, 302, 48, gText(gm('Délai de rétractation de 30 jours. Les certificats émis et les factures sont conservés (obligation légale).', 'Votre compte et vos données personnelles sont supprimés après un délai de rétractation de 30 jours. Les certificats émis et les factures sont conservés (obligation légale).'), 12, Color(0xFF57545F), lh: 16, wrap: true)),
       gP(44, 598, 170, 40, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFC2410C), bw: 1.5, radii: [20, 20, 20, 20]), tap: () => requestAccountDeletion(context, ref)),
       gP(58, 610, 132, 16, gText('Supprimer le compte', 13, Color(0xFFC2410C), weight: 600)),
       gP(24, 690, 212, 15, gText(gm('Dernier export : 12 mars 2026 · 4,2 Mo', '—'), 12, Color(0xFF57545F), weight: 500)),

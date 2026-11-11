@@ -3,7 +3,10 @@ import 'dart:math' as math;
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
+
+import 'gsound_stub.dart' if (dart.library.js_interop) 'gsound_web.dart';
 
 
 /// Réglages globaux des animations (désactivées dans les tests pour des rendus déterministes).
@@ -18,12 +21,17 @@ class GSound {
 
   static Future<void> play(String name, {double volume = 0.7}) async {
     if (!enabled || !GAnim.enabled) return;
+    // Navigateur (téléphone compris) : Web Audio, lancé immédiatement dans le geste de l'utilisateur.
+    if (kIsWeb) {
+      webSoundPlay(name, volume);
+      return;
+    }
     try {
       final p = _players.putIfAbsent(name, () => AudioPlayer());
       await p.stop();
       await p.play(AssetSource('sounds/$name.wav'), volume: volume);
     } catch (_) {
-      // Pas de lecteur audio disponible (tests, navigateur bloquant le son) : on ignore.
+      // Pas de lecteur audio disponible (tests) : on ignore.
     }
   }
 }

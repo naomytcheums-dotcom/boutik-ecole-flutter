@@ -6,6 +6,7 @@ import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/notif_client.dart';
+import '../live/frequency.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -83,7 +84,7 @@ class G_156 extends ConsumerWidget {
       gP(40, 706, 174, 14, gText('À chaque changement de statut', 11.5, Color(0xFF57545F))),
       gP(308, 693, 42, 24, GToggle(on: prefs['resultats']!, onChanged: (v) => ref.read(alertPrefsProvider.notifier).set('resultats', v), onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
       gP(24, 752, 66, 16, gText('Fréquence', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 772, 342, 48, GField(hint: '', initial: 'Quotidienne', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
+      gP(24, 772, 342, 48, const FrequencyField()),
       gP(37.5, 785.5, 21, 21, gImg('assets/figma/v/8283e962773df2.svg')),
       gP(45, 788.5, 9, 12, gImg('assets/figma/v/ed425c4c4b79bb.svg')),
       gP(334.5, 790.75, 15, 10.5, gImg('assets/figma/v/7abbf201b36418.svg')),
@@ -93,10 +94,10 @@ class G_156 extends ConsumerWidget {
       gP(46.875, 860.583, 10.25, 8.833, gImg('assets/figma/v/2bdcafa88f7a43.svg')),
       gP(76, 848, 277, 34, gText('L’IA n’envoie jamais d’alerte sans votre accord et vous pouvez tout désactiver.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
       gP(0, 920, 390, 100, gBox(color: Color(0x00FFFFFF))),
-      gP(24, 936, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => savePrefs(context, ref, alertPrefsProvider)),
+      gP(24, 936, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => savePrefs(context, ref, alertPrefsProvider, extra: {'frequency': ref.read(alertFrequencyProvider)})),
       gP(100.5, 954, 189, 18, gText('Enregistrer les préférences', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 1006, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
-      if (!demoContent) gP(24, 880, 342, 44, const EnablePushButton(width: 342)),
+      if (!demoContent) gP(24, 880, 342, 48, const AppNotificationsRow(width: 342)),
     ]);
   }
 }

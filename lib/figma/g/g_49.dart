@@ -84,7 +84,7 @@ class G_49 extends ConsumerWidget {
       gP(336.75, 550.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
       gP(24, 598, 342, 132, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xFF0F2E4E), Color(0xFF1E4A80)], stops: [0, 1]), radii: [24, 24, 24, 24])),
       gP(222.36, 598, 143.64, 132, gBox(image: 'assets/figma/img/93dff03913a5b9f3a8ba8bc190862ebc295fc28d.png', fit: BoxFit.cover, radii: [24, 24, 24, 24])),
-      gP(195, 598, 68.4, 132, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xFF1B3F6E), Color(0x001B3F6E)], stops: [0, 1]))),
+      gP(190, 598, 110, 132, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xFF163B66), Color(0xBF163B66), Color(0x4D163B66), Color(0x00163B66)], stops: [0, 0.35, 0.7, 1]))),
       gP(42, 614, 174, 20, gText('Besoin d’aide ?', 15, Color(0xFFFFFFFF), weight: 700, lh: 20, wrap: true)),
       gP(42, 660, 160.32, 30, gText('Notre équipe répond sous 24 h.', 11, Color(0xFFE9E4F5), lh: 15, wrap: true)),
       gP(42, 690, 170, 28, gBox(color: Color(0xFF111015), radii: [14, 14, 14, 14])),

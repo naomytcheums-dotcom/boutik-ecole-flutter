@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Text;
+import '../i18n.dart' show Text;
 import 'tp_ui.dart' show tpBackground, GlassBack, TpFrame;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -82,8 +83,6 @@ class PlansScreen extends ConsumerWidget {
       body = const Center(child: CircularProgressIndicator());
     } else {
       body = ListView(padding: const EdgeInsets.all(18), children: [
-        Text('Offres premium', style: _st(22, w: FontWeight.w800)),
-        const SizedBox(height: 4),
         Text('Le badge vérifié reste attribué par le département : il ne s’achète pas.', style: _st(12, c: _grey)),
         const SizedBox(height: 16),
         for (final p in plans)
@@ -128,7 +127,7 @@ class PlansScreen extends ConsumerWidget {
         ],
       ]);
     }
-    return DecoratedBox(decoration: tpBackground, child: TpFrame(child: Scaffold(backgroundColor: Colors.transparent, appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0, scrolledUnderElevation: 0, leadingWidth: 64, foregroundColor: _ink, leading: Padding(padding: const EdgeInsets.only(left: 12, top: 4, bottom: 4), child: GlassBack(onTap: () => gBack(context))), title: Text('Offres', style: _st(16, w: FontWeight.w700))), body: SafeArea(child: body))));
+    return DecoratedBox(decoration: tpBackground, child: TpFrame(child: Scaffold(backgroundColor: Colors.transparent, appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0, scrolledUnderElevation: 0, leadingWidth: 64, foregroundColor: _ink, leading: Padding(padding: const EdgeInsets.only(left: 12, top: 4, bottom: 4), child: GlassBack(onTap: () => gBack(context))), title: Text('Offres premium', style: _st(16, w: FontWeight.w700))), body: SafeArea(child: body))));
   }
 
   static String _status(String s) => switch (s) { 'pending' => 'paiement en attente', 'active' => 'actif', 'cancel_at_period_end' => 'se termine à l’échéance', _ => 'expiré' };

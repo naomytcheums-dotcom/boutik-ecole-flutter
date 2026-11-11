@@ -43,7 +43,7 @@ class G_241 extends ConsumerWidget {
       gP(43.546, 83.546, 11.454, 16.908, gImg('assets/figma/v/eadfa38ab5fb32.svg')),
       gP(43.546, 89, 16.908, 6, gImg('assets/figma/v/876f9e4ca5bd5d.svg')),
       gP(140, 76, 110, 21, gText('Mes contacts', 17, Color(0xFF111015), weight: 500)),
-      gP(89, 100, 212, 15, gText('WhatsApp et répertoire du téléphone', 12, Color(0xFF57545F))),
+      gP(89, 100, 212, 15, gText('WhatsApp et répertoire du téléphone', 12, Color(0xFF57545F), align: TextAlign.center)),
       gP(316, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
       gP(328.65, 82.65, 18.7, 18.7, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(327.987, 81.988, 18.467, 18.467, gImg('assets/figma/v/027b8aa954f1e6.svg')),
@@ -58,7 +58,7 @@ class G_241 extends ConsumerWidget {
       gP(38, 235, 16, 16, const SizedBox.expand(), tap: () => gTab(context, '19'), show: demoContent),
       gP(37, 234, 16.667, 16.667, gImg('assets/figma/v/6cd505732f55fa.svg'), show: demoContent),
       gP(46.133, 243.133, 8.867, 8.867, gImg('assets/figma/v/9ff6d75c1f17b1.svg'), show: demoContent),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 278, 94, 34, 'WhatsApp', 12, 500), GChip(126, 278, 102, 34, 'Téléphone', 12, 400), GChip(236, 278, 62, 34, 'Tous', 12, 400)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFFFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 17)),
+      if (demoContent) Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 278, 94, 34, 'WhatsApp', 12, 500), GChip(126, 278, 102, 34, 'Téléphone', 12, 400), GChip(236, 278, 62, 34, 'Tous', 12, 400)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFFFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 17)),
       gP(40, 340, 40, 40, gBox(image: 'assets/figma/img/ebf23a969ca7b1083d1dcab994c4899c0b4db38b.png', fit: BoxFit.cover, radii: [20, 20, 20, 20]), show: demoContent),
       gP(92, 343, 99, 16, gText(gm('Brice Ndoumbe', ''), 13, Color(0xFF111015), weight: 600), show: demoContent),
       gP(92, 362, 158, 13, gText('Sur WhatsApp · pas encore inscrit', 10, Color(0xFF57545F)), show: demoContent),
@@ -91,8 +91,8 @@ class G_241 extends ConsumerWidget {
       gP(44, 674, 302, 52, gBox(color: Color(0xFFE7F6D9), radii: [16, 16, 16, 16]), tap: () => shareViaWhatsApp(context, ref), show: demoContent),
       gP(54, 680, 287, 28, gText(gm('Salut ! Rejoins Boutik-École, la marketplace des talents de l’IUT de Douala : boutik-ecole.cm/r/mariam24', '—'), 10.5, Color(0xFF111015), lh: 14, wrap: true), show: demoContent),
       gP(24, 748, 342, 52, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x40403366), offset: Offset(0, 10), blurRadius: 22, spreadRadius: 0)], radii: [26, 26, 26, 26]), tap: () => shareViaWhatsApp(context, ref), show: demoContent),
-      gP(109, 763, 172, 18, gText(gm('Envoyer via WhatsApp (3)', '—'), 14, Color(0xFFFFFFFF), weight: 600)),
-      gP(91, 810, 208, 13, gText('Ou copier le lien et le partager moi-même', 10.5, Color(0xFF57545F), weight: 500)),
+      gP(109, 763, 172, 18, gText(gm('Envoyer via WhatsApp (3)'), 14, Color(0xFFFFFFFF), weight: 600), show: demoContent),
+      gP(91, 810, 208, 13, gText('Ou copier le lien et le partager moi-même', 10.5, Color(0xFF57545F), weight: 500), show: demoContent),
       if (!demoContent) gP(24, 125, 342, 620, const ReferralKit(width: 342)),
     ]);
   }

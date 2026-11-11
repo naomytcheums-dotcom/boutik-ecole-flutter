@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/payment_methods_page.dart' show defaultPaymentProvider;
 import '../live/store.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
@@ -29,6 +30,14 @@ class G_08 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Le moyen de paiement par défaut du compte est présélectionné (opérateur et numéro), le numéro reste modifiable.
+    ref.listen(defaultPaymentProvider, (_, v) {
+      final d = v.value;
+      if (d == null) return;
+      ref.read(payMethodProvider.notifier).set(d.provider == 'orange_money' ? 0 : 1);
+      ref.read(payPhoneProvider.notifier).set(d.phone);
+    });
+    ref.watch(defaultPaymentProvider);
     return GScreen(w: 390, h: 900, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 147, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 624, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),

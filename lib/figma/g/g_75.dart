@@ -83,7 +83,7 @@ class G_75 extends ConsumerWidget {
       gP(293.9, 430, 45, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(visibleOpportunities75).length > 3 ? (ref.watch(applicationsProvider).containsKey(ref.watch(visibleOpportunities75)[3].title) ? 'Postulé' : 'Postuler') : '', 11, (ref.watch(visibleOpportunities75).length > 3 ? oppInk(ref.watch(applicationsProvider).containsKey(ref.watch(visibleOpportunities75)[3].title)) : const Color(0xFF5A3FE0)), weight: 600, align: TextAlign.center)), show: (ref.watch(visibleOpportunities75).length > 3)),
       gP(24, 484, 342, 132, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xFF0F2E4E), Color(0xFF1E4A80)], stops: [0, 1]), radii: [24, 24, 24, 24])),
       gP(222.36, 484, 143.64, 132, gBox(image: 'assets/figma/img/cbf050b9f90ddf4164a56ebd171cee79dfa21141.png', fit: BoxFit.cover, radii: [24, 24, 24, 24], decor: true)),
-      gP(195, 484, 68.4, 132, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xFF1B3F6E), Color(0x001B3F6E)], stops: [0, 1]))),
+      gP(190, 484, 110, 132, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xFF163B66), Color(0xBF163B66), Color(0x4D163B66), Color(0x00163B66)], stops: [0, 0.35, 0.7, 1]))),
       gP(42, 500, 174, 20, gText('Profil à compléter', 15, Color(0xFFFFFFFF), weight: 700, lh: 20, wrap: true)),
       gP(42, 546, 160.32, 30, gText(gm('Un profil complet reçoit 3× plus de réponses.', '—'), 11, Color(0xFFE9E4F5), lh: 15, wrap: true)),
       gP(42, 576, 93, 28, gBox(color: Color(0xFF111015), radii: [14, 14, 14, 14])),

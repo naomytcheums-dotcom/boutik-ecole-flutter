@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/tp_ui.dart' show GlassBack;
 import '../live/store.dart';
 import '../live/paiement_messagerie.dart';
 import '../live/premium_pub.dart';
@@ -38,7 +39,9 @@ class G_261 extends ConsumerWidget {
     return GScreen(w: 390, h: 900, radius: 46, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFFFF3C9), Color(0xFFFFF8EA), Color(0xFFFFE9B0)], stops: [0, 0.5, 1]), children: [
       gP(24, 70, 92, 16, gText(gSelf(ref, 'Bonjour Mariam'), 12.5, Color(0xFF57545F))),
       gP(24, 90, 193, 28, gText('Mon espace client', 22, Color(0xFF111015), weight: 600)),
-      gP(326, 64, 44, 44, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
+      if (demoContent) gP(326, 64, 44, 44, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
+      if (!demoContent) profileAvatar(326, 64, 44),
+      gP(14, 18, 40, 40, GlassBack(onTap: () => gBack(context))),
       gP(24, 130, 342, 150, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFF1B1630), Color(0xFF4A38B8)], stops: [0, 1]), shadows: [BoxShadow(color: Color(0x40403366), offset: Offset(0, 12), blurRadius: 26, spreadRadius: 0)], radii: [32, 32, 32, 32]), show: demoContent),
       gP(44, 150, 246, 28, gText(gm('2 commandes en cours', '—'), 22, Color(0xFFFFFFFF), weight: 700), show: demoContent),
       gP(44, 182, 243, 32, gText(gm('1 devis en attente de réponse · 1 mission à valider', '—'), 11.5, Color(0xD9FFFFFF), lh: 16, wrap: true), show: demoContent),

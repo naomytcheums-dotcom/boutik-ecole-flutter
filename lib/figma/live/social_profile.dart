@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Text;
+import '../i18n.dart' show Text;
 import 'home_live.dart' show liveTalentsProvider;
 import 'tp_ui.dart' show TpRound, tpPickFile, tpUpload;
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Text;
+import '../i18n.dart' show Text;
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -27,22 +28,33 @@ String? qrTokenOf(String raw) {
   return RegExp(r'^[A-Za-z0-9_-]{32}$').hasMatch(c) ? c : null;
 }
 
-/// Dessin d'un QR (modules carrés, correction d'erreur moyenne) pour [data].
+/// Dessin d'un QR pour [data] : correction d'erreur élevée et, au centre, le logo de Boutik-École (QR personnel, plus reconnaissable).
 class QrView extends StatelessWidget {
-  const QrView({super.key, required this.data, this.size = 180, this.color = const Color(0xFF111015)});
+  const QrView({super.key, required this.data, this.size = 180, this.color = const Color(0xFF111015), this.logo = true});
   final String data;
   final double size;
   final Color color;
+  final bool logo;
 
   @override
   Widget build(BuildContext context) {
-    final image = QrImage(QrCode.fromData(data: data, errorCorrectLevel: QrErrorCorrectLevel.M));
+    final image = QrImage(QrCode.fromData(data: data, errorCorrectLevel: QrErrorCorrectLevel.H));
     return Container(
       width: size,
       height: size,
       padding: EdgeInsets.all(size * 0.06),
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(size * 0.06)),
-      child: CustomPaint(painter: _QrPainter(image, color)),
+      child: Stack(alignment: Alignment.center, children: [
+        Positioned.fill(child: CustomPaint(painter: _QrPainter(image, color))),
+        if (logo)
+          Container(
+            width: size * 0.22,
+            height: size * 0.22,
+            padding: EdgeInsets.all(size * 0.02),
+            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(size * 0.05)),
+            child: Image.asset('assets/figma/img/2b51b5d6469cca917952ac344a2ddf9cc1440830.png', fit: BoxFit.contain),
+          ),
+      ]),
     );
   }
 }

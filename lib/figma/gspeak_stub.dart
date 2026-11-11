@@ -1,0 +1,1 @@
+void webSpeak(String text) {}

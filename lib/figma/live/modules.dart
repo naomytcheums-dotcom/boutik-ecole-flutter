@@ -1,4 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Text;
+import '../i18n.dart' show Text;
+import 'contacts_stub.dart' if (dart.library.js_interop) 'contacts_web.dart';
+import 'referral.dart' show copyInvitation, invitationMessage, shareInvitation;
+import 'share.dart' show openUrl;
+import 'tp_ui.dart' show TpButton;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gen.dart' show gToast;
@@ -242,19 +247,37 @@ class ReferralKit extends ConsumerWidget {
     final c = ref.watch(referralProvider);
     if (c == null) return _note(width, 'Chargement…');
     if (c.isEmpty) return _note(width, 'Code indisponible pour le moment.');
+    final msg = invitationMessage(c);
     return SizedBox(
       width: width,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text('Votre code de parrainage', style: _st(15, w: FontWeight.w700)),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        Text('Votre code de parrainage', textAlign: TextAlign.center, style: _st(15, w: FontWeight.w700)),
         const SizedBox(height: 10),
-        Container(width: width, padding: const EdgeInsets.all(18), alignment: Alignment.center, decoration: BoxDecoration(color: const Color(0xFFEEE9FF), borderRadius: BorderRadius.circular(20)), child: SelectableText(c, style: _st(26, w: FontWeight.w800, c: const Color(0xFF5A3FE0)))),
-        const SizedBox(height: 14),
-        Text('Message à partager :\n« Rejoins Boutik-École avec mon code $c : https://boutik-ecole.vercel.app »', style: _st(13).copyWith(height: 1.5)),
-        const SizedBox(height: 12),
-        Text('Le suivi des parrainages et des gains n’est pas encore disponible.', style: _st(12, c: _grey)),
+        Container(width: width, padding: const EdgeInsets.all(18), alignment: Alignment.center, decoration: BoxDecoration(color: const Color(0xFFEEE9FF), borderRadius: BorderRadius.circular(18)), child: SelectableText(c, style: _st(26, w: FontWeight.w800, c: const Color(0xFF5A3FE0)))),
+        const SizedBox(height: 16),
+        Text('Message à partager', textAlign: TextAlign.center, style: _st(13, w: FontWeight.w700)),
+        const SizedBox(height: 6),
+        Text('« $msg »', textAlign: TextAlign.center, style: _st(12.5, c: _grey).copyWith(height: 1.5)),
+        const SizedBox(height: 18),
+        TpButton('Choisir dans mes contacts', () => inviteFromContacts(context, ref, msg), icon: Icons.contacts_outlined),
+        const SizedBox(height: 10),
+        TpButton('Partager avec une application', () => shareInvitation(context, ref, 'system'), dark: false, icon: Icons.ios_share),
+        const SizedBox(height: 10),
+        TpButton('Copier le message', () => copyInvitation(context, ref), dark: false, compact: true),
       ]),
     );
   }
+}
+
+/// Ouvre le répertoire du téléphone (là où le navigateur le permet), puis prépare le SMS d'invitation pour les contacts choisis.
+/// Ailleurs (iPhone, ordinateur), la feuille de partage du système propose les contacts et les applications.
+Future<void> inviteFromContacts(BuildContext context, WidgetRef ref, String msg) async {
+  if (!contactPickerSupported) return shareInvitation(context, ref, 'system');
+  final numbers = await pickContactNumbers();
+  if (!context.mounted) return;
+  if (numbers == null) return shareInvitation(context, ref, 'system');
+  if (numbers.isEmpty) return gToast(context, 'Aucun contact choisi.');
+  await openUrl(context, 'sms:${numbers.join(',')}?&body=${Uri.encodeComponent(msg)}');
 }
 
 // ------------------------------------------------------------------ duels de talents

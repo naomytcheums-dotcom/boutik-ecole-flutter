@@ -48,7 +48,7 @@ class G_274 extends ConsumerWidget {
       gP(44, 268, 223, 18, gText('CGU · Utilisation de la plateforme', 14, Color(0xFF111015), weight: 600)),
       gP(44, 292, 302, 20, gText('Comptes, contenus publiés, propriété intellectuelle des productions étudiantes, modération.', 12, Color(0xFF57545F))),
       gP(44, 356, 164, 18, gText('CGV · Ventes et services', 14, Color(0xFF111015), weight: 600)),
-      gP(44, 380, 302, 20, gText(gm('Prix en FCFA, paiement Orange Money / MTN MoMo, ventilation 70 / 20 / 10, retours et remboursements.', '—'), 12, Color(0xFF57545F))),
+      gP(44, 380, 302, 20, gText(gm('Prix en FCFA, paiement Orange Money / MTN MoMo, ventilation 70 / 20 / 10, retours et remboursements.', 'Prix en FCFA, paiement par Mobile Money, commandes, retours et remboursements.'), 12, Color(0xFF57545F))),
       gP(44, 444, 150, 18, gText('Données personnelles', 14, Color(0xFF111015), weight: 600)),
       gP(44, 468, 302, 20, gText('Hébergement, durée de conservation, vos droits d’accès et de suppression.', 12, Color(0xFF57545F))),
       gP(24, 580, 22, 22, GCheck(on: false, onColor: Color(0xFF111015), offColor: Color(0xFFFFFFFF), border: Color(0xFFCFCBD6), radius: 7)),

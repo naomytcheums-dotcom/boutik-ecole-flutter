@@ -1,4 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Text;
+import '../i18n.dart' show Text;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -100,3 +102,6 @@ class EnablePushButton extends StatelessWidget {
     ),
   );
 }
+
+/// Canaux réellement configurés sur le serveur (SMS et WhatsApp : secrets Twilio) ; l'e-mail et l'application sont toujours disponibles.
+final serverChannelsProvider = FutureProvider.autoDispose<Map<String, bool>>((ref) => Backend.recoveryChannels());

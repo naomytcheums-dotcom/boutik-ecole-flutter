@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/trust_guides.dart';
 import '../live/store.dart';
 import '../live/decisions.dart';
 import '../live/l06.dart';
@@ -49,16 +50,14 @@ class G_174 extends ConsumerWidget {
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 208, 26, gText('Centre de confiance', 21, Color(0xFF111015), weight: 700)),
       gP(24, 120, 342, 168, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xFF0F2E4E), Color(0xFF1E4A80)], stops: [0, 1]), radii: [24, 24, 24, 24])),
-      gP(42, 138, 32, 32, gBox(color: Color(0xFF111015), oval: true)),
-      gP(48.625, 143.5, 18.75, 18.375, gImg('assets/figma/v/d177b28382093d.svg')),
-      gP(58, 153.25, 10.5, 10.5, gImg('assets/figma/v/6fd6a3c35cbbc1.svg')),
+      gP(40, 134, 38, 38, gBox(image: 'assets/figma/img/2b51b5d6469cca917952ac344a2ddf9cc1440830.png', fit: BoxFit.contain)),
       gP(84, 137, 269, 18, gText('Achetez en confiance', 14, Color(0xFFFFFFFF), weight: 700, wrap: true)),
       gP(84, 160, 269, 32, gText('Conseils pour éviter les arnaques et protéger votre compte.', 11.5, Color(0xFFE9E4F5), lh: 16, wrap: true)),
-      gP(46.667, 205.75, 14.667, 11.958, gImg('assets/figma/v/ac006383c9ee5c.svg')),
+      gP(46.667, 205.75, 14.667, 11.958, gImgTint('assets/figma/v/ac006383c9ee5c.svg', Colors.white)),
       gP(70, 204, 283, 15, gText('Payez uniquement dans l’application', 12, Color(0xFFFFFFFF), weight: 500, wrap: true)),
-      gP(46.667, 229.75, 14.667, 11.958, gImg('assets/figma/v/ac006383c9ee5c.svg')),
+      gP(46.667, 229.75, 14.667, 11.958, gImgTint('assets/figma/v/ac006383c9ee5c.svg', Colors.white)),
       gP(70, 228, 283, 15, gText('Vérifiez le badge du vendeur', 12, Color(0xFFFFFFFF), weight: 500, wrap: true)),
-      gP(46.667, 253.75, 14.667, 11.958, gImg('assets/figma/v/ac006383c9ee5c.svg')),
+      gP(46.667, 253.75, 14.667, 11.958, gImgTint('assets/figma/v/ac006383c9ee5c.svg', Colors.white)),
       gP(70, 252, 283, 15, gText('Signalez toute demande suspecte', 12, Color(0xFFFFFFFF), weight: 500, wrap: true)),
       gP(24, 302, 52, 19, gText('Guides', 15, Color(0xFF111015), weight: 700)),
       gP(36, 346, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
@@ -101,6 +100,10 @@ class G_174 extends ConsumerWidget {
       gP(169, 762, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gTab(context, '03')),
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
+      gTap(24, 344, 342, 48, () { showTrustGuide(context, 'paiement'); }),
+      gTap(24, 396, 342, 48, () { showTrustGuide(context, 'annonce'); }),
+      gTap(24, 448, 342, 48, () { showTrustGuide(context, 'compte'); }),
+      gTap(24, 500, 342, 48, () { showTrustGuide(context, 'signaler'); }),
       if (!demoContent) gP(0, 100, 390, 700, const CmsPageOverlay(title: 'Centre de confiance', height: 700)),
     ]);
   }

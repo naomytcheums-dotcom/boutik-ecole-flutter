@@ -95,14 +95,14 @@ void main() {
     expect(find.text('Sur WhatsApp · pas encore inscrit'), findsNothing);
   });
 
-  testWidgets('149 : langue honnête et réglage mémorisé', (t) async {
+  testWidgets('149 : français et anglais proposés, changement immédiat', (t) async {
     await monter(t, const G_149(), connecte: true);
-    expect(find.text('Bientôt disponible'), findsOneWidget);
+    expect(find.text('Français'), findsOneWidget);
+    expect(find.text('English'), findsOneWidget);
   });
 
-  testWidgets('185 connecté : anglais non proposé tant que non traduit', (t) async {
+  testWidgets('185 connecté : aucun produit de maquette en anglais', (t) async {
     await monter(t, const G_185(), connecte: true);
-    expect(find.text('Bientôt disponible'), findsOneWidget);
     expect(find.text('Recycled wooden lamp'), findsNothing);
   });
 

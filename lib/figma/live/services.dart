@@ -1,5 +1,6 @@
 import 'tp_ui.dart' show tpPick;
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Text;
+import '../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/demo/section_a_demo.dart';

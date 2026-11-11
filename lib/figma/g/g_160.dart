@@ -89,7 +89,7 @@ class G_160 extends ConsumerWidget {
       gP(303.8, 548, 38, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(visibleHackathonsProvider).length > 2 ? ref.watch(visibleHackathonsProvider)[2].status : '', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)), show: (ref.watch(visibleHackathonsProvider).length > 2)),
       gP(24, 602, 342, 132, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xFF0F2E4E), Color(0xFF1E4A80)], stops: [0, 1]), radii: [24, 24, 24, 24])),
       gP(222.36, 602, 143.64, 132, gBox(image: 'assets/figma/img/6baf8125049f662c1c5c4c23c6b514db2881910c.png', fit: BoxFit.cover, radii: [24, 24, 24, 24])),
-      gP(195, 602, 68.4, 132, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xFF1B3F6E), Color(0x001B3F6E)], stops: [0, 1]))),
+      gP(190, 602, 110, 132, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xFF163B66), Color(0xBF163B66), Color(0x4D163B66), Color(0x00163B66)], stops: [0, 0.35, 0.7, 1]))),
       gP(42, 618, 174, 20, gText('Pas encore d’équipe ?', 15, Color(0xFFFFFFFF), weight: 700, lh: 20, wrap: true)),
       gP(42, 664, 160.32, 30, gText('Trouvez des coéquipiers dans l’annuaire des talents.', 11, Color(0xFFE9E4F5), lh: 15, wrap: true)),
       gP(42, 694, 156, 28, gBox(color: Color(0xFF111015), radii: [14, 14, 14, 14])),

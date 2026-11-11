@@ -31,9 +31,33 @@ class DevicePrefs extends Notifier<Map<String, bool>> {
 }
 
 const dataPrefsDefaults = {'data_saver': true, 'low_images': true, 'wifi_video': true, 'wifi_sync': false};
-const accessPrefsDefaults = {'large_text': true, 'contrast': true, 'reduce_motion': false, 'screen_reader': false};
+const accessPrefsDefaults = {'large_text': false, 'contrast': false, 'reduce_motion': false, 'screen_reader': false};
 final dataPrefsProvider = NotifierProvider<DevicePrefs, Map<String, bool>>(() => DevicePrefs(dataPrefsDefaults));
 final accessPrefsProvider = NotifierProvider<DevicePrefs, Map<String, bool>>(() => DevicePrefs(accessPrefsDefaults));
 
-const accessPrefs149Defaults = {'a149_large_text': false, 'a149_contrast': true, 'a149_reduce_motion': false, 'a149_screen_reader': false};
+const accessPrefs149Defaults = {'a149_large_text': false, 'a149_contrast': false, 'a149_reduce_motion': false, 'a149_screen_reader': false};
 final accessPrefs149Provider = NotifierProvider<DevicePrefs, Map<String, bool>>(() => DevicePrefs(accessPrefs149Defaults));
+
+/// Taille du texte choisie : 0 petit, 1 normal, 2 grand (enregistrée sur l'appareil).
+class TextSize extends Notifier<int> {
+  @override
+  int build() {
+    Future.microtask(() async {
+      try {
+        final p = await SharedPreferences.getInstance();
+        if (ref.mounted) state = p.getInt('dev_text_size') ?? 1;
+      } catch (_) {}
+    });
+    return 1;
+  }
+
+  Future<void> set(int v) async {
+    state = v;
+    try {
+      final p = await SharedPreferences.getInstance();
+      await p.setInt('dev_text_size', v);
+    } catch (_) {}
+  }
+}
+
+final textSizeProvider = NotifierProvider<TextSize, int>(TextSize.new);

@@ -45,6 +45,38 @@
   <meta property="og:url" content="https://boutik-ecole.vercel.app/">
   <meta property="og:image" content="https://boutik-ecole.vercel.app/icons/Icon-512.png">
   <meta name="twitter:card" content="summary">
+  <script>
+    // Sons de l'application (Web Audio) : débloqués au premier toucher, lus sans attente (iPhone et Android l'exigent).
+    (function () {
+      var ctx = null, cache = {}, loading = {};
+      function ac() { if (!ctx) { var C = window.AudioContext || window.webkitAudioContext; if (C) ctx = new C(); } return ctx; }
+      function load(url) {
+        if (cache[url] || loading[url] || !ac()) return;
+        loading[url] = true;
+        fetch(url).then(function (r) { return r.arrayBuffer(); }).then(function (b) {
+          return new Promise(function (ok, ko) { ctx.decodeAudioData(b, ok, ko); });
+        }).then(function (buf) { cache[url] = buf; }).catch(function () { loading[url] = false; });
+      }
+      window.boutikSound = {
+        unlock: function () {
+          var c = ac(); if (!c) return;
+          if (c.state === 'suspended') c.resume();
+          ['click', 'pop', 'tick', 'success', 'whoosh', 'mic_start', 'mic_stop'].forEach(function (n) { load('assets/assets/sounds/' + n + '.wav'); });
+        },
+        play: function (url, vol) {
+          var c = ac(); if (!c) return;
+          if (c.state === 'suspended') c.resume();
+          var b = cache[url];
+          if (!b) { load(url); return; }
+          var s = c.createBufferSource(), g = c.createGain();
+          s.buffer = b; g.gain.value = vol; s.connect(g); g.connect(c.destination); s.start(0);
+        }
+      };
+      ['touchstart', 'pointerdown', 'mousedown', 'keydown'].forEach(function (e) {
+        window.addEventListener(e, function () { window.boutikSound.unlock(); }, { once: false, passive: true, capture: true });
+      });
+    })();
+  </script>
 </head>
 <body>
   <noscript>

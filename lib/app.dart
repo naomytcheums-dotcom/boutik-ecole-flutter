@@ -8,7 +8,11 @@ import 'core/router/app_router.dart';
 import 'core/router/paths.dart';
 import 'core/state/app_settings.dart';
 import 'core/theme/app_theme.dart';
+import 'figma/gsound.dart' show GAnim;
+import 'figma/i18n.dart' show I18n, I18nScope;
 import 'figma/live/auth.dart' show appSessionExpired;
+import 'figma/live/device_prefs.dart' show accessPrefs149Provider, accessPrefsProvider, textSizeProvider;
+import 'figma/gaccess.dart';
 import 'figma/live/backend.dart';
 import 'figma/live/connectivity_stub.dart' if (dart.library.js_interop) 'figma/live/connectivity_web.dart';
 import 'figma/live/missions.dart' show missionLoadedProvider, missionProvider, missionScreens, redirectMissionScreen;
@@ -97,6 +101,20 @@ class _BoutikEcoleAppState extends ConsumerState<BoutikEcoleApp> {
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(appSettingsProvider);
+    // Réglages d'accessibilité de l'appareil : texte agrandi, taille du texte, contraste, animations réduites, lecture vocale.
+    final a1 = ref.watch(accessPrefs149Provider);
+    final a2 = ref.watch(accessPrefsProvider);
+    bool acc(String k149, String k) => (a1[k149] ?? false) || (a2[k] ?? false);
+    final size = ref.watch(textSizeProvider); // 0 petit, 1 normal, 2 grand
+    final accScale = (acc('a149_large_text', 'large_text') ? 1.2 : 1.0) * (size == 0 ? 0.9 : (size == 2 ? 1.12 : 1.0));
+    final accContrast = acc('a149_contrast', 'contrast');
+    final accMotion = acc('a149_reduce_motion', 'reduce_motion');
+    GAccess.voice = acc('a149_screen_reader', 'screen_reader');
+    // « Réduire les animations » : n'agit que sur un changement de réglage (les animations par défaut restent inchangées).
+    if (accMotion != GAccess.motionReduced) {
+      GAccess.motionReduced = accMotion;
+      GAnim.enabled = !accMotion;
+    }
     if (Backend.ready) {
       ref.listen(ordersLoadedProvider, (_, _) => _ordersScreen());
       ref.listen(ordersProvider, (_, _) => _ordersScreen());
@@ -122,18 +140,22 @@ class _BoutikEcoleAppState extends ConsumerState<BoutikEcoleApp> {
       routerConfig: _router,
       builder: (context, child) {
         final mq = MediaQuery.of(context);
-        return SystemStates(
+        return ValueListenableBuilder<String>(
+          valueListenable: I18n.notifier,
+          builder: (context, lang, child) => I18nScope(lang: lang, child: child!),
+          child: SystemStates(
           router: _router,
           onSessionExpired: appSessionExpired,
           child: MediaQuery(
             data: mq.copyWith(
-              textScaler: TextScaler.linear(mq.textScaler.scale(1) * settings.textScale),
+              textScaler: TextScaler.linear(mq.textScaler.scale(1) * settings.textScale * accScale),
               boldText: mq.boldText || settings.boldText,
-              highContrast: mq.highContrast || settings.highContrast,
-              disableAnimations: mq.disableAnimations || settings.reduceMotion,
+              highContrast: mq.highContrast || settings.highContrast || accContrast,
+              disableAnimations: mq.disableAnimations || settings.reduceMotion || accMotion,
             ),
             child: child!,
           ),
+        ),
         );
       },
     );

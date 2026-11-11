@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/payment_methods_page.dart';
 import '../live/profile_data.dart';
 import '../live/store.dart';
 import '../live/lot20b.dart';
@@ -119,7 +120,7 @@ class G_148_1 extends ConsumerWidget {
       gTap(80, 337, 274, 48, () { gOpen(context, '27'); }), // parcours 148_1 -> 27
       gTap(80, 493, 274, 48, () { gOpen(context, '149'); }), // parcours 148_1 -> 149
       gTap(80, 545, 274, 48, () { gOpen(context, '49'); }), // parcours 148_1 -> 49
-      gTap(80, 389, 274, 48, () { gOpen(context, '144'); }), // parcours 148_1 -> 144
+      gTap(80, 389, 274, 48, () { Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const PaymentMethodsPage())); }), // moyens de paiement
       if (!demoContent) gP(22, 212, 300, 50, const AccountHeader(width: 300)),
     ]);
   }

@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Text;
+import '../i18n.dart' show Text;
 
 /// Carte produit unique de l'application (format de la première maquette) : grande photo 4:5 aux coins arrondis, titre, prix,
 /// nom de la boutique et bouton d'action. Utilisée partout où un produit est listé (marketplace, vitrine, catalogues) :

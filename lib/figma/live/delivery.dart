@@ -6,7 +6,10 @@ import '../nav.dart';
 import 'auth.dart';
 import 'backend.dart';
 import 'lots.dart' show formDialog;
+import 'compte.dart' show addressesProvider;
+import 'marche/marche_data.dart' show marcheCall;
 import 'store.dart';
+import '../../data/repositories/repositories.dart' show cartProvider;
 
 /// Livraison (écrans 07, 41 ; migration 20261101000300, règles § 5) : retrait sur campus par défaut ; la livraison à domicile
 /// n'est proposée que si l'administrateur l'a activée, dans la ville desservie, avec une adresse du carnet.
@@ -34,6 +37,25 @@ final deliverySettingsProvider = NotifierProvider<DeliverySettingsNotifier, Deli
 
 /// Adresse du carnet retenue pour la commande en cours (identifiant serveur).
 final selectedAddressProvider = NotifierProvider<StrV, String>(StrV.new);
+
+/// Frais de livraison du panier vers la ville de l'adresse choisie, vendeur par vendeur (tarifs par ville fixés par les vendeurs et l'administrateur).
+/// Null : pas de livraison à domicile, adresse non choisie, ou ville non desservie par un vendeur (la commande l'expliquera).
+final deliveryQuoteProvider = FutureProvider.autoDispose<int?>((ref) async {
+  if (!Backend.ready || !ref.watch(homeDeliveryProvider)) return null;
+  final id = ref.watch(selectedAddressProvider);
+  if (id.isEmpty) return null;
+  String? city;
+  for (final a in ref.watch(addressesProvider) ?? const <Map<String, dynamic>>[]) {
+    if ('${a['id']}' == id) city = '${a['city']}';
+  }
+  if (city == null) return null;
+  final lines = ref.watch(cartProvider);
+  if (lines.isEmpty) return null;
+  final r = await marcheCall('delivery_quote', {'p_city': city, 'p_items': [for (final l in lines) {'title': l.title, 'qty': l.qty}]});
+  if (r.error != null || r.data is! Map) return null;
+  final fee = (r.data as Map)['fee'];
+  return fee is num ? fee.toInt() : null;
+});
 
 /// Frais de livraison affichés : hors serveur, ceux de la maquette ; connecté, ceux du réglage (0 si domicile non proposé).
 int deliveryFee(bool home, DeliverySettings? s) => !home ? 0 : (s?.fee ?? 5000);

@@ -6,7 +6,7 @@ import '../../data/demo/section_a_demo.dart';
 import 'dart:async' show Timer;
 import 'auth.dart' show authProvider, demoContent;
 import 'backend.dart';
-import 'delivery.dart' show deliveryFee, deliverySettingsProvider;
+import 'delivery.dart' show deliveryFee, deliveryQuoteProvider, deliverySettingsProvider;
 import '../../data/repositories/repositories.dart' show cartProvider;
 import 'promo_state.dart' show promoDiscountProvider;
 
@@ -119,7 +119,9 @@ final totalsProvider = Provider<Totals>((ref) {
   final raw = lines.fold<int>(0, (a, l) => a + l.price * l.qty);
   final n = lines.fold<int>(0, (a, l) => a + l.qty);
   final d = (ref.watch(promoDiscountProvider).value ?? 0).clamp(0, raw);
-  return Totals(n, raw - d, lines.isEmpty ? 0 : deliveryFee(home, ref.watch(deliverySettingsProvider)), discount: d);
+  final quoted = ref.watch(deliveryQuoteProvider).value;
+  final fee = lines.isEmpty ? 0 : (home && quoted != null ? quoted : deliveryFee(home, ref.watch(deliverySettingsProvider)));
+  return Totals(n, raw - d, fee, discount: d);
 });
 
 class Order {

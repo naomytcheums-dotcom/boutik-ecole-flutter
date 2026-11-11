@@ -15,6 +15,8 @@ import 'qr.dart' show myQrDialog;
 import 'referral.dart';
 import 'services.dart';
 
+Future<void> _livraisonVendeur(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/marche/livraison');
+Future<void> _livraisonPlateforme(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/marche/livraison?plateforme=1');
 Future<void> _promotions(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/marche/promotions');
 
 const _st = TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 14, color: Color(0xFF111015));
@@ -74,6 +76,7 @@ final _groups = <_Group>[
     _Entry('Tableau de bord', screen: '57', roles: {'student', 'dept', 'admin'}),
     _Entry('Mes annonces', screen: '58', roles: {'student', 'dept', 'admin'}),
     _Entry('Commandes reçues', screen: '63', roles: {'student', 'dept', 'admin'}),
+    _Entry('Mes tarifs de livraison', action: _livraisonVendeur, roles: {'student', 'dept', 'admin'}),
     _Entry('Stocks', screen: '62', roles: {'student', 'dept', 'admin'}),
     _Entry('Revenus', screen: '66', roles: {'student', 'dept', 'admin'}),
     _Entry('Statistiques', screen: '67', roles: {'student', 'dept', 'admin'}),
@@ -136,6 +139,7 @@ final _groups = <_Group>[
     _Entry('Kiosques et support', screen: '145', roles: {'support', 'admin'}),
     _Entry('Livraison à domicile (réglage)', action: homeDeliverySettingsDialog, roles: {'admin'}),
     _Entry('Promotions de la plateforme', action: _promotions, roles: {'admin'}),
+    _Entry('Tarifs de livraison de la plateforme', action: _livraisonPlateforme, roles: {'admin'}),
     _Entry('Supervision des bornes', screen: '277', roles: {'support', 'admin'}),
   ]),
   const _Group('Mon compte', [

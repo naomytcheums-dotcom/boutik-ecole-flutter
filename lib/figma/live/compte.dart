@@ -90,6 +90,7 @@ Future<void> addAddressDialog(BuildContext context, WidgetRef ref) async {
     'line': TextEditingController(),
   };
   GeoPlace? place;
+  var gen = 0; // change quand la position détectée remplit le quartier : le champ est recréé avec la nouvelle valeur
   String status = 'search';
   var started = false;
   Future<void> locate(StateSetter set) async {
@@ -102,8 +103,43 @@ Future<void> addAddressDialog(BuildContext context, WidgetRef ref) async {
       if (p.district.isNotEmpty) c['district']!.text = p.district;
       if (p.line.isNotEmpty) c['line']!.text = p.line;
     }
-    set(() => status = r.status);
+    set(() {
+      gen++;
+      status = r.status;
+    });
   }
+
+  Widget district() => Padding(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: Autocomplete<String>(
+          key: ValueKey('district$gen'),
+          initialValue: TextEditingValue(text: c['district']!.text),
+          optionsBuilder: (v) async {
+            final city = c['city']!.text.trim();
+            if (city.length < 2) return const <String>[];
+            final r = await Backend.rpc('suggest_districts', {'p_city': city, 'p_q': v.text, 'p_limit': 8});
+            if (r.error != null || r.data is! List) return const <String>[];
+            return [for (final x in r.data as List) '${(x as Map)['name']}'];
+          },
+          onSelected: (v) => c['district']!.text = v,
+          fieldViewBuilder: (ctx, ctrl, focus, submit) => TextField(
+            controller: ctrl,
+            focusNode: focus,
+            style: _st(14),
+            onChanged: (v) => c['district']!.text = v,
+            decoration: InputDecoration(
+              labelText: 'Quartier',
+              labelStyle: _st(13, c: _grey),
+              helperText: 'Pas dans la liste ? Saisissez-le : il sera proposé aux prochains clients.',
+              helperMaxLines: 2,
+              filled: true,
+              fillColor: Colors.white,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
+            ),
+          ),
+        ),
+      );
 
   Widget f(String k, String label, {TextInputType? kb}) => Padding(
         padding: const EdgeInsets.only(bottom: 12),
@@ -155,7 +191,7 @@ Future<void> addAddressDialog(BuildContext context, WidgetRef ref) async {
               f('recipient', 'Nom du destinataire'),
               f('phone', 'Téléphone', kb: TextInputType.phone),
               f('city', 'Ville'),
-              f('district', 'Quartier'),
+              district(),
               f('line', 'Adresse'),
               Align(
                 alignment: Alignment.centerLeft,

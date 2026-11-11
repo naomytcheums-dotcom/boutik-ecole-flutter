@@ -20,7 +20,7 @@ String feeLabel(int fee) => fee == 0 ? 'Gratuit' : fcfa(fee);
     home ? (title: 'Livraison à domicile', detail: 'À l’adresse du carnet') : (title: 'Retrait sur campus', detail: 'IUT de Douala – Bâtiment principal');
 
 /// Moyen de paiement retenu (08).
-String payMethodLabel(int method) => method == 0 ? 'Orange Money' : 'Mobile Money';
+String payMethodLabel(int method) => method == 0 ? 'Orange Money' : (method == 2 ? 'Paiement à la livraison' : 'Mobile Money');
 
 /// Référence à indiquer au paiement : celle de la commande créée ; tant qu'aucune commande n'existe, aucune référence n'est inventée.
 String orderReferenceLabel(List<Order> orders) => orders.isEmpty ? 'Attribuée à la validation' : orders.first.id.replaceFirst('#', '');

@@ -110,9 +110,10 @@ Future<void> startPayment(WidgetRef ref, BuildContext context) async {
   }
   if (!await requireLogin(context, ref, 'payer votre commande')) return;
   if (Supabase.instance.client.auth.currentUser == null) return;
+  final cod = ref.read(payMethodProvider) == 2;
   var phone = ref.read(payPhoneProvider).replaceAll(RegExp(r'\D'), '');
   if (phone.startsWith('237')) phone = phone.substring(3);
-  if (!RegExp(r'^[62]\d{8}$').hasMatch(phone)) {
+  if (!cod && !RegExp(r'^[62]\d{8}$').hasMatch(phone)) {
     gToast(context, 'Saisissez un numéro Mobile Money valide (9 chiffres, ex. 690 11 22 33).');
     return;
   }
@@ -129,6 +130,22 @@ Future<void> startPayment(WidgetRef ref, BuildContext context) async {
   }
   ref.read(ordersProvider.notifier).adopt(o.id, created['number'] as String, (created['subtotal'] as num).toInt(), (created['fee'] as num).toInt());
   o = ref.read(ordersProvider).firstWhere((x) => x.id == created['number']);
+  if (cod) {
+    // Paiement à la livraison : aucun prélèvement ; la commande est confirmée, le vendeur la prépare et encaisse à la remise.
+    final err = await Backend.confirmCodOrder(o.id);
+    if (err != null) {
+      await Backend.cancelOrder(o.id); // le stock réservé est restitué
+      pay.set(PayState(PayPhase.failed, err));
+      if (context.mounted) gToast(context, err);
+      return;
+    }
+    ref.read(auditProvider.notifier).log(who.name, 'Commande confirmée, paiement à la livraison', o.id, 'Finances');
+    pay.set(const PayState(PayPhase.idle));
+    if (!context.mounted) return;
+    gToast(context, 'Commande confirmée : vous payez à la livraison.');
+    gOpen(context, '259');
+    return;
+  }
   final orange = ref.read(payMethodProvider) == 0 || phone.startsWith('69') || RegExp(r'^65[5-9]').hasMatch(phone);
   final res = await _call({
     'action': 'start',

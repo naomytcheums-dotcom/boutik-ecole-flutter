@@ -200,7 +200,8 @@ class Orders extends Notifier<List<Order>> {
   Order place() {
     final now = DateTime.now();
     final t = ref.read(totalsProvider);
-    final method = ref.read(payMethodProvider) == 0 ? 'Orange Money' : 'Mobile Money';
+    final m = ref.read(payMethodProvider);
+    final method = m == 0 ? 'Orange Money' : (m == 2 ? 'Paiement à la livraison' : 'Mobile Money');
     final o = Order(
       id: '#BE-${now.year}-${(_n++).toString().padLeft(4, '0')}',
       date: '${now.day} ${_mois[now.month - 1]} ${now.year}',

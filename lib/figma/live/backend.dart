@@ -1224,6 +1224,20 @@ class Backend {
   /// stock sans survente et sépare les lignes par boutique. Le client n'envoie que des titres, des quantités et un code.
   /// Une clé d'idempotence (même panier, même quart d'heure) évite deux commandes si la réponse se perd et que l'on réessaie.
   /// Retourne {number, subtotal, fee, discount} ou {error: message}.
+  /// Confirme une commande à payer à la livraison (après sa création) : le vendeur la voit et la prépare, l'argent est encaissé à la remise.
+  static Future<String?> confirmCodOrder(String number) async {
+    final c = _c;
+    if (c == null) return 'Connexion requise.';
+    try {
+      await c.rpc('confirm_cod_order', params: {'p_number': number});
+      return null;
+    } on PostgrestException catch (e) {
+      return e.message;
+    } catch (_) {
+      return 'Connexion impossible au serveur.';
+    }
+  }
+
   static Future<Map<String, dynamic>> createOrder(List<CartLine> lines, bool home, String method, {String? address}) async {
     final c = _c;
     if (c == null || c.auth.currentUser == null) return {'error': 'Connexion requise pour passer commande.'};

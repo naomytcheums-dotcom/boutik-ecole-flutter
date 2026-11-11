@@ -438,6 +438,64 @@ class MDropdown extends StatelessWidget {
       );
 }
 
+/// Vendeur vérifié d'une offre : photo, nom, filière et année à l'IUT, enseignant encadrant et badge « Projet validé par l'IUT ».
+/// Rien n'est inventé : une information absente n'est pas affichée.
+class SellerCard extends StatelessWidget {
+  const SellerCard({super.key, required this.seller, this.supervisor = '', this.validated = false, this.onTap});
+  final Map<String, dynamic> seller;
+  final String supervisor;
+  final bool validated;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final name = '${seller['name'] ?? ''}'.trim();
+    if (name.isEmpty) return const SizedBox.shrink();
+    final avatar = '${seller['avatar_url'] ?? ''}';
+    final line = [for (final k in ['department', 'study_level', 'institution']) if ('${seller[k] ?? ''}'.trim().isNotEmpty) '${seller[k]}'.trim()].join(' · ');
+    return Semantics(
+      button: onTap != null,
+      label: 'Vendeur : $name',
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Container(
+          margin: const EdgeInsets.only(top: 14),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(4), border: Border.all(color: kLine)),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Row(children: [
+              ClipOval(child: SizedBox(width: 52, height: 52, child: MImage(avatar, icon: Icons.person_outline))),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Row(children: [
+                    Flexible(child: Text(name, maxLines: 1, overflow: TextOverflow.ellipsis, style: mst(14.5, w: FontWeight.w800))),
+                    if (seller['certified'] == true) ...[const SizedBox(width: 6), const Icon(Icons.verified_rounded, size: 18, color: kViolet)],
+                  ]),
+                  Text(seller['certified'] == true ? 'Vendeur vérifié' : 'Étudiant vendeur', style: mst(11.5, w: FontWeight.w700, c: seller['certified'] == true ? kViolet : kGrey)),
+                  if (line.isNotEmpty) Text(line, style: mst(12, c: kGrey)),
+                ]),
+              ),
+              if (onTap != null) const Icon(Icons.chevron_right_rounded, color: kGrey),
+            ]),
+            if (supervisor.trim().isNotEmpty) Padding(padding: const EdgeInsets.only(top: 8), child: Text('Encadré par ${supervisor.trim()}', style: mst(12.5, w: FontWeight.w600))),
+            if (validated)
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                  decoration: BoxDecoration(color: const Color(0xFFDDF5EC), borderRadius: BorderRadius.circular(3)),
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [const Icon(Icons.verified_outlined, size: 16, color: kGreen), const SizedBox(width: 6), Flexible(child: Text('Projet validé par l’IUT de Douala', style: mst(12, w: FontWeight.w700, c: kGreen)))]),
+                ),
+              ),
+          ]),
+        ),
+      ),
+    );
+  }
+}
+
 /// Contenu asynchrone : chargement, erreur lisible, état vide.
 Widget mAsync<T>(AsyncValue<T> v, Widget Function(T) builder) => v.when(
       data: builder,

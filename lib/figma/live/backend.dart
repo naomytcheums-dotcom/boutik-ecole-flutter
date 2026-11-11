@@ -422,6 +422,7 @@ class Backend {
         'price': l.price,
         'stock': l.stock,
         'description': l.description.trim().isEmpty ? null : l.description.trim(),
+        if (l.supervisor.trim().isNotEmpty) 'supervisor': l.supervisor.trim(),
         'status': submit ? 'pending' : 'draft',
       }).select().single();
       return (listing: Listing.fromRow(row), error: null);

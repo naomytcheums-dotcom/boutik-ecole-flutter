@@ -40,6 +40,8 @@ export async function run(db) {
     ('${A}','Gestion de stock web','Informatique','Solutions numériques',150000,5,'approved','{}'),
     ('${A}','Creation de logo','Design','Services',20000,99,'approved','{}'),
     ('${A}','Prototype irrigation','Genie civil','Projets et licences',500000,1,'approved','{}')`);
+  await db.exec(`update listings set supervisor='M. Nkoulou', reviewed_by='${M}' where title='Prototype irrigation'`);
+  await db.exec(`update profiles set study_level='Licence 2', department='Génie civil' where id='${A}'`);
   await as(null, 'anon');
   let res = (await q(`select marketplace_search(null,null,null,null,null,'price_asc') r`))[0].r;
   check('recherche publique triee par prix croissant, mes 3 produits presents', res.every((x, i) => i === 0 || res[i - 1].price <= x.price) && ['Lampe en bois', 'Table basse', 'Sac direct'].every(t => res.some(x => x.title === t)));
@@ -59,6 +61,11 @@ export async function run(db) {
   check('type produit physique : aucun service ni solution', res.length >= 3 && res.every(x => x.offer_type === 'product'));
   res = (await q(`select marketplace_search() r`))[0].r;
   check('sans type : toutes les offres', ['Lampe en bois', 'Gestion de stock web', 'Creation de logo', 'Prototype irrigation'].every(t => res.some(x => x.title === t)));
+  const proj = (await q(`select id from listings where title='Prototype irrigation'`))[0];
+  const pd = (await q(`select product_detail('${proj.id}') d`))[0].d;
+  check('fiche : vendeur avec filiere et annee, encadrant, badge valide par l IUT', pd.seller && pd.seller.study_level === 'Licence 2' && pd.seller.department === 'Génie civil' && pd.supervisor === 'M. Nkoulou' && pd.validated === true && pd.card.validated === true);
+  const pd2 = (await q(`select product_detail('${lamp.id}') d`))[0].d;
+  check('annonce non relue : pas de badge valide', pd2.validated === false && pd2.supervisor === null);
   check('boutiques actives visibles', (await q(`select marketplace_shops() s`))[0].s.length === 1);
   const det = (await q(`select product_detail('${lamp.id}') d`))[0].d;
   check('fiche produit : 3 images', det.found && det.images.length === 3);

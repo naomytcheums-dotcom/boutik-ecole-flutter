@@ -17,8 +17,11 @@ import 'store.dart';
 // ------------------------------------------------------------------ annonces
 
 class Listing {
-  const Listing({required this.title, required this.category, required this.price, required this.stock, this.published = true, this.inReview = false, this.description = '', this.id = '', this.status = '', this.note = '', this.images = const [], this.department = '', this.platform = false, this.showcase = false});
+  const Listing({required this.title, required this.category, required this.price, required this.stock, this.published = true, this.inReview = false, this.description = '', this.id = '', this.status = '', this.note = '', this.images = const [], this.department = '', this.platform = false, this.showcase = false, this.supervisor = ''});
   final String title, category, description, department;
+
+  /// Enseignant qui encadre le projet (facultatif), affiché sur la fiche de l'offre.
+  final String supervisor;
   final int price, stock;
   final bool published, inReview;
 
@@ -54,6 +57,7 @@ class Listing {
       department: (r['department'] ?? '').toString(),
       platform: r.containsKey('seller_id') && r['seller_id'] == null,
       showcase: r['showcase'] == true,
+      supervisor: (r['supervisor'] ?? '').toString(),
     );
   }
 
@@ -76,7 +80,8 @@ class Listing {
         stock: stock ?? this.stock,
         published: published ?? this.published,
         inReview: inReview ?? this.inReview,
-        description: description);
+        description: description,
+        supervisor: supervisor);
 }
 
 class Listings extends Notifier<List<Listing>> {
@@ -493,6 +498,7 @@ Future<void> submitListing(WidgetRef ref, BuildContext context, {required bool p
     published: false,
     inReview: publish,
     description: f['np_desc'] ?? '',
+    supervisor: (f['np_sup'] ?? '').trim(),
   );
   if (Backend.ready) {
     final err = await ref.read(listingsProvider.notifier).create(nouvelle, submit: publish);

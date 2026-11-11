@@ -9,6 +9,7 @@ import '../../gen.dart' show gToast;
 import '../auth.dart';
 import '../backend.dart';
 import '../messages.dart' show contactSeller;
+import '../../nav.dart' show gOpenProfile;
 import '../offer_types.dart' show offerTypeLabels;
 import 'marche_data.dart';
 import 'marche_widgets.dart';
@@ -468,6 +469,13 @@ class _ProductBodyState extends ConsumerState<_ProductBody> {
           const SizedBox(height: 4),
           Text(stock <= 0 ? 'Épuisé' : (stock <= 5 ? 'Plus que $stock en stock' : 'En stock'), style: mst(13, w: FontWeight.w700, c: stock <= 0 ? kRed : (stock <= 5 ? const Color(0xFFB45309) : kGreen))),
           if (card['rating_avg'] != null) Text('★ ${card['rating_avg']} · ${mInt(card['rating_count'])} avis · ${mInt(card['sales'])} vendu(s)', style: mst(12.5, c: kGrey)),
+          if (d['seller'] is Map)
+            SellerCard(
+              seller: Map<String, dynamic>.from(d['seller'] as Map),
+              supervisor: '${d['supervisor'] ?? ''}',
+              validated: d['validated'] == true,
+              onTap: '${d['seller_id'] ?? ''}'.isEmpty ? null : () => gOpenProfile(context, '${d['seller_id']}'),
+            ),
         ]),
       ),
       if (variants.isNotEmpty) ...[

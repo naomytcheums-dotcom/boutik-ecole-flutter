@@ -28,9 +28,9 @@ const _icons = <List<(double, double, double, double, String)>>[
     (332.054, 222.865, 6.008, 6, 'f5ee10b4cf6bcd'),
   ],
 ];
-const _labels = ['Confirmée', 'En préparation', 'Expédiée', 'Livrée'];
-const _labelX = [32.727, 114.518, 226.317, 320.191];
-const _labelW = [58.0, 81.0, 51.0, 33.0];
+const _labels = ['Confirmée', 'En préparation', 'En livraison', 'Livrée'];
+const _labelX = [32.727, 114.518, 217.317, 320.191];
+const _labelW = [58.0, 81.0, 69.0, 33.0];
 
 List<Widget> liveTimeline(WidgetRef ref) => [
       Positioned.fill(

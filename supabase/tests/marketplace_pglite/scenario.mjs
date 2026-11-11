@@ -137,6 +137,21 @@ export async function run(db) {
   await q(`select submit_shop_review((select id from shops), 4, 'Bien')`);
   check('avis boutique', (await q(`select shop_public('atelier-awa') p`))[0].p.rating_avg == 4);
   await q(`select report_shop((select id from shops), 'fraud', 'test')`);
+  // --- devis sur une offre non physique
+  const logo = (await q(`select id from listings where title='Creation de logo'`))[0];
+  await as(B);
+  await fails('devis : un produit physique s achete, pas de devis', `select request_quote_offer('${lamp.id}','Besoin de vingt lampes pour la rentree')`, /s'achète directement/);
+  await fails('devis : besoin trop court refuse', `select request_quote_offer('${logo.id}','court')`, /10 caractères/);
+  const dq = (await q(`select request_quote_offer('${logo.id}','Logo pour mon association sportive', 25000, 'fin du mois') id`))[0].id;
+  await fails('devis : une seule demande en cours par offre', `select request_quote_offer('${logo.id}','Une autre demande de logo')`, /déjà en cours/);
+  await as(A);
+  await fails('devis : pas sur sa propre offre', `select request_quote_offer('${logo.id}','Mon propre logo ici svp')`, /propre offre/);
+  check('devis : le vendeur est notifie', (await q(`select count(*)::int n from notifications where user_id='${A}' and kind='quote'`))[0].n === 1);
+  check('devis : le vendeur repond avec prix et delai', (await q(`select answer_quote('${dq}', 22000, 7, 'Deux propositions incluses') s`))[0].s === 'quoted');
+  await as(B);
+  check('devis : l acheteur accepte', (await q(`select decide_quote('${dq}', true) s`))[0].s === 'accepted');
+  const qr = (await q(`select status, quote_amount, quote_delay_days from quote_requests where id='${dq}'`))[0];
+  check('devis : etat final accepte avec prix et delai', qr.status === 'accepted' && qr.quote_amount === 22000 && qr.quote_delay_days === 7);
   await as(M);
   check('signalement dans la file de moderation', (await q(`select marketplace_moderation() m`))[0].m.shop_reports.length === 1);
   check('suspension avec motif', (await q(`select shop_decide((select id from shops), 'suspend', 'Plaintes multiples') s`))[0].s === 'suspended');

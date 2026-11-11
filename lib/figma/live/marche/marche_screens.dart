@@ -496,6 +496,10 @@ class _ProductBodyState extends ConsumerState<_ProductBody> {
             const SizedBox(width: 10),
             Expanded(flex: 2, child: mButton('Contacter', isOwner ? null : () => contactSeller(ref, context, '${card['title']}'), dark: false)),
           ]),
+          if (offerTypeOf(card) != 'product') ...[
+            const SizedBox(height: 10),
+            mButton('Demander un devis', isOwner ? null : () => _askQuote(card), dark: false, icon: Icons.request_quote_outlined, width: double.infinity),
+          ],
           const SizedBox(height: 8),
           Wrap(spacing: 8, children: [
             if (stock <= 0) MChip(alerts.contains('stock') ? 'Alerte retour en stock activée' : 'M’alerter au retour en stock', selected: alerts.contains('stock'), onTap: () => _alert('stock', !alerts.contains('stock'))),
@@ -552,6 +556,48 @@ class _ProductBodyState extends ConsumerState<_ProductBody> {
       if (rs.isEmpty) Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: Text('Aucun avis pour le moment. Seuls les acheteurs peuvent noter.', style: mst(13, c: kGrey))),
       for (final r in rs) Padding(padding: const EdgeInsets.fromLTRB(16, 0, 16, 10), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('${'★' * mInt(r['rating'])}  ${r['author']}', style: mst(13, w: FontWeight.w700)), if ('${r['comment'] ?? ''}'.isNotEmpty) Text('${r['comment']}', style: mst(13, c: kGrey))])),
     ]);
+  }
+
+  String offerTypeOf(Map<String, dynamic> card) => '${card['offer_type'] ?? 'product'}';
+
+  /// Demande de devis adressée au vendeur d'une solution, d'un service ou d'un projet : besoin, budget facultatif, échéance facultative.
+  Future<void> _askQuote(Map<String, dynamic> card) async {
+    if (!await requireLogin(context, ref, 'demander un devis') || !mounted) return;
+    final brief = TextEditingController(), budget = TextEditingController(), deadline = TextEditingController();
+    InputDecoration deco(String label, {String? hint}) => InputDecoration(labelText: label, hintText: hint, border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)));
+    final ok = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(8))),
+      builder: (c) => Padding(
+        padding: EdgeInsets.fromLTRB(20, 20, 20, 20 + MediaQuery.of(c).viewInsets.bottom),
+        child: SingleChildScrollView(
+          child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('Demander un devis', style: mst(18, w: FontWeight.w800)),
+            const SizedBox(height: 4),
+            Text('${card['title']}', style: mst(13, c: kGrey)),
+            const SizedBox(height: 14),
+            TextField(controller: brief, maxLines: 4, decoration: deco('Votre besoin', hint: 'Décrivez ce que vous voulez, en quelques lignes')),
+            const SizedBox(height: 12),
+            TextField(controller: budget, keyboardType: TextInputType.number, decoration: deco('Budget (FCFA, facultatif)')),
+            const SizedBox(height: 12),
+            TextField(controller: deadline, decoration: deco('Échéance souhaitée (facultatif)', hint: 'Ex. fin du mois')),
+            const SizedBox(height: 16),
+            Row(children: [
+              Expanded(child: mButton('Annuler', () => Navigator.pop(c, false), dark: false)),
+              const SizedBox(width: 12),
+              Expanded(child: mButton('Envoyer', () => Navigator.pop(c, true))),
+            ]),
+          ]),
+        ),
+      ),
+    );
+    if (ok != true || !mounted) return;
+    final b = int.tryParse(budget.text.replaceAll(RegExp(r'[^0-9]'), ''));
+    final r = await marcheCall('request_quote_offer', {'p_listing': widget.id, 'p_brief': brief.text, 'p_budget': b, 'p_deadline': deadline.text});
+    if (!mounted) return;
+    gToast(context, r.error != null ? Backend.userMessage('${r.error}') : 'Demande envoyée. Le vendeur vous répondra avec un devis : retrouvez-le dans « Mes devis ».');
   }
 
   String mImageUrlVideo(String v) => v.startsWith('http') ? v : Backend.publicUrl('listing-videos', v);

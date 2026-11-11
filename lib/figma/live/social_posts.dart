@@ -1,3 +1,4 @@
+import '../gdata.dart' show GData, gNetImage;
 import 'dart:async';
 import 'dart:math' as math;
 
@@ -59,7 +60,7 @@ Widget socialAvatar(String url, String name, double size) {
   final initial = name.trim().isEmpty ? '?' : name.trim().characters.first.toUpperCase();
   final fallback = Container(width: size, height: size, alignment: Alignment.center, decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFFEDE9F6)), child: Text(initial, style: sty(size * 0.38, w: FontWeight.w700, c: const Color(0xFF4A4854))));
   if (url.isEmpty) return fallback;
-  return ClipOval(child: SizedBox(width: size, height: size, child: Image.network(url, fit: BoxFit.cover, errorBuilder: (_, _, _) => fallback)));
+  return ClipOval(child: SizedBox(width: size, height: size, child: gNetImage(url, fit: BoxFit.cover, errorBuilder: (_, _, _) => fallback)));
 }
 
 // ------------------------------------------------------------------ cœur
@@ -212,6 +213,10 @@ class _DuoPlayerState extends State<_DuoPlayer> {
   @override
   void initState() {
     super.initState();
+    if (!GData.blockVideo) _start();
+  }
+
+  void _start() {
     final c = VideoPlayerController.networkUrl(Uri.parse(widget.url), videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true));
     _c = c;
     c.initialize().then((_) {
@@ -231,7 +236,8 @@ class _DuoPlayerState extends State<_DuoPlayer> {
   @override
   Widget build(BuildContext context) {
     final c = _c;
-    if (c == null || !c.value.isInitialized) return const ColoredBox(color: Color(0xFF18171F));
+    if (c == null) return GestureDetector(onTap: () => setState(_start), child: const ColoredBox(color: Color(0xFF18171F), child: Center(child: Icon(Icons.play_circle_fill, color: Colors.white, size: 40))));
+    if (!c.value.isInitialized) return const ColoredBox(color: Color(0xFF18171F));
     return GestureDetector(
       onTap: () {
         _on = !_on;
@@ -573,7 +579,7 @@ class _CommentsSheetState extends ConsumerState<_CommentsSheet> {
             if (c.attachment.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 6),
-                child: ConstrainedBox(constraints: const BoxConstraints(maxHeight: 200, maxWidth: 220), child: Image.network(c.attachment, fit: BoxFit.contain, errorBuilder: (_, _, _) => const SizedBox.shrink())),
+                child: ConstrainedBox(constraints: const BoxConstraints(maxHeight: 200, maxWidth: 220), child: gNetImage(c.attachment, fit: BoxFit.contain, errorBuilder: (_, _, _) => const SizedBox.shrink())),
               ),
             Row(children: [
               GestureDetector(
@@ -793,7 +799,7 @@ class _MediaCarouselState extends State<MediaCarousel> {
             onPageChanged: (v) => setState(() => _i = v),
             itemBuilder: (_, k) => m[k].video
                 ? InlineVideo(url: m[k].url, onFull: widget.onOpenReels)
-                : Image.network(m[k].url, fit: BoxFit.contain, width: double.infinity, height: double.infinity, errorBuilder: (_, _, _) => const Center(child: Icon(Icons.broken_image_outlined, color: kGrey)), loadingBuilder: (_, child, p) => p == null ? child : const Center(child: SizedBox(width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2)))),
+                : gNetImage(m[k].url, fit: BoxFit.contain, width: double.infinity, height: double.infinity, errorBuilder: (_, _, _) => const Center(child: Icon(Icons.broken_image_outlined, color: kGrey)), loadingBuilder: (_, child, p) => p == null ? child : const Center(child: SizedBox(width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2)))),
           ),
         ),
       ),
@@ -978,7 +984,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                     if (post.repostCaption.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 4), child: Text(post.repostCaption, maxLines: 4, overflow: TextOverflow.ellipsis, style: sty(12.5, c: const Color(0xFF2A2833), h: 1.4))),
                   ]),
                 ),
-                if (post.repostMediaUrl.isNotEmpty && !post.repostMediaVideo) Padding(padding: const EdgeInsets.only(left: 10), child: SizedBox(width: 64, height: 64, child: Image.network(post.repostMediaUrl, fit: BoxFit.cover, errorBuilder: (_, _, _) => const SizedBox.shrink()))),
+                if (post.repostMediaUrl.isNotEmpty && !post.repostMediaVideo) Padding(padding: const EdgeInsets.only(left: 10), child: SizedBox(width: 64, height: 64, child: gNetImage(post.repostMediaUrl, fit: BoxFit.cover, errorBuilder: (_, _, _) => const SizedBox.shrink()))),
               ]),
             ),
           ),

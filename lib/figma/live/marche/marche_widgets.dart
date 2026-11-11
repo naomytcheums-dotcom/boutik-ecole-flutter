@@ -1,3 +1,4 @@
+import '../../gdata.dart' show gNetImage;
 import 'dart:async';
 
 import 'package:flutter/material.dart' hide Text;
@@ -91,7 +92,7 @@ class MImage extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget neutral() => Container(color: const Color(0xFFEEE9F5), alignment: Alignment.center, child: Icon(icon, color: const Color(0xFFB9B4C7), size: 36));
     if (url.isEmpty) return neutral();
-    return Image.network(url, fit: fit, errorBuilder: (_, _, _) => neutral(), loadingBuilder: (c, child, p) => p == null ? child : neutral());
+    return gNetImage(url, fit: fit, errorBuilder: (_, _, _) => neutral(), loadingBuilder: (c, child, p) => p == null ? child : neutral());
   }
 }
 

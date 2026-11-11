@@ -42,7 +42,7 @@ class G_274 extends ConsumerWidget {
       gP(43.458, 83.458, 11.542, 17.083, gImg('assets/figma/v/7a21623fe0dfea.svg')),
       gP(43.458, 89, 17.083, 6, gImg('assets/figma/v/e130a05f3cf779.svg')),
       gP(108, 76, 174, 21, gText('Conditions générales', 17, Color(0xFF111015), weight: 500)),
-      gP(88, 102, 214, 15, gText(gm('Version 2.1 · mise à jour le 02/09/2026', '—'), 12, Color(0xFF57545F))),
+      gP(88, 102, 214, 15, gText(gm('Version 2.1 · mise à jour le 02/09/2026', ''), 12, Color(0xFF57545F))),
       gP(160.167, 137.833, 69.667, 84.333, gImg('assets/figma/r/200_351.png')),
       gP(174.833, 137.833, 55, 66, gImg('assets/figma/r/200_352.png')),
       gP(44, 268, 223, 18, gText('CGU · Utilisation de la plateforme', 14, Color(0xFF111015), weight: 600)),

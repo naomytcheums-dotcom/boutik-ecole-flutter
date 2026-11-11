@@ -46,7 +46,7 @@ class G_138 extends ConsumerWidget {
       gP(695, 287, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18), show: demoContent),
       gP(284, 332, 457, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
       gP(284, 344, 112, 16, gText('Défis entreprises', 13.5, Color(0xFF111015), weight: 600, inter: true), show: demoContent),
-      gP(284, 366, 65, 14, gText(gm('Espace B2B', '—'), 11.5, Color(0xFF57545F), inter: true), show: demoContent),
+      gP(284, 366, 65, 14, gText(gm('Espace B2B', ''), 11.5, Color(0xFF57545F), inter: true), show: demoContent),
       gP(695, 353, 42, 24, GToggle(on: false, onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18), show: demoContent),
       gP(767, 134, 485, 264, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26]), show: demoContent),
       gP(779, 147, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13]), show: demoContent),

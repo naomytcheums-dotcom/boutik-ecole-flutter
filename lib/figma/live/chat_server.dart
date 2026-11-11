@@ -1,3 +1,4 @@
+import '../gdata.dart' show gNetImage;
 import 'dart:async';
 import 'dart:typed_data';
 
@@ -297,7 +298,7 @@ class _ServerChatPanelState extends ConsumerState<ServerChatPanel> {
                 future: _url(m.path!),
                 builder: (_, s) => s.data == null
                     ? SizedBox(width: 200, height: 120, child: Center(child: Text(s.connectionState == ConnectionState.done ? 'Photo indisponible' : 'Chargement…', style: _st(11.5, c: fg))))
-                    : GestureDetector(onTap: () => openUrl(context, s.data!), child: ClipRRect(borderRadius: BorderRadius.circular(14), child: Image.network(s.data!, width: 200, fit: BoxFit.cover, errorBuilder: (_, _, _) => SizedBox(width: 200, height: 80, child: Center(child: Text('Photo indisponible', style: _st(11.5, c: fg))))))),
+                    : GestureDetector(onTap: () => openUrl(context, s.data!), child: ClipRRect(borderRadius: BorderRadius.circular(14), child: gNetImage(s.data!, width: 200, fit: BoxFit.cover, errorBuilder: (_, _, _) => SizedBox(width: 200, height: 80, child: Center(child: Text('Photo indisponible', style: _st(11.5, c: fg))))))),
               );
       case 'file':
         body = GestureDetector(

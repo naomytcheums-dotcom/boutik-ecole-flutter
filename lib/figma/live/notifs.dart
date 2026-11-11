@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import 'auth.dart';
+import '../gdata.dart' show GData;
 import 'backend.dart';
 
 /// Notifications réelles (table `notifications`, isolée par utilisateur) et compteurs de non-lus.
@@ -59,7 +60,10 @@ final notifsProvider = NotifierProvider<Notifs, List<NotificationItem>>(Notifs.n
 final unreadProvider = FutureProvider<({int notifications, int messages})>((ref) async {
   ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
   // Mise à jour automatique : le chiffre suit les nouvelles notifications sans recharger la page.
-  final t = Timer(const Duration(seconds: 25), ref.invalidateSelf);
+  final t = Timer(const Duration(seconds: 25), () {
+    // « Synchronisation en Wi-Fi uniquement » : pas d'actualisation automatique sur données mobiles
+    if (!GData.blockSync) ref.invalidateSelf();
+  });
   ref.onDispose(t.cancel);
   return Backend.unreadCounts();
 });

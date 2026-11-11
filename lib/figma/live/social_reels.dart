@@ -1,3 +1,4 @@
+import '../gdata.dart' show gNetImage;
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -50,7 +51,7 @@ class _ReelPhotosState extends State<_ReelPhotos> {
           onPageChanged: (v) => setState(() => _i = v),
           itemBuilder: (_, k) => widget.media[k].video
               ? InlineVideo(url: widget.media[k].url)
-              : Image.network(widget.media[k].url, fit: BoxFit.contain, width: double.infinity, height: double.infinity, errorBuilder: (_, _, _) => const Center(child: Icon(Icons.broken_image_outlined, color: Colors.white54, size: 40))),
+              : gNetImage(widget.media[k].url, fit: BoxFit.contain, width: double.infinity, height: double.infinity, errorBuilder: (_, _, _) => const Center(child: Icon(Icons.broken_image_outlined, color: Colors.white54, size: 40))),
         ),
         if (widget.media.length > 1)
           Positioned(

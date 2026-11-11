@@ -80,7 +80,7 @@ class G_72 extends ConsumerWidget {
       gP(48.833, 575.833, 9.333, 9.333, gImg('assets/figma/v/87052a066968e5.svg')),
       gP(48, 579.44, 18.5, 14.06, gImg('assets/figma/v/f51abb12c4fc4f.svg')),
       gP(88, 562, 125, 17, gText('Ajouter des médias', 13.5, Color(0xFF111015), weight: 600)),
-      gP(88, 584, 170, 14, gText(gm('Photos, captures, vidéo (5 max)', '—'), 11.5, Color(0xFF57545F))),
+      gP(88, 584, 170, 14, gText(gm('Photos, captures, vidéo (5 max)', ''), 11.5, Color(0xFF57545F))),
       gP(336.75, 575.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
       gP(0, 744, 390, 100, gBox(color: Color(0x00FFFFFF))),
       gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => addPortfolioItem(context, ref)),

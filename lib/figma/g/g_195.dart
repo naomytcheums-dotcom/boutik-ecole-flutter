@@ -53,7 +53,7 @@ class G_195 extends ConsumerWidget {
       gP(44.667, 154.167, 22.667, 10.167, gImg('assets/figma/v/9870aa4d1427a0.svg'), show: demoContent),
       gP(44.667, 150, 22.667, 10.167, gImg('assets/figma/v/9870aa4d1427a0.svg'), show: demoContent),
       gP(88, 132, 135, 17, gText('Propositions de logo', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
-      gP(88, 154, 166, 14, gText(gm('Jalon 2 · Identité visuelle Mbel…', '—'), 11.5, Color(0xFF57545F)), show: demoContent),
+      gP(88, 154, 166, 14, gText(gm('Jalon 2 · Identité visuelle Mbel…', ''), 11.5, Color(0xFF57545F)), show: demoContent),
       gP(280.8, 142, 71.2, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11]), show: demoContent),
       gP(293.9, 146, 45, 14, gText('En cours', 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center), show: demoContent),
       gP(24, 200, 187, 19, gText('Photos ou vidéo du travail', 15, Color(0xFF111015), weight: 700), show: demoContent),

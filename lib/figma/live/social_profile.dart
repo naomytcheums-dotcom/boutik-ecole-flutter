@@ -1,3 +1,4 @@
+import '../gdata.dart' show gNetImage;
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'home_live.dart' show liveTalentsProvider;
@@ -391,7 +392,7 @@ class SocialProfilePanel extends ConsumerWidget {
       child: ClipOval(
         child: p.avatarUrl.isEmpty
             ? fallback
-            : Image.network(
+            : gNetImage(
                 p.avatarUrl,
                 width: size,
                 height: size,
@@ -444,7 +445,7 @@ class SocialProfilePanel extends ConsumerWidget {
             ),
           )
         else
-          Image.network(
+          gNetImage(
             r.mediaUrl,
             fit: BoxFit.cover,
             errorBuilder: (_, _, _) => const ColoredBox(

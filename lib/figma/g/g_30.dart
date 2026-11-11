@@ -47,7 +47,7 @@ class G_30 extends ConsumerWidget {
       gP(25.412, 73.67, 10.769, 15.538, gImg('assets/figma/v/c5fe2620711652.svg')),
       gP(25.412, 78.439, 15.538, 6, gImg('assets/figma/v/c120b3472d891c.svg')),
       gP(95.145, 319.158, 205, 28, gText('Commande reçue !', 22.121, Color(0xFF111015), weight: 700, align: TextAlign.center)),
-      gP(59.645, 379.27, 276, 44, gText(gm('Votre commande #BE-2026-0142 a bien été\nreçue. Merci pour votre confiance !', '—'), 12.984, Color(0xFF5A3FE0), lh: 21.64, align: TextAlign.center), show: demoContent),
+      gP(59.645, 379.27, 276, 44, gText(gm('Votre commande #BE-2026-0142 a bien été\nreçue. Merci pour votre confiance !', ''), 12.984, Color(0xFF5A3FE0), lh: 21.64, align: TextAlign.center), show: demoContent),
       gP(50.974, 473.825, 294.303, 57.007, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 5), blurRadius: 12, spreadRadius: 0)], radii: [19.236, 19.236, 19.236, 19.236]), tap: () { reviewOrderDialog(context, ref); }),
       gP(131.626, 494.698, 133, 16, gText('Évaluer la commande', 12.984, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(50.974, 551.561, 294.303, 59.228, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x12403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28]), tap: () => gOpen(context, '29')),

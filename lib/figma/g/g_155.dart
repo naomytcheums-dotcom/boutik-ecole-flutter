@@ -68,7 +68,7 @@ class G_155 extends ConsumerWidget {
       gP(36, 351, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13]), show: demoContent),
       gP(44.667, 359.667, 22.667, 22.667, gImg('assets/figma/v/fea5b000abca5c.svg'), show: demoContent),
       gP(53, 363, 9.333, 12.667, gImg('assets/figma/v/abb8a0dfdd76de.svg'), show: demoContent),
-      gP(88, 350, 149, 17, gText(gm('Date limite dans 2 jours', '—'), 13.5, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(88, 350, 149, 17, gText(gm('Date limite dans 2 jours', ''), 13.5, Color(0xFF111015), weight: 600), show: demoContent),
       gP(88, 372, 181, 14, gText(gm('Hackathon Orange Digital Center', ''), 11.5, Color(0xFF57545F)), show: demoContent),
       gP(312.8, 360, 39.2, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11]), show: demoContent),
       gP(323.4, 364, 18, 14, gText('J-2', 11, Color(0xFF8F5400), weight: 600, align: TextAlign.center), show: demoContent),

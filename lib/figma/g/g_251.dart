@@ -49,7 +49,7 @@ class G_251 extends ConsumerWidget {
       gP(200, 242, 166, 114, gBox(image: 'assets/figma/img/4ca68f79023605aecb4f83724629d508e921e885.png', fit: BoxFit.cover, radii: [28, 28, 28, 28]), show: demoContent),
       gP(200, 364, 166, 114, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [28, 28, 28, 28]), show: demoContent),
       gP(34, 254, 49, 24, gBox(color: Color(0xB2111015), radii: [100, 100, 100, 100]), show: demoContent),
-      gP(46, 260, 25, 12, gText(demoContent ? '3,2 M' : '—', 9.5, Color(0xFFFFFFFF), weight: 600), show: demoContent),
+      gP(46, 260, 25, 12, gText(demoContent ? '3,2 M' : '', 9.5, Color(0xFFFFFFFF), weight: 600), show: demoContent),
       gP(313, 254, 43, 24, gBox(color: Color(0xFFFF2D55), radii: [100, 100, 100, 100]), show: demoContent),
       gP(325, 260, 19, 12, gText('Live', 9.5, Color(0xFF111015), weight: 600), fx: 'pulse', show: demoContent),
       gP(24, 490, 110, 100, gBox(image: 'assets/figma/img/4b7b6cea2f4622846841cd8342842e81fa1ed891.png', fit: BoxFit.cover, radii: [22, 22, 22, 22]), show: demoContent),

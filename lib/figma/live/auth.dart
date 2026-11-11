@@ -1,3 +1,4 @@
+import '../gdata.dart' show gNetImage;
 import 'dart:async';
 
 import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform, TargetPlatform;
@@ -1234,7 +1235,7 @@ Widget profileAvatar(double x, double y, double size) => gP(
         );
       if (a.avatarUrl.isEmpty) return initials();
       return ClipOval(
-        child: Image.network(
+        child: gNetImage(
           a.avatarUrl,
           fit: BoxFit.cover,
           width: size,

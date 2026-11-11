@@ -1,3 +1,4 @@
+import '../gdata.dart' show GData, gNetImage;
 import 'dart:async';
 
 import 'package:flutter/material.dart' hide Text;
@@ -177,7 +178,7 @@ class _ProjectMediaViewState extends State<ProjectMediaView> {
         onPageChanged: (v) => setState(() => _i = v),
         itemBuilder: (_, k) => m[k].video
             ? _LoopVideo(url: m[k].url)
-            : Image.network(m[k].url, fit: BoxFit.cover, errorBuilder: (_, _, _) => const _NoMedia()),
+            : gNetImage(m[k].url, fit: BoxFit.cover, errorBuilder: (_, _, _) => const _NoMedia()),
       ),
       if (m.length > 1)
         Positioned(
@@ -208,6 +209,10 @@ class _LoopVideoState extends State<_LoopVideo> {
   @override
   void initState() {
     super.initState();
+    if (!GData.blockVideo) _start();
+  }
+
+  void _start() {
     final c = VideoPlayerController.networkUrl(Uri.parse(widget.url), videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true));
     _c = c;
     c.initialize().then((_) {
@@ -227,7 +232,8 @@ class _LoopVideoState extends State<_LoopVideo> {
   @override
   Widget build(BuildContext context) {
     final c = _c;
-    if (c == null || !c.value.isInitialized) return const ColoredBox(color: Color(0xFF18171F));
+    if (c == null) return GestureDetector(onTap: () => setState(_start), child: const ColoredBox(color: Color(0xFF18171F), child: Center(child: Icon(Icons.play_circle_fill, color: Colors.white, size: 40))));
+    if (!c.value.isInitialized) return const ColoredBox(color: Color(0xFF18171F));
     return FittedBox(fit: BoxFit.cover, clipBehavior: Clip.hardEdge, child: SizedBox(width: c.value.size.width, height: c.value.size.height, child: VideoPlayer(c)));
   }
 }

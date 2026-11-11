@@ -58,7 +58,7 @@ class G_185 extends ConsumerWidget {
       gP(24, 266, 60, 19, gText('Preview', 15, Color(0xFF111015), weight: 700), show: demoContent),
       gP(36, 312, 50, 50, gBox(image: 'assets/figma/img/a76e4a9cacb04ffda33cfd8133809ed5cc5c402c.png', fit: BoxFit.cover, radii: [12, 12, 12, 12]), show: demoContent),
       gP(98, 316, 153, 17, gText(gm('Recycled wooden lamp', ''), 13.5, Color(0xFF111015), weight: 600), show: demoContent),
-      gP(98, 338, 171, 14, gText(gm('25,000 FCFA · Civil Engineering', '—'), 11.5, Color(0xFF57545F)), show: demoContent),
+      gP(98, 338, 171, 14, gText(gm('25,000 FCFA · Civil Engineering', ''), 11.5, Color(0xFF57545F)), show: demoContent),
       gP(280.8, 326, 71.2, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: demoContent),
       gP(295.4, 330, 42, 14, gText('In stock', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center), show: demoContent),
       gP(98, 370, 256, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),

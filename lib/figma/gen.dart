@@ -1,3 +1,4 @@
+import 'gdata.dart' show gNetImage;
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
@@ -840,7 +841,7 @@ Widget _gImg(String asset, BoxFit fit) => gIsMockPhoto(asset) ? const IgnorePoin
       child: asset.endsWith('.svg')
           ? SvgPicture.asset(asset, fit: fit)
           : (asset.startsWith('http')
-              ? Image.network(asset, fit: fit, filterQuality: FilterQuality.high, gaplessPlayback: true, errorBuilder: (_, _, _) => const ColoredBox(color: Color(0xFFEDE9F6)))
+              ? gNetImage(asset, fit: fit, filterQuality: FilterQuality.high, gaplessPlayback: true, errorBuilder: (_, _, _) => const ColoredBox(color: Color(0xFFEDE9F6)))
               : Image.asset(asset, fit: fit, filterQuality: FilterQuality.high, gaplessPlayback: true)),
     );
 

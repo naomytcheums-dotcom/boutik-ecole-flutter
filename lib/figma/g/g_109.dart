@@ -63,7 +63,7 @@ class G_109 extends ConsumerWidget {
       gP(512.48, 300, 108, 15, gText('Génie informatique', 12, Color(0xFF4A4854), inter: true), show: demoContent),
       gP(702.88, 300, 48, 15, gText('Vendeur', 12, Color(0xFF4A4854), inter: true), show: demoContent),
       gP(836.16, 300, 13, 15, gText('12', 12, Color(0xFF4A4854), inter: true), show: demoContent),
-      gP(950.4, 300, 57, 15, gText(demoContent ? '1 245 000' : '—', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(950.4, 300, 57, 15, gText(demoContent ? '1 245 000' : '', 12, Color(0xFF4A4854), inter: true), show: demoContent),
       gP(1102.72, 297, 64.8, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: demoContent),
       gP(1118.12, 301, 35, 13, gText('Vérifié', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
       gP(280, 330, 960, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
@@ -71,7 +71,7 @@ class G_109 extends ConsumerWidget {
       gP(512.48, 344, 59, 15, gText('Génie civil', 12, Color(0xFF4A4854), inter: true), show: demoContent),
       gP(702.88, 344, 48, 15, gText('Vendeur', 12, Color(0xFF4A4854), inter: true), show: demoContent),
       gP(836.16, 344, 8, 15, gText('9', 12, Color(0xFF4A4854), inter: true), show: demoContent),
-      gP(950.4, 344, 49, 15, gText(demoContent ? '860 000' : '—', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(950.4, 344, 49, 15, gText(demoContent ? '860 000' : '', 12, Color(0xFF4A4854), inter: true), show: demoContent),
       gP(1102.72, 341, 64.8, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: demoContent),
       gP(1118.12, 345, 35, 13, gText('Vérifié', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
       gP(280, 374, 960, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
@@ -79,7 +79,7 @@ class G_109 extends ConsumerWidget {
       gP(512.48, 388, 25, 15, gText('MMI', 12, Color(0xFF4A4854), inter: true), show: demoContent),
       gP(702.88, 388, 48, 15, gText('Vendeur', 12, Color(0xFF4A4854), inter: true), show: demoContent),
       gP(836.16, 388, 7, 15, gText('7', 12, Color(0xFF4A4854), inter: true), show: demoContent),
-      gP(950.4, 388, 49, 15, gText(demoContent ? '540 000' : '—', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(950.4, 388, 49, 15, gText(demoContent ? '540 000' : '', 12, Color(0xFF4A4854), inter: true), show: demoContent),
       gP(1102.72, 385, 64.8, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: demoContent),
       gP(1118.12, 389, 35, 13, gText('Vérifié', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
       gP(280, 418, 960, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
@@ -87,7 +87,7 @@ class G_109 extends ConsumerWidget {
       gP(512.48, 432, 65, 15, gText('Audiovisuel', 12, Color(0xFF4A4854), inter: true), show: demoContent),
       gP(702.88, 432, 47, 15, gText('Étudiant', 12, Color(0xFF4A4854), inter: true), show: demoContent),
       gP(836.16, 432, 8, 15, gText('0', 12, Color(0xFF4A4854), inter: true), show: demoContent),
-      gP(950.4, 432, 12, 15, gText('—', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(950.4, 432, 12, 15, gText('', 12, Color(0xFF4A4854), inter: true), show: demoContent),
       gP(1102.72, 429, 84, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11]), show: demoContent),
       gP(1117.22, 433, 55, 13, gText('En attente', 11, Color(0xFF8F5400), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
       gP(280, 462, 960, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
@@ -95,7 +95,7 @@ class G_109 extends ConsumerWidget {
       gP(512.48, 476, 71, 15, gText('Électronique', 12, Color(0xFF4A4854), inter: true), show: demoContent),
       gP(702.88, 476, 48, 15, gText('Vendeur', 12, Color(0xFF4A4854), inter: true), show: demoContent),
       gP(836.16, 476, 8, 15, gText('5', 12, Color(0xFF4A4854), inter: true), show: demoContent),
-      gP(950.4, 476, 49, 15, gText(demoContent ? '320 000' : '—', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(950.4, 476, 49, 15, gText(demoContent ? '320 000' : '', 12, Color(0xFF4A4854), inter: true), show: demoContent),
       gP(1102.72, 473, 64.8, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: demoContent),
       gP(1118.12, 477, 35, 13, gText('Vérifié', 11, Color(0xFF0F7A52), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
       gP(280, 506, 960, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
@@ -103,7 +103,7 @@ class G_109 extends ConsumerWidget {
       gP(512.48, 520, 108, 15, gText('Génie informatique', 12, Color(0xFF4A4854), inter: true), show: demoContent),
       gP(702.88, 520, 47, 15, gText('Étudiant', 12, Color(0xFF4A4854), inter: true), show: demoContent),
       gP(836.16, 520, 8, 15, gText('0', 12, Color(0xFF4A4854), inter: true), show: demoContent),
-      gP(950.4, 520, 12, 15, gText('—', 12, Color(0xFF4A4854), inter: true), show: demoContent),
+      gP(950.4, 520, 12, 15, gText('', 12, Color(0xFF4A4854), inter: true), show: demoContent),
       gP(1102.72, 517, 71.2, 22, gBox(color: Color(0xFFFDE6E7), radii: [11, 11, 11, 11]), show: demoContent),
       gP(1111.32, 521, 54, 13, gText('Suspendu', 11, Color(0xFFE5484D), weight: 600, inter: true, align: TextAlign.center), show: demoContent),
       gP(0, 0, 1280, 56, gBox(color: Color(0xFFFFFFFF))),
@@ -186,7 +186,7 @@ class G_109 extends ConsumerWidget {
       if (demoContent) gTap(276, 380, 96, 32, () { gOpen(context, 'p3'); }), // parcours 109 -> p3
       gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
       gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
-      if (!demoContent) gP(268, 296, 940, 520, ConsoleTable(provider: deptStudentsProvider, columns: [ConsoleColumn(16, 210, (r) => '${r['name']}', bold: true), ConsoleColumn(244.48, 180, (r) => '${r['department']}'.isEmpty ? '—' : '${r['department']}'), ConsoleColumn(434.88, 110, (r) => roleLabel(r['role'])), ConsoleColumn(568.16, 90, (r) => '${r['listings']}'), ConsoleColumn(682.4, 140, (r) => fcfa((r['sales'] as num).toInt())), ConsoleColumn(834.72, 110, (r) => r['verified'] == true ? 'Vérifié' : 'Non vérifié')], emptyText: 'Aucun étudiant dans votre département.', width: 940, height: 520)),
+      if (!demoContent) gP(268, 296, 940, 520, ConsoleTable(provider: deptStudentsProvider, columns: [ConsoleColumn(16, 210, (r) => '${r['name']}', bold: true), ConsoleColumn(244.48, 180, (r) => '${r['department']}'.isEmpty ? '' : '${r['department']}'), ConsoleColumn(434.88, 110, (r) => roleLabel(r['role'])), ConsoleColumn(568.16, 90, (r) => '${r['listings']}'), ConsoleColumn(682.4, 140, (r) => fcfa((r['sales'] as num).toInt())), ConsoleColumn(834.72, 110, (r) => r['verified'] == true ? 'Vérifié' : 'Non vérifié')], emptyText: 'Aucun étudiant dans votre département.', width: 940, height: 520)),
     ]);
   }
 }

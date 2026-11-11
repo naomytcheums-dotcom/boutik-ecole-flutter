@@ -79,7 +79,7 @@ class G_52 extends ConsumerWidget {
       gP(98, 446, 256, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
       gP(36, 454, 50, 50, gBox(image: 'assets/figma/img/ebf23a969ca7b1083d1dcab994c4899c0b4db38b.png', fit: BoxFit.cover, radii: [25, 25, 25, 25]), show: demoContent),
       gP(98, 458, 102, 17, gText(gm('Brice Ndoumbe', ''), 13.5, Color(0xFF111015), weight: 600), show: demoContent),
-      gP(98, 480, 181, 14, gText(gm('Le drone est disponible en 3 jours', '—'), 11.5, Color(0xFF57545F)), show: demoContent),
+      gP(98, 480, 181, 14, gText(gm('Le drone est disponible en 3 jours', ''), 11.5, Color(0xFF57545F)), show: demoContent),
       gP(336.75, 471.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg'), show: demoContent),
       gP(125, 832, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),

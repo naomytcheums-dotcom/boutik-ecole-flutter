@@ -55,7 +55,7 @@ class G_148_2 extends ConsumerWidget {
       gP(108, 168, 149, 16, gText('Niveau de sécurité : Élevé', 12.5, Color(0xFF57545F)), show: demoContent),
       gP(44, 202, 302, 6, gBox(color: Color(0xFFD6EEE3), radii: [3, 3, 3, 3]), show: demoContent),
       gP(44, 202, 244, 6, gBox(color: Color(0xFF1F9D6B), radii: [3, 3, 3, 3]), show: demoContent),
-      gP(315, 182.5, 31, 15, gText(demoContent ? '80 %' : '—', 12, Color(0xFF0F7A52), weight: 700, align: TextAlign.right), show: demoContent),
+      gP(315, 182.5, 31, 15, gText(demoContent ? '80 %' : '', 12, Color(0xFF0F7A52), weight: 700, align: TextAlign.right), show: demoContent),
       gP(24, 244.5, 145, 19, gText('Accès et protection', 15, Color(0xFF111015), weight: 700)),
       gP(40, 288, 36, 36, gBox(color: Color(0xFFF1EEFB), radii: [12, 12, 12, 12])),
       gP(47.5, 301.5, 14.25, 14.25, gImg('assets/figma/v/8dc44dcd0da244.svg')),

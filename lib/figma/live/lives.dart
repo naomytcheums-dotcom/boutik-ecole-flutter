@@ -1,3 +1,4 @@
+import '../gdata.dart' show gNetImage;
 import 'dart:async';
 import 'dart:math' as math;
 
@@ -190,7 +191,7 @@ class _LiveCard extends StatelessWidget {
             AspectRatio(
               aspectRatio: 16 / 9,
               child: Stack(fit: StackFit.expand, children: [
-                l.cover.isEmpty ? Container(decoration: const BoxDecoration(gradient: LinearGradient(colors: [Color(0xFF2B2740), Color(0xFF15131F)])), child: const Icon(Icons.videocam_rounded, color: Colors.white38, size: 54)) : Image.network(l.cover, fit: BoxFit.cover, errorBuilder: (_, _, _) => const ColoredBox(color: Color(0xFF2B2740))),
+                l.cover.isEmpty ? Container(decoration: const BoxDecoration(gradient: LinearGradient(colors: [Color(0xFF2B2740), Color(0xFF15131F)])), child: const Icon(Icons.videocam_rounded, color: Colors.white38, size: 54)) : gNetImage(l.cover, fit: BoxFit.cover, errorBuilder: (_, _, _) => const ColoredBox(color: Color(0xFF2B2740))),
                 Positioned(top: 10, left: 10, child: Container(padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4), color: const Color(0xFFFF2D55), child: Text('EN DIRECT', style: sty(10.5, w: FontWeight.w800, c: Colors.white)))),
                 Positioned(top: 10, right: 10, child: Container(padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4), color: const Color(0xB3111015), child: Row(mainAxisSize: MainAxisSize.min, children: [const Icon(Icons.remove_red_eye_outlined, color: Colors.white, size: 13), const SizedBox(width: 4), Text(compactCount(l.viewers), style: sty(10.5, w: FontWeight.w700, c: Colors.white))]))),
               ]),

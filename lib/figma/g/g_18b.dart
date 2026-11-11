@@ -1,5 +1,6 @@
 // GÉNÉRÉ par tool/figma_export/convert.py — écran 18b (nœud Figma 22:123). Ne pas éditer à la main.
 // ignore_for_file: camel_case_types, prefer_is_empty, prefer_interpolation_to_compose_strings, unnecessary_string_interpolations, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
+import '../gdata.dart' show gNetImage;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
@@ -51,12 +52,12 @@ class G_18b extends ConsumerWidget {
       gP(32.583, 81, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 71, 218, 26, gText('Compléter mon profil', 21, Color(0xFF111015), weight: 700)),
       gP(24, 130, 73, 16, gText('Étape 1 sur 2', 12.5, Color(0xFF57545F), weight: 600)),
-      gP(334, 130, 32, 16, gText(demoContent ? '50 %' : '—', 12.5, Color(0xFF5A3FE0), weight: 700, align: TextAlign.right)),
+      gP(334, 130, 32, 16, gText(demoContent ? '50 %' : '', 12.5, Color(0xFF5A3FE0), weight: 700, align: TextAlign.right)),
       gP(24, 152, 342, 6, gBox(color: Color(0xFFE4E8EE), radii: [3, 3, 3, 3])),
       gP(24, 152, 171, 6, gBox(color: Color(0xFF6A4DFF), radii: [3, 3, 3, 3])),
       gP(181.175, 196.075, 40.25, 40.25, gImg('assets/figma/r/173_49.png')),
       gP(169.1, 236.325, 64.4, 32.2, gImg('assets/figma/r/173_50.png')),
-      gP(168, 194, 68, 76, Consumer(builder: (context, ref, _) { final u = ref.watch(profileAccountProvider).avatarUrl; return u.isEmpty ? const SizedBox.shrink() : ClipOval(child: Image.network(u, fit: BoxFit.cover, width: 68, height: 68, errorBuilder: (_, e, st) => const SizedBox.shrink())); })),
+      gP(168, 194, 68, 76, Consumer(builder: (context, ref, _) { final u = ref.watch(profileAccountProvider).avatarUrl; return u.isEmpty ? const SizedBox.shrink() : ClipOval(child: gNetImage(u, fit: BoxFit.cover, width: 68, height: 68, errorBuilder: (_, e, st) => const SizedBox.shrink())); })),
       gP(217, 247, 30, 30, gBox(color: Color(0xFF111015), border: Color(0xFFFCFCFD), bw: 3, oval: true)),
       gP(222.333, 253.667, 19.333, 16.667, gImg('assets/figma/v/137457bf84ef00.svg')),
       gP(227, 257.667, 10, 10, gImg('assets/figma/v/d54cbc802ab6f7.svg')),

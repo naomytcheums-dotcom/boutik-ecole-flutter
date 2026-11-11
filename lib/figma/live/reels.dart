@@ -1,3 +1,4 @@
+import '../gdata.dart' show gNetImage;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -512,6 +513,6 @@ class ReelBackdrop extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final r = ref.watch(currentReelProvider);
     if (r == null || r.video || r.mediaUrl.isEmpty) return _neutral;
-    return Image.network(r.mediaUrl, fit: BoxFit.cover, width: double.infinity, height: double.infinity, errorBuilder: (_, _, _) => _neutral, loadingBuilder: (_, child, p) => p == null ? child : _neutral);
+    return gNetImage(r.mediaUrl, fit: BoxFit.cover, width: double.infinity, height: double.infinity, errorBuilder: (_, _, _) => _neutral, loadingBuilder: (_, child, p) => p == null ? child : _neutral);
   }
 }

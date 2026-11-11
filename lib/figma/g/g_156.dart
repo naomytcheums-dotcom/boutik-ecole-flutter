@@ -77,7 +77,7 @@ class G_156 extends ConsumerWidget {
       gP(308, 561, 42, 24, GToggle(on: prefs['offres']!, onChanged: (v) => ref.read(alertPrefsProvider.notifier).set('offres', v), onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
       gP(40, 606, 314, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 618, 84, 17, gText('Dates limites', 13.5, Color(0xFF111015), weight: 600)),
-      gP(40, 640, 107, 14, gText(gm('48 h avant la clôture', '—'), 11.5, Color(0xFF57545F))),
+      gP(40, 640, 107, 14, gText(gm('48 h avant la clôture', ''), 11.5, Color(0xFF57545F))),
       gP(308, 627, 42, 24, GToggle(on: prefs['echeances']!, onChanged: (v) => ref.read(alertPrefsProvider.notifier).set('echeances', v), onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
       gP(40, 672, 314, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 684, 162, 17, gText('Résultats de candidature', 13.5, Color(0xFF111015), weight: 600)),

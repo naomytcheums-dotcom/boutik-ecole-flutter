@@ -11,7 +11,8 @@ import 'core/theme/app_theme.dart';
 import 'figma/gsound.dart' show GAnim;
 import 'figma/i18n.dart' show I18n, I18nScope;
 import 'figma/live/auth.dart' show appSessionExpired;
-import 'figma/live/device_prefs.dart' show accessPrefs149Provider, accessPrefsProvider, textSizeProvider;
+import 'figma/gdata.dart';
+import 'figma/live/device_prefs.dart' show accessPrefs149Provider, accessPrefsProvider, dataPrefsProvider, textSizeProvider;
 import 'figma/gaccess.dart';
 import 'figma/live/backend.dart';
 import 'figma/live/connectivity_stub.dart' if (dart.library.js_interop) 'figma/live/connectivity_web.dart';
@@ -110,6 +111,11 @@ class _BoutikEcoleAppState extends ConsumerState<BoutikEcoleApp> {
     final accContrast = acc('a149_contrast', 'contrast');
     final accMotion = acc('a149_reduce_motion', 'reduce_motion');
     GAccess.voice = acc('a149_screen_reader', 'screen_reader');
+    final dp = ref.watch(dataPrefsProvider);
+    GData.saver = dp['data_saver'] ?? true;
+    GData.lowImages = dp['low_images'] ?? true;
+    GData.wifiVideo = dp['wifi_video'] ?? true;
+    GData.wifiSync = dp['wifi_sync'] ?? false;
     // « Réduire les animations » : n'agit que sur un changement de réglage (les animations par défaut restent inchangées).
     if (accMotion != GAccess.motionReduced) {
       GAccess.motionReduced = accMotion;

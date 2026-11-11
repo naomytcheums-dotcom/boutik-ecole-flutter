@@ -1,3 +1,4 @@
+import '../gdata.dart' show gNetImage;
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:flutter/services.dart';
@@ -258,7 +259,7 @@ class _ProjectFormPageState extends ConsumerState<ProjectFormPage> {
               decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: const Color(0xFFF1EEFB), border: Border.all(color: Colors.white, width: 1.5)),
               clipBehavior: Clip.antiAlias,
               child: m['type'] == 'image'
-                  ? Image.network(Backend.publicUrl('project-media', m['path']!), fit: BoxFit.cover, errorBuilder: (_, _, _) => const Icon(Icons.image_outlined, color: tpViolet))
+                  ? gNetImage(Backend.publicUrl('project-media', m['path']!), fit: BoxFit.cover, errorBuilder: (_, _, _) => const Icon(Icons.image_outlined, color: tpViolet))
                   : const Icon(Icons.play_circle_outline_rounded, color: tpViolet, size: 36),
             ),
             Positioned(right: -6, top: -6, child: GestureDetector(onTap: () => _removeMedia(m), child: Container(width: 26, height: 26, decoration: const BoxDecoration(color: tpInk, shape: BoxShape.circle), child: const Icon(Icons.close_rounded, size: 15, color: Colors.white)))),

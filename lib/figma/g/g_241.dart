@@ -89,7 +89,7 @@ class G_241 extends ConsumerWidget {
       gP(324, 580, 24, 24, gBox(color: Color(0xFFECE8F6), oval: true), show: demoContent),
       gP(44, 654, 89, 14, gText('Message envoyé', 11, Color(0xFF57545F), weight: 500), show: demoContent),
       gP(44, 674, 302, 52, gBox(color: Color(0xFFE7F6D9), radii: [16, 16, 16, 16]), tap: () => shareViaWhatsApp(context, ref), show: demoContent),
-      gP(54, 680, 287, 28, gText(gm('Salut ! Rejoins Boutik-École, la marketplace des talents de l’IUT de Douala : boutik-ecole.cm/r/mariam24', '—'), 10.5, Color(0xFF111015), lh: 14, wrap: true), show: demoContent),
+      gP(54, 680, 287, 28, gText(gm('Salut ! Rejoins Boutik-École, la marketplace des talents de l’IUT de Douala : boutik-ecole.cm/r/mariam24', ''), 10.5, Color(0xFF111015), lh: 14, wrap: true), show: demoContent),
       gP(24, 748, 342, 52, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x40403366), offset: Offset(0, 10), blurRadius: 22, spreadRadius: 0)], radii: [26, 26, 26, 26]), tap: () => shareViaWhatsApp(context, ref), show: demoContent),
       gP(109, 763, 172, 18, gText(gm('Envoyer via WhatsApp (3)'), 14, Color(0xFFFFFFFF), weight: 600), show: demoContent),
       gP(91, 810, 208, 13, gText('Ou copier le lien et le partager moi-même', 10.5, Color(0xFF57545F), weight: 500), show: demoContent),

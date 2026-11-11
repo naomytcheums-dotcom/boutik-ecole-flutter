@@ -1,3 +1,4 @@
+import '../gdata.dart' show gNetImage;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
@@ -373,7 +374,7 @@ class _StoryViewerState extends ConsumerState<StoryViewer> with SingleTickerProv
           if (s.video)
             (_video != null && _video!.value.isInitialized) ? Center(child: AspectRatio(aspectRatio: _video!.value.aspectRatio, child: VideoPlayer(_video!))) : const Center(child: CircularProgressIndicator(color: Colors.white))
           else
-            ColoredBox(color: Colors.white, child: Image.network(s.mediaUrl, fit: BoxFit.contain, errorBuilder: (_, _, _) => const Center(child: Icon(Icons.broken_image_outlined, color: Colors.white54, size: 44)), loadingBuilder: (_, c, p) => p == null ? c : const Center(child: CircularProgressIndicator(color: Colors.white)))),
+            ColoredBox(color: Colors.white, child: gNetImage(s.mediaUrl, fit: BoxFit.contain, errorBuilder: (_, _, _) => const Center(child: Icon(Icons.broken_image_outlined, color: Colors.white54, size: 44)), loadingBuilder: (_, c, p) => p == null ? c : const Center(child: CircularProgressIndicator(color: Colors.white)))),
           if (s.sticker != null)
             Positioned(left: 20, right: 20, bottom: mq.padding.bottom + 90, child: _StickerPanel(key: ValueKey('sticker-${s.id}'), story: s, mine: s.authorId == me, onBusy: (b) { if (b) { _timer.stop(); _video?.pause(); } else { _timer.forward(); _video?.play(); } })),
           const Positioned(top: 0, left: 0, right: 0, height: 130, child: IgnorePointer(child: DecoratedBox(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0x99000000), Color(0x00000000)]))))),

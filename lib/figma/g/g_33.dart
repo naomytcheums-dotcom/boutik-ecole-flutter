@@ -70,7 +70,7 @@ class G_33 extends ConsumerWidget {
       gP(24, 744, 20, 20, gBox(color: Color(0xFF1F9D6B), oval: true), show: demoContent),
       gP(27.333, 748.25, 13.333, 11.042, gImg('assets/figma/v/23149818a3337a.svg'), show: demoContent),
       gP(56, 743, 305, 17, gText('Découpe et ponçage', 13.5, Color(0xFF111015), weight: 600, wrap: true), show: demoContent),
-      gP(56, 763, 305, 14, gText(gm('Lamelles de 3 mm', '—'), 11.5, Color(0xFF57545F), wrap: true)),
+      gP(56, 763, 305, 14, gText(gm('Lamelles de 3 mm', ''), 11.5, Color(0xFF57545F), wrap: true)),
       gP(33, 827, 2, 40, gBox(color: Color(0xFFE4E8EE), radii: [1, 1, 1, 1])),
       gP(24, 806, 20, 20, gBox(color: Color(0xFF111015), oval: true)),
       gP(56, 805, 305, 17, gText('Assemblage', 13.5, Color(0xFF111015), weight: 600, wrap: true)),

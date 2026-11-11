@@ -1,3 +1,4 @@
+import '../gdata.dart' show gNetImage;
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,7 +44,7 @@ class ProductCards extends ConsumerWidget {
     Widget image(LiveProduct p) {
       Widget neutral() => Image.asset(neutralProductImage, fit: BoxFit.cover);
       if (p.image == 'placeholder' || p.image.isEmpty) return neutral();
-      return p.image.startsWith('http') ? Image.network(p.image, fit: BoxFit.cover, errorBuilder: (_, _, _) => neutral()) : Image.asset(p.image, fit: BoxFit.cover);
+      return p.image.startsWith('http') ? gNetImage(p.image, fit: BoxFit.cover, errorBuilder: (_, _, _) => neutral()) : Image.asset(p.image, fit: BoxFit.cover);
     }
 
     // Carte produit unique (photo 4:5, titre, prix, boutique, bouton) : voir product_card.dart.

@@ -50,7 +50,7 @@ class G_131 extends ConsumerWidget {
       gP(969.5, 153.25, 16, 12.875, gImg('assets/figma/v/633fba394a419f.svg')),
       gP(1013.5, 134, 238.5, 92, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
       gP(1027.5, 146, 68, 14, gText('Délai moyen', 11.5, Color(0xFF57545F), weight: 500, inter: true)),
-      gP(1027.5, 166, 31, 24, gText(gm('6 h', '—'), 20, Color(0xFF111015), weight: 700, inter: true)),
+      gP(1027.5, 166, 31, 24, gText(gm('6 h', ''), 20, Color(0xFF111015), weight: 700, inter: true)),
       gP(1212, 146, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),
       gP(1217.375, 151.38, 17.25, 17.25, gImg('assets/figma/v/9a131974c55f92.svg')),
       gP(1217.375, 151.375, 9.125, 9.125, gImg('assets/figma/v/3ad9c2af89ef3b.svg')),

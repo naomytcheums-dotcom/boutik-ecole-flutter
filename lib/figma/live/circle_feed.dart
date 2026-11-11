@@ -1,3 +1,4 @@
+import '../gdata.dart' show gNetImage;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
@@ -159,7 +160,7 @@ class FeaturedVideo extends ConsumerWidget {
           if (v.video)
             const DecoratedBox(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0xFF2A2833), Color(0xFF0E0F14)])))
           else
-            Image.network(v.mediaUrl, fit: BoxFit.cover, errorBuilder: (_, _, _) => const ColoredBox(color: Color(0xFFEDE9F6))),
+            gNetImage(v.mediaUrl, fit: BoxFit.cover, errorBuilder: (_, _, _) => const ColoredBox(color: Color(0xFFEDE9F6))),
           if (v.video) const Center(child: Icon(Icons.play_circle_fill, color: Colors.white, size: 40)),
         ]),
       ),

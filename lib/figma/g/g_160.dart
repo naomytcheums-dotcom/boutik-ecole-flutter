@@ -56,7 +56,7 @@ class G_160 extends ConsumerWidget {
       gP(24, 168, 342, 170, gBox(image: 'assets/figma/img/a30d4e56acc9216d03ba2d7972f7dfac533b78bf.png', fit: BoxFit.cover, radii: [24, 24, 24, 24])),
       gP(24, 168, 342, 170, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [24, 24, 24, 24])),
       gP(42, 276, 309, 23, gText(gm('Hackathon Orange Digital Center', ''), 18, Color(0xFFFFFFFF), weight: 700, wrap: true), show: demoContent),
-      gP(42, 304, 309, 15, gText(gm('Inscriptions ouvertes · 48 h · Douala', '—'), 12, Color(0xFFE3ECF7), wrap: true)),
+      gP(42, 304, 309, 15, gText(gm('Inscriptions ouvertes · 48 h · Douala', ''), 12, Color(0xFFE3ECF7), wrap: true)),
       gP(24, 352, 144, 19, gText('Prochains concours', 15, Color(0xFF111015), weight: 700)),
       gP(301, 354, 49, 15, gText('Voir tout', 12, Color(0xFF5A3FE0), weight: 500, align: TextAlign.right)),
       gP(352.5, 359, 13, 6, gImg('assets/figma/v/4159f10924eea0.svg')),

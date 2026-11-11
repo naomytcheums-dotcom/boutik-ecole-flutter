@@ -53,7 +53,7 @@ class G_22b extends ConsumerWidget {
       gP(340.75, 70.75, 20.667, 20.667, gImg('assets/figma/v/eeff0eb6fd6e24.svg')),
       gP(353.308, 83.308, 9.942, 9.942, gImg('assets/figma/v/34172806399cca.svg')),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 55.6, 34, 'Tous', 12.5, 600), GChip(87.6, 120, 70.4, 34, 'Design', 12.5, 500), GChip(166, 120, 122.2, 34, 'Développement', 12.5, 500), GChip(296.2, 120, 77.8, 34, 'Tutorat', 12.5, 500), GChip(382, 120, 107.4, 34, 'Audiovisuel', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
-      gP(24, 168, 83, 19, gText(gm('46 services', '—'), 15, Color(0xFF111015), weight: 700), show: demoContent),
+      gP(24, 168, 83, 19, gText(gm('46 services', ''), 15, Color(0xFF111015), weight: 700), show: demoContent),
       gP(325, 170, 25, 15, gText('Trier', 12, Color(0xFF5A3FE0), weight: 500, align: TextAlign.right), show: demoContent),
       gP(352.5, 175, 13, 6, gImg('assets/figma/v/4159f10924eea0.svg'), show: demoContent),
       gP(356, 171.5, 9.5, 13, gImg('assets/figma/v/a365eb17b7a19f.svg'), show: demoContent),

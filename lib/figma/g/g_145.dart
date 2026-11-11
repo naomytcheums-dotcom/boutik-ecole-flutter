@@ -138,9 +138,9 @@ class G_145 extends ConsumerWidget {
       gP(902.057, 336.59, 9, 9, gBox(color: Color(0xFFE5484D), border: Color(0xFFFFFFFF), bw: 1.5, oval: true), show: demoContent),
       gP(1074, 160, 100, 13, gText('Réseau de kiosques', 10.5, Color(0xFF57545F), weight: 500), show: demoContent),
       gP(1074, 178, 113, 19, gText('Douala · Littoral', 15, Color(0xFF120F14), weight: 600), show: demoContent),
-      gP(1074, 204, 140, 14, gText(gm('4 kiosques · IUT de Douala', '—'), 11.5, Color(0xFF57545F)), show: demoContent),
-      gP(1074, 246, 55, 15, gText(gm('3 en ligne', '—'), 12, Color(0xFF0F7A52), weight: 600), show: demoContent),
-      gP(1074, 268, 63, 15, gText(gm('1 hors ligne', '—'), 12, Color(0xFFE5474D), weight: 600), show: demoContent),
+      gP(1074, 204, 140, 14, gText(gm('4 kiosques · IUT de Douala', ''), 11.5, Color(0xFF57545F)), show: demoContent),
+      gP(1074, 246, 55, 15, gText(gm('3 en ligne', ''), 12, Color(0xFF0F7A52), weight: 600), show: demoContent),
+      gP(1074, 268, 63, 15, gText(gm('1 hors ligne', ''), 12, Color(0xFFE5474D), weight: 600), show: demoContent),
       gTap(40, 97, 232, 36, () { gOpen(context, '139'); }), // parcours 145 -> 139
       gTap(40, 137, 232, 36, () { gOpen(context, '140'); }), // parcours 145 -> 140
       gTap(40, 177, 232, 36, () { gOpen(context, '141'); }), // parcours 145 -> 141

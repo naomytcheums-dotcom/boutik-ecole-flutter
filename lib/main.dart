@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app.dart';
+import 'figma/gdata.dart' show GData;
 import 'figma/i18n.dart' show I18n;
 import 'figma/live/auth.dart';
 import 'figma/live/backend.dart';
@@ -40,6 +41,7 @@ Future<void> main() async {
     // notifications natives : en arrière-plan, sans retarder l'ouverture
     native_push.syncNativePushForCurrentUser().timeout(const Duration(seconds: 20), onTimeout: () {}).ignore();
   }
+  GData.watchNetwork(); // type de réseau (Wi-Fi ou données mobiles) pour l'économie de données
   runApp(AppRoot(remembered: remembered));
 }
 

@@ -1,3 +1,4 @@
+import '../gdata.dart' show gNetImage;
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:flutter/services.dart';
@@ -490,7 +491,7 @@ class _PortfolioPageState extends ConsumerState<PortfolioPage> {
       onTap: () => _open(it),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         if (thumb.isNotEmpty)
-          Padding(padding: const EdgeInsets.only(bottom: 10), child: ClipRRect(borderRadius: BorderRadius.circular(14), child: Image.network(thumb, height: 170, width: double.infinity, fit: BoxFit.cover, errorBuilder: (_, _, _) => const SizedBox(height: 60)))),
+          Padding(padding: const EdgeInsets.only(bottom: 10), child: ClipRRect(borderRadius: BorderRadius.circular(14), child: gNetImage(thumb, height: 170, width: double.infinity, fit: BoxFit.cover, errorBuilder: (_, _, _) => const SizedBox(height: 60)))),
         Row(children: [
           Icon(switch (kind) { 'video' => Icons.play_circle_outline_rounded, 'link' => Icons.link_rounded, 'image' => Icons.image_outlined, _ => Icons.work_outline_rounded }, color: tpViolet, size: 22),
           const SizedBox(width: 8),

@@ -46,7 +46,7 @@ class G_111 extends ConsumerWidget {
       gP(724.125, 155.75, 9.75, 8.5, gImg('assets/figma/v/67b1d949f5166f.svg')),
       gP(765, 134, 238.5, 92, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
       gP(779, 146, 40, 14, gText('Validés', 11.5, Color(0xFF57545F), weight: 500, inter: true)),
-      gP(779, 166, 23, 24, gText(gm('13', '—'), 20, Color(0xFF111015), weight: 700, inter: true)),
+      gP(779, 166, 23, 24, gText(gm('13', ''), 20, Color(0xFF111015), weight: 700, inter: true)),
       gP(963.5, 146, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),
       gP(969.5, 153.25, 16, 12.875, gImg('assets/figma/v/633fba394a419f.svg')),
       gP(1013.5, 134, 238.5, 92, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),

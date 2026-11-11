@@ -1,3 +1,4 @@
+import '../gdata.dart' show GData, gNetImage;
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:video_player/video_player.dart';
@@ -131,7 +132,7 @@ class _TalentStory extends StatelessWidget {
           if (t.coverUrl.isNotEmpty && t.coverVideo)
             _CoverVideo(url: t.coverUrl)
           else if (t.coverUrl.isNotEmpty || hasPhoto)
-            Image.network(t.coverUrl.isNotEmpty ? t.coverUrl : t.avatarUrl, fit: BoxFit.cover, alignment: Alignment.topCenter, errorBuilder: (_, _, _) => const ColoredBox(color: Color(0xFFD9D2E6)))
+            gNetImage(t.coverUrl.isNotEmpty ? t.coverUrl : t.avatarUrl, fit: BoxFit.cover, alignment: Alignment.topCenter, errorBuilder: (_, _, _) => const ColoredBox(color: Color(0xFFD9D2E6)))
           else
             const DecoratedBox(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0xFFEDE3F6), Color(0xFFD9C9EC)]))),
           const DecoratedBox(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0x00000000), Color(0x00000000), Color(0xCC000000)], stops: [0, .5, 1]))),
@@ -174,6 +175,10 @@ class _CoverVideoState extends State<_CoverVideo> {
   @override
   void initState() {
     super.initState();
+    if (!GData.blockVideo) _start();
+  }
+
+  void _start() {
     final c = VideoPlayerController.networkUrl(Uri.parse(widget.url), videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true));
     _c = c;
     c.initialize().then((_) {
@@ -193,7 +198,8 @@ class _CoverVideoState extends State<_CoverVideo> {
   @override
   Widget build(BuildContext context) {
     final c = _c;
-    if (c == null || !c.value.isInitialized) return const ColoredBox(color: Color(0xFFD9D2E6));
+    if (c == null) return GestureDetector(onTap: () => setState(_start), child: const ColoredBox(color: Color(0xFF18171F), child: Center(child: Icon(Icons.play_circle_fill, color: Colors.white, size: 40))));
+    if (!c.value.isInitialized) return const ColoredBox(color: Color(0xFFD9D2E6));
     return FittedBox(fit: BoxFit.cover, clipBehavior: Clip.hardEdge, child: SizedBox(width: c.value.size.width, height: c.value.size.height, child: VideoPlayer(c)));
   }
 }
@@ -207,7 +213,7 @@ class _Avatar extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget initials() => Container(width: size, height: size, alignment: Alignment.center, decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFFEDE9F6)), child: Text(t.initials, style: _st(size * .34, w: FontWeight.w700, c: const Color(0xFF4A4854))));
     if (t.avatarUrl.isEmpty) return initials();
-    return ClipOval(child: Image.network(t.avatarUrl, width: size, height: size, fit: BoxFit.cover, errorBuilder: (_, _, _) => initials()));
+    return ClipOval(child: gNetImage(t.avatarUrl, width: size, height: size, fit: BoxFit.cover, errorBuilder: (_, _, _) => initials()));
   }
 }
 
@@ -244,7 +250,7 @@ class HomeProducts extends ConsumerWidget {
                 width: double.infinity,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(22),
-                  child: list[i].image == 'placeholder' || list[i].image.isEmpty ? Image.asset(neutralProductImage, fit: BoxFit.cover) : (list[i].image.startsWith('http') ? Image.network(list[i].image, fit: BoxFit.cover, errorBuilder: (_, _, _) => Image.asset(neutralProductImage, fit: BoxFit.cover)) : Image.asset(list[i].image, fit: BoxFit.cover)),
+                  child: list[i].image == 'placeholder' || list[i].image.isEmpty ? Image.asset(neutralProductImage, fit: BoxFit.cover) : (list[i].image.startsWith('http') ? gNetImage(list[i].image, fit: BoxFit.cover, errorBuilder: (_, _, _) => Image.asset(neutralProductImage, fit: BoxFit.cover)) : Image.asset(list[i].image, fit: BoxFit.cover)),
                 ),
               ),
               const SizedBox(height: 8),

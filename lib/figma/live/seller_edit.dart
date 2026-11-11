@@ -1,3 +1,4 @@
+import '../gdata.dart' show gNetImage;
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -62,7 +63,7 @@ Widget listingHeroLive() => _live(
                 alignment: Alignment.center,
                 child: Text('Aucune photo\nTouchez « Modifier » pour en ajouter', textAlign: TextAlign.center, style: _t(13, FontWeight.w500, _mute).copyWith(height: 1.5)),
               )
-            : Image.network(Backend.listingImageUrl(l.images.first), fit: BoxFit.cover, errorBuilder: (_, _, _) => Container(color: const Color(0xFFEDE9F6), alignment: Alignment.center, child: Text('Photo indisponible', style: _t(13, FontWeight.w500, _mute)))),
+            : gNetImage(Backend.listingImageUrl(l.images.first), fit: BoxFit.cover, errorBuilder: (_, _, _) => Container(color: const Color(0xFFEDE9F6), alignment: Alignment.center, child: Text('Photo indisponible', style: _t(13, FontWeight.w500, _mute)))),
       ),
     );
 
@@ -196,7 +197,7 @@ Future<void> editListingDialog(BuildContext context, WidgetRef ref) async {
                 Wrap(spacing: 8, runSpacing: 8, children: [
                   for (final path in images)
                     Stack(clipBehavior: Clip.none, children: [
-                      ClipRRect(borderRadius: BorderRadius.circular(12), child: Image.network(Backend.listingImageUrl(path), width: 72, height: 72, fit: BoxFit.cover, errorBuilder: (_, _, _) => Container(width: 72, height: 72, color: const Color(0xFFEDE9F6)))),
+                      ClipRRect(borderRadius: BorderRadius.circular(12), child: gNetImage(Backend.listingImageUrl(path), width: 72, height: 72, fit: BoxFit.cover, errorBuilder: (_, _, _) => Container(width: 72, height: 72, color: const Color(0xFFEDE9F6)))),
                       Positioned(
                         right: -6,
                         top: -6,

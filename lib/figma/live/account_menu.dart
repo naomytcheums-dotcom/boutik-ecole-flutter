@@ -2,6 +2,8 @@ import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:go_router/go_router.dart';
+
 import '../nav.dart';
 import 'access.dart';
 import 'auth.dart';
@@ -12,6 +14,8 @@ import 'lots.dart';
 import 'qr.dart' show myQrDialog;
 import 'referral.dart';
 import 'services.dart';
+
+Future<void> _promotions(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/marche/promotions');
 
 const _st = TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 14, color: Color(0xFF111015));
 
@@ -131,6 +135,7 @@ final _groups = <_Group>[
     _Entry('Registre financier', screen: '284', roles: {'finance', 'direction', 'admin'}),
     _Entry('Kiosques et support', screen: '145', roles: {'support', 'admin'}),
     _Entry('Livraison à domicile (réglage)', action: homeDeliverySettingsDialog, roles: {'admin'}),
+    _Entry('Promotions de la plateforme', action: _promotions, roles: {'admin'}),
     _Entry('Supervision des bornes', screen: '277', roles: {'support', 'admin'}),
   ]),
   const _Group('Mon compte', [

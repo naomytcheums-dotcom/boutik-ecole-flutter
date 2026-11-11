@@ -74,7 +74,7 @@ class G_08 extends ConsumerWidget {
       gP(334.383, 372, 16.278, 16.278, gBox(border: ref.watch(payMethodProvider) == 2 ? Color(0xFF6A4DFF) : Color(0xFF57545F), bw: 1.696, oval: true)),
       gP(338.113, 375.73, 8.817, 8.817, gBox(color: Color(0xFF6A4DFF), oval: true), show: ref.watch(payMethodProvider) == 2),
       gP(43, 412, 70, 20, gText('Numéro :', 12, Color(0xFF57545F), weight: 500), show: ref.watch(payMethodProvider) != 2), gP(100, 406, 240, 30, Consumer(builder: (context, ref, _) => ref.watch(payMethodProvider) == 2 ? const SizedBox.shrink() : GField(hint: '6XX XX XX XX', initial: ref.read(payPhoneProvider), size: 13, hintColor: Color(0xFF8C8A93), weight: 600, padL: 0, numeric: true, maxLength: 12, onChanged: (v) { ref.read(payPhoneProvider.notifier).set(v); }))), gP(43.409, 449.039, 94, 19, gText('Récapitulatif', 14.922, Color(0xFF111015), weight: 700)),
-      gP(43.409, 492.163, 61, 15, Consumer(builder: (context, ref, _) => gText('Articles (${ref.watch(totalsProvider).count})', 12.209, Color(0xFF57545F)))),
+      gP(43.409, 492.163, 61, 15, Consumer(builder: (context, ref, _) => gText('Articles (${ref.watch(totalsProvider).count})${ref.watch(totalsProvider).discount > 0 ? ' · promo' : ''}', 12.209, Color(0xFF57545F)))),
       gP(131.339, 492.163, 220, 15, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(totalsProvider).subtotal), 11.53, Color(0xFF5A3FE0), weight: 600, wrap: true, align: TextAlign.right))),
       gP(43.409, 525.197, 51, 15, gText('Livraison', 12.209, Color(0xFF57545F))),
       gP(145.339, 525.197, 206, 15, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(totalsProvider).fee), 11.53, Color(0xFF5A3FE0), weight: 600, wrap: true, align: TextAlign.right))),

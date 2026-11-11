@@ -8,6 +8,7 @@ import 'auth.dart' show authProvider, demoContent;
 import 'backend.dart';
 import 'delivery.dart' show deliveryFee, deliverySettingsProvider;
 import '../../data/repositories/repositories.dart' show cartProvider;
+import 'promo_state.dart' show promoDiscountProvider;
 
 /// État partagé du parcours d'achat : fiche produit → panier → livraison → paiement → commande → suivi.
 
@@ -105,17 +106,20 @@ class PayMethod extends Notifier<int> {
 final payMethodProvider = NotifierProvider<PayMethod, int>(PayMethod.new);
 
 class Totals {
-  const Totals(this.count, this.subtotal, this.fee);
-  final int count, subtotal, fee;
+  const Totals(this.count, this.subtotal, this.fee, {this.discount = 0});
+
+  /// [subtotal] est déjà diminué de la [discount] (promotion appliquée par le serveur).
+  final int count, subtotal, fee, discount;
   int get total => subtotal + fee;
 }
 
 final totalsProvider = Provider<Totals>((ref) {
   final lines = ref.watch(cartProvider);
   final home = ref.watch(homeDeliveryProvider);
-  final sub = lines.fold<int>(0, (a, l) => a + l.price * l.qty);
+  final raw = lines.fold<int>(0, (a, l) => a + l.price * l.qty);
   final n = lines.fold<int>(0, (a, l) => a + l.qty);
-  return Totals(n, sub, lines.isEmpty ? 0 : deliveryFee(home, ref.watch(deliverySettingsProvider)));
+  final d = (ref.watch(promoDiscountProvider).value ?? 0).clamp(0, raw);
+  return Totals(n, raw - d, lines.isEmpty ? 0 : deliveryFee(home, ref.watch(deliverySettingsProvider)), discount: d);
 });
 
 class Order {

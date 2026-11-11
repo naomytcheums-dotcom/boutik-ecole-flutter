@@ -11,6 +11,7 @@ import '../backend.dart';
 import '../messages.dart' show contactSeller;
 import '../../nav.dart' show gOpenProfile;
 import '../offer_types.dart' show offerTypeLabels;
+import '../promo_state.dart';
 import 'decouverte.dart';
 import 'marche_data.dart';
 import 'marche_widgets.dart';
@@ -703,18 +704,6 @@ class FollowedShopsScreen extends ConsumerWidget {
 
 // ------------------------------------------------------------------ panier par boutique
 
-/// Code promo saisi au panier (appliqué par le serveur à la création de la commande).
-class PromoCodeNotifier extends Notifier<String> {
-  @override
-  String build() => '';
-  void set(String v) {
-    state = v.trim();
-    Backend.promoCode = state;
-  }
-}
-
-final promoCodeProvider = NotifierProvider<PromoCodeNotifier, String>(PromoCodeNotifier.new);
-
 class CartByShopScreen extends ConsumerStatefulWidget {
   const CartByShopScreen({super.key});
 
@@ -751,7 +740,9 @@ class _CartByShopScreenState extends ConsumerState<CartByShopScreen> {
       (groups[shop] ??= []).add(l);
     }
     final sub = lines.fold<int>(0, (a, l) => a + l.price * l.qty);
-    final disc = _preview?['valid'] == true ? mInt(_preview!['discount']) : 0;
+    final auto = ref.watch(marcheAutoPromoProvider).value;
+    final autoDisc = ref.watch(promoDiscountProvider).value ?? 0;
+    final disc = auto != null ? autoDisc : (_preview?['valid'] == true ? mInt(_preview!['discount']) : 0);
     return MarchePage(
       title: 'Panier par boutique',
       child: lines.isEmpty
@@ -772,12 +763,23 @@ class _CartByShopScreenState extends ConsumerState<CartByShopScreen> {
                     Row(children: [Expanded(child: Text('Sous-total', style: mst(12.5, c: kGrey))), Text(mFcfa(e.value.fold<int>(0, (a, l) => a + l.price * l.qty)), style: mst(13, w: FontWeight.w800))]),
                   ]),
                 ),
-              Row(children: [
-                Expanded(child: TextField(controller: _code, textCapitalization: TextCapitalization.characters, decoration: const InputDecoration(labelText: 'Code promo', border: OutlineInputBorder()))),
-                const SizedBox(width: 8),
-                mButton('Appliquer', _check, dark: false),
-              ]),
-              if (_preview != null) Padding(padding: const EdgeInsets.only(top: 6), child: Text(_preview!['valid'] == true ? 'Code accepté : −${mFcfa(disc)}' : '${_preview!['message']}', style: mst(12.5, w: FontWeight.w600, c: _preview!['valid'] == true ? kGreen : kRed))),
+              if (auto != null) ...[
+                // promotion créée par l'administrateur : le code est appliqué d'office, le champ est verrouillé
+                TextFormField(
+                  key: ValueKey('auto-${auto['code']}'),
+                  initialValue: '${auto['code']}',
+                  readOnly: true,
+                  decoration: InputDecoration(labelText: 'Code promo', suffixIcon: const Icon(Icons.lock_outline, size: 18), border: const OutlineInputBorder(), filled: true, fillColor: const Color(0xFFF2EFF6)),
+                ),
+                Padding(padding: const EdgeInsets.only(top: 6), child: Text('Promotion « ${auto['label'] ?? auto['code']} » appliquée automatiquement : ${promoValueLabel(auto)}${autoDisc > 0 ? ' (−${mFcfa(autoDisc)})' : ''}', style: mst(12.5, w: FontWeight.w600, c: kGreen))),
+              ] else ...[
+                Row(children: [
+                  Expanded(child: TextField(controller: _code, textCapitalization: TextCapitalization.characters, decoration: const InputDecoration(labelText: 'Code promo', border: OutlineInputBorder()))),
+                  const SizedBox(width: 8),
+                  mButton('Appliquer', _check, dark: false),
+                ]),
+              ],
+              if (auto == null && _preview != null) Padding(padding: const EdgeInsets.only(top: 6), child: Text(_preview!['valid'] == true ? 'Code accepté : −${mFcfa(disc)}' : '${_preview!['message']}', style: mst(12.5, w: FontWeight.w600, c: _preview!['valid'] == true ? kGreen : kRed))),
               const SizedBox(height: 14),
               Row(children: [Expanded(child: Text('Total articles', style: mst(14, w: FontWeight.w700))), Text(mFcfa(sub - disc), style: mst(16, w: FontWeight.w800))]),
               const SizedBox(height: 14),

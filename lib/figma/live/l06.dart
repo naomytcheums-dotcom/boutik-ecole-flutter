@@ -61,7 +61,7 @@ class _Cart extends StatelessWidget {
       if (!demoContent && lines.isNotEmpty) gP(150, 98, 216, 30, const MarcheLink('Par boutique · code promo', '/marche/panier')),
       // Totaux (positions fixes de la maquette)
       gP(25.64, 625.94, 337.37, 0.677, gBox(color: const Color(0xFFF2EFF6))),
-      gP(28.339, 642.624, 59, 14, gText('Sous-total', 11.471, _grey)),
+      gP(28.339, 642.624, 150, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(totalsProvider).discount > 0 ? 'Sous-total après promo' : 'Sous-total', 11.471, _grey))),
       gP(150, 642.624, 211.7, 14, gText(fcfa(t.subtotal), 11.471, _violet, weight: 600, align: TextAlign.right, wrap: true)),
       gP(28.339, 668.338, 48, 14, gText('Livraison', 11.471, _grey)),
       gP(150, 668.338, 211.7, 14, gText(t.fee == 0 ? 'Gratuit' : fcfa(t.fee), 11.471, _violet, weight: 600, align: TextAlign.right, wrap: true)),

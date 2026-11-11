@@ -1245,7 +1245,15 @@ class Backend {
       for (final l in lines)
         packLines.containsKey(l.title) ? {'pack': packLines[l.title], 'qty': l.qty} : {'title': l.title, 'qty': l.qty}
     ];
-    final sig = '${c.auth.currentUser!.id}|${items.map((e) => '${e['pack'] ?? e['title']}x${e['qty']}').join(',')}|$home|$promoCode|${DateTime.now().millisecondsSinceEpoch ~/ 900000}';
+    var code = promoCode;
+    if (code.isEmpty) {
+      // promotion automatique créée par l'administrateur : elle s'applique à chaque commande
+      try {
+        final a = await c.rpc('active_auto_promo');
+        if (a is Map && a['code'] != null) code = '${a['code']}';
+      } catch (_) {}
+    }
+    final sig = '${c.auth.currentUser!.id}|${items.map((e) => '${e['pack'] ?? e['title']}x${e['qty']}').join(',')}|$home|$code|${DateTime.now().millisecondsSinceEpoch ~/ 900000}';
     final key = sig.hashCode.toRadixString(16).padLeft(8, '0') + sig.length.toRadixString(16).padLeft(2, '0');
     try {
       final r = await c.rpc('marketplace_checkout', params: {
@@ -1253,7 +1261,7 @@ class Backend {
         'p_home': home,
         'p_method': method,
         if (home && address != null && address.isNotEmpty) 'p_address': address,
-        if (promoCode.isNotEmpty) 'p_code': promoCode,
+        if (code.isNotEmpty) 'p_code': code,
         'p_key': 'k$key',
       });
       return Map<String, dynamic>.from(r as Map);

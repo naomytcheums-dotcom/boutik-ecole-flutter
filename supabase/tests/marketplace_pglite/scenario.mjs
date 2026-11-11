@@ -36,6 +36,10 @@ export async function run(db) {
   await fails('rattacher une annonce a la boutique d un autre est refuse', `update listings set shop_id=(select id from shops) where title='Sac direct'`, /appartient pas/);
   await db.exec(`update listings set price_before=30000 where title='Lampe en bois'`);
   await fails('prix normal inferieur au prix refuse', `update listings set price_before=100 where title='Lampe en bois'`, /check|violates/);
+  await db.exec(`insert into listings (seller_id,title,department,category,price,stock,status,images) values
+    ('${A}','Gestion de stock web','Informatique','Solutions numériques',150000,5,'approved','{}'),
+    ('${A}','Creation de logo','Design','Services',20000,99,'approved','{}'),
+    ('${A}','Prototype irrigation','Genie civil','Projets et licences',500000,1,'approved','{}')`);
   await as(null, 'anon');
   let res = (await q(`select marketplace_search(null,null,null,null,null,'price_asc') r`))[0].r;
   check('recherche publique triee par prix croissant, mes 3 produits presents', res.every((x, i) => i === 0 || res[i - 1].price <= x.price) && ['Lampe en bois', 'Table basse', 'Sac direct'].every(t => res.some(x => x.title === t)));
@@ -45,6 +49,16 @@ export async function run(db) {
   check('filtre categorie', res.length >= 1 && res.every(x => x.category === 'Mode') && res.some(x => x.title === 'Sac direct'));
   res = (await q(`select marketplace_search(null,null,null,10000,30000) r`))[0].r;
   check('filtre prix', res.length >= 1 && res.every(x => x.price >= 10000 && x.price <= 30000) && res.some(x => x.title === 'Lampe en bois'));
+  res = (await q(`select marketplace_search(null,null,null,null,null,'popular',null,24,0,'tech') r`))[0].r;
+  check('type solution technique : uniquement les solutions, avec offer_type', res.length === 1 && res[0].title === 'Gestion de stock web' && res[0].offer_type === 'tech');
+  res = (await q(`select marketplace_search(null,null,null,null,null,'popular',null,24,0,'service') r`))[0].r;
+  check('type service : le service apparait', res.length === 1 && res[0].offer_type === 'service');
+  res = (await q(`select marketplace_search(null,null,null,null,null,'popular',null,24,0,'project') r`))[0].r;
+  check('type projet ou licence', res.length === 1 && res[0].title === 'Prototype irrigation');
+  res = (await q(`select marketplace_search(null,null,null,null,null,'popular',null,24,0,'product') r`))[0].r;
+  check('type produit physique : aucun service ni solution', res.length >= 3 && res.every(x => x.offer_type === 'product'));
+  res = (await q(`select marketplace_search() r`))[0].r;
+  check('sans type : toutes les offres', ['Lampe en bois', 'Gestion de stock web', 'Creation de logo', 'Prototype irrigation'].every(t => res.some(x => x.title === t)));
   check('boutiques actives visibles', (await q(`select marketplace_shops() s`))[0].s.length === 1);
   const det = (await q(`select product_detail('${lamp.id}') d`))[0].d;
   check('fiche produit : 3 images', det.found && det.images.length === 3);

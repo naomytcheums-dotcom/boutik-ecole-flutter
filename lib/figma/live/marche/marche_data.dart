@@ -59,14 +59,17 @@ Future<Map<String, dynamic>> _map(String fn, Map<String, dynamic> p) async {
 const marcheSorts = {'popular': 'Popularité', 'recent': 'Nouveautés', 'price_asc': 'Prix croissant', 'price_desc': 'Prix décroissant', 'rating': 'Mieux notés'};
 
 class MarcheFilters {
-  const MarcheFilters({this.q = '', this.category = '', this.city = '', this.min, this.max, this.sort = 'popular', this.shops = false});
+  const MarcheFilters({this.q = '', this.category = '', this.city = '', this.min, this.max, this.sort = 'popular', this.shops = false, this.offerType = ''});
   final String q, category, city, sort;
+
+  /// Type d'offre : vide (tous), product, tech, service ou project.
+  final String offerType;
   final int? min, max;
 
   /// Vrai : l'onglet « Boutiques » est affiché à la place des produits.
   final bool shops;
 
-  MarcheFilters copy({String? q, String? category, String? city, Object? min = _keep, Object? max = _keep, String? sort, bool? shops}) => MarcheFilters(
+  MarcheFilters copy({String? q, String? category, String? city, Object? min = _keep, Object? max = _keep, String? sort, bool? shops, String? offerType}) => MarcheFilters(
         q: q ?? this.q,
         category: category ?? this.category,
         city: city ?? this.city,
@@ -74,18 +77,20 @@ class MarcheFilters {
         max: identical(max, _keep) ? this.max : max as int?,
         sort: sort ?? this.sort,
         shops: shops ?? this.shops,
+        offerType: offerType ?? this.offerType,
       );
 
   Map<String, dynamic> get productParams => {
         if (q.trim().isNotEmpty) 'p_q': q.trim(),
         if (category.isNotEmpty) 'p_category': category,
+        if (offerType.isNotEmpty) 'p_offer_type': offerType,
         if (city.isNotEmpty) 'p_city': city,
         if (min != null) 'p_min': min,
         if (max != null) 'p_max': max,
         'p_sort': sort,
       };
 
-  bool get active => category.isNotEmpty || city.isNotEmpty || min != null || max != null;
+  bool get active => category.isNotEmpty || offerType.isNotEmpty || city.isNotEmpty || min != null || max != null;
 }
 
 const _keep = Object();

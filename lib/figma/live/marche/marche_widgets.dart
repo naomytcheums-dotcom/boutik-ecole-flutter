@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../gsound.dart' show GAnim, GSound;
+import '../offer_types.dart' show offerTypeBadges;
 import '../product_card.dart';
 import 'marche_data.dart';
 
@@ -129,6 +130,8 @@ class MarcheProductTile extends ConsumerWidget {
       overlays: [
         if (off > 0 || flash != null)
           Positioned(left: 8, top: 8, child: Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4), decoration: BoxDecoration(color: flash != null ? kRed : kInk, borderRadius: BorderRadius.circular(10)), child: Text(flash != null ? 'Flash −$off %' : '−$off %', style: mst(11, w: FontWeight.w700, c: Colors.white)))),
+        if (offerTypeBadges['${card['offer_type']}'] != null)
+          Positioned(left: 8, bottom: soldOut ? 36 : 8, child: Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(3)), child: Text(offerTypeBadges['${card['offer_type']}']!, style: mst(11, w: FontWeight.w700)))),
         if (soldOut) Positioned(left: 8, bottom: 8, child: Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)), child: Text('Épuisé', style: mst(11, w: FontWeight.w700)))),
         Positioned(
           right: 2,

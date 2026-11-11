@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/offer_types.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -70,8 +71,8 @@ class G_58 extends ConsumerWidget {
       errorText('np_title', 28, 338),
       gP(37.5, 301.5, 20.996, 20.996, gImg('assets/figma/v/5cb3a366ba37dc.svg')),
       gP(40.875, 304.875, 7.5, 7.5, gImg('assets/figma/v/af3b58bd7187b4.svg')),
-      gP(24, 350, 61, 16, gText('Catégorie', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 370, 342, 48, GField(hint: '', initial: 'Maison et déco', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('np_cat', v); })),
+      gP(24, 350, 200, 16, gText('Type d’offre et catégorie', 12.5, Color(0xFF111015), weight: 600)),
+      gP(24, 370, 342, 48, const OfferCategoryPicker()),
       errorText('np_cat', 28, 420),
       gP(38.25, 384.25, 11.25, 11.25, gImg('assets/figma/v/4aa41d01b63de8.svg')),
       gP(46.5, 384.25, 11.25, 11.25, gImg('assets/figma/v/4aa41d01b63de8.svg')),

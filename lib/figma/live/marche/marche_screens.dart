@@ -9,6 +9,7 @@ import '../../gen.dart' show gToast;
 import '../auth.dart';
 import '../backend.dart';
 import '../messages.dart' show contactSeller;
+import '../offer_types.dart' show offerTypeLabels;
 import 'marche_data.dart';
 import 'marche_widgets.dart';
 
@@ -108,6 +109,8 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
           child: Column(children: [
+            MDropdown(label: 'Type d’offre', value: f.offerType, items: {'': 'Tous les types d’offres', ...offerTypeLabels}, onChanged: (v) => _set(f.copy(offerType: v, shops: false))),
+            const SizedBox(height: 10),
             Row(children: [
               Expanded(child: MDropdown(label: 'Afficher', value: f.shops ? 'shops' : 'products', items: const {'products': 'Produits', 'shops': 'Boutiques'}, onChanged: (v) => _set(f.copy(shops: v == 'shops')))),
               const SizedBox(width: 10),

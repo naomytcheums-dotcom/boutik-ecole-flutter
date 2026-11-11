@@ -3,6 +3,7 @@ import '../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gen.dart' show gToast;
+import 'geo_stub.dart' if (dart.library.js_interop) 'geo_web.dart';
 import 'auth.dart';
 import 'backend.dart';
 import 'console.dart';
@@ -21,7 +22,7 @@ final productReviewsProvider = NotifierProvider<RpcRows, List<Map<String, dynami
 
 Widget _note(double w, String t, {double h = 140}) => Container(width: w, height: h, alignment: Alignment.center, padding: const EdgeInsets.symmetric(horizontal: 24), child: Text(t, textAlign: TextAlign.center, style: _st(13, c: _grey).copyWith(height: 1.5)));
 
-String addressLine(Map<String, dynamic> a) => [a['line'], if ('${a['district'] ?? ''}'.isNotEmpty) a['district'], a['city'], if ('${a['landmark'] ?? ''}'.isNotEmpty) 'Repère : ${a['landmark']}'].join(', ');
+String addressLine(Map<String, dynamic> a) => [a['line'], if ('${a['district'] ?? ''}'.isNotEmpty) a['district'], a['city'], if ('${a['landmark'] ?? ''}'.isNotEmpty && !'${a['landmark']}'.startsWith('GPS')) 'Repère : ${a['landmark']}'].join(', ');
 
 class AddressBook extends ConsumerWidget {
   const AddressBook({super.key, this.width = 342, this.height = 600});
@@ -77,19 +78,116 @@ class AddressBook extends ConsumerWidget {
   }
 }
 
+/// Fenêtre « Nouvelle adresse » : la position réelle de l'appareil remplit ville, quartier et rue ; le nom et le téléphone viennent du profil.
+/// Tout reste modifiable à la main si la personne le souhaite.
 Future<void> addAddressDialog(BuildContext context, WidgetRef ref) async {
-  final c = {for (final k in ['recipient', 'phone', 'city', 'district', 'line', 'landmark']) k: TextEditingController()};
-  Widget f(String k, String label) => TextField(controller: c[k], decoration: InputDecoration(labelText: label));
+  final me = ref.read(authProvider).current;
+  final c = {
+    'recipient': TextEditingController(text: me?.name ?? ''),
+    'phone': TextEditingController(text: me?.phone ?? ''),
+    'city': TextEditingController(),
+    'district': TextEditingController(),
+    'line': TextEditingController(),
+  };
+  GeoPlace? place;
+  String status = 'search';
+  var started = false;
+  Future<void> locate(StateSetter set) async {
+    set(() => status = 'search');
+    final r = await detectPlace();
+    place = r.place;
+    if (r.place != null) {
+      final p = r.place!;
+      if (p.city.isNotEmpty) c['city']!.text = p.city;
+      if (p.district.isNotEmpty) c['district']!.text = p.district;
+      if (p.line.isNotEmpty) c['line']!.text = p.line;
+    }
+    set(() => status = r.status);
+  }
+
+  Widget f(String k, String label, {TextInputType? kb}) => Padding(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: TextField(
+          controller: c[k],
+          keyboardType: kb,
+          style: _st(14),
+          decoration: InputDecoration(
+            labelText: label,
+            labelStyle: _st(13, c: _grey),
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
+          ),
+        ),
+      );
+
   final ok = await showDialog<bool>(
     context: context,
-    builder: (d) => AlertDialog(
-      title: const Text('Nouvelle adresse'),
-      content: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, children: [f('recipient', 'Destinataire'), f('phone', 'Téléphone'), f('city', 'Ville'), f('district', 'Quartier'), f('line', 'Adresse'), f('landmark', 'Repère (facultatif)')])),
-      actions: [TextButton(onPressed: () => Navigator.pop(d, false), child: const Text('Annuler')), TextButton(onPressed: () => Navigator.pop(d, true), child: const Text('Enregistrer'))],
-    ),
+    builder: (d) => StatefulBuilder(builder: (d, set) {
+      if (!started) {
+        started = true;
+        locate(set);
+      }
+      final msg = switch (status) {
+        'search' => 'Recherche de votre position…',
+        'ok' => place == null ? '' : 'Position détectée automatiquement. Corrigez-la si besoin.',
+        'denied' => 'Localisation refusée : autorisez-la dans votre navigateur ou saisissez l’adresse.',
+        'unsupported' => 'La localisation n’est pas disponible sur cet appareil : saisissez l’adresse.',
+        _ => 'Position introuvable : activez le GPS ou saisissez l’adresse.',
+      };
+      return Dialog(
+        backgroundColor: const Color(0xFFF4EFF8),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 22, 20, 14),
+          child: SingleChildScrollView(
+            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text('Nouvelle adresse', style: _st(20, w: FontWeight.w800)),
+              const SizedBox(height: 12),
+              Row(children: [
+                Icon(status == 'ok' ? Icons.my_location : Icons.location_searching, size: 18, color: status == 'ok' ? const Color(0xFF2E9E5B) : _grey),
+                const SizedBox(width: 8),
+                Expanded(child: Text(msg, style: _st(12, c: _grey).copyWith(height: 1.4))),
+              ]),
+              const SizedBox(height: 14),
+              f('recipient', 'Nom du destinataire'),
+              f('phone', 'Téléphone', kb: TextInputType.phone),
+              f('city', 'Ville'),
+              f('district', 'Quartier'),
+              f('line', 'Adresse'),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton.icon(
+                  onPressed: status == 'search' ? null : () => locate(set),
+                  icon: const Icon(Icons.my_location, size: 18),
+                  label: Text('Utiliser ma position actuelle', style: _st(13, w: FontWeight.w700)),
+                ),
+              ),
+              const SizedBox(height: 4),
+              Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                TextButton(onPressed: () => Navigator.pop(d, false), child: Text('Annuler', style: _st(13.5, c: _grey))),
+                const SizedBox(width: 8),
+                FilledButton(
+                  style: FilledButton.styleFrom(backgroundColor: _ink, shape: const StadiumBorder(), padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14)),
+                  onPressed: () => Navigator.pop(d, true),
+                  child: Text('Enregistrer', style: _st(13.5, w: FontWeight.w700, c: Colors.white)),
+                ),
+              ]),
+            ]),
+          ),
+        ),
+      );
+    }),
   );
   if (ok != true || !context.mounted) return;
-  final r = await Backend.rpc('save_address', {'p_id': null, 'p_recipient': c['recipient']!.text, 'p_phone': c['phone']!.text, 'p_city': c['city']!.text, 'p_district': c['district']!.text, 'p_line': c['line']!.text, 'p_landmark': c['landmark']!.text});
+  if (c['city']!.text.trim().isEmpty || c['line']!.text.trim().isEmpty) {
+    gToast(context, 'Indiquez au moins la ville et l’adresse.');
+    return;
+  }
+  final gps = place == null ? '' : 'GPS ${place!.lat.toStringAsFixed(6)},${place!.lon.toStringAsFixed(6)}';
+  final r = await Backend.rpc('save_address', {'p_id': null, 'p_recipient': c['recipient']!.text, 'p_phone': c['phone']!.text, 'p_city': c['city']!.text, 'p_district': c['district']!.text, 'p_line': c['line']!.text, 'p_landmark': gps});
   if (!context.mounted) return;
   if (r.error != null) {
     gToast(context, 'Enregistrement impossible : ${r.error}');

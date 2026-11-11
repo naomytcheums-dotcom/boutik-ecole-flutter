@@ -10,7 +10,8 @@ import 'notifs.dart' show notifsProvider;
 import 'ops.dart' show serverReportsProvider;
 import 'review.dart' show reviewQueueProvider;
 import 'seller.dart' show platformListingsProvider, serverSellerOrdersProvider;
-import 'share.dart' show siteUrl;
+import 'auth.dart' show authProvider;
+import 'share.dart' show shareText, siteUrl;
 import 'store.dart' show ordersProvider;
 
 /// Actions des libellés qui ressemblaient à des boutons sans rien faire (audit du 01/11).
@@ -67,6 +68,17 @@ void uiAllShown(BuildContext context) => gToast(context, 'Tous les éléments so
 Future<void> uiCopy(BuildContext context, String text, String what) async {
   final ok = await copyText(text);
   if (context.mounted) gToast(context, ok ? '$what copié' : 'Copie impossible : autorisez l’accès au presse-papiers.');
+}
+
+/// Partage de son profil : message prêt à envoyer (WhatsApp, SMS…) avec le vrai lien public ; copie du lien si le partage est indisponible.
+Future<void> shareMyProfile(BuildContext context, WidgetRef ref) async {
+  final me = ref.read(authProvider).current;
+  final id = me?.serverId ?? '';
+  final link = id.isEmpty ? siteUrl : '$siteUrl/#/s/247?user=${Uri.encodeQueryComponent(id)}';
+  final who = (me?.name ?? '').trim();
+  final spec = [if (me != null && me.department.isNotEmpty) me.department, if (me != null && me.institution.isNotEmpty) me.institution].join(' · ');
+  final msg = '${who.isEmpty ? 'Découvre mon profil' : 'Découvre le profil de $who'} sur Boutik-École${spec.isEmpty ? '' : ' ($spec)'} : $link';
+  await shareText(context, msg, subject: 'Mon profil Boutik-École');
 }
 
 /// Lien public d'un écran de l'application.

@@ -51,6 +51,7 @@ class G_08 extends ConsumerWidget {
       gP(330.978, 19.815, 28, 17, gImg('assets/figma/v/6a818f3296df50.svg')),
       gP(332.978, 21.815, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(354.478, 23.315, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
+      gP(17.980, 56.850, 40, 40, const GGlassCircle()),
       gP(27.13, 66.002, 21.704, 21.704, const SizedBox.expand(), tap: () => gBack(context)),
       gP(28.652, 67.524, 12.33, 18.661, gImg('assets/figma/v/20b2385b0d2955.svg')),
       gP(28.652, 73.854, 18.661, 6, gImg('assets/figma/v/7c4663a1ebdfe9.svg')),

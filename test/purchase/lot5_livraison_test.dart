@@ -39,17 +39,19 @@ void main() {
     expect(deliveryFee(false, null), 0);
     expect(deliveryFee(true, null), 5000, reason: 'maquette');
     Backend.ready = true;
-    expect(deliveryFee(true, null), 0, reason: 'réglage non lu : aucun frais facturé');
-    expect(deliveryFee(true, (enabled: false, city: 'Douala', fee: 5000)), 0);
+    expect(deliveryFee(true, null), 5000, reason: 'réglage non lu : frais par défaut, la livraison reste proposée');
+    expect(deliveryFee(true, (enabled: false, city: 'Douala', fee: 5000)), 5000);
     expect(deliveryFee(true, (enabled: true, city: 'Douala', fee: 4000)), 4000);
   });
 
-  testWidgets('connecté, domicile non activé : refusé avec explication, la commande reste en retrait sur campus', (tester) async {
+  testWidgets('connecté : la livraison à domicile est toujours proposée, sans refus', (tester) async {
     Backend.ready = true;
-    final c = await _pumpButton(tester, (enabled: false, city: 'Douala', fee: 5000), chooseHomeDelivery);
-    expect(find.textContaining('non proposée pour le moment'), findsOneWidget);
-    expect(c.read(homeDeliveryProvider), isFalse);
-    expect(c.read(totalsProvider).fee, 0);
+    final c = await _pumpButton(tester, (enabled: false, city: 'Douala', fee: 5000), (context, ref) {
+      ref.read(selectedAddressProvider.notifier).set('a1'); // adresse déjà retenue : pas de navigation
+      chooseHomeDelivery(context, ref);
+    });
+    expect(find.textContaining('non proposée pour le moment'), findsNothing);
+    expect(c.read(homeDeliveryProvider), isTrue);
   });
 
   testWidgets('connecté, adresse incomplète : erreurs sous les champs, rien n’est envoyé', (tester) async {

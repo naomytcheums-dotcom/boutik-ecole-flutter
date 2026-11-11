@@ -53,11 +53,11 @@ class G_04 extends ConsumerWidget {
       gP(348.141, 64.12, 21.072, 21.072, gImg('assets/figma/v/bc071aaa26d332.svg')),
       gP(361.047, 77.025, 10.051, 10.051, gImg('assets/figma/v/cf2d5b01cff302.svg')),
       Positioned.fill(child: GChoiceGroup(chips: [GChip(18.37, 119.402, 61.467, 33.913, 'Tous', 13.424, 700), GChip(86.902, 119.402, 75.598, 33.913, 'Produits', 13.424, 500), GChip(168.859, 119.402, 75.598, 33.913, 'Services', 13.424, 500), GChip(252.228, 119.402, 66.413, 33.913, 'Talents', 13.424, 500), GChip(325.707, 119.402, 67.12, 33.913, 'Projets', 13.424, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 16.957)),
-      gP(18.37, 185.815, 171.685, 268.478, const SizedBox.expand(), tap: () => gOpen(context, '05')),
-      gP(19.783, 187.228, 168.859, 162.5, gBox(image: 'assets/figma/img/b49b6a241d16c8c01f026ab4fe2980adaae1b6f4.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
-      gP(156.848, 193.587, 25.435, 25.435, gBox(color: Color(0xFFFFFFFF), oval: true)),
-      gP(160.678, 198.005, 17.775, 16.598, gImg('assets/figma/v/2b12c20ee1d37c.svg')),
-      gP(154.5, 191.239, 30.13, 30.13, GHeart()),
+      gP(18.37, 185.815, 171.685, 268.478, const SizedBox.expand(), tap: () => gOpen(context, '05'), show: demoContent),
+      gP(19.783, 187.228, 168.859, 162.5, gBox(image: 'assets/figma/img/b49b6a241d16c8c01f026ab4fe2980adaae1b6f4.png', fit: BoxFit.cover, radii: [22, 22, 22, 22]), show: demoContent),
+      gP(156.848, 193.587, 25.435, 25.435, gBox(color: Color(0xFFFFFFFF), oval: true), show: demoContent),
+      gP(160.678, 198.005, 17.775, 16.598, gImg('assets/figma/v/2b12c20ee1d37c.svg'), show: demoContent),
+      gP(154.5, 191.239, 30.13, 30.13, GHeart(), show: demoContent),
       
       
       
@@ -65,10 +65,10 @@ class G_04 extends ConsumerWidget {
       gP(28.967, 363.522, 121, 36, gText(gm('Pots connectés pour\nl’agriculture urbaine', ''), 12.1, Color(0xFF111015), weight: 600, lh: 17.663), show: demoContent),
       gP(28.967, 406.728, 78, 16, gText(demoContent ? '15 000 FCFA' : '', 12.717, Color(0xFF111015), weight: 600), show: demoContent),
       gP(28.967, 429.424, 131, 13, gText('Département : Agronomie', 10.598, Color(0xFF57545F)), show: demoContent),
-      gP(207.717, 187.228, 166.033, 162.5, gBox(image: 'assets/figma/img/209b06d9669544abc2d1f3eb45ceb34026db6495.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
-      gP(341.957, 193.587, 25.435, 25.435, gBox(color: Color(0xFFFFFFFF), oval: true)),
-      gP(345.786, 198.005, 17.775, 16.598, gImg('assets/figma/v/2b12c20ee1d37c.svg')),
-      gP(339.609, 191.239, 30.13, 30.13, GHeart()),
+      gP(207.717, 187.228, 166.033, 162.5, gBox(image: 'assets/figma/img/209b06d9669544abc2d1f3eb45ceb34026db6495.png', fit: BoxFit.cover, radii: [22, 22, 22, 22]), show: demoContent),
+      gP(341.957, 193.587, 25.435, 25.435, gBox(color: Color(0xFFFFFFFF), oval: true), show: demoContent),
+      gP(345.786, 198.005, 17.775, 16.598, gImg('assets/figma/v/2b12c20ee1d37c.svg'), show: demoContent),
+      gP(339.609, 191.239, 30.13, 30.13, GHeart(), show: demoContent),
       
       
       gP(216.902, 363.522, 124, 36, gText('Développement web\nsur mesure', 12.1, Color(0xFF111015), weight: 600, lh: 17.663), show: demoContent),
@@ -90,7 +90,7 @@ class G_04 extends ConsumerWidget {
       
       gP(216.902, 637.652, 151, 36, gText(gm('Montage vidéo & création\nde contenu', ''), 12.1, Color(0xFF111015), weight: 600, lh: 17.663), show: demoContent),
       gP(216.902, 680.152, 144, 16, gText(gm('À partir de 10 000 FCFA', ''), 12.717, Color(0xFF111015), weight: 600), show: demoContent),
-      gP(216.902, 702.848, 133, 13, gText('Département : Audiovisuel', 10.598, Color(0xFF57545F))), gP(24, 328.5, 72, 21, gBox(color: Color(0xFFFFFFFF), radii: [10.5, 10.5, 10.5, 10.5])), gP(24, 331.7, 72, 15, gText('Produit', 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.center)),gP(212, 328.5, 72, 21, gBox(color: Color(0xFFFFFFFF), radii: [10.5, 10.5, 10.5, 10.5])), gP(212, 331.7, 72, 15, gText('Service', 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.center)),gP(24, 615.5, 72, 21, gBox(color: Color(0xFFFFFFFF), radii: [10.5, 10.5, 10.5, 10.5])), gP(24, 618.7, 72, 15, gText('Projet', 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.center)),gP(212, 615.5, 72, 21, gBox(color: Color(0xFFFFFFFF), radii: [10.5, 10.5, 10.5, 10.5])), gP(212, 618.7, 72, 15, gText('Talent', 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.center), show: demoContent),
+      gP(216.902, 702.848, 133, 13, gText('Département : Audiovisuel', 10.598, Color(0xFF57545F))), gP(24, 328.5, 72, 21, gBox(color: Color(0xFFFFFFFF), radii: [10.5, 10.5, 10.5, 10.5]), show: demoContent), gP(24, 331.7, 72, 15, gText('Produit', 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.center), show: demoContent),gP(212, 328.5, 72, 21, gBox(color: Color(0xFFFFFFFF), radii: [10.5, 10.5, 10.5, 10.5]), show: demoContent), gP(212, 331.7, 72, 15, gText('Service', 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.center), show: demoContent),gP(24, 615.5, 72, 21, gBox(color: Color(0xFFFFFFFF), radii: [10.5, 10.5, 10.5, 10.5]), show: demoContent), gP(24, 618.7, 72, 15, gText('Projet', 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.center), show: demoContent),gP(212, 615.5, 72, 21, gBox(color: Color(0xFFFFFFFF), radii: [10.5, 10.5, 10.5, 10.5]), show: demoContent), gP(212, 618.7, 72, 15, gText('Talent', 11.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.center), show: demoContent),
       gP(18.37, 753.152, 354.674, 151.902, gBox(image: 'assets/figma/img/8f6ca1bb4903a4a383d533c9719e840c10c65c71.png', fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 5), blurRadius: 14, spreadRadius: 0)], radii: [18.37, 18.37, 18.37, 18.37]), show: demoContent),
       gP(18.37, 753.152, 354.674, 151.902, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xD1120F1A), Color(0x33120F1A)], stops: [0, 1]), radii: [18.37, 18.37, 18.37, 18.37]), show: demoContent),
       gP(36.739, 779.891, 206, 20, gRich([('Vous êtes ', 16.25, 700, Color(0xFFFFFFFF)), ('une entreprise ?', 16.25, 700, Color(0xFFFBC02D))]), show: demoContent),

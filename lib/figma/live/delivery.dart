@@ -36,7 +36,7 @@ final deliverySettingsProvider = NotifierProvider<DeliverySettingsNotifier, Deli
 final selectedAddressProvider = NotifierProvider<StrV, String>(StrV.new);
 
 /// Frais de livraison affichés : hors serveur, ceux de la maquette ; connecté, ceux du réglage (0 si domicile non proposé).
-int deliveryFee(bool home, DeliverySettings? s) => !home ? 0 : (!Backend.ready ? 5000 : (s != null && s.enabled ? s.fee : 0));
+int deliveryFee(bool home, DeliverySettings? s) => !home ? 0 : (s?.fee ?? 5000);
 
 /// 07 « Livraison à domicile » : connecté, refusée tant qu'elle n'est pas activée ; sinon l'adresse est demandée (41).
 void chooseHomeDelivery(BuildContext context, WidgetRef ref) {
@@ -46,13 +46,8 @@ void chooseHomeDelivery(BuildContext context, WidgetRef ref) {
     return;
   }
   final s = ref.read(deliverySettingsProvider);
-  if (s == null || !s.enabled) {
-    ref.read(homeDeliveryProvider.notifier).set(false);
-    gAlert(context, 'Livraison à domicile', 'Livraison à domicile non proposée pour le moment. Votre commande sera à retirer sur campus, gratuitement, avec un code à 6 chiffres.');
-    return;
-  }
   ref.read(homeDeliveryProvider.notifier).set(true);
-  gToast(context, 'Livraison à domicile · ${s.city} · ${fcfa(s.fee)}');
+  gToast(context, 'Livraison à domicile · ${fcfa(s?.fee ?? 5000)}');
   if (ref.read(selectedAddressProvider).isEmpty) gOpen(context, '41');
 }
 

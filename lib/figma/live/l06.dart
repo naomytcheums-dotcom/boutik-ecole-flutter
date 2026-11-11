@@ -58,7 +58,7 @@ class _Cart extends StatelessWidget {
                 ),
               ),
       ),
-      if (!demoContent && lines.isNotEmpty) gP(150, 92, 216, 40, const MarcheLink('Par boutique · code promo', '/marche/panier')),
+      if (!demoContent && lines.isNotEmpty) gP(150, 98, 216, 30, const MarcheLink('Par boutique · code promo', '/marche/panier')),
       // Totaux (positions fixes de la maquette)
       gP(25.64, 625.94, 337.37, 0.677, gBox(color: const Color(0xFFF2EFF6))),
       gP(28.339, 642.624, 59, 14, gText('Sous-total', 11.471, _grey)),

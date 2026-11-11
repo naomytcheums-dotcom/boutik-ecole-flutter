@@ -54,8 +54,8 @@ class G_19 extends ConsumerWidget {
       gP(26.914, 370.834, 221, 69, gText('Produits, services, talents,\nprojets... explorez tout l’univers\nétudiant de l’IUT de Douala.', 14.727, Color(0xFFFFFFFF), weight: 500, lh: 22.852)),
       gP(0, 470.807, 390, 373.193, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), shadows: [BoxShadow(color: Color(0x14122640), offset: Offset(0, -4), blurRadius: 14, spreadRadius: 0)], radii: [30.469, 30.469, 30.469, 30.469])),
       gP(30.977, 480.925, 328.555, 48.212, GField(hint: 'Rechercher un produit, service, talent...', size: 13.711, hintColor: Color(0xFF57545F), weight: 400, padL: 44.18, onChanged: (v) { ref.read(searchQueryProvider.notifier).set(v); }, onSubmitted: (v) { ref.read(searchQueryProvider.notifier).set(v); gOpen(context, '22'); })),
-      gP(42.449, 494.878, 18.188, 18.188, gImg('assets/figma/v/9961637ab1d06e.svg')),
-      gP(52.885, 505.314, 9.275, 9.275, gImg('assets/figma/v/789bfa36ccd2e1.svg')),
+      gP(42.449, 497.878, 18.188, 18.188, gImg('assets/figma/v/9961637ab1d06e.svg')),
+      gP(52.885, 508.314, 9.275, 9.275, gImg('assets/figma/v/789bfa36ccd2e1.svg')),
       gP(30.977, 542.231, 328.555, 49.402, gBox(color: Color(0xFFF2EFF6), radii: [20.312, 20.312, 20.312, 20.312])),
       gP(51.336, 558.136, 11.332, 6, gImg('assets/figma/v/729a3d6803c2bf.svg')),
       gP(42.957, 558.136, 11.332, 6, gImg('assets/figma/v/729a3d6803c2bf.svg')),
@@ -82,8 +82,7 @@ class G_19 extends ConsumerWidget {
       gP(118.734, 696.722, 53, 16, gText('Services', 12.695, Color(0xFF111015), weight: 500, align: TextAlign.center)),
       gP(215.82, 631.628, 49.766, 49.766, gBox(color: Color(0xFFE6CCF5), oval: true)),
       gP(256.445, 634.417, 6.094, 6.094, gBox(color: Color(0xFF7FB6D8), oval: true)),
-      gP(230.547, 646.354, 20.312, 20.312, const SizedBox.expand(), tap: () => gTab(context, '10')),
-      gP(233.471, 645.893, 14.464, 14.464, gImg('assets/figma/v/9eca5d1f97dbf8.svg')),
+            gP(233.471, 645.893, 14.464, 14.464, gImg('assets/figma/v/9eca5d1f97dbf8.svg')),
       gP(230.932, 654.357, 19.542, 12.771, gImg('assets/figma/v/2e8d1491a0fd68.svg')),
       gP(219.203, 696.722, 43, 16, gText('Talents', 12.695, Color(0xFF111015), weight: 500, align: TextAlign.center)),
       gP(311.797, 631.628, 49.766, 49.766, gBox(color: Color(0xFFCFEDE0), oval: true)),
@@ -111,6 +110,12 @@ class G_19 extends ConsumerWidget {
       gTap(31, 542, 329, 49, () { gOpen(context, '21'); }),
       gTap(20, 625, 75, 95, () { ref.read(searchQueryProvider.notifier).set(''); ref.read(categoryProvider.notifier).set(0); gOpen(context, '22'); }),
       gTap(18.9, 362.8, 237, 85, () { gOpen(context, '20'); }), // lien métier 19 -> 20
+      gTap(31, 482, 44, 46, () { gOpen(context, '22'); }),
+      gTap(120, 631, 52, 84, () => gOpen(context, '22b')),
+      gTap(216, 631, 52, 84, () => gOpen(context, '70')),
+      gTap(312, 631, 52, 84, () => gOpen(context, '78')),
+      gP(21.98, 102.98, 40, 40, const GGlassCircle()),
+      gP(31, 112, 22, 22, const Icon(Icons.arrow_back, size: 21, color: Colors.white), tap: () => gBack(context)),
     ]);
   }
 }

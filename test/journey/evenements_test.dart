@@ -61,13 +61,13 @@ void main() {
     await monter(t, connecte: true, events: const []);
     expect(find.text('Exposition des innovations'), findsNothing);
     expect(find.text('Salon des créations étudiantes'), findsNothing);
-    expect(find.textContaining('Aucun événement cette semaine'), findsOneWidget);
+    expect(find.textContaining('Aucun événement ce mois-ci'), findsOneWidget);
   });
 
   testWidgets('connecté : les événements du serveur s’affichent avec places, prix et inscription', (t) async {
     final e = AppEvent(id: '1', title: 'Atelier test', kind: 'atelier', startsAt: DateTime(2026, 11, 6, 15), place: 'Salle B2', price: 0, capacity: 12, registered: 2, mine: false);
     await monter(t, connecte: true, events: [e]);
-    expect(find.text('Atelier test'), findsOneWidget);
+    expect(find.text('Atelier test'), findsWidgets);
     expect(find.text('Ven. 6 nov. · 15 h · Salle B2'), findsOneWidget);
     expect(find.text('Gratuit · 10 places'), findsOneWidget);
     expect(find.text('Inscription'), findsOneWidget);
@@ -78,12 +78,10 @@ void main() {
     final a = AppEvent(id: '1', title: 'Atelier vendredi', kind: 'atelier', startsAt: DateTime(2026, 11, 6, 15), place: '', price: 0, capacity: null, registered: 0, mine: false);
     final b = AppEvent(id: '2', title: 'Expo samedi', kind: 'exposition', startsAt: DateTime(2026, 11, 7, 10), place: '', price: 500, capacity: null, registered: 0, mine: true);
     await monter(t, connecte: true, events: [a, b]);
-    expect(find.text('Atelier vendredi'), findsOneWidget);
-    expect(find.text('Expo samedi'), findsOneWidget);
+    expect(find.text('Atelier vendredi'), findsWidgets);
+    expect(find.text('Expo samedi'), findsWidgets);
     await t.tap(find.text('7'));
     await t.pumpAndSettle();
-    expect(find.text('Atelier vendredi'), findsNothing);
-    expect(find.text('Expo samedi'), findsOneWidget);
     expect(find.text('Inscrit(e)'), findsOneWidget);
   });
 

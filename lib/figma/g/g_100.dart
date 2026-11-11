@@ -74,7 +74,7 @@ class G_100 extends ConsumerWidget {
       gP(319.143, 120, 44.857, 58, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1, radii: [16, 16, 16, 16]), show: demoContent),
       gP(337.071, 129, 9, 14, gText('D', 11, Color(0xFF57545F), weight: 500, align: TextAlign.center), show: demoContent),
       gP(331.571, 147, 20, 20, gText(gm('26', ''), 16, Color(0xFF111015), weight: 700, align: TextAlign.center), show: demoContent),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 192, 55.6, 34, 'Tous', 12.5, 600), GChip(87.6, 192, 107.4, 34, 'Expositions', 12.5, 500), GChip(203, 192, 85.2, 34, 'Ateliers', 12.5, 500), GChip(296.2, 192, 107.4, 34, 'Conférences', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17, onChanged: (i) { ref.read(eventKindProvider.notifier).set(i); })),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, (demoContent ? 192.0 : 114.0), 55.6, 34, 'Tous', 12.5, 600), GChip(87.6, (demoContent ? 192.0 : 114.0), 107.4, 34, 'Expositions', 12.5, 500), GChip(203, (demoContent ? 192.0 : 114.0), 85.2, 34, 'Ateliers', 12.5, 500), GChip(296.2, (demoContent ? 192.0 : 114.0), 107.4, 34, 'Conférences', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17, onChanged: (i) { ref.read(eventKindProvider.notifier).set(i); })),
       gP(24, 240, 107, 19, gText('Cette semaine', 15, Color(0xFF111015), weight: 700), show: demoContent),
       gP(36, 291, 40, 40, gBox(color: Color(0xFFFDEFC8), radii: [13, 13, 13, 13]), show: demoContent),
       gP(45.5, 301.333, 21, 21, gImg('assets/figma/v/ffe808ced2c9ec.svg'), show: demoContent),
@@ -131,8 +131,8 @@ class G_100 extends ConsumerWidget {
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       if (demoContent) gTap(270.3, 428, 73, 32, () { gOpen(context, '162'); }), // parcours 100 -> 162
       if (demoContent) gTap(42, 582, 86, 28, () { gOpen(context, '101'); }), // audit 01/11 : « Réserver » n'avait aucun effet
-      if (!demoContent) gP(24, 114, 342, 68, const EventsWeekStrip(width: 342)),
-      if (!demoContent) gP(24, 240, 342, 480, const EventsList(width: 342, height: 480)),
+      if (!demoContent) gP(24, 156, 342, 400, const EventsCalendar(width: 342)),
+      if (!demoContent) gP(24, 560, 342, 190, const EventsList(width: 342, height: 190, calendar: true)),
     ]);
   }
 }

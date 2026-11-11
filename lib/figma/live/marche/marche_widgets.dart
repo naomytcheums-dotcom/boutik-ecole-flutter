@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:video_player/video_player.dart';
 
-import '../../gsound.dart' show GAnim;
+import '../../gsound.dart' show GAnim, GSound;
 import '../product_card.dart';
 import 'marche_data.dart';
 
@@ -361,7 +361,7 @@ class MarcheLink extends StatelessWidget {
         onTap: () => context.push(route),
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: () => context.push(route),
+          onTap: () { GSound.play('click'); context.push(route); },
           child: Align(
             alignment: Alignment.centerRight,
             child: Container(

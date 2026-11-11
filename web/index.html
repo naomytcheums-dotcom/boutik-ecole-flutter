@@ -67,11 +67,13 @@
           var c = ac(); if (!c) return;
           if (c.state === 'suspended') c.resume();
           var b = cache[url];
-          if (!b) { load(url); return; }
+          if (!b) { load(url); var n = 0, t = setInterval(function () { n++; if (cache[url]) { clearInterval(t); window.boutikSound.play(url, vol); } else if (n > 15) clearInterval(t); }, 40); return; }
           var s = c.createBufferSource(), g = c.createGain();
           s.buffer = b; g.gain.value = vol; s.connect(g); g.connect(c.destination); s.start(0);
         }
       };
+      // Préchargement dès l'ouverture : le tout premier toucher (« Commencer ») fait déjà son bruit.
+      ['click', 'pop', 'tick', 'success', 'whoosh', 'mic_start', 'mic_stop'].forEach(function (n) { load('assets/assets/sounds/' + n + '.wav'); });
       ['touchstart', 'pointerdown', 'mousedown', 'keydown'].forEach(function (e) {
         window.addEventListener(e, function () { window.boutikSound.unlock(); }, { once: false, passive: true, capture: true });
       });

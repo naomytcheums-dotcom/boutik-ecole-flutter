@@ -70,6 +70,34 @@ class EventDay extends Notifier<int?> {
 
 final eventDayProvider = NotifierProvider<EventDay, int?>(EventDay.new);
 
+/// Mois affiché par le calendrier (1er jour du mois) ; l'année se change aussi.
+class EventMonth extends Notifier<DateTime> {
+  @override
+  DateTime build() {
+    final n = ref.read(nowProvider);
+    return DateTime(n.year, n.month);
+  }
+
+  void set(DateTime v) => state = DateTime(v.year, v.month);
+  void shift(int months) => state = DateTime(state.year, state.month + months);
+  void shiftYears(int years) => state = DateTime(state.year + years, state.month);
+}
+
+final eventMonthProvider = NotifierProvider<EventMonth, DateTime>(EventMonth.new);
+
+/// Jour touché dans le calendrier (null : tout le mois).
+class EventDate extends Notifier<DateTime?> {
+  @override
+  DateTime? build() => null;
+  void toggle(DateTime v) => state = state != null && DateUtils.isSameDay(state, v) ? null : v;
+  void clear() => state = null;
+}
+
+final eventDateProvider = NotifierProvider<EventDate, DateTime?>(EventDate.new);
+
+/// Premier jour (lundi) de la grille d'un mois.
+DateTime gridStart(DateTime month) => weekStart(DateTime(month.year, month.month, 1));
+
 /// `null` : lecture en cours ou serveur absent ; liste vide : aucun événement. `error` : la lecture a échoué.
 class EventsNotifier extends Notifier<List<AppEvent>?> {
   bool error = false;
@@ -78,19 +106,19 @@ class EventsNotifier extends Notifier<List<AppEvent>?> {
   List<AppEvent>? build() {
     if (!Backend.ready) return null;
     final kind = ref.watch(eventKindProvider);
-    final start = weekStart(ref.watch(nowProvider));
+    final start = gridStart(ref.watch(eventMonthProvider));
     Future.microtask(() => _load(start, kind));
     return null;
   }
 
   Future<void> _load(DateTime start, int kind) async {
-    final r = await Backend.rpc('events_between', {'p_from': start.toUtc().toIso8601String(), 'p_to': start.add(const Duration(days: 7)).toUtc().toIso8601String(), 'p_kind': _types[kind.clamp(0, 3)]});
+    final r = await Backend.rpc('events_between', {'p_from': start.toUtc().toIso8601String(), 'p_to': start.add(const Duration(days: 42)).toUtc().toIso8601String(), 'p_kind': _types[kind.clamp(0, 3)]});
     if (!ref.mounted) return;
     error = r.error != null || r.data is! List;
     state = error ? const [] : [for (final x in r.data as List) AppEvent.fromRow(x as Map)];
   }
 
-  Future<void> refresh() => _load(weekStart(ref.read(nowProvider)), ref.read(eventKindProvider));
+  Future<void> refresh() => _load(gridStart(ref.read(eventMonthProvider)), ref.read(eventKindProvider));
 }
 
 final eventsProvider = NotifierProvider<EventsNotifier, List<AppEvent>?>(EventsNotifier.new);
@@ -144,10 +172,99 @@ class EventsWeekStrip extends ConsumerWidget {
   }
 }
 
+const _moisLong = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+
+/// Calendrier complet du mois (comme celui d'un téléphone) : tous les jours en grille, changement de mois et d'année par flèches ou balayage,
+/// dates avec événements encerclées et titrées dans la case, jour d'aujourd'hui entouré ; toucher un jour filtre la liste placée dessous.
+class EventsCalendar extends ConsumerWidget {
+  const EventsCalendar({super.key, this.width = 342});
+  final double width;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final month = ref.watch(eventMonthProvider);
+    final sel = ref.watch(eventDateProvider);
+    final now = ref.watch(nowProvider);
+    final events = ref.watch(eventsProvider) ?? const <AppEvent>[];
+    final start = gridStart(month);
+    Widget arrow(IconData i, VoidCallback f, String tip) => IconButton(onPressed: f, tooltip: tip, icon: Icon(i, size: 20, color: _ink));
+    final cell = width / 7;
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onHorizontalDragEnd: (d) {
+        final v = d.primaryVelocity ?? 0;
+        if (v.abs() < 200) return;
+        ref.read(eventDateProvider.notifier).clear();
+        ref.read(eventMonthProvider.notifier).shift(v < 0 ? 1 : -1);
+      },
+      child: SizedBox(
+        width: width,
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Row(children: [
+            arrow(Icons.keyboard_double_arrow_left, () { ref.read(eventDateProvider.notifier).clear(); ref.read(eventMonthProvider.notifier).shiftYears(-1); }, 'Année précédente'),
+            arrow(Icons.chevron_left, () { ref.read(eventDateProvider.notifier).clear(); ref.read(eventMonthProvider.notifier).shift(-1); }, 'Mois précédent'),
+            Expanded(
+              child: GestureDetector(
+                onTap: () { ref.read(eventDateProvider.notifier).clear(); ref.read(eventMonthProvider.notifier).set(DateTime(now.year, now.month)); },
+                child: Text('${_moisLong[month.month - 1]} ${month.year}', textAlign: TextAlign.center, style: _st(16, w: FontWeight.w800)),
+              ),
+            ),
+            arrow(Icons.chevron_right, () { ref.read(eventDateProvider.notifier).clear(); ref.read(eventMonthProvider.notifier).shift(1); }, 'Mois suivant'),
+            arrow(Icons.keyboard_double_arrow_right, () { ref.read(eventDateProvider.notifier).clear(); ref.read(eventMonthProvider.notifier).shiftYears(1); }, 'Année suivante'),
+          ]),
+          Row(children: [for (final l in _initiales) SizedBox(width: cell, child: Text(l, textAlign: TextAlign.center, style: _st(11, c: _grey)))]),
+          const SizedBox(height: 4),
+          for (var w = 0; w < 6; w++)
+            Row(children: [
+              for (var i = 0; i < 7; i++)
+                Builder(builder: (_) {
+                  final d = start.add(Duration(days: w * 7 + i));
+                  final inMonth = d.month == month.month;
+                  final dayEvents = [for (final e in events) if (DateUtils.isSameDay(e.startsAt, d)) e];
+                  final isSel = sel != null && DateUtils.isSameDay(sel, d);
+                  final today = DateUtils.isSameDay(d, now);
+                  final has = dayEvents.isNotEmpty;
+                  return GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => ref.read(eventDateProvider.notifier).toggle(d),
+                    child: SizedBox(
+                      width: cell,
+                      height: 54,
+                      child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+                        Container(
+                          width: 30,
+                          height: 30,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: isSel ? _ink : Colors.transparent,
+                            border: Border.all(color: has ? const Color(0xFF5A3FE0) : (today ? _ink : Colors.transparent), width: 1.6),
+                          ),
+                          child: Text('${d.day}', style: _st(13.5, w: has || today ? FontWeight.w800 : FontWeight.w500, c: isSel ? Colors.white : (inMonth ? _ink : const Color(0xFFB8B4C2)))),
+                        ),
+                        if (has)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 1),
+                            child: Text(dayEvents.first.title, maxLines: 1, overflow: TextOverflow.clip, textAlign: TextAlign.center, style: _st(7.5, c: const Color(0xFF5A3FE0))),
+                          ),
+                      ]),
+                    ),
+                  );
+                }),
+            ]),
+        ]),
+      ),
+    );
+  }
+}
+
 /// Liste des événements de la semaine : chargement, erreur, état vide, puis une ligne par événement avec son inscription.
 class EventsList extends ConsumerWidget {
-  const EventsList({super.key, this.width = 342, this.height = 480});
+  const EventsList({super.key, this.width = 342, this.height = 480, this.calendar = false});
   final double width, height;
+
+  /// Mode calendrier : le mois affiché et le jour touché filtrent la liste.
+  final bool calendar;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -162,8 +279,12 @@ class EventsList extends ConsumerWidget {
         );
     if (all == null) return note('Chargement des événements…');
     if (ref.read(eventsProvider.notifier).error) return note('Les événements ne peuvent pas être chargés pour le moment.');
-    final list = [for (final e in all) if (sel == null || e.startsAt.weekday == sel + 1) e];
-    if (list.isEmpty) return note(sel == null ? 'Aucun événement cette semaine.\nLes expositions, ateliers et conférences de l’établissement apparaîtront ici.' : 'Aucun événement ce jour-là.');
+    final month = ref.watch(eventMonthProvider);
+    final date = ref.watch(eventDateProvider);
+    final list = calendar
+        ? [for (final e in all) if (date != null ? DateUtils.isSameDay(e.startsAt, date) : (e.startsAt.year == month.year && e.startsAt.month == month.month)) e]
+        : [for (final e in all) if (sel == null || e.startsAt.weekday == sel + 1) e];
+    if (list.isEmpty) return note(calendar ? (date == null ? 'Aucun événement ce mois-ci.\nLes expositions, ateliers et conférences de l’établissement apparaîtront ici.' : 'Aucun événement ce jour-là.') : (sel == null ? 'Aucun événement cette semaine.\nLes expositions, ateliers et conférences de l’établissement apparaîtront ici.' : 'Aucun événement ce jour-là.'));
     return SizedBox(
       width: width,
       height: height,

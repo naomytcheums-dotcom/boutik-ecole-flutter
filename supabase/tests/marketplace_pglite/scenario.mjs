@@ -43,6 +43,8 @@ export async function run(db) {
   await db.exec(`update listings set supervisor='M. Nkoulou', reviewed_by='${M}' where title='Prototype irrigation'`);
   await db.exec(`update profiles set study_level='Licence 2', department='Génie civil' where id='${A}'`);
   await db.exec(`update profiles set department='Génie civil' where id='${B}'`);
+  await db.exec(`insert into missions (number, client_id, kind, title, description, total, status, budget_min, budget_max) values ('#BR-T-1', '${B}', 'besoin', 'Gestion des stocks pour ma boutique', 'Je cherche une solution pour ne plus perdre mon stock de boutique', 100000, 'published', 50000, 100000), ('#BR-T-2', '${B}', 'besoin', 'Brouillon prive', 'Un besoin qui reste en brouillon chez moi', 1000, 'draft', null, null)`);
+  await db.exec(`insert into projects (owner_id, title, summary, department, status) values ('${A}', 'Pompe solaire', 'Irrigation autonome pour petites exploitations', 'Génie civil', 'approved'), ('${A}', 'Projet non valide', 'En attente de validation', 'Génie civil', 'submitted')`);
   await as(null, 'anon');
   let res = (await q(`select marketplace_search(null,null,null,null,null,'price_asc') r`))[0].r;
   check('recherche publique triee par prix croissant, mes 3 produits presents', res.every((x, i) => i === 0 || res[i - 1].price <= x.price) && ['Lampe en bois', 'Table basse', 'Sac direct'].every(t => res.some(x => x.title === t)));
@@ -163,6 +165,19 @@ export async function run(db) {
   check('devis : etat final accepte avec prix et delai', qr.status === 'accepted' && qr.quote_amount === 22000 && qr.quote_delay_days === 7);
   const reco = (await q(`select recommended_offers(10) r`))[0].r;
   check('recommandes : offres de ma filiere en premier, jamais les miennes', ['Lampe en bois', 'Table basse'].every(t => reco.some(x => x.title === t)) && !reco.some(x => ['Sac direct', 'Creation de logo'].includes(x.title)), JSON.stringify(reco.map(x => x.title)));
+  // --- appel à entreprises et projets de l'IUT
+  let calls = (await q(`select open_calls() r`))[0].r;
+  check('appel : le besoin publie est visible, pas le brouillon', calls.length === 1 && calls[0].title === 'Gestion des stocks pour ma boutique' && calls[0].own === true && calls[0].company === 'Paul Buyer');
+  await as(A);
+  calls = (await q(`select open_calls('stock') r`))[0].r;
+  check('appel : un etudiant le voit et peut le chercher par mot', calls.length === 1 && calls[0].own === false && calls[0].proposed === false);
+  await q(`select propose_on_mission('${calls[0].id}', 80000, 10, 'Une application de gestion de stock')`);
+  calls = (await q(`select open_calls() r`))[0].r;
+  check('appel : la proposition est comptee et marquee comme envoyee', calls[0].proposals === 1 && calls[0].proposed === true);
+  const pj = (await q(`select iut_projects() r`))[0].r;
+  check('projets de l IUT : seuls les projets valides', pj.length === 1 && pj[0].title === 'Pompe solaire' && pj[0].department === 'Génie civil' && pj[0].owner.startsWith('Awa'));
+  check('projets de l IUT : filtre par filiere sans resultat', (await q(`select iut_projects('agro') r`))[0].r.length === 0);
+  await as(B);
   // --- paiement a la livraison
   const tbl = (await q(`select id from listings where title='Table basse'`))[0];
   const cod = (await q(`select marketplace_checkout('[{"id":"${tbl.id}","qty":1}]'::jsonb,false,'Paiement à la livraison') o`))[0].o;

@@ -92,6 +92,14 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
         Semantics(button: true, label: 'Mes boutiques suivies', excludeSemantics: true, child: IconButton(constraints: const BoxConstraints(minWidth: 48, minHeight: 48), icon: const Icon(Icons.storefront_outlined), onPressed: () => context.push('/marche/suivies'))),
       ],
       child: ListView(padding: const EdgeInsets.only(bottom: 90), children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: Row(children: [
+            Expanded(child: mButton('Appel à entreprises', () => context.push('/marche/appels'), dark: false, icon: Icons.campaign_outlined)),
+            const SizedBox(width: 10),
+            Expanded(child: mButton('Projets de l’IUT', () => context.push('/marche/projets'), dark: false, icon: Icons.verified_outlined)),
+          ]),
+        ),
         if (ref.watch(marcheCompareProvider).length >= 2) Padding(padding: const EdgeInsets.fromLTRB(16, 0, 16, 8), child: mButton('Comparer ${ref.watch(marcheCompareProvider).length} produits', () => context.push('/marche/comparer'), icon: Icons.compare_arrows_rounded)),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),

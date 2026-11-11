@@ -33,7 +33,7 @@ Widget mButton(String label, VoidCallback? onTap, {bool dark = true, bool busy =
         constraints: const BoxConstraints(minHeight: 48, minWidth: 48),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         alignment: Alignment.center,
-        decoration: BoxDecoration(color: onTap == null ? const Color(0xFFB9B4C7) : (dark ? kInk : Colors.white), borderRadius: BorderRadius.circular(24), border: dark ? null : Border.all(color: kLine)),
+        decoration: BoxDecoration(color: onTap == null ? const Color(0xFFB9B4C7) : (dark ? kInk : Colors.white), borderRadius: BorderRadius.circular(4), border: dark ? null : Border.all(color: kLine)),
         child: Row(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, children: [
           if (icon != null) ...[Icon(icon, size: 18, color: fg), const SizedBox(width: 8)],
           Flexible(child: Text(busy ? 'Un instant…' : label, textAlign: TextAlign.center, style: mst(14, w: FontWeight.w700, c: fg))),
@@ -168,9 +168,9 @@ class MarcheGrid extends StatelessWidget {
         return GridView.builder(
           shrinkWrap: shrink,
           physics: shrink ? const NeverScrollableScrollPhysics() : null,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 12),
           itemCount: cards.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: cols, crossAxisSpacing: 12, mainAxisSpacing: 16, childAspectRatio: productCardAspect((c.maxWidth - 32 - 12 * (cols - 1)) / cols)),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: cols, crossAxisSpacing: 10, mainAxisSpacing: 20, childAspectRatio: productCardAspect((c.maxWidth - 24 - 10 * (cols - 1)) / cols)),
           itemBuilder: (_, i) => MarcheProductTile(card: cards[i]),
         );
       });
@@ -366,7 +366,7 @@ class MarcheLink extends StatelessWidget {
             alignment: Alignment.centerRight,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
-              decoration: BoxDecoration(color: kInk, borderRadius: BorderRadius.circular(22)),
+              decoration: BoxDecoration(color: kInk, borderRadius: BorderRadius.circular(4)),
               child: Row(mainAxisSize: MainAxisSize.min, children: [Flexible(child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: mst(12.5, w: FontWeight.w700, c: Colors.white))), const SizedBox(width: 4), const Icon(Icons.chevron_right_rounded, size: 16, color: Colors.white)]),
             ),
           ),
@@ -393,7 +393,43 @@ class MChip extends StatelessWidget {
           onTap: onTap,
           child: ConstrainedBox(
             constraints: const BoxConstraints(minHeight: 48),
-            child: Center(child: Container(padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8), decoration: BoxDecoration(color: selected ? kInk : Colors.white, borderRadius: BorderRadius.circular(20), border: Border.all(color: selected ? kInk : kLine)), child: Text(label, style: mst(12.5, w: FontWeight.w600, c: selected ? Colors.white : kInk)))),
+            child: Center(child: Container(padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8), decoration: BoxDecoration(color: selected ? kInk : Colors.white, borderRadius: BorderRadius.circular(4), border: Border.all(color: selected ? kInk : kLine)), child: Text(label, style: mst(12.5, w: FontWeight.w600, c: selected ? Colors.white : kInk)))),
+          ),
+        ),
+      );
+}
+
+/// Liste déroulante carrée : l'utilisateur choisit son filtre dans une liste plutôt que parmi une rangée de pastilles.
+class MDropdown extends StatelessWidget {
+  const MDropdown({super.key, required this.label, required this.value, required this.items, required this.onChanged});
+  final String label;
+  final String value;
+  final Map<String, String> items;
+  final ValueChanged<String> onChanged;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+        label: label,
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 48),
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(4), border: Border.all(color: kLine)),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              isExpanded: true,
+              value: items.containsKey(value) ? value : items.keys.first,
+              icon: const Icon(Icons.keyboard_arrow_down_rounded, color: kInk),
+              borderRadius: BorderRadius.circular(4),
+              dropdownColor: Colors.white,
+              style: mst(13, w: FontWeight.w600),
+              items: [for (final e in items.entries) DropdownMenuItem(value: e.key, child: Text(e.value, maxLines: 1, overflow: TextOverflow.ellipsis, style: mst(13, w: FontWeight.w600)))],
+              onChanged: (v) {
+                if (v != null) {
+                  GSound.play('click');
+                  onChanged(v);
+                }
+              },
+            ),
           ),
         ),
       );

@@ -12,7 +12,7 @@ const kCardViolet = Color(0xFF5A3FE0);
 TextStyle _cs(double size, {FontWeight w = FontWeight.w500, Color c = kCardInk}) => TextStyle(fontFamily: 'PlusJakartaSans', fontSize: size, fontWeight: w, color: c);
 
 /// Hauteur du corps de la carte sous la photo (titre 2 lignes, prix, boutique, bouton) : sert à calculer le rapport de la grille.
-const double kProductCardBodyHeight = 150;
+const double kProductCardBodyHeight = 156;
 
 /// Rapport largeur / hauteur d'une carte de largeur [w] pour une grille.
 double productCardAspect(double w) => w / (w * 5 / 4 + kProductCardBodyHeight);
@@ -54,12 +54,10 @@ class ProductCardView extends StatelessWidget {
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: Container(
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18), border: Border.all(color: const Color(0xFFECE8F2)), boxShadow: const [BoxShadow(color: Color(0x14403366), blurRadius: 10, offset: Offset(0, 3))]),
-          clipBehavior: Clip.antiAlias,
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            AspectRatio(aspectRatio: 4 / 5, child: Stack(fit: StackFit.expand, children: [photo, ...overlays])),
+            AspectRatio(aspectRatio: 4 / 5, child: ClipRRect(borderRadius: BorderRadius.circular(4), child: Stack(fit: StackFit.expand, children: [photo, ...overlays]))),
             Padding(
-              padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
+              padding: const EdgeInsets.fromLTRB(2, 8, 2, 4),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
                 Text(title, maxLines: 2, overflow: TextOverflow.ellipsis, style: _cs(12.5, w: FontWeight.w700)),
                 const SizedBox(height: 3),
@@ -71,10 +69,10 @@ class ProductCardView extends StatelessWidget {
                 if (extra.isNotEmpty) Text(extra, maxLines: 1, overflow: TextOverflow.ellipsis, style: _cs(10.5, c: kCardGrey)),
                 const SizedBox(height: 8),
                 Container(
-                  height: 32,
+                  height: 36,
                   width: double.infinity,
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(color: kCardInk, borderRadius: BorderRadius.circular(16)),
+                  decoration: BoxDecoration(color: kCardInk, borderRadius: BorderRadius.circular(3)),
                   child: Text(buttonLabel, maxLines: 1, overflow: TextOverflow.ellipsis, style: _cs(11.5, w: FontWeight.w700, c: Colors.white)),
                 ),
               ]),

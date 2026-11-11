@@ -98,28 +98,23 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
                 controller: _q,
                 textInputAction: TextInputAction.search,
                 onSubmitted: (v) => _set(f.copy(q: v)),
-                decoration: InputDecoration(hintText: f.shops ? 'Rechercher une boutique' : 'Rechercher un produit, une boutique', prefixIcon: const Icon(Icons.search), filled: true, fillColor: Colors.white, border: OutlineInputBorder(borderRadius: BorderRadius.circular(24), borderSide: BorderSide.none), contentPadding: const EdgeInsets.symmetric(vertical: 14)),
+                decoration: InputDecoration(hintText: f.shops ? 'Rechercher une boutique' : 'Rechercher un produit, une boutique', prefixIcon: const Icon(Icons.search), filled: true, fillColor: Colors.white, border: OutlineInputBorder(borderRadius: BorderRadius.circular(4), borderSide: BorderSide.none), contentPadding: const EdgeInsets.symmetric(vertical: 14)),
               ),
             ),
             const SizedBox(width: 8),
-            Semantics(button: true, label: 'Filtres prix, lieu', excludeSemantics: true, child: GestureDetector(onTap: _filters, child: Container(width: 48, height: 48, decoration: BoxDecoration(color: f.active ? kInk : Colors.white, shape: BoxShape.circle), child: Icon(Icons.tune_rounded, color: f.active ? Colors.white : kInk)))),
+            Semantics(button: true, label: 'Filtres prix, lieu', excludeSemantics: true, child: GestureDetector(onTap: _filters, child: Container(width: 48, height: 48, decoration: BoxDecoration(color: f.active ? kInk : Colors.white, borderRadius: BorderRadius.circular(4)), child: Icon(Icons.tune_rounded, color: f.active ? Colors.white : kInk)))),
           ]),
         ),
-        SizedBox(
-          height: 52,
-          child: ListView(scrollDirection: Axis.horizontal, padding: const EdgeInsets.symmetric(horizontal: 16), children: [
-            MChip('Produits', selected: !f.shops, onTap: () => _set(f.copy(shops: false))),
-            const SizedBox(width: 8),
-            MChip('Boutiques', selected: f.shops, onTap: () => _set(f.copy(shops: true))),
-            const SizedBox(width: 16),
-            MChip('Toutes catégories', selected: f.category.isEmpty, onTap: () => _set(f.copy(category: ''))),
-            for (final c in cats) ...[const SizedBox(width: 8), MChip(c, selected: f.category == c, onTap: () => _set(f.copy(category: c)))],
-          ]),
-        ),
-        SizedBox(
-          height: 52,
-          child: ListView(scrollDirection: Axis.horizontal, padding: const EdgeInsets.symmetric(horizontal: 16), children: [
-            for (final e in marcheSorts.entries) ...[MChip(e.value, selected: f.sort == e.key, onTap: () => _set(f.copy(sort: e.key))), const SizedBox(width: 8)],
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+          child: Column(children: [
+            Row(children: [
+              Expanded(child: MDropdown(label: 'Afficher', value: f.shops ? 'shops' : 'products', items: const {'products': 'Produits', 'shops': 'Boutiques'}, onChanged: (v) => _set(f.copy(shops: v == 'shops')))),
+              const SizedBox(width: 10),
+              Expanded(child: MDropdown(label: 'Catégorie', value: f.category, items: {'': 'Toutes catégories', for (final c in cats) c: c}, onChanged: (v) => _set(f.copy(category: v)))),
+            ]),
+            const SizedBox(height: 10),
+            MDropdown(label: 'Trier par', value: f.sort, items: marcheSorts, onChanged: (v) => _set(f.copy(sort: v))),
           ]),
         ),
         if (browsing) ...[

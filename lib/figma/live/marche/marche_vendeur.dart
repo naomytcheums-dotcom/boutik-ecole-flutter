@@ -9,6 +9,7 @@ import 'package:supabase_flutter/supabase_flutter.dart' show FunctionException, 
 import '../../gen.dart' show gToast;
 import '../auth.dart';
 import '../backend.dart';
+import '../litiges_screens.dart' show openDisputeDialog;
 import '../seller.dart' show serverSellerOrdersProvider, SellerOrder;
 import 'marche_data.dart';
 import 'marche_widgets.dart';
@@ -380,6 +381,11 @@ class _OrderCard extends ConsumerWidget {
               gToast(context, err ?? 'Commande mise à jour, l’acheteur est prévenu.');
               ref.read(serverSellerOrdersProvider.notifier).refresh();
             }, dark: false),
+          ),
+        if (o.status >= 3)
+          Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: TextButton(onPressed: () => openDisputeDialog(context, ref, o.id), child: Text('Le client refuse de payer', style: mst(12.5, w: FontWeight.w700, c: kRed))),
           ),
       ]),
     );

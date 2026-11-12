@@ -177,6 +177,8 @@ class _QuoteTile extends StatelessWidget {
           if (mine && s == 'quoted') TextButton(onPressed: () { close(); _decide(parent, r['id'] as String, true); }, child: const Text('Accepter')),
           if (mine && s == 'quoted') TextButton(onPressed: () { close(); _decide(parent, r['id'] as String, false); }, child: const Text('Refuser')),
           if (mine && open) TextButton(onPressed: () { close(); _cancel(parent, r['id'] as String); }, child: const Text('Annuler la demande')),
+          if (mine && s == 'accepted' && r['order_number'] == null) TextButton(onPressed: () { close(); _checkout(parent, r['id'] as String); }, child: const Text('Commander au prix du devis')),
+          if (mine && s == 'accepted' && r['order_number'] != null) Text('Commande ${r['order_number']}', style: _st.copyWith(fontSize: 12, fontWeight: FontWeight.w700, color: const Color(0xFF0F7A52))),
         ]),
         const Divider(height: 14),
       ]),
@@ -189,6 +191,14 @@ Future<void> _decide(BuildContext context, String id, bool accept) async {
   if (!context.mounted) return;
   if (err != null) return gAlert(context, 'Action impossible', err);
   gToast(context, accept ? 'Devis accepté. Le prestataire est prévenu.' : 'Devis refusé.');
+}
+
+Future<void> _checkout(BuildContext context, String id) async {
+  final r = await Backend.rpc('quote_checkout', {'p_quote': id});
+  if (!context.mounted) return;
+  if (r.error != null) return gAlert(context, 'Commande impossible', Backend.userMessage(r.error!));
+  final n = r.data is Map ? '${(r.data as Map)['number']}' : '';
+  gToast(context, 'Commande $n créée au prix du devis. Payez-la depuis « Mes commandes ».');
 }
 
 Future<void> _cancel(BuildContext context, String id) async {

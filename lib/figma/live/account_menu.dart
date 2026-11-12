@@ -20,6 +20,7 @@ Future<void> _livraisonPlateforme(BuildContext context, WidgetRef ref) async => 
 Future<void> _innovations(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/innovations');
 Future<void> _concours(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/concours');
 Future<void> _mentors(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/mentors');
+Future<void> _litiges(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/litiges');
 Future<void> _promotions(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/marche/promotions');
 
 const _st = TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 14, color: Color(0xFF111015));
@@ -55,6 +56,7 @@ final _groups = <_Group>[
     _Entry('Mes réclamations', action: _reclamations),
     _Entry('Comparer des offres', screen: '26'),
     _Entry('Mentors', action: _mentors),
+    _Entry('Mes litiges', action: _litiges),
     _Entry('Concours, bourses et hackathons', action: _concours),
     _Entry('Innovations (SOS, défis, victoires)', action: _innovations),
   ]),

@@ -549,3 +549,49 @@ class VictoriesScreen extends ConsumerWidget {
     );
   }
 }
+
+/// Niveau (points) d'une personne : { total, level }. Lecture publique ; « none » quand il n'y a pas encore de niveau.
+final userLevelProvider = FutureProvider.autoDispose.family<Map<String, dynamic>, String>((ref, id) async {
+  final r = await marcheCall('user_level', {'p_user': id});
+  if (r.error != null || r.data is! Map) return const {'total': 0, 'level': 'none'};
+  return Map<String, dynamic>.from(r.data as Map);
+});
+
+/// Niveaux des membres d'une communauté qui en ont un (id → { total, level }).
+final communityLevelsProvider = FutureProvider.autoDispose.family<Map<String, Map<String, dynamic>>, String>((ref, communityId) async {
+  final r = await marcheCall('community_levels', {'p_community': communityId});
+  if (r.error != null || r.data is! Map) return const {};
+  return {for (final e in (r.data as Map).entries) '${e.key}': Map<String, dynamic>.from(e.value as Map)};
+});
+
+/// Petit badge « Aidant Argent » à côté du nom ; rien tant que la personne n'a pas de niveau.
+class LevelBadge extends StatelessWidget {
+  const LevelBadge({super.key, required this.level, this.compact = false});
+  final String level;
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context) {
+    final label = levelLabels[level];
+    if (label == null || level == 'none') return const SizedBox.shrink();
+    final c = levelColors[level]!;
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: compact ? 6 : 9, vertical: compact ? 2 : 4),
+      decoration: BoxDecoration(color: c.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(compact ? 8 : 12)),
+      child: Row(mainAxisSize: MainAxisSize.min, children: [Icon(Icons.military_tech, size: compact ? 12 : 15, color: c), const SizedBox(width: 3), Text(label, style: mst(compact ? 10 : 11.5, w: FontWeight.w700, c: c))]),
+    );
+  }
+}
+
+/// Badge de niveau d'un profil (charge le niveau de la personne).
+class UserLevelBadge extends ConsumerWidget {
+  const UserLevelBadge({super.key, required this.userId, this.compact = false});
+  final String userId;
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final lv = ref.watch(userLevelProvider(userId)).asData?.value;
+    return LevelBadge(level: '${lv?['level'] ?? 'none'}', compact: compact);
+  }
+}

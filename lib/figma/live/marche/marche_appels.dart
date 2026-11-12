@@ -13,15 +13,44 @@ import 'marche_widgets.dart';
 /// Appel à entreprises et projets de l'IUT. Une entreprise publie « Je cherche une solution pour… » (écran 90, déjà existant) ;
 /// les étudiants répondent depuis cette page avec un montant, un délai et un message.
 
+/// Recherche, tri et filière mentionnée de la liste des appels (envoyés au serveur).
+class CallsQuery {
+  const CallsQuery({this.q = '', this.sort = 'recent', this.dept = ''});
+  final String q, sort, dept;
+  CallsQuery copy({String? q, String? sort, String? dept}) => CallsQuery(q: q ?? this.q, sort: sort ?? this.sort, dept: dept ?? this.dept);
+  Map<String, dynamic> get params => {'p_limit': 50, 'p_sort': sort, if (q.trim().isNotEmpty) 'p_q': q.trim(), if (dept.isNotEmpty) 'p_department': dept};
+}
+
+class CallsQueryNotifier extends Notifier<CallsQuery> {
+  @override
+  CallsQuery build() => const CallsQuery();
+  void set(CallsQuery q) => state = q;
+}
+
+final callsQueryProvider = NotifierProvider<CallsQueryNotifier, CallsQuery>(CallsQueryNotifier.new);
+
+const callSorts = {'recent': 'Plus récents', 'budget': 'Budget le plus élevé', 'fewest': 'Moins de propositions'};
+const callDepartments = {'': 'Toutes les filières', 'informatique': 'Informatique', 'gestion': 'Gestion', 'design': 'Design', 'génie civil': 'Génie civil', 'électrique': 'Électricité', 'marketing': 'Marketing', 'agriculture': 'Agriculture'};
+const projectSorts = {'best': 'Les meilleurs', 'recent': 'Les plus récents'};
+
+class ProjectsSortNotifier extends Notifier<String> {
+  @override
+  String build() => 'best';
+  void set(String v) => state = v;
+}
+
+final projectsSortProvider = NotifierProvider<ProjectsSortNotifier, String>(ProjectsSortNotifier.new);
+
 final marcheCallsProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
   ref.watch(authProvider.select((a) => a.current?.serverId));
-  final r = await marcheCall('open_calls', const {'p_limit': 50});
+  final r = await marcheCall('open_calls', ref.watch(callsQueryProvider).params);
   if (r.error != null) throw MarcheException(r.error);
   return [for (final x in (r.data as List? ?? const [])) Map<String, dynamic>.from(x as Map)];
 });
 
 final marcheIutProjectsProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
-  final r = await marcheCall('iut_projects', const {'p_limit': 60});
+  ref.watch(authProvider.select((a) => a.current?.serverId));
+  final r = await marcheCall('iut_projects', {'p_limit': 60, 'p_sort': ref.watch(projectsSortProvider)});
   if (r.error != null) throw MarcheException(r.error);
   return [for (final x in (r.data as List? ?? const [])) Map<String, dynamic>.from(x as Map)];
 });
@@ -86,10 +115,26 @@ class AppelsScreen extends ConsumerWidget {
           child: Text('Une entreprise publie « Je cherche une solution pour… » ; les étudiants répondent avec un prix, un délai et leur solution.', style: mst(13, c: kGrey).copyWith(height: 1.5)),
         ),
         Padding(padding: const EdgeInsets.fromLTRB(16, 4, 16, 8), child: mButton('Publier mon besoin', () => context.push('/s/90'), icon: Icons.add)),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+          child: TextField(
+            textInputAction: TextInputAction.search,
+            onSubmitted: (v) => ref.read(callsQueryProvider.notifier).set(ref.read(callsQueryProvider).copy(q: v)),
+            decoration: InputDecoration(hintText: 'Rechercher un besoin…', prefixIcon: const Icon(Icons.search), filled: true, fillColor: Colors.white, border: OutlineInputBorder(borderRadius: BorderRadius.circular(4), borderSide: BorderSide.none), contentPadding: const EdgeInsets.symmetric(vertical: 12)),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: Row(children: [
+            Expanded(child: MDropdown(label: 'Trier par', value: ref.watch(callsQueryProvider).sort, items: callSorts, onChanged: (v) => ref.read(callsQueryProvider.notifier).set(ref.read(callsQueryProvider).copy(sort: v)))),
+            const SizedBox(width: 10),
+            Expanded(child: MDropdown(label: 'Filière', value: ref.watch(callsQueryProvider).dept, items: callDepartments, onChanged: (v) => ref.read(callsQueryProvider.notifier).set(ref.read(callsQueryProvider).copy(dept: v)))),
+          ]),
+        ),
         mAsync<List<Map<String, dynamic>>>(
           ref.watch(marcheCallsProvider),
           (l) => l.isEmpty
-              ? mNote('Aucun appel publié pour le moment.\nLes besoins des entreprises apparaîtront ici dès leur publication.')
+              ? mNote(ref.watch(callsQueryProvider).q.isEmpty && ref.watch(callsQueryProvider).dept.isEmpty ? 'Aucun appel publié pour le moment.\nLes besoins des entreprises apparaîtront ici dès leur publication.' : 'Aucun besoin ne correspond à cette recherche.')
               : Column(children: [
                   for (final c in l)
                     Container(
@@ -120,21 +165,48 @@ class AppelsScreen extends ConsumerWidget {
 }
 
 /// Projets de l'IUT : les projets validés, regroupés par filière.
+class ProjectDeptNotifier extends Notifier<String> {
+  @override
+  String build() => '';
+  void set(String v) => state = v;
+}
+
+final _projectDeptProvider = NotifierProvider<ProjectDeptNotifier, String>(ProjectDeptNotifier.new);
+
 class ProjetsIutScreen extends ConsumerWidget {
   const ProjetsIutScreen({super.key});
+
+  Future<void> _support(BuildContext context, WidgetRef ref, Map<String, dynamic> p) async {
+    if (!await requireLogin(context, ref, 'soutenir un projet') || !context.mounted) return;
+    final r = await marcheCall('project_upvote_toggle', {'p_project': p['id']});
+    if (!context.mounted) return;
+    if (r.error != null) {
+      gToast(context, Backend.userMessage('${r.error}'));
+      return;
+    }
+    ref.invalidate(marcheIutProjectsProvider);
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MarchePage(
       title: 'Projets de l’IUT',
       child: ListView(padding: const EdgeInsets.only(bottom: 90), children: [
-        mAsync<List<Map<String, dynamic>>>(ref.watch(marcheIutProjectsProvider), (l) {
-          if (l.isEmpty) return mNote('Aucun projet validé pour le moment.\nLes meilleurs projets de chaque filière apparaîtront ici après validation.');
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+          child: MDropdown(label: 'Classer', value: ref.watch(projectsSortProvider), items: projectSorts, onChanged: (v) => ref.read(projectsSortProvider.notifier).set(v)),
+        ),
+        mAsync<List<Map<String, dynamic>>>(ref.watch(marcheIutProjectsProvider), (all) {
+          if (all.isEmpty) return mNote('Aucun projet validé pour le moment.\nLes meilleurs projets de chaque filière apparaîtront ici après validation.');
+          final depts = {'': 'Toutes les filières', for (final p in all) '${p['department']}': '${p['department']}'};
+          final sel = depts.containsKey(ref.watch(_projectDeptProvider)) ? ref.watch(_projectDeptProvider) : '';
+          final l = [for (final p in all) if (sel.isEmpty || '${p['department']}' == sel) p];
           final byDept = <String, List<Map<String, dynamic>>>{};
           for (final p in l) {
             byDept.putIfAbsent('${p['department']}', () => []).add(p);
           }
           return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Padding(padding: const EdgeInsets.fromLTRB(16, 0, 16, 4), child: MDropdown(label: 'Filière', value: sel, items: depts, onChanged: (v) => ref.read(_projectDeptProvider.notifier).set(v))),
             for (final e in byDept.entries) ...[
               mSectionTitle(e.key),
               for (final p in e.value)
@@ -155,6 +227,8 @@ class ProjetsIutScreen extends ConsumerWidget {
                         const SizedBox(width: 6),
                         Flexible(child: Text('Projet validé par l’IUT de Douala · ${p['owner']}', style: mst(11.5, w: FontWeight.w700, c: kGreen))),
                       ]),
+                      const SizedBox(height: 10),
+                      Align(alignment: Alignment.centerLeft, child: mButton(p['voted'] == true ? 'Soutenu · ${mInt(p['votes'])}' : 'Soutenir · ${mInt(p['votes'])}', () => _support(context, ref, p), dark: p['voted'] != true, icon: p['voted'] == true ? Icons.thumb_up : Icons.thumb_up_outlined)),
                     ]),
                   ),
                 ),

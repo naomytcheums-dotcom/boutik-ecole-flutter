@@ -113,7 +113,7 @@ void main() {
     ('158', const G_158(), 'Mariam Essono', false),
     ('251', const G_251(), 'Tendances', false),
     ('244b', const G_244b(), 'Yannick', false),
-    ('25b', const G_25b(), 'Mes listes', false),
+    ('25b', const G_25b(), 'Maison et déco', false),
     ('263', const G_263(), 'Téléverser un média', true),
     ('74', const G_74(), 'Niveau Confirmé', false),
     ('88', const G_88(), 'Besoins publiés', false),

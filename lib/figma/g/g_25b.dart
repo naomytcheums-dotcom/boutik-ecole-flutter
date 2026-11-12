@@ -23,6 +23,7 @@ import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
+import '../live/collections_screens.dart';
 import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
@@ -101,7 +102,8 @@ class G_25b extends ConsumerWidget {
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       if (demoContent) gTap(24, 498, 342, 50, () { uiSoon(context, 'Créer une collection', 'Vos créations préférées restent rassemblées dans « Mes favoris ».'); }), // audit 01/11 : « Créer une collection » n'avait aucun effet
-      if (!demoContent) gP(24, 185, 342, 560, const FavoritesList(width: 342, height: 560)),
+      if (!demoContent) gP(24, 185, 342, 560, const CollectionsPanel(width: 342, height: 560)),
+      if (!demoContent) gTap(326, 64, 44, 44, () { editCollection(context, ref); }), // « + » : créer une collection
     ]);
   }
 }

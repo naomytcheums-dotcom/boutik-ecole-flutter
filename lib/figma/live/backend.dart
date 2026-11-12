@@ -539,7 +539,7 @@ class Backend {
     final c = _c;
     if (c == null || c.auth.currentUser == null) return const [];
     try {
-      final r = await c.from('quote_requests').select('id,requester_id,provider_id,brief,budget,deadline,status,quote_amount,quote_delay_days,quote_message,created_at,listings(title)').order('created_at', ascending: false);
+      final r = await c.from('quote_requests').select('id,requester_id,provider_id,brief,budget,deadline,status,quote_amount,quote_delay_days,quote_message,order_number,created_at,listings(title)').order('created_at', ascending: false);
       return [for (final x in r) Map<String, dynamic>.from(x as Map)];
     } catch (_) {
       return const [];

@@ -1,4 +1,6 @@
 import 'community_exchanges.dart';
+import 'community_media.dart';
+import 'innovations_screens.dart' show LevelBadge, communityLevelsProvider;
 import 'community_styles.dart';
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
@@ -18,7 +20,6 @@ const _ink = Color(0xFF111015);
 const _grey = Color(0xFF57545F);
 const _violet = Color(0xFF5A3FE0);
 const _line = Color(0xFFECE8F2);
-const _bg = Color(0xFFF7F6F4);
 
 /// Limite de la description d'une communauté.
 const kCommunityMaxWords = 500;
@@ -287,6 +288,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
   int _tab = 0;
   String? _style;
   bool _compose = false;
+  PostAttachment? _attach;
 
   @override
   void dispose() {
@@ -298,7 +300,8 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
     final c = ref.read(selectedCommunityProvider);
     if (c == null) return;
     setState(() => _busy = true);
-    final r = await Backend.rpc('create_community_post', {'p_community': c.id, 'p_body': _text.text, 'p_style': _style});
+    final a = _attach;
+    final r = await Backend.rpc('create_community_post', {'p_community': c.id, 'p_body': _text.text, 'p_style': _style, if (a != null && a.kind != 'link') 'p_media_path': a.path, if (a != null && a.kind != 'link') 'p_media_kind': a.kind, if (a != null && a.kind == 'link') 'p_link': a.link});
     if (!mounted) return;
     setState(() => _busy = false);
     if (r.error != null) {
@@ -309,6 +312,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
     setState(() {
       _style = null;
       _compose = false;
+      _attach = null;
     });
     await ref.read(communityFeedProvider.notifier).refresh();
   }
@@ -422,8 +426,8 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
 
   Widget _header(Community c) {
     final canJoin = c.status == 'active' && !c.isMember && c.myStatus != 'pending' && c.myStatus != 'banned';
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+    return Column(mainAxisSize: MainAxisSize.min, children: [CommunityBanner(community: c), Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
       child: _card(Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(c.name, style: _st(19, w: FontWeight.w800)),
         const SizedBox(height: 4),
@@ -437,7 +441,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
         if (c.isMember && c.myRole != 'owner') _button('Quitter la communauté', () async { await leaveCommunity(context, ref, c); if (mounted) await _reload(c.id); }, dark: false),
         if (!canJoin && !c.isMember && c.status == 'active') Text(c.actionLabel, style: _st(13, w: FontWeight.w600, c: _violet)),
       ])),
-    );
+    )]);
   }
 
   Widget _posts(Community c, List<Map<String, dynamic>>? feed) {
@@ -463,6 +467,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
             PollView(question: '${p['body']}', poll: Map<String, dynamic>.from(p['poll'] as Map), onVote: (o) => _vote(p, o), style: postStyleOf(p['style']))
           else
             StyledPostText('${p['body']}', style: postStyleOf(p['style'])),
+          PostAttachmentView(post: p),
         ]));
       },
     );
@@ -477,6 +482,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
         final list = mentorsOnly ? [for (final m in all) if (m['role'] == 'mentor') m] : all;
         if (list.isEmpty) return Center(child: Padding(padding: const EdgeInsets.all(28), child: Text(mentorsOnly ? 'Aucun mentor pour le moment.' : 'Aucun membre.', textAlign: TextAlign.center, style: _st(13.5, c: _grey))));
         final canRole = c.myRole == 'owner' || c.myRole == 'admin';
+        final levels = ref.watch(communityLevelsProvider(c.id)).asData?.value ?? const <String, Map<String, dynamic>>{};
         return ListView.separated(
           padding: const EdgeInsets.all(16),
           itemCount: list.length,
@@ -487,7 +493,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
             return _card(Row(children: [
               Container(width: 40, height: 40, alignment: Alignment.center, decoration: BoxDecoration(color: const Color(0xFFF1EEFB), borderRadius: BorderRadius.circular(13)), child: Text('${m['name']}'.characters.first.toUpperCase(), style: _st(15, w: FontWeight.w700, c: _violet))),
               const SizedBox(width: 12),
-              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('${m['name']}', style: _st(13.5, w: FontWeight.w700)), Text(roleLabel('${m['role']}'), style: _st(11.5, c: m['role'] == 'member' ? _grey : _violet))])),
+              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('${m['name']}', style: _st(13.5, w: FontWeight.w700)), Text(roleLabel('${m['role']}'), style: _st(11.5, c: m['role'] == 'member' ? _grey : _violet)), if (levels['${m['user_id']}'] != null) Padding(padding: const EdgeInsets.only(top: 3), child: LevelBadge(level: '${levels['${m['user_id']}']!['level']}', compact: true))])),
               if (manageable) GestureDetector(onTap: () => _changeRole(c, m), child: const Padding(padding: EdgeInsets.all(12), child: Icon(Icons.more_horiz))),
             ]));
           },
@@ -516,7 +522,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
       appBar: _bar(context, c.name),
       body: SafeArea(
         child: Column(children: [
-          _header(c),
+          ConstrainedBox(constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.4), child: SingleChildScrollView(child: _header(c))),
           _tabs(),
           Expanded(child: body),
           if (_tab == 0 && c.status == 'active')
@@ -527,10 +533,12 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                     child: Column(mainAxisSize: MainAxisSize.min, children: [
                       if (_compose) ...[
                         Align(alignment: Alignment.centerLeft, child: Text('Fond de la publication', style: _st(12, w: FontWeight.w700, c: _grey))),
-                        StylePicker(value: _style, onChanged: (v) => setState(() => _style = v)),
+                        StylePicker(value: _style, onChanged: (v) => setState(() { _style = v; if (v != null) _attach = null; })),
                         if (_style != null && _text.text.trim().isNotEmpty) Padding(padding: const EdgeInsets.only(bottom: 8), child: StyledPostText(_text.text.trim(), style: postStyleOf(_style), minHeight: 110)),
                       ],
+                      if (_attach != null) AttachmentChip(attachment: _attach!, onRemove: () => setState(() => _attach = null)),
                       Row(children: [
+                      IconButton(tooltip: 'Joindre une photo, une vidéo ou un lien', onPressed: () async { final a = await chooseAttachment(context, ref); if (a != null && mounted) setState(() { _attach = a; _style = null; }); }, icon: Icon(Icons.attach_file, color: _attach != null ? _violet : _ink)),
                       IconButton(tooltip: 'Fond design', onPressed: () => setState(() => _compose = !_compose), icon: Icon(Icons.palette_outlined, color: _compose ? _violet : _ink)),
                       IconButton(tooltip: 'Sondage', onPressed: () => _newPoll(c), icon: const Icon(Icons.poll_outlined)),
                       Expanded(child: TextField(controller: _text, maxLength: 2000, onChanged: (_) => setState(() {}), decoration: InputDecoration(hintText: 'Écrire dans ${c.name}…', counterText: '', filled: true, fillColor: const Color(0xFFF2EFF6), border: OutlineInputBorder(borderRadius: BorderRadius.circular(22), borderSide: BorderSide.none), contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12)))),

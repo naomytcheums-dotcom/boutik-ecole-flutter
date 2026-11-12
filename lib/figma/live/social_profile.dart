@@ -1,4 +1,5 @@
 import '../gdata.dart' show gNetImage;
+import 'innovations_screens.dart' show UserLevelBadge;
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'home_live.dart' show liveTalentsProvider;
@@ -222,6 +223,7 @@ class SocialProfilePanel extends ConsumerWidget {
                             ],
                           ),
                           const SizedBox(height: 4),
+                          UserLevelBadge(userId: p.id),
                           Text(
                             profileSubtitle(p),
                             style: _t(

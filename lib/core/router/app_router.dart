@@ -21,6 +21,7 @@ import '../../figma/live/paiement_messagerie.dart';
 import '../../figma/live/premium_pub.dart';
 import '../../figma/live/communities.dart' show CommunityScreen;
 import '../../figma/live/community_explore.dart';
+import '../../figma/live/concours_screens.dart';
 import '../../figma/live/innovations_screens.dart';
 import '../../figma/live/marche/marche_appels.dart';
 import '../../figma/live/opportunites_screens.dart';
@@ -57,6 +58,10 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/marche', builder: (_, _) => const MarketplaceScreen()),
     GoRoute(path: '/marche/livraison', builder: (_, state) => LivraisonTarifsScreen(platform: state.uri.queryParameters['plateforme'] == '1')),
     GoRoute(path: '/marche/promotions', builder: (_, _) => const PromotionsAdminScreen()),
+    GoRoute(path: '/concours', builder: (_, _) => const ContestAnnouncementsScreen()),
+    GoRoute(path: '/concours/publier', builder: (_, _) => const AnnouncementEditScreen()),
+    GoRoute(path: '/concours/mes', builder: (_, _) => const MyAnnouncementsScreen()),
+    GoRoute(path: '/concours/:id', builder: (_, state) => AnnouncementDetailScreen(id: state.pathParameters['id'] ?? '')),
     GoRoute(path: '/opportunites', builder: (_, _) => const OpportunitiesScreen()),
     GoRoute(path: '/opportunites/publier', builder: (_, _) => const OpportunityEditScreen()),
     GoRoute(path: '/opportunites/mes', builder: (_, _) => const MyOpportunitiesScreen()),

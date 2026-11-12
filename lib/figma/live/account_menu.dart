@@ -18,6 +18,7 @@ import 'services.dart';
 Future<void> _livraisonVendeur(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/marche/livraison');
 Future<void> _livraisonPlateforme(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/marche/livraison?plateforme=1');
 Future<void> _innovations(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/innovations');
+Future<void> _concours(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/concours');
 Future<void> _mentors(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/mentors');
 Future<void> _promotions(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/marche/promotions');
 
@@ -54,6 +55,7 @@ final _groups = <_Group>[
     _Entry('Mes réclamations', action: _reclamations),
     _Entry('Comparer des offres', screen: '26'),
     _Entry('Mentors', action: _mentors),
+    _Entry('Concours, bourses et hackathons', action: _concours),
     _Entry('Innovations (SOS, défis, victoires)', action: _innovations),
   ]),
   const _Group('Découvrir et participer', [

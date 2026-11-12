@@ -2,6 +2,7 @@
 // ignore_for_file: camel_case_types, prefer_is_empty, prefer_interpolation_to_compose_strings, unnecessary_string_interpolations, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
@@ -118,6 +119,7 @@ class G_160 extends ConsumerWidget {
       gTap(24, 694, 160, 28, () { gOpen(context, '163'); }),
       gTap(16, 344, 160, 35, () { gOpen(context, '168'); }), // parcours 160 -> 168
       gTap(295.5, 346, 61, 32, () { uiAllShown(context); }), // audit 01/11 : « Voir tout » n'avait aucun effet
+      if (!demoContent) gTap(256, 350, 112, 26, () { GoRouter.of(context).push('/concours'); }), // « Voir tout » : concours, bourses et appels à projets
     ]);
   }
 }

@@ -23,6 +23,7 @@ import '../../figma/live/communities.dart' show CommunityScreen;
 import '../../figma/live/community_explore.dart';
 import '../../figma/live/innovations_screens.dart';
 import '../../figma/live/marche/marche_appels.dart';
+import '../../figma/live/opportunites_screens.dart';
 import '../../figma/live/mentors_screens.dart';
 import '../../figma/live/marche/marche_compare.dart';
 import '../../figma/live/marche/marche_livraison.dart';
@@ -56,6 +57,11 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/marche', builder: (_, _) => const MarketplaceScreen()),
     GoRoute(path: '/marche/livraison', builder: (_, state) => LivraisonTarifsScreen(platform: state.uri.queryParameters['plateforme'] == '1')),
     GoRoute(path: '/marche/promotions', builder: (_, _) => const PromotionsAdminScreen()),
+    GoRoute(path: '/opportunites', builder: (_, _) => const OpportunitiesScreen()),
+    GoRoute(path: '/opportunites/publier', builder: (_, _) => const OpportunityEditScreen()),
+    GoRoute(path: '/opportunites/mes', builder: (_, _) => const MyOpportunitiesScreen()),
+    GoRoute(path: '/opportunites/:id', builder: (_, state) => OpportunityDetailScreen(id: state.pathParameters['id'] ?? '')),
+    GoRoute(path: '/opportunites/:id/candidatures', builder: (_, state) => OpportunityApplicationsScreen(id: state.pathParameters['id'] ?? '')),
     GoRoute(path: '/innovations', builder: (_, _) => const InnovationsScreen()),
     GoRoute(path: '/innovations/points', builder: (_, _) => const PointsScreen()),
     GoRoute(path: '/innovations/sos', builder: (_, _) => const SosScreen()),

@@ -21,6 +21,7 @@ import '../../figma/live/paiement_messagerie.dart';
 import '../../figma/live/premium_pub.dart';
 import '../../figma/live/communities.dart' show CommunityScreen;
 import '../../figma/live/community_explore.dart';
+import '../../figma/live/innovations_screens.dart';
 import '../../figma/live/marche/marche_appels.dart';
 import '../../figma/live/mentors_screens.dart';
 import '../../figma/live/marche/marche_compare.dart';
@@ -55,6 +56,12 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/marche', builder: (_, _) => const MarketplaceScreen()),
     GoRoute(path: '/marche/livraison', builder: (_, state) => LivraisonTarifsScreen(platform: state.uri.queryParameters['plateforme'] == '1')),
     GoRoute(path: '/marche/promotions', builder: (_, _) => const PromotionsAdminScreen()),
+    GoRoute(path: '/innovations', builder: (_, _) => const InnovationsScreen()),
+    GoRoute(path: '/innovations/points', builder: (_, _) => const PointsScreen()),
+    GoRoute(path: '/innovations/sos', builder: (_, _) => const SosScreen()),
+    GoRoute(path: '/innovations/defis', builder: (_, _) => const ChallengesScreen()),
+    GoRoute(path: '/innovations/competences', builder: (_, _) => const SkillsScreen()),
+    GoRoute(path: '/innovations/victoires', builder: (_, _) => const VictoriesScreen()),
     GoRoute(path: '/mentors', builder: (_, _) => const MentorsScreen()),
     GoRoute(path: '/mentors/profil', builder: (_, _) => const MentorProfileScreen()),
     GoRoute(path: '/mentors/demandes', builder: (_, _) => const MentorRequestsScreen()),

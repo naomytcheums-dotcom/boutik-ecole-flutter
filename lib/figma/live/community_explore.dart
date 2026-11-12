@@ -72,6 +72,7 @@ class _CommunityExploreScreenState extends ConsumerState<CommunityExploreScreen>
               ),
           ]),
         ),
+        Padding(padding: const EdgeInsets.fromLTRB(16, 0, 16, 4), child: GestureDetector(onTap: () => context.push('/innovations'), child: Container(height: 44, alignment: Alignment.center, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(4), border: Border.all(color: kLine)), child: Text('Innovations : SOS Cours, défis, mur des victoires…', style: mst(12.5, w: FontWeight.w700))))),
         if (list == null)
           const Padding(padding: EdgeInsets.all(40), child: Center(child: CircularProgressIndicator()))
         else if (list.isEmpty)

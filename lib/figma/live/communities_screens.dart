@@ -1,3 +1,4 @@
+import 'community_exchanges.dart';
 import 'community_styles.dart';
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
@@ -405,7 +406,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
   Widget _card(Widget child) => Container(padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18), border: Border.all(color: _line)), child: child);
 
   Widget _tabs() {
-    const names = ['Publications', 'Membres', 'Mentors'];
+    const names = ['Publications', 'Chat', 'Questions', 'Événements', 'Fichiers', 'Membres', 'Mentors'];
     return SizedBox(
       height: 48,
       child: ListView(scrollDirection: Axis.horizontal, padding: const EdgeInsets.symmetric(horizontal: 16), children: [
@@ -503,8 +504,12 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
       return DecoratedBox(decoration: tpBackground, child: TpFrame(child: Scaffold(backgroundColor: Colors.transparent, appBar: _bar(context, 'Communauté'), body: const Center(child: Text('Aucune communauté ouverte.')))));
     }
     final Widget body = switch (_tab) {
-      1 => _members(c, mentorsOnly: false),
-      2 => _members(c, mentorsOnly: true),
+      1 => CommunityChatTab(key: ValueKey('chat-${c.id}-${c.isMember}'), communityId: c.id, isMember: c.isMember),
+      2 => CommunityQaTab(key: ValueKey('qa-${c.id}'), communityId: c.id, isMember: c.isMember),
+      3 => CommunityEventsTab(key: ValueKey('ev-${c.id}'), communityId: c.id, isMember: c.isMember),
+      4 => CommunityFilesTab(key: ValueKey('files-${c.id}-${c.isMember}'), communityId: c.id, isMember: c.isMember),
+      5 => _members(c, mentorsOnly: false),
+      6 => _members(c, mentorsOnly: true),
       _ => _posts(c, feed),
     };
     return DecoratedBox(decoration: tpBackground, child: TpFrame(child: Scaffold(backgroundColor: Colors.transparent, 

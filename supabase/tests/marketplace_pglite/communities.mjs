@@ -59,5 +59,64 @@ export async function run(db) {
   const p4 = (await q(`select create_community_post('${cid}', 'Quatrieme annonce') id`))[0].id;
   await fails('epingle : trois au plus', `select pin_community_post('${p4}', true)`, /Trois annonces/);
   check('activite recente et publications de la semaine', (await q(`select * from communities_list('flutter')`))[0].posts_week === 4 && (await q(`select * from communities_list('flutter')`))[0].last_activity !== null);
+  // --- chat du groupe
+  await as(C);
+  await fails('chat : reserve aux membres', `select community_chat_send('${cid}', 'Salut')`, /Réservé aux membres/);
+  await fails('chat : lecture reservee aux membres', `select * from community_chat_list('${cid}')`, /Réservé aux membres/);
+  await as(B);
+  await q(`select community_chat_send('${cid}', 'Bonjour le groupe')`);
+  await as(A);
+  const m2 = (await q(`select community_chat_send('${cid}', 'Salut Paul') id`))[0].id;
+  await fails('chat : message vide refuse', `select community_chat_send('${cid}', '   ')`, /1 à 1000/);
+  let chat = await q(`select * from community_chat_list('${cid}')`);
+  check('chat : messages dans l ordre, auteur et propre message', chat.length === 2 && chat[0].body === 'Bonjour le groupe' && chat[1].mine === true && chat[0].mine === false && chat[0].author.startsWith('Paul'));
+  await as(B);
+  await q(`select community_chat_send('${cid}', 'Quelqu un a le cours ?')`);
+  chat = await q(`select * from community_chat_list('${cid}', ${m2})`);
+  check('chat : seulement les messages apres le dernier connu', chat.length === 1 && chat[0].body === 'Quelqu un a le cours ?');
+  // --- questions et réponses
+  await as(A);
+  const qid = (await q(`select community_ask('${cid}', 'Quelqu un a deja fait le TP de reseaux ?') id`))[0].id;
+  await fails('question : trop courte refusee', `select community_ask('${cid}', 'ok')`, /5 à 600/);
+  await as(C);
+  await fails('reponse : reservee aux membres', `select community_answer('${qid}', 'Oui')`, /Réservé aux membres/);
+  await as(B);
+  const aid = (await q(`select community_answer('${qid}', 'Oui, je peux te passer mon rapport') id`))[0].id;
+  await as(A);
+  check('reponse : l auteur de la question est notifie', (await q(`select count(*)::int n from notifications where user_id='${A}' and kind='community_answer'`))[0].n === 1);
+  await as(B);
+  await fails('question : seul l auteur retient une reponse', `select community_accept_answer('${aid}')`, /Seul l'auteur/);
+  await as(A);
+  await q(`select community_accept_answer('${aid}')`);
+  const qa = (await q(`select community_qa('${cid}') r`))[0].r;
+  check('Q&R : question resolue, reponse retenue en premier', qa.length === 1 && qa[0].solved === true && qa[0].answers[0].accepted === true && qa[0].answers.length === 1);
+  await as(null, 'anon');
+  check('Q&R : lisible par un visiteur dans une communaute publique', (await q(`select community_qa('${cid}') r`))[0].r.length === 1);
+  await as(A);
+  // --- événements
+  await fails('evenement : date passee refusee', `select community_event_create('${cid}', 'Revision', 'revision', now() - interval '2 days')`, /futur/);
+  const ev = (await q(`select community_event_create('${cid}', 'Revision reseaux - examen demain', 'revision', now() + interval '2 days', 'Salle B2', 'On revise ensemble') id`))[0].id;
+  await as(B);
+  check('evenement : les membres sont notifies', (await q(`select count(*)::int n from notifications where user_id='${B}' and kind='community_event'`))[0].n === 1);
+  await q(`select community_event_rsvp('${ev}', true)`);
+  let evs = (await q(`select community_events_list('${cid}') r`))[0].r;
+  check('evenement : inscrits comptes, ma participation', evs.length === 1 && evs[0].going === 2 && evs[0].i_go === true && evs[0].kind === 'revision');
+  await q(`select community_event_rsvp('${ev}', false)`);
+  check('evenement : desinscription', (await q(`select community_events_list('${cid}') r`))[0].r[0].going === 1);
+  await fails('evenement : suppression reservee au createur ou aux responsables', `select community_event_delete('${ev}')`, /non autorisée/);
+  await as(A);
+  await q(`select community_event_delete('${ev}')`);
+  check('evenement : supprime par son createur', (await q(`select community_events_list('${cid}') r`))[0].r.length === 0);
+  // --- fichiers partagés
+  await fails('fichier : chemin d une autre communaute refuse', `select community_file_add('${cid}', 'Cours reseaux', 'course', '${cid2}/cours.pdf', 1000, 'application/pdf')`, /Chemin de fichier invalide/);
+  const fid = (await q(`select community_file_add('${cid}', 'Cours de reseaux', 'course', '${cid}/abc-cours.pdf', 120000, 'application/pdf') id`))[0].id;
+  await as(C);
+  await fails('fichier : liste reservee aux membres', `select community_files_list('${cid}')`, /Réservé aux membres/);
+  await as(B);
+  const files = (await q(`select community_files_list('${cid}') r`))[0].r;
+  check('fichier : liste avec titre, type et depose par', files.length === 1 && files[0].title === 'Cours de reseaux' && files[0].kind === 'course' && files[0].uploader.startsWith('Awa'));
+  await fails('fichier : suppression reservee au deposant ou aux responsables', `select community_file_delete('${fid}')`, /non autorisée/);
+  await as(A);
+  check('fichier : le deposant supprime et recupere le chemin a effacer', (await q(`select community_file_delete('${fid}') p`))[0].p === `${cid}/abc-cours.pdf`);
   console.log(`\n${ok}/${ok + ko}`);
 }

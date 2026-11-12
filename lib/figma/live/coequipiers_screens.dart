@@ -66,7 +66,7 @@ final myMateInvitesProvider = FutureProvider.autoDispose.family<List<Map<String,
 /// Texte du bouton d'invitation selon l'état renvoyé par le serveur (aucune invitation, en attente, acceptée, déclinée).
 String mateInviteLabel(Object? status) => switch ('$status') {
       'pending' => 'En attente',
-      'accepted' => 'Dans l’équipe',
+      'accepted' => 'Écrire',
       'declined' => 'Réinviter',
       _ => 'Inviter',
     };
@@ -186,8 +186,8 @@ class _MatesState extends ConsumerState<TeammatesScreen> {
       gToast(context, 'Invitation déjà envoyée : ${m['name']} doit répondre.');
       return;
     }
-    if ('${m['invite']}' == 'accepted') {
-      gToast(context, '${m['name']} est déjà dans votre équipe.');
+    if ('${m['invite']}' == 'accepted' && '${m['invite_id'] ?? ''}'.isNotEmpty) {
+      await openTeammateChat(context, '${m['invite_id']}', '${m['name']}');
       return;
     }
     final msg = TextEditingController();
@@ -465,6 +465,7 @@ class MateInvitesSheet extends ConsumerWidget {
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text('${i['other']} vous invite', style: mst(13.5, w: FontWeight.w700)),
                       if ('${i['message']}'.isNotEmpty) Text('${i['message']}', style: mst(12.5, c: kGrey)),
+                      if ('${i['status']}' == 'accepted') Padding(padding: const EdgeInsets.only(top: 6), child: mButton('Écrire à ${i['other']}', () => openTeammateChat(context, '${i['id']}', '${i['other']}'), icon: Icons.chat_bubble_outline)),
                       if ('${i['status']}' == 'pending')
                         Padding(
                           padding: const EdgeInsets.only(top: 6),
@@ -485,7 +486,7 @@ class MateInvitesSheet extends ConsumerWidget {
             ? Padding(padding: const EdgeInsets.symmetric(vertical: 10), child: Text('Aucune invitation envoyée.', style: mst(13, c: kGrey)))
             : Column(children: [
                 for (final i in rows)
-                  Padding(padding: const EdgeInsets.symmetric(vertical: 6), child: Row(children: [Expanded(child: Text('${i['other']}', style: mst(13.5))), Text(state('${i['status']}'), style: mst(12, w: FontWeight.w700, c: kGrey))])),
+                  Padding(padding: const EdgeInsets.symmetric(vertical: 6), child: Row(children: [Expanded(child: Text('${i['other']}', style: mst(13.5))), if ('${i['status']}' == 'accepted') TextButton(onPressed: () => openTeammateChat(context, '${i['id']}', '${i['other']}'), child: Text('Écrire')) else Text(state('${i['status']}'), style: mst(12, w: FontWeight.w700, c: kGrey))])),
               ])),
       ]),
     );
@@ -560,4 +561,111 @@ class MateCategoriesAdminSheet extends ConsumerWidget {
       ]),
     );
   }
+}
+
+// ------------------------------------------------------------------ messagerie entre coéquipiers
+
+Future<void> openTeammateChat(BuildContext context, String inviteId, String otherName) =>
+    Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => TeammateChatScreen(inviteId: inviteId, otherName: otherName)));
+
+/// Messages échangés entre deux coéquipiers (invitation acceptée). Rafraîchi toutes les 4 secondes tant que l'écran est ouvert.
+class TeammateChatScreen extends ConsumerStatefulWidget {
+  const TeammateChatScreen({super.key, required this.inviteId, required this.otherName});
+  final String inviteId, otherName;
+
+  @override
+  ConsumerState<TeammateChatScreen> createState() => _ChatState();
+}
+
+class _ChatState extends ConsumerState<TeammateChatScreen> {
+  final _text = TextEditingController();
+  final _scroll = ScrollController();
+  List<Map<String, dynamic>> _msgs = const [];
+  String? _error;
+  bool _loading = true, _sending = false;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+    _timer = Timer.periodic(const Duration(seconds: 4), (_) => _load());
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _text.dispose();
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  Future<void> _load() async {
+    final r = await marcheCall('teammate_messages_list', {'p_invite': widget.inviteId});
+    if (!mounted) return;
+    setState(() {
+      _loading = false;
+      if (r.error != null) {
+        _error = Backend.userMessage('${r.error}');
+      } else {
+        _error = null;
+        final next = [for (final x in (r.data as List? ?? const [])) Map<String, dynamic>.from(x as Map)];
+        final grew = next.length != _msgs.length;
+        _msgs = next;
+        if (grew) WidgetsBinding.instance.addPostFrameCallback((_) => _scroll.hasClients ? _scroll.jumpTo(_scroll.position.maxScrollExtent) : null);
+      }
+    });
+  }
+
+  Future<void> _send() async {
+    final t = _text.text.trim();
+    if (t.isEmpty || _sending) return;
+    setState(() => _sending = true);
+    final r = await marcheCall('teammate_message_send', {'p_invite': widget.inviteId, 'p_body': t});
+    if (!mounted) return;
+    setState(() => _sending = false);
+    if (r.error != null) return gToast(context, Backend.userMessage('${r.error}'));
+    _text.clear();
+    await _load();
+  }
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        backgroundColor: const Color(0xFFF7F4FA),
+        appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0, foregroundColor: kInk, title: Text(widget.otherName, maxLines: 1, overflow: TextOverflow.ellipsis, style: mst(17, w: FontWeight.w800))),
+        body: SafeArea(
+          child: Column(children: [
+            Expanded(
+              child: _loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _error != null
+                      ? mNote(_error!)
+                      : _msgs.isEmpty
+                          ? mNote('Aucun message pour le moment.\nPrésentez-vous et organisez votre équipe.')
+                          : ListView(controller: _scroll, padding: const EdgeInsets.all(16), children: [
+                              for (final m in _msgs)
+                                Align(
+                                  alignment: m['mine'] == true ? Alignment.centerRight : Alignment.centerLeft,
+                                  child: Container(
+                                    margin: const EdgeInsets.only(bottom: 8),
+                                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                                    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.78),
+                                    decoration: BoxDecoration(color: m['mine'] == true ? kInk : Colors.white, borderRadius: BorderRadius.circular(18), border: Border.all(color: kLine)),
+                                    child: Text('${m['body']}', style: mst(13.5, c: m['mine'] == true ? Colors.white : kInk).copyWith(height: 1.4)),
+                                  ),
+                                ),
+                            ]),
+            ),
+            Container(
+              color: Colors.white,
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+              child: Row(children: [
+                Expanded(child: TextField(controller: _text, maxLength: 1000, textInputAction: TextInputAction.send, onSubmitted: (_) => _send(), decoration: InputDecoration(hintText: 'Votre message…', counterText: '', filled: true, fillColor: const Color(0xFFF2EFF6), border: OutlineInputBorder(borderRadius: BorderRadius.circular(22), borderSide: BorderSide.none), contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12)))),
+                const SizedBox(width: 8),
+                IconButton(tooltip: 'Envoyer', onPressed: _sending ? null : _send, icon: const Icon(Icons.send_rounded)),
+              ]),
+            ),
+          ]),
+        ),
+      );
 }

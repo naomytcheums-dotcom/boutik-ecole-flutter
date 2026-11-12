@@ -58,12 +58,14 @@ class G_184 extends ConsumerWidget {
       gP(308, 207, 42, 24, GToggle(on: ref.watch(dataPrefsProvider)['low_images'] ?? true, onChanged: (v) => ref.read(dataPrefsProvider.notifier).set('low_images', v), onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
       gP(40, 252, 314, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 264, 256, 17, gText('Téléchargement des vidéos en Wi-Fi u…', 13.5, Color(0xFF111015), weight: 600)),
-      gP(40, 286, 137, 14, gText('Évite les frais de données', 11.5, Color(0xFF57545F))),
+      gP(40, 286, 250, 14, Consumer(builder: (context, ref, _) => gText((ref.watch(dataPrefsProvider)['wifi_video'] ?? true) ? 'Wi-Fi uniquement' : 'Wi-Fi + données mobiles', 11.5, Color(0xFF57545F)))),
       gP(308, 273, 42, 24, GToggle(on: ref.watch(dataPrefsProvider)['wifi_video'] ?? true, onChanged: (v) => ref.read(dataPrefsProvider.notifier).set('wifi_video', v), onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
       gP(40, 318, 314, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 330, 205, 17, gText('Synchronisation en arrière-plan', 13.5, Color(0xFF111015), weight: 600)),
-      gP(40, 352, 114, 14, gText('Uniquement en Wi-Fi', 11.5, Color(0xFF57545F))),
-      gP(308, 339, 42, 24, GToggle(on: ref.watch(dataPrefsProvider)['wifi_sync'] ?? false, onChanged: (v) => ref.read(dataPrefsProvider.notifier).set('wifi_sync', v), onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18)),
+      gP(40, 352, 250, 14, Consumer(builder: (context, ref, _) => gText((ref.watch(dataPrefsProvider)['sync_never'] ?? false) ? 'Jamais' : ((ref.watch(dataPrefsProvider)['wifi_sync'] ?? true) ? 'Wi-Fi uniquement' : 'Toujours'), 11.5, Color(0xFF57545F)))),
+      gP(308, 339, 42, 24, GToggle(on: ref.watch(dataPrefsProvider)['wifi_sync'] ?? true, onChanged: (v) => ref.read(dataPrefsProvider.notifier).set('wifi_sync', v), onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18)),
+      gP(40, 384, 250, 17, gText('Ne jamais synchroniser', 13.5, Color(0xFF111015), weight: 600), show: !demoContent),
+      gP(308, 381, 42, 24, GToggle(on: ref.watch(dataPrefsProvider)['sync_never'] ?? false, onChanged: (v) => ref.read(dataPrefsProvider.notifier).set('sync_never', v), onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18), show: !demoContent),
       gP(40, 412, 106, 18, gText('Consommation', 14, Color(0xFF111015), weight: 700), show: demoContent),
       gP(40, 446, 136, 16, gText('Données utilisées (30 j)', 12.5, Color(0xFF57545F)), show: demoContent),
       gP(308, 446, 42, 16, gText(gm('182 Mo', ''), 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right), show: demoContent),
@@ -76,7 +78,7 @@ class G_184 extends ConsumerWidget {
       gP(41.917, 560, 13.792, 12.375, gImg('assets/figma/v/5a42605c735300.svg'), show: demoContent),
       gP(76, 546, 277, 34, gText('Le mode économie réduit la taille des images et reporte les contenus lourds.', 12, Color(0xFF4A4854), lh: 17, wrap: true), show: demoContent),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
-      if (!demoContent) gP(40, 412, 314, 120, const Text('La consommation de données n’est pas mesurée par l’application. Ces réglages sont mémorisés sur cet appareil.', style: TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 12.5, color: Color(0xFF57545F), height: 1.5))),
+      if (!demoContent) gP(40, 436, 314, 120, const Text('La consommation de données n’est pas mesurée par l’application. Ces réglages sont mémorisés sur cet appareil.', style: TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 12.5, color: Color(0xFF57545F), height: 1.5))),
     ]);
   }
 }

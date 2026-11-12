@@ -5,12 +5,13 @@ import 'package:flutter/widgets.dart';
 import 'gdata_native.dart' if (dart.library.js_interop) 'gdata_web.dart';
 
 /// Économie de données : les quatre réglages de l'écran « Économie de données » agissent réellement.
-///  · Mode économie : images réduites et vidéos jamais lancées toutes seules, quel que soit le réseau.
-///  · Images basse qualité sur réseau mobile : images réduites quand l'appareil est sur données mobiles.
-///  · Vidéos en Wi-Fi uniquement : aucune vidéo ne se charge ni ne démarre seule sur données mobiles (un appui la lance).
-///  · Synchronisation en arrière-plan en Wi-Fi uniquement : les actualisations automatiques sont suspendues sur données mobiles.
+///  · Mode économie (ON/OFF, mémorisé sur l'appareil) : vidéos jamais lancées toutes seules ; images en basse qualité (480 px au plus) sur réseau mobile,
+///    en haute qualité sur Wi-Fi. Désactivé, tout redevient normal.
+///  · Téléchargement des vidéos : « Wi-Fi uniquement » le refuse sur données mobiles (message « Connectez-vous en Wi-Fi pour télécharger »), « Wi-Fi + mobile » l'autorise.
+///  · Synchronisation en arrière-plan : « Wi-Fi uniquement » (suspendue sur données mobiles) ou « Jamais » (aucune actualisation automatique) ;
+///    la connexion est revérifiée avant chaque synchronisation.
 class GData {
-  static bool saver = true, lowImages = true, wifiVideo = true, wifiSync = false;
+  static bool saver = true, lowImages = true, wifiVideo = true, wifiSync = true, syncNever = false;
   static bool cellular = false;
   static Timer? _poll;
 
@@ -20,9 +21,24 @@ class GData {
     isCellularNetwork().then((v) => cellular = v);
   }
 
-  static bool get reduceImages => saver || (lowImages && cellular);
+  static bool get reduceImages => saver && lowImages && cellular;
   static bool get blockVideo => saver || (wifiVideo && cellular);
-  static bool get blockSync => wifiSync && cellular;
+
+  /// Téléchargement de vidéo refusé : « Wi-Fi uniquement » choisi et appareil sur données mobiles.
+  static bool get blockDownload => wifiVideo && cellular;
+  static bool get blockSync => syncNever || (wifiSync && cellular);
+
+  /// Revérifie le réseau maintenant (avant un téléchargement ou une synchronisation).
+  static Future<void> refreshNetwork() async {
+    cellular = await isCellularNetwork();
+  }
+
+  /// Synchronisation autorisée ? Revérifie la connexion à chaque appel : « Jamais » refuse toujours, « Wi-Fi uniquement » refuse sur données mobiles.
+  static Future<bool> syncAllowed() async {
+    if (syncNever) return false;
+    await refreshNetwork();
+    return !blockSync;
+  }
 
   /// Largeur maximale de décodage des images quand elles sont réduites.
   static int? get imageWidth => reduceImages ? 480 : null;

@@ -115,7 +115,8 @@ class _BoutikEcoleAppState extends ConsumerState<BoutikEcoleApp> {
     GData.saver = dp['data_saver'] ?? true;
     GData.lowImages = dp['low_images'] ?? true;
     GData.wifiVideo = dp['wifi_video'] ?? true;
-    GData.wifiSync = dp['wifi_sync'] ?? false;
+    GData.wifiSync = dp['wifi_sync'] ?? true;
+    GData.syncNever = dp['sync_never'] ?? false;
     // « Réduire les animations » : n'agit que sur un changement de réglage (les animations par défaut restent inchangées).
     if (accMotion != GAccess.motionReduced) {
       GAccess.motionReduced = accMotion;

@@ -60,9 +60,9 @@ final notifsProvider = NotifierProvider<Notifs, List<NotificationItem>>(Notifs.n
 final unreadProvider = FutureProvider<({int notifications, int messages})>((ref) async {
   ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
   // Mise à jour automatique : le chiffre suit les nouvelles notifications sans recharger la page.
-  final t = Timer(const Duration(seconds: 25), () {
-    // « Synchronisation en Wi-Fi uniquement » : pas d'actualisation automatique sur données mobiles
-    if (!GData.blockSync) ref.invalidateSelf();
+  final t = Timer(const Duration(seconds: 25), () async {
+    // « Wi-Fi uniquement » : pas d'actualisation automatique sur données mobiles ; « Jamais » : aucune. Le réseau est revérifié avant chaque actualisation.
+    if (await GData.syncAllowed() && ref.mounted) ref.invalidateSelf();
   });
   ref.onDispose(t.cancel);
   return Backend.unreadCounts();

@@ -15,6 +15,7 @@ import '../nav.dart';
 import 'auth.dart';
 import 'backend.dart';
 import 'dictation_stub.dart' if (dart.library.js_interop) 'dictation_web.dart';
+import 'download_stub.dart' if (dart.library.js_interop) 'download_web.dart' show saveRemoteFile;
 import 'reels.dart';
 import 'share.dart';
 import 'store.dart' show nowProvider;
@@ -726,6 +727,21 @@ Future<void> repostPost(BuildContext context, WidgetRef ref, Reel r) async {
   if (context.mounted) gToast(context, st == 'published' ? 'Publication republiée' : 'Republication envoyée : visible après validation');
 }
 
+/// Télécharge la vidéo d'une publication. Le réglage « Téléchargement des vidéos » de l'écran Économie de données décide : en « Wi-Fi uniquement » sur données mobiles,
+/// le téléchargement est refusé avec le message « Connectez-vous en Wi-Fi pour télécharger » ; en « Wi-Fi + mobile » il est autorisé. Le réseau est revérifié à chaque fois.
+Future<void> downloadReelVideo(BuildContext context, Reel r) async {
+  await GData.refreshNetwork();
+  if (!context.mounted) return;
+  if (GData.blockDownload) {
+    gToast(context, 'Connectez-vous en Wi-Fi pour télécharger');
+    return;
+  }
+  gToast(context, 'Téléchargement de la vidéo…');
+  final ok = await saveRemoteFile(r.mediaUrl, 'boutik-ecole-${r.id}.mp4');
+  if (!context.mounted) return;
+  gToast(context, ok ? 'Vidéo téléchargée' : 'Téléchargement impossible pour le moment');
+}
+
 /// Menu à trois points d'une publication.
 Future<void> showPostMenu(BuildContext context, WidgetRef ref, Reel r) {
   Widget item(BuildContext ctx, IconData icon, String label, FutureOr<void> Function() run, {Color color = kInk}) => ListTile(
@@ -749,6 +765,7 @@ Future<void> showPostMenu(BuildContext context, WidgetRef ref, Reel r) {
         const SizedBox(height: 4),
         item(ctx, r.saved ? Icons.bookmark : Icons.bookmark_border, r.saved ? 'Retirer des enregistrements' : 'Enregistrer', () => toggleSavePost(context, ref, r)),
         item(ctx, Icons.repeat, 'Republier', () => repostPost(context, ref, r)),
+        if (r.video) item(ctx, Icons.download_outlined, 'Télécharger la vidéo', () => downloadReelVideo(context, r)),
         if (r.video) item(ctx, Icons.splitscreen_outlined, 'Faire un duo', () => createRemix(context, ref, r, 'duet')),
         if (r.video) item(ctx, Icons.auto_awesome_motion_outlined, 'Faire un remix', () => createRemix(context, ref, r, 'remix')),
         item(ctx, Icons.ios_share, 'Partager', () => sharePost(context, ref, r)),

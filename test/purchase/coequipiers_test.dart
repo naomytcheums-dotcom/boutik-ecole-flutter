@@ -25,7 +25,7 @@ void main() {
   test('libellés : invitation et compteur', () {
     expect(mateInviteLabel(null), 'Inviter');
     expect(mateInviteLabel('pending'), 'En attente');
-    expect(mateInviteLabel('accepted'), 'Dans l’équipe');
+    expect(mateInviteLabel('accepted'), 'Écrire');
     expect(mateInviteLabel('declined'), 'Réinviter');
     expect(mateCountLabel(0), 'Aucun talent trouvé');
     expect(mateCountLabel(1), '1 talent disponible');
@@ -143,6 +143,13 @@ void main() {
     expect(find.text('Refuser'), findsOneWidget);
     expect(find.text('Déclinée'), findsOneWidget);
     expect(find.text('Boris E.'), findsOneWidget);
-    expect(find.text('Acceptée'), findsOneWidget);
+    expect(find.text('Écrire'), findsOneWidget, reason: 'invitation acceptée : on peut écrire');
+  });
+
+  testWidgets('messagerie : écran de conversation avec champ de saisie et envoi', (t) async {
+    await _pump(t, const TeammateChatScreen(inviteId: 'i1', otherName: 'Boris E.'));
+    expect(find.text('Boris E.'), findsOneWidget);
+    expect(find.byTooltip('Envoyer'), findsOneWidget);
+    expect(find.byType(TextField), findsOneWidget);
   });
 }

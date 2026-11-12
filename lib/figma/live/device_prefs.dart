@@ -30,7 +30,7 @@ class DevicePrefs extends Notifier<Map<String, bool>> {
   }
 }
 
-const dataPrefsDefaults = {'data_saver': true, 'low_images': true, 'wifi_video': true, 'wifi_sync': false};
+const dataPrefsDefaults = {'data_saver': true, 'low_images': true, 'wifi_video': true, 'wifi_sync': true, 'sync_never': false};
 const accessPrefsDefaults = {'large_text': false, 'contrast': false, 'reduce_motion': false, 'screen_reader': false};
 final dataPrefsProvider = NotifierProvider<DevicePrefs, Map<String, bool>>(() => DevicePrefs(dataPrefsDefaults));
 final accessPrefsProvider = NotifierProvider<DevicePrefs, Map<String, bool>>(() => DevicePrefs(accessPrefsDefaults));

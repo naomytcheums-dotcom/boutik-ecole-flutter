@@ -51,12 +51,13 @@ void main() {
 
   testWidgets('184 : un interrupteur change et est mémorisé sur l’appareil', (t) async {
     final c = await monter(t, const G_184(), connecte: false);
-    expect(c.read(dataPrefsProvider)['wifi_sync'], false);
-    await c.read(dataPrefsProvider.notifier).set('wifi_sync', true);
+    expect(c.read(dataPrefsProvider)['wifi_sync'], true, reason: 'par défaut : Wi-Fi uniquement');
+    expect(c.read(dataPrefsProvider)['sync_never'], false);
+    await c.read(dataPrefsProvider.notifier).set('sync_never', true);
     await t.pumpAndSettle();
-    expect(c.read(dataPrefsProvider)['wifi_sync'], true);
+    expect(c.read(dataPrefsProvider)['sync_never'], true);
     final p = await SharedPreferences.getInstance();
-    expect(p.getBool('dev_wifi_sync'), true);
+    expect(p.getBool('dev_sync_never'), true, reason: 'choix « Jamais » mémorisé sur l’appareil');
   });
 
   testWidgets('184 connecté : plus de consommation inventée', (t) async {

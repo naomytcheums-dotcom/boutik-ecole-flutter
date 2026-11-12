@@ -1,5 +1,6 @@
 import 'community_exchanges.dart';
 import 'community_media.dart';
+import 'study_rooms.dart' show StudyRoomsTab;
 import 'innovations_screens.dart' show LevelBadge, communityLevelsProvider;
 import 'community_styles.dart';
 import 'package:flutter/material.dart' hide Text;
@@ -410,7 +411,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
   Widget _card(Widget child) => Container(padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18), border: Border.all(color: _line)), child: child);
 
   Widget _tabs() {
-    const names = ['Publications', 'Chat', 'Questions', 'Événements', 'Fichiers', 'Membres', 'Mentors'];
+    const names = ['Publications', 'Chat', 'Questions', 'Événements', 'Fichiers', 'Membres', 'Mentors', 'Salons vocaux'];
     return SizedBox(
       height: 48,
       child: ListView(scrollDirection: Axis.horizontal, padding: const EdgeInsets.symmetric(horizontal: 16), children: [
@@ -516,6 +517,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
       4 => CommunityFilesTab(key: ValueKey('files-${c.id}-${c.isMember}'), communityId: c.id, isMember: c.isMember),
       5 => _members(c, mentorsOnly: false),
       6 => _members(c, mentorsOnly: true),
+      7 => StudyRoomsTab(key: ValueKey('rooms-${c.id}-${c.isMember}'), communityId: c.id, isMember: c.isMember),
       _ => _posts(c, feed),
     };
     return DecoratedBox(decoration: tpBackground, child: TpFrame(child: Scaffold(backgroundColor: Colors.transparent, 

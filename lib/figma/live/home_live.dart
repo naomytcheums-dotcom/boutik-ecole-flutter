@@ -5,6 +5,7 @@ import 'package:video_player/video_player.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../nav.dart';
+import 'auth.dart' show authProvider;
 import 'backend.dart';
 import 'seller.dart' show allProductsProvider;
 import 'store.dart';
@@ -294,7 +295,9 @@ class CommunityMembers extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final list = ref.watch(liveTalentsProvider);
+    final me = ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
+    final all = ref.watch(liveTalentsProvider);
+    final list = all == null ? null : [for (final t in all) if (t.id != me) t]; // son propre profil n'est jamais proposé comme un autre membre
     final failed = ref.read(liveTalentsProvider.notifier).error;
     Widget note(String t) => Container(
           width: width,

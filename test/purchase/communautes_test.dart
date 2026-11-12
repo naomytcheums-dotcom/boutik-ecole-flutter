@@ -65,7 +65,7 @@ void main() {
   testWidgets('103 connecté : les communautés viennent du serveur, aucun nom ni chiffre de maquette', (t) async {
     await monter(t, [communitiesProvider.overrideWith(() => _Liste(const [_publique, _approbation, _membre]))]);
     expect(find.text('Développeurs du Cameroun'), findsOneWidget);
-    expect(find.text('12 membres · Publique'), findsOneWidget);
+    expect(find.textContaining('12 membres · Publique'), findsOneWidget);
     expect(find.text('Rejoindre'), findsOneWidget);
     expect(find.text('Demande envoyée'), findsOneWidget);
     expect(find.text('Membre'), findsOneWidget);

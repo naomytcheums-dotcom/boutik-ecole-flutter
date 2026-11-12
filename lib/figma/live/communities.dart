@@ -15,8 +15,16 @@ export 'communities_screens.dart';
 /// Les permissions (rôles, bannissement, modération) sont vérifiées par le serveur ; ce module ne fait que les appeler.
 
 class Community {
-  const Community({required this.id, required this.name, required this.description, required this.category, required this.privacy, required this.members, this.myStatus, this.myRole, this.status = 'active', this.department = '', this.decisionNote = ''});
+  const Community({required this.id, required this.name, required this.description, required this.category, required this.privacy, required this.members, this.myStatus, this.myRole, this.status = 'active', this.department = '', this.decisionNote = '', this.kind = 'interest', this.promoYear = '', this.interest = '', this.official = false, this.createdAt, this.lastActivity, this.postsWeek = 0, this.ownerKind = ''});
   final String id, name, description, category, privacy;
+
+  /// Type : filiere, promo, interest (centre d'intérêt), alumni ou project ; promotion et centre d'intérêt selon le type.
+  final String kind, promoYear, interest, ownerKind;
+
+  /// Badge « Officiel IUT » posé par l'équipe.
+  final bool official;
+  final DateTime? createdAt, lastActivity;
+  final int postsWeek;
 
   /// Validation par l'équipe : pending (en attente), active (publiée), rejected (refusée), suspended.
   final String status, department, decisionNote;
@@ -42,6 +50,14 @@ class Community {
         status: '${x['status'] ?? 'active'}',
         department: '${x['department'] ?? ''}',
         decisionNote: '${x['decision_note'] ?? ''}',
+        kind: '${x['kind'] ?? 'interest'}',
+        promoYear: '${x['promo_year'] ?? ''}',
+        interest: '${x['interest'] ?? ''}',
+        official: x['official'] == true,
+        createdAt: DateTime.tryParse('${x['created_at']}')?.toLocal(),
+        lastActivity: DateTime.tryParse('${x['last_activity']}')?.toLocal(),
+        postsWeek: (x['posts_week'] as num?)?.toInt() ?? 0,
+        ownerKind: '${x['owner_kind'] ?? ''}',
       );
 
   /// Libellé du bouton d'action selon l'état et la confidentialité.
@@ -60,6 +76,99 @@ class Community {
       };
 
   String get membersLabel => members <= 1 ? '$members membre' : '$members membres';
+
+  String get kindLabel => switch (kind) {
+        'filiere' => 'Filière',
+        'promo' => promoYear.isEmpty ? 'Promo' : promoYear,
+        'alumni' => 'Alumni',
+        'project' => 'Projet',
+        _ => interest.isEmpty ? 'Centre d’intérêt' : interest,
+      };
+
+  /// Qui administre : un étudiant, un enseignant ou l'équipe.
+  String get adminLabel => switch (ownerKind) {
+        'teacher' => 'Enseignant',
+        'student' => 'Étudiant',
+        _ => 'Équipe',
+      };
+
+  /// Badges : Officiel IUT, Populaire (50 membres ou 10 publications cette semaine), Nouveau (moins de 14 jours).
+  List<String> badges(DateTime now) => [
+        if (official) 'Officiel IUT',
+        if (members >= 50 || postsWeek >= 10) 'Populaire',
+        if (createdAt != null && now.difference(createdAt!).inDays < 14) 'Nouveau',
+      ];
+
+  /// « Dernière publication il y a 5 min » ; « Aucune publication » sans activité.
+  String activityLabel(DateTime now) {
+    final t = lastActivity;
+    if (t == null) return 'Aucune publication';
+    final d = now.difference(t);
+    if (d.inMinutes < 1) return 'Dernière publication à l’instant';
+    if (d.inMinutes < 60) return 'Dernière publication il y a ${d.inMinutes} min';
+    if (d.inHours < 24) return 'Dernière publication il y a ${d.inHours} h';
+    return 'Dernière publication il y a ${d.inDays} j';
+  }
+}
+
+/// Carte d'une communauté avant d'y entrer : nom, type, membres, confidentialité, responsable, dernière activité et badges.
+class CommunityCard extends StatelessWidget {
+  const CommunityCard({super.key, required this.c, this.onOpen, this.onJoin, this.now});
+  final Community c;
+  final VoidCallback? onOpen;
+  final VoidCallback? onJoin;
+  final DateTime? now;
+
+  @override
+  Widget build(BuildContext context) {
+    const grey = Color(0xFF57545F);
+    final t = now ?? DateTime.now();
+    final canJoin = c.status == 'active' && !c.isMember && c.myStatus != 'pending' && c.myStatus != 'banned';
+    final own = c.isPending || c.isRejected;
+    Widget pill(String s, {Color bg = const Color(0xFFEEE9FF), Color fg = const Color(0xFF5A3FE0)}) => Container(
+          margin: const EdgeInsets.only(left: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+          decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(4)),
+          child: Text(s, style: TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 9.5, fontWeight: FontWeight.w700, color: fg)),
+        );
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onOpen,
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(color: const Color(0xFFF1EEFB), borderRadius: BorderRadius.circular(13)),
+          alignment: Alignment.center,
+          child: Text(c.name.characters.first.toUpperCase(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Color(0xFF5A3FE0))),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+            Row(children: [
+              Flexible(child: gText(c.name, 13.5, const Color(0xFF111015), weight: 700, wrap: true, maxLines: 1)),
+              for (final b in c.badges(t)) pill(b, bg: b == 'Officiel IUT' ? const Color(0xFF0F2E4E) : (b == 'Nouveau' ? const Color(0xFFDDF5EC) : const Color(0xFFFFF0D6)), fg: b == 'Officiel IUT' ? Colors.white : (b == 'Nouveau' ? const Color(0xFF0F7A52) : const Color(0xFF8F5400))),
+            ]),
+            const SizedBox(height: 2),
+            gText(c.isPending ? 'En attente de validation' : (c.isRejected ? 'Refusée par l’administrateur' : [c.kindLabel, c.membersLabel, c.privacyLabel].join(' · ')), 10.5, c.isRejected ? const Color(0xFFB42318) : grey, wrap: true, maxLines: 1),
+            if (!own) gText('Administrateur : ${c.adminLabel} · ${c.activityLabel(t)}', 10, grey, wrap: true, maxLines: 1),
+            if (c.description.isNotEmpty && !own) gText(c.description, 10.5, const Color(0xFF111015), wrap: true, maxLines: 1),
+          ]),
+        ),
+        const SizedBox(width: 8),
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: canJoin ? onJoin : null,
+          child: Container(
+            margin: const EdgeInsets.only(top: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            decoration: BoxDecoration(color: canJoin ? const Color(0xFF111015) : const Color(0xFFEEE9FF), borderRadius: BorderRadius.circular(100)),
+            child: gText(own ? (c.isPending ? 'En attente' : 'Refusée') : c.actionLabel, 10.5, canJoin ? Colors.white : const Color(0xFF5A3FE0), weight: 600, wrap: true),
+          ),
+        ),
+      ]),
+    );
+  }
 }
 
 /// `null` : lecture en cours ou serveur absent ; liste vide : aucune communauté.
@@ -162,45 +271,17 @@ class CommunitiesList extends ConsumerWidget {
       child: ListView.separated(
         padding: EdgeInsets.zero,
         itemCount: list.length,
-        separatorBuilder: (_, _) => const Divider(height: 14, thickness: 1, color: Color(0xFFF2EFF6)),
+        separatorBuilder: (_, _) => const Divider(height: 16, thickness: 1, color: Color(0xFFF2EFF6)),
         itemBuilder: (_, i) {
           final c = list[i];
-          final canJoin = c.status == 'active' && !c.isMember && c.myStatus != 'pending' && c.myStatus != 'banned';
-          final own = c.isPending || c.isRejected;
-          return Row(children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(color: const Color(0xFFF1EEFB), borderRadius: BorderRadius.circular(13)),
-              alignment: Alignment.center,
-              child: Text(c.name.characters.first.toUpperCase(), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Color(0xFF5A3FE0))),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  ref.read(selectedCommunityProvider.notifier).select(c);
-                  GoRouter.of(context).push('/communaute');
-                },
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-                  gText(c.name, 13.5, const Color(0xFF111015), weight: 600, wrap: true, maxLines: 1),
-                  const SizedBox(height: 2),
-                  gText(c.isPending ? 'En attente de validation' : (c.isRejected ? 'Refusée par l’administrateur' : [c.membersLabel, c.privacyLabel, if (c.department.isNotEmpty) c.department].join(' · ')), 10.5, c.isRejected ? const Color(0xFFB42318) : grey, wrap: true, maxLines: 1),
-                ]),
-              ),
-            ),
-            const SizedBox(width: 8),
-            GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: canJoin ? () => joinCommunity(context, ref, c) : null,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(color: canJoin ? const Color(0xFF111015) : const Color(0xFFEEE9FF), borderRadius: BorderRadius.circular(100)),
-                child: gText(own ? (c.isPending ? 'En attente' : 'Refusée') : c.actionLabel, 10.5, canJoin ? Colors.white : const Color(0xFF5A3FE0), weight: 600, wrap: true),
-              ),
-            ),
-          ]);
+          return CommunityCard(
+            c: c,
+            onOpen: () {
+              ref.read(selectedCommunityProvider.notifier).select(c);
+              GoRouter.of(context).push('/communaute');
+            },
+            onJoin: () => joinCommunity(context, ref, c),
+          );
         },
       ),
         ),

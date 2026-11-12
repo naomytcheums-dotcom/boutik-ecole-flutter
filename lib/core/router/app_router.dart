@@ -20,6 +20,7 @@ import 'screen_entry.dart';
 import '../../figma/live/paiement_messagerie.dart';
 import '../../figma/live/premium_pub.dart';
 import '../../figma/live/communities.dart' show CommunityScreen;
+import '../../figma/live/community_explore.dart';
 import '../../figma/live/marche/marche_appels.dart';
 import '../../figma/live/marche/marche_compare.dart';
 import '../../figma/live/marche/marche_livraison.dart';
@@ -53,6 +54,7 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/marche', builder: (_, _) => const MarketplaceScreen()),
     GoRoute(path: '/marche/livraison', builder: (_, state) => LivraisonTarifsScreen(platform: state.uri.queryParameters['plateforme'] == '1')),
     GoRoute(path: '/marche/promotions', builder: (_, _) => const PromotionsAdminScreen()),
+    GoRoute(path: '/communautes', builder: (_, _) => const CommunityExploreScreen()),
     GoRoute(path: '/marche/appels', builder: (_, _) => const AppelsScreen()),
     GoRoute(path: '/marche/projets', builder: (_, _) => const ProjetsIutScreen()),
     GoRoute(path: '/marche/boutique/:slug', builder: (_, state) => ShopPageScreen(slug: state.pathParameters['slug'] ?? '')),

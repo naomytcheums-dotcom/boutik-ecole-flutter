@@ -43,9 +43,12 @@ void main() {
     await monter(t, const CommunityCreateScreen(), [
       communityDepartmentsProvider.overrideWith((ref) async => const [DepartmentOption('d1', 'Génie logiciel', 'IUT Douala')]),
     ]);
+    t.view.physicalSize = const Size(400, 3200); // le formulaire est plus long avec le type de communauté
+    await t.pumpAndSettle();
     expect(find.text('0 / 500 mots'), findsOneWidget);
     expect(find.textContaining('validation'), findsWidgets);
-    final desc = find.byType(TextField).at(1);
+    final desc = find.byWidgetPredicate((w) => w is TextField && (w.decoration?.hintText ?? '').startsWith('À quoi sert'));
+    await t.ensureVisible(desc);
     await t.enterText(desc, List.filled(501, 'mot').join(' '));
     await t.pump();
     expect(find.text('501 / 500 mots'), findsOneWidget);

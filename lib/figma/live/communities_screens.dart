@@ -1,3 +1,4 @@
+import 'community_styles.dart';
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'tp_ui.dart' show tpBackground, GlassBack, TpFrame;
@@ -78,6 +79,10 @@ class _CommunityCreateState extends ConsumerState<CommunityCreateScreen> {
   final _name = TextEditingController();
   final _desc = TextEditingController();
   String _privacy = 'public';
+  String _kind = 'interest';
+  String _promo = '';
+  final _interest = TextEditingController();
+  final _promoText = TextEditingController();
   String? _department;
   String _error = '';
   bool _busy = false;
@@ -86,11 +91,16 @@ class _CommunityCreateState extends ConsumerState<CommunityCreateScreen> {
   void dispose() {
     _name.dispose();
     _desc.dispose();
+    _interest.dispose();
+    _promoText.dispose();
     super.dispose();
   }
 
   Future<void> _submit() async {
     final name = _name.text.trim();
+    if (_kind == 'filiere' && _department == null) return setState(() => _error = 'Choisissez la filière.');
+    if (_kind == 'promo' && _promo.isEmpty && _promoText.text.trim().isEmpty) return setState(() => _error = 'Indiquez la promotion.');
+    if (_kind == 'interest' && _interest.text.trim().isEmpty) return setState(() => _error = 'Indiquez le centre d’intérêt.');
     if (name.length < 3 || name.length > 60) return setState(() => _error = 'Le nom doit contenir entre 3 et 60 caractères.');
     final words = wordCount(_desc.text);
     if (words > kCommunityMaxWords) return setState(() => _error = 'La description ne doit pas dépasser $kCommunityMaxWords mots ($words saisis).');
@@ -98,7 +108,8 @@ class _CommunityCreateState extends ConsumerState<CommunityCreateScreen> {
       _busy = true;
       _error = '';
     });
-    final r = await Backend.rpc('create_community', {'p_name': name, 'p_description': _desc.text.trim(), 'p_category': '', 'p_privacy': _privacy, 'p_rules': '', 'p_department': _department});
+    final promo = _promo.isNotEmpty ? _promo : _promoText.text.trim();
+    final r = await Backend.rpc('create_community', {'p_name': name, 'p_description': _desc.text.trim(), 'p_category': '', 'p_privacy': _privacy, 'p_rules': '', 'p_department': _department, 'p_kind': _kind, 'p_promo': _kind == 'promo' ? promo : null, 'p_interest': _kind == 'interest' ? _interest.text.trim() : null});
     if (!mounted) return;
     if (r.error != null) {
       setState(() {
@@ -146,7 +157,44 @@ class _CommunityCreateState extends ConsumerState<CommunityCreateScreen> {
           ),
           label('Nom de la communauté'),
           TextField(controller: _name, maxLength: 60, decoration: deco('Développeurs du Cameroun').copyWith(counterText: '')),
-          label('Département (facultatif)'),
+          label('Type de communauté'),
+          Wrap(spacing: 8, runSpacing: 8, children: [
+            for (final (k, t) in const [('filiere', 'Par filière'), ('promo', 'Par promo'), ('interest', 'Par centre d’intérêt'), ('alumni', 'Alumni (anciens)'), ('project', 'Par projet')])
+              GestureDetector(
+                onTap: () => setState(() => _kind = k),
+                child: Container(padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10), decoration: BoxDecoration(color: _kind == k ? _ink : Colors.white, borderRadius: BorderRadius.circular(8), border: Border.all(color: _kind == k ? _ink : _line)), child: Text(t, style: _st(12.5, w: FontWeight.w600, c: _kind == k ? Colors.white : _ink))),
+              ),
+          ]),
+          Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: Text(switch (_kind) {
+              'filiere' => 'Génie Info, Génie Électrique, Génie Civil, Agroalimentaire…',
+              'promo' => 'Retrouvez votre classe : Promo 2024, Promo 2025, Promo 2026…',
+              'alumni' => 'Les anciens qui travaillent déjà et peuvent aider.',
+              'project' => 'Ceux qui travaillent sur le même projet.',
+              _ => 'Dev Flutter, Design, Entrepreneuriat, Musique, Sport, IA…',
+            }, style: _st(12, c: _grey)),
+          ),
+          if (_kind == 'promo') ...[
+            label('Promotion'),
+            Wrap(spacing: 8, runSpacing: 8, children: [
+              for (final y in [for (var i = 0; i < 4; i++) 'Promo ${DateTime.now().year - 1 + i}'])
+                GestureDetector(
+                  onTap: () => setState(() {
+                    _promo = y;
+                    _promoText.clear();
+                  }),
+                  child: Container(padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10), decoration: BoxDecoration(color: _promo == y ? _ink : Colors.white, borderRadius: BorderRadius.circular(8), border: Border.all(color: _promo == y ? _ink : _line)), child: Text(y, style: _st(12.5, w: FontWeight.w600, c: _promo == y ? Colors.white : _ink))),
+                ),
+            ]),
+            const SizedBox(height: 8),
+            TextField(controller: _promoText, onChanged: (_) => setState(() => _promo = ''), decoration: deco('Ou une autre promotion')),
+          ],
+          if (_kind == 'interest') ...[
+            label('Centre d’intérêt'),
+            TextField(controller: _interest, maxLength: 60, decoration: deco('Ex. Dev Flutter, Design, Sport').copyWith(counterText: '')),
+          ],
+          label(_kind == 'filiere' ? 'Filière' : 'Département (facultatif)'),
           deps.when(
             loading: () => Text('Chargement des départements…', style: _st(12.5, c: _grey)),
             error: (_, _) => Text('Les départements ne peuvent pas être chargés pour le moment.', style: _st(12.5, c: const Color(0xFFB42318))),
@@ -236,6 +284,8 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
   final _text = TextEditingController();
   bool _busy = false;
   int _tab = 0;
+  String? _style;
+  bool _compose = false;
 
   @override
   void dispose() {
@@ -247,7 +297,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
     final c = ref.read(selectedCommunityProvider);
     if (c == null) return;
     setState(() => _busy = true);
-    final r = await Backend.rpc('create_community_post', {'p_community': c.id, 'p_body': _text.text});
+    final r = await Backend.rpc('create_community_post', {'p_community': c.id, 'p_body': _text.text, 'p_style': _style});
     if (!mounted) return;
     setState(() => _busy = false);
     if (r.error != null) {
@@ -255,6 +305,62 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
       return;
     }
     _text.clear();
+    setState(() {
+      _style = null;
+      _compose = false;
+    });
+    await ref.read(communityFeedProvider.notifier).refresh();
+  }
+
+  Future<void> _newPoll(Community c) async {
+    final q = TextEditingController();
+    final opts = [TextEditingController(), TextEditingController()];
+    String? style;
+    final ok = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(12))),
+      builder: (sheet) => StatefulBuilder(
+        builder: (sheet, set) => Padding(
+          padding: EdgeInsets.fromLTRB(20, 20, 20, 20 + MediaQuery.of(sheet).viewInsets.bottom),
+          child: SingleChildScrollView(
+            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text('Nouveau sondage', style: _st(18, w: FontWeight.w800)),
+              const SizedBox(height: 12),
+              TextField(controller: q, maxLength: 280, decoration: InputDecoration(labelText: 'Question', counterText: '', border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)))),
+              const SizedBox(height: 8),
+              for (var i = 0; i < opts.length; i++) Padding(padding: const EdgeInsets.only(bottom: 8), child: TextField(controller: opts[i], maxLength: 80, decoration: InputDecoration(labelText: 'Réponse ${i + 1}', counterText: '', border: OutlineInputBorder(borderRadius: BorderRadius.circular(8))))),
+              if (opts.length < 6) TextButton.icon(onPressed: () => set(() => opts.add(TextEditingController())), icon: const Icon(Icons.add), label: const Text('Ajouter une réponse')),
+              Text('Fond (facultatif)', style: _st(12.5, w: FontWeight.w700)),
+              StylePicker(value: style, onChanged: (v) => set(() => style = v)),
+              const SizedBox(height: 8),
+              if (q.text.trim().isNotEmpty || style != null) PollView(question: q.text.trim().isEmpty ? 'Votre question' : q.text.trim(), poll: {'options': [for (final o in opts) {'label': o.text.trim().isEmpty ? '…' : o.text.trim(), 'votes': 0}], 'total': 0, 'mine': null}, onVote: (_) {}, style: postStyleOf(style)),
+              const SizedBox(height: 12),
+              _button('Publier le sondage', () => Navigator.pop(sheet, true)),
+            ]),
+          ),
+        ),
+      ),
+    );
+    if (ok != true || !mounted) return;
+    final r = await Backend.rpc('create_community_poll', {'p_community': c.id, 'p_question': q.text, 'p_options': [for (final o in opts) if (o.text.trim().isNotEmpty) o.text.trim()], 'p_style': style});
+    if (!mounted) return;
+    if (r.error != null) return gToast(context, Backend.userMessage(r.error!));
+    await ref.read(communityFeedProvider.notifier).refresh();
+  }
+
+  Future<void> _vote(Map<String, dynamic> p, int option) async {
+    final r = await Backend.rpc('vote_community_poll', {'p_post': p['id'], 'p_option': option});
+    if (!mounted) return;
+    if (r.error != null) return gToast(context, Backend.userMessage(r.error!));
+    await ref.read(communityFeedProvider.notifier).refresh();
+  }
+
+  Future<void> _pin(Map<String, dynamic> p) async {
+    final r = await Backend.rpc('pin_community_post', {'p_post': p['id'], 'p_pin': p['pinned'] != true});
+    if (!mounted) return;
+    if (r.error != null) return gToast(context, Backend.userMessage(r.error!));
     await ref.read(communityFeedProvider.notifier).refresh();
   }
 
@@ -320,7 +426,8 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
       child: _card(Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(c.name, style: _st(19, w: FontWeight.w800)),
         const SizedBox(height: 4),
-        Text([c.membersLabel, c.privacyLabel, if (c.department.isNotEmpty) c.department].join(' · '), style: _st(12, c: _grey)),
+        Text([c.kindLabel, c.membersLabel, c.privacyLabel, if (c.department.isNotEmpty) c.department].join(' · '), style: _st(12, c: _grey)),
+        if (c.badges(DateTime.now()).isNotEmpty) Padding(padding: const EdgeInsets.only(top: 6), child: Wrap(spacing: 6, children: [for (final b in c.badges(DateTime.now())) Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3), decoration: BoxDecoration(color: b == 'Officiel IUT' ? const Color(0xFF0F2E4E) : const Color(0xFFFFF0D6), borderRadius: BorderRadius.circular(4)), child: Text(b, style: _st(10.5, w: FontWeight.w700, c: b == 'Officiel IUT' ? Colors.white : const Color(0xFF8F5400))))])),
         if (c.description.isNotEmpty) ...[const SizedBox(height: 10), Text(c.description, style: _st(13.5, c: _ink).copyWith(height: 1.5))],
         if (c.isPending) Padding(padding: const EdgeInsets.only(top: 10), child: Text('En attente de validation par l’administrateur.', style: _st(12.5, w: FontWeight.w700, c: const Color(0xFFB45309)))),
         if (c.isRejected) Padding(padding: const EdgeInsets.only(top: 10), child: Text('Refusée${c.decisionNote.isEmpty ? '' : ' : ${c.decisionNote}'}', style: _st(12.5, w: FontWeight.w700, c: const Color(0xFFB42318)))),
@@ -342,13 +449,19 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
       separatorBuilder: (_, _) => const SizedBox(height: 12),
       itemBuilder: (_, i) {
         final p = feed[i];
+        final pinned = p['pinned'] == true;
         return _card(Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
-            Expanded(child: Text('${p['author']}', style: _st(13.5, w: FontWeight.w700))),
+            if (pinned) const Padding(padding: EdgeInsets.only(right: 6), child: Icon(Icons.push_pin, size: 15, color: Color(0xFF8F5400))),
+            Expanded(child: Text('${p['author']}${pinned ? ' · annonce épinglée' : ''}', style: _st(13.5, w: FontWeight.w700))),
+            if (c.canManage) GestureDetector(onTap: () => _pin(p), child: Padding(padding: const EdgeInsets.all(4), child: Text(pinned ? 'Retirer' : 'Épingler', style: _st(12, w: FontWeight.w600, c: _grey)))),
             if (c.canManage) GestureDetector(onTap: () => _hide(p), child: Padding(padding: const EdgeInsets.all(4), child: Text('Masquer', style: _st(12, w: FontWeight.w600, c: _grey)))),
           ]),
           const SizedBox(height: 6),
-          Text('${p['body']}', style: _st(14).copyWith(height: 1.5)),
+          if ('${p['kind']}' == 'poll' && p['poll'] is Map)
+            PollView(question: '${p['body']}', poll: Map<String, dynamic>.from(p['poll'] as Map), onVote: (o) => _vote(p, o), style: postStyleOf(p['style']))
+          else
+            StyledPostText('${p['body']}', style: postStyleOf(p['style'])),
         ]));
       },
     );
@@ -406,10 +519,19 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                 ? Container(
                     color: Colors.white,
                     padding: const EdgeInsets.fromLTRB(12, 10, 12, 14),
-                    child: Row(children: [
-                      Expanded(child: TextField(controller: _text, maxLength: 2000, decoration: InputDecoration(hintText: 'Écrire dans ${c.name}…', counterText: '', filled: true, fillColor: const Color(0xFFF2EFF6), border: OutlineInputBorder(borderRadius: BorderRadius.circular(22), borderSide: BorderSide.none), contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12)))),
+                    child: Column(mainAxisSize: MainAxisSize.min, children: [
+                      if (_compose) ...[
+                        Align(alignment: Alignment.centerLeft, child: Text('Fond de la publication', style: _st(12, w: FontWeight.w700, c: _grey))),
+                        StylePicker(value: _style, onChanged: (v) => setState(() => _style = v)),
+                        if (_style != null && _text.text.trim().isNotEmpty) Padding(padding: const EdgeInsets.only(bottom: 8), child: StyledPostText(_text.text.trim(), style: postStyleOf(_style), minHeight: 110)),
+                      ],
+                      Row(children: [
+                      IconButton(tooltip: 'Fond design', onPressed: () => setState(() => _compose = !_compose), icon: Icon(Icons.palette_outlined, color: _compose ? _violet : _ink)),
+                      IconButton(tooltip: 'Sondage', onPressed: () => _newPoll(c), icon: const Icon(Icons.poll_outlined)),
+                      Expanded(child: TextField(controller: _text, maxLength: 2000, onChanged: (_) => setState(() {}), decoration: InputDecoration(hintText: 'Écrire dans ${c.name}…', counterText: '', filled: true, fillColor: const Color(0xFFF2EFF6), border: OutlineInputBorder(borderRadius: BorderRadius.circular(22), borderSide: BorderSide.none), contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12)))),
                       const SizedBox(width: 8),
                       IconButton(tooltip: 'Publier', onPressed: _busy ? null : _send, icon: const Icon(Icons.send_rounded)),
+                    ]),
                     ]),
                   )
                 : Container(width: double.infinity, color: Colors.white, padding: const EdgeInsets.all(16), child: Text('Rejoignez la communauté pour publier.', textAlign: TextAlign.center, style: _st(13, c: _grey))),

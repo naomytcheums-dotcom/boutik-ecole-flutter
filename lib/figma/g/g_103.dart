@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
@@ -74,7 +75,7 @@ class G_103 extends ConsumerWidget {
       gP(280.8, 322, 71.2, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: demoContent),
       gP(289.4, 326, 54, 14, gText('Connecté', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center), show: demoContent),
       gP(24, 380, 342, 132, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xFF0F2E4E), Color(0xFF1E4A80)], stops: [0, 1]), radii: [24, 24, 24, 24])),
-      gP(222.36, 380, 143.64, 132, gBox(image: 'assets/figma/img/b49b6a241d16c8c01f026ab4fe2980adaae1b6f4.png', fit: BoxFit.cover, radii: [24, 24, 24, 24])),
+      gP(222.36, 380, 143.64, 132, gBox(image: 'assets/figma/img/b49b6a241d16c8c01f026ab4fe2980adaae1b6f4.png', fit: BoxFit.cover, radii: [24, 24, 24, 24], decor: true)),
       gP(190, 380, 110, 132, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xFF163B66), Color(0xBF163B66), Color(0x4D163B66), Color(0x00163B66)], stops: [0, 0.35, 0.7, 1]))),
       gP(42, 396, 174, 20, gText('Rejoignez un groupe', 15, Color(0xFFFFFFFF), weight: 700, lh: 20, wrap: true)),
       gP(42, 442, 160.32, 30, gText('Échangez avec les anciens de votre filière.', 11, Color(0xFFE9E4F5), lh: 15, wrap: true)),
@@ -118,7 +119,7 @@ class G_103 extends ConsumerWidget {
       gP(169, 762, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gTab(context, '03')),
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
-      gTap(53.5, 470, 63, 32, () { gOpen(context, '105'); }), // parcours 103 -> 105
+      gTap(53.5, 470, 63, 32, () { if (demoContent) { gOpen(context, '105'); } else { GoRouter.of(context).push('/communautes'); } }), // parcours 103 -> 105 ; connecté : explorer les communautés
       if (demoContent) gTap(255.2, 190, 96.8, 22, () { gOpen(context, '52'); }), // audit 01/11 : « Se connecter » n'avait aucun effet
       if (demoContent) gTap(255.2, 256, 96.8, 22, () { gOpen(context, '52'); }), // audit 01/11 : « Se connecter » n'avait aucun effet
       if (!demoContent) gP(24, 172, 342, 190, const CommunityMembers(width: 342, height: 190)),

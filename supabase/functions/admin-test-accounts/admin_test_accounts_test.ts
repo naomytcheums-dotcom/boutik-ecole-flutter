@@ -1,4 +1,4 @@
-import { randomPassword, TEST_ROLES, testEmail } from "./index.ts";
+import { TEST_ROLES, testEmail, validPassword } from "./index.ts";
 
 Deno.test("un compte de test par profil, courriels distincts et reconnaissables", () => {
   const roles = TEST_ROLES.map((t) => t.role);
@@ -10,7 +10,9 @@ Deno.test("un compte de test par profil, courriels distincts et reconnaissables"
   if (roles.includes("admin")) throw new Error("jamais de compte de test administrateur");
 });
 
-Deno.test("mot de passe aléatoire : long, différent à chaque appel", () => {
-  const a = randomPassword(), b = randomPassword();
-  if (a === b || a.length < 30) throw new Error("mot de passe trop faible");
+Deno.test("mot de passe : 10 caractères, une lettre et un chiffre", () => {
+  if (!validPassword("Test12345678")) throw new Error("mot de passe valide refusé");
+  for (const bad of ["court1A", "sansChiffreAAAA", "12345678901234", "", null, 42, "a1".repeat(40)]) {
+    if (validPassword(bad)) throw new Error("mot de passe invalide accepté : " + bad);
+  }
 });

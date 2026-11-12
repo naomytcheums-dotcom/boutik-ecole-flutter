@@ -1,8 +1,9 @@
 // Edge Function « admin-test-accounts » : comptes de test de l'administrateur.
-//   POST {action: "ensure"}                -> crée les comptes de test manquants (un par profil) ; renvoie ceux qui existent
+//   POST {action: "ensure", password}      -> crée les comptes de test manquants (un par profil) avec le mot de passe choisi par l'administrateur
+//   POST {action: "password", password}    -> change le mot de passe de tous les comptes de test
 //   POST {action: "login", target_id: ...} -> lien à usage unique pour ouvrir un compte de test : { token_hash, email, role }
 // Sécurité : l'appelant doit être un administrateur actif (profil role = admin, non suspendu). Seuls les comptes marqués « test » (profiles.is_test)
-// peuvent être ouverts : jamais un vrai compte. Les mots de passe des comptes de test sont aléatoires, jamais renvoyés ni conservés.
+// peuvent être ouverts : jamais un vrai compte. Le mot de passe est choisi et saisi par l'administrateur dans l'application ; il n'est ni renvoyé ni journalisé.
 // Chaque ouverture est journalisée (test_login_log).
 import { adminClient, callerOf, cors, jsonResponse } from "../_shared/core.ts";
 
@@ -19,11 +20,9 @@ export const TEST_ROLES: { role: string; name: string; department?: string }[] =
 
 export const testEmail = (role: string) => `test-${role}@boutik-ecole.test`;
 
-export function randomPassword(): string {
-  const b = crypto.getRandomValues(new Uint8Array(24));
-  let s = "";
-  for (const x of b) s += String.fromCharCode(x);
-  return btoa(s).replace(/[+/=]/g, "x") + "Aa1!";
+/** Mot de passe acceptable : 10 caractères au moins, avec une lettre et un chiffre. */
+export function validPassword(p: unknown): p is string {
+  return typeof p === "string" && p.length >= 10 && p.length <= 72 && /[A-Za-z]/.test(p) && /[0-9]/.test(p);
 }
 
 if (import.meta.main) {
@@ -38,14 +37,26 @@ if (import.meta.main) {
     let body: Record<string, unknown>;
     try { body = await req.json(); } catch { return jsonResponse(req, { error: "bad_request" }, 400); }
 
+    if (body.action === "password") {
+      if (!validPassword(body.password)) return jsonResponse(req, { error: "weak_password", message: "Mot de passe : 10 caractères au moins, avec une lettre et un chiffre." }, 400);
+      const { data: tests } = await admin.from("profiles").select("id").eq("is_test", true);
+      let changed = 0;
+      for (const t of tests ?? []) {
+        const r = await admin.auth.admin.updateUserById(t.id, { password: body.password });
+        if (!r.error) changed++;
+      }
+      return jsonResponse(req, { changed });
+    }
+
     if (body.action === "ensure") {
+      if (!validPassword(body.password)) return jsonResponse(req, { error: "weak_password", message: "Mot de passe : 10 caractères au moins, avec une lettre et un chiffre." }, 400);
       const created: string[] = [], failed: { role: string; message: string }[] = [];
       for (const t of TEST_ROLES) {
         const { data: have } = await admin.from("profiles").select("id").eq("is_test", true).eq("role", t.role).limit(1);
         if (have && have.length > 0) continue;
         const email = testEmail(t.role);
         let id: string | null = null;
-        const made = await admin.auth.admin.createUser({ email, password: randomPassword(), email_confirm: true, user_metadata: { name: t.name, test_account: true } });
+        const made = await admin.auth.admin.createUser({ email, password: body.password, email_confirm: true, user_metadata: { name: t.name, test_account: true } });
         if (made.error) {
           // le compte d'authentification existe déjà (essai précédent interrompu) : on le retrouve
           const list = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });

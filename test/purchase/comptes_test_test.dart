@@ -13,6 +13,13 @@ Future<void> _pump(WidgetTester t, Widget w, {List<Override> overrides = const [
 }
 
 void main() {
+  test('mot de passe des comptes de test : 10 caractères, une lettre, un chiffre', () {
+    expect(validTestPassword('Test12345678'), isTrue);
+    expect(validTestPassword('court1A'), isFalse);
+    expect(validTestPassword('SansChiffreAAAA'), isFalse);
+    expect(validTestPassword('12345678901234'), isFalse);
+  });
+
   test('libellés : un par profil, jamais d’administrateur de test', () {
     expect(testRoleLabels.keys, ['client', 'student', 'company', 'other', 'dept', 'direction', 'finance', 'support']);
     expect(testRoleLabels.containsKey('admin'), isFalse);
@@ -24,6 +31,7 @@ void main() {
     await _pump(t, const TestAccountsScreen(), overrides: [testAccountsProvider.overrideWith((ref) async => <Map<String, dynamic>>[])]);
     expect(find.text('Comptes de test'), findsOneWidget);
     expect(find.text('Créer les comptes de test manquants'), findsOneWidget);
+    expect(find.text('Changer le mot de passe des comptes de test'), findsOneWidget);
     expect(find.textContaining('Aucun compte de test'), findsOneWidget);
   });
 

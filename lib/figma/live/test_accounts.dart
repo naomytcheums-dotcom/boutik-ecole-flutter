@@ -61,8 +61,45 @@ Future<({Map<String, dynamic>? data, String? error})> _fn(Map<String, dynamic> b
   }
 }
 
+/// Mot de passe choisi par l'administrateur (10 caractères au moins, une lettre et un chiffre) ; jamais affiché ni enregistré par l'application.
+bool validTestPassword(String p) => p.length >= 10 && p.length <= 72 && RegExp(r'[A-Za-z]').hasMatch(p) && RegExp(r'[0-9]').hasMatch(p);
+
+Future<String?> _askPassword(BuildContext context, String title) async {
+  final ctl = TextEditingController();
+  final ok = await showDialog<bool>(
+    context: context,
+    builder: (c) => AlertDialog(
+      title: Text(title),
+      content: Column(mainAxisSize: MainAxisSize.min, children: [
+        TextField(controller: ctl, obscureText: true, autofocus: true, decoration: const InputDecoration(labelText: 'Mot de passe des comptes de test')),
+        const SizedBox(height: 8),
+        Text('10 caractères au moins, avec une lettre et un chiffre. Vous le saisissez vous-même : il n’est affiché nulle part.', style: mst(12, c: kGrey)),
+      ]),
+      actions: [TextButton(onPressed: () => Navigator.pop(c, false), child: Text('Annuler')), TextButton(onPressed: () => Navigator.pop(c, true), child: Text('Valider'))],
+    ),
+  );
+  final v = ctl.text;
+  ctl.dispose();
+  if (ok != true || !context.mounted) return null;
+  if (!validTestPassword(v)) {
+    gToast(context, 'Mot de passe trop faible : 10 caractères au moins, avec une lettre et un chiffre.');
+    return null;
+  }
+  return v;
+}
+
+Future<void> setTestPassword(BuildContext context, WidgetRef ref) async {
+  final pw = await _askPassword(context, 'Changer le mot de passe des comptes de test');
+  if (pw == null || !context.mounted) return;
+  final r = await _fn({'action': 'password', 'password': pw});
+  if (!context.mounted) return;
+  gToast(context, r.error ?? '${r.data?['changed'] ?? 0} compte(s) de test mis à jour.');
+}
+
 Future<void> ensureTestAccounts(BuildContext context, WidgetRef ref) async {
-  final r = await _fn({'action': 'ensure'});
+  final pw = await _askPassword(context, 'Créer les comptes de test');
+  if (pw == null || !context.mounted) return;
+  final r = await _fn({'action': 'ensure', 'password': pw});
   if (!context.mounted) return;
   if (r.error != null) return gToast(context, r.error!);
   final created = (r.data?['created'] as List? ?? const []).length;
@@ -169,7 +206,9 @@ class TestAccountsScreen extends ConsumerWidget {
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
           child: Text('Un compte par profil, reconnus comme comptes de test par le système. Ouvrez-en un pour parcourir l’application comme ce profil, puis touchez « Revenir à mon compte ».', style: mst(13, c: kGrey).copyWith(height: 1.5)),
         ),
-        Padding(padding: const EdgeInsets.fromLTRB(16, 4, 16, 12), child: mButton('Créer les comptes de test manquants', () => ensureTestAccounts(context, ref), icon: Icons.add)),
+        Padding(padding: const EdgeInsets.fromLTRB(16, 4, 16, 8), child: mButton('Créer les comptes de test manquants', () => ensureTestAccounts(context, ref), icon: Icons.add)),
+        Padding(padding: const EdgeInsets.fromLTRB(16, 0, 16, 12), child: mButton('Changer le mot de passe des comptes de test', () => setTestPassword(context, ref), dark: false, icon: Icons.lock_reset)),
+        Padding(padding: const EdgeInsets.fromLTRB(16, 0, 16, 12), child: Text('Chaque compte se connecte aussi normalement : page de connexion, e-mail ci-dessous et le mot de passe que vous avez choisi.', style: mst(12, c: kGrey).copyWith(height: 1.4))),
         mAsync<List<Map<String, dynamic>>>(
           ref.watch(testAccountsProvider),
           (l) => l.isEmpty
@@ -182,7 +221,7 @@ class TestAccountsScreen extends ConsumerWidget {
                       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(4), border: Border.all(color: kLine)),
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         Text(testAccountLabel(a), style: mst(15, w: FontWeight.w800)),
-                        Text('${a['email']}', style: mst(12, c: kGrey)),
+                        SelectableText('${a['email']}', style: mst(12.5, w: FontWeight.w600, c: kInk)),
                         Text(a['last_login'] == null ? 'Jamais ouvert' : 'Dernière ouverture : ${'${a['last_login']}'.substring(0, 10)}', style: mst(12, c: kGrey)),
                         const SizedBox(height: 10),
                         mButton('Ouvrir en tant que ce profil', () => openTestAccount(context, ref, a), icon: Icons.login),

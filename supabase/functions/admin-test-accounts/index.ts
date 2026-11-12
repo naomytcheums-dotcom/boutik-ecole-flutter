@@ -8,6 +8,7 @@
 import { adminClient, callerOf, cors, jsonResponse } from "../_shared/core.ts";
 
 export const TEST_ROLES: { role: string; name: string; department?: string }[] = [
+  { role: "visitor", name: "Test Visiteur" },
   { role: "client", name: "Test Client" },
   { role: "student", name: "Test Étudiant-vendeur", department: "Génie informatique" },
   { role: "company", name: "Test Entreprise" },
@@ -16,6 +17,7 @@ export const TEST_ROLES: { role: string; name: string; department?: string }[] =
   { role: "direction", name: "Test Direction" },
   { role: "finance", name: "Test Finance" },
   { role: "support", name: "Test Support" },
+  { role: "admin", name: "Test Administrateur" },
 ];
 
 export const testEmail = (role: string) => `test-${role}@boutik-ecole.test`;

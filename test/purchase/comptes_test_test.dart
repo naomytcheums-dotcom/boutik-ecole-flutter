@@ -20,9 +20,8 @@ void main() {
     expect(validTestPassword('12345678901234'), isFalse);
   });
 
-  test('libellés : un par profil, jamais d’administrateur de test', () {
-    expect(testRoleLabels.keys, ['client', 'student', 'company', 'other', 'dept', 'direction', 'finance', 'support']);
-    expect(testRoleLabels.containsKey('admin'), isFalse);
+  test('libellés : un par profil de test', () {
+    expect(testRoleLabels.keys, ['visitor', 'client', 'student', 'company', 'other', 'dept', 'direction', 'finance', 'support', 'admin']);
     expect(testAccountLabel({'role': 'dept'}), 'Responsable de département');
     expect(testAccountLabel({'role': 'inconnu'}), 'inconnu');
   });

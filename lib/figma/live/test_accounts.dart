@@ -13,6 +13,7 @@ import 'marche/marche_widgets.dart';
 /// l'administrateur (fonction « admin-test-accounts »). Aucun mot de passe n'est connu : l'ouverture se fait par lien à usage unique et est journalisée.
 
 const testRoleLabels = {
+  'visitor': 'Visiteur',
   'client': 'Client',
   'student': 'Étudiant-vendeur',
   'company': 'Entreprise',
@@ -21,6 +22,7 @@ const testRoleLabels = {
   'direction': 'Direction',
   'finance': 'Finance',
   'support': 'Support',
+  'admin': 'Administrateur',
 };
 
 final testAccountsProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {

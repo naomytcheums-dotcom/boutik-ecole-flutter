@@ -22,6 +22,7 @@ import '../../figma/live/premium_pub.dart';
 import '../../figma/live/communities.dart' show CommunityScreen;
 import '../../figma/live/community_explore.dart';
 import '../../figma/live/marche/marche_appels.dart';
+import '../../figma/live/mentors_screens.dart';
 import '../../figma/live/marche/marche_compare.dart';
 import '../../figma/live/marche/marche_livraison.dart';
 import '../../figma/live/marche/marche_promotions.dart';
@@ -54,6 +55,10 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/marche', builder: (_, _) => const MarketplaceScreen()),
     GoRoute(path: '/marche/livraison', builder: (_, state) => LivraisonTarifsScreen(platform: state.uri.queryParameters['plateforme'] == '1')),
     GoRoute(path: '/marche/promotions', builder: (_, _) => const PromotionsAdminScreen()),
+    GoRoute(path: '/mentors', builder: (_, _) => const MentorsScreen()),
+    GoRoute(path: '/mentors/profil', builder: (_, _) => const MentorProfileScreen()),
+    GoRoute(path: '/mentors/demandes', builder: (_, _) => const MentorRequestsScreen()),
+    GoRoute(path: '/mentors/:id', builder: (_, state) => MentorDetailScreen(id: state.pathParameters['id'] ?? '')),
     GoRoute(path: '/communautes', builder: (_, _) => const CommunityExploreScreen()),
     GoRoute(path: '/marche/appels', builder: (_, _) => const AppelsScreen()),
     GoRoute(path: '/marche/projets', builder: (_, _) => const ProjetsIutScreen()),

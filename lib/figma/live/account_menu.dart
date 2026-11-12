@@ -17,6 +17,7 @@ import 'services.dart';
 
 Future<void> _livraisonVendeur(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/marche/livraison');
 Future<void> _livraisonPlateforme(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/marche/livraison?plateforme=1');
+Future<void> _mentors(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/mentors');
 Future<void> _promotions(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/marche/promotions');
 
 const _st = TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 14, color: Color(0xFF111015));
@@ -51,6 +52,7 @@ final _groups = <_Group>[
     _Entry('Mes devis', action: _devis),
     _Entry('Mes réclamations', action: _reclamations),
     _Entry('Comparer des offres', screen: '26'),
+    _Entry('Mentors', action: _mentors),
   ]),
   const _Group('Découvrir et participer', [
     _Entry('Événements', screen: '100'),

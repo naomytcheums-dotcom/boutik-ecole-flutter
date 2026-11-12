@@ -123,6 +123,7 @@ class G_103 extends ConsumerWidget {
       if (demoContent) gTap(255.2, 190, 96.8, 22, () { gOpen(context, '52'); }), // audit 01/11 : « Se connecter » n'avait aucun effet
       if (demoContent) gTap(255.2, 256, 96.8, 22, () { gOpen(context, '52'); }), // audit 01/11 : « Se connecter » n'avait aucun effet
       if (!demoContent) gP(24, 172, 342, 190, const CommunityMembers(width: 342, height: 190)),
+      if (!demoContent) gTap(109.8, 120, 77.8, 34, () { GoRouter.of(context).push('/mentors'); }), // onglet Mentors : réseau des mentors
     ]);
   }
 }

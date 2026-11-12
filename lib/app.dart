@@ -11,6 +11,7 @@ import 'core/theme/app_theme.dart';
 import 'figma/gsound.dart' show GAnim;
 import 'figma/i18n.dart' show I18n, I18nScope;
 import 'figma/live/auth.dart' show appSessionExpired;
+import 'figma/live/test_accounts.dart' show TestAccountBanner;
 import 'figma/gdata.dart';
 import 'figma/live/device_prefs.dart' show accessPrefs149Provider, accessPrefsProvider, dataPrefsProvider, textSizeProvider;
 import 'figma/gaccess.dart';
@@ -160,7 +161,7 @@ class _BoutikEcoleAppState extends ConsumerState<BoutikEcoleApp> {
               highContrast: mq.highContrast || settings.highContrast || accContrast,
               disableAnimations: mq.disableAnimations || settings.reduceMotion || accMotion,
             ),
-            child: child!,
+            child: TestAccountBanner(child: child!),
           ),
         ),
         );

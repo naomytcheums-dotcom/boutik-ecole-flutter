@@ -164,7 +164,7 @@ class TalentSearchList extends ConsumerWidget {
   final double width, height;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => CommunityMembers(width: width, height: height);
+  Widget build(BuildContext context, WidgetRef ref) => CommunityMembers(width: width, height: height, studentProfile: true);
 }
 
 String projectStatus(Object? s) => switch ('$s') { 'approved' => 'Validé', 'submitted' => 'À valider', 'draft' => 'Brouillon', 'rejected' => 'Refusé', _ => '$s' };

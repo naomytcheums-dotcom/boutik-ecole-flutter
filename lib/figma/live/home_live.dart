@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:video_player/video_player.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../nav.dart';
 import 'auth.dart' show authProvider;
@@ -290,8 +291,11 @@ class TalentAvatar extends ConsumerWidget {
 /// Membres de la communauté (écran 103) : les vrais profils étudiants, avec ouverture de leur profil public.
 /// Chargement, état vide et erreur ; aucun nom de maquette hors démonstration.
 class CommunityMembers extends ConsumerWidget {
-  const CommunityMembers({super.key, this.width = 342, this.height = 190});
+  const CommunityMembers({super.key, this.width = 342, this.height = 190, this.studentProfile = false});
   final double width, height;
+
+  /// Vrai depuis « Rechercher des talents » : ouvre le profil étudiant, pas le profil du réseau social.
+  final bool studentProfile;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -319,7 +323,7 @@ class CommunityMembers extends ConsumerWidget {
           final t = list[i];
           return GestureDetector(
             behavior: HitTestBehavior.opaque,
-            onTap: () => gOpenProfile(context, t.id),
+            onTap: () => studentProfile ? GoRouter.of(context).push('/etudiant/${t.id}') : gOpenProfile(context, t.id),
             child: Row(children: [
               _Avatar(t, size: 50),
               const SizedBox(width: 12),

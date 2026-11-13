@@ -10,6 +10,7 @@ import 'coequipiers_screens.dart' show MateNavPill;
 import 'company_screens.dart' show companyStatusColor, companyStatusLabel;
 import 'marche/marche_data.dart';
 import 'marche/marche_widgets.dart';
+import 'tara_payment.dart';
 
 /// Accueil et forfaits de l'entreprise. Tout vient du serveur (migration 20261114002600) ; les prix et quotas sont ceux que l'administrateur a définis.
 
@@ -157,6 +158,17 @@ class CompanyPlansSheet extends ConsumerWidget {
     final status = ref.watch(companyPlanStatusProvider).asData?.value;
     final current = '${(status?['plan'] as Map?)?['code'] ?? 'free'}';
     final requested = '${status?['requested'] ?? ''}';
+    Future<void> pay(Map<String, dynamic> p) async {
+      final r = await marcheCall('company_plan_checkout', {'p_plan': p['code']});
+      if (!context.mounted) return;
+      if (r.error != null) return gToast(context, Backend.userMessage('${r.error}'));
+      final tx = Map<String, dynamic>.from(r.data as Map);
+      final ok = await payWithTara(context, ref, reference: '${tx['reference']}', amount: (tx['amount'] as num).toInt(), label: 'le forfait ${p['name']}');
+      ref.invalidate(companyPlanStatusProvider);
+      ref.invalidate(companyDashboardProvider);
+      if (ok && context.mounted) Navigator.of(context).maybePop();
+    }
+
     Future<void> request(String code) async {
       final r = await marcheCall('company_subscription_request', {'p_plan': code});
       if (!context.mounted) return;
@@ -186,8 +198,11 @@ class CompanyPlansSheet extends ConsumerWidget {
                   Text('Besoins : ${quotaLabel(0, (p['max_needs'] as num).toInt()).replaceFirst('0 ', '')} · Offres : ${quotaLabel(0, (p['max_offers'] as num).toInt()).replaceFirst('0 ', '')} · Concours : ${quotaLabel(0, (p['max_contests'] as num).toInt()).replaceFirst('0 ', '')}', style: mst(12, c: kGrey)),
                   const SizedBox(height: 8),
                   if ('${p['code']}' == current) Text('Votre forfait actuel', style: mst(12.5, w: FontWeight.w800, c: kGreen))
-                  else if ('${p['code']}' == requested) Text('Demande envoyée : en attente de l’administrateur', style: mst(12.5, w: FontWeight.w800, c: const Color(0xFFB45309)))
-                  else if (((p['price_fcfa'] as num?) ?? 0) > 0) mButton('Demander ce forfait', () => request('${p['code']}'), dark: false),
+                  else if (((p['price_fcfa'] as num?) ?? 0) > 0) ...[
+                    if ('${p['code']}' == requested) Padding(padding: const EdgeInsets.only(bottom: 6), child: Text('Demande envoyée : en attente de l’administrateur', style: mst(12.5, w: FontWeight.w800, c: const Color(0xFFB45309)))),
+                    mButton('Payer par Mobile Money', () => pay(p), icon: Icons.phone_android),
+                    if ('${p['code']}' != requested) TextButton(onPressed: () => request('${p['code']}'), child: Text('Payer autrement : demander l’activation à l’administrateur', style: mst(12, w: FontWeight.w600, c: kGrey))),
+                  ],
                 ]),
               ),
           ]),

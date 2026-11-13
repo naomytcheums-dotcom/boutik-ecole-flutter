@@ -24,6 +24,7 @@ Future<void> _litiges(BuildContext context, WidgetRef ref) async => GoRouter.of(
 Future<void> _ficheEntreprise(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/entreprise/profil');
 Future<void> _entreprisesAVerifier(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/admin/entreprises');
 Future<void> _forfaitsEntreprises(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/admin/forfaits');
+Future<void> _sequestre(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/admin/sequestre');
 Future<void> _comptesTest(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/comptes-test');
 Future<void> _promotions(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/marche/promotions');
 
@@ -137,6 +138,7 @@ final _groups = <_Group>[
     _Entry('Demandes de certification (badge)', action: certificationRequestsDialog, roles: {'admin'}),
     _Entry('Entreprises à vérifier', action: _entreprisesAVerifier, roles: {'admin'}),
     _Entry('Forfaits des entreprises', action: _forfaitsEntreprises, roles: {'admin'}),
+    _Entry('Séquestre et règle 70/20/10', action: _sequestre, roles: {'admin', 'finance'}),
     _Entry('Journal des incidents des bornes', action: kioskIncidentsDialog, roles: {'support', 'admin'}),
     _Entry('Remettre une commande (code de retrait)', action: confirmPickupDialog, roles: {'support', 'admin'}),
     _Entry('Établissement et identité visuelle', screen: '118', roles: {'direction', 'admin'}),

@@ -70,7 +70,8 @@ void main() {
     expect(find.text('Forfaits entreprise'), findsOneWidget);
     expect(find.text('Votre forfait actuel'), findsOneWidget);
     expect(find.textContaining('Demande envoyée'), findsOneWidget);
-    expect(find.text('Demander ce forfait'), findsOneWidget, reason: 'seul Partenaire reste demandable');
+    expect(find.text('Payer par Mobile Money'), findsNWidgets(2), reason: 'Entreprise et Partenaire sont payables en ligne');
+    expect(find.textContaining('Payer autrement'), findsNWidgets(1), reason: 'Entreprise : demande déjà envoyée, plus de second envoi');
     expect(find.text('25 000 FCFA / mois'), findsOneWidget);
     expect(find.text('75 000 FCFA / mois'), findsOneWidget);
   });

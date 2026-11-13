@@ -21,6 +21,8 @@ Future<void> _innovations(BuildContext context, WidgetRef ref) async => GoRouter
 Future<void> _concours(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/concours');
 Future<void> _mentors(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/mentors');
 Future<void> _litiges(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/litiges');
+Future<void> _ficheEntreprise(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/entreprise/profil');
+Future<void> _entreprisesAVerifier(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/admin/entreprises');
 Future<void> _comptesTest(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/comptes-test');
 Future<void> _promotions(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/marche/promotions');
 
@@ -110,6 +112,7 @@ final _groups = <_Group>[
     _Entry('Journal du projet', screen: '82', roles: {'student', 'dept', 'admin'}),
   ]),
   const _Group('Espace entreprise', [
+    _Entry('Fiche entreprise et vérification', action: _ficheEntreprise, roles: {'company'}),
     _Entry('Tableau de bord entreprise', screen: '187', roles: {'company', 'admin'}),
     _Entry('Publier un besoin', screen: '90', roles: {'company', 'admin'}),
     _Entry('Historique des besoins', screen: '99', roles: {'company', 'admin'}),
@@ -131,6 +134,7 @@ final _groups = <_Group>[
     _Entry('Émettre un certificat', action: issueCertificateDialog, roles: {'dept', 'admin'}),
     _Entry('Révoquer un certificat', action: revokeCertificateDialog, roles: {'dept', 'admin'}),
     _Entry('Demandes de certification (badge)', action: certificationRequestsDialog, roles: {'admin'}),
+    _Entry('Entreprises à vérifier', action: _entreprisesAVerifier, roles: {'admin'}),
     _Entry('Journal des incidents des bornes', action: kioskIncidentsDialog, roles: {'support', 'admin'}),
     _Entry('Remettre une commande (code de retrait)', action: confirmPickupDialog, roles: {'support', 'admin'}),
     _Entry('Établissement et identité visuelle', screen: '118', roles: {'direction', 'admin'}),

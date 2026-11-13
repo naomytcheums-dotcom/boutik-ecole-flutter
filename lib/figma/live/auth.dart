@@ -329,7 +329,8 @@ void _afterLogin(WidgetRef ref, BuildContext context) {
   } else {
     // Un étudiant arrive directement sur son profil ; les autres comptes sur l'accueil.
     final a = ref.read(authProvider).current;
-    gOpen(context, a != null && a.role == 1 && a.staff.isEmpty ? '10' : '03');
+    // Un étudiant et une entreprise arrivent directement sur leur profil (fiche) ; les autres comptes sur l'accueil.
+    gOpen(context, a != null && (a.role == 1 || a.role == 2) && a.staff.isEmpty ? '10' : '03');
   }
 }
 

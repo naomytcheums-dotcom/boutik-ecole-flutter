@@ -1,0 +1,55 @@
+let ok = 0, ko = 0;
+export async function run(db) {
+  const E = '00000000-0000-0000-0000-0000000000e1', S = '00000000-0000-0000-0000-0000000000e2', M = '00000000-0000-0000-0000-0000000000ee', D = '00000000-0000-0000-0000-0000000000e3';
+  const as = async (uid, role = 'authenticated') => { await db.exec(`reset role; select set_config('request.jwt.claim.sub', '${uid ?? ''}', false)`); if (role) await db.exec(`set role ${role}`); };
+  const q = async (sql) => (await db.query(sql)).rows;
+  const check = (name, cond, extra = '') => { if (cond) { ok++; console.log('OK', name); } else { ko++; console.log('ECHEC', name, extra); } };
+  const fails = async (name, sql, re) => { try { await q(sql); check(name, false, 'aurait du echouer'); } catch (e) { check(name, re.test(e.message), e.message); } };
+  await db.exec('reset role');
+  for (const [id, nm, role] of [[E, 'Orange Cameroun', 'company'], [S, 'Awa Etudiante', 'student'], [M, 'Mod Admin', 'admin'], [D, 'Resp Dept', 'dept']]) {
+    await db.exec(`insert into auth.users(id,email) values ('${id}','${nm.split(' ')[0]}@t.cm'); insert into profiles(id,name,role,email) values ('${id}','${nm}','${role}','${nm.split(' ')[0]}@t.cm')`);
+  }
+  const fiche = (extra = '') => `select company_save(jsonb_build_object('company_name','Orange Cameroun','sector','Telecoms','size','1000+','city','Douala','website','https://orange.cm','phone','699000000','contact_name','Mme Ndongo','contact_role','RH','description','Operateur de telecommunications','founded_year',1999,'registration_number','RC/DLA/1999/B/1234'${extra})) r`;
+  await as(S);
+  await fails('fiche : reservee aux entreprises et organisations', fiche(), /Réservé/);
+  await as(E);
+  check('get : rien avant le premier enregistrement', (await q(`select company_get() r`))[0].r === null);
+  await fails('fiche : nom obligatoire', `select company_save(jsonb_build_object('company_name',' '))`, /nom/);
+  await fails('fiche : site en https', `select company_save(jsonb_build_object('company_name','Orange','website','orange.cm'))`, /https/);
+  await fails('fiche : logo dans son dossier', fiche(`, 'logo_path', '${S}/logo.png'`), /dossier/);
+  check('fiche : enregistree en brouillon', (await q(fiche()))[0].r === 'draft');
+  await fails('envoi : au moins une piece justificative', `select company_submit()`, /pièce justificative/);
+  await fails('piece : dans son dossier', `select company_doc_add('registration', 'RCCM.pdf', '${S}/rccm.pdf', 'application/pdf', 1000)`, /dossier/);
+  const doc = (await q(`select company_doc_add('registration', 'RCCM.pdf', '${E}/company/rccm.pdf', 'application/pdf', 52000) id`))[0].id;
+  check('envoi : en attente d examen', (await q(`select company_submit() r`))[0].r === 'pending');
+  await fails('envoi : deja en cours', `select company_submit()`, /déjà en cours/);
+  let g = (await q(`select company_get() r`))[0].r;
+  check('get : fiche, statut et pieces', g.status === 'pending' && g.documents.length === 1 && g.documents[0].kind === 'registration');
+  await as(M);
+  check('notification : l administrateur est prevenu', (await q(`select count(*)::int n from notifications where user_id='${M}' and kind='company_review'`))[0].n === 1);
+  const queue = (await q(`select company_queue() r`))[0].r;
+  check('file : fiche, pieces et e-mail pour l administrateur', queue.length === 1 && queue[0].company_name === 'Orange Cameroun' && queue[0].documents.length === 1 && queue[0].email === 'Orange@t.cm');
+  await as(D);
+  await fails('file : reservee a l administrateur (pas le departement)', `select company_queue()`, /Réservé/);
+  await fails('decision : reservee a l administrateur', `select company_decide('${E}', true)`, /Réservé/);
+  await as(M);
+  await fails('refus : motif obligatoire', `select company_decide('${E}', false, '')`, /motif/);
+  check('refus : enregistre avec motif', (await q(`select company_decide('${E}', false, 'Pièce illisible') r`))[0].r === 'rejected');
+  await as(E);
+  g = (await q(`select company_get() r`))[0].r;
+  check('refus : l entreprise voit le motif et peut corriger', g.status === 'rejected' && g.review_note === 'Pièce illisible');
+  check('notification : refus', (await q(`select count(*)::int n from notifications where user_id='${E}' and title='Vérification refusée'`))[0].n === 1);
+  await q(`select company_save(jsonb_build_object('company_name','Orange Cameroun','sector','Telecoms','city','Douala','phone','699000000','contact_name','Mme Ndongo'))`);
+  check('renvoi apres refus', (await q(`select company_submit() r`))[0].r === 'pending');
+  await as(M);
+  check('approbation', (await q(`select company_decide('${E}', true) r`))[0].r === 'approved');
+  await fails('decision : demande deja traitee', `select company_decide('${E}', true)`, /déjà traitée/);
+  await as(S);
+  let pub = (await q(`select company_public('${E}') r`))[0].r;
+  check('carte publique : verifiee, sans piece ni numero', pub.verified === true && pub.company_name === 'Orange Cameroun' && pub.registration_number === undefined && pub.documents === undefined);
+  await as(E);
+  check('modifier le nom apres approbation : nouvelle verification', (await q(`select company_save(jsonb_build_object('company_name','Orange Cameroun SA','sector','Telecoms','city','Douala')) r`))[0].r === 'pending');
+  check('piece supprimee par son proprietaire', (await q(`select company_doc_delete('${doc}') r`))[0].r.endsWith('rccm.pdf'));
+  await fails('tables : aucun acces direct', `select * from company_profiles`, /permission/);
+  console.log(`\n${ok}/${ok + ko}`);
+}

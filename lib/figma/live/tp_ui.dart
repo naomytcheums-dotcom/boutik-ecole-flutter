@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../gen.dart' show gToast;
+import '../gsound.dart' show GSound;
 import 'backend.dart';
 import 'profile_data.dart' show mimeFromName, sizeLabel;
 
@@ -102,7 +103,10 @@ class TpRound extends StatelessWidget {
         button: true,
         label: label,
         child: GestureDetector(
-          onTap: onTap,
+          onTap: () {
+            GSound.play('click');
+            onTap();
+          },
           child: ClipOval(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 13, sigmaY: 13),

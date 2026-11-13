@@ -72,6 +72,7 @@ class MarchePage extends StatelessWidget {
                   excludeSemantics: true,
                   child: GlassBack(onTap: () => context.canPop() ? context.pop() : context.go('/s/03')),
                 ),
+                const SizedBox(width: 12),
                 Expanded(child: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis, style: mst(20, w: FontWeight.w800))),
                 ...actions,
               ]),

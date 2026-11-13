@@ -9,6 +9,7 @@ import 'auth.dart';
 import 'backend.dart';
 import 'marche/marche_data.dart';
 import 'marche/marche_widgets.dart';
+import 'form_options.dart';
 import 'opportunites_screens.dart' show oppDeadlineLabel, oppModes;
 import 'share.dart' show openUrl, shareText, siteUrl;
 
@@ -486,6 +487,7 @@ class AnnouncementEditScreen extends ConsumerStatefulWidget {
 class _AnnEditState extends ConsumerState<AnnouncementEditScreen> {
   final _c = {for (final k in ['title', 'organizer', 'country', 'place', 'description', 'why', 'conditions', 'documents', 'steps', 'criteria', 'reward', 'level', 'age', 'department', 'eligCountry', 'cost', 'url']) k: TextEditingController()};
   String _kind = 'contest', _domain = 'tech', _orgKind = 'university', _placeKind = 'online';
+  String _currency = 'FCFA';
   bool _free = true, _iut = false, _busy = false;
   DateTime? _opens, _deadline, _results, _start;
 
@@ -530,6 +532,7 @@ class _AnnEditState extends ConsumerState<AnnouncementEditScreen> {
         'iut_only': _iut,
         'free': _free,
         'cost_amount': _free ? null : int.tryParse(_c['cost']!.text.replaceAll(RegExp(r'[^0-9]'), '')),
+        'cost_currency': _currency,
         'official_url': _c['url']!.text,
       },
     });
@@ -569,7 +572,8 @@ class _AnnEditState extends ConsumerState<AnnouncementEditScreen> {
         const SizedBox(height: 10),
         MDropdown(label: 'Domaine', value: _domain, items: {for (final e in annDomains.entries) if (e.key.isNotEmpty) e.key: e.value}, onChanged: (v) => setState(() => _domain = v)),
         const SizedBox(height: 10),
-        _f('country', 'Pays ou zone', hint: 'Cameroun, Afrique, International'),
+        MDropdown(label: 'Pays ou zone', value: _c['country']!.text, items: countryOrZoneItems, onChanged: (v) => setState(() => _c['country']!.text = v)),
+        const SizedBox(height: 10),
         MDropdown(label: 'Lieu', value: _placeKind, items: {for (final e in oppModes.entries) if (e.key.isNotEmpty) e.key: e.value}, onChanged: (v) => setState(() => _placeKind = v)),
         const SizedBox(height: 10),
         _f('place', 'Ville ou plateforme (facultatif)'),
@@ -587,11 +591,18 @@ class _AnnEditState extends ConsumerState<AnnouncementEditScreen> {
         _f('reward', 'Gain ou récompense', hint: '500 000 FCFA, bourse complète, voyage…'),
         _f('level', 'Niveau (facultatif)'),
         _f('age', 'Âge (facultatif)'),
-        _f('department', 'Filière (facultatif)'),
-        _f('eligCountry', 'Pays éligibles (facultatif)'),
+        MultiPickField(label: 'Filières concernées', options: studyFields, value: _c['department']!.text, emptyText: 'Toutes les filières', onChanged: (v) => setState(() => _c['department']!.text = v)),
+        MultiPickField(label: 'Pays éligibles', options: africanCountries, value: _c['eligCountry']!.text, emptyText: 'Tous les pays', onChanged: (v) => setState(() => _c['eligCountry']!.text = v)),
         SwitchListTile(contentPadding: EdgeInsets.zero, title: Text('Réservé aux étudiants de l’IUT', style: mst(13.5)), value: _iut, onChanged: (v) => setState(() => _iut = v)),
         SwitchListTile(contentPadding: EdgeInsets.zero, title: Text('Participation gratuite', style: mst(13.5)), value: _free, onChanged: (v) => setState(() => _free = v)),
-        if (!_free) _f('cost', 'Montant (FCFA)', hint: '5000'),
+        if (!_free) ...[
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Expanded(flex: 3, child: Padding(padding: const EdgeInsets.only(bottom: 10), child: TextField(controller: _c['cost'], keyboardType: TextInputType.number, inputFormatters: [FilteringTextInputFormatter.digitsOnly], decoration: _deco('Montant', hint: '5000')))),
+            const SizedBox(width: 8),
+            Expanded(flex: 2, child: MDropdown(label: 'Devise', value: _currency, items: currencyItems, onChanged: (v) => setState(() => _currency = v))),
+          ]),
+          const SizedBox(height: 10),
+        ],
         _f('url', 'Lien officiel', hint: 'https://…'),
         mButton(_busy ? 'Envoi…' : 'Envoyer pour validation', _busy ? null : _send, width: double.infinity),
       ]),

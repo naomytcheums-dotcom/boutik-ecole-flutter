@@ -10,7 +10,10 @@ import '../gen.dart' show gToast;
 import '../i18n.dart' show Text;
 import 'auth.dart';
 import 'backend.dart';
+import 'package:go_router/go_router.dart';
+import 'form_options.dart';
 import 'coequipiers_screens.dart' show MateNavPill;
+import 'tp_ui.dart' show GlassBack;
 import 'marche/marche_data.dart';
 import 'marche/marche_widgets.dart';
 import 'share.dart' show openUrl;
@@ -88,7 +91,7 @@ class CompanyProfileScreen extends ConsumerStatefulWidget {
 class _CompanyState extends ConsumerState<CompanyProfileScreen> {
   final _name = TextEditingController(), _sector = TextEditingController(), _city = TextEditingController(), _site = TextEditingController(), _phone = TextEditingController();
   final _contact = TextEditingController(), _role = TextEditingController(), _desc = TextEditingController(), _year = TextEditingController(), _reg = TextEditingController();
-  String _size = '', _docKind = 'registration', _logo = '';
+  String _sectorPick = '', _size = '', _docKind = 'registration', _logo = '';
   bool _filled = false, _busy = false;
 
   @override
@@ -102,12 +105,16 @@ class _CompanyState extends ConsumerState<CompanyProfileScreen> {
   void _fill(Map<String, dynamic>? c) {
     if (_filled) return;
     _filled = true;
-    if (c == null) return;
+    if (c == null) {
+      _phone.text = ref.read(authProvider).current?.phone ?? '';
+      return;
+    }
     _name.text = '${c['company_name'] ?? ''}';
     _sector.text = '${c['sector'] ?? ''}';
+    _sectorPick = _sector.text.isEmpty ? '' : (companySectors.contains(_sector.text) ? _sector.text : companySectorOther);
     _city.text = '${c['city'] ?? ''}';
     _site.text = '${c['website'] ?? ''}';
-    _phone.text = '${c['phone'] ?? ''}';
+    _phone.text = '${c['phone'] ?? ''}'.isNotEmpty ? '${c['phone']}' : (ref.read(authProvider).current?.phone ?? '');
     _contact.text = '${c['contact_name'] ?? ''}';
     _role.text = '${c['contact_role'] ?? ''}';
     _desc.text = '${c['description'] ?? ''}';
@@ -248,7 +255,17 @@ class _CompanyState extends ConsumerState<CompanyProfileScreen> {
         ]),
         const SizedBox(height: 14),
         _field(_name, 'Nom de l’entreprise', max: 120),
-        _field(_sector, 'Secteur d’activité', hint: 'Télécoms, agroalimentaire, BTP…', max: 80),
+        MDropdown(
+          label: 'Secteur d’activité',
+          value: _sectorPick,
+          items: {'': 'Choisir un secteur', for (final x in companySectors) x: x, companySectorOther: 'Autre (je l’écris)'},
+          onChanged: (v) => setState(() {
+            _sectorPick = v;
+            if (v != companySectorOther) _sector.text = v;
+          }),
+        ),
+        const SizedBox(height: 10),
+        if (_sectorPick == companySectorOther) _field(_sector, 'Votre secteur d’activité', max: 80),
         MDropdown(label: 'Taille', value: _size, items: companySizes, onChanged: (v) => setState(() => _size = v)),
         const SizedBox(height: 10),
         _field(_city, 'Ville', max: 80),
@@ -287,7 +304,7 @@ class _CompanyState extends ConsumerState<CompanyProfileScreen> {
       body: SafeArea(
         child: Stack(children: [
           Column(children: [
-            Padding(padding: const EdgeInsets.fromLTRB(16, 12, 16, 8), child: Align(alignment: Alignment.centerLeft, child: Text('Fiche entreprise', style: mst(22, w: FontWeight.w800)))),
+            Padding(padding: const EdgeInsets.fromLTRB(4, 8, 16, 4), child: Row(children: [GlassBack(onTap: () => context.canPop() ? context.pop() : context.go('/s/03')), const SizedBox(width: 12), Expanded(child: Text('Fiche entreprise', style: mst(22, w: FontWeight.w800)))])),
             Expanded(child: body),
           ]),
           if (widget.showNav) const Positioned(left: 0, right: 0, bottom: 14, child: Center(child: MateNavPill())),

@@ -85,62 +85,61 @@ Future<bool> _call(BuildContext context, String fn, Map<String, dynamic> params,
   return true;
 }
 
-/// Menu du bas de l'application (même dessin que les autres pages) : Explorer, Marketplace, Projets, Compte, bouton central.
+/// Menu du bas de l'application en ligne : Kéla, messages, accueil, réseau social, profil. La pastille sombre suit l'onglet de la page.
 class MateNavPill extends StatelessWidget {
-  const MateNavPill({super.key});
+  const MateNavPill({super.key, this.active});
+
+  /// Onglet allumé (0 Kéla, 1 messages, 2 accueil, 3 réseau social, 4 profil) ; -1 = aucun.
+  final int? active;
+
+  static const _targets = ['231', '52', '03', '244', '10'];
+  static const _labels = ['Kéla', 'Messages', 'Accueil', 'Réseau social', 'Profil'];
 
   @override
   Widget build(BuildContext context) {
-    Widget tap(double x, double y, double w, double h, String id) => Positioned(left: x, top: y, width: w, height: h, child: Semantics(button: true, child: GestureDetector(behavior: HitTestBehavior.opaque, onTap: () => gTab(context, id))));
-    Widget img(double x, double y, double w, double h, String path) => Positioned(left: x, top: y, width: w, height: h, child: IgnorePointer(child: gImg('assets/figma/v/$path.svg')));
-    return SizedBox(
+    final on = active ?? -1;
+    Widget glyph(int k, Color c) => switch (k) {
+          0 => Image.asset('assets/figma/img/2b51b5d6469cca917952ac344a2ddf9cc1440830.png', width: 30, height: 30, fit: BoxFit.contain),
+          1 => Icon(Icons.chat_bubble_outline, size: 23, color: c),
+          2 => Icon(Icons.home_rounded, size: 25, color: c),
+          3 => Icon(Icons.groups_outlined, size: 25, color: c),
+          _ => Icon(Icons.person_outline, size: 25, color: c),
+        };
+    return Container(
       width: 346,
-      height: 70,
-      child: Stack(clipBehavior: Clip.none, children: [
-        Positioned(
-          left: 0,
-          top: 0,
-          width: 346,
-          height: 64,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: const Color(0xCCFFFFFF),
-              borderRadius: BorderRadius.circular(32),
-              border: Border.all(color: Colors.white, width: 1.5),
-              boxShadow: const [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24)],
-            ),
-          ),
-        ),
-        img(25.125, 21.125, 20, 20, '96285515fb0e14'),
-        img(37.113, 33.113, 9.762, 9.762, '524f40fa464a05'),
-        tap(21, 11, 44, 42, '19'),
-        img(90.25, 21.118, 22.632, 22.632, '5610544a74c77c'),
-        tap(87, 11, 44, 42, '52'),
-        img(238.875, 20.25, 11.25, 16.5, '3adad339ddf7e4'),
-        img(235.875, 27.25, 18.25, 13, '9c6e9349b8c3b4'),
-        img(241, 34.25, 6, 9.5, 'c403dd00a5d407'),
-        tap(233, 11, 44, 42, '230'),
-        img(302.625, 21.125, 14.75, 14.75, 'c6a28fb600186c'),
-        img(300, 29.875, 20, 13, 'de7faa24b27dad'),
-        tap(295, 11, 44, 42, '10'),
-        Positioned(
-          left: 147,
-          top: 6,
-          width: 52,
-          height: 52,
-          child: GestureDetector(
-            onTap: () => gTab(context, '03'),
-            child: Container(
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)]),
-                border: Border.fromBorderSide(BorderSide(color: Color(0xFFFF8A3D), width: 2.5)),
-                boxShadow: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10)],
+      height: 64,
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      decoration: BoxDecoration(
+        color: const Color(0xCCFFFFFF),
+        borderRadius: BorderRadius.circular(32),
+        border: Border.all(color: Colors.white, width: 1.5),
+        boxShadow: const [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24)],
+      ),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        for (var k = 0; k < 5; k++)
+          Semantics(
+            button: true,
+            selected: k == on,
+            label: _labels[k],
+            excludeSemantics: true,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => gTab(context, _targets[k]),
+              child: Container(
+                width: 50,
+                height: 50,
+                alignment: Alignment.center,
+                decoration: k == on
+                    ? BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: const RadialGradient(colors: [Color(0xF22A2D36), Color(0xF20E0F14)]),
+                        border: Border.all(color: const Color(0xB3E3E6EE), width: 1.6),
+                      )
+                    : const BoxDecoration(shape: BoxShape.circle),
+                child: glyph(k, k == on ? Colors.white : const Color(0xFF111015)),
               ),
-              child: Center(child: SizedBox(width: 22.5, height: 23.4, child: gImg('assets/figma/v/af3cc156833fdf.svg'))),
             ),
           ),
-        ),
       ]),
     );
   }

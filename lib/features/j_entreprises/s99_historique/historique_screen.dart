@@ -15,7 +15,7 @@ class _HistoriqueScreenState extends ConsumerState<HistoriqueScreen> {
   Widget build(BuildContext context) {
     final d = ref.watch(sectionJDataProvider);
     final items = d.history.where((h) => h.category == d.historyTabs[_tab]).toList();
-    return JRootPage(
+    return JNavPage(
       title: 'Historique',
       children: [
         HChips(labels: d.historyTabs, selected: _tab, onSelected: (i) => setState(() => _tab = i)),

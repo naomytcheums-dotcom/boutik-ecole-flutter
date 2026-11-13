@@ -49,7 +49,17 @@
     // Sons de l'application (Web Audio) : débloqués au premier toucher, lus sans attente (iPhone et Android l'exigent).
     (function () {
       var ctx = null, cache = {}, loading = {};
-      function ac() { if (!ctx) { var C = window.AudioContext || window.webkitAudioContext; if (C) ctx = new C(); } return ctx; }
+      // iPhone met le contexte en « interrupted » (appel, micro, arrière-plan) : il faut le relancer à chaque fois qu'il n'est pas « running »,
+      // et le recréer s'il a été fermé, sinon les sons s'arrêtent définitivement après un live ou un changement d'application.
+      function ac() {
+        if (ctx && ctx.state === 'closed') { ctx = null; cache = {}; loading = {}; }
+        if (!ctx) { var C = window.AudioContext || window.webkitAudioContext; if (C) ctx = new C(); }
+        return ctx;
+      }
+      function wake() { var c = ac(); if (c && c.state !== 'running') { try { c.resume(); } catch (e) {} } }
+      document.addEventListener('visibilitychange', function () { if (!document.hidden) wake(); });
+      window.addEventListener('focus', wake);
+      window.addEventListener('pageshow', wake);
       function load(url) {
         if (cache[url] || loading[url] || !ac()) return;
         loading[url] = true;
@@ -60,12 +70,12 @@
       window.boutikSound = {
         unlock: function () {
           var c = ac(); if (!c) return;
-          if (c.state === 'suspended') c.resume();
+          if (c.state !== 'running') c.resume();
           ['click', 'pop', 'tick', 'success', 'whoosh', 'mic_start', 'mic_stop'].forEach(function (n) { load('assets/assets/sounds/' + n + '.wav'); });
         },
         play: function (url, vol) {
           var c = ac(); if (!c) return;
-          if (c.state === 'suspended') c.resume();
+          if (c.state !== 'running') c.resume();
           var b = cache[url];
           if (!b) { load(url); var n = 0, t = setInterval(function () { n++; if (cache[url]) { clearInterval(t); window.boutikSound.play(url, vol); } else if (n > 15) clearInterval(t); }, 40); return; }
           var s = c.createBufferSource(), g = c.createGain();

@@ -1218,17 +1218,17 @@ class _ComposerSheetState extends ConsumerState<_ComposerSheet> {
                   },
                 ),
               ),
-            Row(children: [
+            Wrap(spacing: 4, runSpacing: 0, crossAxisAlignment: WrapCrossAlignment.center, children: [
               TextButton.icon(onPressed: _busy ? null : _pick, icon: const Icon(Icons.add_photo_alternate_outlined), label: Text(_files.isEmpty ? 'Photos ou vidéos' : 'Ajouter', style: sty(13, w: FontWeight.w600))),
               TextButton(onPressed: _busy ? null : () => showScheduledSheet(context), child: Text('Programmées', style: sty(12.5, c: kGrey))),
               TextButton.icon(onPressed: _busy ? null : _pickSchedule, icon: Icon(_at == null ? Icons.schedule : Icons.event_available, size: 20), label: Text(_at == null ? 'Programmer' : _fmt(_at!), style: sty(13, w: FontWeight.w600))),
-              const Spacer(),
-              FilledButton(
+            ]),
+            const SizedBox(height: 8),
+            SizedBox(height: 48, child: FilledButton(
                 onPressed: _busy ? null : _publish,
                 style: FilledButton.styleFrom(backgroundColor: kInk, shape: const StadiumBorder(), padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12)),
                 child: _busy ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)) : Text(_at == null ? 'Publier' : 'Programmer', style: sty(14, w: FontWeight.w700, c: Colors.white)),
-              ),
-            ]),
+              )),
             if (_busy) Padding(padding: const EdgeInsets.only(top: 6), child: Text(_step, style: sty(12, c: kGrey))),
           ]),
         ),

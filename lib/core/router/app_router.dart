@@ -22,6 +22,7 @@ import '../../figma/live/premium_pub.dart';
 import '../../figma/live/communities.dart' show CommunityScreen;
 import '../../figma/live/community_explore.dart';
 import '../../figma/live/concours_screens.dart';
+import '../../figma/live/company_home.dart';
 import '../../figma/live/company_screens.dart';
 import '../../figma/live/litiges_screens.dart';
 import '../../figma/live/staff_portal.dart';
@@ -66,6 +67,7 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/litiges', builder: (_, _) => const DisputesScreen()),
     GoRoute(path: '/entreprise/profil', builder: (_, _) => const CompanyProfileScreen()),
     GoRoute(path: '/admin/entreprises', builder: (_, _) => const CompanyReviewScreen()),
+    GoRoute(path: '/admin/forfaits', builder: (_, _) => const CompanyPlansAdminScreen()),
     GoRoute(path: '/comptes-test', builder: (_, _) => const TestAccountsScreen()),
     GoRoute(path: '/equipe/:key', builder: (_, s) => StaffPortalScreen(portalKey: s.pathParameters['key'] ?? '')),
     GoRoute(path: '/concours/publier', builder: (_, _) => const AnnouncementEditScreen()),

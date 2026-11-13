@@ -11,6 +11,7 @@ import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
 import '../live/auth.dart';
+import '../live/company_home.dart';
 import '../live/seller.dart';
 import '../live/review.dart';
 import '../live/audit.dart';
@@ -33,6 +34,9 @@ class G_03 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Une entreprise a son propre accueil : forfait, vérification et chiffres clés (besoins, propositions, offres, candidatures).
+    final me = ref.watch(authProvider.select((a) => a.current));
+    if (!demoContent && me != null && me.role == 2 && me.staff.isEmpty) return const CompanyHomeScreen();
     // connecté : la page s'allonge pour recevoir la liste réelle des talents ; le menu reste au bas de la page
     final dy = demoContent ? 0.0 : 191.0;
     return GScreen(w: 390, h: demoContent ? 939 : 1130, radius: 43.333, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [

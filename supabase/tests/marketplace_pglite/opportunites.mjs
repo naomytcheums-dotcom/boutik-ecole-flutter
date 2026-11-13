@@ -9,6 +9,8 @@ export async function run(db) {
   for (const [id, nm, role, dept, inst] of [[A, 'Awa Etudiante', 'student', 'Génie informatique', 'IUT de Douala'], [B, 'Orange Cameroun', 'company', '', ''], [C, 'Cora Externe', 'student', 'Génie civil', 'Université de Yaoundé'], [M, 'Mod Admin', 'admin', 'Direction', 'IUT de Douala']]) {
     await db.exec(`insert into auth.users(id,email) values ('${id}','${nm.split(' ')[0]}@t.cm'); insert into profiles(id,name,role,email,department,institution) values ('${id}','${nm}','${role}','${nm.split(' ')[0]}@t.cm','${dept}','${inst}')`);
   }
+  // l'entreprise est vérifiée et a un forfait Partenaire actif (la porte « entreprise vérifiée + forfait » s'applique aux publications des entreprises)
+  await db.exec(`insert into company_profiles (owner_id, company_name, status) values ('${B}', 'Orange Cameroun', 'approved'); insert into company_subscriptions (owner_id, plan_code, status, starts_at, ends_at) values ('${B}', 'partner', 'active', now(), now() + interval '30 days')`);
   const post = (org, kind, title, extra = {}) => {
     const e = { contract: 'academique', loc: 'Douala', mode: 'onsite', dur: '3 mois', payKind: 'paid', amount: 50000, deadline: "current_date + 10", dept: 'Génie informatique', iut: 'false', wa: '', app: 'true', ...extra };
     return `select opp_save('${org}', '${kind}', '${e.contract}', '${title}', '${e.loc}', '${e.mode}', '${e.dur}', '${e.payKind}', ${e.amount}, '', ${e.deadline}, array['Flutter','Canva'], 'Description complete de l offre pour les etudiants', array['Developper des ecrans','Tester'], 'Etudiant motive', '${e.dept}', 'Licence 2', array['Attestation de stage','Experience'], '${e.wa}', ${e.app}, 'Operateur de telecommunications', ${e.iut}) id`;

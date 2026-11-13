@@ -106,7 +106,7 @@ class G_248 extends ConsumerWidget {
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       if (demoContent) gTap(24, 176, 342, 52, () => gOpen(context, '249')),
       gTap(144, 94, 102, 32, () { gOpen(context, 'd1'); }), // lien métier 248 -> d1
-      if (!demoContent) gP(24, 100, 342, 650, const MyListings(width: 342, height: 650)),
+      if (!demoContent) gP(24, 176, 342, 580, const MyListings(width: 342, height: 580)),
     ]);
   }
 }

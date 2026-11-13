@@ -859,10 +859,82 @@ Widget gClip(double x, double y, double w, double h, List<double>? radii, List<W
 // ---------------------------------------------------------------- couche dynamique
 
 /// Message bref pour les actions simulées (démonstration).
+OverlayEntry? _toastEntry;
+
+/// Dans une fenêtre, un volet ou un dialogue (ou quand un écran s'est ouvert par-dessus), le bandeau classique se cachait DERRIÈRE : le
+/// message n'était jamais vu et le bouton semblait inerte. Le message s'affiche alors dans la couche racine, au-dessus de tout.
+void _gToastOnTop(BuildContext context, String message) {
+  final overlay = Overlay.maybeOf(context, rootOverlay: true);
+  if (overlay == null) return;
+  _toastEntry?.remove();
+  late final OverlayEntry entry;
+  entry = OverlayEntry(builder: (c) => _GToastView(message: message, onDone: () {
+        if (_toastEntry == entry) _toastEntry = null;
+        entry.remove();
+      }));
+  _toastEntry = entry;
+  overlay.insert(entry);
+}
+
+class _GToastView extends StatefulWidget {
+  const _GToastView({required this.message, required this.onDone});
+  final String message;
+  final VoidCallback onDone;
+  @override
+  State<_GToastView> createState() => _GToastViewState();
+}
+
+class _GToastViewState extends State<_GToastView> with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 2800))
+    ..forward().whenComplete(() {
+      if (mounted) widget.onDone();
+    });
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final mq = MediaQuery.of(context);
+    final w = math.min(340.0, mq.size.width - 32);
+    return Positioned(
+      left: (mq.size.width - w) / 2,
+      width: w,
+      bottom: math.max(mq.viewInsets.bottom, mq.padding.bottom) + 40,
+      child: IgnorePointer(
+        child: AnimatedBuilder(
+          animation: _c,
+          builder: (_, child) {
+            final t = _c.value;
+            final o = t < 0.1 ? t / 0.1 : (t > 0.88 ? (1 - t) / 0.12 : 1.0);
+            return Opacity(opacity: o.clamp(0.0, 1.0), child: child);
+          },
+          child: Material(
+            color: Colors.transparent,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 13),
+              decoration: BoxDecoration(color: const Color(0xFF111015), borderRadius: BorderRadius.circular(18), boxShadow: const [BoxShadow(color: Color(0x33000000), blurRadius: 12, offset: Offset(0, 4))]),
+              child: Text(widget.message, textAlign: TextAlign.center, style: const TextStyle(fontFamily: _jakarta, fontSize: 13, fontWeight: FontWeight.w500, color: Colors.white, decoration: TextDecoration.none)),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 void gToast(BuildContext context, String message) {
   final m = ScaffoldMessenger.maybeOf(context);
   GSound.play('success');
   GAccess.speak(I18n.tr(message));
+  final route = ModalRoute.of(context);
+  if (route != null && (route is! PageRoute || !route.isCurrent)) {
+    _gToastOnTop(context, message);
+    return;
+  }
   final w = math.min(320.0, MediaQuery.sizeOf(context).width - 32);
   m?.hideCurrentSnackBar();
   m?.showSnackBar(SnackBar(

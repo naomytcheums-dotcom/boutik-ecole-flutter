@@ -24,6 +24,12 @@ import '../live/share.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
+/// Pastille d'icône de l'écran Créer (les photos de la maquette ne servent qu'à la démonstration).
+Widget _creerTile(IconData icon, Color a, Color b) => DecoratedBox(
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(22), gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [a, b])),
+      child: Center(child: Icon(icon, size: 36, color: Colors.white)),
+    );
+
 class G_249 extends ConsumerWidget {
   const G_249({super.key});
 
@@ -42,28 +48,32 @@ class G_249 extends ConsumerWidget {
       gP(171.5, 82, 47, 21, gText('Créer', 17, Color(0xFF111015), weight: 500)),
       gP(129.5, 106, 131, 15, gText('Que veux-tu partager ?', 12, Color(0xFF57545F))),
       gP(24, 140, 342, 116, const SizedBox.expand(), tap: () => gOpen(context, '250')),
-      gP(44, 160, 80, 80, gBox(image: 'assets/figma/img/1574e42a325d3a4ac509841e7a5eb5a285a3d991.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
+      gP(44, 160, 80, 80, gBox(image: 'assets/figma/img/1574e42a325d3a4ac509841e7a5eb5a285a3d991.png', fit: BoxFit.cover, radii: [22, 22, 22, 22]), show: demoContent),
+      if (!demoContent) gP(44, 160, 80, 80, _creerTile(Icons.grid_view_rounded, const Color(0xFF9B7BFF), const Color(0xFFFF8A3D))),
       gP(142, 170, 82, 19, gText('Publication', 15, Color(0xFF111015), weight: 600)),
       gP(142, 194, 173, 30, gText('Photo, vidéo ou carrousel pour ton fil', 11, Color(0xFF57545F), lh: 15, wrap: true)),
       gP(327, 183, 30, 30, gBox(color: Color(0xFFF4F1F8), oval: true)),
       gP(337.375, 191.75, 9.25, 12.5, gImg('assets/figma/v/7fc706b238185f.svg')),
-      gP(44, 288, 80, 80, gBox(image: 'assets/figma/img/d5a96228e65dc2920e40cfac9b1205c2faee3caf.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
+      gP(44, 288, 80, 80, gBox(image: 'assets/figma/img/d5a96228e65dc2920e40cfac9b1205c2faee3caf.png', fit: BoxFit.cover, radii: [22, 22, 22, 22]), show: demoContent),
+      if (!demoContent) gP(44, 288, 80, 80, _creerTile(Icons.movie_creation_outlined, const Color(0xFFFF4B6E), const Color(0xFFFF8A3D))),
       gP(142, 298, 32, 19, gText('Reel', 15, Color(0xFF111015), weight: 600)),
       gP(142, 322, 173, 30, gText('Vidéo verticale courte, plein écran', 11, Color(0xFF57545F), lh: 15, wrap: true)),
       gP(327, 311, 30, 30, gBox(color: Color(0xFFF4F1F8), oval: true)),
       gP(337.375, 319.75, 9.25, 12.5, gImg('assets/figma/v/7fc706b238185f.svg')),
-      gP(44, 416, 80, 80, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
+      gP(44, 416, 80, 80, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [22, 22, 22, 22]), show: demoContent),
+      if (!demoContent) gP(44, 416, 80, 80, _creerTile(Icons.sensors, const Color(0xFFFF2D55), const Color(0xFF9B7BFF))),
       gP(142, 426, 30, 19, gText('Live', 15, Color(0xFF111015), weight: 600), fx: 'pulse'),
       gP(142, 450, 173, 15, gText('Direct sans seuil d’abonnés', 11, Color(0xFF57545F), lh: 15, wrap: true)),
       gP(327, 439, 30, 30, gBox(color: Color(0xFFF4F1F8), oval: true)),
       gP(337.375, 447.75, 9.25, 12.5, gImg('assets/figma/v/7fc706b238185f.svg')),
-      gP(44, 544, 80, 80, gBox(image: 'assets/figma/img/4ca68f79023605aecb4f83724629d508e921e885.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
+      gP(44, 544, 80, 80, gBox(image: 'assets/figma/img/4ca68f79023605aecb4f83724629d508e921e885.png', fit: BoxFit.cover, radii: [22, 22, 22, 22]), show: demoContent),
+      if (!demoContent) gP(44, 544, 80, 80, _creerTile(Icons.storefront_outlined, const Color(0xFF2F7DF6), const Color(0xFF9B7BFF))),
       gP(142, 554, 139, 19, gText('Article de boutique', 15, Color(0xFF111015), weight: 600)),
       gP(142, 578, 173, 15, gText('Produit, service ou offre', 11, Color(0xFF57545F), lh: 15, wrap: true)),
       gP(327, 567, 30, 30, gBox(color: Color(0xFFF4F1F8), oval: true)),
       gP(337.375, 575.75, 9.25, 12.5, gImg('assets/figma/v/7fc706b238185f.svg')),
-      gP(51, 695, 12.75, 6, gImg('assets/figma/v/077154502d192d.svg')),
-      gP(44.25, 682.159, 18.841, 18.841, gImg('assets/figma/v/80acba5fb06071.svg')),
+      gP(51, 687.5, 12.75, 6, gImg('assets/figma/v/077154502d192d.svg')),
+      gP(44.25, 674.659, 18.841, 18.841, gImg('assets/figma/v/80acba5fb06071.svg')),
       gP(82, 676, 63, 16, gText('Brouillons', 13, Color(0xFF111015), weight: 600)),
       gP(82, 696, 143, 13, gText(gm('2 publications non terminées', ''), 10.5, Color(0xFF57545F))),
       gP(272, 682, 78, 25, gBox(color: Color(0xFFEEE9FF), radii: [100, 100, 100, 100])),

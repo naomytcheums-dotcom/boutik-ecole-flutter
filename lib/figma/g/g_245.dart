@@ -40,7 +40,8 @@ class G_245 extends ConsumerWidget {
       gP(0, 110, 316, 480, GestureDetector(behavior: HitTestBehavior.translucent, onVerticalDragEnd: (d) { if (!demoContent) moveReel(ref, (d.primaryVelocity ?? 0) < 0 ? 1 : -1); }, child: const SizedBox.expand())),
       gP(30, 14, 28, 18, gText('9:41', 14, Color(0xFFFFFFFF), weight: 600)),
       gP(140, 10, 110, 30, gBox(color: Color(0xFF000000), radii: [15, 15, 15, 15])),
-      gP(24, 62, 58, 28, gText('Reels', 22, Color(0xFFFFFFFF), weight: 600)),
+      gP(demoContent ? 24 : 78, 62, 58, 28, gText('Reels', 22, Color(0xFFFFFFFF), weight: 600)),
+      if (!demoContent) gP(24, 56, 40, 40, GestureDetector(behavior: HitTestBehavior.opaque, onTap: () => gBack(context), child: Semantics(button: true, label: 'Retour', child: Container(decoration: BoxDecoration(color: const Color(0x8CFFFFFF), shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 1.5)), child: const Icon(Icons.arrow_back, size: 20, color: Color(0xFF111015)))))),
       gP(324, 56, 40, 40, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
       gP(333.917, 67.333, 20.167, 17.333, gImg('assets/figma/v/d6b1a9cf24c644.svg')),
       gP(338.875, 71.583, 10.25, 10.25, gImg('assets/figma/v/6d51bbc13363b0.svg')),
@@ -98,6 +99,7 @@ class G_245 extends ConsumerWidget {
       if (demoContent) gTap(336, 382, 20, 20, () => gOpen(context, '252')),
       if (demoContent) gTap(336, 568, 20, 20, () => gOpen(context, '248')),
       gTap(22, 612, 40, 40, () => gOpenProfile(context, ref.read(currentReelProvider)?.authorId ?? '')),
+      if (!demoContent) gTap(324, 56, 40, 40, () => gOpen(context, '249')),
       if (demoContent) gTap(320, 470, 52, 32, () { uiCopy(context, uiLink('245'), 'Lien du reel'); if (!demoContent) recordReelShare(ref); }), // audit 01/11 : « Partager » n'avait aucun effet
       gTap(160, 610, 77, 25, () { demoContent ? uiFollow(context) : toggleFollowReelAuthor(context, ref); }),
       if (demoContent) gTap(324, 494, 44, 44, () { demoContent ? gToast(context, 'Publication enregistrée (démonstration)') : saveCurrentReel(context, ref); }), // audit 01/11 : « S’abonner » n'avait aucun effet

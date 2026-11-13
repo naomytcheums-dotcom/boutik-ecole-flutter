@@ -1060,8 +1060,16 @@ Future<void> publishPost(BuildContext context, WidgetRef ref) async {
   );
 }
 
+/// Formulaire de publication en pleine page (écran 250) : même logique que le volet, sans l'habillage du volet.
+class PostComposerBody extends StatelessWidget {
+  const PostComposerBody({super.key});
+  @override
+  Widget build(BuildContext context) => const _ComposerSheet(page: true);
+}
+
 class _ComposerSheet extends ConsumerStatefulWidget {
-  const _ComposerSheet();
+  const _ComposerSheet({this.page = false});
+  final bool page;
   @override
   ConsumerState<_ComposerSheet> createState() => _ComposerSheetState();
 }
@@ -1157,7 +1165,7 @@ class _ComposerSheetState extends ConsumerState<_ComposerSheet> {
       final nav = Navigator.of(context);
       final messenger = ScaffoldMessenger.maybeOf(context);
       final when = _at!;
-      nav.pop();
+      widget.page ? gBack(context) : nav.pop();
       messenger?.showSnackBar(SnackBar(content: Text('Publication programmée le ${_fmt(when)}'), behavior: SnackBarBehavior.floating));
       return;
     }
@@ -1178,22 +1186,12 @@ class _ComposerSheetState extends ConsumerState<_ComposerSheet> {
     if (!mounted) return;
     final nav = Navigator.of(context);
     final messenger = ScaffoldMessenger.maybeOf(context);
-    nav.pop();
+    widget.page ? gBack(context) : nav.pop();
     messenger?.showSnackBar(SnackBar(content: Text(st == 'published' ? 'Publication en ligne' : 'Publication envoyée : elle sera visible après validation par le département'), behavior: SnackBarBehavior.floating));
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final mq = MediaQuery.of(context);
-    return Padding(
-      padding: EdgeInsets.only(bottom: mq.viewInsets.bottom),
-      child: Container(
-        constraints: BoxConstraints(maxHeight: mq.size.height * 0.85),
-        decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(18))),
-        padding: EdgeInsets.fromLTRB(16, 12, 16, 14 + (mq.viewInsets.bottom > 0 ? 0 : mq.viewPadding.bottom)),
-        child: SingleChildScrollView(
-          child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            Row(children: [
+  Widget _form() => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            if (!widget.page) Row(children: [
               Expanded(child: Text('Nouvelle publication', style: sty(16, w: FontWeight.w700))),
               IconButton(onPressed: _busy ? null : () => Navigator.of(context).pop(), icon: const Icon(Icons.close)),
             ]),
@@ -1230,7 +1228,26 @@ class _ComposerSheetState extends ConsumerState<_ComposerSheet> {
                 child: _busy ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)) : Text(_at == null ? 'Publier' : 'Programmer', style: sty(14, w: FontWeight.w700, c: Colors.white)),
               )),
             if (_busy) Padding(padding: const EdgeInsets.only(top: 6), child: Text(_step, style: sty(12, c: kGrey))),
-          ]),
+          ]);
+
+  @override
+  Widget build(BuildContext context) {
+    final mq = MediaQuery.of(context);
+    if (widget.page) {
+      return Container(
+        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(24), boxShadow: const [BoxShadow(color: Color(0x14403366), blurRadius: 16, offset: Offset(0, 6))]),
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+        child: _form(),
+      );
+    }
+    return Padding(
+      padding: EdgeInsets.only(bottom: mq.viewInsets.bottom),
+      child: Container(
+        constraints: BoxConstraints(maxHeight: mq.size.height * 0.85),
+        decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(18))),
+        padding: EdgeInsets.fromLTRB(16, 12, 16, 14 + (mq.viewInsets.bottom > 0 ? 0 : mq.viewPadding.bottom)),
+        child: SingleChildScrollView(
+          child: _form(),
         ),
       ),
     );

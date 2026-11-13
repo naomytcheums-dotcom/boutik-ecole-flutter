@@ -93,8 +93,8 @@ class G_L1 extends ConsumerWidget {
       gP(248, 746, 54, 12, gText('Non éligible', 9.5, Color(0xFFB26A00)), show: demoContent),
       gP(332.875, 742.542, 14.25, 11.042, gImg('assets/figma/v/2af36c9e23ec90.svg'), show: demoContent),
       gP(334.708, 738.417, 10.583, 10.125, gImg('assets/figma/v/ba7c6cc74be2bd.svg'), show: demoContent),
-      gP(24, 792, 342, 44, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x40403366), offset: Offset(0, 8), blurRadius: 18, spreadRadius: 0)], radii: [22, 22, 22, 22]), tap: () => unavailableAction(context, 'Diffusion indisponible', 'La diffusion vidéo en direct nécessite un service de streaming qui n’est pas encore raccordé. Programmez votre live depuis « Programmer un live ».')),
-      gP(153.5, 804, 83, 17, gText('Lancer le live', 13.5, Color(0xFFFFFFFF), weight: 600)),
+      gP(24, 792, 342, 44, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x40403366), offset: Offset(0, 8), blurRadius: 18, spreadRadius: 0)], radii: [22, 22, 22, 22]), tap: () => unavailableAction(context, 'Diffusion indisponible', 'La diffusion vidéo en direct nécessite un service de streaming qui n’est pas encore raccordé. Programmez votre live depuis « Programmer un live ».'), show: demoContent),
+      gP(153.5, 804, 83, 17, gText('Lancer le live', 13.5, Color(0xFFFFFFFF), weight: 600), show: demoContent),
       if (!demoContent) gP(0, 0, 390, 844, const LiveHostEntry()),
     ]);
   }

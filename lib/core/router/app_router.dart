@@ -23,6 +23,7 @@ import '../../figma/live/communities.dart' show CommunityScreen;
 import '../../figma/live/community_explore.dart';
 import '../../figma/live/concours_screens.dart';
 import '../../figma/live/company_home.dart';
+import '../../figma/live/company_profile_page.dart';
 import '../../figma/live/company_screens.dart';
 import '../../figma/live/company_team.dart';
 import '../../figma/live/student_profile.dart';
@@ -68,6 +69,7 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/marche/promotions', builder: (_, _) => const PromotionsAdminScreen()),
     GoRoute(path: '/concours', builder: (_, _) => const ContestAnnouncementsScreen()),
     GoRoute(path: '/litiges', builder: (_, _) => const DisputesScreen()),
+    GoRoute(path: '/entreprise/vue/:owner', builder: (_, s) => CompanyPublicProfileScreen(owner: s.pathParameters['owner'] ?? '', showNav: false)),
     GoRoute(path: '/entreprise/profil', builder: (_, _) => const CompanyProfileScreen()),
     GoRoute(path: '/admin/entreprises', builder: (_, _) => const CompanyReviewScreen()),
     GoRoute(path: '/admin/forfaits', builder: (_, _) => const CompanyPlansAdminScreen()),

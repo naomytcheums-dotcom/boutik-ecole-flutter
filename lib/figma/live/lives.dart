@@ -86,7 +86,7 @@ Future<({String? url, String? token, String? error, String role})> fetchLiveToke
     if (e.status == 503) return (url: null, token: null, error: 'La diffusion en direct n’est pas encore activée sur ce serveur (clés du fournisseur vidéo à configurer).', role: 'viewer');
     return (url: null, token: null, error: d is Map && d['message'] != null ? '${d['message']}' : 'La connexion au direct a échoué (code ${e.status}).', role: 'viewer');
   } catch (_) {
-    return (url: null, token: null, error: 'Connexion impossible. Vérifiez votre réseau puis réessayez.', role: 'viewer');
+    return (url: null, token: null, error: Backend.serviceDownMessage(), role: 'viewer');
   }
 }
 
@@ -862,7 +862,7 @@ class _LiveViewerState extends ConsumerState<LiveViewer> {
     await _transport.disconnect();
     final t = await fetchLiveToken(id);
     if (!mounted) return;
-    if (t.token == null) return gToast(context, t.error ?? 'Connexion impossible.');
+    if (t.token == null) return gToast(context, t.error ?? Backend.serviceDownMessage());
     String? failure;
     await _transport.connect(url: t.url!, token: t.token!, publish: publish && t.role == 'cohost', onState: (s) {
       if (mounted) setState(() => _conn = s);
@@ -1153,7 +1153,7 @@ class _GiftSheetState extends ConsumerState<_GiftSheet> {
     final r = await Backend.rpc('send_gift', {'p_live': widget.liveId, 'p_gift': g.code, 'p_qty': _qty, 'p_key': _key});
     if (!mounted) return;
     setState(() => _busy = false);
-    final networkError = r.error != null && Backend.userMessage(r.error!).startsWith('Connexion impossible');
+    final networkError = r.error != null && Backend.isServiceMessage(Backend.userMessage(r.error!));
     if (r.error != null) {
       if (!networkError) _key = null; // refus définitif du serveur : le prochain essai sera une nouvelle transaction
       return gToast(context, networkError ? 'Réseau indisponible : touchez « Envoyer » pour réessayer, vous ne serez débité qu’une fois.' : Backend.userMessage(r.error!));

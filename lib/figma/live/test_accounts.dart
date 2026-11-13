@@ -59,7 +59,7 @@ Future<({Map<String, dynamic>? data, String? error})> _fn(Map<String, dynamic> b
     final d = e.details;
     return (data: null, error: d is Map && d['message'] != null ? '${d['message']}' : 'Action refusée (${e.status})');
   } catch (e) {
-    return (data: null, error: 'Connexion impossible. Vérifiez votre réseau.');
+    return (data: null, error: 'Le service ne répond pas pour le moment. Réessayez dans un instant.');
   }
 }
 

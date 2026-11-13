@@ -89,7 +89,7 @@ Future<Map<String, dynamic>?> _call(Map<String, dynamic> body) async {
     final d = e.details;
     return d is Map ? Map<String, dynamic>.from(d) : {'error': 'server', 'message': '$d'};
   } catch (_) {
-    return {'error': 'network', 'message': 'Connexion impossible au serveur de paiement.'};
+    return {'error': 'network', 'message': 'Le service de paiement ne répond pas pour le moment. Réessayez dans un instant.'};
   }
 }
 

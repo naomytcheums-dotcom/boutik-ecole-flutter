@@ -34,5 +34,5 @@ String roomErrorMessage(String code) => switch (code) {
       'unsupported' => 'Les salons vocaux fonctionnent dans le navigateur (Chrome, Safari, Firefox). Ils ne sont pas encore activés dans l’application installée.',
       'autoplay_blocked' => 'Touchez l’écran pour activer le son des autres participants.',
       'screen_unsupported' => 'Le partage d’écran n’est pas proposé par ce navigateur (il fonctionne sur ordinateur).',
-      _ => 'La connexion au salon a échoué. Vérifiez votre réseau puis réessayez.',
+      _ => 'La connexion au salon a échoué. Réessayez dans un instant.',
     };

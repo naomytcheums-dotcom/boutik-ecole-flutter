@@ -17,6 +17,8 @@ import 'services.dart';
 
 Future<void> _livraisonVendeur(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/marche/livraison');
 Future<void> _livraisonPlateforme(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/marche/livraison?plateforme=1');
+Future<void> _accueilCommun(BuildContext context, WidgetRef ref) async => GoRouter.of(context).go('/s/03?vue=standard');
+Future<void> _marketplace(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/marche');
 Future<void> _innovations(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/innovations');
 Future<void> _concours(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/concours');
 Future<void> _mentors(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/mentors');
@@ -53,6 +55,10 @@ Future<void> _reclamations(BuildContext c, WidgetRef r) => claimsDialog(c, r);
 Future<void> _assign(BuildContext c, WidgetRef r) => assignNeedDialog(c, r);
 
 final _groups = <_Group>[
+  const _Group('Pages de base', [
+    _Entry('Accueil Boutik-École', action: _accueilCommun),
+    _Entry('Marketplace', action: _marketplace),
+  ]),
   const _Group('Mes achats', [
     _Entry('Mes commandes', screen: '45'),
     _Entry('Mes favoris', screen: '25'),
@@ -89,19 +95,19 @@ final _groups = <_Group>[
     _Entry('Alertes et opportunités', screen: '155'),
   ]),
   const _Group('Espace étudiant-vendeur', [
-    _Entry('Tableau de bord', screen: '57', roles: {'student', 'dept', 'admin'}),
-    _Entry('Mes annonces', screen: '58', roles: {'student', 'dept', 'admin'}),
-    _Entry('Commandes reçues', screen: '63', roles: {'student', 'dept', 'admin'}),
-    _Entry('Mes tarifs de livraison', action: _livraisonVendeur, roles: {'student', 'dept', 'admin'}),
-    _Entry('Stocks', screen: '62', roles: {'student', 'dept', 'admin'}),
-    _Entry('Revenus', screen: '66', roles: {'student', 'dept', 'admin'}),
-    _Entry('Statistiques', screen: '67', roles: {'student', 'dept', 'admin'}),
+    _Entry('Tableau de bord', screen: '57', roles: {'student'}),
+    _Entry('Mes annonces', screen: '58', roles: {'student'}),
+    _Entry('Commandes reçues', screen: '63', roles: {'student'}),
+    _Entry('Mes tarifs de livraison', action: _livraisonVendeur, roles: {'student'}),
+    _Entry('Stocks', screen: '62', roles: {'student'}),
+    _Entry('Revenus', screen: '66', roles: {'student'}),
+    _Entry('Statistiques', screen: '67', roles: {'student'}),
     _Entry('Mes documents', screen: '73', roles: {'student', 'dept', 'admin'}),
-    _Entry('Publier un service', screen: '59', roles: {'student', 'dept', 'admin'}),
-    _Entry('Conformité du compte', screen: '69', roles: {'student', 'dept', 'admin'}),
+    _Entry('Publier un service', screen: '59', roles: {'student'}),
+    _Entry('Conformité du compte', screen: '69', roles: {'student'}),
     _Entry('Opportunités', screen: '75', roles: {'student', 'dept', 'admin'}),
     _Entry('Mon CV vivant', screen: '227', roles: {'student', 'dept', 'admin'}),
-    _Entry('Tableau de bord du studio', screen: 'D1', roles: {'student', 'dept', 'admin'}),
+    _Entry('Tableau de bord du studio', screen: 'D1', roles: {'student'}),
     _Entry('Connecter mes outils', screen: 'P5', roles: {'student', 'dept', 'admin'}),
     _Entry('Aller en direct', screen: 'L1', roles: {'student', 'dept', 'admin'}),
     _Entry('Programmer un live', screen: '224', roles: {'student', 'dept', 'admin'}),

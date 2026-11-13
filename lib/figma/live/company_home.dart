@@ -6,6 +6,7 @@ import '../gen.dart' show gAlert, gToast;
 import '../i18n.dart' show Text;
 import 'auth.dart';
 import 'backend.dart';
+import 'account_menu.dart' show accountMenu;
 import 'coequipiers_screens.dart' show MateNavPill;
 import 'company_screens.dart' show companyContextProvider, companyRoleLabels, companyStatusColor, companyStatusLabel;
 import 'marche/marche_data.dart';
@@ -87,7 +88,7 @@ class CompanyHomeScreen extends ConsumerWidget {
             final status = '${x['status']}' == 'none' ? 'draft' : '${x['status']}';
             int n(String k) => (x[k] as num?)?.toInt() ?? 0;
             return ListView(padding: const EdgeInsets.fromLTRB(11, 12, 11, 130), children: [
-              Padding(padding: const EdgeInsets.fromLTRB(5, 0, 5, 4), child: Text('${x['company_name'] ?? 'Mon entreprise'}', style: mst(22, w: FontWeight.w800))),
+              Padding(padding: const EdgeInsets.fromLTRB(5, 0, 0, 4), child: Row(children: [Expanded(child: Text('${x['company_name'] ?? 'Mon entreprise'}', style: mst(22, w: FontWeight.w800))), IconButton(tooltip: 'Menu du compte', onPressed: () => accountMenu(context, ref), icon: const Icon(Icons.menu_rounded, color: kInk))])),
               if (shared) Padding(padding: const EdgeInsets.fromLTRB(5, 0, 5, 8), child: Text('Vous êtes ${companyRoleLabels['${x['my_role']}'] ?? x['my_role']} de cette entreprise.', style: mst(12.5, w: FontWeight.w600, c: kViolet)))
               else const SizedBox(height: 4),
               GestureDetector(

@@ -110,58 +110,82 @@ class CircleFeed extends ConsumerWidget {
   }
 }
 
-/// Les trois vidéos phares du profil (écran 10, derrière la photo) : les trois dernières vidéos publiées par la personne connectée.
-/// Un emplacement libre invite à publier une vidéo ; rien n'est inventé.
-/// Ajoute une photo ou une vidéo à la couverture du profil : ouvre directement la galerie ou le sélecteur de fichiers, sans texte ni lien.
-Future<void> _addCover(BuildContext context, WidgetRef ref) async {
+/// Les trois couvertures du profil (écran 10, derrière la photo) : photos ou vidéos de la personne, enregistrées tout de suite (table
+/// profile_covers). Un emplacement libre invite à ajouter une photo ou une vidéo ; rien n'est inventé.
+final profileCoversProvider = FutureProvider.autoDispose.family<Map<int, ({String path, String kind})>, String>((ref, userId) async {
+  ref.watch(authProvider.select((a) => a.current?.serverId));
+  final r = await Backend.rpc('profile_covers_get', {if (userId.isNotEmpty) 'p_user': userId});
+  if (r.error != null || r.data is! List) return const {};
+  return {for (final x in r.data as List) (x['slot'] as num).toInt(): (path: '${x['path']}', kind: '${x['kind']}')};
+});
+
+Future<void> _addCover(BuildContext context, WidgetRef ref, int slot) async {
   if (!Backend.ready) return;
   if (!await requireLogin(context, ref, 'ajouter une couverture') || !context.mounted) return;
   final p = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: const ['jpg', 'jpeg', 'png', 'webp', 'mp4', 'mov']);
   if (p.isEmpty || !context.mounted) return;
   final up = await uploadPostMedia(context, p.first);
   if (up == null || !context.mounted) return;
-  final res = await Backend.rpc('create_post_v2', {'p_caption': '', 'p_media': [{'path': up.path, 'kind': up.kind}], 'p_link': null, 'p_tags': const <String>[], 'p_listing': null, 'p_repost_of': null});
+  final res = await Backend.rpc('profile_cover_set', {'p_slot': slot, 'p_path': up.path, 'p_kind': up.kind});
   if (!context.mounted) return;
   if (res.error != null) return gAlert(context, 'Ajout impossible', Backend.userMessage(res.error!));
-  await ref.read(reelsProvider.notifier).refresh();
+  ref.invalidate(profileCoversProvider);
+}
+
+Future<void> _coverMenu(BuildContext context, WidgetRef ref, int slot) async {
+  final choice = await showModalBottomSheet<String>(
+    context: context,
+    backgroundColor: Colors.white,
+    builder: (c) => SafeArea(
+      child: Column(mainAxisSize: MainAxisSize.min, children: [
+        ListTile(leading: const Icon(Icons.swap_horiz), title: Text('Remplacer'), onTap: () => Navigator.pop(c, 'replace')),
+        ListTile(leading: const Icon(Icons.delete_outline), title: Text('Supprimer'), onTap: () => Navigator.pop(c, 'delete')),
+      ]),
+    ),
+  );
+  if (choice == null || !context.mounted) return;
+  if (choice == 'replace') return _addCover(context, ref, slot);
+  final res = await Backend.rpc('profile_cover_clear', {'p_slot': slot});
+  if (!context.mounted) return;
+  if (res.error != null) return gAlert(context, 'Suppression impossible', Backend.userMessage(res.error!));
+  ref.invalidate(profileCoversProvider);
 }
 
 class FeaturedVideo extends ConsumerWidget {
-  const FeaturedVideo({super.key, required this.slot});
+  const FeaturedVideo({super.key, required this.slot, this.userId});
   final int slot;
+
+  /// Profil d'une autre personne (lecture seule) ; vide : le mien.
+  final String? userId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final me = ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
-    final all = ref.watch(reelsProvider) ?? const <Reel>[];
-    final mine = [for (final r in all) if (r.mediaUrl.isNotEmpty && me.isNotEmpty && r.authorId == me) r];
-    final v = slot < mine.length ? mine[slot] : null;
+    final who = (userId ?? '').isNotEmpty ? userId! : me;
+    final mineView = who == me;
+    final covers = who.isEmpty ? const <int, ({String path, String kind})>{} : (ref.watch(profileCoversProvider(mineView ? '' : who)).value ?? const <int, ({String path, String kind})>{});
+    final c = covers[slot];
     const radius = BorderRadius.all(Radius.circular(26));
-    if (v == null) {
-      return GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () => _addCover(context, ref),
-        child: Container(
-          decoration: BoxDecoration(color: const Color(0x66FFFFFF), borderRadius: radius, border: Border.all(color: const Color(0xCCFFFFFF), width: 1.2)),
-          alignment: Alignment.center,
-          child: const Icon(Icons.add_circle_outline, size: 34, color: _grey, semanticLabel: 'Ajouter une photo ou une vidéo'),
-        ),
+    if (c == null) {
+      final box = Container(
+        decoration: BoxDecoration(color: const Color(0x66FFFFFF), borderRadius: radius, border: Border.all(color: const Color(0xCCFFFFFF), width: 1.2)),
+        alignment: Alignment.center,
+        child: mineView ? const Icon(Icons.add_circle_outline, size: 34, color: _grey, semanticLabel: 'Ajouter une photo ou une vidéo') : null,
       );
+      return mineView ? GestureDetector(behavior: HitTestBehavior.opaque, onTap: () => _addCover(context, ref, slot), child: box) : box;
     }
+    final video = c.kind == 'video';
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () {
-        ref.read(reelIndexProvider.notifier).set(all.indexWhere((r) => r.id == v.id).clamp(0, all.length - 1));
-        gOpen(context, '245');
-      },
+      onTap: mineView ? () => _coverMenu(context, ref, slot) : null,
       child: ClipRRect(
         borderRadius: radius,
         child: Stack(fit: StackFit.expand, children: [
-          if (v.video)
+          if (video)
             const DecoratedBox(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0xFF2A2833), Color(0xFF0E0F14)])))
           else
-            gNetImage(v.mediaUrl, fit: BoxFit.cover, errorBuilder: (_, _, _) => const ColoredBox(color: Color(0xFFEDE9F6))),
-          if (v.video) const Center(child: Icon(Icons.play_circle_fill, color: Colors.white, size: 40)),
+            gNetImage(Backend.postMediaUrl(c.path), fit: BoxFit.cover, errorBuilder: (_, _, _) => const ColoredBox(color: Color(0xFFEDE9F6))),
+          if (video) const Center(child: Icon(Icons.play_circle_fill, color: Colors.white, size: 40)),
         ]),
       ),
     );

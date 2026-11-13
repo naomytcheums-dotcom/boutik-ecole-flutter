@@ -47,7 +47,7 @@ Set<String>? allowedRoles(String id) {
   const admin = 'admin';
   // Demande de devis : tout compte connecté peut en adresser une à un prestataire (pas seulement les entreprises).
   if (id == '95b') return {'client', 'student', 'company', 'other', 'dept', admin};
-  if (n >= 57 && n <= 69) return {'student', 'dept', admin};
+  if (n >= 57 && n <= 69) return {'student', admin}; // espace vendeur : étudiants-vendeurs ; l'administrateur peut le consulter (la création de boutique reste refusée aux autres rôles par le serveur)
   if ((n >= 88 && n <= 99) || (n >= 187 && n <= 190)) return {'company', admin};
   if (n >= 108 && n <= 116) return {'dept', 'direction', admin};
   if (n >= 117 && n <= 126) return {'direction', admin};

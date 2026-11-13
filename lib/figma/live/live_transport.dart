@@ -29,5 +29,5 @@ String liveErrorMessage(String code) => switch (code) {
       'device_busy' => 'La caméra ou le micro est utilisé par une autre application. Fermez-la puis réessayez.',
       'sdk_unavailable' => 'Le module de diffusion n’a pas pu être chargé. Vérifiez votre connexion puis réessayez.',
       'unsupported' => 'La diffusion en direct est disponible dans le navigateur (Chrome, Safari, Firefox). Elle n’est pas encore activée dans l’application installée.',
-      _ => 'La connexion au direct a échoué. Vérifiez votre réseau puis réessayez.',
+      _ => 'La connexion au direct a échoué. Réessayez dans un instant.',
     };

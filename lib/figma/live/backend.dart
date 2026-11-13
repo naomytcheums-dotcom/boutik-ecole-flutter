@@ -1,3 +1,4 @@
+import 'connectivity_stub.dart' if (dart.library.js_interop) 'connectivity_web.dart' show browserOnline;
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
@@ -1074,10 +1075,15 @@ class Backend {
 
   /// Message affichable pour une erreur du serveur : un texte technique (refus de permission, fonction, JWT, SQL) n'est jamais
   /// montré à l'utilisateur ; seuls les messages métier lisibles (français, sans vocabulaire technique) sont conservés.
+  /// Message quand le service ne répond pas. Le faux « connexion impossible, vérifiez votre réseau » est supprimé : on ne parle de réseau
+  /// que si le navigateur lui-même se dit hors ligne.
+  static String serviceDownMessage() => browserOnline() ? 'Le service ne répond pas pour le moment. Réessayez dans un instant.' : 'Vous êtes hors ligne. Reconnectez-vous puis réessayez.';
+  static bool isServiceMessage(String m) => m == 'Le service ne répond pas pour le moment. Réessayez dans un instant.' || m == 'Vous êtes hors ligne. Reconnectez-vous puis réessayez.';
+
   static String userMessage(String raw) {
     final low = raw.toLowerCase();
     const reseau = ['socketexception', 'clientexception', 'failed host lookup', 'xmlhttprequest', 'connection closed', 'connection refused', 'network', 'handshake', 'timeoutexception'];
-    if (reseau.any(low.contains)) return 'Connexion impossible. Vérifiez votre réseau puis réessayez.';
+    if (reseau.any(low.contains)) return serviceDownMessage();
     const technique = ['permission denied', 'function', 'exception', 'stack', 'dart', 'postgrest', 'jwt', 'violates', 'row-level', 'rls', 'syntax', 'relation ', 'column ', 'null value', 'pgrst', 'not authenticated', 'unauthorized'];
     if (low.contains('not authenticated') || low.contains('jwt') || low.contains('unauthorized')) return 'Votre session a expiré. Reconnectez-vous puis réessayez.';
     if (technique.any(low.contains)) return 'Cette action n’est pas disponible pour votre compte pour le moment. Si le problème continue, contactez le support.';
@@ -1234,7 +1240,7 @@ class Backend {
     } on PostgrestException catch (e) {
       return e.message;
     } catch (_) {
-      return 'Connexion impossible au serveur.';
+      return serviceDownMessage();
     }
   }
 
@@ -1268,7 +1274,7 @@ class Backend {
     } on PostgrestException catch (e) {
       if (e.code != 'PGRST202' && e.code != '42883') return {'error': e.message};
     } catch (_) {
-      return {'error': 'Connexion impossible au serveur.'};
+      return {'error': serviceDownMessage()};
     }
     // Serveur sans marketplace (migration non appliquée) : ancienne fonction, mêmes règles de stock et de prix.
     try {
@@ -1282,7 +1288,7 @@ class Backend {
     } on PostgrestException catch (e) {
       return {'error': e.message};
     } catch (_) {
-      return {'error': 'Connexion impossible au serveur.'};
+      return {'error': serviceDownMessage()};
     }
   }
 

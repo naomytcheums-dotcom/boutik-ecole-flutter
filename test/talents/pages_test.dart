@@ -63,6 +63,22 @@ void main() {
     expect(picked, 'Architecture');
   });
 
+  testWidgets('sélecteur : la ligne « Autre » reste visible en haut, même avec une très longue liste', (tester) async {
+    tester.view.physicalSize = const Size(390, 700);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(_wrap(Scaffold(
+      body: Builder(builder: (c) => TextButton(onPressed: () => tpPick(c, 'Catégorie', [for (var i = 0; i < 80; i++) 'Domaine $i'], customLabel: 'Autre catégorie (saisir)'), child: const Text('ouvrir'))),
+    )));
+    await tester.tap(find.text('ouvrir'));
+    await tester.pumpAndSettle();
+    final autre = find.text('Autre catégorie (saisir)');
+    expect(autre, findsOneWidget);
+    // visible dans l'écran sans défiler
+    expect(tester.getTopLeft(autre).dy, lessThan(700));
+    expect(find.text('Domaine 79'), findsNothing);
+  });
+
   test('catalogue : domaines, métiers et compétences s’adaptent au choix', () {
     final c = SkillCatalog([
       {'domain': 'Génie civil', 'job': '', 'skill': ''},

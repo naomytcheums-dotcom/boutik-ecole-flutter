@@ -356,7 +356,17 @@ class _PickSheetState extends State<_PickSheet> {
                 padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
                 child: TpButton('Utiliser « ${q.text.trim()} »', q.text.trim().length >= 2 ? () => Navigator.of(context).pop(q.text.trim()) : null),
               )
-            else
+            else ...[
+              if (widget.allowCustom)
+                ListTile(
+                  dense: true,
+                  leading: const Icon(Icons.add_circle_outline, color: tpViolet),
+                  title: Text(widget.customLabel, style: tpSt(14.5, w: FontWeight.w700, c: tpViolet)),
+                  onTap: () => setState(() {
+                    custom = true;
+                    q.clear();
+                  }),
+                ),
               Flexible(
                 child: ListView(shrinkWrap: true, children: [
                   for (final o in shown)
@@ -367,18 +377,9 @@ class _PickSheetState extends State<_PickSheet> {
                       onTap: () => Navigator.of(context).pop(o),
                     ),
                   if (shown.isEmpty && !widget.allowCustom) Padding(padding: const EdgeInsets.all(20), child: Text('Aucun résultat.', style: tpSt(13, c: tpGrey))),
-                  if (widget.allowCustom)
-                    ListTile(
-                      dense: true,
-                      leading: const Icon(Icons.add_circle_outline, color: tpViolet),
-                      title: Text(widget.customLabel, style: tpSt(14.5, w: FontWeight.w700, c: tpViolet)),
-                      onTap: () => setState(() {
-                        custom = true;
-                        q.clear();
-                      }),
-                    ),
                 ]),
               ),
+            ],
           ]),
         ),
       ),

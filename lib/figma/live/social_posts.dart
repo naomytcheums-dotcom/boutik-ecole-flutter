@@ -1,3 +1,4 @@
+import 'form_options.dart' show pickDate;
 import '../gdata.dart' show GData, gNetImage;
 import 'dart:async';
 import 'dart:math' as math;
@@ -1096,7 +1097,7 @@ class _ComposerSheetState extends ConsumerState<_ComposerSheet> {
   Future<void> _pickSchedule() async {
     if (_at != null) return setState(() => _at = null);
     final now = DateTime.now();
-    final d = await showDatePicker(context: context, initialDate: now.add(const Duration(days: 1)), firstDate: now, lastDate: now.add(const Duration(days: 183)), helpText: 'Date de publication');
+    final d = await pickDate(context: context, initialDate: now.add(const Duration(days: 1)), firstDate: now, lastDate: now.add(const Duration(days: 183)), helpText: 'Date de publication');
     if (d == null || !mounted) return;
     final t = await showTimePicker(context: context, initialTime: const TimeOfDay(hour: 9, minute: 0), helpText: 'Heure de publication');
     if (t == null || !mounted) return;

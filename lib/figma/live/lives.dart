@@ -1,3 +1,4 @@
+import 'form_options.dart' show pickDate;
 import '../gdata.dart' show gNetImage;
 import 'dart:async';
 import 'dart:math' as math;
@@ -275,7 +276,7 @@ class _LiveCreateFormState extends ConsumerState<LiveCreateForm> {
   }
 
   Future<void> _pickWhen() async {
-    final d = await showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime.now().add(const Duration(days: 90)));
+    final d = await pickDate(context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime.now().add(const Duration(days: 90)));
     if (d == null || !mounted) return;
     final t = await showTimePicker(context: context, initialTime: TimeOfDay.now());
     if (t == null || !mounted) return;

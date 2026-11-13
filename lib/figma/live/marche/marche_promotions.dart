@@ -1,3 +1,4 @@
+import '../form_options.dart' show pickDate;
 import 'package:flutter/material.dart' hide Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -65,14 +66,14 @@ class PromotionsAdminScreen extends ConsumerWidget {
               Row(children: [
                 Expanded(
                   child: mButton('Début : ${_date(from.toIso8601String())}', () async {
-                    final d = await showDatePicker(context: c, initialDate: from, firstDate: DateTime.now().subtract(const Duration(days: 1)), lastDate: DateTime.now().add(const Duration(days: 730)));
+                    final d = await pickDate(context: c, initialDate: from, firstDate: DateTime.now().subtract(const Duration(days: 1)), lastDate: DateTime.now().add(const Duration(days: 730)));
                     if (d != null) set(() => from = d);
                   }, dark: false),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: mButton('Fin : ${_date(to.toIso8601String())}', () async {
-                    final d = await showDatePicker(context: c, initialDate: to.isBefore(from) ? from : to, firstDate: from, lastDate: DateTime.now().add(const Duration(days: 1095)));
+                    final d = await pickDate(context: c, initialDate: to.isBefore(from) ? from : to, firstDate: from, lastDate: DateTime.now().add(const Duration(days: 1095)));
                     if (d != null) set(() => to = d);
                   }, dark: false),
                 ),

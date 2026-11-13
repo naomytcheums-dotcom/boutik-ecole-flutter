@@ -111,3 +111,28 @@ class MultiPickField extends StatelessWidget {
     );
   }
 }
+
+/// Sélecteur de date qui ne se coupe pas : le texte est ramené à une taille normale dans la fenêtre (une grande police du téléphone
+/// la faisait déborder) et, sur un écran bas (paysage), la date se saisit au clavier au lieu d'un calendrier trop haut.
+Future<DateTime?> pickDate({
+  required BuildContext context,
+  required DateTime initialDate,
+  required DateTime firstDate,
+  required DateTime lastDate,
+  String? helpText,
+}) {
+  final low = MediaQuery.of(context).size.height < 600;
+  return showDatePicker(
+    context: context,
+    initialDate: initialDate,
+    firstDate: firstDate,
+    lastDate: lastDate,
+    helpText: helpText,
+    initialEntryMode: low ? DatePickerEntryMode.input : DatePickerEntryMode.calendar,
+    builder: (ctx, child) {
+      final mq = MediaQuery.of(ctx);
+      final scale = mq.textScaler.scale(1).clamp(1.0, 1.0);
+      return MediaQuery(data: mq.copyWith(textScaler: TextScaler.linear(scale)), child: child ?? const SizedBox.shrink());
+    },
+  );
+}

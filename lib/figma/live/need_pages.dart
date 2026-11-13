@@ -1,3 +1,4 @@
+import 'form_options.dart' show pickDate;
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:flutter/services.dart';
@@ -59,7 +60,7 @@ class _NeedFormPageState extends ConsumerState<NeedFormPage> {
 
   Future<void> _pickDate() async {
     final now = DateTime.now();
-    final d = await showDatePicker(context: context, initialDate: deadlineDate ?? now.add(const Duration(days: 14)), firstDate: now, lastDate: now.add(const Duration(days: 730)));
+    final d = await pickDate(context: context, initialDate: deadlineDate ?? now.add(const Duration(days: 14)), firstDate: now, lastDate: now.add(const Duration(days: 730)));
     if (d == null || !mounted) return;
     setState(() {
       deadlineDate = d;

@@ -1,3 +1,4 @@
+import 'form_options.dart' show pickDate;
 import 'package:flutter/material.dart' hide Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -660,7 +661,7 @@ class _EditState extends ConsumerState<OpportunityEditScreen> {
         if (_pay == 'paid') _f('amount', 'Montant par mois (FCFA)', hint: '50000', number: true),
         _f('payNote', 'Précision sur la rémunération', hint: 'Ex. attestation de stage'),
         mButton(_deadline == null ? 'Choisir la date limite' : 'Date limite : ${_deadline!.day}/${_deadline!.month}/${_deadline!.year}', () async {
-          final d = await showDatePicker(context: context, initialDate: DateTime.now().add(const Duration(days: 14)), firstDate: DateTime.now(), lastDate: DateTime.now().add(const Duration(days: 730)));
+          final d = await pickDate(context: context, initialDate: DateTime.now().add(const Duration(days: 14)), firstDate: DateTime.now(), lastDate: DateTime.now().add(const Duration(days: 730)));
           if (d != null) setState(() => _deadline = d);
         }, dark: false, width: double.infinity),
         const SizedBox(height: 10),

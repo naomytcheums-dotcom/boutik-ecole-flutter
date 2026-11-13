@@ -1,3 +1,4 @@
+import 'form_options.dart' show pickDate;
 import 'dart:async';
 
 import 'package:file_picker/file_picker.dart';
@@ -336,7 +337,7 @@ class _EventsState extends State<CommunityEventsTab> {
               Row(children: [
                 Expanded(
                   child: _btn('Le ${when.day} ${_mois[when.month - 1]} ${when.year}', () async {
-                    final d = await showDatePicker(context: s, initialDate: when, firstDate: DateTime.now(), lastDate: DateTime.now().add(const Duration(days: 365)));
+                    final d = await pickDate(context: s, initialDate: when, firstDate: DateTime.now(), lastDate: DateTime.now().add(const Duration(days: 365)));
                     if (d != null) set(() => when = DateTime(d.year, d.month, d.day, when.hour, when.minute));
                   }, dark: false),
                 ),

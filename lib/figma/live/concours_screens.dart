@@ -552,7 +552,7 @@ class _AnnEditState extends ConsumerState<AnnouncementEditScreen> {
   Widget _date(String label, DateTime? v, ValueChanged<DateTime> set) => Padding(
         padding: const EdgeInsets.only(bottom: 8),
         child: mButton(v == null ? label : '$label : ${v.day}/${v.month}/${v.year}', () async {
-          final d = await showDatePicker(context: context, initialDate: v ?? DateTime.now().add(const Duration(days: 14)), firstDate: DateTime.now().subtract(const Duration(days: 30)), lastDate: DateTime.now().add(const Duration(days: 1095)));
+          final d = await pickDate(context: context, initialDate: v ?? DateTime.now().add(const Duration(days: 14)), firstDate: DateTime.now().subtract(const Duration(days: 30)), lastDate: DateTime.now().add(const Duration(days: 1095)));
           if (d != null) setState(() => set(d));
         }, dark: false, width: double.infinity),
       );

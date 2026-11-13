@@ -25,6 +25,7 @@ Future<void> _ficheEntreprise(BuildContext context, WidgetRef ref) async => GoRo
 Future<void> _entreprisesAVerifier(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/admin/entreprises');
 Future<void> _forfaitsEntreprises(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/admin/forfaits');
 Future<void> _sequestre(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/admin/sequestre');
+Future<void> _mesEntreprises(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/mes-entreprises');
 Future<void> _comptesTest(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/comptes-test');
 Future<void> _promotions(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/marche/promotions');
 
@@ -62,6 +63,7 @@ final _groups = <_Group>[
     _Entry('Comparer des offres', screen: '26'),
     _Entry('Mentors', action: _mentors),
     _Entry('Mes litiges', action: _litiges),
+    _Entry('Mes entreprises (équipes)', action: _mesEntreprises),
     _Entry('Comptes de test (administrateur)', action: _comptesTest, roles: {'admin'}),
     _Entry('Concours, bourses et hackathons', action: _concours),
     _Entry('Innovations (SOS, défis, victoires)', action: _innovations),

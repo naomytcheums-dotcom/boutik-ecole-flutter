@@ -46,9 +46,21 @@ Color companyStatusColor(String s) => switch (s) {
 /// Vrai pour une adresse web complète (même règle que le serveur).
 bool validCompanyWebsite(String s) => s.trim().isEmpty || RegExp(r'^https?://[^ ]+$', caseSensitive: false).hasMatch(s.trim());
 
+/// Entreprise consultée : null = la mienne ; sinon l'entreprise dont je suis membre (espace partagé).
+class CompanyContext extends Notifier<String?> {
+  @override
+  String? build() => null;
+  void set(String? v) => state = v;
+}
+
+final companyContextProvider = NotifierProvider<CompanyContext, String?>(CompanyContext.new);
+
+const companyRoleLabels = {'owner': 'Propriétaire', 'admin': 'Administrateur', 'finance': 'Finance', 'viewer': 'Lecteur'};
+
 final companyProvider = FutureProvider.autoDispose<Map<String, dynamic>?>((ref) async {
   ref.watch(authProvider.select((a) => a.current?.serverId));
-  final r = await marcheCall('company_get', const {});
+  final ctx = ref.watch(companyContextProvider);
+  final r = await marcheCall('company_get', {if (ctx != null) 'p_owner': ctx});
   if (r.error != null) throw MarcheException(r.error);
   return r.data is Map ? Map<String, dynamic>.from(r.data as Map) : null;
 });
@@ -111,7 +123,9 @@ class _CompanyState extends ConsumerState<CompanyProfileScreen> {
       return false;
     }
     setState(() => _busy = true);
+    final ctx = ref.read(companyContextProvider);
     final r = await marcheCall('company_save', {
+      if (ctx != null) 'p_owner': ctx,
       'p': {
         'company_name': _name.text,
         'sector': _sector.text,
@@ -202,7 +216,10 @@ class _CompanyState extends ConsumerState<CompanyProfileScreen> {
       _fill(c);
       final status = '${c?['status'] ?? 'draft'}';
       final docs = [for (final x in (c?['documents'] as List? ?? const [])) Map<String, dynamic>.from(x as Map)];
-      final locked = status == 'pending';
+      final myRole = '${c?['my_role'] ?? 'owner'}';
+      final isOwner = myRole == 'owner';
+      final canEdit = myRole == 'owner' || myRole == 'admin';
+      final locked = status == 'pending' || !canEdit;
       return ListView(padding: EdgeInsets.fromLTRB(16, 4, 16, widget.showNav ? 130 : 40), children: [
         Container(
           padding: const EdgeInsets.all(14),
@@ -213,10 +230,11 @@ class _CompanyState extends ConsumerState<CompanyProfileScreen> {
             if (status != 'approved') Padding(padding: const EdgeInsets.only(top: 6), child: Text('Votre entreprise doit être vérifiée par l’administrateur : complétez la fiche, ajoutez vos pièces justificatives, puis envoyez la demande.', style: mst(12, c: kGrey).copyWith(height: 1.4))),
           ]),
         ),
+        if (!canEdit) Padding(padding: const EdgeInsets.only(top: 10), child: Text('Lecture seule : votre rôle (${companyRoleLabels[myRole] ?? myRole}) ne permet pas de modifier la fiche.', style: mst(12.5, w: FontWeight.w600, c: kGrey))),
         const SizedBox(height: 14),
         Row(children: [
           GestureDetector(
-            onTap: _pickLogo,
+            onTap: canEdit ? _pickLogo : null,
             child: Container(
               width: 72,
               height: 72,
@@ -243,6 +261,7 @@ class _CompanyState extends ConsumerState<CompanyProfileScreen> {
         _field(_desc, 'Présentation', lines: 4, max: 1500),
         const SizedBox(height: 4),
         mButton('Enregistrer la fiche', locked ? null : () => _save().then((ok) { if (ok && mounted) gToast(context, 'Fiche enregistrée.'); }), busy: _busy),
+        if (isOwner) ...[
         mSectionTitle('Pièces justificatives'),
         Text('Elles ne sont visibles que de vous et de l’administrateur.', style: mst(12, c: kGrey)),
         const SizedBox(height: 8),
@@ -258,8 +277,9 @@ class _CompanyState extends ConsumerState<CompanyProfileScreen> {
         MDropdown(label: 'Type de pièce', value: _docKind, items: companyDocKinds, onChanged: (v) => setState(() => _docKind = v)),
         const SizedBox(height: 8),
         mButton('Ajouter une pièce', locked ? null : _addDoc, dark: false, icon: Icons.upload_file),
+        ],
         const SizedBox(height: 16),
-        if (status == 'draft' || status == 'rejected') mButton(status == 'rejected' ? 'Renvoyer pour vérification' : 'Envoyer pour vérification', _submit, icon: Icons.send_outlined),
+        if (isOwner && (status == 'draft' || status == 'rejected')) mButton(status == 'rejected' ? 'Renvoyer pour vérification' : 'Envoyer pour vérification', _submit, icon: Icons.send_outlined),
       ]);
     });
     return Scaffold(

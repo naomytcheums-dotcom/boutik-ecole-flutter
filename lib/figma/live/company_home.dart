@@ -7,7 +7,7 @@ import '../i18n.dart' show Text;
 import 'auth.dart';
 import 'backend.dart';
 import 'coequipiers_screens.dart' show MateNavPill;
-import 'company_screens.dart' show companyStatusColor, companyStatusLabel;
+import 'company_screens.dart' show companyContextProvider, companyRoleLabels, companyStatusColor, companyStatusLabel;
 import 'marche/marche_data.dart';
 import 'marche/marche_widgets.dart';
 import 'tara_payment.dart';
@@ -16,7 +16,8 @@ import 'tara_payment.dart';
 
 final companyDashboardProvider = FutureProvider.autoDispose<Map<String, dynamic>>((ref) async {
   ref.watch(authProvider.select((a) => a.current?.serverId));
-  final r = await marcheCall('company_dashboard', const {});
+  final ctx = ref.watch(companyContextProvider);
+  final r = await marcheCall('company_dashboard', {if (ctx != null) 'p_owner': ctx});
   if (r.error != null) throw MarcheException(r.error);
   return Map<String, dynamic>.from(r.data as Map);
 });
@@ -30,7 +31,8 @@ final companyPlansProvider = FutureProvider.autoDispose<List<Map<String, dynamic
 
 final companyPlanStatusProvider = FutureProvider.autoDispose<Map<String, dynamic>>((ref) async {
   ref.watch(authProvider.select((a) => a.current?.serverId));
-  final r = await marcheCall('company_plan_status', const {});
+  final ctx = ref.watch(companyContextProvider);
+  final r = await marcheCall('company_plan_status', {if (ctx != null) 'p_owner': ctx});
   if (r.error != null) throw MarcheException(r.error);
   return Map<String, dynamic>.from(r.data as Map);
 });
@@ -56,7 +58,10 @@ String planPriceLabel(Map<String, dynamic> p) {
 String quotaLabel(int used, int max) => max >= 999 ? '$used (illimité)' : '$used sur $max';
 
 class CompanyHomeScreen extends ConsumerWidget {
-  const CompanyHomeScreen({super.key});
+  const CompanyHomeScreen({super.key, this.shared = false});
+
+  /// Espace partagé : on consulte l'entreprise dont on est membre (pas de publication au nom de l'entreprise pour l'instant).
+  final bool shared;
 
   Widget _tile(BuildContext context, IconData icon, String value, String label, String route) => Expanded(
         child: GestureDetector(
@@ -82,7 +87,9 @@ class CompanyHomeScreen extends ConsumerWidget {
             final status = '${x['status']}' == 'none' ? 'draft' : '${x['status']}';
             int n(String k) => (x[k] as num?)?.toInt() ?? 0;
             return ListView(padding: const EdgeInsets.fromLTRB(11, 12, 11, 130), children: [
-              Padding(padding: const EdgeInsets.fromLTRB(5, 0, 5, 8), child: Text('${x['company_name'] ?? 'Mon entreprise'}', style: mst(22, w: FontWeight.w800))),
+              Padding(padding: const EdgeInsets.fromLTRB(5, 0, 5, 4), child: Text('${x['company_name'] ?? 'Mon entreprise'}', style: mst(22, w: FontWeight.w800))),
+              if (shared) Padding(padding: const EdgeInsets.fromLTRB(5, 0, 5, 8), child: Text('Vous êtes ${companyRoleLabels['${x['my_role']}'] ?? x['my_role']} de cette entreprise.', style: mst(12.5, w: FontWeight.w600, c: kViolet)))
+              else const SizedBox(height: 4),
               GestureDetector(
                 onTap: () => context.push('/entreprise/profil'),
                 child: Container(
@@ -126,11 +133,14 @@ class CompanyHomeScreen extends ConsumerWidget {
                 _tile(context, Icons.emoji_events_outlined, '${n('contests_active')}', 'Concours actifs', '/concours/mes'),
                 _tile(context, Icons.celebration_outlined, '${n('recruits')}', 'Recrutés', '/opportunites/mes'),
               ]),
+              Padding(padding: const EdgeInsets.fromLTRB(5, 6, 5, 0), child: mButton('Équipe de l’entreprise · ${n('members')} personne${n('members') > 1 ? 's' : ''}', () => context.push('/entreprise/equipe'), dark: false, icon: Icons.groups_2_outlined)),
+              if (!shared) ...[
               mSectionTitle('Actions rapides'),
               Padding(padding: const EdgeInsets.symmetric(horizontal: 5), child: mButton('Publier un besoin', () => context.push('/s/90'), icon: Icons.add)),
               Padding(padding: const EdgeInsets.fromLTRB(5, 8, 5, 0), child: mButton('Publier une offre (stage, emploi, mission)', () => context.push('/opportunites/publier'), dark: false, icon: Icons.work_outline)),
               Padding(padding: const EdgeInsets.fromLTRB(5, 8, 5, 0), child: mButton('Publier un concours ou un hackathon', () => context.push('/concours/publier'), dark: false, icon: Icons.emoji_events_outlined)),
               Padding(padding: const EdgeInsets.fromLTRB(5, 8, 5, 0), child: mButton('Rechercher des talents', () => context.push('/s/91'), dark: false, icon: Icons.search)),
+              ],
             ]);
           }),
           const Positioned(left: 0, right: 0, bottom: 14, child: Center(child: MateNavPill())),
@@ -158,8 +168,11 @@ class CompanyPlansSheet extends ConsumerWidget {
     final status = ref.watch(companyPlanStatusProvider).asData?.value;
     final current = '${(status?['plan'] as Map?)?['code'] ?? 'free'}';
     final requested = '${status?['requested'] ?? ''}';
+    final myRole = '${status?['my_role'] ?? 'owner'}';
+    final canPay = myRole == 'owner' || myRole == 'admin' || myRole == 'finance';
     Future<void> pay(Map<String, dynamic> p) async {
-      final r = await marcheCall('company_plan_checkout', {'p_plan': p['code']});
+      final ctx = ref.read(companyContextProvider);
+      final r = await marcheCall('company_plan_checkout', {'p_plan': p['code'], if (ctx != null) 'p_owner': ctx});
       if (!context.mounted) return;
       if (r.error != null) return gToast(context, Backend.userMessage('${r.error}'));
       final tx = Map<String, dynamic>.from(r.data as Map);
@@ -198,7 +211,7 @@ class CompanyPlansSheet extends ConsumerWidget {
                   Text('Besoins : ${quotaLabel(0, (p['max_needs'] as num).toInt()).replaceFirst('0 ', '')} · Offres : ${quotaLabel(0, (p['max_offers'] as num).toInt()).replaceFirst('0 ', '')} · Concours : ${quotaLabel(0, (p['max_contests'] as num).toInt()).replaceFirst('0 ', '')}', style: mst(12, c: kGrey)),
                   const SizedBox(height: 8),
                   if ('${p['code']}' == current) Text('Votre forfait actuel', style: mst(12.5, w: FontWeight.w800, c: kGreen))
-                  else if (((p['price_fcfa'] as num?) ?? 0) > 0) ...[
+                  else if (canPay && ((p['price_fcfa'] as num?) ?? 0) > 0) ...[
                     if ('${p['code']}' == requested) Padding(padding: const EdgeInsets.only(bottom: 6), child: Text('Demande envoyée : en attente de l’administrateur', style: mst(12.5, w: FontWeight.w800, c: const Color(0xFFB45309)))),
                     mButton('Payer par Mobile Money', () => pay(p), icon: Icons.phone_android),
                     if ('${p['code']}' != requested) TextButton(onPressed: () => request('${p['code']}'), child: Text('Payer autrement : demander l’activation à l’administrateur', style: mst(12, w: FontWeight.w600, c: kGrey))),

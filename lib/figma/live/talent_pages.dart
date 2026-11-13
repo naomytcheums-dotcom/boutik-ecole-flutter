@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gen.dart' show gToast;
 import 'auth.dart';
+import 'profile_extras.dart';
 import 'backend.dart';
 import 'profile_data.dart';
 import 'tp_ui.dart';
@@ -464,6 +465,7 @@ class _PortfolioPageState extends ConsumerState<PortfolioPage> {
       title: title,
       bottom: mine && l != null && l.isNotEmpty ? TpButton('Ajouter un élément', () => _edit(), icon: Icons.add_rounded) : null,
       children: [
+        ProfileExtrasCard(userId: mine ? '' : widget.userId),
         if (l == null) const Padding(padding: EdgeInsets.all(40), child: Center(child: CircularProgressIndicator()))
         else if (error != null) TpEmpty(title: 'Lecture impossible', text: error!, icon: Icons.cloud_off_rounded)
         else if (l.isEmpty)

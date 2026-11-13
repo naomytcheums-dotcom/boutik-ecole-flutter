@@ -1,5 +1,7 @@
 import 'form_options.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart' hide Text;
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -10,6 +12,8 @@ import 'backend.dart';
 import 'marche/marche_data.dart';
 import 'marche/marche_widgets.dart';
 import 'share.dart' show openUrl, shareText, siteUrl;
+import 'social_posts.dart' show uploadPostMedia;
+import '../gdata.dart' show gNetImage;
 
 /// Opportunités : stages, emplois, missions, défis, bénévolat et formations publiés par des entreprises, ONG, startups ou l'IUT.
 /// Cartes qui permettent de décider en 10 secondes, fiche complète, candidature dans l'application ou par WhatsApp, favoris, rappel, alerte filière, recrutés.
@@ -127,6 +131,28 @@ class OpportunityCard extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: _box(Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        if ('${o['media_path'] ?? ''}'.isNotEmpty && '${o['media_path']}' != 'null')
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: o['media_kind'] == 'video' ? () => openUrl(context, Backend.postMediaUrl('${o['media_path']}')) : onTap,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: SizedBox(
+                  height: 150,
+                  width: double.infinity,
+                  child: o['media_kind'] == 'video'
+                      ? Stack(fit: StackFit.expand, children: [
+                          const DecoratedBox(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0xFF2A2833), Color(0xFF0E0F14)]))),
+                          const Center(child: Icon(Icons.play_circle_fill, color: Colors.white, size: 48)),
+                          Positioned(left: 10, bottom: 8, child: Text('Vidéo de présentation', style: mst(11.5, w: FontWeight.w700, c: Colors.white))),
+                        ])
+                      : gNetImage(Backend.postMediaUrl('${o['media_path']}'), fit: BoxFit.cover, errorBuilder: (_, _, _) => const ColoredBox(color: Color(0xFFEDE9F6))),
+                ),
+              ),
+            ),
+          ),
         Row(children: [
           ClipRRect(borderRadius: BorderRadius.circular(4), child: SizedBox(width: 36, height: 36, child: MImage('${o['logo'] ?? ''}', icon: Icons.business_outlined))),
           const SizedBox(width: 10),
@@ -590,6 +616,7 @@ class _EditState extends ConsumerState<OpportunityEditScreen> {
   String _kind = 'stage', _mode = 'onsite', _pay = 'paid';
   bool _inApp = true, _iut = false, _busy = false;
   DateTime? _deadline;
+  PlatformFile? _media;
 
   @override
   void dispose() {
@@ -601,8 +628,23 @@ class _EditState extends ConsumerState<OpportunityEditScreen> {
 
   List<String> _split(String s, Pattern sep) => [for (final x in s.split(sep)) if (x.trim().isNotEmpty) x.trim()];
 
+  Future<void> _pickMedia() async {
+    final p = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: const ['jpg', 'jpeg', 'png', 'webp', 'mp4', 'mov']);
+    if (p.isEmpty || !mounted) return;
+    setState(() => _media = p.first);
+  }
+
   Future<void> _send() async {
     setState(() => _busy = true);
+    ({String path, String kind, String mime})? up;
+    if (_media != null) {
+      up = await uploadPostMedia(context, _media!);
+      if (!mounted) return;
+      if (up == null) {
+        setState(() => _busy = false);
+        return;
+      }
+    }
     final r = await marcheCall('opp_save', {
       'p_org': _c['org']!.text,
       'p_kind': _kind,
@@ -628,6 +670,16 @@ class _EditState extends ConsumerState<OpportunityEditScreen> {
       'p_iut_only': _iut,
     });
     if (!mounted) return;
+    if (r.error == null && up != null) {
+      final m = await marcheCall('opp_media_set', {'p_id': '${r.data}', 'p_path': up.path, 'p_kind': up.kind});
+      if (!mounted) return;
+      if (m.error != null) gToast(context, 'Offre envoyée, mais le média n’a pas pu être ajouté : ${Backend.userMessage('${m.error}')}');
+    } else if (r.error != null && up != null) {
+      try {
+        await Supabase.instance.client.storage.from('post-media').remove([up.path]);
+      } catch (_) {}
+    }
+    if (!mounted) return;
     setState(() => _busy = false);
     gToast(context, r.error != null ? Backend.userMessage('${r.error}') : 'Offre envoyée : elle sera visible après validation par l’équipe.');
     if (r.error == null) {
@@ -647,6 +699,13 @@ class _EditState extends ConsumerState<OpportunityEditScreen> {
       child: ListView(padding: const EdgeInsets.fromLTRB(16, 4, 16, 90), children: [
         Text('Réservé aux entreprises, ONG, startups et à l’équipe de l’IUT. Votre offre est relue avant d’être publiée.', style: mst(13, c: kGrey).copyWith(height: 1.5)),
         const SizedBox(height: 12),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: Row(children: [
+            Expanded(child: mButton(_media == null ? 'Ajouter une image ou une vidéo' : _media!.name, _busy ? null : _pickMedia, dark: false, icon: Icons.add_photo_alternate_outlined)),
+            if (_media != null) IconButton(tooltip: 'Retirer', onPressed: () => setState(() => _media = null), icon: const Icon(Icons.close, size: 18)),
+          ]),
+        ),
         _f('org', 'Organisation', hint: 'Orange Cameroun, ONG, startup…'),
         MDropdown(label: 'Type', value: _kind, items: {for (final e in oppKinds.entries) if (e.key.isNotEmpty) e.key: e.value}, onChanged: (v) => setState(() => _kind = v)),
         const SizedBox(height: 10),

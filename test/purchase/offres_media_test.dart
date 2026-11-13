@@ -1,0 +1,28 @@
+import 'package:boutik_ecole/figma/live/opportunites_screens.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+Widget _wrap(Widget w) => MaterialApp(home: Scaffold(body: SingleChildScrollView(child: w)));
+
+void main() {
+  const base = {'id': 'o1', 'org': 'Orange', 'kind': 'stage', 'title': 'Stage développeur', 'location': 'Douala', 'mode': 'onsite', 'pay_kind': 'paid', 'deadline': null, 'skills': [], 'verified': true};
+
+  testWidgets('offre avec vidéo : bandeau de présentation et bouton de lecture', (t) async {
+    await t.pumpWidget(_wrap(OpportunityCard(o: {...base, 'media_path': 'u1/v.mp4', 'media_kind': 'video'})));
+    expect(find.text('Vidéo de présentation'), findsOneWidget);
+    expect(find.byIcon(Icons.play_circle_fill), findsOneWidget);
+    expect(find.text('Stage développeur'), findsOneWidget);
+  });
+
+  testWidgets('offre sans média : aucun bandeau', (t) async {
+    await t.pumpWidget(_wrap(OpportunityCard(o: {...base})));
+    expect(find.text('Vidéo de présentation'), findsNothing);
+    expect(find.byIcon(Icons.play_circle_fill), findsNothing);
+    expect(find.text('Stage développeur'), findsOneWidget);
+  });
+
+  testWidgets('valeur « null » du serveur : traitée comme absente', (t) async {
+    await t.pumpWidget(_wrap(OpportunityCard(o: {...base, 'media_path': null, 'media_kind': null})));
+    expect(find.byIcon(Icons.play_circle_fill), findsNothing);
+  });
+}

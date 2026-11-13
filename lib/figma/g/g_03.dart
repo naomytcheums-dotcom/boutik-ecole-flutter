@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
+import 'package:go_router/go_router.dart' show GoRouterState;
 import '../nav.dart';
 import '../live/notifs.dart' show NotifBadge;
 import '../live/store.dart';
@@ -36,7 +37,12 @@ class G_03 extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Une entreprise a son propre accueil : forfait, vérification et chiffres clés (besoins, propositions, offres, candidatures).
     final me = ref.watch(authProvider.select((a) => a.current));
-    if (!demoContent && me != null && me.role == 2 && me.staff.isEmpty) return const CompanyHomeScreen();
+    // « Accueil Boutik-École » (depuis l'accueil entreprise) : la page d'accueil commune à tous les profils.
+    var vue = '';
+    try {
+      vue = GoRouterState.of(context).uri.queryParameters['vue'] ?? '';
+    } catch (_) {}
+    if (!demoContent && me != null && me.role == 2 && me.staff.isEmpty && vue != 'standard') return const CompanyHomeScreen();
     // connecté : la page s'allonge pour recevoir la liste réelle des talents ; le menu reste au bas de la page
     final dy = demoContent ? 0.0 : 191.0;
     return GScreen(w: 390, h: demoContent ? 939 : 1130, radius: 43.333, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [

@@ -141,6 +141,29 @@ class CompanyHomeScreen extends ConsumerWidget {
               Padding(padding: const EdgeInsets.fromLTRB(5, 8, 5, 0), child: mButton('Publier un concours ou un hackathon', () => context.push('/concours/publier'), dark: false, icon: Icons.emoji_events_outlined)),
               Padding(padding: const EdgeInsets.fromLTRB(5, 8, 5, 0), child: mButton('Rechercher des talents', () => context.push('/s/91'), dark: false, icon: Icons.search)),
               ],
+              mSectionTitle('Explorer Boutik-École'),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5),
+                child: Wrap(spacing: 8, runSpacing: 8, children: [
+                  for (final e in const [
+                    (Icons.storefront_outlined, 'Marketplace', '/marche'),
+                    (Icons.home_outlined, 'Accueil Boutik-École', '/s/03?vue=standard'),
+                    (Icons.lightbulb_outline, 'Projets innovants', '/innovations'),
+                    (Icons.emoji_events_outlined, 'Concours', '/concours'),
+                    (Icons.work_outline, 'Opportunités', '/opportunites'),
+                    (Icons.school_outlined, 'Mentors', '/mentors'),
+                    (Icons.groups_outlined, 'Communautés', '/communautes'),
+                  ])
+                    GestureDetector(
+                      onTap: () => context.push(e.$3),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(100), border: Border.all(color: kLine)),
+                        child: Row(mainAxisSize: MainAxisSize.min, children: [Icon(e.$1, size: 18, color: kViolet), const SizedBox(width: 6), Text(e.$2, style: mst(12.5, w: FontWeight.w700))]),
+                      ),
+                    ),
+                ]),
+              ),
             ]);
           }),
           const Positioned(left: 0, right: 0, bottom: 14, child: Center(child: MateNavPill())),

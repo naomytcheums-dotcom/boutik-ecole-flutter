@@ -51,6 +51,9 @@ void main() {
     expect(find.text('7'), findsOneWidget);
     expect(find.text('Publier un besoin'), findsOneWidget);
     expect(find.text('Rechercher des talents'), findsOneWidget);
+    expect(find.text('Explorer Boutik-École'), findsOneWidget);
+    expect(find.text('Marketplace'), findsOneWidget);
+    expect(find.text('Accueil Boutik-École'), findsOneWidget);
   });
 
   testWidgets('accueil entreprise non vérifiée : appel à compléter la fiche', (t) async {

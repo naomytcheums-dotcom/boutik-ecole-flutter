@@ -85,6 +85,15 @@ final oppsProvider = FutureProvider.autoDispose.family<List<Map<String, dynamic>
 final oppHiredProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) => _list('opp_hired_list', const {'p_limit': 10}));
 final oppMyApplicationsProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) => _list('opp_my_applications', const {}));
 final oppMyPostedProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) => _list('opp_my_posted', const {}));
+/// Statistiques de mes offres (vues, favoris, candidatures, taux de réponse), indexées par l'identifiant de l'offre.
+final oppStatsProvider = FutureProvider.autoDispose<Map<String, Map<String, dynamic>>>((ref) async {
+  ref.watch(authProvider.select((a) => a.current?.serverId));
+  if (!Backend.ready) return const {};
+  final r = await marcheCall('opp_stats', const {});
+  if (r.error != null || r.data is! List) return const {};
+  return {for (final x in r.data as List) '${(x as Map)['id']}': Map<String, dynamic>.from(x)};
+});
+
 final oppDetailProvider = FutureProvider.autoDispose.family<Map<String, dynamic>, String>((ref, id) async {
   final r = await marcheCall('opp_detail', {'p_id': id});
   if (r.error != null) throw MarcheException(r.error);
@@ -373,6 +382,14 @@ class OpportunityDetailScreen extends ConsumerWidget {
     await openUrl(context, 'https://wa.me/$number?text=$text');
   }
 
+  static final _tracked = <String>{};
+
+  /// Enregistre la vue une seule fois par ouverture de l'écran (le serveur la compte une fois par personne et par jour).
+  static void _trackView(String id) {
+    if (!Backend.ready || !_tracked.add(id)) return;
+    marcheCall('opp_view_track', {'p_id': id});
+  }
+
   Widget _list(String title, List items) => items.isEmpty
       ? const SizedBox.shrink()
       : _box(Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -386,6 +403,7 @@ class OpportunityDetailScreen extends ConsumerWidget {
     return MarchePage(
       title: 'Offre',
       child: mAsync<Map<String, dynamic>>(ref.watch(oppDetailProvider(id)), (o) {
+        if (o['mine'] != true && o['status'] == 'published') _trackView(id);
         final app = o['my_application'] is Map ? Map<String, dynamic>.from(o['my_application'] as Map) : null;
         final wa = '${o['apply_whatsapp']}';
         final deadline = DateTime.tryParse('${o['deadline']}');
@@ -512,6 +530,24 @@ class _PostedCard extends ConsumerWidget {
       Text('${o['org']}${'${o['poster'] ?? ''}'.isEmpty ? '' : ' · ${o['poster']}'}', style: mst(12, w: FontWeight.w700, c: kGrey)),
       Text('${o['title']}', style: mst(14.5, w: FontWeight.w800)),
       Text('${const {'pending': 'En attente de validation', 'published': 'Publiée', 'rejected': 'Refusée', 'closed': 'Clôturée'}['${o['status']}']} · ${mInt(o['applications'])} candidature${mInt(o['applications']) > 1 ? 's' : ''}', style: mst(12.5, c: pending ? const Color(0xFFB45309) : kGrey)),
+      Builder(builder: (context) {
+        final st = ref.watch(oppStatsProvider).asData?.value['${o['id']}'];
+        if (st == null || pending) return const SizedBox.shrink();
+        Widget cell(String v, String l) => Expanded(child: Column(children: [Text(v, style: mst(16, w: FontWeight.w800)), Text(l, textAlign: TextAlign.center, style: mst(10.5, c: kGrey))]));
+        String pct(Object? x) => x == null ? '—' : '${(x as num).round()} %';
+        return Container(
+          margin: const EdgeInsets.only(top: 8),
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(color: const Color(0xFFF7F4FA), borderRadius: BorderRadius.circular(8)),
+          child: Row(children: [
+            cell('${mInt(st['views'])}', 'Vues'),
+            cell('${mInt(st['saves'])}', 'Favoris'),
+            cell('${mInt(st['applications'])}', 'Candidatures'),
+            cell(pct(st['response_rate']), 'Réponses'),
+            cell('${mInt(st['hired'])}', 'Recrutés'),
+          ]),
+        );
+      }),
       const SizedBox(height: 8),
       if (pending && (ref.watch(authProvider).current?.staff ?? '').isNotEmpty)
         Row(children: [

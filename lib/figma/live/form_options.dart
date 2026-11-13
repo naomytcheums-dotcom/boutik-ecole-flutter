@@ -38,6 +38,16 @@ const studyFields = [
   'Arts, design et audiovisuel', 'Sciences', 'Toutes les filières',
 ];
 
+/// Compétences courantes proposées dans les offres.
+const commonSkills = [
+  'Flutter', 'Développement web', 'Développement mobile', 'Python', 'JavaScript', 'Java', 'PHP', 'SQL et bases de données', 'Réseaux et systèmes',
+  'Cybersécurité', 'Intelligence artificielle', 'Analyse de données', 'Excel', 'Word et PowerPoint', 'Design graphique', 'Canva', 'Photoshop',
+  'Illustrator', 'Montage vidéo', 'Photographie', 'Community management', 'Marketing digital', 'Rédaction et communication', 'Relation client',
+  'Vente et négociation', 'Comptabilité', 'Gestion de projet', 'Gestion de stock et logistique', 'Électricité', 'Électronique', 'Mécanique',
+  'Maintenance industrielle', 'Génie civil et topographie', 'Dessin technique (AutoCAD)', 'Agriculture et élevage', 'Transformation agroalimentaire',
+  'Enseignement et formation', 'Traduction', 'Anglais', 'Français', 'Travail en équipe', 'Leadership', 'Organisation',
+];
+
 /// Devises acceptées par le serveur pour une participation payante.
 const currencyItems = {'FCFA': 'FCFA', 'EUR': 'Euro (EUR)', 'USD': 'Dollar (USD)'};
 

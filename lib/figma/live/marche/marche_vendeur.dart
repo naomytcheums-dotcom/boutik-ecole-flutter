@@ -77,7 +77,9 @@ class ShopEditorScreen extends ConsumerWidget {
         title: 'Ma boutique',
         child: ref.watch(authProvider.select((a) => a.current == null)) && Backend.ready
             ? mNote('Connectez-vous pour créer votre boutique.')
-            : mAsync<Map<String, dynamic>>(ref.watch(marcheMyShopProvider), (s) => _ShopForm(shop: s)),
+            : (Backend.ready && !ref.watch(authProvider.select((a) => a.current?.role == 1 && (a.current?.staff ?? '').isEmpty)) )
+                ? mNote('La boutique est réservée aux étudiants-vendeurs.')
+                : mAsync<Map<String, dynamic>>(ref.watch(marcheMyShopProvider), (s) => _ShopForm(shop: s)),
       );
 }
 

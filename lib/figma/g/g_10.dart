@@ -59,7 +59,7 @@ class G_10 extends ConsumerWidget {
       gP(334.05, 82.508, 7.9, 7.9, gImg('assets/figma/v/cb3b5db29da178.svg')),
       gP(334.05, 88.05, 7.9, 7.9, gImg('assets/figma/v/fd509ee195da6b.svg')),
       gP(334.05, 93.592, 7.9, 7.9, gImg('assets/figma/v/c2a19bebfb5925.svg')),
-      gP(140, 68, 102, 19, gText('Profil étudiant', 15, Color(0xFF111015), weight: 600)),
+      gP(140, 68, 102, 19, gText(demoContent ? 'Profil étudiant' : 'Mon profil', 15, Color(0xFF111015), weight: 600)),
       gP(138, 273, 114, 114, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFFF4B6E), Color(0xFFFF8A3D), Color(0xFF9B7BFF)], stops: [0, 0.5, 1]), oval: true)),
       gP(143, 278, 104, 104, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x1A403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], oval: true)),
       profileAvatar(149, 284, 92),

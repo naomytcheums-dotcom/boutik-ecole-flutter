@@ -65,17 +65,25 @@ class MarchePage extends StatelessWidget {
           child: Column(children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(4, 8, 8, 4),
-              child: Row(children: [
-                Semantics(
-                  button: true,
-                  label: 'Retour',
-                  excludeSemantics: true,
-                  child: GlassBack(onTap: () => context.canPop() ? context.pop() : context.go('/s/03')),
-                ),
-                const SizedBox(width: 12),
-                Expanded(child: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis, style: mst(20, w: FontWeight.w800))),
-                ...actions,
-              ]),
+              child: SizedBox(
+                height: 48,
+                child: Stack(alignment: Alignment.center, children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 56),
+                    child: Text(title, maxLines: 1, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, style: mst(20, w: FontWeight.w800)),
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Semantics(
+                      button: true,
+                      label: 'Retour',
+                      excludeSemantics: true,
+                      child: GlassBack(onTap: () => context.canPop() ? context.pop() : context.go('/s/03')),
+                    ),
+                  ),
+                  if (actions.isNotEmpty) Align(alignment: Alignment.centerRight, child: Row(mainAxisSize: MainAxisSize.min, children: actions)),
+                ]),
+              ),
             ),
             Expanded(child: child),
           ]),

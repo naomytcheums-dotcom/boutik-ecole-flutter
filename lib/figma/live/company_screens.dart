@@ -168,9 +168,9 @@ class _CompanyState extends ConsumerState<CompanyProfileScreen> {
   }
 
   Future<void> _addDoc() async {
-    if (!await _save() || !mounted) return;
     final p = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'webp']);
     if (p.isEmpty || !mounted) return;
+    if (!await _save() || !mounted) return;
     final f = p.first;
     final Uint8List bytes = await f.readAsBytes();
     if (!mounted) return;
@@ -271,13 +271,13 @@ class _CompanyState extends ConsumerState<CompanyProfileScreen> {
         _field(_city, 'Ville', max: 80),
         _field(_site, 'Site web', hint: 'https://…', type: TextInputType.url),
         _field(_phone, 'Téléphone', type: TextInputType.phone, max: 30),
+        Padding(padding: const EdgeInsets.only(bottom: 8), child: Text('Interlocuteur : la personne que l’administrateur peut joindre pour vérifier votre entreprise. Elle n’est pas affichée publiquement.', style: mst(12, c: kGrey))),
         _field(_contact, 'Interlocuteur (nom)', max: 80),
         _field(_role, 'Fonction de l’interlocuteur', max: 80),
         _field(_year, 'Année de création', type: TextInputType.number, max: 4),
         _field(_reg, 'Numéro d’immatriculation (RCCM)', max: 60),
         _field(_desc, 'Présentation', lines: 4, max: 1500),
         const SizedBox(height: 4),
-        mButton('Enregistrer la fiche', locked ? null : () => _save().then((ok) { if (ok && mounted) gToast(context, 'Fiche enregistrée.'); }), busy: _busy),
         if (isOwner) ...[
         mSectionTitle('Pièces justificatives'),
         Text('Elles ne sont visibles que de vous et de l’administrateur.', style: mst(12, c: kGrey)),
@@ -296,7 +296,10 @@ class _CompanyState extends ConsumerState<CompanyProfileScreen> {
         mButton('Ajouter une pièce', locked ? null : _addDoc, dark: false, icon: Icons.upload_file),
         ],
         const SizedBox(height: 16),
-        if (isOwner && (status == 'draft' || status == 'rejected')) mButton(status == 'rejected' ? 'Renvoyer pour vérification' : 'Envoyer pour vérification', _submit, icon: Icons.send_outlined),
+        if (isOwner && (status == 'draft' || status == 'rejected'))
+          mButton(status == 'rejected' ? 'Enregistrer et renvoyer pour vérification' : 'Enregistrer et envoyer pour vérification', locked ? null : _submit, busy: _busy, icon: Icons.send_outlined)
+        else
+          mButton('Enregistrer la fiche', locked ? null : () => _save().then((ok) { if (ok && mounted) gToast(context, 'Fiche enregistrée.'); }), busy: _busy),
       ]);
     });
     return Scaffold(
@@ -304,7 +307,7 @@ class _CompanyState extends ConsumerState<CompanyProfileScreen> {
       body: SafeArea(
         child: Stack(children: [
           Column(children: [
-            Padding(padding: const EdgeInsets.fromLTRB(4, 8, 16, 4), child: Row(children: [GlassBack(onTap: () => context.canPop() ? context.pop() : context.go('/s/03')), const SizedBox(width: 12), Expanded(child: Text('Fiche entreprise', style: mst(22, w: FontWeight.w800)))])),
+            Padding(padding: const EdgeInsets.fromLTRB(4, 8, 16, 4), child: Row(children: [GlassBack(onTap: () => context.canPop() ? context.pop() : context.go('/s/03')), Expanded(child: Text('Fiche entreprise', textAlign: TextAlign.center, style: mst(20, w: FontWeight.w800))), const SizedBox(width: 44)])),
             Expanded(child: body),
           ]),
           if (widget.showNav) const Positioned(left: 0, right: 0, bottom: 14, child: Center(child: MateNavPill())),

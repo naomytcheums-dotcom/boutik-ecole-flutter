@@ -97,7 +97,15 @@ class MateNavPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final on = active ?? -1;
+    var path = '';
+    try {
+      path = GoRouter.of(context).routeInformationProvider.value.uri.path;
+    } catch (_) {}
+    final id = path.startsWith('/s/') ? path.substring(3) : '';
+    const kela = {'230', '231', 'A1', 'A2'};
+    const reseau = {'244', '244b', '245', '246', '247', '248', '249', '250', '251', '252', '253', '254', '255'};
+    final auto = kela.contains(id) ? 0 : (id == '52' ? 1 : (id == '03' ? 2 : (reseau.contains(id) ? 3 : (id == '10' ? 4 : (path.startsWith('/entreprise') || path == '/' ? 2 : -1)))));
+    final on = active ?? auto;
     Widget glyph(int k, Color c) => switch (k) {
           0 => Image.asset('assets/figma/img/2b51b5d6469cca917952ac344a2ddf9cc1440830.png', width: 30, height: 30, fit: BoxFit.contain),
           1 => Icon(Icons.chat_bubble_outline, size: 23, color: c),

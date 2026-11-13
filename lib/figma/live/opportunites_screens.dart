@@ -1,4 +1,4 @@
-import 'form_options.dart' show pickDate;
+import 'form_options.dart';
 import 'package:flutter/material.dart' hide Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -665,11 +665,11 @@ class _EditState extends ConsumerState<OpportunityEditScreen> {
           if (d != null) setState(() => _deadline = d);
         }, dark: false, width: double.infinity),
         const SizedBox(height: 10),
-        _f('skills', 'Compétences demandées', hint: 'Séparées par des virgules : Flutter, Canva, Excel'),
+        MultiPickField(label: 'Compétences demandées', options: commonSkills, value: _c['skills']!.text, emptyText: 'Choisir dans la liste', onChanged: (v) => setState(() => _c['skills']!.text = v)),
         _f('description', 'Description', lines: 5),
         _f('missions', 'Missions (une par ligne)', lines: 4),
         _f('profile', 'Profil recherché', lines: 3),
-        _f('department', 'Filière IUT visée (facultatif)', hint: 'Génie informatique'),
+        MultiPickField(label: 'Filières visées', options: studyFields, value: _c['department']!.text, emptyText: 'Toutes les filières', onChanged: (v) => setState(() => _c['department']!.text = v)),
         _f('level', 'Niveau (facultatif)', hint: 'Licence 2'),
         _f('gains', 'Ce que l’étudiant gagne', hint: 'Séparés par des virgules : Attestation de stage, Expérience, Possibilité d’embauche'),
         SwitchListTile(contentPadding: EdgeInsets.zero, title: Text('Postuler dans l’application', style: mst(13.5)), value: _inApp, onChanged: (v) => setState(() => _inApp = v)),

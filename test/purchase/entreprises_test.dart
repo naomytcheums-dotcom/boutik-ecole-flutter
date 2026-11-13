@@ -35,7 +35,7 @@ void main() {
     expect(find.text('Numéro d’immatriculation (RCCM)'), findsOneWidget);
     expect(find.text('Pièces justificatives'), findsOneWidget);
     expect(find.text('Aucune pièce pour le moment.'), findsOneWidget);
-    expect(find.text('Envoyer pour vérification'), findsOneWidget);
+    expect(find.text('Enregistrer et envoyer pour vérification'), findsOneWidget);
   });
 
   testWidgets('fiche refusée : motif visible, renvoi possible, pièces listées', (t) async {
@@ -55,7 +55,7 @@ void main() {
     expect(find.text('Motif : Pièce illisible'), findsOneWidget);
     expect(find.text('RCCM.pdf'), findsOneWidget);
     expect(find.text('Immatriculation (RCCM)'), findsWidgets);
-    expect(find.text('Renvoyer pour vérification'), findsOneWidget);
+    expect(find.text('Enregistrer et renvoyer pour vérification'), findsOneWidget);
   });
 
   testWidgets('fiche vérifiée : badge, plus d’envoi', (t) async {
@@ -63,7 +63,7 @@ void main() {
       companyProvider.overrideWith((ref) async => {'company_name': 'Orange', 'status': 'approved', 'documents': []}),
     ]);
     expect(find.text('Entreprise vérifiée'), findsOneWidget);
-    expect(find.text('Envoyer pour vérification'), findsNothing);
+    expect(find.text('Enregistrer et envoyer pour vérification'), findsNothing);
   });
 
   testWidgets('administrateur : file d’examen avec fiche, pièces, valider ou refuser', (t) async {

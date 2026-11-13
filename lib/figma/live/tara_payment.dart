@@ -4,7 +4,7 @@ import 'package:flutter/material.dart' hide Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../gen.dart' show gToast;
+import '../gen.dart' show gAlert, gToast;
 import '../i18n.dart' show Text;
 import 'auth.dart';
 import 'marche/marche_data.dart';
@@ -65,7 +65,7 @@ Future<bool> payWithTara(BuildContext context, WidgetRef ref, {required String r
   phoneCtl.dispose();
   if (go != true || !context.mounted) return false;
   if (phone == null) {
-    gToast(context, 'Numéro invalide : saisissez un numéro camerounais (6XXXXXXXX).');
+    gAlert(context, 'Numéro invalide', 'Saisissez un numéro camerounais : 6XXXXXXXX.');
     return false;
   }
   try {
@@ -74,10 +74,10 @@ Future<bool> payWithTara(BuildContext context, WidgetRef ref, {required String r
     if (d is Map && '${d['status']}' == 'confirmed') return true;
   } on FunctionException catch (e) {
     final d = e.details;
-    if (context.mounted) gToast(context, d is Map && d['message'] != null ? '${d['message']}' : 'Le paiement n’a pas pu démarrer.');
+    if (context.mounted) gAlert(context, 'Paiement non démarré', d is Map && d['message'] != null ? '${d['message']}' : 'Le paiement n’a pas pu démarrer (code ${e.status}). Réessayez ou demandez l’activation à l’administrateur.');
     return false;
   } catch (_) {
-    if (context.mounted) gToast(context, 'Connexion impossible. Vérifiez votre réseau.');
+    if (context.mounted) gAlert(context, 'Paiement non démarré', 'Le service de paiement ne répond pas. Réessayez dans un instant ou demandez l’activation à l’administrateur.');
     return false;
   }
   if (!context.mounted) return false;
@@ -105,6 +105,6 @@ Future<bool> payWithTara(BuildContext context, WidgetRef ref, {required String r
   if (context.mounted && !cancelled) Navigator.of(context, rootNavigator: true).pop();
   await waiting;
   if (!context.mounted) return result == 'confirmed';
-  gToast(context, result == 'confirmed' ? 'Paiement confirmé. Merci !' : (result == 'failed' || result == 'cancelled') ? 'Paiement non abouti. Vous pouvez réessayer.' : 'Paiement en attente : le forfait s’activera dès la confirmation.');
+  await gAlert(context, result == 'confirmed' ? 'Paiement confirmé' : (result == 'failed' || result == 'cancelled') ? 'Paiement non abouti' : 'Paiement en attente', result == 'confirmed' ? 'Merci ! Votre paiement est enregistré.' : (result == 'failed' || result == 'cancelled') ? 'Le paiement n’a pas abouti. Vous pouvez réessayer.' : 'Le forfait s’activera dès la confirmation du paiement.');
   return result == 'confirmed';
 }

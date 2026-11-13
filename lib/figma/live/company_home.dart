@@ -2,7 +2,7 @@ import 'package:flutter/material.dart' hide Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../gen.dart' show gToast;
+import '../gen.dart' show gAlert, gToast;
 import '../i18n.dart' show Text;
 import 'auth.dart';
 import 'backend.dart';
@@ -197,7 +197,7 @@ class CompanyPlansSheet extends ConsumerWidget {
       final ctx = ref.read(companyContextProvider);
       final r = await marcheCall('company_plan_checkout', {'p_plan': p['code'], if (ctx != null) 'p_owner': ctx});
       if (!context.mounted) return;
-      if (r.error != null) return gToast(context, Backend.userMessage('${r.error}'));
+      if (r.error != null) return gAlert(context, 'Paiement impossible', Backend.userMessage('${r.error}'));
       final tx = Map<String, dynamic>.from(r.data as Map);
       final ok = await payWithTara(context, ref, reference: '${tx['reference']}', amount: (tx['amount'] as num).toInt(), label: 'le forfait ${p['name']}');
       ref.invalidate(companyPlanStatusProvider);
@@ -208,7 +208,11 @@ class CompanyPlansSheet extends ConsumerWidget {
     Future<void> request(String code) async {
       final r = await marcheCall('company_subscription_request', {'p_plan': code});
       if (!context.mounted) return;
-      gToast(context, r.error != null ? Backend.userMessage('${r.error}') : 'Demande envoyée. Réglez le forfait comme indiqué par l’administrateur : il l’active dès réception du paiement.');
+      if (r.error != null) {
+        await gAlert(context, 'Demande impossible', Backend.userMessage('${r.error}'));
+      } else {
+        await gAlert(context, 'Demande envoyée', 'Réglez le forfait comme indiqué par l’administrateur : il l’active dès réception du paiement.');
+      }
       ref.invalidate(companyPlanStatusProvider);
     }
 

@@ -27,8 +27,8 @@ test.describe('Visiteur : explorer sans compte', () => {
 
   test('« Commencer » ouvre l\'accueil : aucune inscription ni connexion imposée', async ({ page }) => {
     await ouvrir(page, '#/s/02');
-    // bouton « Commencer » : zone (59,716)-(337,763) du cadre 390×844
-    await page.mouse.click(198, 739);
+    // bouton « Commencer » : cliqué par son nœud sémantique (la maquette est adaptée à la largeur, ses coordonnées ne sont pas fixes)
+    await page.getByRole('button', { name: /^Commencer/ }).first().click({ force: true });
     await expect.poll(async () => await texte(page), { timeout: 20_000 }).toContain('Bienvenue');
     const t = await texte(page);
     expect(t).not.toContain('Se connecter');   // aucun écran de connexion imposé

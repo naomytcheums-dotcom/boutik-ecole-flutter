@@ -48,22 +48,55 @@ class ServerContests extends Notifier<List<Hackathon>?> {
     return null;
   }
 
-  Future<void> refresh() async {
+  Future<String?> refresh() async {
     final c = await Backend.rows('contests', 'id,title,description,city,reg_close_at,submit_close_at,starts_on,ends_on,prize,places,status', order: 'reg_close_at', ascending: true, limit: 100);
-    if (c.error != null || !ref.mounted) return;
-    final t = await Backend.rows('contest_teams', 'contest_id', limit: 1000);
-    final counts = <String, int>{};
-    for (final x in t.rows) {
-      counts.update('${x['contest_id']}', (v) => v + 1, ifAbsent: () => 1);
+    if (!ref.mounted) return null;
+    final errors = ref.read(contestsErrorProvider.notifier);
+    if (c.error != null) {
+      errors.set('Les concours ne peuvent pas être chargés pour le moment.');
+      return c.error;
     }
-    if (ref.mounted) state = [for (final r in c.rows) if (r['status'] != 'cancelled') contestFromRow(r, counts['${r['id']}'] ?? 0)];
+    final counts = <String, int>{};
+    String? teamsError;
+    // la table des équipes n'est lisible que par un compte connecté
+    if (Backend.userId != null) {
+      final t = await Backend.rows('contest_teams', 'contest_id', limit: 1000);
+      if (!ref.mounted) return null;
+      teamsError = t.error;
+      for (final x in t.rows) {
+        counts.update('${x['contest_id']}', (v) => v + 1, ifAbsent: () => 1);
+      }
+    }
+    contestTeamsReadable = teamsError == null;
+    errors.set(teamsError == null ? '' : 'Le nombre d’équipes inscrites ne peut pas être lu pour le moment.');
+    state = [for (final r in c.rows) if (r['status'] != 'cancelled') contestFromRow(r, counts['${r['id']}'] ?? 0)];
+    return teamsError;
   }
 }
 
 final serverContestsProvider = NotifierProvider<ServerContests, List<Hackathon>?>(ServerContests.new);
 
+/// Relit les concours ; en cas d'échec, dit pourquoi et propose « Réessayer » au lieu de laisser une liste vide.
+Future<void> reloadContests(BuildContext context, WidgetRef ref) async {
+  while (true) {
+    final err = await ref.read(serverContestsProvider.notifier).refresh();
+    if (err == null || !context.mounted) return;
+    final again = await gDialog<bool>(
+      context: context,
+      builder: (c) => AlertDialog(
+        title: const Text('Lecture impossible'),
+        content: Text(ref.read(contestsErrorProvider)),
+        actions: [TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('Fermer')), FilledButton(onPressed: () => Navigator.pop(c, true), child: const Text('Réessayer'))],
+      ),
+    );
+    if (again != true || !context.mounted) return;
+  }
+}
+
 /// Mes équipes : concours → (équipe, capitaine ?). Lues sur le serveur (RLS : mes adhésions).
 class MyContestTeams extends Notifier<Map<String, ({String teamId, String name, bool captain})>> {
+  bool loadFailed = false;
+
   @override
   Map<String, ({String teamId, String name, bool captain})> build() {
     if (!Backend.ready) return const {};
@@ -74,7 +107,9 @@ class MyContestTeams extends Notifier<Map<String, ({String teamId, String name, 
 
   Future<void> refresh() async {
     final r = await Backend.rows('contest_members', 'status,team_id,contest_teams(contest_id,name,captain_id)', limit: 200);
-    if (r.error != null || !ref.mounted) return;
+    if (!ref.mounted) return;
+    loadFailed = r.error != null;
+    if (r.error != null) return;
     final me = ref.read(profileAccountProvider).serverId;
     state = {
       for (final m in r.rows)
@@ -124,7 +159,7 @@ Future<bool> registerContestTeam(BuildContext context, WidgetRef ref, Hackathon 
   final err = await _call(context, 'register_contest_team', {'p_contest': ev.id, 'p_name': name, 'p_theme': theme, 'p_solo': false, 'p_rules': true}, 'Inscription refusée');
   if (err != null) return false;
   await ref.read(myContestTeamsProvider.notifier).refresh();
-  await ref.read(serverContestsProvider.notifier).refresh();
+  if (context.mounted) await reloadContests(context, ref);
   if (context.mounted) gToast(context, 'Inscription enregistrée : ${ev.title}');
   return true;
 }
@@ -132,6 +167,7 @@ Future<bool> registerContestTeam(BuildContext context, WidgetRef ref, Hackathon 
 /// 163, 164 : invitation d'un coéquipier par son adresse e-mail (capitaine).
 Future<void> inviteContestMate(BuildContext context, WidgetRef ref) async {
   final team = ref.read(myContestTeamsProvider)[ref.read(currentEventProvider).id];
+  if (team == null && ref.read(myContestTeamsProvider.notifier).loadFailed) return gAlert(context, 'Invitation', 'Vos équipes de concours ne peuvent pas être lues pour le moment : réessayez dans un instant.');
   if (team == null || !team.captain) return gAlert(context, 'Invitation', 'Seul le capitaine d’une équipe inscrite à ce concours peut inviter.');
   final mail = await askText(context, title: 'Inviter un coéquipier', body: 'Adresse e-mail de son compte étudiant (5 membres au plus).', hint: 'prenom.nom@…', ok: 'Inviter', min: 5);
   if (mail == null || !context.mounted) return;
@@ -144,6 +180,7 @@ Future<void> inviteContestMate(BuildContext context, WidgetRef ref) async {
 Future<void> submitContestProject(BuildContext context, WidgetRef ref, String title, String link, String desc) async {
   final ev = ref.read(currentEventProvider);
   final team = ref.read(myContestTeamsProvider)[ev.id];
+  if (team == null && ref.read(myContestTeamsProvider.notifier).loadFailed) return gAlert(context, 'Dépôt', 'Vos équipes de concours ne peuvent pas être lues pour le moment : réessayez dans un instant.');
   if (team == null) return gAlert(context, 'Dépôt', 'Votre équipe n’est pas inscrite à ce concours.');
   if (!team.captain) return gAlert(context, 'Dépôt', 'Seul le capitaine de l’équipe dépose le projet.');
   final ok = await gDialog<bool>(
@@ -225,7 +262,7 @@ Future<void> publishContestDialog(BuildContext context, WidgetRef ref) async {
     'p_prize': int.tryParse(ctl['dotation']!.text.replaceAll(RegExp(r'\D'), '')) ?? 0, 'p_places': int.tryParse(ctl['places']!.text.trim()) ?? 0, 'p_publish': true,
   }, 'Publication refusée');
   if (err != null || !context.mounted) return;
-  await ref.read(serverContestsProvider.notifier).refresh();
+  await reloadContests(context, ref);
   if (context.mounted) gToast(context, 'Concours publié');
 }
 
@@ -251,8 +288,22 @@ Future<void> moderateContestDialog(BuildContext context, WidgetRef ref) async {
     if (mail == null || !context.mounted) return;
     err = await _call(context, 'assign_contest_juror', {'p_contest': ev.id, 'p_email': mail, 'p_add': true}, 'Désignation refusée');
   } else if (action == 'hide') {
-    final t = await Backend.rows('contest_teams', 'id,name,contest_id', eq: {'contest_id': ev.id}, limit: 200);
+    var t = await Backend.rows('contest_teams', 'id,name,contest_id', eq: {'contest_id': ev.id}, limit: 200);
+    while (t.error != null) {
+      if (!context.mounted) return;
+      final again = await gDialog<bool>(
+        context: context,
+        builder: (c) => AlertDialog(
+          title: const Text('Lecture impossible'),
+          content: const Text('La liste des équipes de ce concours ne peut pas être lue pour le moment.'),
+          actions: [TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('Fermer')), FilledButton(onPressed: () => Navigator.pop(c, true), child: const Text('Réessayer'))],
+        ),
+      );
+      if (again != true) return;
+      t = await Backend.rows('contest_teams', 'id,name,contest_id', eq: {'contest_id': ev.id}, limit: 200);
+    }
     if (!context.mounted) return;
+    if (t.rows.isEmpty) return gAlert(context, 'Aucune équipe', 'Aucune équipe n’est inscrite à ce concours.');
     final pick = await gDialog<Map<String, dynamic>>(
       context: context,
       builder: (c) => SimpleDialog(title: const Text('Équipe à écarter'), children: [for (final x in t.rows) SimpleDialogOption(onPressed: () => Navigator.pop(c, x), child: Text('${x['name']}'))]),
@@ -265,6 +316,6 @@ Future<void> moderateContestDialog(BuildContext context, WidgetRef ref) async {
     err = await _call(context, 'set_contest_status', {'p_contest': ev.id, 'p_status': action}, 'Changement refusé');
   }
   if (err != null || !context.mounted) return;
-  await ref.read(serverContestsProvider.notifier).refresh();
+  await reloadContests(context, ref);
   if (context.mounted) gToast(context, 'Modification enregistrée');
 }

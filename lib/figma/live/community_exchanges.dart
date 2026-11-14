@@ -3,10 +3,12 @@ import 'dart:async';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart' hide Text;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gen.dart' show gToast;
 import '../gsound.dart' show GAnim;
 import '../i18n.dart' show Text;
+import 'auth.dart' show authProvider, requireLogin;
 import 'backend.dart';
 import 'chat_server.dart' show mimeOf;
 import 'share.dart' show openUrl;
@@ -21,6 +23,19 @@ const _violet = Color(0xFF5A3FE0);
 TextStyle _st(double size, {FontWeight w = FontWeight.w500, Color c = _ink}) => TextStyle(fontFamily: 'PlusJakartaSans', fontSize: size, fontWeight: w, color: c);
 
 Widget _note(String t) => Center(child: Padding(padding: const EdgeInsets.all(28), child: Text(t, textAlign: TextAlign.center, style: _st(13.5, c: _grey).copyWith(height: 1.5))));
+
+/// Visiteur sans compte (avec le serveur) : les actions proposent la connexion au lieu d'échouer.
+bool communityVisitor(WidgetRef ref) => Backend.ready && ref.watch(authProvider.select((a) => a.current == null));
+
+Widget communityGate(BuildContext context, WidgetRef ref, String text, String pour) => Center(
+      child: Padding(
+        padding: const EdgeInsets.all(28),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Text(text, textAlign: TextAlign.center, style: _st(13.5, c: _grey).copyWith(height: 1.5)),
+          if (communityVisitor(ref)) ...[const SizedBox(height: 14), _btn('Se connecter', () => requireLogin(context, ref, pour))],
+        ]),
+      ),
+    );
 
 Widget _card(Widget child) => Container(padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8), border: Border.all(color: _line)), child: child);
 
@@ -38,16 +53,16 @@ Widget _btn(String label, VoidCallback? onTap, {bool dark = true}) => GestureDet
 
 // ------------------------------------------------------------------ chat du groupe
 
-class CommunityChatTab extends StatefulWidget {
+class CommunityChatTab extends ConsumerStatefulWidget {
   const CommunityChatTab({super.key, required this.communityId, required this.isMember});
   final String communityId;
   final bool isMember;
 
   @override
-  State<CommunityChatTab> createState() => _ChatState();
+  ConsumerState<CommunityChatTab> createState() => _ChatState();
 }
 
-class _ChatState extends State<CommunityChatTab> {
+class _ChatState extends ConsumerState<CommunityChatTab> {
   final _text = TextEditingController();
   final _scroll = ScrollController();
   List<Map<String, dynamic>> _msgs = const [];
@@ -93,6 +108,7 @@ class _ChatState extends State<CommunityChatTab> {
   Future<void> _send() async {
     final t = _text.text.trim();
     if (t.isEmpty) return;
+    if (!await requireLogin(context, ref, 'écrire au groupe') || !mounted) return;
     _text.clear();
     final r = await Backend.rpc('community_chat_send', {'p_community': widget.communityId, 'p_body': t});
     if (!mounted) return;
@@ -105,7 +121,7 @@ class _ChatState extends State<CommunityChatTab> {
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.isMember) return _note('Le chat est réservé aux membres. Rejoignez la communauté pour discuter en direct.');
+    if (!widget.isMember) return communityGate(context, ref, 'Le chat est réservé aux membres. Rejoignez la communauté pour discuter en direct.', 'accéder au chat de cette communauté');
     if (_failed) return _note('Le chat est indisponible pour le moment.');
     return Column(children: [
       Expanded(
@@ -151,16 +167,16 @@ class _ChatState extends State<CommunityChatTab> {
 
 // ------------------------------------------------------------------ questions et réponses
 
-class CommunityQaTab extends StatefulWidget {
+class CommunityQaTab extends ConsumerStatefulWidget {
   const CommunityQaTab({super.key, required this.communityId, required this.isMember});
   final String communityId;
   final bool isMember;
 
   @override
-  State<CommunityQaTab> createState() => _QaState();
+  ConsumerState<CommunityQaTab> createState() => _QaState();
 }
 
-class _QaState extends State<CommunityQaTab> {
+class _QaState extends ConsumerState<CommunityQaTab> {
   List<Map<String, dynamic>>? _qs;
   bool _failed = false;
   final _ask = TextEditingController();
@@ -188,6 +204,7 @@ class _QaState extends State<CommunityQaTab> {
   }
 
   Future<void> _call(String fn, Map<String, dynamic> params, {String? ok}) async {
+    if (!await requireLogin(context, ref, 'participer à cette communauté') || !mounted) return;
     final r = await Backend.rpc(fn, params);
     if (!mounted) return;
     if (r.error != null) return gToast(context, Backend.userMessage(r.error!));
@@ -196,6 +213,7 @@ class _QaState extends State<CommunityQaTab> {
   }
 
   Future<void> _answer(Map<String, dynamic> q) async {
+    if (!await requireLogin(context, ref, 'répondre à cette question') || !mounted) return;
     final c = TextEditingController();
     final ok = await showModalBottomSheet<bool>(
       context: context,
@@ -221,17 +239,19 @@ class _QaState extends State<CommunityQaTab> {
 
   @override
   Widget build(BuildContext context) {
-    if (_failed) return _note('Les questions sont réservées aux membres, ou indisponibles pour le moment.');
+    if (_failed) return communityGate(context, ref, 'Les questions sont réservées aux membres, ou indisponibles pour le moment.', 'voir les questions de cette communauté');
     final qs = _qs;
     if (qs == null) return const Center(child: CircularProgressIndicator());
+    final canAct = widget.isMember || communityVisitor(ref);
     return ListView(padding: const EdgeInsets.all(16), children: [
-      if (widget.isMember)
+      if (canAct)
         _card(Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text('Poser une question au groupe', style: _st(13.5, w: FontWeight.w700)),
           const SizedBox(height: 8),
           TextField(controller: _ask, maxLines: 3, maxLength: 600, decoration: InputDecoration(hintText: 'Ex. Quelqu’un a déjà fait le TP de réseaux ?', counterText: '', border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)))),
           const SizedBox(height: 8),
           _btn('Publier la question', () async {
+            if (!await requireLogin(context, ref, 'poser une question au groupe') || !mounted) return;
             final t = _ask.text;
             _ask.clear();
             await _call('community_ask', {'p_community': widget.communityId, 'p_body': t});
@@ -260,7 +280,7 @@ class _QaState extends State<CommunityQaTab> {
               ]),
             ),
           ],
-          if (widget.isMember) Align(alignment: Alignment.centerLeft, child: GestureDetector(onTap: () => _answer(q), child: Padding(padding: const EdgeInsets.only(top: 10), child: Text('Répondre', style: _st(12.5, w: FontWeight.w700, c: _violet))))),
+          if (canAct) Align(alignment: Alignment.centerLeft, child: GestureDetector(onTap: () => _answer(q), child: Padding(padding: const EdgeInsets.only(top: 10), child: Text('Répondre', style: _st(12.5, w: FontWeight.w700, c: _violet))))),
         ])),
       ],
     ]);
@@ -274,16 +294,16 @@ const _mois = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août
 
 String eventWhen(DateTime d) => '${d.day} ${_mois[d.month - 1]} · ${d.hour.toString().padLeft(2, '0')} h ${d.minute.toString().padLeft(2, '0')}';
 
-class CommunityEventsTab extends StatefulWidget {
+class CommunityEventsTab extends ConsumerStatefulWidget {
   const CommunityEventsTab({super.key, required this.communityId, required this.isMember});
   final String communityId;
   final bool isMember;
 
   @override
-  State<CommunityEventsTab> createState() => _EventsState();
+  ConsumerState<CommunityEventsTab> createState() => _EventsState();
 }
 
-class _EventsState extends State<CommunityEventsTab> {
+class _EventsState extends ConsumerState<CommunityEventsTab> {
   List<Map<String, dynamic>>? _events;
   bool _failed = false;
 
@@ -304,6 +324,7 @@ class _EventsState extends State<CommunityEventsTab> {
   }
 
   Future<void> _call(String fn, Map<String, dynamic> params, {String? ok}) async {
+    if (!await requireLogin(context, ref, 'participer à cette communauté') || !mounted) return;
     final r = await Backend.rpc(fn, params);
     if (!mounted) return;
     if (r.error != null) return gToast(context, Backend.userMessage(r.error!));
@@ -312,6 +333,7 @@ class _EventsState extends State<CommunityEventsTab> {
   }
 
   Future<void> _create() async {
+    if (!await requireLogin(context, ref, 'créer un événement') || !mounted) return;
     final title = TextEditingController(), place = TextEditingController(), desc = TextEditingController();
     var kind = 'revision';
     var when = DateTime.now().add(const Duration(days: 1)).copyWith(minute: 0, second: 0, millisecond: 0);
@@ -366,11 +388,12 @@ class _EventsState extends State<CommunityEventsTab> {
 
   @override
   Widget build(BuildContext context) {
-    if (_failed) return _note('Les événements sont réservés aux membres, ou indisponibles pour le moment.');
+    if (_failed) return communityGate(context, ref, 'Les événements sont réservés aux membres, ou indisponibles pour le moment.', 'voir les événements de cette communauté');
     final evs = _events;
     if (evs == null) return const Center(child: CircularProgressIndicator());
+    final canAct = widget.isMember || communityVisitor(ref);
     return ListView(padding: const EdgeInsets.all(16), children: [
-      if (widget.isMember) _btn('Créer un événement', _create),
+      if (canAct) _btn('Créer un événement', _create),
       if (evs.isEmpty) _note('Aucun événement à venir.\nUne réunion, un live ou une révision ensemble : proposez-en un.'),
       for (final e in evs) ...[
         const SizedBox(height: 12),
@@ -382,7 +405,7 @@ class _EventsState extends State<CommunityEventsTab> {
           if ('${e['description']}'.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 4), child: Text('${e['description']}', style: _st(13).copyWith(height: 1.4))),
           const SizedBox(height: 4),
           Text('${e['going']} participant${(e['going'] as num) > 1 ? 's' : ''} · proposé par ${e['creator']}', style: _st(11.5, c: _grey)),
-          if (widget.isMember) ...[
+          if (canAct) ...[
             const SizedBox(height: 10),
             Row(children: [
               Expanded(child: _btn(e['i_go'] == true ? 'Je participe ✓' : 'Je participe', () => _call('community_event_rsvp', {'p_event': e['id'], 'p_going': e['i_go'] != true}), dark: e['i_go'] != true)),
@@ -401,16 +424,16 @@ const _fileKinds = {'course': 'Cours', 'pdf': 'PDF', 'exam': 'Ancien sujet', 'te
 
 String fileSizeLabel(num bytes) => bytes >= 1048576 ? '${(bytes / 1048576).toStringAsFixed(1)} Mo' : '${(bytes / 1024).ceil()} Ko';
 
-class CommunityFilesTab extends StatefulWidget {
+class CommunityFilesTab extends ConsumerStatefulWidget {
   const CommunityFilesTab({super.key, required this.communityId, required this.isMember});
   final String communityId;
   final bool isMember;
 
   @override
-  State<CommunityFilesTab> createState() => _FilesState();
+  ConsumerState<CommunityFilesTab> createState() => _FilesState();
 }
 
-class _FilesState extends State<CommunityFilesTab> {
+class _FilesState extends ConsumerState<CommunityFilesTab> {
   List<Map<String, dynamic>>? _files;
   bool _failed = false, _busy = false;
 
@@ -431,6 +454,7 @@ class _FilesState extends State<CommunityFilesTab> {
   }
 
   Future<void> _add() async {
+    if (!await requireLogin(context, ref, 'partager un fichier') || !mounted) return;
     try {
       final picked = await FilePicker.pickFiles();
       if (picked.isEmpty || !mounted) return;
@@ -503,6 +527,7 @@ class _FilesState extends State<CommunityFilesTab> {
   }
 
   Future<void> _delete(Map<String, dynamic> f) async {
+    if (!await requireLogin(context, ref, 'supprimer un fichier') || !mounted) return;
     final r = await Backend.rpc('community_file_delete', {'p_id': f['id']});
     if (!mounted) return;
     if (r.error != null) return gToast(context, Backend.userMessage(r.error!));
@@ -512,7 +537,7 @@ class _FilesState extends State<CommunityFilesTab> {
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.isMember) return _note('Les fichiers sont réservés aux membres. Rejoignez la communauté pour les consulter.');
+    if (!widget.isMember) return communityGate(context, ref, 'Les fichiers sont réservés aux membres. Rejoignez la communauté pour les consulter.', 'consulter les fichiers de cette communauté');
     if (_failed) return _note('Les fichiers sont indisponibles pour le moment.');
     final files = _files;
     if (files == null) return const Center(child: CircularProgressIndicator());

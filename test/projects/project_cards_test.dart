@@ -20,7 +20,7 @@ void main() {
   setUpAll(loadAppFonts);
   tearDown(() => Backend.ready = false);
 
-  Future<void> monter(WidgetTester t, List<Map<String, dynamic>> rows) async {
+  Future<void> monter(WidgetTester t, List<Map<String, dynamic>> rows, {bool visiteur = false}) async {
     Backend.ready = true;
     t.view.physicalSize = const Size(393, 852);
     t.view.devicePixelRatio = 1;
@@ -30,9 +30,17 @@ void main() {
       child: const MaterialApp(home: Scaffold(body: SizedBox(width: 342, height: 540, child: ProjectCards()))),
     ));
     final c = ProviderScope.containerOf(t.element(find.byType(ProjectCards)));
-    c.read(authProvider.notifier).login(demoAccount);
+    if (!visiteur) c.read(authProvider.notifier).login(demoAccount);
     await t.pumpAndSettle();
   }
+
+  testWidgets('visiteur : le catalogue est visible sans connexion', (t) async {
+    await monter(t, [
+      {'id': '1', 'kind': 'projet', 'title': 'Serre ouverte', 'summary': 'Une serre', 'department': '', 'status': 'approved', 'media': const [], 'details': const {}},
+    ], visiteur: true);
+    expect(find.text('Serre ouverte'), findsOneWidget);
+    expect(find.textContaining('Connectez-vous'), findsNothing);
+  });
 
   testWidgets('aucun projet : état vide, aucune carte inventée', (t) async {
     await monter(t, const []);

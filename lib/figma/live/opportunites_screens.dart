@@ -231,13 +231,16 @@ class _OppsState extends ConsumerState<OpportunitiesScreen> {
   Future<void> _alert(bool on) async {
     if (!await requireLogin(context, ref, 'activer l’alerte filière') || !mounted) return;
     final dept = ref.read(authProvider).current?.department ?? '';
-    // le serveur retrouve l'alerte par la filière : sans filière au profil, il refuse même la désactivation
-    if (!on && dept.trim().length < 2) return gToast(context, 'Pour désactiver l’alerte, renseignez d’abord votre filière dans votre profil : elle sert à retrouver votre alerte.');
-    if (!await _call(context, 'opp_alert_set', {'p_department': dept, 'p_on': on}, ok: on ? 'Alerte activée : vous serez prévenu des nouvelles offres de votre filière.' : null)) return;
+    // désactivation : filière vide = toutes les alertes du compte, même si la filière du profil a changé
+    if (!await _call(context, 'opp_alert_set', {'p_department': on ? dept : '', 'p_on': on}, ok: on ? 'Alerte activée : vous serez prévenu des nouvelles offres de votre filière.' : null)) return;
     ref.invalidate(oppAlertProvider);
     if (on) return;
-    final still = await ref.read(oppAlertProvider.future);
-    if (mounted) gToast(context, still ? 'L’alerte n’a pas pu être retirée : elle porte sur une autre filière que celle de votre profil.' : 'Alerte désactivée.');
+    bool? still;
+    try {
+      still = await ref.read(oppAlertProvider.future);
+    } catch (_) {}
+    if (!mounted) return;
+    gToast(context, still == null ? 'Demande envoyée, mais l’état de l’alerte n’a pas pu être relu : vérifiez-le dans un instant.' : (still ? 'L’alerte n’a pas pu être retirée : réessayez.' : 'Alerte désactivée.'));
   }
 
   Widget _section(String title, OppQuery q, {int max = 3}) {

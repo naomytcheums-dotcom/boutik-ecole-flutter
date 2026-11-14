@@ -99,6 +99,9 @@ Future<void> saveDeliveryAddress(BuildContext context, WidgetRef ref) async {
     return;
   }
   ref.read(errorsProvider.notifier).clear();
+  final keep = (f['ad_save'] ?? '1') != '0';
+  await discardTransientAddress(ref);
+  if (!context.mounted) return;
   final r = await Backend.rpc('save_address', {
     'p_id': null, 'p_recipient': f['ad_name']!.trim(), 'p_phone': f['ad_phone']!.trim(), 'p_city': city, 'p_district': district,
     'p_line': f['ad_line']!.trim(), 'p_landmark': (f['ad_landmark'] ?? '').trim(),
@@ -106,8 +109,27 @@ Future<void> saveDeliveryAddress(BuildContext context, WidgetRef ref) async {
   if (!context.mounted) return;
   if (r.error != null) return gAlert(context, 'Adresse non enregistrée', r.error!);
   ref.read(selectedAddressProvider.notifier).set('${r.data}');
-  gToast(context, 'Adresse enregistrée');
+  ref.read(transientAddressProvider.notifier).set(keep ? '' : '${r.data}');
+  await ref.read(addressesProvider.notifier).refresh();
+  if (!context.mounted) return;
+  gToast(context, keep ? 'Adresse enregistrée' : 'Adresse retenue pour cette commande');
   gOpen(context, '42');
+}
+
+/// Adresse saisie sans « Enregistrer dans mon carnet » : le serveur ne livre qu'à une adresse qu'il connaît, elle est donc créée
+/// le temps de la commande, masquée du carnet, puis supprimée dès que la commande est passée (l'adresse reste copiée dans la commande).
+final transientAddressProvider = NotifierProvider<StrV, String>(StrV.new);
+
+Future<void> discardTransientAddress(WidgetRef ref) async {
+  final id = ref.read(transientAddressProvider);
+  if (id.isEmpty) return;
+  ref.read(transientAddressProvider.notifier).set('');
+  if (ref.read(selectedAddressProvider) == id) ref.read(selectedAddressProvider.notifier).set('');
+  final book = ref.read(addressesProvider.notifier);
+  await Backend.rpc('delete_address', {'p_id': id});
+  try {
+    await book.refresh();
+  } catch (_) {}
 }
 
 /// Réglage administrateur (menu du compte) : active ou coupe la livraison à domicile, ville desservie et frais.

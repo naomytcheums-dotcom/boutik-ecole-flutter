@@ -8,6 +8,7 @@ import 'auth.dart';
 import 'backend.dart';
 import 'marche/marche_data.dart';
 import 'marche/marche_widgets.dart';
+import 'reels.dart' as reels show challengesProvider, dailyCheckIn;
 import 'share.dart' show openUrl;
 
 /// Innovations des communautés : points et badges IUT, SOS Cours, défis hebdomadaires, marché des compétences, mur des victoires,
@@ -324,9 +325,17 @@ class ChallengesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final role = ref.watch(authProvider.select((a) => a.current?.staff ?? ''));
     final canCreate = role.isNotEmpty;
+    final streak = Backend.ready ? ref.watch(reels.challengesProvider) : null;
     return MarchePage(
       title: 'Défis hebdomadaires',
       child: ListView(padding: const EdgeInsets.only(bottom: 90), children: [
+        if (Backend.ready)
+          _box(Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(streak?.streakLabel ?? 'Série de présence', style: mst(15, w: FontWeight.w800)),
+            if (streak != null) Text(streak.nextLabel, style: mst(12.5, c: kGrey).copyWith(height: 1.4)),
+            const SizedBox(height: 8),
+            mButton('Pointer ma présence', () => reels.dailyCheckIn(context, ref), dark: false, icon: Icons.event_available_outlined),
+          ])),
         if (canCreate) Padding(padding: const EdgeInsets.fromLTRB(16, 0, 16, 8), child: mButton('Lancer un défi', () => _create(context, ref), icon: Icons.add)),
         mAsync<List<Map<String, dynamic>>>(
           ref.watch(challengesProvider),

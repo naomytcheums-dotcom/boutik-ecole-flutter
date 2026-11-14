@@ -382,6 +382,22 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
     ref.invalidate(communityMembersProvider(id));
   }
 
+  Future<void> _decline(Community c) async {
+    if (!await requireLogin(context, ref, 'répondre à cette invitation') || !mounted) return;
+    final r = await Backend.rpc('leave_community', {'p_community': c.id});
+    if (!mounted) return;
+    if (r.error != null) return gAlert(context, 'Action impossible', Backend.userMessage(r.error!));
+    await ref.read(communitiesProvider.notifier).refresh();
+    if (!mounted) return;
+    gToast(context, 'Invitation refusée : « ${c.name} »');
+    final still = (ref.read(communitiesProvider) ?? const <Community>[]).any((x) => x.id == c.id);
+    if (still) {
+      await _reload(c.id);
+    } else {
+      await Navigator.of(context).maybePop();
+    }
+  }
+
   Future<void> _hide(Map<String, dynamic> p) async {
     final r = await Backend.rpc('moderate_community_post', {'p_post': p['id'], 'p_hide': true});
     if (!mounted) return;
@@ -441,6 +457,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
         if (c.isRejected) Padding(padding: const EdgeInsets.only(top: 10), child: Text('Refusée${c.decisionNote.isEmpty ? '' : ' : ${c.decisionNote}'}', style: _st(12.5, w: FontWeight.w700, c: const Color(0xFFB42318)))),
         const SizedBox(height: 12),
         if (canJoin) _button(c.actionLabel, () async { await joinCommunity(context, ref, c); if (mounted) await _reload(c.id); }),
+        if (c.myStatus == 'invited') _button('Refuser l’invitation', () => _decline(c), dark: false),
         if (c.isMember && c.myRole != 'owner') _button('Quitter la communauté', () async { await leaveCommunity(context, ref, c); if (mounted) await _reload(c.id); }, dark: false),
         if (!canJoin && !c.isMember && c.status == 'active') Text(c.actionLabel, style: _st(13, w: FontWeight.w600, c: _violet)),
       ])),

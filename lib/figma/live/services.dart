@@ -8,6 +8,7 @@ import '../../data/repositories/repositories.dart' show cartProvider;
 import '../gen.dart';
 import '../nav.dart';
 import 'auth.dart';
+import 'access.dart' show canOpen;
 import 'backend.dart';
 import 'seller.dart';
 import 'store.dart';
@@ -152,12 +153,19 @@ Future<void> orderService(BuildContext context, WidgetRef ref) async {
   gOpen(context, '06');
 }
 
+/// Rôle exclu du formulaire 95b (direction, finance, support) : message clair plutôt qu'une page d'accès réservé ou une erreur du serveur.
+bool _quoteAllowed(BuildContext context, WidgetRef ref) {
+  if (canOpen(ref.read(authProvider).current, '95b')) return true;
+  gAlert(context, 'Action réservée', 'Cette action est réservée aux clients, étudiants-vendeurs, entreprises, responsables de département et administrateurs. Votre rôle ne permet pas de demander un devis.');
+  return false;
+}
+
 /// Écran 36, « Demander un devis » : ouvre le formulaire 95b pour le service consulté.
 Future<void> askQuote(BuildContext context, WidgetRef ref) async {
   if (!Backend.ready) return gAlert(context, 'Hors connexion', 'La demande de devis nécessite la connexion au serveur.');
   if (currentService(ref) == null) return gToast(context, 'Choisissez un service dans la liste.');
-  if (!await requireLogin(context, ref, 'demander un devis')) return;
-  if (context.mounted) gOpen(context, '95b');
+  if (!await requireLogin(context, ref, 'demander un devis') || !context.mounted) return;
+  if (_quoteAllowed(context, ref)) gOpen(context, '95b');
 }
 
 int? _digits(String s) {
@@ -169,6 +177,7 @@ int? _digits(String s) {
 Future<void> submitQuoteRequest(BuildContext context, WidgetRef ref) async {
   final l = currentService(ref);
   if (l == null) return gAlert(context, 'Service manquant', 'Ouvrez d’abord la fiche d’un service.');
+  if (Backend.ready && !_quoteAllowed(context, ref)) return;
   final f = ref.read(formProvider);
   final obj = (f['q_obj'] ?? '').trim(), desc = (f['q_desc'] ?? '').trim(), qty = (f['q_qty'] ?? '').trim();
   final brief = [if (obj.isNotEmpty) 'Objet : $obj', if (desc.isNotEmpty) desc, if (qty.isNotEmpty) 'Quantité : $qty'].join('\n');

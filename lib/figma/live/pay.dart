@@ -8,7 +8,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../gen.dart';
 import '../nav.dart';
 import 'audit.dart';
-import 'delivery.dart' show selectedAddressProvider;
+import 'delivery.dart' show discardTransientAddress, selectedAddressProvider;
 import 'auth.dart';
 import 'backend.dart';
 import 'store.dart';
@@ -136,6 +136,7 @@ Future<void> startPayment(WidgetRef ref, BuildContext context) async {
     return;
   }
   ref.read(ordersProvider.notifier).adopt(o.id, created['number'] as String, (created['subtotal'] as num).toInt(), (created['fee'] as num).toInt());
+  unawaited(discardTransientAddress(ref));
   o = ref.read(ordersProvider).firstWhere((x) => x.id == created['number']);
   if (cod) {
     // Paiement à la livraison : aucun prélèvement ; la commande est confirmée, le vendeur la prépare et encaisse à la remise.

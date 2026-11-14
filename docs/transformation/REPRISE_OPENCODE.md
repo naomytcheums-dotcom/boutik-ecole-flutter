@@ -49,3 +49,8 @@ vues comptées une fois par compte et par jour (`view_seen`), note de modératio
 `company_subscription_request(p_plan, p_owner)`, `product_reviews`, `opp_save` (rôle client refusé, département prévenu), `create_community` (admin et support prévenus), notification du département à la soumission d'un projet.
 Test SQL : `supabase/tests/marketplace_pglite/correctifs_visiteur.mjs` (`node replay.mjs all ./correctifs_visiteur.mjs`, attendu 28/28).
 Edge Function `auth-recovery` : à redéployer (`--no-verify-jwt`) pour que l'envoi du code ne révèle plus l'existence d'un compte par le délai de réponse.
+
+Migration `supabase/migrations/20261114004200_correctifs_visiteur_suite.sql` (NON appliquée en production, à appliquer après 4100) : `current_role_name()` nul pour un compte suspendu, déclencheurs `trg_block_suspended` sur les écritures de contenu,
+messages exacts de `create_post*`/`create_story`/`create_live`, rappels de date limite envoyés par `send_due_reminders()` (pg_cron toutes les 15 min ; vérifier que pg_cron existe, sinon les rappels ne partent pas) et non plus par `opps_list`/`anns_list`,
+`public_sellers`, `seller_public(p_name, p_id)` (homonymes signalés), `public_projects` (catalogue public sans contacts), `opp_alert_set` désactivable sans filière, titres des collections synchronisés.
+Test SQL : `correctifs_visiteur_suite.mjs` (attendu 26/26) ; `concours.mjs` (28) et `opportunites.mjs` (36) adaptés aux rappels planifiés.

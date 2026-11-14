@@ -11,6 +11,7 @@ bool get contactPickerSupported {
   }
 }
 
+/// Contacts choisis : liste vide si l'utilisateur a fermé le sélecteur sans choisir ; null si le sélecteur a échoué ou n'est pas pris en charge.
 Future<List<String>?> pickContactNumbers() async {
   try {
     final nav = globalContext['navigator'] as JSObject;
@@ -18,9 +19,9 @@ Future<List<String>?> pickContactNumbers() async {
     final opts = JSObject();
     opts['multiple'] = true.toJS;
     final res = await (contacts.callMethod('select'.toJS, ['tel'.toJS].toJS, opts) as JSPromise<JSAny?>).toDart;
+    final arr = (res as JSArray<JSAny?>).toDart;
     final out = <String>[];
-    final arr = res as JSArray<JSAny?>;
-    for (final c in arr.toDart) {
+    for (final c in arr) {
       final tel = (c as JSObject)['tel'];
       if (tel == null) continue;
       for (final t in (tel as JSArray<JSAny?>).toDart) {
@@ -28,8 +29,9 @@ Future<List<String>?> pickContactNumbers() async {
         if (n.isNotEmpty) out.add(n);
       }
     }
+    if (arr.isNotEmpty && out.isEmpty) return null;
     return out;
-  } catch (_) {
-    return null;
+  } catch (e) {
+    return '$e'.contains('AbortError') ? <String>[] : null;
   }
 }

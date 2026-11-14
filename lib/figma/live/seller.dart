@@ -17,8 +17,11 @@ import 'store.dart';
 // ------------------------------------------------------------------ annonces
 
 class Listing {
-  const Listing({required this.title, required this.category, required this.price, required this.stock, this.published = true, this.inReview = false, this.description = '', this.id = '', this.status = '', this.note = '', this.images = const [], this.department = '', this.platform = false, this.showcase = false, this.supervisor = ''});
+  const Listing({required this.title, required this.category, required this.price, required this.stock, this.published = true, this.inReview = false, this.description = '', this.id = '', this.status = '', this.note = '', this.images = const [], this.department = '', this.platform = false, this.showcase = false, this.supervisor = '', this.sellerId});
   final String title, category, description, department;
+
+  /// Identifiant du vendeur (colonne `seller_id`) ; nul pour un produit de la plateforme ou hors connexion.
+  final String? sellerId;
 
   /// Enseignant qui encadre le projet (facultatif), affiché sur la fiche de l'offre.
   final String supervisor;
@@ -58,6 +61,7 @@ class Listing {
       platform: r.containsKey('seller_id') && r['seller_id'] == null,
       showcase: r['showcase'] == true,
       supervisor: (r['supervisor'] ?? '').toString(),
+      sellerId: r['seller_id']?.toString(),
     );
   }
 
@@ -81,6 +85,7 @@ class Listing {
         published: published ?? this.published,
         inReview: inReview ?? this.inReview,
         description: description,
+        sellerId: sellerId,
         supervisor: supervisor);
 }
 
@@ -281,18 +286,34 @@ String _photoOf(Listing l) {
   return u.isEmpty ? 'placeholder' : u;
 }
 
+/// Noms d'affichage (« Prénom N. ») des vendeurs d'annonces publiées, lus par la fonction publique `public_sellers` (visiteurs compris).
+final sellerNamesProvider = FutureProvider<Map<String, String>>((ref) async {
+  if (!Backend.ready) return const {};
+  final ids = {for (final l in ref.watch(publicListingsProvider)) if ((l.sellerId ?? '').isNotEmpty) l.sellerId!}.toList()..sort();
+  if (ids.isEmpty) return const {};
+  final r = await Backend.rpc('public_sellers', {'p_ids': ids});
+  if (r.error != null || r.data is! Map) return const {};
+  return {for (final e in (r.data as Map).entries) '${e.key}': '${e.value}'};
+}, retry: (_, _) => null);
+
 final allProductsProvider = Provider<List<LiveProduct>>((ref) {
   final own = ref.watch(listingsProvider);
   final ownIds = {for (final l in own) l.id};
   final mine = [...own, ...ref.watch(publicListingsProvider)];
+  final names = ref.watch(sellerNamesProvider).value ?? const <String, String>{};
   final base = ref.watch(platformProductsProvider);
   platformProducts = base;
   final seen = <String>{};
   final extra = [
     for (final l in mine)
       if (!l.platform && l.published && l.stock > 0 && l.category != 'Services' && !base.any((p) => p.title == l.title) && seen.add(l.title))
-        LiveProduct(l.title, 'Étudiant-vendeur', l.price, (l.id.isNotEmpty && ownIds.contains(l.id)) || (l.id.isEmpty && own.contains(l)) ? ref.watch(profileAccountProvider).name : 'Étudiant-vendeur',
-            l.description.isEmpty ? 'Annonce publiée par un étudiant de l’IUT de Douala.' : l.description, _photoOf(l), category: liveCategories.contains(l.category) ? l.category : 'Maison'),
+        () {
+          final isOwn = (l.id.isNotEmpty && ownIds.contains(l.id)) || (l.id.isEmpty && own.contains(l));
+          final sid = (l.sellerId ?? '').isNotEmpty ? l.sellerId : (isOwn ? Backend.userId : null);
+          return LiveProduct(l.title, l.department.isEmpty ? 'IUT de Douala' : l.department, l.price, isOwn ? ref.watch(profileAccountProvider).name : (names[sid] ?? 'Vendeur'),
+              l.description.isEmpty ? 'Annonce publiée par un étudiant de l’IUT de Douala.' : l.description, _photoOf(l),
+              category: liveCategories.contains(l.category) ? l.category : 'Maison', sellerId: sid);
+        }(),
   ];
   extraProducts = extra;
   return [...extra, ...base];

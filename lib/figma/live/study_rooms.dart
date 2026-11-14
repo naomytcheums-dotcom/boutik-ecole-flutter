@@ -10,6 +10,7 @@ import '../gen.dart' show gToast;
 import '../i18n.dart' show Text;
 import 'auth.dart';
 import 'backend.dart';
+import 'community_exchanges.dart' show communityGate;
 import 'marche/marche_data.dart';
 import 'marche/marche_widgets.dart';
 import 'room_transport.dart';
@@ -371,7 +372,7 @@ final studyRoomsProvider = FutureProvider.autoDispose.family<List<Map<String, dy
   final r = await marcheCall('study_rooms_list', {'p_community': communityId});
   if (r.error != null) throw MarcheException(r.error);
   return [for (final x in (r.data as List? ?? const [])) Map<String, dynamic>.from(x as Map)];
-});
+}, retry: (_, _) => null);
 
 /// Onglet « Salons » d'une communauté : salons ouverts, ouvrir un salon, rejoindre, fermer.
 class StudyRoomsTab extends ConsumerWidget {
@@ -380,6 +381,7 @@ class StudyRoomsTab extends ConsumerWidget {
   final bool isMember;
 
   Future<void> _create(BuildContext context, WidgetRef ref) async {
+    if (!await requireLogin(context, ref, 'ouvrir un salon vocal') || !context.mounted) return;
     final title = TextEditingController(), topic = TextEditingController();
     final ok = await showModalBottomSheet<bool>(
       context: context,
@@ -415,7 +417,7 @@ class StudyRoomsTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (!isMember) return mNote('Les salons vocaux sont réservés aux membres de la communauté.\nRejoignez-la pour y participer.');
+    if (!isMember) return communityGate(context, ref, 'Les salons vocaux sont réservés aux membres de la communauté.\nRejoignez-la pour y participer.', 'accéder aux salons vocaux de cette communauté');
     return mAsync<List<Map<String, dynamic>>>(
       ref.watch(studyRoomsProvider(communityId)),
       (rooms) => ListView(padding: const EdgeInsets.all(16), children: [
@@ -437,11 +439,15 @@ class StudyRoomsTab extends ConsumerWidget {
               Padding(padding: const EdgeInsets.only(top: 4), child: Text('Organisé par ${r['host']}', style: mst(12, c: kGrey))),
               const SizedBox(height: 10),
               Row(children: [
-                Expanded(child: mButton('Rejoindre', () => openStudyRoom(context, '${r['id']}'), icon: Icons.headset_mic_outlined)),
+                Expanded(child: mButton('Rejoindre', () async {
+                  if (!await requireLogin(context, ref, 'rejoindre un salon vocal') || !context.mounted) return;
+                  await openStudyRoom(context, '${r['id']}');
+                }, icon: Icons.headset_mic_outlined)),
                 if (r['can_close'] == true) ...[
                   const SizedBox(width: 10),
                   Expanded(
                     child: mButton('Fermer', () async {
+                      if (!await requireLogin(context, ref, 'fermer ce salon') || !context.mounted) return;
                       final x = await marcheCall('study_room_close', {'p_room': r['id']});
                       if (!context.mounted) return;
                       if (x.error != null) gToast(context, Backend.userMessage('${x.error}'));

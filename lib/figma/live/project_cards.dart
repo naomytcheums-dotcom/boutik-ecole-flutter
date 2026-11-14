@@ -10,7 +10,7 @@ import 'package:video_player/video_player.dart';
 import 'auth.dart';
 import 'backend.dart';
 import 'console.dart';
-import 'entreprise.dart' show TableRows, dateCourte, projectStatus;
+import 'entreprise.dart' show dateCourte, projectStatus;
 import 'project_pages.dart' show projectProgress;
 import 'store.dart' show StrV, fcfa, normText;
 import 'talents.dart' show projectTabProvider;
@@ -23,9 +23,38 @@ const _grey = Color(0xFF57545F);
 TextStyle _st(double size, {FontWeight w = FontWeight.w500, Color c = _ink, double? h}) =>
     TextStyle(inherit: false, fontFamily: 'PlusJakartaSans', fontSize: size, fontWeight: w, color: c, height: h, textBaseline: TextBaseline.alphabetic);
 
+/// Catalogue de projets validés : lecture de la table pour un compte connecté ; pour un visiteur (ou si la table est refusée),
+/// fonction publique `public_projects` (projets validés et publics, sans e-mail ni téléphone de contact).
+class PublicProjectRows extends RpcRows {
+  PublicProjectRows({this.kind}) : super('public_projects', {if (kind != null) 'p_kind': kind, 'p_limit': 100}, true);
+  final String? kind;
+
+  @override
+  List<Map<String, dynamic>>? build() {
+    if (!Backend.ready) return null;
+    ref.watch(authProvider.select((a) => a.current?.email));
+    Future.microtask(refresh);
+    return null;
+  }
+
+  @override
+  Future<void> refresh() async {
+    if (Backend.userId != null) {
+      final r = await Backend.rows('projects', 'id,kind,title,summary,department,details,media,status,created_at',
+          eq: {'status': 'approved', if (kind != null) 'kind': kind!}, order: 'created_at');
+      if (!ref.mounted) return;
+      if (r.error == null) {
+        error = false;
+        state = r.rows;
+        return;
+      }
+    }
+    await super.refresh();
+  }
+}
+
 /// Seuls les projets validés sont listés (le propriétaire et le département verraient sinon aussi les brouillons).
-final projectsFeedProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(
-    () => TableRows('projects', 'id,kind,title,summary,department,details,media,status,created_at', order: 'created_at', eq: const {'status': 'approved'}));
+final projectsFeedProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(PublicProjectRows.new);
 
 Map<String, dynamic> _detailsOf(Map<String, dynamic> p) => p['details'] is Map ? Map<String, dynamic>.from(p['details'] as Map) : <String, dynamic>{};
 
@@ -91,7 +120,6 @@ class _ProjectCardsState extends ConsumerState<ProjectCards> {
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Text(t, textAlign: TextAlign.center, style: _st(13, c: _grey, h: 1.5)),
         );
-    if (ref.watch(authProvider.select((a) => a.current == null))) return note('Connectez-vous pour voir les projets.');
     final all = ref.watch(projectsFeedProvider);
     final tab = ref.watch(projectTabProvider);
     if (all == null) return note('Chargement…');
@@ -278,9 +306,7 @@ class _LoopVideoState extends State<_LoopVideo> {
 }
 
 /// Registre des innovations (écran 87) : projets de type innovation validés ; la RLS ne laisse voir que les projets publics (ou les siens).
-final innovationsRegistryProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows(
-    'projects', 'id,kind,title,summary,department,created_at,details,media,status',
-    order: 'created_at', eq: const {'kind': 'innovation', 'status': 'approved'}));
+final innovationsRegistryProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => PublicProjectRows(kind: 'innovation'));
 
 /// Texte saisi dans le champ de recherche du registre.
 final innovationQueryProvider = NotifierProvider<StrV, String>(StrV.new);
@@ -302,17 +328,13 @@ class _InnovationRegistryState extends ConsumerState<InnovationRegistry> {
 
   @override
   Widget build(BuildContext context) {
-    Widget note(String t, {bool login = false}) => Container(
+    Widget note(String t) => Container(
           width: widget.width,
           height: 190,
           alignment: Alignment.center,
           padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Text(t, textAlign: TextAlign.center, style: _st(13, c: _grey, h: 1.5)),
-            if (login) TextButton(onPressed: () => requireLogin(context, ref, 'voir le registre des innovations'), child: Text('Se connecter', style: _st(13.5, w: FontWeight.w700, c: const Color(0xFF5A3FE0)))),
-          ]),
+          child: Text(t, textAlign: TextAlign.center, style: _st(13, c: _grey, h: 1.5)),
         );
-    if (ref.watch(authProvider.select((a) => a.current == null))) return note('Connectez-vous pour voir le registre des innovations.', login: true);
     final all = ref.watch(innovationsRegistryProvider);
     final q = normText(ref.watch(innovationQueryProvider).trim());
     if (all == null) return note('Chargement…');

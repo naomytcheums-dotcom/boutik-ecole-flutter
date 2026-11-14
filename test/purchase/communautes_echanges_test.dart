@@ -1,9 +1,10 @@
 import 'package:boutik_ecole/figma/live/community_exchanges.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Future<void> _pump(WidgetTester t, Widget w) async {
-  await t.pumpWidget(MaterialApp(home: Scaffold(body: w)));
+  await t.pumpWidget(ProviderScope(child: MaterialApp(home: Scaffold(body: w))));
   await t.pumpAndSettle();
 }
 

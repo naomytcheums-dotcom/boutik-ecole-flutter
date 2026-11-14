@@ -30,6 +30,7 @@ class G_41 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final keep = ref.watch(formProvider.select((m) => m['ad_save'] != '0'));
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
@@ -83,9 +84,10 @@ class G_41 extends ConsumerWidget {
       gP(24, 536, 342, 48, GField(hint: demoContent ? '' : 'Point de repère (facultatif)', initial: demoContent ? 'Près de la bibliothèque' : '', size: 13.5, hintColor: demoContent ? Color(0xFF111015) : Color(0xFF57545F), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('ad_landmark', v); })),
       gP(39, 549.5, 18, 16.5, gImg('assets/figma/v/30f0e53e8efa49.svg')),
       gP(39, 559.25, 6, 11.25, gImg('assets/figma/v/37382165c8fa4f.svg')),
-      gP(24, 598, 20, 20, gBox(color: Color(0xFF111015), radii: [6, 6, 6, 6])),
-      gP(26.667, 601.75, 14.667, 11.958, gImg('assets/figma/v/w_check.svg')),
+      gP(24, 598, 20, 20, gBox(color: keep ? Color(0xFF111015) : Color(0xFFFFFFFF), border: keep ? null : Color(0xFFCFCBD6), bw: 1.5, radii: [6, 6, 6, 6])),
+      if (keep) gP(26.667, 601.75, 14.667, 11.958, gImg('assets/figma/v/w_check.svg')),
       gP(54, 599, 315, 18, gText('Enregistrer cette adresse dans mon carnet', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
+      gP(14, 590, 355, 36, const SizedBox.expand(), tap: () => ref.read(formProvider.notifier).put('ad_save', keep ? '0' : '1')),
       gP(0, 744, 390, 100, gBox(color: Color(0x00FFFFFF))),
       gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => saveDeliveryAddress(context, ref)),
       errorText('ad_name', 28, 258),

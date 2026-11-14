@@ -7,6 +7,7 @@ import 'geo_stub.dart' if (dart.library.js_interop) 'geo_web.dart';
 import 'auth.dart';
 import 'backend.dart';
 import 'console.dart';
+import 'delivery.dart' show transientAddressProvider;
 import 'entreprise.dart' show TableRows, dateCourte;
 import 'store.dart' show selectedProductProvider;
 
@@ -37,7 +38,9 @@ class AddressBook extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (ref.watch(authProvider.select((a) => a.current == null))) return _note(width, 'Connectez-vous pour gérer vos adresses.');
-    final rows = ref.watch(addressesProvider);
+    final temp = ref.watch(transientAddressProvider);
+    final all = ref.watch(addressesProvider);
+    final rows = all == null ? null : [for (final a in all) if ('${a['id']}' != temp) a];
     if (rows == null) return _note(width, 'Chargement…');
     return SizedBox(
       width: width,

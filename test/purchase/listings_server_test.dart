@@ -9,6 +9,7 @@ class _FakePublic extends PublicListings {
   List<Listing> build() => [
         Listing.fromRow({'id': 'a1', 'title': 'Casque d\'un autre vendeur', 'category': 'Tech', 'price': 30000, 'stock': 12, 'status': 'approved'}),
         Listing.fromRow({'id': 'a2', 'title': 'Épuisé', 'category': 'Tech', 'price': 1000, 'stock': 0, 'status': 'approved'}),
+        Listing.fromRow({'id': 'a3', 'title': 'Lampe du vendeur s1', 'category': 'Maison', 'price': 5000, 'stock': 2, 'status': 'approved', 'seller_id': 's1', 'department': 'Génie civil'}),
       ];
 }
 
@@ -59,7 +60,21 @@ void main() {
     addTearDown(c.dispose);
     final p = c.read(allProductsProvider).firstWhere((p) => p.title == "Casque d'un autre vendeur");
     expect(p.image, 'placeholder');
-    expect(p.seller, 'Étudiant-vendeur'); // pas le nom de la personne qui consulte
+    expect(p.seller, 'Vendeur'); // pas le nom de la personne qui consulte
+    expect(p.department, 'IUT de Douala');
+  });
+
+  test('catalogue acheteur : nom d\'affichage du vendeur et identifiant transmis au produit', () async {
+    final c = ProviderContainer(overrides: [
+      publicListingsProvider.overrideWith(_FakePublic.new),
+      sellerNamesProvider.overrideWith((ref) async => {'s1': 'Yannick M.'}),
+    ]);
+    addTearDown(c.dispose);
+    await c.read(sellerNamesProvider.future);
+    final p = c.read(allProductsProvider).firstWhere((p) => p.title == 'Lampe du vendeur s1');
+    expect(p.sellerId, 's1');
+    expect(p.seller, 'Yannick M.');
+    expect(p.department, 'Génie civil');
   });
 
   test('file de validation serveur : les décisions viennent du statut enregistré', () {

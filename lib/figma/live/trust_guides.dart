@@ -37,7 +37,7 @@ const _guides = <String, _Guide>{
     'Protéger mon compte',
     'Un compte bien protégé reste le vôtre.',
     [
-      ('Choisissez un mot de passe fort', 'Au moins 8 caractères avec une majuscule, un chiffre et un caractère spécial, différent de vos autres comptes.'),
+      ('Choisissez un mot de passe fort', 'Au moins 8 caractères avec une majuscule et un chiffre, différent de vos autres comptes.'),
       ('Activez la vérification en 2 étapes', 'Dans Mon compte, « Vérification en 2 étapes » : un code à 6 chiffres, propre à votre compte, est demandé à chaque connexion.'),
       ('Ne partagez jamais vos codes', 'Les codes reçus par SMS, WhatsApp ou e-mail ne doivent être donnés à personne, même à quelqu’un qui se dit de Boutik-École.'),
       ('Déconnectez-vous sur un appareil partagé', 'Sur un téléphone ou un ordinateur qui n’est pas le vôtre, fermez toujours votre session.'),

@@ -45,12 +45,13 @@ class _SystemStatesState extends State<SystemStates> {
   StreamSubscription<AuthState>? _auth;
   bool _hadSession = false;
   bool _online = true;
+  void Function()? _stopNetwork;
 
   @override
   void initState() {
     super.initState();
     _online = browserOnline();
-    listenConnectivity(_network);
+    _stopNetwork = listenConnectivity(_network);
     widget.router.routerDelegate.addListener(_route);
     if (!_online) WidgetsBinding.instance.addPostFrameCallback((_) => _network(false));
     if (Backend.ready) {
@@ -112,6 +113,7 @@ class _SystemStatesState extends State<SystemStates> {
   void dispose() {
     widget.router.routerDelegate.removeListener(_route);
     _auth?.cancel();
+    _stopNetwork?.call();
     super.dispose();
   }
 

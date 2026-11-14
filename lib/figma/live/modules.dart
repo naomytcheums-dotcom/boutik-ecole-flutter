@@ -269,8 +269,8 @@ Future<void> inviteFromContacts(BuildContext context, WidgetRef ref, String msg)
   if (!contactPickerSupported) return shareInvitation(context, ref, 'system');
   final numbers = await pickContactNumbers();
   if (!context.mounted) return;
-  // Sélecteur fermé sans choix (ou refusé) : on ne force pas l'ouverture d'un partage.
-  if (numbers == null || numbers.isEmpty) return gToast(context, 'Aucun contact choisi.');
+  if (numbers == null) return gToast(context, 'Le répertoire n\'a pas pu être ouvert. Utilisez « Partager avec une application ».');
+  if (numbers.isEmpty) return;
   await openUrl(context, 'sms:${numbers.join(',')}?&body=${Uri.encodeComponent(msg)}');
 }
 

@@ -463,15 +463,27 @@ class ChallengesNotifier extends Notifier<Challenges?> {
     return null;
   }
 
-  /// La visite de l'écran compte comme présence du jour (une fois par jour, côté serveur).
+  /// Lecture seule : la présence du jour se pointe explicitement avec [dailyCheckIn].
   Future<void> refresh() async {
-    await Backend.rpc('daily_checkin', const {});
     final r = await Backend.rpc('my_challenges', const {});
     if (r.error == null && r.data is Map && ref.mounted) state = Challenges.fromJson(Map<String, dynamic>.from(r.data as Map));
   }
 }
 
 final challengesProvider = NotifierProvider<ChallengesNotifier, Challenges?>(ChallengesNotifier.new);
+
+/// « Pointer ma présence » : enregistre la présence du jour (une fois par jour, côté serveur), relit la série et annonce le résultat réel.
+Future<void> dailyCheckIn(BuildContext context, WidgetRef ref) async {
+  if (!Backend.ready) return;
+  if (!await requireLogin(context, ref, 'pointer votre présence') || !context.mounted) return;
+  final r = await Backend.rpc('daily_checkin', const {});
+  if (!context.mounted) return;
+  if (r.error != null) return gAlert(context, 'Présence non enregistrée', Backend.userMessage(r.error!));
+  await ref.read(challengesProvider.notifier).refresh();
+  if (!context.mounted) return;
+  final days = r.data is num ? (r.data as num).toInt() : ref.read(challengesProvider)?.streak;
+  gToast(context, days == null ? 'Présence enregistrée.' : 'Présence enregistrée : série de $days jour${days > 1 ? 's' : ''}.');
+}
 
 /// 253 « Récupérer » : boost de série (6 jours) ou, à défaut, défi « 3 publications » ; le serveur décide.
 Future<void> claimReward(BuildContext context, WidgetRef ref) async {

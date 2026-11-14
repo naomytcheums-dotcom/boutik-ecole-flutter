@@ -107,7 +107,7 @@ final _groups = <_Group>[
     _Entry('Conformité du compte', screen: '69', roles: {'student'}),
     _Entry('Opportunités', screen: '75', roles: {'student', 'dept', 'admin'}),
     _Entry('Mon CV vivant', screen: '227', roles: {'student', 'dept', 'admin'}),
-    _Entry('Tableau de bord du studio', screen: 'D1', roles: {'student'}),
+    _Entry('Tableau de bord du studio', screen: 'D1', roles: {'student', 'dept', 'admin'}),
     _Entry('Connecter mes outils', screen: 'P5', roles: {'student', 'dept', 'admin'}),
     _Entry('Aller en direct', screen: 'L1', roles: {'student', 'dept', 'admin'}),
     _Entry('Programmer un live', screen: '224', roles: {'student', 'dept', 'admin'}),

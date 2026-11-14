@@ -55,8 +55,10 @@ export async function run(db) {
   check('enregistres : liste filtree', (await q(`select anns_list(null,null,null,null,null,null,null,true) r`))[0].r.length === 1);
   await q(`select ann_remind('${c2}', true)`);
   await q(`select anns_list()`);
+  check('rappel : la lecture de la liste ne cree aucune notification', (await q(`select count(*)::int n from notifications where user_id='${A}' and kind='contest_reminder'`))[0].n === 0);
+  await db.exec('reset role'); await q(`select send_due_reminders()`); await as(A);
   check('rappel : envoye quand la date limite approche (3 jours)', (await q(`select count(*)::int n from notifications where user_id='${A}' and kind='contest_reminder'`))[0].n === 1);
-  await q(`select anns_list()`);
+  await db.exec('reset role'); await q(`select send_due_reminders()`); await as(A);
   check('rappel : une seule fois', (await q(`select count(*)::int n from notifications where user_id='${A}' and kind='contest_reminder'`))[0].n === 1);
   // --- ils ont gagné
   await fails('victoire : preuve obligatoire', `select ann_win_submit('Hackathon Orange', '1er prix', 2026, 'pas-un-lien')`, /preuve/);

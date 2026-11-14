@@ -67,13 +67,23 @@ final rulesProvider = NotifierProvider<Flag, bool>(Flag.new);
 /// Aucun concours publié (serveur) : rien d'exemple n'est présenté comme réel.
 const noContest = Hackathon('', 'Aucun concours publié pour le moment', '', '', 0, 0, '');
 
+/// Lecture des concours en échec : l'écran ne doit pas affirmer qu'il n'y en a aucun.
+const unavailableContest = Hackathon('', 'Concours indisponibles pour le moment', '', '', 0, 0, '', desc: 'La lecture des concours a échoué. Vérifiez votre connexion puis réessayez dans un instant.');
+
+/// Message de la dernière lecture en échec (concours ou équipes) ; vide quand tout a été lu.
+final contestsErrorProvider = NotifierProvider<StrV, String>(StrV.new);
+
+/// Faux quand le nombre d'équipes inscrites n'a pas pu être lu : les places restantes sont alors inconnues.
+bool contestTeamsReadable = true;
+
 /// Concours affichés : ceux du serveur une fois connecté, sinon ceux de la maquette.
 final contestsProvider = Provider<List<Hackathon>>((ref) => Backend.ready ? (ref.watch(serverContestsProvider) ?? const <Hackathon>[]) : hackathons);
 
 final currentEventProvider = Provider<Hackathon>((ref) {
   final id = ref.watch(selectedEventProvider);
   final all = ref.watch(contestsProvider);
-  return all.firstWhere((h) => h.id == id, orElse: () => all.isEmpty ? noContest : all.first);
+  final failed = ref.watch(contestsErrorProvider).isNotEmpty;
+  return all.firstWhere((h) => h.id == id, orElse: () => all.isEmpty ? (failed ? unavailableContest : noContest) : all.first);
 });
 
 final visibleHackathonsProvider = Provider<List<Hackathon>>((ref) {
@@ -86,7 +96,7 @@ final visibleHackathonsProvider = Provider<List<Hackathon>>((ref) {
 
 /// Le nombre d'équipes inscrites n'est lisible que par un compte connecté (la table des équipes est refusée aux visiteurs) :
 /// sans compte, le nombre de places restantes est inconnu et ne doit pas être affiché.
-bool placesKnown() => !Backend.ready || Backend.userId != null;
+bool placesKnown() => !Backend.ready || (Backend.userId != null && contestTeamsReadable);
 
 /// Texte à afficher pour les places restantes : le nombre, ou « Places limitées » quand il ne peut pas être établi.
 String placesText(Hackathon h, Map<String, Registration> regs) => placesKnown() ? '${placesLeft(h, regs)}' : 'Places limitées';

@@ -23,8 +23,11 @@ String fcfa(num v) {
 }
 
 class LiveProduct {
-  const LiveProduct(this.title, this.department, this.price, this.seller, this.description, this.image, {this.category = 'Maison', this.showcase = false});
+  const LiveProduct(this.title, this.department, this.price, this.seller, this.description, this.image, {this.category = 'Maison', this.showcase = false, this.sellerId});
   final String title, department, seller, description, image, category;
+
+  /// Identifiant du vendeur quand il est connu : distingue deux vendeurs qui portent le même nom.
+  final String? sellerId;
   final int price;
 
   /// Produit d'exemple (fictif) : visible pour montrer le rendu, jamais vendu (refus côté serveur, 20261101000800).
@@ -74,7 +77,7 @@ LiveProduct productByTitle(String t) => [...extraProducts, ...platformProducts, 
 /// « 25 000 FCFA · Yannick M. » : prix et vendeur abrégé (nom enregistré « Nom Prénom »).
 String productPriceAndSeller(LiveProduct p) {
   final parts = p.seller.trim().split(RegExp(r'\s+'));
-  final who = parts.length >= 2 ? '${parts.last} ${parts.first[0]}.' : p.seller.trim();
+  final who = parts.length >= 2 && !RegExp(r'^\S\.$').hasMatch(parts.last) ? '${parts.last} ${parts.first[0]}.' : p.seller.trim();
   final price = fcfa(p.price).replaceAll('\u202f', ' '); // espace simple, comme sur la maquette
   return who.isEmpty ? price : '$price · $who';
 }

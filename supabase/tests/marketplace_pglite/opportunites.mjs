@@ -66,8 +66,10 @@ export async function run(db) {
   await q(`select opp_remind('${o2}', true)`);
   await fails('rappel : offre sans date limite refusee', `select opp_remind('${o3}', true)`, /date limite/);
   await q(`select opps_list()`);
+  check('rappel : la lecture de la liste ne cree aucune notification', (await q(`select count(*)::int n from notifications where user_id='${A}' and kind='opportunity_reminder'`))[0].n === 0);
+  await db.exec('reset role'); await q(`select send_due_reminders()`); await as(A);
   check('rappel : envoye quand la date limite approche (2 jours)', (await q(`select count(*)::int n from notifications where user_id='${A}' and kind='opportunity_reminder'`))[0].n === 1);
-  await q(`select opps_list()`);
+  await db.exec('reset role'); await q(`select send_due_reminders()`); await as(A);
   check('rappel : une seule fois', (await q(`select count(*)::int n from notifications where user_id='${A}' and kind='opportunity_reminder'`))[0].n === 1);
   await q(`select opp_alert_set('Génie informatique', true)`);
   check('alerte filiere : active', (await q(`select opp_my_alert() r`))[0].r === true);

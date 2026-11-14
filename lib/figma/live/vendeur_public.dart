@@ -17,10 +17,10 @@ TextStyle _st(double size, {FontWeight w = FontWeight.w500, Color c = _ink}) => 
 class SellerPublic extends Notifier<Map<String, dynamic>?> {
   @override
   Map<String, dynamic>? build() {
-    final name = ref.watch(selectedProductProvider.select((p) => p.seller));
+    final (name, id) = ref.watch(selectedProductProvider.select((p) => (p.seller, p.sellerId)));
     if (!Backend.ready) return null;
     Future.microtask(() async {
-      final r = await Backend.rpc('seller_public', {'p_name': name});
+      final r = await Backend.rpc('seller_public', (id ?? '').isNotEmpty ? {'p_id': id} : {'p_name': name});
       if (!ref.mounted) return;
       state = r.error != null || r.data is! Map ? {'found': false, 'error': true} : Map<String, dynamic>.from(r.data as Map);
     });
@@ -36,7 +36,10 @@ Widget _note(double w, String t) => Container(width: w, height: 140, alignment: 
 
 Widget? _gate(Map<String, dynamic>? d, double w, String seller) {
   if (d == null) return _note(w, 'Chargement…');
-  if (d['found'] != true) return _note(w, d['error'] == true ? 'Ce profil ne peut pas être chargé pour le moment.' : 'Aucun profil public trouvé pour « $seller ».');
+  if (d['found'] != true) {
+    if (d['ambiguous'] == true) return _note(w, 'Plusieurs vendeurs portent ce nom. Ouvrez la boutique depuis un de ses produits.');
+    return _note(w, d['error'] == true ? 'Ce profil ne peut pas être chargé pour le moment.' : 'Aucun profil public trouvé pour « $seller ».');
+  }
   return null;
 }
 
@@ -58,10 +61,12 @@ class SellerProfileBlock extends ConsumerWidget {
     final d = ref.watch(sellerPublicProvider);
     final g = _gate(d, width, seller);
     if (g != null) return SizedBox(width: width, child: g);
+    final fallbackId = '${d!['id'] ?? ''}';
+    final sellerId = ref.watch(selectedProductProvider.select((p) => p.sellerId)) ?? fallbackId;
     return SizedBox(
       width: width,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text('${d!['name']}', style: _st(20, w: FontWeight.w800)),
+        Text('${d['name']}', style: _st(20, w: FontWeight.w800)),
         const SizedBox(height: 4),
         Text([if ('${d['department']}'.isNotEmpty) '${d['department']}', if ('${d['institution']}'.isNotEmpty) '${d['institution']}', _since(d['since'])].where((e) => e.isNotEmpty).join(' · '), style: _st(12.5, c: _grey)),
         const SizedBox(height: 16),
@@ -70,7 +75,7 @@ class SellerProfileBlock extends ConsumerWidget {
         const SizedBox(height: 22),
         Text('Ses produits', style: _st(16, w: FontWeight.w700)),
         const SizedBox(height: 10),
-        ProductCards(width: width, rows: 2, filter: (p) => p.seller == '${d['name']}', emptyText: 'Aucun produit publié par ce vendeur pour le moment.'),
+        ProductCards(width: width, rows: 2, filter: (p) => sellerId.isNotEmpty && (p.sellerId ?? '').isNotEmpty ? p.sellerId == sellerId : p.seller == '${d['name']}', emptyText: 'Aucun produit publié par ce vendeur pour le moment.'),
       ]),
     );
   }

@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../gen.dart' show gToast;
+import '../gen.dart' show gAlert, gToast;
 import '../i18n.dart' show Text;
 import 'auth.dart';
 import 'backend.dart';
@@ -12,6 +12,8 @@ import 'marche/marche_widgets.dart';
 import 'form_options.dart';
 import 'opportunites_screens.dart' show oppDeadlineLabel, oppModes;
 import 'share.dart' show openUrl, shareText, siteUrl;
+import 'tara_payment.dart';
+import 'access.dart' show roleKey;
 
 /// Concours, bourses, hackathons et appels à projets : fiche complète pour décider en 10 secondes, filtres, rappel 3 jours avant la date limite,
 /// partage WhatsApp et section « Ils ont gagné ». Tout vient du serveur (migration 20261114001400) ; aucune annonce n'est inventée.
@@ -155,6 +157,7 @@ class AnnouncementCard extends StatelessWidget {
         Wrap(spacing: 6, runSpacing: 4, children: [
           _pill(oppDeadlineLabel(deadline, t), deadline != null && deadline.difference(DateTime(t.year, t.month, t.day)).inDays <= 3 ? kRed : kViolet),
           _pill(annCostLabel(a), a['free'] == false ? const Color(0xFF8F5400) : kGreen),
+          if (mInt(a['prize_amount']) > 0 && ['held', 'awarded'].contains('${a['prize_status']}')) _pill('Récompense garantie ${mFcfa(mInt(a['prize_amount']))}', kGreen),
           for (final b in annBadges(a, t)) _pill(b, _badgeColor(b)),
         ]),
         if ('${a['reward']}'.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 8), child: Text('Gain : ${a['reward']}', style: mst(13, w: FontWeight.w700))),
@@ -378,12 +381,75 @@ class AnnouncementDetailScreen extends ConsumerWidget {
 
 // ------------------------------------------------------------------ mes annonces et validation par l'équipe
 
+/// Paiement de la récompense : la somme est conservée par Boutik-École jusqu'à l'attribution au gagnant.
+Future<void> payPrize(BuildContext context, WidgetRef ref, String annId, {String? title}) async {
+  final r = await marcheCall('ann_prize_checkout', {'p_ann': annId});
+  if (!context.mounted) return;
+  if (r.error != null) {
+    await gAlert(context, 'Paiement impossible', Backend.userMessage('${r.error}'));
+    return;
+  }
+  final tx = Map<String, dynamic>.from(r.data as Map);
+  await payWithTara(context, ref, reference: '${tx['reference']}', amount: (tx['amount'] as num).toInt(), label: 'la récompense « ${title ?? tx['title']} »');
+  ref.invalidate(annPostedProvider);
+}
+
+Future<void> awardPrize(BuildContext context, WidgetRef ref, Map<String, dynamic> a) async {
+  final email = TextEditingController();
+  final ok = await showDialog<bool>(
+    context: context,
+    builder: (c) => AlertDialog(
+      title: Text('Attribuer ${mFcfa(mInt(a['prize_amount']))}'),
+      content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text('Adresse e-mail du compte étudiant gagnant. La somme lui est réservée en entier ; l’équipe Boutik-École la débloque sur son solde.', style: mst(12.5, c: kGrey)),
+        const SizedBox(height: 10),
+        TextField(controller: email, keyboardType: TextInputType.emailAddress, decoration: const InputDecoration(labelText: 'E-mail du gagnant', hintText: 'prenom.nom@…')),
+      ]),
+      actions: [TextButton(onPressed: () => Navigator.pop(c, false), child: Text('Annuler')), TextButton(onPressed: () => Navigator.pop(c, true), child: Text('Attribuer'))],
+    ),
+  );
+  final mail = email.text.trim();
+  email.dispose();
+  if (ok != true || !context.mounted || mail.isEmpty) return;
+  final r = await marcheCall('ann_prize_award', {'p_ann': a['id'], 'p_winner_email': mail});
+  if (!context.mounted) return;
+  if (r.error != null) {
+    await gAlert(context, 'Attribution impossible', Backend.userMessage('${r.error}'));
+    return;
+  }
+  await gAlert(context, 'Récompense attribuée', 'Le gagnant est prévenu. L’équipe Boutik-École débloque la somme sur son solde.');
+  ref.invalidate(annPostedProvider);
+}
+
+/// État et actions de la récompense sous séquestre, sous une annonce.
+List<Widget> prizeActions(BuildContext context, WidgetRef ref, Map<String, dynamic> a, {required bool staff, required bool admin}) {
+  final amount = mInt(a['prize_amount']);
+  final st = '${a['prize_status'] ?? 'none'}';
+  if (amount <= 0 || st == 'none') return const [];
+  final label = switch (st) {
+    'awaiting' => 'Récompense ${mFcfa(amount)} : à payer pour pouvoir publier',
+    'held' => 'Récompense ${mFcfa(amount)} : sous séquestre',
+    'awarded' => 'Récompense ${mFcfa(amount)} : attribuée à ${a['prize_winner_name'] ?? 'un étudiant'}',
+    'refunded' => 'Récompense ${mFcfa(amount)} : remboursée à l’organisateur',
+    _ => '',
+  };
+  return [
+    Padding(padding: const EdgeInsets.fromLTRB(16, 0, 16, 6), child: Row(children: [const Icon(Icons.lock_outline, size: 16, color: kViolet), const SizedBox(width: 6), Expanded(child: Text(label, style: mst(12.5, w: FontWeight.w700, c: st == 'awaiting' ? const Color(0xFFB45309) : kInk)))])),
+    if (!staff && st == 'awaiting') Padding(padding: const EdgeInsets.fromLTRB(16, 0, 16, 8), child: mButton('Payer la récompense (${mFcfa(amount)})', () => payPrize(context, ref, '${a['id']}', title: '${a['title']}'), icon: Icons.phone_android)),
+    if (!staff && st == 'held' && a['status'] == 'published') Padding(padding: const EdgeInsets.fromLTRB(16, 0, 16, 8), child: mButton('Attribuer la récompense', () => awardPrize(context, ref, a), icon: Icons.emoji_events_outlined)),
+    if (admin && st == 'held') Padding(padding: const EdgeInsets.fromLTRB(16, 0, 16, 8), child: mButton('Rembourser l’organisateur (aucun gagnant)', () async {
+      if (await _call(context, 'ann_prize_refund', {'p_ann': a['id'], 'p_note': 'Aucun gagnant désigné'}, ok: 'Récompense marquée remboursée : effectuez le remboursement Mobile Money.')) ref.invalidate(annPostedProvider);
+    }, dark: false)),
+  ];
+}
+
 class MyAnnouncementsScreen extends ConsumerWidget {
   const MyAnnouncementsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final staff = (ref.watch(authProvider).current?.staff ?? '').isNotEmpty;
+    final admin = roleKey(ref.watch(authProvider).current) == 'admin';
     return MarchePage(
       title: staff ? 'Annonces à valider' : 'Mes annonces',
       child: ListView(padding: const EdgeInsets.only(bottom: 90), children: [
@@ -395,6 +461,7 @@ class MyAnnouncementsScreen extends ConsumerWidget {
                   for (final a in l)
                     Column(children: [
                       AnnouncementCard(a: a, onTap: () => context.push('/concours/${a['id']}')),
+                      ...prizeActions(context, ref, a, staff: staff, admin: admin),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
                         child: a['status'] == 'pending' && staff
@@ -485,7 +552,7 @@ class AnnouncementEditScreen extends ConsumerStatefulWidget {
 }
 
 class _AnnEditState extends ConsumerState<AnnouncementEditScreen> {
-  final _c = {for (final k in ['title', 'organizer', 'country', 'place', 'description', 'why', 'conditions', 'documents', 'steps', 'criteria', 'reward', 'level', 'age', 'department', 'eligCountry', 'cost', 'url']) k: TextEditingController()};
+  final _c = {for (final k in ['title', 'organizer', 'country', 'place', 'description', 'why', 'conditions', 'documents', 'steps', 'criteria', 'reward', 'prize', 'level', 'age', 'department', 'eligCountry', 'cost', 'url']) k: TextEditingController()};
   String _kind = 'contest', _domain = 'tech', _orgKind = 'university', _placeKind = 'online';
   String _currency = 'FCFA';
   bool _free = true, _iut = false, _busy = false;
@@ -537,6 +604,30 @@ class _AnnEditState extends ConsumerState<AnnouncementEditScreen> {
       },
     });
     if (!mounted) return;
+    final prize = int.tryParse(_c['prize']!.text.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+    if (r.error == null && prize > 0) {
+      final ps = await marcheCall('ann_prize_set', {'p_ann': '${r.data}', 'p_amount': prize});
+      if (!mounted) return;
+      setState(() => _busy = false);
+      if (ps.error != null) {
+        await gAlert(context, 'Récompense non enregistrée', Backend.userMessage('${ps.error}'));
+      } else {
+        ref.invalidate(annPostedProvider);
+        final pay = await showDialog<bool>(
+          context: context,
+          builder: (c) => AlertDialog(
+            title: Text('Mettre la récompense sous séquestre ?'),
+            content: Text('${mFcfa(prize)} sont payés maintenant par Mobile Money et conservés par Boutik-École jusqu’à l’attribution au gagnant. Votre annonce ne peut pas être publiée avant ce paiement.'),
+            actions: [TextButton(onPressed: () => Navigator.pop(c, false), child: Text('Plus tard')), TextButton(onPressed: () => Navigator.pop(c, true), child: Text('Payer maintenant'))],
+          ),
+        );
+        if (pay == true && mounted) await payPrize(context, ref, '${r.data}', title: _c['title']!.text);
+      }
+      if (!mounted) return;
+      gToast(context, 'Annonce envoyée : elle sera visible après le paiement de la récompense et la validation par l’équipe.');
+      context.pop();
+      return;
+    }
     setState(() => _busy = false);
     gToast(context, r.error != null ? Backend.userMessage('${r.error}') : 'Annonce envoyée : elle sera visible après validation par l’équipe.');
     if (r.error == null) {
@@ -588,7 +679,11 @@ class _AnnEditState extends ConsumerState<AnnouncementEditScreen> {
         _date('Résultats', _results, (d) => _results = d),
         _date('Début du programme', _start, (d) => _start = d),
         const SizedBox(height: 4),
-        _f('reward', 'Gain ou récompense', hint: '500 000 FCFA, bourse complète, voyage…'),
+        _f('reward', 'Gain ou récompense', hint: 'Bourse complète, voyage, stage…'),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: TextField(controller: _c['prize'], keyboardType: TextInputType.number, inputFormatters: [FilteringTextInputFormatter.digitsOnly], decoration: _deco('Récompense en argent (FCFA, facultatif)', hint: '100000').copyWith(helperText: 'Payée à l’avance et conservée sous séquestre jusqu’à l’attribution au gagnant.', helperMaxLines: 2)),
+        ),
         _f('level', 'Niveau (facultatif)'),
         _f('age', 'Âge (facultatif)'),
         MultiPickField(label: 'Filières concernées', options: studyFields, value: _c['department']!.text, emptyText: 'Toutes les filières', onChanged: (v) => setState(() => _c['department']!.text = v)),

@@ -274,6 +274,17 @@ final lastOrderProvider = Provider<Order>((ref) {
 
 String statusLabel(int s) => const ['Confirmée', 'En préparation', 'Expédiée', 'Livrée'][s.clamp(0, 3)];
 
+/// Première commande à payer : ni payée ni annulée (les commandes sont rangées de la plus récente à la plus ancienne) ; null s'il n'y en a pas.
+Order? payableOrder(List<Order> orders) {
+  for (final o in orders) {
+    if (!o.paid && !o.cancelled) return o;
+  }
+  return null;
+}
+
+/// Commande ciblée par le paiement (écran 43) : la plus récente commande impayée et non annulée ; null s'il n'y en a pas.
+final payableOrderProvider = Provider<Order?>((ref) => payableOrder(ref.watch(ordersProvider)));
+
 /// Historique de démonstration (maquettes 28 et 45) : les nouvelles commandes passent devant.
 final _history = <Order>[
   Order(id: '#BE-2026-0142', date: '22 oct. 2026', lines: [liveLine('Lampe en bois recyclé', 25000)], subtotal: 32500, fee: 0, method: 'Orange Money', reference: 'OM-7F3A-2210', status: 3, paid: true),

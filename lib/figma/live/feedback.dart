@@ -98,6 +98,7 @@ Future<void> reviewOrderDialog(BuildContext context, WidgetRef ref) async {
   final o = await _viewedOrder(ref);
   if (o.lines.isEmpty) return gToast(context, 'Aucun article à évaluer.');
   var line = 0, stars = 5, busy = false;
+  String? failure;
   final comment = TextEditingController();
   await gDialog<void>(
     context: context,
@@ -128,6 +129,7 @@ Future<void> reviewOrderDialog(BuildContext context, WidgetRef ref) async {
             ]),
             const SizedBox(height: 10),
             TextField(controller: comment, maxLines: 3, maxLength: 1000, style: _st, decoration: const InputDecoration(hintText: 'Votre commentaire (facultatif)')),
+            if (failure != null) Padding(padding: const EdgeInsets.only(top: 6), child: Text(failure!, style: _st.copyWith(color: const Color(0xFFD64545), fontSize: 12.5))),
           ]),
         ),
         actions: [
@@ -136,17 +138,23 @@ Future<void> reviewOrderDialog(BuildContext context, WidgetRef ref) async {
             onPressed: busy
                 ? null
                 : () async {
-                    set(() => busy = true);
+                    set(() {
+                      busy = true;
+                      failure = null;
+                    });
                     final err = await Backend.submitReview(o.id, o.lines[line].title, stars, comment.text);
                     if (!ctx.mounted) return;
+                    if (err != null) {
+                      set(() {
+                        busy = false;
+                        failure = 'Avis non enregistré : $err';
+                      });
+                      return;
+                    }
                     Navigator.pop(ctx);
                     if (!context.mounted) return;
-                    if (err != null) {
-                      await gAlert(context, 'Avis non enregistré', err);
-                    } else {
-                      ref.read(ratingsProvider.notifier).refresh();
-                      gToast(context, 'Merci ! Votre avis a été publié.');
-                    }
+                    ref.read(ratingsProvider.notifier).refresh();
+                    gToast(context, 'Merci ! Votre avis a été publié.');
                   },
             child: Text(busy ? 'Envoi…' : 'Publier mon avis'),
           ),
@@ -167,7 +175,7 @@ Future<void> submitClaimForm(BuildContext context, WidgetRef ref) async {
   if (!context.mounted) return;
   if (err != null) return gAlert(context, 'Réclamation non envoyée', err);
   ref.read(formProvider.notifier).clear(const ['claim_details']);
-  gToast(context, 'Réclamation envoyée. Le vendeur et l’équipe ont été prévenus.');
+  gToast(context, 'Réclamation envoyée. Le vendeur a été prévenu.');
   gBack(context);
 }
 

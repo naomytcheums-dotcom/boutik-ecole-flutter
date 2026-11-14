@@ -116,9 +116,9 @@ void main() {
 
   testWidgets('43 connecté : bouton de paiement par messagerie ; hors connexion : maquette inchangée', (t) async {
     await monter(t, const G_43());
-    expect(find.text('Payer par messagerie (WhatsApp, Dikalo)'), findsOneWidget);
+    expect(find.text('Payer par messagerie'), findsOneWidget);
     await monter(t, const G_43(), connecte: false);
-    expect(find.text('Payer par messagerie (WhatsApp, Dikalo)'), findsNothing);
+    expect(find.text('Payer par messagerie'), findsNothing);
   });
 
   testWidgets('communauté : fil réel et saisie réservée aux membres', (t) async {

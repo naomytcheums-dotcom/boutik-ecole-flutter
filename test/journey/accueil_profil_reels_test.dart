@@ -7,6 +7,8 @@ import 'package:boutik_ecole/figma/live/auth.dart';
 import 'package:boutik_ecole/figma/live/backend.dart';
 import 'package:boutik_ecole/figma/live/home_live.dart';
 import 'package:boutik_ecole/figma/live/profile_data.dart';
+import 'package:boutik_ecole/figma/live/seller.dart' show Listing, PlatformListings, platformListingsProvider;
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -27,6 +29,15 @@ class _Docs extends DocsNotifier {
   List<UserDoc>? build() => v;
 }
 
+class _Platform extends PlatformListings {
+  _Platform(this.v);
+  final List<Listing>? v;
+  @override
+  List<Listing>? build() => v;
+  @override
+  Future<void> refresh() async {}
+}
+
 void main() {
   setUpAll(loadAppFonts);
   setUp(() => GScreen.mockupFrame = false);
@@ -35,14 +46,19 @@ void main() {
     Backend.ready = false;
   });
 
-  Future<void> monter(WidgetTester t, Widget ecran, {required bool connecte, List<LiveTalent>? talents, List<UserDoc>? docs, bool connectedUser = false, Size size = const Size(393, 852)}) async {
+  Future<void> monter(WidgetTester t, Widget ecran, {required bool connecte, List<LiveTalent>? talents, List<UserDoc>? docs, bool connectedUser = false, Size size = const Size(393, 852), List<Listing>? catalogue = const [], Future<bool>? lecture}) async {
     Backend.ready = connecte;
     GAnim.enabled = false;
     t.view.physicalSize = size;
     t.view.devicePixelRatio = 1;
     addTearDown(t.view.reset);
     await t.pumpWidget(ProviderScope(
-      overrides: [liveTalentsProvider.overrideWith(() => _Talents(talents)), myDocsProvider.overrideWith(() => _Docs(docs))],
+      overrides: [
+        liveTalentsProvider.overrideWith(() => _Talents(talents)),
+        myDocsProvider.overrideWith(() => _Docs(docs)),
+        platformListingsProvider.overrideWith(() => _Platform(catalogue)),
+        if (lecture != null) homeProductsReadProvider.overrideWith((ref) => lecture),
+      ],
       child: MaterialApp(home: ecran),
     ));
     await t.pumpAndSettle();
@@ -58,6 +74,25 @@ void main() {
     expect(find.text('Drone éducatif'), findsNothing);
     expect(find.textContaining('Ngoné'), findsNothing);
     expect(find.text('Aucun produit publié pour le moment.\nLes créations des étudiants apparaîtront ici dès leur publication.'), findsOneWidget);
+  });
+
+  testWidgets('accueil : « Chargement… » pendant la lecture des produits, jamais « Aucun produit publié »', (t) async {
+    await monter(t, const G_03(), connecte: true, talents: const [], catalogue: null, lecture: Completer<bool>().future);
+    expect(find.text('Chargement des produits…'), findsOneWidget);
+    expect(find.textContaining('Aucun produit publié'), findsNothing);
+  });
+
+  testWidgets('accueil : un échec de lecture des produits est distinct de « aucun produit »', (t) async {
+    await monter(t, const G_03(), connecte: true, talents: const [], catalogue: null, lecture: Future.value(false));
+    expect(find.textContaining('Les produits ne peuvent pas être chargés'), findsOneWidget);
+    expect(find.textContaining('Aucun produit publié'), findsNothing);
+  });
+
+  testWidgets('accueil visiteur : « Connectez-vous pour découvrir les talents. » avec un bouton « Se connecter »', (t) async {
+    await monter(t, const G_03(), connecte: true, talents: const []);
+    expect(find.text('Connectez-vous pour découvrir les talents.', skipOffstage: false), findsOneWidget);
+    expect(find.text('Se connecter', skipOffstage: false), findsOneWidget);
+    expect(find.textContaining('ne peuvent pas être chargés', skipOffstage: false), findsNothing);
   });
 
   testWidgets('accueil connecté : « Talents à découvrir » est atteignable au défilement, au-dessus du menu', (t) async {

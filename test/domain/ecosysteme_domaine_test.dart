@@ -46,11 +46,19 @@ void main() {
       expect(ids, ['ok']);
     });
 
-    test('diversité : au plus 2 contenus du même auteur', () {
+    test('diversité : au plus 2 contenus du même auteur en tête, les suivants passent après les autres sans être écartés', () {
       final items = [for (var i = 0; i < 6; i++) _item('a$i', 'meme', hoursAgo: i + 1), _item('b', 'autre', hoursAgo: 20)];
       final r = ranker.rank(items, const FeedSignals(), _now);
-      expect(r.where((x) => x.item.authorId == 'meme').length, 2);
-      expect(r.map((x) => x.item.id), contains('b'));
+      expect(r.length, 7, reason: 'aucune publication n’est supprimée par le plafond par auteur');
+      final tete = r.take(3).map((x) => x.item.authorId).toList();
+      expect(tete.where((a) => a == 'meme').length, 2);
+      expect(r.take(3).map((x) => x.item.id), contains('b'));
+      expect(r.map((x) => x.item.id).toSet(), {for (final i in items) i.id});
+    });
+
+    test('le plafond par auteur respecte la limite demandée', () {
+      final items = [for (var i = 0; i < 6; i++) _item('a$i', 'meme', hoursAgo: i + 1)];
+      expect(ranker.rank(items, const FeedSignals(), _now, limit: 4).length, 4);
     });
 
     test('un contenu déjà vu et un contenu signalé sont pénalisés', () {

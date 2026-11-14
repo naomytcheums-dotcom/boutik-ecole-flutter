@@ -6,6 +6,7 @@ import '../i18n.dart' show Text;
 import 'auth.dart';
 import 'backend.dart';
 import 'marche/marche_data.dart';
+import 'marche/marche_appels.dart' show marcheLoginRequired;
 import 'marche/marche_widgets.dart';
 
 /// Litiges sur les commandes à payer à la livraison : le vendeur signale un refus de payer, l'acheteur répond, l'équipe tranche
@@ -97,6 +98,7 @@ class DisputesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (Backend.ready && ref.watch(authProvider.select((a) => a.current == null))) return marcheLoginRequired(context, ref, title: 'Mes litiges', pour: 'voir vos litiges');
     return MarchePage(
       title: 'Mes litiges',
       child: ListView(padding: const EdgeInsets.only(bottom: 90), children: [

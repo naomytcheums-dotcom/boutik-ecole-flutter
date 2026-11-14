@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart' hide Text;
-import '../i18n.dart' show Text;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pdf/pdf.dart';
@@ -8,6 +7,7 @@ import 'package:printing/printing.dart';
 
 import '../gen.dart';
 import 'auth.dart';
+import 'backend.dart';
 import 'store.dart';
 
 /// Documents téléchargeables : reçu de paiement et facture (PDF réel, avec le logo de la plateforme).
@@ -108,7 +108,7 @@ Future<pw.Document> _build(Order o, Account who, {required bool invoice}) async 
               padding: const pw.EdgeInsets.symmetric(horizontal: 10, vertical: 9),
               decoration: pw.BoxDecoration(color: _ink, borderRadius: pw.BorderRadius.circular(8)),
               child: pw.Row(mainAxisAlignment: pw.MainAxisAlignment.spaceBetween, children: [
-                pw.Text(invoice ? 'Total TTC' : 'Total payé', style: st(11, b: true, c: PdfColors.white)),
+                pw.Text(invoice ? 'Total' : 'Total payé', style: st(11, b: true, c: PdfColors.white)),
                 pw.Text(fcfa(o.total), style: st(12, b: true, c: PdfColors.white)),
               ]),
             ),
@@ -121,10 +121,6 @@ Future<pw.Document> _build(Order o, Account who, {required bool invoice}) async 
       kv('Moyen de paiement', o.method),
       kv('Référence de transaction', o.reference),
       kv('Statut', o.paid ? 'Payé' : 'En attente de paiement'),
-      if (invoice) ...[
-        pw.SizedBox(height: 10),
-        pw.Text('Répartition indicative : fonds d’innovation de l’établissement (20 %) ${fcfa(o.total * 0.20)}.', style: st(9, c: _muted)),
-      ],
       pw.Spacer(),
       pw.Container(height: 1, color: _line),
       pw.SizedBox(height: 8),
@@ -137,6 +133,7 @@ Future<pw.Document> _build(Order o, Account who, {required bool invoice}) async 
 /// Télécharge (web) ou partage (mobile) le PDF.
 Future<void> downloadDocument(BuildContext context, WidgetRef ref, {required bool invoice}) async {
   final o = ref.read(lastOrderProvider);
+  if (Backend.ready && (o.id == '#----' || o.lines.isEmpty)) return gToast(context, 'Aucune commande à télécharger.');
   final who = ref.read(profileAccountProvider);
   gToast(context, invoice ? 'Préparation de la facture…' : 'Préparation du reçu…');
   try {

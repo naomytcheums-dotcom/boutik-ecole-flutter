@@ -2,8 +2,8 @@ import 'dart:math' as math;
 
 /// Moteur de classement du fil (logique pure, sans interface ni réseau).
 ///
-/// État : **implémenté et testé unitairement ; non branché** (aucune table de publications n'existe encore, voir
-/// docs/transformation/ALGORITHME_RECOMMANDATION.md). Les poids sont configurables, le classement est explicable
+/// État : **implémenté, testé unitairement et branché** sur le fil du Cercle (`rankReels`, lib/figma/live/reels.dart), voir
+/// docs/transformation/ALGORITHME_RECOMMANDATION.md. Les poids sont configurables, le classement est explicable
 /// (chaque résultat porte ses raisons) et un flux chronologique simple est toujours disponible.
 
 enum FeedMode { pourToi, abonnements, communautes, tendances, recentes }
@@ -153,6 +153,8 @@ class FeedRanker {
   }
 
   /// Sélection gloutonne : chaque choix pénalise les contenus du même auteur, de la même catégorie et du même format.
+  /// Au-delà de `maxPerAuthor` publications d'un même auteur, les suivantes passent après toutes les autres : le classement
+  /// limite la place d'un auteur mais n'écarte jamais une publication.
   List<RankedItem> _diversify(List<RankedItem> sorted, int limit) {
     final left = [...sorted];
     final out = <RankedItem>[];
@@ -173,7 +175,10 @@ class FeedRanker {
           best = c;
         }
       }
-      if (best == null) break;
+      if (best == null) {
+        out.addAll(left.take(limit - out.length));
+        break;
+      }
       left.remove(best);
       out.add(best);
       byAuthor[best.item.authorId] = (byAuthor[best.item.authorId] ?? 0) + 1;

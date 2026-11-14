@@ -2,6 +2,7 @@ import 'package:boutik_ecole/figma/live/auth.dart';
 import 'package:boutik_ecole/figma/live/backend.dart';
 import 'package:boutik_ecole/figma/live/console.dart';
 import 'package:boutik_ecole/figma/live/project_cards.dart';
+import 'package:boutik_ecole/figma/live/talents.dart' show projectTabProvider;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -49,5 +50,37 @@ void main() {
     await t.pumpAndSettle();
     expect(find.text('Problème résolu'), findsOneWidget);
     expect(find.text('Les récoltes chauffent.'), findsOneWidget);
+  });
+
+  testWidgets('pastilles : Prototypes, Recherche et Financement filtrent réellement', (t) async {
+    await monter(t, [
+      {'id': '1', 'kind': 'projet', 'title': 'Drone', 'summary': '', 'department': '', 'status': 'approved', 'media': const [], 'details': {'progress': 'prototype'}},
+      {'id': '2', 'kind': 'projet', 'title': 'Serre', 'summary': '', 'department': '', 'status': 'approved', 'media': const [], 'details': {'progress': 'idee', 'funding_xaf': '500000'}},
+      {'id': '3', 'kind': 'projet', 'title': 'Filtre', 'summary': '', 'department': '', 'status': 'approved', 'media': const [], 'details': {'progress': 'conception', 'funding_xaf': ''}},
+    ]);
+    final c = ProviderScope.containerOf(t.element(find.byType(ProjectCards)));
+    expect(find.text('Drone'), findsOneWidget);
+    expect(find.text('Serre'), findsOneWidget);
+    c.read(projectTabProvider.notifier).set(1);
+    await t.pumpAndSettle();
+    expect([find.text('Drone').evaluate().length, find.text('Serre').evaluate().length, find.text('Filtre').evaluate().length], [1, 0, 0]);
+    c.read(projectTabProvider.notifier).set(2);
+    await t.pumpAndSettle();
+    expect([find.text('Drone').evaluate().length, find.text('Serre').evaluate().length, find.text('Filtre').evaluate().length], [0, 1, 1]);
+    c.read(projectTabProvider.notifier).set(3);
+    await t.pumpAndSettle();
+    expect([find.text('Drone').evaluate().length, find.text('Serre').evaluate().length, find.text('Filtre').evaluate().length], [0, 1, 0]);
+  });
+
+  testWidgets('fiche : avancement et besoin de financement, jamais les contacts', (t) async {
+    await monter(t, [
+      {'id': '1', 'kind': 'projet', 'title': 'Serre', 'summary': 'Une serre', 'department': '', 'status': 'approved', 'media': const [], 'details': {'progress': 'tests', 'funding_xaf': '500000', 'contact_email': 'a@b.cm', 'contact_phone': '699000000'}},
+    ]);
+    await t.tap(find.text('Serre'));
+    await t.pumpAndSettle();
+    expect(find.text('Tests sur le terrain'), findsOneWidget);
+    expect(find.text('Besoin de financement'), findsOneWidget);
+    expect(find.textContaining('a@b.cm'), findsNothing);
+    expect(find.textContaining('699000000'), findsNothing);
   });
 }

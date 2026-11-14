@@ -18,7 +18,13 @@ const _grey = Color(0xFF57545F);
 TextStyle _st(double size, {FontWeight w = FontWeight.w500, Color c = _ink}) => TextStyle(fontFamily: 'PlusJakartaSans', fontSize: size, fontWeight: w, color: c);
 
 final addressesProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('addresses', 'id,recipient,phone,city,district,line,landmark', order: 'created_at'));
-final productReviewsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('reviews', 'rating,comment,created_at,listings(title)', order: 'created_at'));
+
+/// Avis publics d'une annonce (lecture ouverte aux visiteurs par la fonction serveur `product_reviews`, filtrée par titre côté serveur).
+final productReviewsProvider = FutureProvider.autoDispose.family<List<Map<String, dynamic>>, String>((ref, title) async {
+  final r = await Backend.rpc('product_reviews', {'p_title': title});
+  if (r.error != null || r.data is! List) throw StateError('product_reviews');
+  return [for (final x in r.data as List) Map<String, dynamic>.from(x as Map)];
+}, retry: (_, _) => null);
 
 Widget _note(double w, String t, {double h = 140}) => Container(width: w, height: h, alignment: Alignment.center, padding: const EdgeInsets.symmetric(horizontal: 24), child: Text(t, textAlign: TextAlign.center, style: _st(13, c: _grey).copyWith(height: 1.5)));
 
@@ -240,10 +246,11 @@ class ProductReviews extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final title = ref.watch(selectedProductProvider).title;
-    final all = ref.watch(productReviewsProvider);
-    if (all == null) return _note(width, 'Chargement…');
-    final rows = [for (final r in all) if ('${(r['listings'] as Map?)?['title']}' == title) r];
-    if (rows.isEmpty) return _note(width, 'Aucun avis pour « $title » pour le moment.\nSeuls les acheteurs d’une commande livrée peuvent en publier.');
+    final async = ref.watch(productReviewsProvider(title));
+    if (async.isLoading && !async.hasValue) return _note(width, 'Chargement…');
+    if (async.hasError && !async.hasValue) return _note(width, 'Les avis ne peuvent pas être chargés pour le moment.');
+    final rows = async.value ?? const <Map<String, dynamic>>[];
+    if (rows.isEmpty) return _note(width, 'Aucun avis pour « $title » pour le moment.\nSeuls les acheteurs d’une commande payée, dont l’article a été préparé, peuvent en publier.');
     final avg = rows.fold<num>(0, (a, r) => a + (r['rating'] as num)) / rows.length;
     return SizedBox(
       width: width,

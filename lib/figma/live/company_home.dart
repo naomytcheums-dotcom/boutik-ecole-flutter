@@ -58,6 +58,9 @@ String planPriceLabel(Map<String, dynamic> p) {
 /// « 3 sur 10 », « 4 (illimité) » : quota utilisé.
 String quotaLabel(int used, int max) => max >= 999 ? '$used (illimité)' : '$used sur $max';
 
+/// Quota d'un forfait tel qu'affiché sur sa carte : « 0 sur 10 » ou « illimité ».
+String planQuotaLabel(int max) => max >= 999 ? 'illimité' : quotaLabel(0, max);
+
 class CompanyHomeScreen extends ConsumerWidget {
   const CompanyHomeScreen({super.key, this.shared = false});
 
@@ -195,10 +198,12 @@ class CompanyPlansSheet extends ConsumerWidget {
     final myRole = '${status?['my_role'] ?? 'owner'}';
     final canPay = myRole == 'owner' || myRole == 'admin' || myRole == 'finance';
     Future<void> pay(Map<String, dynamic> p) async {
+      if (!Backend.ready) return gAlert(context, 'Paiement indisponible', 'Le paiement nécessite la connexion au serveur. Reconnectez-vous puis réessayez.');
       final ctx = ref.read(companyContextProvider);
       final r = await marcheCall('company_plan_checkout', {'p_plan': p['code'], if (ctx != null) 'p_owner': ctx});
       if (!context.mounted) return;
       if (r.error != null) return gAlert(context, 'Paiement impossible', Backend.userMessage('${r.error}'));
+      if (r.data is! Map) return gAlert(context, 'Paiement impossible', 'Le serveur n’a pas renvoyé la transaction. Réessayez dans un instant.');
       final tx = Map<String, dynamic>.from(r.data as Map);
       final ok = await payWithTara(context, ref, reference: '${tx['reference']}', amount: (tx['amount'] as num).toInt(), label: 'le forfait ${p['name']}');
       ref.invalidate(companyPlanStatusProvider);
@@ -207,7 +212,9 @@ class CompanyPlansSheet extends ConsumerWidget {
     }
 
     Future<void> request(String code) async {
-      final r = await marcheCall('company_subscription_request', {'p_plan': code});
+      if (!Backend.ready) return gAlert(context, 'Demande impossible', 'La demande nécessite la connexion au serveur. Reconnectez-vous puis réessayez.');
+      final owner = ref.read(companyContextProvider);
+      final r = await marcheCall('company_subscription_request', {'p_plan': code, 'p_owner': ?owner});
       if (!context.mounted) return;
       if (r.error != null) {
         await gAlert(context, 'Demande impossible', Backend.userMessage('${r.error}'));
@@ -236,7 +243,7 @@ class CompanyPlansSheet extends ConsumerWidget {
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Row(children: [Expanded(child: Text('${p['name']}', style: mst(15, w: FontWeight.w800))), Text(planPriceLabel(p), style: mst(13.5, w: FontWeight.w800, c: kViolet))]),
                   Text('${p['perks'] ?? ''}', style: mst(12.5, c: kGrey).copyWith(height: 1.4)),
-                  Text('Besoins : ${quotaLabel(0, (p['max_needs'] as num).toInt()).replaceFirst('0 ', '')} · Offres : ${quotaLabel(0, (p['max_offers'] as num).toInt()).replaceFirst('0 ', '')} · Concours : ${quotaLabel(0, (p['max_contests'] as num).toInt()).replaceFirst('0 ', '')}', style: mst(12, c: kGrey)),
+                  Text('Besoins : ${planQuotaLabel((p['max_needs'] as num).toInt())} · Offres : ${planQuotaLabel((p['max_offers'] as num).toInt())} · Concours : ${planQuotaLabel((p['max_contests'] as num).toInt())}', style: mst(12, c: kGrey)),
                   const SizedBox(height: 8),
                   if ('${p['code']}' == current) Text('Votre forfait actuel', style: mst(12.5, w: FontWeight.w800, c: kGreen))
                   else if (canPay && ((p['price_fcfa'] as num?) ?? 0) > 0) ...[

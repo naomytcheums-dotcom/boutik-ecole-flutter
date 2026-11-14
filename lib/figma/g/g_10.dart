@@ -30,6 +30,7 @@ import '../live/access.dart';
 import 'package:go_router/go_router.dart' show GoRouter;
 import '../live/company_profile_layers.dart';
 import '../live/social_profile.dart' show SocialProfile;
+import '../live/lot20b.dart' show myProjectsProvider;
 import '../live/company_screens.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -84,9 +85,9 @@ class G_10 extends ConsumerWidget {
       gP(34, 512, 104, 30, gBox(color: Color(0xFFF4F3F6), radii: [15, 15, 15, 15])),
       if (isView) companyStatLayer(34, 'Publications', viewProfile!.postsCount) else if (co != null) companyStatLayer(34, 'Offres', co.offers) else profileStat(34, 'Produits', (ref) => ref.watch(listingsProvider).where((l) => l.published).length),
       gP(143, 512, 104, 30, gBox(color: Color(0xFFF4F3F6), radii: [15, 15, 15, 15])),
-      if (isView) companyStatLayer(143, 'Abonnés', viewProfile!.followersCount) else if (co != null) companyStatLayer(143, 'Concours', co.contests) else profileStat(143, 'Services', (ref) => 0),
+      if (isView) companyStatLayer(143, 'Abonnés', viewProfile!.followersCount) else if (co != null) companyStatLayer(143, 'Concours', co.contests) else profileStat(143, 'Services', (ref) => ref.watch(listingsProvider).where((l) => l.published && l.category == 'Services').length),
       gP(252, 512, 104, 30, gBox(color: Color(0xFFF4F3F6), radii: [15, 15, 15, 15])),
-      if (isView) companyStatLayer(252, 'Suivis', viewProfile!.followingCount) else if (co != null) companyStatLayer(252, 'Besoins', co.needs) else profileStat(252, 'Projets', (ref) => 0),
+      if (isView) companyStatLayer(252, 'Suivis', viewProfile!.followingCount) else if (co != null) companyStatLayer(252, 'Besoins', co.needs) else profileStat(252, 'Projets', (ref) => ref.watch(myProjectsProvider)?.length ?? 0),
       gP(24, 562, 29, 14, gText('Liens', 11.5, Color(0xFF57545F), weight: 500)),
       gP(89, 553, 32, 32, gImg('assets/figma/v/cdc43165645969.svg'), show: !hideLinks),
       gP(94.417, 563.292, 9.033, 15.75, gImg('assets/figma/v/ae94c8691f4b0c.svg'), show: !hideLinks),

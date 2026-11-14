@@ -10,7 +10,10 @@ import 'package:video_player/video_player.dart';
 import 'auth.dart';
 import 'backend.dart';
 import 'console.dart';
-import 'entreprise.dart' show TableRows, projectStatus;
+import 'entreprise.dart' show TableRows, dateCourte, projectStatus;
+import 'project_pages.dart' show projectProgress;
+import 'store.dart' show StrV, fcfa, normText;
+import 'talents.dart' show projectTabProvider;
 
 /// Catalogue des projets et innovations (écran 78) : une carte par projet réel, avec ses visuels (photos qui défilent, vidéo lue
 /// automatiquement et sans son), son domaine, son état et une fiche détaillée. Rien n'est inventé : sans projet validé, un état vide.
@@ -20,8 +23,24 @@ const _grey = Color(0xFF57545F);
 TextStyle _st(double size, {FontWeight w = FontWeight.w500, Color c = _ink, double? h}) =>
     TextStyle(inherit: false, fontFamily: 'PlusJakartaSans', fontSize: size, fontWeight: w, color: c, height: h, textBaseline: TextBaseline.alphabetic);
 
+/// Seuls les projets validés sont listés (le propriétaire et le département verraient sinon aussi les brouillons).
 final projectsFeedProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(
-    () => TableRows('projects', 'id,kind,title,summary,department,details,media,status,created_at', order: 'created_at'));
+    () => TableRows('projects', 'id,kind,title,summary,department,details,media,status,created_at', order: 'created_at', eq: const {'status': 'approved'}));
+
+Map<String, dynamic> _detailsOf(Map<String, dynamic> p) => p['details'] is Map ? Map<String, dynamic>.from(p['details'] as Map) : <String, dynamic>{};
+
+int _fundingOf(Map<String, dynamic> p) => int.tryParse('${_detailsOf(p)['funding_xaf'] ?? ''}'.replaceAll(RegExp(r'\s'), '')) ?? 0;
+
+/// Pastilles du catalogue : 0 Tous, 1 Prototypes, 2 Recherche, 3 Financement.
+bool _inTab(Map<String, dynamic> p, int tab) {
+  final progress = '${_detailsOf(p)['progress'] ?? ''}';
+  return switch (tab) {
+    1 => const ['prototype', 'tests', 'lance'].contains(progress),
+    2 => const ['idee', 'conception'].contains(progress),
+    3 => _fundingOf(p) > 0,
+    _ => true,
+  };
+}
 
 class _Media {
   const _Media(this.url, this.video);
@@ -46,12 +65,25 @@ List<_Media> _mediaOf(Map<String, dynamic> r) {
   return out;
 }
 
-class ProjectCards extends ConsumerWidget {
+class ProjectCards extends ConsumerStatefulWidget {
   const ProjectCards({super.key, this.width = 342, this.height = 540});
   final double width, height;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ProjectCards> createState() => _ProjectCardsState();
+}
+
+class _ProjectCardsState extends ConsumerState<ProjectCards> {
+  @override
+  void initState() {
+    super.initState();
+    // le catalogue est mis en cache par le fournisseur : à chaque ouverture de l'écran on le relit
+    if (ref.exists(projectsFeedProvider)) Future.microtask(() => ref.invalidate(projectsFeedProvider));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final width = widget.width, height = widget.height;
     Widget note(String t) => Container(
           width: width,
           height: 190,
@@ -61,17 +93,24 @@ class ProjectCards extends ConsumerWidget {
         );
     if (ref.watch(authProvider.select((a) => a.current == null))) return note('Connectez-vous pour voir les projets.');
     final all = ref.watch(projectsFeedProvider);
+    final tab = ref.watch(projectTabProvider);
     if (all == null) return note('Chargement…');
     if (ref.read(projectsFeedProvider.notifier).error) return note('Les projets ne peuvent pas être chargés pour le moment.');
     if (all.isEmpty) return note('Aucun projet validé pour le moment.\nLes projets des étudiants apparaissent ici après validation.');
+    final rows = [for (final p in all) if (_inTab(p, tab)) p];
+    if (rows.isEmpty) return note('Aucun projet validé dans cette catégorie pour le moment.');
     return SizedBox(
       width: width,
       height: height,
-      child: ListView.separated(
-        padding: EdgeInsets.zero,
-        itemCount: all.length,
-        separatorBuilder: (_, _) => const SizedBox(height: 18),
-        itemBuilder: (_, i) => _Card(p: all[i], width: width),
+      child: RefreshIndicator(
+        onRefresh: () => ref.read(projectsFeedProvider.notifier).refresh(),
+        child: ListView.separated(
+          padding: EdgeInsets.zero,
+          physics: const AlwaysScrollableScrollPhysics(),
+          itemCount: rows.length,
+          separatorBuilder: (_, _) => const SizedBox(height: 18),
+          itemBuilder: (_, i) => _Card(p: rows[i], width: width),
+        ),
       ),
     );
   }
@@ -238,6 +277,88 @@ class _LoopVideoState extends State<_LoopVideo> {
   }
 }
 
+/// Registre des innovations (écran 87) : projets de type innovation validés ; la RLS ne laisse voir que les projets publics (ou les siens).
+final innovationsRegistryProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows(
+    'projects', 'id,kind,title,summary,department,created_at,details,media,status',
+    order: 'created_at', eq: const {'kind': 'innovation', 'status': 'approved'}));
+
+/// Texte saisi dans le champ de recherche du registre.
+final innovationQueryProvider = NotifierProvider<StrV, String>(StrV.new);
+
+class InnovationRegistry extends ConsumerStatefulWidget {
+  const InnovationRegistry({super.key, this.width = 342, this.height = 520});
+  final double width, height;
+
+  @override
+  ConsumerState<InnovationRegistry> createState() => _InnovationRegistryState();
+}
+
+class _InnovationRegistryState extends ConsumerState<InnovationRegistry> {
+  @override
+  void initState() {
+    super.initState();
+    if (ref.exists(innovationsRegistryProvider)) Future.microtask(() => ref.invalidate(innovationsRegistryProvider));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget note(String t, {bool login = false}) => Container(
+          width: widget.width,
+          height: 190,
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            Text(t, textAlign: TextAlign.center, style: _st(13, c: _grey, h: 1.5)),
+            if (login) TextButton(onPressed: () => requireLogin(context, ref, 'voir le registre des innovations'), child: Text('Se connecter', style: _st(13.5, w: FontWeight.w700, c: const Color(0xFF5A3FE0)))),
+          ]),
+        );
+    if (ref.watch(authProvider.select((a) => a.current == null))) return note('Connectez-vous pour voir le registre des innovations.', login: true);
+    final all = ref.watch(innovationsRegistryProvider);
+    final q = normText(ref.watch(innovationQueryProvider).trim());
+    if (all == null) return note('Chargement…');
+    if (ref.read(innovationsRegistryProvider.notifier).error) return note('Le registre ne peut pas être chargé pour le moment.');
+    if (all.isEmpty) return note('Aucune innovation validée pour le moment.');
+    final rows = [for (final r in all) if (q.isEmpty || normText('${r['title'] ?? ''} ${r['summary'] ?? ''}').contains(q)) r];
+    if (rows.isEmpty) return note('Aucune innovation ne correspond à votre recherche.');
+    return SizedBox(
+      width: widget.width,
+      height: widget.height,
+      child: RefreshIndicator(
+        onRefresh: () => ref.read(innovationsRegistryProvider.notifier).refresh(),
+        child: ListView.separated(
+          padding: EdgeInsets.zero,
+          physics: const AlwaysScrollableScrollPhysics(),
+          itemCount: rows.length,
+          separatorBuilder: (_, _) => const Divider(height: 22, thickness: 1, color: Color(0xFFF2EFF6)),
+          itemBuilder: (_, i) {
+            final r = rows[i];
+            final dept = '${r['department'] ?? ''}'.trim();
+            return Semantics(
+              button: true,
+              label: '${r['title']}',
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => showProjectSheet(context, r),
+                child: Row(children: [
+                  Expanded(
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text('${r['title']}', maxLines: 2, overflow: TextOverflow.ellipsis, style: _st(13.5, w: FontWeight.w600)),
+                      const SizedBox(height: 3),
+                      Text([if (dept.isNotEmpty) dept, dateCourte(r['created_at'])].join(' · '), maxLines: 2, overflow: TextOverflow.ellipsis, style: _st(11.5, c: _grey)),
+                    ]),
+                  ),
+                  const SizedBox(width: 10),
+                  _Chip(projectStatus(r['status'])),
+                ]),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
 /// Fiche d'un projet : visuels, description, problème et solution, avancement, équipe et liens.
 Future<void> showProjectSheet(BuildContext context, Map<String, dynamic> p) {
   final media = _mediaOf(p);
@@ -285,6 +406,7 @@ Future<void> showProjectSheet(BuildContext context, Map<String, dynamic> p) {
             _Chip(projectStatus(p['status'])),
             if ('${p['department'] ?? ''}'.isNotEmpty) _Chip('${p['department']}'),
             if (s('domain').isNotEmpty) _Chip(s('domain')),
+            if (projectProgress[s('progress')] != null) _Chip(projectProgress[s('progress')]!),
           ]),
           block('Description', '${p['summary'] ?? ''}'.trim()),
           block('Problème résolu', s('problem')),
@@ -292,6 +414,7 @@ Future<void> showProjectSheet(BuildContext context, Map<String, dynamic> p) {
           block('Étapes réalisées', s('done_steps')),
           block('Objectifs', s('objectives')),
           if (team.isNotEmpty) block('Équipe', team.join('\n')),
+          if (_fundingOf(p) > 0) block('Besoin de financement', fcfa(_fundingOf(p))),
           block('Besoins de soutien', s('support_needs')),
           Padding(
             padding: const EdgeInsets.only(top: 12),

@@ -1,10 +1,49 @@
 import 'package:boutik_ecole/figma/live/access.dart';
 import 'package:boutik_ecole/figma/live/auth.dart';
+import 'package:boutik_ecole/figma/live/backend.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Account _by(String staff) => seedAccounts.firstWhere((a) => a.staff == staff);
 
+Future<ProviderContainer> _monter(WidgetTester t, Widget child, {Account? compte}) async {
+  final c = ProviderContainer();
+  addTearDown(c.dispose);
+  if (compte != null) c.read(authProvider.notifier).login(compte);
+  await t.pumpWidget(UncontrolledProviderScope(container: c, child: MaterialApp(home: child)));
+  await t.pump();
+  return c;
+}
+
 void main() {
+  tearDown(() => Backend.ready = false);
+
+  testWidgets('RouteGuard : seuls les rôles listés voient l’écran, les autres la page introuvable', (t) async {
+    const garde = RouteGuard(name: '/admin/test', roles: {'admin'}, child: Text('CONTENU'));
+    await _monter(t, garde);
+    expect(find.text('CONTENU'), findsNothing);
+    expect(find.text('Page introuvable'), findsOneWidget);
+    await _monter(t, garde, compte: demoAccount);
+    expect(find.text('CONTENU'), findsNothing);
+    await _monter(t, garde, compte: _by('Admin global'));
+    expect(find.text('CONTENU'), findsOneWidget);
+  });
+
+  testWidgets('LoginGuard : « Connexion requise » pour un visiteur avec le serveur, écran ouvert sinon', (t) async {
+    const garde = LoginGuard(child: Text('CONTENU'));
+    Backend.ready = true;
+    await _monter(t, garde);
+    expect(find.text('CONTENU'), findsNothing);
+    expect(find.text('Connexion requise'), findsOneWidget);
+    expect(find.text('Se connecter'), findsOneWidget);
+    await _monter(t, garde, compte: demoAccount);
+    expect(find.text('CONTENU'), findsOneWidget);
+    Backend.ready = false;
+    await _monter(t, garde);
+    expect(find.text('CONTENU'), findsOneWidget);
+  });
+
   test('chaque rôle n\'ouvre que ses écrans', () {
     final student = demoAccount;
     final dept = _by('Resp. département');
@@ -28,6 +67,12 @@ void main() {
     expect(canOpen(student, '58'), isTrue);
     expect(canOpen(null, '58'), isFalse);
     expect(canOpen(finance, '58'), isFalse);
+    // tableau de bord du studio (D1)
+    expect(canOpen(null, 'D1'), isFalse);
+    expect(canOpen(student, 'D1'), isTrue);
+    expect(canOpen(dept, 'D1'), isTrue);
+    expect(canOpen(finance, 'D1'), isFalse);
+    expect(canOpen(admin, 'D1'), isTrue);
     // console du département
     expect(canOpen(dept, '110'), isTrue);
     expect(canOpen(student, '110'), isFalse);

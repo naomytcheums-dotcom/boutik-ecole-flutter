@@ -205,7 +205,7 @@ class ReelAuthorRow extends ConsumerWidget {
 }
 
 /// 252 hors démonstration : plus de page indépendante. L'écran montre la publication et ouvre la feuille de commentaires par-dessus ;
-/// la fermer ramène à l'écran précédent.
+/// la fermer ramène à l'écran précédent. Le fil est d'abord chargé (indicateur) : l'écran ne fait retour que si la personne le décide.
 class CommentsHost extends ConsumerStatefulWidget {
   const CommentsHost({super.key});
   @override
@@ -213,20 +213,70 @@ class CommentsHost extends ConsumerStatefulWidget {
 }
 
 class _CommentsHostState extends ConsumerState<CommentsHost> {
-  @override
-  void initState() {
-    super.initState();
+  bool _opened = false;
+
+  void _openSheet(Reel r) {
+    _opened = true;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) return;
-      final r = ref.read(currentReelProvider);
-      if (r == null) return gBack(context);
       await showCommentsSheet(context, r.id);
       if (mounted) gBack(context);
     });
   }
 
   @override
-  Widget build(BuildContext context) => const Stack(children: [ReelPlayerBackdrop(), SizedBox.expand(child: ColoredBox(color: Color(0x33000000)))]);
+  Widget build(BuildContext context) {
+    final feed = ref.watch(reelsProvider);
+    final failed = ref.watch(reelsLoadErrorProvider);
+    final r = ref.watch(currentReelProvider);
+    if (r != null && !_opened) _openSheet(r);
+    Widget? status;
+    if (r == null) {
+      if (feed == null && !failed) {
+        status = const Center(child: SizedBox(width: 30, height: 30, child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white)));
+      } else {
+        final message = feed == null ? 'Les publications ne peuvent pas être chargées pour le moment.' : 'Aucune publication à commenter.';
+        status = Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              Text(message, textAlign: TextAlign.center, style: _w(14, w: FontWeight.w500)),
+              const SizedBox(height: 16),
+              if (feed == null) ...[
+                _hostButton('Réessayer', () => ref.read(reelsProvider.notifier).retry()),
+                const SizedBox(height: 10),
+              ],
+              _hostButton('Retour', () => gBack(context)),
+            ]),
+          ),
+        );
+      }
+    }
+    return Stack(children: [const ReelPlayerBackdrop(), const SizedBox.expand(child: ColoredBox(color: Color(0x33000000))), ?status]);
+  }
+}
+
+Widget _hostButton(String label, VoidCallback onTap) => GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Container(padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12), decoration: const BoxDecoration(color: Colors.white), child: Text(label, style: const TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF111015)))),
+    );
+
+/// Fil d'attente de l'écran Reels (245) : « Chargement… » pendant la lecture, message et « Réessayer » si elle a échoué.
+/// Invisible dès qu'une publication est affichée.
+class ReelsStatusNote extends ConsumerWidget {
+  const ReelsStatusNote({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final feed = ref.watch(reelsProvider);
+    if (feed != null) return const SizedBox.shrink();
+    final failed = ref.watch(reelsLoadErrorProvider);
+    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Text(failed ? 'Les publications ne peuvent pas être chargées pour le moment.' : 'Chargement des publications…', textAlign: TextAlign.center, style: _w(14, w: FontWeight.w500)),
+      if (failed) ...[const SizedBox(height: 16), _hostButton('Réessayer', () => ref.read(reelsProvider.notifier).retry())],
+    ]);
+  }
 }
 
 /// Indique si l'utilisateur est connecté (aide pour les écrans qui masquent des actions sans compte).

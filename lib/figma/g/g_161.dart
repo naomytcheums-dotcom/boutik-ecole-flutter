@@ -56,7 +56,7 @@ class G_161 extends ConsumerWidget {
       gP(177.5, 328, 35, 25, Consumer(builder: (context, ref, _) => gText(prizeShort(ref.watch(currentEventProvider).prize).replaceAll(' FCFA', ''), 20, Color(0xFF111015), weight: 800, align: TextAlign.center))),
       gP(161, 358, 68, 14, gText('FCFA de prix', 11.5, Color(0xFF57545F), align: TextAlign.center)),
       gP(138, 328, 1, 48, gBox(color: Color(0xFFF2EFF6))),
-      gP(291.5, 328, 35, 25, Consumer(builder: (context, ref, _) => gText('${placesLeft(ref.watch(currentEventProvider), ref.watch(registrationsProvider))}', 20, Color(0xFF111015), weight: 800, align: TextAlign.center))),
+      gP(291.5, 328, 35, 25, Consumer(builder: (context, ref, _) => gText(placesKnown() ? '${placesLeft(ref.watch(currentEventProvider), ref.watch(registrationsProvider))}' : '—', 20, Color(0xFF111015), weight: 800, align: TextAlign.center))),
       gP(290.5, 358, 37, 14, gText('Places', 11.5, Color(0xFF57545F), align: TextAlign.center)),
       gP(252, 328, 1, 48, gBox(color: Color(0xFFF2EFF6))),
       gP(24, 440, 342, 1, gBox(color: Color(0xFFECE8F2))),

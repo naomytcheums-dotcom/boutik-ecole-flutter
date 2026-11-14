@@ -9,6 +9,7 @@ import 'tp_ui.dart' show tpBackground, GlassBack, TpFrame;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gen.dart';
+import 'auth.dart' show authProvider, requireLogin;
 import 'backend.dart';
 import 'communities.dart';
 import 'talents.dart' show askText;
@@ -357,6 +358,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
   }
 
   Future<void> _vote(Map<String, dynamic> p, int option) async {
+    if (!await requireLogin(context, ref, 'voter à ce sondage') || !mounted) return;
     final r = await Backend.rpc('vote_community_poll', {'p_post': p['id'], 'p_option': option});
     if (!mounted) return;
     if (r.error != null) return gToast(context, Backend.userMessage(r.error!));
@@ -445,9 +447,20 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
     )]);
   }
 
+  /// Visiteur sans compte (avec le serveur) : les messages « réservé aux membres » proposent de se connecter.
+  bool get _visitor => Backend.ready && ref.watch(authProvider.select((a) => a.current == null));
+
+  Widget _loginButton() => TextButton(onPressed: () => requireLogin(context, ref, 'voir cette communauté'), child: Text('Se connecter', style: _st(13.5, w: FontWeight.w700, c: _violet)));
+
   Widget _posts(Community c, List<Map<String, dynamic>>? feed) {
     if (feed == null) return const Center(child: CircularProgressIndicator());
-    if (ref.read(communityFeedProvider.notifier).error) return Center(child: Padding(padding: const EdgeInsets.all(28), child: Text('Ce fil est réservé aux membres, ou indisponible pour le moment.', textAlign: TextAlign.center, style: _st(13.5, c: _grey))));
+    if (ref.read(communityFeedProvider.notifier).error) {
+      final visitor = _visitor;
+      return Center(child: Padding(padding: const EdgeInsets.all(28), child: Column(mainAxisSize: MainAxisSize.min, children: [
+        Text(visitor ? 'Ce fil est réservé aux membres : connectez-vous pour le consulter.' : 'Ce fil est réservé aux membres, ou indisponible pour le moment.', textAlign: TextAlign.center, style: _st(13.5, c: _grey)),
+        if (visitor) _loginButton(),
+      ])));
+    }
     if (feed.isEmpty) return Center(child: Padding(padding: const EdgeInsets.all(28), child: Text('Aucune publication pour le moment.', textAlign: TextAlign.center, style: _st(13.5, c: _grey))));
     return ListView.separated(
       padding: const EdgeInsets.all(16),
@@ -478,7 +491,13 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
     final async = ref.watch(communityMembersProvider(c.id));
     return async.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (_, _) => Center(child: Padding(padding: const EdgeInsets.all(28), child: Text('La liste des membres est indisponible pour le moment.', textAlign: TextAlign.center, style: _st(13.5, c: _grey)))),
+      error: (_, _) {
+        final visitor = _visitor;
+        return Center(child: Padding(padding: const EdgeInsets.all(28), child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Text(visitor ? 'La liste des membres est réservée aux membres : connectez-vous pour la consulter.' : 'La liste des membres est indisponible pour le moment.', textAlign: TextAlign.center, style: _st(13.5, c: _grey)),
+          if (visitor) _loginButton(),
+        ])));
+      },
       data: (all) {
         final list = mentorsOnly ? [for (final m in all) if (m['role'] == 'mentor') m] : all;
         if (list.isEmpty) return Center(child: Padding(padding: const EdgeInsets.all(28), child: Text(mentorsOnly ? 'Aucun mentor pour le moment.' : 'Aucun membre.', textAlign: TextAlign.center, style: _st(13.5, c: _grey))));
@@ -549,7 +568,10 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                     ]),
                     ]),
                   )
-                : Container(width: double.infinity, color: Colors.white, padding: const EdgeInsets.all(16), child: Text('Rejoignez la communauté pour publier.', textAlign: TextAlign.center, style: _st(13, c: _grey))),
+                : Container(width: double.infinity, color: Colors.white, padding: const EdgeInsets.all(16), child: Column(mainAxisSize: MainAxisSize.min, children: [
+                    Text('Rejoignez la communauté pour publier.', textAlign: TextAlign.center, style: _st(13, c: _grey)),
+                    if (_visitor) _loginButton(),
+                  ])),
         ]),
       ),
     )));

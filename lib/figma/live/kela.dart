@@ -9,6 +9,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../gen.dart';
 import '../nav.dart';
+import 'auth.dart' show requireLogin;
 import 'backend.dart';
 
 /// Assistante Kéla : l'orbe tourne quand elle écoute ou réfléchit, puis s'arrête dès qu'elle a répondu.
@@ -57,6 +58,7 @@ Future<void> kelaAsk(WidgetRef ref, String said) async {
 
 /// Crée un brouillon de besoin à partir du brief proposé par l'IA, ou à défaut de ce qui a été dit.
 Future<void> kelaCreateDraft(BuildContext context, WidgetRef ref) async {
+  if (!await requireLogin(context, ref, 'créer un brouillon') || !context.mounted) return;
   final said = ref.read(kelaTextProvider).trim();
   final b = ref.read(kelaReplyProvider).brief;
   if (said.isEmpty && b == null) {
@@ -99,6 +101,7 @@ Future<void> kelaToggle(WidgetRef ref, bool listening, BuildContext context) asy
   final n = ref.read(kelaProvider.notifier);
   final text = ref.read(kelaTextProvider.notifier);
   if (listening) {
+    if (!await requireLogin(context, ref, 'parler à Kéla') || !context.mounted) return;
     text.set('');
     n.toggle(true);
     try {

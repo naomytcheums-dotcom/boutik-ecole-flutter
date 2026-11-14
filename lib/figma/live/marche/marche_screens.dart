@@ -529,7 +529,7 @@ class _ProductBodyState extends ConsumerState<_ProductBody> {
             if (stock <= 0) MChip(alerts.contains('stock') ? 'Alerte retour en stock activée' : 'M’alerter au retour en stock', selected: alerts.contains('stock'), onTap: () => _alert('stock', !alerts.contains('stock'))),
             MChip(alerts.contains('price') ? 'Alerte de prix activée' : 'M’alerter si le prix baisse', selected: alerts.contains('price'), onTap: () => _alert('price', !alerts.contains('price'))),
             MChip(ref.watch(marcheCompareProvider).contains(widget.id) ? 'Dans la comparaison' : 'Comparer', selected: ref.watch(marcheCompareProvider).contains(widget.id), onTap: () {
-              if (!ref.read(marcheCompareProvider.notifier).toggle(widget.id)) gToast(context, 'Comparaison limitée à 4 produits.');
+              if (!ref.read(marcheCompareProvider.notifier).toggle(widget.id)) gToast(context, 'Comparaison limitée à 2 offres : retirez-en une pour en choisir une autre.');
             }),
           ]),
         ]),

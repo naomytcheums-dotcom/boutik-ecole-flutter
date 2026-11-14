@@ -308,14 +308,15 @@ class Backend {
     final uid = c?.auth.currentUser?.id;
     if (c == null || uid == null) return false;
     try {
-      await c.from('profiles').update({
+      // select('id') : la RLS peut accepter la requête sans modifier aucune ligne ; on ne l'annonce alors pas comme enregistrée.
+      final rows = await c.from('profiles').update({
         'name': a.name,
         'city': a.city,
         if (parseBirth(a.birth) != null) 'birth': parseBirth(a.birth)!.toIso8601String().substring(0, 10),
         'bio': a.bio,
         'skills': a.skills,
-      }).eq('id', uid);
-      return true;
+      }).eq('id', uid).select('id');
+      return rows.isNotEmpty;
     } catch (_) {
       return false;
     }
@@ -337,18 +338,22 @@ class Backend {
     }
   }
 
-  /// Ajoute ou retire un favori ; retourne false si l'écriture a échoué.
+  /// Ajoute ou retire un favori ; retourne false si l'écriture a échoué. L'annonce est retrouvée par son titre (unique parmi les annonces
+  /// non retirées : listings_titre_unique), qu'elle vienne de la plateforme ou d'une boutique d'étudiant.
   static Future<bool> setFavorite(String title, bool on) async {
     final c = _c;
     final uid = c?.auth.currentUser?.id;
     if (c == null || uid == null) return false;
     try {
-      final l = await c.from('listings').select('id').eq('title', title).isFilter('seller_id', null).maybeSingle();
-      if (l == null) return false;
       if (on) {
+        final l = await c.from('listings').select('id').eq('title', title).eq('status', 'approved').limit(1).maybeSingle();
+        if (l == null) return false;
         await c.from('favorites').upsert({'user_id': uid, 'listing_id': l['id']});
       } else {
-        await c.from('favorites').delete().eq('user_id', uid).eq('listing_id', l['id']);
+        // Retrait : toutes les annonces de ce titre (y compris une annonce retirée depuis) pour que le cœur et la liste restent cohérents.
+        final ls = await c.from('listings').select('id').eq('title', title);
+        final ids = [for (final l in ls) l['id']];
+        if (ids.isNotEmpty) await c.from('favorites').delete().eq('user_id', uid).inFilter('listing_id', ids);
       }
       return true;
     } catch (_) {
@@ -583,9 +588,11 @@ class Backend {
   /// Commandes du compte connecté ; null si la lecture a échoué (à ne pas confondre avec « aucune commande »).
   static Future<List<Map<String, dynamic>>?> myOrders() async {
     final c = _c;
-    if (c == null || c.auth.currentUser == null) return null;
+    final uid = c?.auth.currentUser?.id;
+    if (c == null || uid == null) return null;
     try {
-      final rows = await c.from('orders').select('number,subtotal,fee,method,reference,status,paid,cancelled,cancelled_at,created_at,order_lines(title,qty,unit_price,fulfillment)').order('created_at', ascending: false);
+      // Filtre explicite : la RLS laisse aux rôles de gestion (admin, finance, support) la lecture de TOUTES les commandes.
+      final rows = await c.from('orders').select('number,subtotal,fee,method,reference,status,paid,cancelled,cancelled_at,created_at,order_lines(title,qty,unit_price,fulfillment)').eq('buyer_id', uid).order('created_at', ascending: false);
       return [for (final r in rows) Map<String, dynamic>.from(r as Map)];
     } catch (_) {
       return null;
@@ -1086,6 +1093,10 @@ class Backend {
     if (reseau.any(low.contains)) return serviceDownMessage();
     const technique = ['permission denied', 'function', 'exception', 'stack', 'dart', 'postgrest', 'jwt', 'violates', 'row-level', 'rls', 'syntax', 'relation ', 'column ', 'null value', 'pgrst', 'not authenticated', 'unauthorized'];
     if (low.contains('not authenticated') || low.contains('jwt') || low.contains('unauthorized')) return 'Votre session a expiré. Reconnectez-vous puis réessayez.';
+    // Ces deux messages SQL sont levés pour un compte suspendu (aucun rôle n'est vérifié à cet endroit).
+    if (low.contains('publication réservée aux étudiants et au département') || low.contains('histoires réservées aux étudiants et au département')) {
+      return 'Votre compte est suspendu : publication impossible. Contactez l’administration.';
+    }
     if (technique.any(low.contains)) return 'Cette action n’est pas disponible pour votre compte pour le moment. Si le problème continue, contactez le support.';
     return raw;
   }
@@ -1180,12 +1191,18 @@ class Backend {
     }
   }
 
-  /// Ferme les sessions de ce compte sur TOUS les appareils.
-  static Future<void> signOutAll() async {
+  /// Ferme les sessions de ce compte sur TOUS les appareils. Retourne false si la révocation côté serveur a échoué (hors ligne…) :
+  /// la session locale de cet appareil est alors fermée quand même.
+  static Future<bool> signOutAll() async {
+    final c = _c;
+    if (c == null) return false;
     signingOut = true;
     try {
-      await _c?.auth.signOut(scope: SignOutScope.global);
-    } catch (_) {}
+      await c.auth.signOut(scope: SignOutScope.global);
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 
   static Future<void> signOut() async {

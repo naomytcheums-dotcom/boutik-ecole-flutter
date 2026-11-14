@@ -4,10 +4,11 @@ import 'package:flutter/material.dart' hide Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../gen.dart' show gImg, gToast;
+import '../gen.dart' show gToast;
 import '../i18n.dart' show Text;
 import '../nav.dart' show gTab;
 import 'tp_ui.dart' show GlassBack;
+import 'access.dart' show roleKey;
 import 'auth.dart';
 import 'backend.dart';
 import 'marche/marche_data.dart';
@@ -330,7 +331,7 @@ class _MatesState extends ConsumerState<TeammatesScreen> {
   Widget build(BuildContext context) {
     final cats = ref.watch(mateCategoriesProvider);
     final list = ref.watch(matesSearchProvider(_query));
-    final admin = ref.watch(authProvider.select((a) => a.current?.staff == 'admin'));
+    final admin = ref.watch(authProvider.select((a) => roleKey(a.current) == 'admin'));
     final catList = cats.asData?.value ?? const <MateCategory>[];
     final count = list.asData?.value.length;
     return Scaffold(

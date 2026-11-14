@@ -35,6 +35,7 @@ import 'package:boutik_ecole/figma/live/backend.dart';
 import 'package:boutik_ecole/figma/live/console.dart';
 import 'package:boutik_ecole/figma/live/impact.dart' show RpcMap;
 import 'package:boutik_ecole/figma/live/modules.dart';
+import 'package:boutik_ecole/figma/live/referral.dart' show ReferralCode, referralCodeProvider;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -185,8 +186,8 @@ void main() {
   });
 
   testWidgets('242 connecté : code de parrainage', (t) async {
-    await monter(t, const G_242(), connecte: true, overrides: [referralProvider.overrideWith(() => _Ref('BE-ABC123'))]);
-    expect(find.text('BE-ABC123'), findsOneWidget);
+    await monter(t, const G_242(), connecte: true, overrides: [referralCodeProvider.overrideWith(() => _Ref('ABCD2345'))]);
+    expect(find.text('ABCD2345'), findsOneWidget);
   });
 
   testWidgets('233 connecté : messages réels de la mission', (t) async {
@@ -239,7 +240,7 @@ void main() {
   }
 }
 
-class _Ref extends RpcText {
+class _Ref extends ReferralCode {
   _Ref(this.v);
   final String v;
   @override

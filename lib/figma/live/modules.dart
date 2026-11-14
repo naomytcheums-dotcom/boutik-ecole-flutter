@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'contacts_stub.dart' if (dart.library.js_interop) 'contacts_web.dart';
-import 'referral.dart' show copyInvitation, invitationMessage, shareInvitation;
+import 'referral.dart' show copyInvitation, invitationMessage, referralCodeProvider, shareInvitation;
 import 'share.dart' show openUrl;
 import 'tp_ui.dart' show TpButton;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -223,28 +223,22 @@ class RadarPanel extends ConsumerWidget {
 
 // ------------------------------------------------------------------ parrainage
 
-final referralProvider = NotifierProvider<RpcText, String?>(RpcText.new);
-
-class RpcText extends Notifier<String?> {
-  @override
-  String? build() {
-    if (!Backend.ready || ref.watch(authProvider.select((a) => a.current == null))) return null;
-    Future.microtask(() async {
-      final r = await Backend.rpc('my_referral_code', const {});
-      if (ref.mounted) state = r.error == null && r.data is String ? r.data as String : '';
-    });
-    return null;
-  }
-}
-
 class ReferralKit extends ConsumerWidget {
   const ReferralKit({super.key, this.width = 342});
   final double width;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (_signedOut(ref)) return _note(width, 'Connectez-vous pour obtenir votre code.');
-    final c = ref.watch(referralProvider);
+    if (_signedOut(ref)) {
+      return SizedBox(
+        width: width,
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          _note(width, 'Connectez-vous pour obtenir votre code.', h: 90),
+          TpButton('Se connecter', () => requireLogin(context, ref, 'obtenir votre code de parrainage'), icon: Icons.login),
+        ]),
+      );
+    }
+    final c = ref.watch(referralCodeProvider);
     if (c == null) return _note(width, 'Chargement…');
     if (c.isEmpty) return _note(width, 'Code indisponible pour le moment.');
     final msg = invitationMessage(c);
@@ -275,14 +269,14 @@ Future<void> inviteFromContacts(BuildContext context, WidgetRef ref, String msg)
   if (!contactPickerSupported) return shareInvitation(context, ref, 'system');
   final numbers = await pickContactNumbers();
   if (!context.mounted) return;
-  if (numbers == null) return shareInvitation(context, ref, 'system');
-  if (numbers.isEmpty) return gToast(context, 'Aucun contact choisi.');
+  // Sélecteur fermé sans choix (ou refusé) : on ne force pas l'ouverture d'un partage.
+  if (numbers == null || numbers.isEmpty) return gToast(context, 'Aucun contact choisi.');
   await openUrl(context, 'sms:${numbers.join(',')}?&body=${Uri.encodeComponent(msg)}');
 }
 
 // ------------------------------------------------------------------ duels de talents
 
-final duelsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => RpcRows('duels_list'));
+final duelsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => RpcRows('duels_list', const {}, true));
 
 class _DuelsBase extends ConsumerWidget {
   const _DuelsBase({super.key, required this.open, required this.width, required this.height});
@@ -292,7 +286,8 @@ class _DuelsBase extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final all = ref.watch(duelsProvider);
-    if (!Backend.ready || all == null) return _note(width, _signedOut(ref) ? 'Connectez-vous pour voir les duels.' : 'Chargement…');
+    if (!Backend.ready || all == null) return _note(width, 'Chargement…');
+    if (ref.read(duelsProvider.notifier).error) return _note(width, 'Les duels ne peuvent pas être chargés pour le moment.');
     final rows = [for (final d in all) if ((d['open'] == true) == open) d];
     if (rows.isEmpty) return _note(width, open ? 'Aucun duel en cours.' : 'Aucun duel terminé pour le moment.');
     return SizedBox(
@@ -321,10 +316,10 @@ class _DuelsBase extends ConsumerWidget {
                   child: Row(children: [
                     Expanded(child: Text('${e['author']} · ${e['title']}${!open && best != null && e['id'] == best['id'] && (e['votes'] as num) > 0 ? '  🏆' : ''}', style: _st(13, w: FontWeight.w600))),
                     Text('${e['votes']} vote${(e['votes'] as num) == 1 ? '' : 's'}', style: _st(11.5, c: _grey)),
-                    if (open) ...[const SizedBox(width: 8), _btn('Voter', () async { if (await _run(context, 'duel_vote', {'p_entry': '${e['id']}'}, 'Vote enregistré.')) await ref.read(duelsProvider.notifier).refresh(); })],
+                    if (open) ...[const SizedBox(width: 8), _btn('Voter', () async { if (!await requireLogin(context, ref, 'voter') || !context.mounted) return; if (await _run(context, 'duel_vote', {'p_entry': '${e['id']}'}, 'Vote enregistré.')) await ref.read(duelsProvider.notifier).refresh(); })],
                   ]),
                 ),
-              if (open) Padding(padding: const EdgeInsets.only(top: 8), child: _btn('Participer', () => enterDuelDialog(context, ref, '${d['id']}'), dark: false)),
+              if (open) Padding(padding: const EdgeInsets.only(top: 8), child: _btn('Participer', () async { if (await requireLogin(context, ref, 'participer à un duel') && context.mounted) await enterDuelDialog(context, ref, '${d['id']}'); }, dark: false)),
             ]),
           );
         },
@@ -383,8 +378,10 @@ class _DuelCreateFormState extends ConsumerState<DuelCreateForm> {
 
 // ------------------------------------------------------------------ lives
 
-final livesAllProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('scheduled_lives', 'id,host_id,title,starts_at,product_title,status', order: 'created_at'));
-final liveCommentsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('live_comments', 'live_id,body,created_at', order: 'created_at'));
+final livesAllProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('scheduled_lives', 'id,host_id,title,starts_at,product_title,status', order: 'created_at', anyOf: ('status', ['scheduled', 'live']), limit: 100, publicRead: true));
+/// Lives programmés ou en cours du compte connecté (lecture filtrée par le serveur sur l'hôte).
+final livesMineProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('scheduled_lives', 'id,host_id,title,starts_at,product_title,status', order: 'created_at', anyOf: ('status', ['scheduled', 'live']), ownerColumn: 'host_id', limit: 100));
+final liveCommentsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('live_comments', 'live_id,body,created_at', order: 'created_at', limit: 200, publicRead: true));
 
 /// Lives en cours avec leurs commentaires (écran 222) ou lives du compte à démarrer (écran l1).
 class LiveRoom extends ConsumerWidget {
@@ -394,12 +391,13 @@ class LiveRoom extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (_signedOut(ref)) return _note(width, 'Connectez-vous pour voir les lives.');
-    final all = ref.watch(livesAllProvider);
-    final comments = ref.watch(liveCommentsProvider) ?? const <Map<String, dynamic>>[];
+    final source = mine ? livesMineProvider : livesAllProvider;
+    if (mine && _signedOut(ref)) return _note(width, 'Connectez-vous pour gérer vos lives.');
+    final all = ref.watch(source);
+    final comments = mine ? const <Map<String, dynamic>>[] : ref.watch(liveCommentsProvider) ?? const <Map<String, dynamic>>[];
     if (all == null) return _note(width, 'Chargement…');
-    final uid = Backend.userId;
-    final rows = [for (final l in all) if (mine ? ('${l['host_id']}' == uid && ('${l['status']}' == 'scheduled' || '${l['status']}' == 'live')) : '${l['status']}' == 'live') l];
+    if (ref.read(source.notifier).error) return _note(width, 'Les lives ne peuvent pas être chargés pour le moment.');
+    final rows = [for (final l in all) if (mine || '${l['status']}' == 'live') l];
     if (rows.isEmpty) return _note(width, mine ? 'Aucun live programmé à démarrer.\nProgrammez-en un depuis votre profil.' : 'Aucun live en cours pour le moment.');
     return SizedBox(
       width: width,
@@ -421,8 +419,8 @@ class LiveRoom extends ConsumerWidget {
               const SizedBox(height: 10),
               if (mine)
                 Row(children: [
-                  if (!live) _btn('Démarrer', () async { if (await _run(context, 'live_set_state', {'p_id': '${l['id']}', 'p_state': 'live'}, 'Live démarré.')) await ref.read(livesAllProvider.notifier).refresh(); }),
-                  if (live) _btn('Terminer', () async { if (await _run(context, 'live_set_state', {'p_id': '${l['id']}', 'p_state': 'ended'}, 'Live terminé.')) await ref.read(livesAllProvider.notifier).refresh(); }),
+                  if (!live) _btn('Démarrer', () async { if (await _run(context, 'live_set_state', {'p_id': '${l['id']}', 'p_state': 'live'}, 'Live démarré.')) await ref.read(source.notifier).refresh(); }),
+                  if (live) _btn('Terminer', () async { if (await _run(context, 'live_set_state', {'p_id': '${l['id']}', 'p_state': 'ended'}, 'Live terminé.')) await ref.read(source.notifier).refresh(); }),
                 ])
               else ...[
                 Text('Commentaires (${mineComments.length})', style: _st(12.5, w: FontWeight.w700)),
@@ -441,6 +439,7 @@ class LiveRoom extends ConsumerWidget {
 }
 
 Future<void> commentDialog(BuildContext context, WidgetRef ref, String live) async {
+  if (!await requireLogin(context, ref, 'commenter') || !context.mounted) return;
   final t = TextEditingController();
   final ok = await showDialog<bool>(context: context, builder: (c) => AlertDialog(title: const Text('Commenter'), content: TextField(controller: t, maxLength: 300, decoration: const InputDecoration(labelText: 'Votre message')), actions: [TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('Annuler')), TextButton(onPressed: () => Navigator.pop(c, true), child: const Text('Envoyer'))]));
   if (ok != true || !context.mounted) return;

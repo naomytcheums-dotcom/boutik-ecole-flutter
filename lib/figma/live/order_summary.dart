@@ -22,11 +22,14 @@ String feeLabel(int fee) => fee == 0 ? 'Gratuit' : fcfa(fee);
 /// Moyen de paiement retenu (08).
 String payMethodLabel(int method) => method == 0 ? 'Orange Money' : (method == 2 ? 'Paiement à la livraison' : 'Mobile Money');
 
-/// Référence à indiquer au paiement : celle de la commande créée ; tant qu'aucune commande n'existe, aucune référence n'est inventée.
-String orderReferenceLabel(List<Order> orders) => orders.isEmpty ? 'Attribuée à la validation' : orders.first.id.replaceFirst('#', '');
+/// Référence à indiquer au paiement : celle de la commande à payer ; tant qu'aucune commande n'est à payer, aucune référence n'est inventée.
+String orderReferenceLabel(List<Order> orders) {
+  final o = payableOrder(orders);
+  return o == null ? 'Attribuée à la validation' : o.id.replaceFirst('#', '');
+}
 
-/// Montant à payer : celui de la dernière commande créée, sinon le total du panier courant.
-int amountToPay(List<Order> orders, Totals totals) => orders.isEmpty ? totals.total : orders.first.total;
+/// Montant à payer : celui de la commande impayée la plus récente, sinon le total du panier courant.
+int amountToPay(List<Order> orders, Totals totals) => payableOrder(orders)?.total ?? totals.total;
 
 /// Lignes du panier dans une zone défilante : toutes les lignes sont affichées, quel que soit leur nombre.
 class OrderLinesList extends ConsumerWidget {

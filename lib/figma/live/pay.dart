@@ -73,7 +73,14 @@ class PayNotifier extends Notifier<PayState> {
       if (context.mounted) gToast(context, 'Paiement refusé ou annulé. Réessayez.');
       return PayPhase.failed;
     }
-    if (!quiet && context.mounted) gToast(context, 'Paiement toujours en attente de validation sur votre téléphone.');
+    if (!quiet && context.mounted) {
+      final msg = res?['message'];
+      if (res?['error'] != null) {
+        gToast(context, msg is String && msg.isNotEmpty ? Backend.userMessage(msg) : 'Vérification impossible pour le moment. Réessayez dans un instant.');
+      } else {
+        gToast(context, 'Paiement toujours en attente de validation sur votre téléphone.');
+      }
+    }
     return PayPhase.pending;
   }
 }
@@ -206,16 +213,23 @@ Future<void> cancelViewedOrder(WidgetRef ref, BuildContext context) async {
   gTab(context, '03');
 }
 
+/// Commande visée par « Copier la référence » et « J'ai payé » : la plus récente commande impayée du compte connecté ;
+/// null (connecté au serveur) quand aucune commande réelle n'est à payer. Hors connexion (démonstration), la commande affichée.
+Order? _orderToSettle(WidgetRef ref) => Backend.ready ? ref.read(payableOrderProvider) : ref.read(viewedOrderProvider);
+
 /// Copie la référence de la commande dans le presse-papiers.
 Future<void> copyOrderRef(WidgetRef ref, BuildContext context) async {
-  final o = ref.read(viewedOrderProvider);
+  final o = _orderToSettle(ref);
+  if (o == null) return gToast(context, 'Aucune commande : la référence sera attribuée à la validation.');
   await Clipboard.setData(ClipboardData(text: o.id));
   if (context.mounted) gToast(context, 'Référence ${o.id} copiée');
 }
 
 /// « J'ai payé » : interroge le serveur de paiement ; la commande n'est confirmée que si le paiement l'est réellement.
 Future<void> checkPaymentNow(WidgetRef ref, BuildContext context) async {
-  final o = ref.read(viewedOrderProvider);
+  if (!await requireLogin(context, ref, 'vérifier votre paiement') || !context.mounted) return;
+  final o = _orderToSettle(ref);
+  if (o == null) return gToast(context, 'Aucune commande à vérifier.');
   final r = await ref.read(payProvider.notifier).check(context, o);
   if (r == PayPhase.failed && context.mounted) gToast(context, 'Paiement non confirmé. Réessayez.');
 }

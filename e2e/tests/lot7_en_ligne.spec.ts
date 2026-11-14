@@ -10,9 +10,10 @@ async function ouvrir(page, hash: string) {
   return err;
 }
 const texte = async (page) => (await page.evaluate(() => (document.querySelector('flt-semantics-host') as HTMLElement | null)?.innerText ?? '')).replace(/\s+/g, ' ');
-test('page /design : nouvelle direction visuelle, sans erreur', async ({ page }) => {
+test('page /design : outil interne, non publique (page introuvable pour un visiteur)', async ({ page }) => {
   const err = await ouvrir(page, '#/design');
-  await expect.poll(() => texte(page), { timeout: 20_000 }).toContain('Nouvelle direction visuelle');
+  await expect.poll(() => texte(page), { timeout: 20_000 }).toContain('Page introuvable');
+  expect(await texte(page)).not.toContain('Nouvelle direction visuelle');
   expect(err).toEqual([]);
   await page.screenshot({ path: 'results/design-en-ligne.png' });
 });

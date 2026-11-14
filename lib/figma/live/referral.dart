@@ -18,14 +18,17 @@ typedef Referee = ({String name, String status, int earned});
 typedef ReferralRule = ({String tier, int minActive, int bonus, double sharePct});
 
 class ReferralSummary {
-  const ReferralSummary({this.tier = 'Aucun', this.active = 0, this.pending = 0, this.available = 0, this.waiting = 0, this.month = 0, this.referees = const [], this.rules = const [], this.history = const []});
+  const ReferralSummary({this.tier = 'Aucun', this.active = 0, this.pending = 0, this.available = 0, this.waiting = 0, this.month = 0, this.referees = const [], this.rules = const [], this.history = const [], this.unavailable = false});
   final String tier;
   final int active, pending, available, waiting, month;
   final List<Referee> referees;
 
-  /// Barème défini par l'administrateur (table referral_rules) ; vide = « récompense non définie ».
+  /// Barème défini par l'administrateur (table referral_rules) ; vide = barème pas encore publié.
   final List<ReferralRule> rules;
   final List<Map<String, dynamic>> history;
+
+  /// Vrai quand la lecture de la synthèse a échoué : les compteurs ne sont alors pas ceux du compte.
+  final bool unavailable;
 
   int get total => available + waiting;
   bool get rewardsDefined => rules.isNotEmpty;
@@ -51,9 +54,10 @@ class ReferralSummary {
   /// « Niveau Argent », ou « Aucun filleul actif ».
   String get tierLabel => tier == 'Aucun' ? 'Aucun filleul actif' : 'Niveau $tier';
 
-  /// Palier suivant du barème réel : « Plus que 13 filleuls pour passer Or ». Sans barème : récompense non définie.
+  /// Palier suivant du barème réel : « Plus que 13 filleuls pour passer Or ». Sans barème : il n'est pas encore publié.
   String get nextLabel {
-    if (rules.isEmpty) return 'Récompense non définie';
+    if (unavailable) return 'Parrainage indisponible pour le moment.';
+    if (rules.isEmpty) return 'Le barème de récompense n’est pas encore publié.';
     final next = rules.where((r) => r.minActive > active).toList();
     if (next.isEmpty) return 'Niveau maximal atteint';
     final n = next.first.minActive - active;
@@ -76,22 +80,50 @@ String ruleReward(ReferralRule r) {
   return '${fcfa(r.bonus)}${r.sharePct > 0 ? ' + $pctText %' : ''}';
 }
 
+const referralSignInHint = 'Connectez-vous pour voir votre parrainage.';
+
+/// Vrai quand personne n'est connecté (visiteur) : le parrainage n'a alors ni barème ni compteur à montrer.
+bool referralSignedOut(WidgetRef ref) => ref.watch(authProvider.select((a) => a.current == null));
+
+/// Libellé du niveau (240) : jamais « Aucun filleul actif » pour un visiteur ou tant que la lecture n'a pas abouti.
+String referralTierText(WidgetRef ref) {
+  if (referralSignedOut(ref)) return 'Parrainage';
+  final s = ref.watch(referralProvider);
+  return s == null ? 'Chargement…' : (s.unavailable ? 'Parrainage' : s.tierLabel);
+}
+
+/// Avancement vers le palier suivant (240) : invitation à se connecter pour un visiteur, chargement, ou état du barème.
+String referralNextText(WidgetRef ref) {
+  if (referralSignedOut(ref)) return referralSignInHint;
+  final s = ref.watch(referralProvider);
+  return s == null ? 'Chargement…' : s.nextLabel;
+}
+
 /// Cartes des paliers (240) construites sur le barème réel du serveur. Aucun montant n'est écrit dans l'application.
 class ReferralTiers extends ConsumerWidget {
   const ReferralTiers({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final s = ref.watch(referralProvider) ?? const ReferralSummary();
-    if (!s.rewardsDefined) {
+    final signedOut = referralSignedOut(ref);
+    final loaded = ref.watch(referralProvider);
+    final s = loaded ?? const ReferralSummary();
+    if (signedOut || loaded == null || !s.rewardsDefined) {
+      final msg = signedOut
+          ? referralSignInHint
+          : loaded == null
+              ? 'Chargement…'
+              : s.unavailable
+                  ? 'Parrainage indisponible pour le moment. Réessayez dans un instant.'
+                  : 'Le barème de récompense n’est pas encore publié.';
       return Container(
         alignment: Alignment.center,
         padding: const EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(color: const Color(0xFFF6F3FA), borderRadius: BorderRadius.circular(22)),
-        child: const Text(
-          'Récompense non définie.\nL’équipe n’a pas encore publié le barème du parrainage ; elle en est informée.',
+        child: Text(
+          msg,
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 12, height: 1.4, color: Color(0xFF57545F), fontWeight: FontWeight.w500),
+          style: const TextStyle(fontSize: 12, height: 1.4, color: Color(0xFF57545F), fontWeight: FontWeight.w500),
         ),
       );
     }
@@ -148,42 +180,64 @@ class ReferralNotifier extends Notifier<ReferralSummary?> {
 
   Future<void> refresh() async {
     final r = await Backend.rpc('my_referral_summary', const {});
-    if (r.error == null && r.data is Map && ref.mounted) state = ReferralSummary.fromJson(Map<String, dynamic>.from(r.data as Map));
+    if (!ref.mounted) return;
+    state = r.error == null && r.data is Map ? ReferralSummary.fromJson(Map<String, dynamic>.from(r.data as Map)) : const ReferralSummary(unavailable: true);
   }
 }
 
 final referralProvider = NotifierProvider<ReferralNotifier, ReferralSummary?>(ReferralNotifier.new);
 
-/// Code personnel (créé par le serveur à la première demande).
-class ReferralCode extends Notifier<String> {
+/// Code personnel (créé par le serveur à la première demande), le même pour tous les écrans de parrainage.
+/// `null` : lecture en cours ; chaîne vide : personne n'est connecté ou le code est indisponible.
+class ReferralCode extends Notifier<String?> {
   @override
-  String build() {
+  String? build() {
     if (!Backend.ready) return '';
     final uid = ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
-    if (uid.isNotEmpty) {
-      Future.microtask(() async {
-        final r = await Backend.rpc('my_referral_code', const {});
-        if (r.error == null && ref.mounted) state = '${r.data}';
-      });
-    }
-    return '';
+    if (uid.isEmpty) return '';
+    Future.microtask(() async {
+      final r = await Backend.rpc('my_referral_code', const {});
+      if (ref.mounted) state = r.error == null && r.data is String ? r.data as String : '';
+    });
+    return null;
   }
 }
 
-final referralCodeProvider = NotifierProvider<ReferralCode, String>(ReferralCode.new);
+final referralCodeProvider = NotifierProvider<ReferralCode, String?>(ReferralCode.new);
 
-/// Texte du lien d'invitation : le code à saisir à l'inscription (Mon compte → « J'ai un code de parrainage »).
-String invitationText(String code) => code.isEmpty ? 'Connectez-vous pour obtenir votre code' : 'Code de parrainage : $code';
+/// Texte du lien d'invitation : le code à saisir après l'inscription (Mon compte → « J'ai un code de parrainage »).
+String invitationText(String? code, {bool signedOut = true}) =>
+    code == null ? 'Chargement du code…' : (code.isEmpty ? (signedOut ? 'Connectez-vous pour obtenir votre code' : 'Code indisponible pour le moment') : 'Code de parrainage : $code');
 
-/// Message d'invitation commun à tous les boutons de partage.
-String invitationMessage(String code) => 'Rejoins Boutik-École : $siteUrl — à l’inscription, saisis mon code de parrainage $code.';
+/// Message d'invitation commun à tous les boutons de partage. Le formulaire d'inscription n'a pas de champ de parrainage :
+/// le filleul saisit le code dans son compte.
+String invitationMessage(String code) =>
+    'Rejoins Boutik-École : $siteUrl — après ton inscription, saisis mon code de parrainage $code dans Mon compte › J’ai un code de parrainage.';
+
+/// Code à partager, ou null après avoir expliqué pourquoi il n'est pas disponible (visiteur : invitation à se connecter).
+Future<String?> _shareableCode(BuildContext context, WidgetRef ref) async {
+  if (ref.read(authProvider).current == null) {
+    await requireLogin(context, ref, 'obtenir votre code de parrainage');
+    return null;
+  }
+  final code = ref.read(referralCodeProvider);
+  if (code == null) {
+    gToast(context, 'Votre code se charge. Réessayez dans un instant.');
+    return null;
+  }
+  if (code.isEmpty) {
+    gToast(context, 'Code de parrainage indisponible pour le moment.');
+    return null;
+  }
+  return code;
+}
 
 /// 240 « Partager via » : ouvre le service choisi avec le message prérempli ; Instagram et TikTok n'ont pas de lien de partage
 /// de texte : le message est copié pour être collé dans l'application.
 Future<void> shareInvitation(BuildContext context, WidgetRef ref, String via) async {
   if (!Backend.ready) return gToast(context, 'Partage disponible une fois connecté au serveur.');
-  final code = ref.read(referralCodeProvider);
-  if (code.isEmpty) return gAlert(context, 'Parrainage', 'Connectez-vous pour obtenir votre code de parrainage.');
+  final code = await _shareableCode(context, ref);
+  if (code == null || !context.mounted) return;
   final msg = invitationMessage(code);
   final q = Uri.encodeComponent(msg);
   switch (via) {
@@ -202,29 +256,45 @@ Future<void> shareInvitation(BuildContext context, WidgetRef ref, String via) as
 /// 240 « Copier » : copie réellement le message d'invitation ; le message dit si la copie a réussi.
 Future<void> copyInvitation(BuildContext context, WidgetRef ref) async {
   if (!Backend.ready) return gToast(context, 'Lien copié');
-  final code = ref.read(referralCodeProvider);
-  if (code.isEmpty) return gAlert(context, 'Parrainage', 'Connectez-vous pour obtenir votre code de parrainage.');
+  final code = await _shareableCode(context, ref);
+  if (code == null || !context.mounted) return;
   final ok = await copyText(invitationMessage(code));
   if (context.mounted) gToast(context, ok ? 'Invitation copiée' : 'Copie impossible : autorisez l’accès au presse-papiers.');
+}
+
+/// Forme attendue d'un code de parrainage serveur : 8 caractères, lettres A-Z et chiffres 2-9, sans préfixe.
+final _codeShape = RegExp(r'^[A-Z2-9]{8}$');
+
+/// Code saisi, mis en forme (majuscules, espaces retirés) ; null s'il n'a pas la forme attendue.
+String? normalizeReferralCode(String raw) {
+  final c = raw.replaceAll(RegExp(r'\s'), '').toUpperCase();
+  return _codeShape.hasMatch(c) ? c : null;
 }
 
 /// Mon compte : le filleul saisit le code reçu (30 jours après l'inscription au plus ; vérifié par le serveur).
 Future<void> claimReferralDialog(BuildContext context, WidgetRef ref) async {
   if (!Backend.ready) return gAlert(context, 'Hors connexion', 'Cette action nécessite la connexion au serveur.');
   if (!await requireLogin(context, ref, 'saisir un code de parrainage') || !context.mounted) return;
-  final code = await askText(context, title: 'Code de parrainage', body: 'Saisissez le code reçu (8 caractères), dans les 30 jours suivant votre inscription.', hint: 'ABCD2345', ok: 'Valider', min: 8);
-  if (code == null || !context.mounted) return;
+  final raw = await askText(context, title: 'Code de parrainage', body: 'Saisissez le code reçu (8 caractères : lettres et chiffres), dans les 30 jours suivant votre inscription.', hint: 'ABCD2345', ok: 'Valider', min: 8);
+  if (raw == null || !context.mounted) return;
+  final code = normalizeReferralCode(raw);
+  if (code == null) return gAlert(context, 'Code invalide', 'Un code de parrainage compte exactement 8 caractères (lettres A à Z et chiffres 2 à 9), sans espace ni préfixe.');
   final r = await Backend.rpc('claim_referral', {'p_code': code});
   if (!context.mounted) return;
-  if (r.error != null) return gAlert(context, 'Code refusé', r.error!);
+  if (r.error != null) return gAlert(context, 'Code refusé', Backend.userMessage(r.error!));
   gToast(context, 'Parrain enregistré : la prime lui sera due à votre première commande payée.');
 }
 
 /// Liste des filleuls réels (243), à la place des exemples de la maquette.
-Widget refereeList(ReferralSummary s) => s.referees.isEmpty
-    ? Text('Aucun filleul pour le moment. Partagez votre code depuis « Parrainer et gagner ».',
-        style: const TextStyle(fontSize: 12.5, color: Color(0xFF57545F), height: 1.4))
-    : Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+Widget refereeList(ReferralSummary? s, {bool signedOut = false}) => signedOut
+    ? const Text(referralSignInHint, style: TextStyle(fontSize: 12.5, color: Color(0xFF57545F), height: 1.4))
+    : s == null
+        ? const Text('Chargement…', style: TextStyle(fontSize: 12.5, color: Color(0xFF57545F), height: 1.4))
+        : s.unavailable
+        ? const Text('Parrainage indisponible pour le moment. Réessayez dans un instant.', style: TextStyle(fontSize: 12.5, color: Color(0xFF57545F), height: 1.4))
+        : s.referees.isEmpty
+            ? const Text('Aucun filleul pour le moment. Partagez votre code depuis « Parrainer et gagner ».', style: TextStyle(fontSize: 12.5, color: Color(0xFF57545F), height: 1.4))
+            : Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         for (final r in s.referees.take(5))
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),

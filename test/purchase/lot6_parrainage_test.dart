@@ -1,5 +1,6 @@
 import 'package:boutik_ecole/figma/g/g_243.dart';
 import 'package:boutik_ecole/figma/gsound.dart';
+import 'package:boutik_ecole/figma/live/auth.dart';
 import 'package:boutik_ecole/figma/live/backend.dart';
 import 'package:boutik_ecole/figma/live/referral.dart';
 import 'package:flutter/material.dart';
@@ -28,10 +29,10 @@ void main() {
     });
     expect(s.total, 1110);
     expect(s.tierLabel, 'Niveau Argent');
-    expect(s.nextLabel, 'Récompense non définie');
+    expect(s.nextLabel, 'Le barème de récompense n’est pas encore publié.');
     expect(s.referees.single.name, 'Brice N.');
     expect(const ReferralSummary().tierLabel, 'Aucun filleul actif');
-    expect(const ReferralSummary(tier: 'Bronze', active: 4).nextLabel, 'Récompense non définie');
+    expect(const ReferralSummary(tier: 'Bronze', active: 4).nextLabel, 'Le barème de récompense n’est pas encore publié.');
     expect(refereeStatus('pending'), 'En attente');
     expect(invitationText(''), contains('Connectez-vous'));
     expect(invitationText('ABCD2345'), 'Code de parrainage : ABCD2345');
@@ -47,6 +48,8 @@ void main() {
       overrides: [referralProvider.overrideWith(() => _Summary(const ReferralSummary(tier: 'Bronze', active: 1, available: 0, waiting: 500, month: 500, referees: [(name: 'Carine M.', status: 'active', earned: 500)])))],
       child: const MaterialApp(home: Scaffold(body: G_243())),
     ));
+    await tester.pump();
+    ProviderScope.containerOf(tester.element(find.byType(G_243))).read(authProvider.notifier).login(demoAccount);
     await tester.pump();
     expect(find.text('12 500 FCFA'), findsNothing);
     expect(find.text('Brice Ndoumbe'), findsNothing);

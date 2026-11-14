@@ -24,7 +24,7 @@ void main() {
     test('sans barème : récompense non définie, aucun montant inventé', () {
       final s = ReferralSummary.fromJson({'tier': 'Aucun', 'active': 0, 'rules': []});
       expect(s.rewardsDefined, isFalse);
-      expect(s.nextLabel, 'Récompense non définie');
+      expect(s.nextLabel, 'Le barème de récompense n’est pas encore publié.');
       expect(s.progress, 0);
     });
 

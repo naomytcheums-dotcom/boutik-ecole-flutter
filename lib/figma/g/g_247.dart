@@ -137,7 +137,7 @@ class G_247 extends ConsumerWidget {
       gTap(280, 200, 76, 26, () => gOpen(context, '248')),
       gTap(228, 412, 20, 20, () => gOpen(context, '248')),
       gTap(313, 412, 20, 20, () => gOpen(context, '252')),
-      gTap(126, 200, 82, 26, () { uiFollow(context); }),
+      gTap(126, 200, 82, 26, () { uiFollow(context, ref, gProfileUserId(context)); }),
       if (!demoContent) gP(0, 0, 390, 756, SocialProfilePanel(userId: gProfileUserId(context))),
     ]);
   }

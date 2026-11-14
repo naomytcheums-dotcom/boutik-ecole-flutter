@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
+import '../live/publish_page.dart';
 import '../live/reels.dart';
 import '../live/social_posts.dart';
 import '../nav.dart';
@@ -32,6 +33,8 @@ class G_P4 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // En service réel : vrai formulaire de publication (la maquette ne sert qu'à la démonstration).
+    if (!demoContent) return const PublishPage();
     return GScreen(w: 390, h: 844, radius: 46, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF1EEE6), Color(0xFFECE7F2), Color(0xFFF3E3D6)], stops: [0, 0.6, 1]), children: [
       gP(220, 70, 260, 260, gBox(color: Color(0x80CDB2F2), layerBlur: 90, oval: true), fx: 'halo'),
       gP(30, 14, 28, 18, gText('9:41', 14, Color(0xFF111015), weight: 600)),

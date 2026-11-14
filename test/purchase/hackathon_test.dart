@@ -18,6 +18,17 @@ void main() {
     expect(placesLeft(orange, c.read(registrationsProvider)), 119);
   });
 
+  test('prix abrégé : virgule française', () {
+    expect(prizeShort(5000000), '5 M FCFA');
+    expect(prizeShort(1500000), '1,5 M FCFA');
+    expect(prizeShort(1050000), '1,05 M FCFA');
+    expect(prizeShort(750000).contains('M'), isFalse);
+  });
+
+  test('places restantes : nombre affiché en démonstration', () {
+    expect(placesText(hackathons.first, const {}), '120');
+  });
+
   test('équipe : invitations, acceptation et limite de taille', () {
     final c = ProviderContainer();
     addTearDown(c.dispose);

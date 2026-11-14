@@ -2,11 +2,36 @@ import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'auth.dart';
+import 'backend.dart';
+
+const _defaultFrequency = 'Une fois par jour · tous les jours';
+
 /// Fréquence des alertes : on choisit au calendrier le nombre de fois par jour et les jours de la semaine, sans rien écrire.
+/// La valeur enregistrée avec les préférences d'alertes du compte (engagement « alert_prefs ») est relue à la connexion.
 class _Freq extends Notifier<String> {
+  bool _touched = false;
+
   @override
-  String build() => 'Une fois par jour · tous les jours';
-  void set(String v) => state = v;
+  String build() {
+    ref.watch(authProvider);
+    _touched = false;
+    _load();
+    return _defaultFrequency;
+  }
+
+  Future<void> _load() async {
+    final rows = await Backend.myEngagements(kind: 'alert_prefs');
+    if (rows.isEmpty || _touched || !ref.mounted) return;
+    final d = rows.first['data'];
+    final f = d is Map ? d['frequency'] : null;
+    if (f is String && f.trim().isNotEmpty) state = f.trim();
+  }
+
+  void set(String v) {
+    _touched = true;
+    state = v;
+  }
 }
 
 final alertFrequencyProvider = NotifierProvider<_Freq, String>(_Freq.new);
@@ -20,6 +45,16 @@ String _label(int n, Set<int> days) {
   final fois = n == 1 ? 'Une fois par jour' : '$n fois par jour';
   final j = days.length == 7 || days.isEmpty ? 'tous les jours' : ([for (final d in (days.toList()..sort())) _jours[d]]).join(', ');
   return '$fois · $j';
+}
+
+/// Relit un libellé produit par [_label] : nombre de fois par jour et jours retenus ; valeurs par défaut si le texte n'est pas reconnu.
+(int, Set<int>) _parse(String v) {
+  final parts = v.split(' · ');
+  final n = parts.first.startsWith('Une') ? 1 : (int.tryParse(parts.first.split(' ').first) ?? 1).clamp(1, 6);
+  final all = <int>{0, 1, 2, 3, 4, 5, 6};
+  if (parts.length < 2 || parts[1].trim() == 'tous les jours') return (n, all);
+  final days = <int>{for (final d in parts[1].split(',')) if (_jours.indexOf(d.trim()) case final i when i >= 0) i};
+  return (n, days.isEmpty ? all : days);
 }
 
 class FrequencyField extends ConsumerWidget {
@@ -45,8 +80,9 @@ class FrequencyField extends ConsumerWidget {
   }
 
   Future<void> _pick(BuildContext context, WidgetRef ref) {
-    var n = 1;
-    final days = <int>{0, 1, 2, 3, 4, 5, 6};
+    final (start, startDays) = _parse(ref.read(alertFrequencyProvider));
+    var n = start;
+    final days = <int>{...startDays};
     return showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.transparent,
@@ -99,12 +135,25 @@ class FrequencyField extends ConsumerWidget {
   }
 }
 
-/// Ligne « Notifications de l'application » : toujours actives (application mobile), sans bouton à activer.
-class AppNotificationsRow extends StatelessWidget {
+/// Appareil réellement enregistré pour recevoir les notifications du compte connecté (table `device_tokens`, lisible par son titulaire).
+final _deviceRegisteredProvider = FutureProvider.autoDispose<bool>((ref) async {
+  ref.watch(authProvider.select((a) => a.current?.email));
+  if (!Backend.ready || Backend.userId == null) return false;
+  final r = await Backend.rows('device_tokens', 'token', limit: 1);
+  if (r.error != null) throw StateError('device_tokens');
+  return r.rows.isNotEmpty;
+});
+
+/// Ligne « Notifications de l'application » : « Actives » seulement quand un appareil est enregistré pour ce compte, sinon « Désactivées ».
+class AppNotificationsRow extends ConsumerWidget {
   const AppNotificationsRow({super.key, this.width = 342});
   final double width;
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final d = ref.watch(_deviceRegisteredProvider);
+    final on = d.value == true;
+    final label = d.isLoading && !d.hasValue ? 'Vérification…' : (d.hasError && !d.hasValue ? 'Indisponible' : (on ? 'Actives' : 'Désactivées'));
+    return Container(
         width: width,
         height: 48,
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -113,7 +162,8 @@ class AppNotificationsRow extends StatelessWidget {
           const Icon(Icons.notifications_active_outlined, size: 20),
           const SizedBox(width: 10),
           Expanded(child: Text('Notifications de l’application', style: _st(13, w: FontWeight.w600))),
-          Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), decoration: BoxDecoration(color: const Color(0xFFDDF5EC), borderRadius: BorderRadius.circular(10)), child: Text('Actives', style: _st(11, w: FontWeight.w700, c: const Color(0xFF0F7A52)))),
+          Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), decoration: BoxDecoration(color: on ? const Color(0xFFDDF5EC) : const Color(0xFFF1EDF7), borderRadius: BorderRadius.circular(10)), child: Text(label, style: _st(11, w: FontWeight.w700, c: on ? const Color(0xFF0F7A52) : const Color(0xFF57545F)))),
         ]),
       );
+  }
 }

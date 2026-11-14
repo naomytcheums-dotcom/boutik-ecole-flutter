@@ -5,7 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../gen.dart' show gToast;
+import '../../core/router/paths.dart' show screenPath;
 import '../nav.dart';
+import 'access.dart' show roleKey;
 import 'auth.dart';
 import 'backend.dart';
 import 'console.dart';
@@ -23,7 +25,7 @@ TextStyle _st(double size, {FontWeight w = FontWeight.w500, Color c = _ink}) => 
 Widget _btn(String t, VoidCallback f, {bool dark = true, double? w}) => GestureDetector(onTap: f, child: Container(width: w, padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12), alignment: Alignment.center, decoration: BoxDecoration(color: dark ? _ink : Colors.white, borderRadius: BorderRadius.circular(22), border: dark ? null : Border.all(color: const Color(0xFFE6E1EE))), child: Text(t, style: _st(13, w: FontWeight.w700, c: dark ? Colors.white : _ink))));
 Widget _note(String t) => Center(child: Padding(padding: const EdgeInsets.all(32), child: Text(t, textAlign: TextAlign.center, style: _st(14, c: _grey).copyWith(height: 1.5))));
 bool _out(WidgetRef ref) => ref.watch(authProvider.select((a) => a.current == null));
-bool _isAdmin(WidgetRef ref) => ref.watch(authProvider.select((a) => a.current?.staff == 'admin'));
+bool _isAdmin(WidgetRef ref) => ref.watch(authProvider.select((a) => roleKey(a.current) == 'admin'));
 
 Future<bool> _run(BuildContext context, String fn, Map<String, dynamic> args, String ok) async {
   final r = await Backend.rpc(fn, args);
@@ -162,7 +164,7 @@ class AdsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final rows = ref.watch(myAdsProvider);
-    final admin = ref.watch(authProvider.select((a) => const {'admin', 'direction'}.contains(a.current?.staff)));
+    final admin = ref.watch(authProvider.select((a) => const {'admin', 'direction'}.contains(roleKey(a.current))));
     Widget body;
     if (_out(ref)) {
       body = _note('Connectez-vous pour gérer vos campagnes.');
@@ -345,7 +347,12 @@ class _SponsoredCardState extends ConsumerState<SponsoredCard> {
       behavior: HitTestBehavior.opaque,
       onTap: () {
         Backend.rpc('ad_event_record', {'p_campaign': '${a['id']}', 'p_kind': 'click'});
-        if (a['listing_id'] != null) gOpen(context, '22');
+        final listing = '${a['listing_id'] ?? ''}', post = '${a['post_id'] ?? ''}';
+        if (listing.isNotEmpty) {
+          gOpen(context, '22');
+        } else if (post.isNotEmpty) {
+          GoRouter.of(context).push('${screenPath('244')}?post=${Uri.encodeQueryComponent(post)}');
+        }
       },
       child: Container(
         padding: const EdgeInsets.all(14),

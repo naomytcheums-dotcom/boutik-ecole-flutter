@@ -35,7 +35,7 @@ Future<void> exportMyData(BuildContext context, WidgetRef ref) async {
   final out = <String, dynamic>{
     'exporte_le': DateTime.now().toUtc().toIso8601String(),
     'compte': uid,
-    'note': 'Données du compte lisibles par son titulaire. Les messages et fichiers déposés restent disponibles dans l’application.',
+    'note': 'Données du compte lisibles par son titulaire : profil, annonces, commandes, notifications, documents, adresses, gains, parrainage, demandes de certification et codes QR. Les messages et les fichiers déposés ne sont pas inclus dans ce fichier.',
   };
   final missing = <String>[];
   for (final (table, col) in _tables) {

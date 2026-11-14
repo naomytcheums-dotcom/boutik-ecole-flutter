@@ -14,14 +14,21 @@ TextStyle _st(double size, {FontWeight w = FontWeight.w500, Color c = _ink}) => 
 
 /// Liste JSON d'une fonction serveur ; `null` : lecture en cours, serveur absent ou personne non connectée ; `error` : accès refusé ou échec.
 class RpcRows extends Notifier<List<Map<String, dynamic>>?> {
-  RpcRows(this.fn, [this.args = const {}]);
+  RpcRows(this.fn, [this.args = const {}, this.publicRead = false]);
   final String fn;
   final Map<String, dynamic> args;
+
+  /// Vrai quand la lecture est autorisée aux visiteurs (grant `anon` vérifié dans les migrations) : la liste se charge sans compte.
+  final bool publicRead;
   bool error = false;
 
   @override
   List<Map<String, dynamic>>? build() {
     if (!Backend.ready) return null;
+    if (publicRead) {
+      Future.microtask(refresh);
+      return null;
+    }
     if (ref.watch(authProvider.select((a) => a.current == null))) return null;
     Future.microtask(refresh);
     return null;

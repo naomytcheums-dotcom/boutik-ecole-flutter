@@ -1,4 +1,5 @@
 import 'package:boutik_ecole/figma/g/g_100.dart';
+import 'package:boutik_ecole/figma/g/g_101.dart';
 import 'package:boutik_ecole/figma/g/g_124.dart';
 import 'package:boutik_ecole/figma/gen.dart';
 import 'package:boutik_ecole/figma/gsound.dart';
@@ -85,8 +86,30 @@ void main() {
     expect(find.text('Inscrit(e)'), findsOneWidget);
   });
 
-  testWidgets('hors connexion : la démonstration de la maquette reste affichée', (t) async {
-    await monter(t, connecte: false);
+  testWidgets('101 connecté : un événement passé n’est plus proposé à l’inscription, seuls ceux à venir sont listés', (t) async {
+    Backend.ready = true;
+    GAnim.enabled = false;
+    t.view.physicalSize = const Size(393, 852);
+    t.view.devicePixelRatio = 1;
+    addTearDown(t.view.reset);
+    final futur = AppEvent(id: '1', title: 'Atelier à venir', kind: 'atelier', startsAt: DateTime(2026, 11, 6, 15), place: '', price: 0, capacity: null, registered: 0, mine: false);
+    final passe = AppEvent(id: '2', title: 'Expo terminée', kind: 'exposition', startsAt: DateTime(2026, 11, 3, 10), place: '', price: 0, capacity: null, registered: 0, mine: false);
+    await t.pumpWidget(ProviderScope(
+      overrides: [nowProvider.overrideWithValue(now), eventsProvider.overrideWith(() => _Events([futur, passe]))],
+      child: const MaterialApp(home: G_101()),
+    ));
+    await t.pumpAndSettle();
+    expect(find.text('Atelier à venir'), findsWidgets);
+    expect(find.text('Expo terminée'), findsNothing);
+    expect(find.text('Inscription'), findsOneWidget);
+    // le mardi 3 est passé : le choisir affiche l'événement avec « Terminé », sans bouton d'inscription
+    ProviderScope.containerOf(t.element(find.byType(G_101))).read(eventDayProvider.notifier).toggle(1);
+    await t.pumpAndSettle();
+    expect(find.text('Terminé'), findsOneWidget);
+    expect(find.text('Inscription'), findsNothing);
+  });
+
+  testWidgets('hors connexion : la démonstration de la maquette reste affichée', (t) async {    await monter(t, connecte: false);
     expect(find.text('Exposition des innovations'), findsOneWidget);
   });
 

@@ -29,7 +29,13 @@ class Hackathon {
   String get listSub => '$dates · $city${city == 'En ligne' ? ' · Prix de ${fcfa(prize)}' : ' · ${prizeShort(prize)}'}';
 }
 
-String prizeShort(int p) => p >= 1000000 ? '${(p / 1000000).toString().replaceAll('.0', '')} M FCFA' : fcfa(p);
+/// « 5 M FCFA », « 1,5 M FCFA » (virgule française) ; en dessous du million, le montant complet.
+String prizeShort(int p) {
+  if (p < 1000000) return fcfa(p);
+  final m = p / 1000000;
+  final s = m == m.roundToDouble() ? '${m.round()}' : m.toStringAsFixed(2).replaceAll(RegExp(r'0+$'), '').replaceAll('.', ',');
+  return '$s M FCFA';
+}
 
 const hackathons = <Hackathon>[
   Hackathon('orange', 'Orange Digital Challenge', '14–16 nov.', 'Douala', 5000000, 120, 'Ouvert',
@@ -77,6 +83,13 @@ final visibleHackathonsProvider = Provider<List<Hackathon>>((ref) {
       if (tab == 0 || (tab == 1 && h.city == 'En ligne') || (tab == 2 && h.city == 'Douala') || (tab == 3 && h.city == 'Yaoundé') || (tab == 4 && h.free)) h,
   ];
 });
+
+/// Le nombre d'équipes inscrites n'est lisible que par un compte connecté (la table des équipes est refusée aux visiteurs) :
+/// sans compte, le nombre de places restantes est inconnu et ne doit pas être affiché.
+bool placesKnown() => !Backend.ready || Backend.userId != null;
+
+/// Texte à afficher pour les places restantes : le nombre, ou « Places limitées » quand il ne peut pas être établi.
+String placesText(Hackathon h, Map<String, Registration> regs) => placesKnown() ? '${placesLeft(h, regs)}' : 'Places limitées';
 
 int placesLeft(Hackathon h, Map<String, Registration> regs) => Backend.ready ? (h.places - h.taken).clamp(0, h.places) : h.places - (regs.containsKey(h.id) ? 1 : 0);
 
@@ -173,7 +186,7 @@ void submitRegistration(WidgetRef ref, BuildContext context) {
     gOpen(context, '164');
     return;
   }
-  if (placesLeft(ev, ref.read(registrationsProvider)) <= 0) {
+  if (placesKnown() && placesLeft(ev, ref.read(registrationsProvider)) <= 0) {
     gToast(context, 'Plus de places disponibles.');
     return;
   }
@@ -193,7 +206,8 @@ void submitRegistration(WidgetRef ref, BuildContext context) {
 /// 161 « Partager » : copie réellement le lien du concours ; le message dépend du résultat de la copie.
 Future<void> shareEventLink(WidgetRef ref, BuildContext context) async {
   final ev = ref.read(currentEventProvider);
-  final ok = await copyText('${ev.title} · Boutik-École : $siteUrl/#/s/161');
+  final link = ev.id.isEmpty ? '$siteUrl/#/s/161' : '$siteUrl/#/s/161?event=${Uri.encodeQueryComponent(ev.id)}';
+  final ok = await copyText('${ev.title} · Boutik-École : $link');
   if (context.mounted) gToast(context, ok ? 'Lien du concours copié' : 'Copie impossible : autorisez l’accès au presse-papiers.');
 }
 

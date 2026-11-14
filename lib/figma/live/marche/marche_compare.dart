@@ -123,13 +123,17 @@ class _CompareScreenState extends ConsumerState<CompareScreen> {
     final compat = [for (final f in facts) compatibility(f, crit)];
     final bestCompat = bestOf(compat[0], compat[1]);
 
-    String money(int? v) => v == null ? 'Non livrable' : (v == 0 ? 'Gratuit' : mFcfa(v));
+    // Tant que delivery_quote n'a pas répondu, la livraison est en cours de calcul : elle n'est pas « non livrable ».
+    final calculating = [feeA.isLoading && !feeA.hasValue, feeB.isLoading && !feeB.hasValue];
+    final anyCalculating = calculating.contains(true);
+    String money(int? v, int i) => calculating[i] ? 'Calcul…' : (v == null ? 'Non livrable' : (v == 0 ? 'Gratuit' : mFcfa(v)));
+    String total(int i) => calculating[i] ? 'Calcul…' : (facts[i].totalDelivered == null ? 'Non livrable' : mFcfa(facts[i].totalDelivered));
 
     // (libellé, valeurs affichées, gagnant)
     final rows = <(String, List<String>, int?)>[
       ('Prix', [mFcfa(facts[0].price), mFcfa(facts[1].price)], bestOf(facts[0].price, facts[1].price, lowerIsBetter: true)),
-      ('Livraison vers $city', [money(fees[0]), money(fees[1])], bestOf(fees[0], fees[1], lowerIsBetter: true)),
-      ('Prix total livré', [facts[0].totalDelivered == null ? 'Non livrable' : mFcfa(facts[0].totalDelivered), facts[1].totalDelivered == null ? 'Non livrable' : mFcfa(facts[1].totalDelivered)], bestOf(facts[0].totalDelivered, facts[1].totalDelivered, lowerIsBetter: true)),
+      ('Livraison vers $city', [money(fees[0], 0), money(fees[1], 1)], anyCalculating ? null : bestOf(fees[0], fees[1], lowerIsBetter: true)),
+      ('Prix total livré', [total(0), total(1)], anyCalculating ? null : bestOf(facts[0].totalDelivered, facts[1].totalDelivered, lowerIsBetter: true)),
       ('Matériau', [for (final s in specs) specText(s, ['mat']) ?? 'Non précisé'], null),
       ('Capacité', [for (final s in specs) specText(s, ['capac']) ?? 'Non précisé'], bestOf(facts[0].capacity, facts[1].capacity)),
       ('Couleurs', [for (final s in specs) specText(s, ['coul']) ?? 'Non précisé'], null),

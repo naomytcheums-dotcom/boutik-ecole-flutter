@@ -458,14 +458,29 @@ class RememberV extends Notifier<bool> {
 
 final rememberProvider = NotifierProvider<RememberV, bool>(RememberV.new);
 const _rememberKey = 'boutik_remember_email';
+const _sessionOnlyKey = 'boutik_session_only';
 
 Future<void> saveRemembered(String? email) async {
   try {
     final p = await SharedPreferences.getInstance();
     if (email == null) {
       await p.remove(_rememberKey);
+      await p.remove(_sessionOnlyKey);
     } else {
       await p.setString(_rememberKey, email);
+    }
+  } catch (_) {}
+}
+
+/// Mémorise le choix de la case « Se souvenir de moi » à la connexion : décochée, la session est fermée au prochain démarrage de l'application.
+Future<void> applyRememberChoice(String email, bool remember) async {
+  await saveRemembered(remember ? email : null);
+  try {
+    final p = await SharedPreferences.getInstance();
+    if (remember) {
+      await p.remove(_sessionOnlyKey);
+    } else {
+      await p.setBool(_sessionOnlyKey, true);
     }
   } catch (_) {}
 }
@@ -475,11 +490,19 @@ Future<Account?> loadRemembered() async {
     final p = await SharedPreferences.getInstance();
     final e = p.getString(_rememberKey);
     if (Backend.ready) {
-      // Avec le serveur : on ne reprend que la session réelle du titulaire qui a coché « Se souvenir de moi », sinon on la ferme.
       final live = Backend.sessionEmail;
+      final sessionOnly = p.getBool(_sessionOnlyKey) ?? false;
+      if (sessionOnly) await p.remove(_sessionOnlyKey);
       if (live == null) return null;
       // Session ouverte par un lien de réinitialisation : conservée (sans connecter le compte) jusqu'au nouveau mot de passe (écran 16).
       if (Backend.recovery.value) return null;
+      // Connexion faite sans « Se souvenir de moi » : la session de la visite précédente est fermée, sans écran « Session expirée ».
+      if (sessionOnly) {
+        await Backend.signOut();
+        Backend.signingOut = false;
+        await saveRemembered(null);
+        return null;
+      }
       // La session reste ouverte tant que la personne ne se déconnecte pas elle-même (plus de déconnexion à chaque rechargement).
       if (e == null || e.toLowerCase() != live.toLowerCase()) await saveRemembered(live);
       return await Backend.restore();
@@ -607,7 +630,7 @@ void submitLogin(WidgetRef ref, BuildContext context) {
   }
   ref.read(errorsProvider.notifier).clear();
   ref.read(authProvider.notifier).login(hit.first);
-  saveRemembered(ref.read(rememberProvider) ? hit.first.email : null);
+  applyRememberChoice(hit.first.email, ref.read(rememberProvider));
   ref
       .read(auditProvider.notifier)
       .log(hit.first.name, 'Connexion réussie', 'Application', 'Connexions');
@@ -653,7 +676,7 @@ Future<void> _serverLogin(
   if (!context.mounted) return;
   ref.read(errorsProvider.notifier).clear();
   ref.read(authProvider.notifier).login(a);
-  saveRemembered(ref.read(rememberProvider) ? a.email : null);
+  applyRememberChoice(a.email, ref.read(rememberProvider));
   ref
       .read(auditProvider.notifier)
       .log(a.name, 'Connexion réussie', 'Application', 'Connexions');
@@ -847,8 +870,13 @@ Future<void> submitRole(WidgetRef ref, BuildContext context) async {
 Future<void> submitProfile(WidgetRef ref, BuildContext context) async {
   final f = ref.read(formProvider);
   final a = ref.read(authProvider).current;
-  final first = (f['pf_first'] ?? a?.firstName ?? '').trim();
-  final last = (f['pf_last'] ?? a?.lastName ?? '').trim();
+  if (a == null) {
+    // Visiteur : rien n'est écrit, donc ni message de succès ni passage à l'étape suivante (sauf en aperçu hors serveur).
+    if (await requireLogin(context, ref, 'compléter votre profil') && context.mounted) gOpen(context, '18c');
+    return;
+  }
+  final first = (f['pf_first'] ?? a.firstName).trim();
+  final last = (f['pf_last'] ?? a.lastName).trim();
   if (first.isEmpty || last.isEmpty) {
     _errors(ref, {
       if (first.isEmpty) 'pf_first': 'Prénom obligatoire.',
@@ -857,61 +885,51 @@ Future<void> submitProfile(WidgetRef ref, BuildContext context) async {
     return;
   }
   ref.read(errorsProvider.notifier).clear();
-  if (a != null) {
-    final instId = (f['pf_inst_id'] ?? '').isNotEmpty
-        ? f['pf_inst_id']!
-        : a.institutionId;
-    final deptId = (f['pf_dept_id'] ?? '').isNotEmpty
-        ? f['pf_dept_id']!
-        : a.departmentId;
-    final birth = (f['pf_birth'] ?? a.birth).trim();
-    if (birth.isNotEmpty && parseBirth(birth) == null) {
-      _errors(ref, {
-        'pf_birth':
-            'Date invalide : écrivez JJ/MM/AAAA, par exemple 07/03/2002.',
-      });
+  final instId = (f['pf_inst_id'] ?? '').isNotEmpty ? f['pf_inst_id']! : a.institutionId;
+  final deptId = (f['pf_dept_id'] ?? '').isNotEmpty ? f['pf_dept_id']! : a.departmentId;
+  final birth = (f['pf_birth'] ?? a.birth).trim();
+  if (birth.isNotEmpty && parseBirth(birth) == null) {
+    _errors(ref, {'pf_birth': 'Date invalide : écrivez JJ/MM/AAAA, par exemple 07/03/2002.'});
+    return;
+  }
+  final maj = a.copyWith(
+    name: '$first $last',
+    city: (f['pf_city'] ?? a.city).trim(),
+    institution: (f['pf_inst_name'] ?? a.institution).trim(),
+    institutionId: instId,
+    department: (f['pf_dept_name'] ?? a.department).trim(),
+    departmentId: deptId,
+    birth: birth,
+  );
+  if (Backend.ready) {
+    // idempotent : crée le profil si le choix du rôle a été sauté
+    final createErr = await Backend.createProfile(maj);
+    if (createErr != null) {
+      if (context.mounted) await gAlert(context, 'Profil non créé', createErr);
       return;
     }
-    final maj = a.copyWith(
-      name: '$first $last',
-      city: (f['pf_city'] ?? a.city).trim(),
-      institution: (f['pf_inst_name'] ?? a.institution).trim(),
-      institutionId: instId,
-      department: (f['pf_dept_name'] ?? a.department).trim(),
-      departmentId: deptId,
-      birth: birth,
-    );
-    if (Backend.ready) {
-      await Backend.createProfile(
-        maj,
-      ); // idempotent : crée le profil si le choix du rôle a été sauté
-      if (!await Backend.saveProfile(maj)) {
-        if (context.mounted)
-          await gAlert(
-            context,
-            'Profil non enregistré',
-            'Vos informations n’ont pas pu être enregistrées. Réessayez.',
-          );
+    if (!await Backend.saveProfile(maj)) {
+      if (context.mounted) {
+        await gAlert(context, 'Profil non enregistré', 'Vos informations n’ont pas pu être enregistrées. Réessayez.');
+      }
+      return;
+    }
+    // établissement et département viennent du référentiel ; le matricule et le niveau déjà saisis sont conservés
+    if (instId.isNotEmpty || deptId.isNotEmpty) {
+      final err = await saveAcademic(
+        ref,
+        institutionId: instId,
+        departmentId: deptId,
+        matricule: a.matricule,
+        level: a.studyLevel,
+      );
+      if (err != null) {
+        if (context.mounted) await gAlert(context, 'Établissement non enregistré', err);
         return;
       }
-      // établissement et département viennent du référentiel ; le matricule et le niveau déjà saisis sont conservés
-      if (instId.isNotEmpty || deptId.isNotEmpty) {
-        final err = await saveAcademic(
-          ref,
-          institutionId: instId,
-          departmentId: deptId,
-          matricule: a.matricule,
-          level: a.studyLevel,
-        );
-        if (err != null) {
-          if (context.mounted)
-            await gAlert(context, 'Établissement non enregistré', err);
-          return;
-        }
-      }
     }
-    ref.read(authProvider.notifier).update(maj);
   }
+  ref.read(authProvider.notifier).update(maj);
   if (!context.mounted) return;
   gToast(context, 'Profil enregistré');
   gOpen(context, '18c');
@@ -1616,14 +1634,45 @@ Future<void> editProfileDialog(BuildContext context, WidgetRef ref) async {
   if (context.mounted) gToast(context, 'Profil enregistré');
 }
 
-/// « Se déconnecter de tous les appareils » :
-/// retire les appareils enregistrés, puis révoque les sessions serveur.
+/// « Se déconnecter de tous les appareils » : confirmation, retrait des appareils enregistrés (notifications), puis révocation
+/// des sessions côté serveur. Le message final dit honnêtement ce qui a réussi ; cet appareil, lui, est toujours déconnecté.
 Future<void> logoutEverywhere(WidgetRef ref, BuildContext context) async {
-  // Nettoyage des appareils avant la révocation de la session.
-  // La déconnexion reste prioritaire si le nettoyage échoue.
-  await Backend.rpc('unregister_all_devices', {});
-
-  await Backend.signOutAll();
+  if (ref.read(authProvider).current == null) {
+    gToast(context, 'Vous n’êtes pas connecté.');
+    return;
+  }
+  const st = TextStyle(inherit: false, fontFamily: 'PlusJakartaSans', fontSize: 14, height: 1.45, color: Color(0xFF4A4854), textBaseline: TextBaseline.alphabetic);
+  final ok = await gDialog<bool>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+      title: Text('Se déconnecter partout ?', style: st.copyWith(fontSize: 17, fontWeight: FontWeight.w700, color: const Color(0xFF111015))),
+      content: Text('Votre compte sera fermé sur tous vos appareils, y compris celui-ci. Vous devrez vous reconnecter.', style: st),
+      actions: [
+        TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text('Annuler', style: st)),
+        TextButton(
+          onPressed: () => Navigator.of(ctx).pop(true),
+          child: Text('Se déconnecter', style: st.copyWith(fontWeight: FontWeight.w700, color: const Color(0xFFE5484D))),
+        ),
+      ],
+    ),
+  );
+  if (ok != true) return;
+  var devicesCleared = true;
+  var revoked = true;
+  if (Backend.ready) {
+    // Les appareils sont retirés avant la révocation : ensuite la session n'autorise plus l'appel.
+    devicesCleared = (await Backend.rpc('unregister_all_devices', {})).error == null;
+    revoked = await Backend.signOutAll();
+  }
+  final message = !revoked
+      ? 'Cet appareil est déconnecté, mais la déconnexion des autres appareils a échoué : réessayez en ligne.'
+      : (!devicesCleared
+          ? 'Déconnecté de tous les appareils, mais les notifications des autres appareils n’ont pas pu être désactivées.'
+          : (Backend.ready ? 'Déconnecté de tous les appareils.' : 'Vous êtes déconnecté.'));
+  // Le message est lu avant la remise à zéro de l'application (qui détruit l'écran courant).
+  if (context.mounted) await gAlert(context, revoked && devicesCleared ? 'Déconnexion terminée' : 'Déconnexion incomplète', message);
   ref.read(authProvider.notifier).logout();
 }
 
@@ -1659,9 +1708,10 @@ class ResetStrength extends ConsumerWidget {
       RegExp('[0-9]').hasMatch(pw),
       RegExp('[^A-Za-z0-9]').hasMatch(pw),
     ];
-    const labels = ['8 caractères minimum', 'Une lettre majuscule', 'Un chiffre', 'Un caractère spécial (! @ # …)'];
+    const labels = ['8 caractères minimum', 'Une lettre majuscule', 'Un chiffre', 'Un caractère spécial (conseillé)'];
     final n = rules.where((e) => e).length;
     const green = Color(0xFF1F9D6B);
+    // « Bon » = les trois règles obligatoires sont remplies ; « Fort » n'est atteint qu'avec le caractère spécial, simplement conseillé.
     final level = pw.isEmpty ? '' : (n <= 1 ? 'Faible' : (n == 2 ? 'Moyen' : (n == 3 ? 'Bon' : 'Fort')));
     final levelColor = n <= 1 ? const Color(0xFFC0261B) : (n == 2 ? const Color(0xFFB36B00) : const Color(0xFF0F7A52));
     return Stack(children: [

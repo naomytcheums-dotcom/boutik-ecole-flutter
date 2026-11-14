@@ -4,7 +4,6 @@ import 'marche/marche_widgets.dart' show MarcheLink;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'auth.dart';
-import 'backend.dart';
 import 'console.dart';
 import 'entreprise.dart';
 import 'store.dart';
@@ -16,8 +15,11 @@ const _ink = Color(0xFF111015);
 const _grey = Color(0xFF57545F);
 TextStyle _st(double size, {FontWeight w = FontWeight.w500, Color c = _ink}) => TextStyle(fontFamily: 'PlusJakartaSans', fontSize: size, fontWeight: w, color: c);
 
-/// Annonces du compte (lecture protégée) : le serveur renvoie les siennes et les publiées ; le filtre garde celles dont on est vendeur.
-final myListingsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('listings', 'title,status,category,price,created_at,seller_id', order: 'created_at'));
+/// Annonces du compte : le serveur ne renvoie que celles dont le compte est le vendeur (filtre seller_id, reconstruit au changement de compte).
+final myListingsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('listings', 'title,status,category,price,created_at,seller_id', order: 'created_at', ownerColumn: 'seller_id', limit: 200));
+
+/// Projets dont le compte est le titulaire (nombre affiché sur son profil) ; null tant que la lecture n'a pas répondu, ou sans compte.
+final myProjectsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('projects', 'id', ownerColumn: 'owner_id', limit: 200));
 
 String _status(Object? s) => switch ('$s') { 'approved' => 'Publiée', 'draft' => 'Brouillon', 'removed' => 'Retirée', _ => '$s' };
 
@@ -64,8 +66,8 @@ class MyListings extends ConsumerWidget {
     if (ref.watch(authProvider.select((a) => a.current == null))) return note('Connectez-vous pour voir votre boutique.');
     final all = ref.watch(myListingsProvider);
     if (all == null) return note('Chargement…');
-    final uid = Backend.userId;
-    final mine = [for (final r in all) if (uid != null && '${r['seller_id']}' == uid) r];
+    if (ref.read(myListingsProvider.notifier).error) return note('Vos annonces ne peuvent pas être chargées pour le moment.');
+    final mine = all;
     return SizedBox(
       width: width,
       height: height,

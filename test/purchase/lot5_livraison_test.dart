@@ -44,9 +44,19 @@ void main() {
     expect(deliveryFee(true, (enabled: true, city: 'Douala', fee: 4000)), 4000);
   });
 
-  testWidgets('connecté : la livraison à domicile est toujours proposée, sans refus', (tester) async {
+  testWidgets('connecté : livraison à domicile refusée quand le réglage dit qu’elle n’est pas activée', (tester) async {
     Backend.ready = true;
     final c = await _pumpButton(tester, (enabled: false, city: 'Douala', fee: 5000), (context, ref) {
+      ref.read(selectedAddressProvider.notifier).set('a1');
+      chooseHomeDelivery(context, ref);
+    });
+    expect(find.textContaining('non proposée pour le moment : choisissez le retrait sur campus.'), findsOneWidget);
+    expect(c.read(homeDeliveryProvider), isFalse);
+  });
+
+  testWidgets('connecté : livraison à domicile retenue quand elle est activée', (tester) async {
+    Backend.ready = true;
+    final c = await _pumpButton(tester, (enabled: true, city: 'Douala', fee: 4000), (context, ref) {
       ref.read(selectedAddressProvider.notifier).set('a1'); // adresse déjà retenue : pas de navigation
       chooseHomeDelivery(context, ref);
     });

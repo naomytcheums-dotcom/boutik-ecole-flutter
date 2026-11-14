@@ -91,13 +91,15 @@ void main() {
       final c = ProviderContainer(overrides: [syncProvider.overrideWith(() => _Sync(SyncReport(at: DateTime.now(), favorites: true, messages: false, orders: true)))]);
       addTearDown(c.dispose);
       await _pump(tester, const G_150_1(), c);
-      expect(find.text('67%'), findsOneWidget);
-      expect(find.text('2 éléments sur 3 à jour'), findsOneWidget);
+      expect(find.text('50%'), findsOneWidget);
+      expect(find.text('1 élément sur 2 à jour'), findsOneWidget);
       expect(find.text('Synchronisation incomplète'), findsOneWidget);
       expect(find.text('Échec de la lecture'), findsOneWidget);
       expect(find.text('Perturbé'), findsOneWidget);
       expect(find.text('Jamais'), findsOneWidget, reason: 'aucune resynchronisation complète réussie');
       expect(find.text('72%'), findsNothing);
+      expect(find.text('Session en cours uniquement'), findsOneWidget);
+      expect(find.text('Conservé sur cet appareil'), findsNothing);
       expect(find.text('Aujourd’hui 10:24'), findsNothing);
     });
 
@@ -125,7 +127,7 @@ void main() {
       expect(syncTime(DateTime(2026, 11, 1, 8, 5), now), 'Aujourd’hui 08:05');
       expect(syncTime(DateTime(2026, 10, 31, 18, 5), now), '31/10 18:05');
       expect(const SyncReport(favorites: true, messages: true, orders: true).percent, 100);
-      expect(const SyncReport().upToDate, 1);
+      expect(const SyncReport().upToDate, 0);
     });
   });
 }

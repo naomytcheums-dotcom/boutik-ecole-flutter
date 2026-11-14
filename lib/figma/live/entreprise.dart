@@ -6,6 +6,7 @@ import 'auth.dart';
 import 'backend.dart';
 import 'console.dart';
 import 'home_live.dart';
+import 'project_cards.dart' show InnovationRegistry;
 import 'talent_pool.dart';
 import 'store.dart' show fcfa;
 
@@ -18,29 +19,61 @@ TextStyle _st(double size, {FontWeight w = FontWeight.w500, Color c = _ink}) => 
 
 /// Lecture directe d'une table protégée par RLS (le serveur ne renvoie que ce que le compte peut voir).
 class TableRows extends RpcRows {
-  TableRows(this.table, this.select, {this.order, this.ascending = false, this.neq}) : super('table:$table');
+  TableRows(this.table, this.select, {this.order, this.ascending = false, this.neq, this.eq = const {}, this.limit = 50, this.ownerColumn, this.anyOf, bool publicRead = false}) : super('table:$table', const {}, publicRead);
   final String table, select;
   final String? order;
   final bool ascending;
   final Map<String, Object>? neq;
 
+  /// Filtres d'égalité appliqués par le serveur (évite de lire les 50 dernières lignes de toute la table puis de filtrer dans l'application).
+  final Map<String, Object> eq;
+  final int limit;
+
+  /// Colonne qui désigne le propriétaire : la lecture est filtrée sur le compte connecté (lu à chaque lecture, la liste se reconstruit au changement de compte).
+  final String? ownerColumn;
+
+  /// Colonne et valeurs admises (une lecture serveur par valeur, résultats fusionnés et triés) : sert aux statuts publics multiples.
+  final (String, List<Object>)? anyOf;
+
+  @override
+  List<Map<String, dynamic>>? build() {
+    if (publicRead || ownerColumn != null) ref.watch(authProvider.select((a) => a.current?.email));
+    return super.build();
+  }
+
   @override
   Future<void> refresh() async {
-    final r = await Backend.rows(table, select, order: order, ascending: ascending, limit: 50);
+    final uid = Backend.userId;
+    if (ownerColumn != null && uid == null) {
+      error = false;
+      state = const [];
+      return;
+    }
+    final base = {...eq, if (ownerColumn != null) ownerColumn!: uid!};
+    final rows = <Map<String, dynamic>>[];
+    var failed = false;
+    for (final v in anyOf?.$2 ?? const <Object?>[null]) {
+      final r = await Backend.rows(table, select, eq: {...base, if (v != null) anyOf!.$1: v}, order: order, ascending: ascending, limit: limit);
+      if (r.error != null) failed = true;
+      rows.addAll(r.rows);
+    }
     if (!ref.mounted) return;
-    error = r.error != null;
-    state = [for (final x in r.rows) x];
+    if (anyOf != null && order != null) {
+      rows.sort((a, b) => ascending ? '${a[order]}'.compareTo('${b[order]}') : '${b[order]}'.compareTo('${a[order]}'));
+    }
+    error = failed;
+    state = rows.length > limit ? rows.sublist(0, limit) : rows;
   }
 }
 
 final companyProposalsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => RpcRows('company_proposals'));
 final companyMissionsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => RpcRows('company_missions'));
-final contestsListProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('contests', 'title,prize,reg_close_at,places,status,city', order: 'reg_close_at', ascending: true));
+final contestsListProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('contests', 'title,prize,reg_close_at,places,status,city', order: 'reg_close_at', ascending: true, publicRead: true));
 final quotesListProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('quote_requests', 'brief,budget,status,quote_amount,quote_delay_days,created_at', order: 'created_at'));
 
-final projectsCatalogProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('projects', 'title,summary,department,status,created_at', order: 'created_at'));
+final projectsCatalogProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('projects', 'title,summary,department,status,created_at', order: 'created_at', eq: const {'status': 'approved'}));
 final certificatesProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('certificates', 'subject_title,code,subject_kind,issued_at,revoked,holder_name', order: 'issued_at'));
-final campaignsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('campaigns', 'project,goal,status,kind,duration_days,created_at', order: 'created_at'));
+final campaignsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('campaigns', 'project,goal,status,kind,duration_days,created_at', order: 'created_at', publicRead: true));
 
 const _mois = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
 String dateCourte(Object? iso) {
@@ -48,7 +81,7 @@ String dateCourte(Object? iso) {
   return d == null ? '—' : '${d.day} ${_mois[d.month - 1]} ${d.year}';
 }
 
-String proposalStatus(Object? s) => switch ('$s') { 'accepted' => 'Acceptée', 'rejected' || 'declined' => 'Refusée', 'pending' => 'Reçue', _ => '$s' };
+String proposalStatus(Object? s) => switch ('$s') { 'accepted' => 'Acceptée', 'rejected' || 'declined' => 'Refusée', 'pending' || 'submitted' => 'Reçue', 'withdrawn' => 'Retirée', _ => '$s' };
 String missionStatus(Object? s) => switch ('$s') {
       'published' => 'Publié',
       'assigned' => 'Attribué',
@@ -79,7 +112,8 @@ class MobileList extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Text(t, textAlign: TextAlign.center, style: _st(13, c: _grey).copyWith(height: 1.5)),
         );
-    if (ref.watch(authProvider.select((a) => a.current == null))) return note('Connectez-vous pour voir cette liste.');
+    final isPublic = ref.read(provider.notifier).publicRead;
+    if (!isPublic && ref.watch(authProvider.select((a) => a.current == null))) return note('Connectez-vous pour voir cette liste.');
     final all = ref.watch(provider);
     if (all == null) return note('Chargement…');
     if (ref.read(provider.notifier).error) return note('Cette liste ne peut pas être chargée pour le moment.');
@@ -222,13 +256,7 @@ Widget projectsCatalogList() => MobileList(
       emptyText: 'Aucun projet validé pour le moment.\nLes projets des étudiants apparaissent ici après validation.',
     );
 
-Widget innovationRegistryList() => MobileList(
-      provider: certificatesProvider,
-      title: (r) => '${r['subject_title']}',
-      subtitle: (r) => 'Certificat n° ${r['code']} · délivré le ${dateCourte(r['issued_at'])}',
-      trailing: (r) => r['revoked'] == true ? 'Révoqué' : 'Certifié',
-      emptyText: 'Aucun certificat enregistré pour le moment.',
-    );
+Widget innovationRegistryList() => const InnovationRegistry(width: 342, height: 548);
 
 Widget campaignsListWidget() => MobileList(
       provider: campaignsProvider,

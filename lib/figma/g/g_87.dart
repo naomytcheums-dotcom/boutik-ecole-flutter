@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/project_pages.dart';
+import '../live/project_cards.dart' show innovationQueryProvider;
 import '../live/store.dart';
 import '../live/entreprise.dart';
 import '../live/l06.dart';
@@ -49,7 +50,7 @@ class G_87 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 249, 26, gText('Registre des innovations', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 48, GField(hint: 'Rechercher une innovation', size: 13.5, hintColor: Color(0xFF57545F), weight: 400, padL: 46)),
+      gP(24, 120, 342, 48, GField(hint: 'Rechercher une innovation', size: 13.5, hintColor: Color(0xFF57545F), weight: 400, padL: 46, initial: ref.read(innovationQueryProvider), onChanged: (v) => ref.read(innovationQueryProvider.notifier).set(v))),
       gP(40.5, 134.5, 19, 19, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(39.875, 133.875, 18.667, 18.667, gImg('assets/figma/v/50f467eb8a9b46.svg')),
       gP(50.721, 144.721, 9.404, 9.404, gImg('assets/figma/v/18d279137d73d9.svg')),
@@ -102,7 +103,7 @@ class G_87 extends ConsumerWidget {
       gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => demoContent ? gOpen(context, '278') : Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ProjectFormPage(kind: 'innovation')))),
       gP(113, 778, 164, 18, gText('Déclarer une innovation', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
-      if (!demoContent) gP(24, 156, 342, 560, innovationRegistryList()),
+      if (!demoContent) gP(24, 180, 342, 552, innovationRegistryList()),
     ]);
   }
 }

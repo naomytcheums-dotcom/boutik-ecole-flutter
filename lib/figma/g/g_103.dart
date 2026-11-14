@@ -56,7 +56,11 @@ class G_103 extends ConsumerWidget {
       gP(331.5, 61.5, 40, 40, const GGlassCircle()),
       gP(340.75, 70.75, 20.667, 20.667, gImg('assets/figma/v/eeff0eb6fd6e24.svg')),
       gP(353.308, 83.308, 9.942, 9.942, gImg('assets/figma/v/34172806399cca.svg')),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 77.8, 34, 'Anciens', 12.5, 600), GChip(109.8, 120, 77.8, 34, 'Mentors', 12.5, 500), GChip(195.6, 120, 77.8, 34, 'Groupes', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
+      Positioned.fill(child: GChoiceGroup(key: ValueKey('g103-${ref.watch(communityTabProvider)}'), chips: [GChip(24, 120, 77.8, 34, 'Anciens', 12.5, 600), GChip(109.8, 120, 77.8, 34, 'Mentors', 12.5, 500), GChip(195.6, 120, 77.8, 34, 'Groupes', 12.5, 500)], selected: ref.watch(communityTabProvider), selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17, onChanged: (i) {
+        // Mentors ouvre le réseau des mentors ; Groupes affiche la liste des communautés à la place des membres ; la pastille suit le choix
+        ref.read(communityTabProvider.notifier).set(i);
+        if (i == 1 && !demoContent) GoRouter.of(context).push('/mentors').then((_) => ref.read(communityTabProvider.notifier).set(0));
+      })),
       gP(36, 176, 50, 50, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [25, 25, 25, 25]), show: demoContent),
       gP(98, 180, 100, 17, gText(gm('Rodrigue Fotso', ''), 13.5, Color(0xFF111015), weight: 600), show: demoContent),
       gP(98, 202, 169, 14, gText(gm('Promo 2021 · Orange Camero…', ''), 11.5, Color(0xFF57545F)), show: demoContent),
@@ -101,7 +105,6 @@ class G_103 extends ConsumerWidget {
       if (!demoContent) gP(24, 566, 342, 130, const CommunitiesList(width: 342, height: 130)),
       if (!demoContent) gP(24, 706, 342, 40, gBox(color: Color(0xFF111015), radii: [20, 20, 20, 20]), tap: () { createCommunityFlow(context, ref); }),
       if (!demoContent) gP(24, 706, 342, 40, Center(child: Text('Créer une communauté', style: TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFFFFFFFF))))),
-      if (!demoContent) gP(24, 190, 342, 120, Center(child: gText('Le réseau des anciens n’est pas encore disponible. Rejoignez une communauté ci-dessous pour échanger.', 12.5, Color(0xFF57545F), wrap: true, align: TextAlign.center))),
       gP(125, 832, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
       gP(47.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '19')),
@@ -122,8 +125,7 @@ class G_103 extends ConsumerWidget {
       gTap(53.5, 470, 63, 32, () { if (demoContent) { gOpen(context, '105'); } else { GoRouter.of(context).push('/communautes'); } }), // parcours 103 -> 105 ; connecté : explorer les communautés
       if (demoContent) gTap(255.2, 190, 96.8, 22, () { gOpen(context, '52'); }), // audit 01/11 : « Se connecter » n'avait aucun effet
       if (demoContent) gTap(255.2, 256, 96.8, 22, () { gOpen(context, '52'); }), // audit 01/11 : « Se connecter » n'avait aucun effet
-      if (!demoContent) gP(24, 172, 342, 190, const CommunityMembers(width: 342, height: 190)),
-      if (!demoContent) gTap(109.8, 120, 77.8, 34, () { GoRouter.of(context).push('/mentors'); }), // onglet Mentors : réseau des mentors
+      if (!demoContent) gP(24, 172, 342, 190, ref.watch(communityTabProvider) == 2 ? const CommunitiesList(width: 342, height: 190) : const CommunityMembers(width: 342, height: 190)),
     ]);
   }
 }

@@ -56,7 +56,7 @@ class G_78 extends ConsumerWidget {
       gP(331.5, 61.5, 40, 40, const GGlassCircle()),
       gP(340.75, 70.75, 20.667, 20.667, gImg('assets/figma/v/eeff0eb6fd6e24.svg')),
       gP(353.308, 83.308, 9.942, 9.942, gImg('assets/figma/v/34172806399cca.svg')),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 55.6, 34, 'Tous', 12.5, 600), GChip(87.6, 120, 100, 34, 'Prototypes', 12.5, 500), GChip(195.6, 120, 92.6, 34, 'Recherche', 12.5, 500), GChip(296.2, 120, 107.4, 34, 'Financement', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17, onChanged: (i) { ref.read(projectTabProvider.notifier).set(i); })),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 55.6, 34, 'Tous', 12.5, 600), GChip(87.6, 120, 84, 34, 'Prototypes', 12.5, 500), GChip(179.6, 120, 80, 34, 'Recherche', 12.5, 500), GChip(267.6, 120, 90, 34, 'Financement', 12.5, 500)], selected: ref.read(projectTabProvider), selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17, onChanged: (i) { ref.read(projectTabProvider.notifier).set(i); })),
       gP(24, 168, 342, 170, gBox(image: 'assets/figma/img/fbb2092962d6dc7886c56df2e6f5a1cfb07c25bb.png', fit: BoxFit.cover, radii: [24, 24, 24, 24]), show: demoContent),
       gP(24, 168, 342, 170, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [24, 24, 24, 24]), show: demoContent),
       gP(42, 276, 309, 23, gText(gm('Drone éducatif connecté', ''), 18, Color(0xFFFFFFFF), weight: 700, wrap: true), show: demoContent),
@@ -111,7 +111,7 @@ class G_78 extends ConsumerWidget {
       if (demoContent) gTap(24, 590, 342, 62, () { final l = ref.read(visibleProjectsProvider); if (l.length > 3) { ref.read(selectedProjectProvider.notifier).set(l[3].title); gOpen(context, '79'); } }),
       if (demoContent) gTap(295.5, 346, 61, 32, () { gOpen(context, '87'); }), // audit 01/11 : « Voir tout » n'avait aucun effet
       if (!demoContent) gP(24, 214, 342, 482, const ProjectCards(width: 342, height: 482)),
-      if (!demoContent) gP(24, 162, 342, 44, TpButton('Soumettre un projet ou une innovation', () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const MyProjectsPage())), compact: true, icon: Icons.add_rounded)),
+      if (!demoContent) gP(24, 162, 342, 44, TpButton('Soumettre un projet ou une innovation', () async { if (!await requireLogin(context, ref, 'soumettre un projet') || !context.mounted) return; Navigator.of(context).push(MaterialPageRoute(builder: (_) => const MyProjectsPage())); }, compact: true, icon: Icons.add_rounded)),
     ]);
   }
 }

@@ -169,7 +169,7 @@ class _KelaBriefState extends ConsumerState<KelaBrief> {
   }
 }
 
-final myMissionDraftsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('missions', 'title,status,created_at,client_id', order: 'created_at'));
+final myMissionDraftsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('missions', 'title,status,created_at,client_id', order: 'created_at', ownerColumn: 'client_id', limit: 100));
 
 class KelaRecent extends ConsumerWidget {
   const KelaRecent({super.key, this.width = 342, this.height = 560});

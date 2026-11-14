@@ -1,3 +1,5 @@
+import 'package:boutik_ecole/figma/live/backend.dart';
+import 'package:boutik_ecole/figma/live/litiges_screens.dart' show DisputesScreen;
 import 'package:boutik_ecole/figma/live/marche/marche_appels.dart';
 import 'package:boutik_ecole/figma/live/marche/marche_data.dart' show mFcfa;
 import 'package:flutter/material.dart';
@@ -43,6 +45,26 @@ void main() {
     expect(find.text('Génie civil'), findsOneWidget);
     expect(find.text('Génie informatique'), findsOneWidget);
     expect(find.text('Pompe solaire'), findsOneWidget);
-    expect(find.textContaining('Projet validé par l’IUT de Douala · Awa M.'), findsOneWidget);
+    expect(find.textContaining('Projet validé par l’établissement · Awa M.'), findsOneWidget);
+  });
+
+  testWidgets('projets de l’IUT : le nom de l’établissement est affiché quand le serveur le renvoie', (t) async {
+    await _pump(t, const ProjetsIutScreen(), overrides: [
+      marcheIutProjectsProvider.overrideWith((ref) async => [
+            {'id': 'a', 'title': 'Pompe solaire', 'summary': '', 'department': 'Génie civil', 'owner': 'Awa M.', 'owner_id': 'u1', 'institution': 'ENSET de Douala'},
+          ]),
+    ]);
+    expect(find.textContaining('Projet validé par ENSET de Douala · Awa M.'), findsOneWidget);
+  });
+
+  testWidgets('visiteur : appels à entreprises et litiges invitent à se connecter', (t) async {
+    Backend.ready = true;
+    addTearDown(() => Backend.ready = false);
+    await _pump(t, const AppelsScreen());
+    expect(find.text('Connexion requise'), findsOneWidget);
+    expect(find.text('Se connecter'), findsOneWidget);
+    await _pump(t, const DisputesScreen());
+    expect(find.text('Connexion requise'), findsOneWidget);
+    expect(find.text('Se connecter'), findsOneWidget);
   });
 }

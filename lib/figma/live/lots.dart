@@ -8,9 +8,11 @@ import 'package:supabase_flutter/supabase_flutter.dart' show FactorStatus;
 
 import '../gen.dart';
 import '../nav.dart';
+import 'access.dart' show roleKey;
 import 'auth.dart';
 import 'backend.dart';
 import 'download_stub.dart' if (dart.library.js_interop) 'download_web.dart';
+import 'project_pages.dart' show projectProgress;
 import 'seller.dart';
 import 'share.dart';
 import 'store.dart' show ordersProvider, viewedOrderProvider;
@@ -435,7 +437,29 @@ Future<void> reviewCampaignsDialog(BuildContext context, WidgetRef ref) =>
     _reviewQueue(context, ref, 'campaigns', 'id,project,goal,duration_days,presentation,status', 'review_campaign', 'Campagnes à valider', (c) => '${c['project']}', (c) => 'Objectif ${_money(c['goal'])} · ${c['duration_days']} j');
 
 Future<void> reviewProjectsDialog(BuildContext context, WidgetRef ref) =>
-    _reviewQueue(context, ref, 'projects', 'id,title,summary,department,status', 'review_project', 'Projets à examiner', (p) => '${p['title']}', (p) => '${p['summary'] ?? ''}');
+    _reviewQueue(context, ref, 'projects', 'id,title,summary,department,status,kind,details,media', 'review_project', 'Projets à examiner', (p) => '${p['title']}', _projectBrief);
+
+/// Fiche de décision d'un projet soumis : tout ce que le relecteur doit lire avant de valider ou refuser (les contacts n'y figurent pas).
+String _projectBrief(Map<String, dynamic> p) {
+  final d = p['details'] is Map ? Map<String, dynamic>.from(p['details'] as Map) : <String, dynamic>{};
+  String g(String k) => '${d[k] ?? ''}'.trim();
+  final team = [for (final m in (d['team'] as List? ?? const [])) if (m is Map && '${m['name']}'.trim().isNotEmpty) '${m['name']}${'${m['role'] ?? ''}'.isEmpty ? '' : ' (${m['role']})'}'];
+  final links = [
+    for (final (label, key) in const [('Prototype', 'prototype_url'), ('Démonstration', 'demo_url'), ('Documentation', 'doc_url'), ('Vidéo', 'video_url')])
+      if (g(key).isNotEmpty) '$label : ${g(key)}',
+  ];
+  final medias = p['media'] is List ? (p['media'] as List).length : 0;
+  return [
+    [if ('${p['kind']}' == 'innovation') 'Innovation' else 'Projet', if ('${p['department'] ?? ''}'.isNotEmpty) '${p['department']}'].join(' · '),
+    if ('${p['summary'] ?? ''}'.trim().isNotEmpty) '${p['summary']}'.trim(),
+    if (g('problem').isNotEmpty) 'Problème : ${g('problem')}',
+    if (g('solution').isNotEmpty) 'Solution : ${g('solution')}',
+    if (projectProgress[g('progress')] != null) 'Avancement : ${projectProgress[g('progress')]}',
+    if (team.isNotEmpty) 'Équipe : ${team.join(', ')}',
+    ...links,
+    if (medias > 0) '$medias visuel${medias > 1 ? 's' : ''} joint${medias > 1 ? 's' : ''}',
+  ].join('\n');
+}
 
 Future<void> _reviewQueue(BuildContext context, WidgetRef ref, String table, String select, String fn, String title, String Function(Map<String, dynamic>) line, String Function(Map<String, dynamic>) sub) async {
   if (!await _ready(context, ref, 'valider')) return;
@@ -449,6 +473,10 @@ Future<void> _reviewQueue(BuildContext context, WidgetRef ref, String table, Str
       final v = await formDialog(context, 'Motif du refus', [('Motif', '')], submit: 'Refuser');
       if (v == null) return false;
       note = v.first;
+      if (note.length < 5) {
+        if (context.mounted) await gAlert(context, 'Motif obligatoire', 'Expliquez le refus en 5 caractères minimum : le porteur le lira.');
+        return false;
+      }
     }
     if (!context.mounted) return false;
     final r = await _run(context, fn, {'p_id': x['id'], 'p_approve': ok, 'p_note': note});
@@ -539,10 +567,10 @@ Future<void> saveService(BuildContext context, WidgetRef ref, {required bool sub
 Future<void> saveLive(BuildContext context, WidgetRef ref, {required bool schedule}) async {
   if (!await _ready(context, ref, 'programmer un live')) return;
   if (!context.mounted) return;
-  final r = await _run(context, 'save_live', {
-    'p_title': field(ref, 'l_title', 'Fabrication de la lampe en bois recyclé'), 'p_starts_at': field(ref, 'l_date', 'Jeudi 29 oct. · 16 h'),
-    'p_product': 'Lampe en bois recyclé', 'p_schedule': schedule,
-  });
+  final title = field(ref, 'l_title'), when = field(ref, 'l_date');
+  if (title.length < 3 || title.length > 120) return gAlert(context, 'Live incomplet', 'Indiquez le titre du live (3 à 120 caractères).');
+  if (schedule && when.length < 3) return gAlert(context, 'Live incomplet', 'Indiquez la date et l’heure du live pour le programmer.');
+  final r = await _run(context, 'save_live', {'p_title': title, 'p_starts_at': when, 'p_product': field(ref, 'l_product'), 'p_schedule': schedule});
   if (r.ok && context.mounted) gToast(context, schedule ? 'Live programmé : il apparaît dans « Prochains lives ».' : 'Brouillon enregistré.');
 }
 
@@ -559,17 +587,33 @@ final pendingLinksProvider = NotifierProvider<PendingLinks, List<Map<String, Str
 Future<void> addProfileLink(BuildContext context, WidgetRef ref) async {
   final v = await formDialog(context, 'Ajouter un lien', [('Nom (portfolio, site, Drive…)', ''), ('Adresse https://', 'https://')], submit: 'Ajouter');
   if (v == null || !context.mounted) return;
-  if (!RegExp(r'^https://\S{3,300}$').hasMatch(v[1])) return gAlert(context, 'Lien invalide', 'Une adresse commençant par https:// est attendue.');
-  ref.read(pendingLinksProvider.notifier).add(v[0].isEmpty ? 'Lien' : v[0], v[1]);
+  final url = v[1].trim(), label = v[0].trim();
+  if (!RegExp(r'^https://[^\s<>"]+$').hasMatch(url) || url.length < 12 || url.length > 300) return gAlert(context, 'Lien invalide', 'Une adresse commençant par https:// est attendue (12 à 300 caractères, sans espace).');
+  if (label.length > 60) return gAlert(context, 'Nom trop long', 'Le nom du lien ne doit pas dépasser 60 caractères.');
+  ref.read(pendingLinksProvider.notifier).add(label.isEmpty ? 'Lien' : label, url);
   gToast(context, 'Lien ajouté : pensez à enregistrer.');
 }
 
+/// Enregistre les liens ajoutés EN PLUS de ceux du profil : la fonction serveur remplace toute la liste, les liens déjà enregistrés sont donc relus d'abord.
 Future<void> saveProfileLinks(BuildContext context, WidgetRef ref) async {
   final links = ref.read(pendingLinksProvider);
   if (links.isEmpty) return gAlert(context, 'Aucun lien', 'Ajoutez d’abord un lien avec « Ajouter un autre lien ».');
   if (!await _ready(context, ref, 'enregistrer vos liens')) return;
   if (!context.mounted) return;
-  final r = await _run(context, 'save_profile_links', {'p_links': links});
+  final uid = Backend.userId;
+  final current = uid == null ? null : await Backend.rows('profiles', 'links', eq: {'id': uid}, limit: 1);
+  if (!context.mounted) return;
+  if (current == null || current.error != null) return gAlert(context, 'Liens non enregistrés', 'Vos liens actuels n’ont pas pu être lus : rien n’a été modifié pour ne pas les écraser. Réessayez.');
+  final saved = current.rows.isEmpty ? const [] : (current.rows.first['links'] as List? ?? const []);
+  final merged = <Map<String, String>>[];
+  for (final l in [...saved, ...links]) {
+    if (l is! Map) continue;
+    final url = '${l['url'] ?? ''}';
+    if (url.isEmpty || merged.any((m) => m['url'] == url)) continue;
+    merged.add({'label': '${l['label'] ?? ''}', 'url': url});
+  }
+  if (merged.length > 12) return gAlert(context, 'Trop de liens', 'Un profil peut afficher 12 liens au maximum (${saved.length} déjà enregistrés).');
+  final r = await _run(context, 'save_profile_links', {'p_links': merged});
   if (r.ok && context.mounted) {
     ref.read(pendingLinksProvider.notifier).clear();
     gToast(context, 'Liens enregistrés sur votre profil.');
@@ -877,6 +921,11 @@ String? acceptedMime(String name) => _fileMimes[name.split('.').last.toLowerCase
 /// Choix, contrôle (type, taille), dépôt dans le dossier de la personne puis enregistrement serveur.
 Future<String?> pickAndUpload(BuildContext context, WidgetRef ref, String scope, String? refId) async {
   if (!await _ready(context, ref, 'déposer un fichier')) return null;
+  // La médiathèque est réservée au département et à l'administration : le refus est annoncé avant tout dépôt.
+  if (scope == 'media' && !const {'dept', 'admin'}.contains(roleKey(ref.read(authProvider).current))) {
+    if (context.mounted) await gAlert(context, 'Fichier refusé', 'Médiathèque réservée au département.');
+    return null;
+  }
   final picked = await FilePicker.pickFiles();
   if (picked.isEmpty || !context.mounted) return null;
   final f = picked.first;

@@ -144,7 +144,10 @@ class _ProjectFormPageState extends ConsumerState<ProjectFormPage> {
     if (f == null || !mounted) return;
     setState(() => uploading = true);
     final p = await tpUpload(context, 'project-media', 'projects', f);
-    if (!mounted) return;
+    if (!mounted) {
+      if (p != null) Backend.removeFile('project-media', p);
+      return;
+    }
     setState(() => uploading = false);
     if (p == null) return;
     newPaths.add(p);
@@ -185,7 +188,7 @@ class _ProjectFormPageState extends ConsumerState<ProjectFormPage> {
         );
         return false;
       }
-      if (!await tpConfirm(context, 'Publier ce $kind ?', 'Il sera envoyé à votre établissement pour examen. Pendant l’examen, vous ne pourrez plus le modifier.', yes: 'Publier')) return false;
+      if (!await tpConfirm(context, kind == 'innovation' ? 'Publier cette innovation ?' : 'Publier ce projet ?', 'Il sera envoyé à votre établissement pour examen. Pendant l’examen, vous ne pourrez plus le modifier.', yes: 'Publier')) return false;
     }
     setState(() => busy = true);
     final r = await Backend.rpc('project_save_full', {
@@ -195,7 +198,7 @@ class _ProjectFormPageState extends ConsumerState<ProjectFormPage> {
     if (!mounted) return false;
     setState(() => busy = false);
     if (r.error != null) {
-      gToast(context, Backend.userMessage(r.error!));
+      gToast(context, r.error!.toLowerCase().contains('trop de médias') ? 'Trop de médias : retirez une image.' : Backend.userMessage(r.error!));
       return false;
     }
     id = '${r.data}';
@@ -204,7 +207,10 @@ class _ProjectFormPageState extends ConsumerState<ProjectFormPage> {
     }
     removedPaths.clear();
     newPaths.clear();
-    if (publish) status = 'submitted';
+    // le serveur décide du statut (un projet refusé repasse en brouillon) : on le relit plutôt que de le deviner
+    final fresh = await Backend.rows('projects', 'status', eq: {'id': id!}, limit: 1);
+    if (!mounted) return true;
+    setState(() => status = fresh.rows.isNotEmpty ? '${fresh.rows.first['status']}' : (publish ? 'submitted' : (status == 'rejected' ? 'draft' : status)));
     gToast(context, publish ? 'Envoyé pour examen. Vous serez notifié de la décision.' : 'Brouillon enregistré');
     return true;
   }
@@ -218,6 +224,7 @@ class _ProjectFormPageState extends ConsumerState<ProjectFormPage> {
     for (final m in media) {
       Backend.removeFile('project-media', m['path']!);
     }
+    newPaths.clear();
     gToast(context, 'Brouillon supprimé');
     Navigator.of(context).pop(true);
   }
@@ -282,12 +289,22 @@ class _ProjectFormPageState extends ConsumerState<ProjectFormPage> {
       tpSection('Contacts', hint: 'Au moins un moyen de contact est nécessaire pour publier.'),
       TpField('E-mail de contact', email, keyboard: TextInputType.emailAddress, maxLength: 120),
       TpField('Téléphone de contact', phone, keyboard: TextInputType.phone, maxLength: 30),
+      tpNote('Ces coordonnées sont visibles des comptes connectés qui consultent la fiche publiée.'),
       tpSection('Visibilité et statut'),
       TpChoice('Visibilité une fois publié', projectVisibility, visibility, (v) => setState(() => visibility = v)),
       Text('Statut : ${projectStatusLabels[status] ?? status}', style: tpSt(13, w: FontWeight.w700, c: status == 'rejected' ? tpRed : tpViolet)),
       if (status == 'rejected' && '${widget.existing?['review_note'] ?? ''}'.isNotEmpty) tpNote('Motif du refus : ${widget.existing!['review_note']}', c: tpRed),
     ];
-    return TpPage(
+    return PopScope(
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) return;
+        // médias envoyés pendant la session et jamais enregistrés : on ne laisse pas de fichiers orphelins
+        for (final p in newPaths) {
+          Backend.removeFile('project-media', p);
+        }
+        newPaths.clear();
+      },
+      child: TpPage(
       title: kind == 'innovation' ? 'Déclarer une innovation' : 'Soumettre un projet',
       subtitle: id == null ? 'Nouvelle fiche' : projectStatusLabels[status],
       actions: [TpRound(icon: Icons.folder_open_rounded, label: 'Mes projets', onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const MyProjectsPage())))],
@@ -305,10 +322,10 @@ class _ProjectFormPageState extends ConsumerState<ProjectFormPage> {
                         })),
             ]),
       children: [
-        ...form,
+        IgnorePointer(ignoring: locked, child: Opacity(opacity: locked ? .6 : 1, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: form))),
         if (id != null && !locked) Padding(padding: const EdgeInsets.only(top: 16), child: TpButton('Supprimer ce brouillon', _delete, danger: true, compact: true)),
       ],
-    );
+    ));
   }
 }
 
@@ -341,12 +358,20 @@ class _MyProjectsPageState extends ConsumerState<MyProjectsPage> {
   }
 
   Future<void> _open([Map<String, dynamic>? p, String kind = 'projet']) async {
-    final ok = await Navigator.of(context).push<bool>(MaterialPageRoute(builder: (_) => ProjectFormPage(existing: p, kind: kind)));
-    if (ok == true || p != null) _load();
+    await Navigator.of(context).push<bool>(MaterialPageRoute(builder: (_) => ProjectFormPage(existing: p, kind: kind)));
+    if (mounted) _load();
   }
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(authProvider.select((a) => a.current?.email), (_, now) {
+      if (now != null) _load();
+    });
+    if (ref.watch(authProvider.select((a) => a.current == null))) {
+      return TpPage(title: 'Mes projets', children: [
+        TpEmpty(title: 'Connexion requise', text: 'Connectez-vous avec votre compte étudiant pour voir et soumettre vos projets.', icon: Icons.lock_outline_rounded, action: 'Se connecter', onAction: () => requireLogin(context, ref, 'soumettre un projet')),
+      ]);
+    }
     final l = items;
     return TpPage(
       title: 'Mes projets',

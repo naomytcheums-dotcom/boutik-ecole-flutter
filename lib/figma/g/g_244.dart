@@ -2,6 +2,7 @@
 // ignore_for_file: camel_case_types, prefer_is_empty, prefer_interpolation_to_compose_strings, unnecessary_string_interpolations, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart' show GoRouterState;
 import '../gen.dart';
 import '../nav.dart';
 import '../live/notifs.dart' show NotifBadge;
@@ -145,7 +146,16 @@ class G_244 extends ConsumerWidget {
       if (demoFeed) gTap(288, 566, 80, 26, () { uiFollow(context); }), // audit 01/11 : « S’abonner » n'avait aucun effet
       if (demoFeed) gTap(16.5, 639, 59, 32, () { gOpen(context, '252'); }), // audit 01/11 : « Voir plus » n'avait aucun effet
       if (!demoFeed) gP(0, 100, 390, 92, const StoriesBar()),
-      if (!demoFeed) gP(20, 248, 350, 520, const CircleFeed(width: 350, height: 520)),
+      if (!demoFeed) gP(20, 248, 350, 520, CircleFeed(width: 350, height: 520, focusPostId: _focusPost(context))),
     ]);
+  }
+
+  /// Publication visée par un lien partagé (`/#/s/244?post=<id>`) ; vide si le paramètre est absent.
+  static String _focusPost(BuildContext context) {
+    try {
+      return GoRouterState.of(context).uri.queryParameters['post']?.trim() ?? '';
+    } catch (_) {
+      return '';
+    }
   }
 }

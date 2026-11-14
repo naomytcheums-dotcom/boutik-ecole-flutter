@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart' hide Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../gen.dart' show gToast;
 import '../i18n.dart' show Text;
 import '../nav.dart' show gBack, gOpen;
 import 'auth.dart';
+import 'backend.dart';
 import 'marche/marche_data.dart' show kGrey, kInk, kViolet, mst;
 import 'social_posts.dart' show PostComposerBody;
 import 'tp_ui.dart' show TpRound;
@@ -20,6 +20,22 @@ class PublishPage extends ConsumerStatefulWidget {
 
 class _PublishPageState extends ConsumerState<PublishPage> {
   String _kind = 'post';
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _guard());
+  }
+
+  /// Un visiteur ne remplit pas un formulaire pour rien : le dialogue « Un compte est nécessaire » s'ouvre tout de suite. S'il renonce, retour à
+  /// l'écran précédent ; s'il choisit de se connecter, l'écran de connexion est déjà par-dessus et cette page reste en dessous.
+  Future<void> _guard() async {
+    if (!mounted || !Backend.ready || ref.read(authProvider).current != null) return;
+    final route = ModalRoute.of(context);
+    await requireLogin(context, ref, 'publier');
+    if (!mounted || ref.read(authProvider).current != null) return;
+    if (route?.isCurrent ?? true) gBack(context);
+  }
 
   Widget _chip(String id, IconData icon, String label, VoidCallback onTap) {
     final on = _kind == id;
@@ -45,6 +61,7 @@ class _PublishPageState extends ConsumerState<PublishPage> {
   Widget build(BuildContext context) {
     final me = ref.watch(authProvider.select((a) => a.current));
     final isSeller = me != null && me.role == 1 && me.staff.isEmpty;
+    final visitor = Backend.ready && me == null;
     return Scaffold(
       backgroundColor: const Color(0xFFEEE8F3),
       body: Container(
@@ -65,16 +82,29 @@ class _PublishPageState extends ConsumerState<PublishPage> {
               padding: const EdgeInsets.fromLTRB(13, 8, 13, 8),
               child: Row(children: [
                 _chip('post', Icons.grid_view_rounded, 'Publication', () => setState(() => _kind = 'post')),
-                _chip('reel', Icons.movie_creation_outlined, 'Reel', () {
-                  setState(() => _kind = 'reel');
-                  gToast(context, 'Ajoutez une vidéo : elle apparaît aussi dans Reels.');
-                }),
+                _chip('reel', Icons.movie_creation_outlined, 'Reel', () => setState(() => _kind = 'reel')),
                 _chip('live', Icons.sensors, 'Live', () => gOpen(context, 'L1')),
                 if (isSeller) _chip('shop', Icons.storefront_outlined, 'Boutique', () => gOpen(context, '58')),
               ]),
             ),
+            if (_kind == 'reel') Padding(padding: const EdgeInsets.fromLTRB(20, 0, 20, 4), child: Text('Une vidéo publiée apparaît aussi dans Reels.', style: mst(12, c: kGrey))),
             Expanded(
               child: ListView(padding: const EdgeInsets.fromLTRB(16, 4, 16, 40), children: [
+                if (visitor) ...[
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(24)),
+                    child: Column(children: [
+                      Text('Un compte est nécessaire pour publier.', textAlign: TextAlign.center, style: mst(14, w: FontWeight.w700)),
+                      const SizedBox(height: 14),
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () => requireLogin(context, ref, 'publier'),
+                        child: Container(height: 48, alignment: Alignment.center, decoration: BoxDecoration(color: kInk, borderRadius: BorderRadius.circular(100)), child: Text('Se connecter ou créer un compte', style: mst(13.5, w: FontWeight.w700, c: Colors.white))),
+                      ),
+                    ]),
+                  ),
+                ] else ...[
                 const PostComposerBody(),
                 const SizedBox(height: 14),
                 GestureDetector(
@@ -96,6 +126,7 @@ class _PublishPageState extends ConsumerState<PublishPage> {
                     ]),
                   ),
                 ),
+                ],
               ]),
             ),
           ]),

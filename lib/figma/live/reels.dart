@@ -1,5 +1,4 @@
 import '../gdata.dart' show gNetImage;
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -134,7 +133,35 @@ List<Reel> rankReels(List<Reel> reels, DateTime now, {FeedSignals signals = cons
 
 String compactCount(int n) => n >= 1000 ? '${(n / 1000).toStringAsFixed(1).replaceAll('.0', '').replaceAll('.', ',')} k' : '$n';
 
+/// Vrai quand la lecture du fil a échoué alors qu'aucune publication n'est encore affichée (l'écran propose « Réessayer »).
+class ReelsLoadError extends Notifier<bool> {
+  @override
+  bool build() => false;
+  void set(bool v) => state = v;
+}
+
+final reelsLoadErrorProvider = NotifierProvider<ReelsLoadError, bool>(ReelsLoadError.new);
+
 class ReelsNotifier extends Notifier<List<Reel>?> {
+  static const pageSize = 30, maxLimit = 60;
+  int _limit = pageSize;
+
+  /// Vrai quand la première page est pleine et qu'une lecture plus large (60 au plus, limite du serveur) est possible.
+  bool get canLoadMore => _limit < maxLimit && (state?.length ?? 0) >= _limit;
+
+  /// « Voir plus » : relit le fil avec la limite supérieure ; en cas d'échec, la limite précédente est rétablie.
+  Future<void> loadMore() async {
+    final before = _limit;
+    _limit = maxLimit;
+    if (!await refresh()) _limit = before;
+  }
+
+  /// « Réessayer » après un échec de chargement : repasse à l'état « chargement » puis relit le fil.
+  Future<bool> retry() {
+    ref.read(reelsLoadErrorProvider.notifier).set(false);
+    return refresh();
+  }
+
   /// Met à jour une publication du fil sans le recharger (cœur, enregistrement : réponse immédiate).
   void patch(String id, Reel Function(Reel) change) {
     final l = state;
@@ -156,13 +183,19 @@ class ReelsNotifier extends Notifier<List<Reel>?> {
     return null;
   }
 
-  Future<void> refresh() async {
+  /// Relit le fil. Renvoie faux si la lecture a échoué ; sans publication déjà affichée, l'échec est signalé par `reelsLoadErrorProvider`.
+  Future<bool> refresh() async {
+    const wait = Duration(seconds: 20);
     // publie d'abord les publications programmées arrivées à échéance (sans attendre la minute suivante du planificateur)
-    if (ref.read(authProvider).current != null) await Backend.rpc('publish_due_posts', const {});
-    var r = await Backend.rpc('circle_feed', {'p_limit': 30});
+    if (ref.read(authProvider).current != null) await Backend.rpc('publish_due_posts', const {}, timeout: wait);
+    var r = await Backend.rpc('circle_feed', {'p_limit': _limit}, timeout: wait);
     // serveur pas encore migré (migration 20261110000000) : repli sur l'ancien fil de médias
-    if (r.error != null || r.data is! List) r = await Backend.rpc('reels_feed', {'p_limit': 20});
-    if (r.error != null || r.data is! List || !ref.mounted) return;
+    if (r.error != null || r.data is! List) r = await Backend.rpc('reels_feed', {'p_limit': 20}, timeout: wait);
+    if (!ref.mounted) return false;
+    if (r.error != null || r.data is! List) {
+      if (state == null) ref.read(reelsLoadErrorProvider.notifier).set(true);
+      return false;
+    }
     String url(String p) {
       try {
         return Supabase.instance.client.storage.from('post-media').getPublicUrl(p);
@@ -171,7 +204,13 @@ class ReelsNotifier extends Notifier<List<Reel>?> {
       }
     }
 
-    final reels = [for (final x in r.data as List) Reel.fromRow(x as Map, url)];
+    final List<Reel> reels;
+    try {
+      reels = [for (final x in r.data as List) Reel.fromRow(x as Map, url)];
+    } catch (_) {
+      if (state == null) ref.read(reelsLoadErrorProvider.notifier).set(true);
+      return false;
+    }
     // signaux réels de la personne : créateurs suivis, centres d'intérêt et affinités déduits de ce qu'elle a aimé ou enregistré
     final following = ref.read(followingIdsProvider) ?? const <String>{};
     final interests = <String, double>{}, affinity = <String, double>{};
@@ -183,8 +222,10 @@ class ReelsNotifier extends Notifier<List<Reel>?> {
       }
       if (r.authorId.isNotEmpty) affinity[r.authorId] = ((affinity[r.authorId] ?? 0) + 0.3).clamp(0.0, 1.0);
     }
+    ref.read(reelsLoadErrorProvider.notifier).set(false);
     state = rankReels(reels, DateTime.now(), signals: FeedSignals(followed: following, interests: interests, affinity: affinity));
     ref.read(reelIndexProvider.notifier).clamp(reels.length);
+    return true;
   }
 }
 
@@ -371,13 +412,13 @@ Future<void> deleteReelComment(BuildContext context, WidgetRef ref, String id) a
 }
 
 /// Cœur : un appui enregistre ou retire la réaction, tout de suite (mise à jour optimiste), sans jamais quitter l'écran.
-/// Sans compte, un message bref explique comment réagir : aucune redirection. Si le serveur refuse, l'état précédent est rétabli.
+/// Sans compte, le dialogue « Un compte est nécessaire » propose de se connecter. Si le serveur refuse, l'état précédent est rétabli.
 Future<void> toggleLike(BuildContext context, WidgetRef ref, Reel r) async {
   if (!Backend.ready) {
     ref.read(reelsProvider.notifier).patch(r.id, (x) => x.copyWith(liked: !x.liked, likes: x.liked ? (x.likes - 1).clamp(0, 1 << 30) : x.likes + 1));
     return;
   }
-  if (ref.read(authProvider).current == null) return gToast(context, 'Connectez-vous pour réagir à une publication.');
+  if (!await requireLogin(context, ref, 'réagir à une publication') || !context.mounted) return;
   final before = ref.read(reelsProvider)?.where((x) => x.id == r.id).firstOrNull ?? r;
   final nowLiked = !before.liked;
   ref.read(reelsProvider.notifier).patch(r.id, (x) => x.copyWith(liked: nowLiked, likes: nowLiked ? x.likes + 1 : (x.likes - 1).clamp(0, 1 << 30)));
@@ -388,60 +429,6 @@ Future<void> toggleLike(BuildContext context, WidgetRef ref, Reel r) async {
   } else if (res.data is bool && res.data != nowLiked) {
     ref.read(reelsProvider.notifier).patch(r.id, (x) => x.copyWith(liked: res.data as bool));
   }
-}
-
-Future<void> likeCurrentReel(BuildContext context, WidgetRef ref) async {
-  final r = ref.read(currentReelProvider);
-  if (r == null) return;
-  await toggleLike(context, ref, r);
-}
-
-Future<void> reportCurrentReel(BuildContext context, WidgetRef ref) async {
-  final r = ref.read(currentReelProvider);
-  if (r == null) return;
-  if (!await requireLogin(context, ref, 'signaler une publication') || !context.mounted) return;
-  final why = await askText(context, title: 'Signaler', body: 'Pourquoi cette publication pose-t-elle problème ?', hint: 'Contenu trompeur…', ok: 'Signaler', min: 3);
-  if (why == null || !context.mounted) return;
-  final res = await Backend.rpc('report_post', {'p_post': r.id, 'p_reason': why});
-  if (context.mounted) res.error != null ? gAlert(context, 'Signalement impossible', Backend.userMessage(res.error!)) : gToast(context, 'Signalement transmis à la modération');
-}
-
-/// 250 « Publier » : choix d'une vidéo (60 s, 50 Mo, MP4/MOV) ou d'une image, légende, dépôt dans son dossier, puis create_post.
-Future<void> publishReel(BuildContext context, WidgetRef ref) async {
-  if (!Backend.ready) return gToast(context, 'Publication envoyée');
-  if (!await requireCertified(context, ref, 'publier') || !context.mounted) return;
-  final picked = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: const ['mp4', 'mov', 'jpg', 'jpeg', 'png', 'webp']);
-  if (picked.isEmpty || !context.mounted) return;
-  final f = picked.first;
-  final ext = f.name.split('.').last.toLowerCase();
-  final mime = const {'mp4': 'video/mp4', 'mov': 'video/quicktime', 'jpg': 'image/jpeg', 'jpeg': 'image/jpeg', 'png': 'image/png', 'webp': 'image/webp'}[ext];
-  if (mime == null) return gAlert(context, 'Format refusé', 'Vidéo MP4 ou MOV, ou image JPG, PNG, WebP.');
-  final bytes = await f.readAsBytes();
-  if (!context.mounted) return;
-  if (bytes.length > 50 * 1024 * 1024) return gAlert(context, 'Fichier trop lourd', '50 Mo au maximum (vidéo de 60 secondes au plus).');
-  final caption = await askText(context, title: 'Légende', body: 'Décrivez votre publication (300 caractères au plus). Ajoutez des mots-clés avec # .', hint: 'Pose d’un kit solaire… #énergie', ok: 'Publier', min: 0);
-  if (caption == null || !context.mounted) return;
-  final uid = Supabase.instance.client.auth.currentUser?.id ?? '';
-  final path = '$uid/${DateTime.now().millisecondsSinceEpoch}.$ext';
-  try {
-    await Supabase.instance.client.storage.from('post-media').uploadBinary(path, bytes, fileOptions: FileOptions(contentType: mime));
-  } catch (_) {
-    if (context.mounted) await gAlert(context, 'Envoi impossible', 'Le média n’a pas pu être déposé. Vérifiez votre connexion et réessayez.');
-    return;
-  }
-  final tags = [for (final m in RegExp(r'#([\p{L}\p{N}_-]{2,30})', unicode: true).allMatches(caption)) m.group(1)!];
-  final res = await Backend.rpc('create_post', {'p_media_path': path, 'p_media_kind': mime.startsWith('video') ? 'video' : 'image', 'p_caption': caption.trim(), 'p_tags': tags, 'p_listing': null});
-  if (!context.mounted) return;
-  if (res.error != null) {
-    try {
-      await Supabase.instance.client.storage.from('post-media').remove([path]);
-    } catch (_) {}
-    if (context.mounted) await gAlert(context, 'Publication refusée', res.error!);
-    return;
-  }
-  final st = (res.data is Map) ? '${(res.data as Map)['status']}' : '';
-  await ref.read(reelsProvider.notifier).refresh();
-  if (context.mounted) gToast(context, st == 'published' ? 'Publication en ligne' : 'Publication envoyée : elle sera visible après validation par le département');
 }
 
 // ------------------------------------------------------------------ défis (253)

@@ -40,3 +40,12 @@ Défilement tactile (menu du bas transmet les glissements), barres de défilemen
 (architecture, fonctions à déployer, secrets que le propriétaire doit fournir, limites officielles des API). Tests : `test/integrations`, scénario SQL PGlite
 `supabase/tests/integrations_pglite/scenario.mjs` (voir son en-tête), tests Deno `supabase/functions/_shared/shared_test.ts`.
 Aucune clé développeur n'existe encore : aucun échange réel avec un fournisseur n'a été exécuté.
+
+## Correctifs du profil Visiteur (14 novembre 2026)
+
+Migration `supabase/migrations/20261114004100_correctifs_profil_visiteur.sql` (NON appliquée en production : à pousser avec la procédure habituelle) : projets privés exclus de `iut_projects`, nom abrégé dans `duels_list`,
+vues comptées une fois par compte et par jour (`view_seen`), note de modération d'annonce masquée, lecture directe de `posts.review_note`, `post_likes` et `post_boosts` retirée,
+`unregister_all_devices`, `my_referral_code` enregistre enfin le code, paiement par messagerie (finance prévenue, `payments_to_verify`, commande marquée payée à la confirmation),
+`company_subscription_request(p_plan, p_owner)`, `product_reviews`, `opp_save` (rôle client refusé, département prévenu), `create_community` (admin et support prévenus), notification du département à la soumission d'un projet.
+Test SQL : `supabase/tests/marketplace_pglite/correctifs_visiteur.mjs` (`node replay.mjs all ./correctifs_visiteur.mjs`, attendu 28/28).
+Edge Function `auth-recovery` : à redéployer (`--no-verify-jwt`) pour que l'envoi du code ne révèle plus l'existence d'un compte par le délai de réponse.

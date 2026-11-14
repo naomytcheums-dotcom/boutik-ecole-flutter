@@ -2,6 +2,7 @@ import 'package:boutik_ecole/figma/g/g_03.dart';
 import 'package:boutik_ecole/figma/g/g_10.dart';
 import 'package:boutik_ecole/figma/g/g_244.dart';
 import 'package:boutik_ecole/figma/gen.dart';
+import 'package:boutik_ecole/figma/live/auth.dart' show authProvider, demoAccount;
 import 'package:boutik_ecole/figma/live/backend.dart';
 import 'package:boutik_ecole/figma/live/home_live.dart';
 import 'package:boutik_ecole/figma/live/reels.dart';
@@ -152,6 +153,8 @@ void main() {
     t.view.devicePixelRatio = 1;
     addTearDown(t.view.reset);
     await t.pumpWidget(ProviderScope(overrides: [liveTalentsProvider.overrideWith(_NoTalents.new)], child: const MaterialApp(home: G_03())));
+    await t.pumpAndSettle();
+    ProviderScope.containerOf(t.element(find.byType(G_03))).read(authProvider.notifier).login(demoAccount);
     await t.pumpAndSettle();
     final scroll = t.state<ScrollableState>(find.descendant(of: find.byType(SingleChildScrollView).first, matching: find.byType(Scrollable)).first);
     scroll.position.jumpTo(scroll.position.maxScrollExtent);

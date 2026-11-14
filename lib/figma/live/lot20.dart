@@ -16,7 +16,7 @@ const _ink = Color(0xFF111015);
 const _grey = Color(0xFF57545F);
 TextStyle _st(double size, {FontWeight w = FontWeight.w500, Color c = _ink}) => TextStyle(fontFamily: 'PlusJakartaSans', fontSize: size, fontWeight: w, color: c);
 
-final kiosksProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('kiosks', 'id,name,location,status,updated_at', order: 'id', ascending: true));
+final kiosksProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('kiosks', 'id,name,location,status,updated_at', order: 'id', ascending: true, publicRead: true));
 final kioskIncidentsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('kiosk_incidents', 'id,kiosk_id,kind,message,created_at,resolved_at', order: 'created_at'));
 final listingsAdminProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('listings', 'title,status,category,price,created_at', order: 'created_at'));
 

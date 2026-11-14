@@ -227,10 +227,22 @@ void submitProject(WidgetRef ref, BuildContext context) {
 
 Future<void> supportDialog(BuildContext context, WidgetRef ref) async {
   final p = ref.read(currentProjectProvider);
+  if (Backend.ready) {
+    // Connecté au serveur : le soutien est un vrai vote sur un projet publié (la fonction refuse son propre projet).
+    if (!await requireLogin(context, ref, 'soutenir un projet') || !context.mounted) return;
+    final found = await Backend.rows('projects', 'id', eq: {'title': p.title, 'status': 'approved'}, limit: 1);
+    if (!context.mounted) return;
+    if (found.error != null) return gToast(context, Backend.userMessage(found.error!));
+    if (found.rows.isEmpty) return gToast(context, 'Ce projet n’est pas publié : il ne peut pas être soutenu pour le moment.');
+    final r = await Backend.rpc('project_upvote_toggle', {'p_project': found.rows.first['id']});
+    if (!context.mounted) return;
+    if (r.error != null) return gToast(context, Backend.userMessage(r.error!));
+    return gToast(context, r.data == true ? 'Merci ! Votre soutien à « ${p.title} » est enregistré.' : 'Votre soutien à « ${p.title} » est retiré.');
+  }
   final msg = await askText(context, title: 'Soutenir « ${p.title} »', body: 'Indiquez un message d’encouragement ou le montant de votre contribution (FCFA).', hint: 'Ex. 5 000 FCFA, bravo à l’équipe !', ok: 'Soutenir', min: 3);
   if (msg == null || !context.mounted) return;
   ref.read(auditProvider.notifier).log(ref.read(profileAccountProvider).name, 'Projet soutenu', p.title, 'Finances');
-  gToast(context, 'Merci ! Votre soutien est transmis à l’équipe');
+  gToast(context, 'Soutien enregistré dans votre journal.');
 }
 
 // ------------------------------------------------------------------ opportunités (75, 151)

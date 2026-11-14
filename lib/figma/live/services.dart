@@ -22,6 +22,87 @@ final servicesProvider = Provider<List<Listing>>((ref) => [
 
 final selectedServiceProvider = NotifierProvider<StrV, String>(StrV.new);
 
+/// Pastille choisie sur l'écran 22b : 0 Tous, 1 Design, 2 Développement, 3 Tutorat, 4 Audiovisuel.
+final serviceFilterProvider = NotifierProvider<IntV, int>(IntV.new);
+
+const _serviceKeywords = <List<String>>[
+  [],
+  ['design', 'logo', 'graphi', 'identite', 'affiche', 'visuel', 'maquette', 'illustration'],
+  ['develop', 'web', 'application', 'site', 'logiciel', 'programm', 'code', 'mobile', 'flutter'],
+  ['tutorat', 'cours', 'soutien', 'maths', 'repetition', 'enseign', 'revision', 'formation'],
+  ['video', 'audio', 'montage', 'photo', 'film', 'musique', 'podcast', 'audiovisuel'],
+];
+
+/// Services de la pastille choisie : mot-clé cherché dans le titre, la description et la catégorie ; « Tous » ne filtre rien.
+final filteredServicesProvider = Provider<List<Listing>>((ref) {
+  final all = ref.watch(servicesProvider);
+  final words = _serviceKeywords[ref.watch(serviceFilterProvider).clamp(0, _serviceKeywords.length - 1)];
+  if (words.isEmpty) return all;
+  return [
+    for (final l in all)
+      if (words.any(normText('${l.title} ${l.description} ${l.category} ').contains)) l,
+  ];
+});
+
+/// Distingue « aucun service publié » d'un chargement en cours ou d'une lecture en échec : -1 si la lecture échoue, sinon 0 (aucun service) ou 1 (au moins un).
+final servicesReadProvider = FutureProvider.autoDispose<int>((ref) async {
+  if (!Backend.ready) return 0;
+  final r = await Backend.rows('listings', 'id', eq: const {'status': 'approved', 'category': 'Services'}, limit: 1);
+  return r.error != null ? -1 : r.rows.length;
+});
+
+/// Liste défilante de tous les services publiés (écran 22b), avec ses états de chargement, d'erreur et de liste vide.
+class ServicesList extends ConsumerWidget {
+  const ServicesList({super.key, this.width = 342, this.height = 396});
+  final double width, height;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    Widget note(String t) => SizedBox(width: width, height: 90, child: Center(child: Text(t, textAlign: TextAlign.center, style: _st.copyWith(fontSize: 12.5, color: const Color(0xFF57545F), height: 1.45))));
+    final all = ref.watch(servicesProvider);
+    final list = ref.watch(filteredServicesProvider);
+    final read = ref.watch(servicesReadProvider);
+    if (all.isEmpty) {
+      return read.when(
+        loading: () => note('Chargement des services…'),
+        error: (_, _) => note('Les services ne peuvent pas être chargés pour le moment.'),
+        data: (n) => n < 0 ? note('Les services ne peuvent pas être chargés pour le moment.') : (n > 0 ? note('Chargement des services…') : note('Aucun service publié pour le moment. Les étudiants peuvent en proposer depuis leur espace vendeur.')),
+      );
+    }
+    if (list.isEmpty) return note('Aucun service dans cette catégorie pour le moment.');
+    return SizedBox(
+      width: width,
+      height: height,
+      child: ListView.separated(
+        padding: EdgeInsets.zero,
+        itemCount: list.length,
+        separatorBuilder: (_, _) => const Divider(height: 16, thickness: 1, color: Color(0xFFF2EFF6)),
+        itemBuilder: (_, i) {
+          final l = list[i];
+          return GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => openService(context, ref, l),
+            child: Row(children: [
+              const SizedBox(width: 12),
+              SizedBox(width: 50, height: 50, child: gBox(image: servicePhoto(l), fit: BoxFit.cover, radii: const [12, 12, 12, 12])),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+                  Text(l.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: _st.copyWith(fontFamily: 'PlusJakartaSans', fontSize: 13.5, fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 4),
+                  Text(servicePriceLine(l), maxLines: 1, overflow: TextOverflow.ellipsis, style: _st.copyWith(fontFamily: 'PlusJakartaSans', fontSize: 11.5, color: const Color(0xFF57545F))),
+                ]),
+              ),
+              const Icon(Icons.chevron_right, size: 20, color: Color(0xFF57545F)),
+              const SizedBox(width: 8),
+            ]),
+          );
+        },
+      ),
+    );
+  }
+}
+
 Listing? serviceAt(WidgetRef ref, int i) {
   final l = ref.watch(servicesProvider);
   return i < l.length ? l[i] : null;
@@ -60,12 +141,14 @@ void openService(BuildContext context, WidgetRef ref, Listing l) {
   gOpen(context, '36');
 }
 
-/// Écran 36, « Commander » : le service passe par le panier et le paiement, comme un produit.
-void orderService(BuildContext context, WidgetRef ref) {
+/// Écran 36, « Commander au tarif affiché » : le service passe par le panier et le paiement, comme un produit.
+/// Un visiteur doit d'abord se connecter (un panier de visiteur échouerait au paiement). Pour un tarif sur mesure : « Demander un devis ».
+Future<void> orderService(BuildContext context, WidgetRef ref) async {
   final l = currentService(ref);
   if (l == null) return gToast(context, 'Choisissez un service dans la liste.');
+  if (!await requireLogin(context, ref, 'commander ce service') || !context.mounted) return;
   ref.read(cartProvider.notifier).add(CartLine(l.title, 'Prestation étudiante', l.price, _photo(l)));
-  gToast(context, 'Ajouté au panier');
+  gToast(context, 'Ajouté au panier au tarif affiché');
   gOpen(context, '06');
 }
 
@@ -89,7 +172,7 @@ Future<void> submitQuoteRequest(BuildContext context, WidgetRef ref) async {
   final f = ref.read(formProvider);
   final obj = (f['q_obj'] ?? '').trim(), desc = (f['q_desc'] ?? '').trim(), qty = (f['q_qty'] ?? '').trim();
   final brief = [if (obj.isNotEmpty) 'Objet : $obj', if (desc.isNotEmpty) desc, if (qty.isNotEmpty) 'Quantité : $qty'].join('\n');
-  if (brief.trim().length < 10) return gAlert(context, 'Besoin manquant', 'Décrivez votre besoin en 10 caractères minimum.');
+  if ((obj + desc + qty).length < 10) return gAlert(context, 'Besoin manquant', 'Décrivez votre besoin en 10 caractères minimum.');
   final err = await Backend.requestQuote(l.title, brief, _digits(f['q_budget'] ?? ''), (f['q_date'] ?? '').trim());
   if (!context.mounted) return;
   if (err != null) return gAlert(context, 'Demande non envoyée', err);

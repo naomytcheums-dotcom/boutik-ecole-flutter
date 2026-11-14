@@ -42,6 +42,9 @@ class AppEvent {
   int? get left => capacity == null ? null : (capacity! - registered).clamp(0, capacity!);
   bool get full => left != null && left == 0;
 
+  /// Événement déjà commencé : le serveur refuse l'inscription (« Événement terminé »).
+  bool endedAt(DateTime now) => startsAt.isBefore(now);
+
   /// « Sam. 24 oct. · 10 h · Hall principal ».
   String get when {
     final d = startsAt;
@@ -163,7 +166,7 @@ class EventsWeekStrip extends ConsumerWidget {
                   child: Text('${start.add(Duration(days: i)).day}', style: _st(15, w: FontWeight.w700, c: sel == i ? Colors.white : _ink)),
                 ),
                 const SizedBox(height: 3),
-                Container(width: 4, height: 4, decoration: BoxDecoration(shape: BoxShape.circle, color: events.any((e) => e.startsAt.weekday == i + 1) ? const Color(0xFF5A3FE0) : Colors.transparent)),
+                Container(width: 4, height: 4, decoration: BoxDecoration(shape: BoxShape.circle, color: events.any((e) => DateUtils.isSameDay(e.startsAt, start.add(Duration(days: i)))) ? const Color(0xFF5A3FE0) : Colors.transparent)),
               ])),
             ),
           ),
@@ -258,7 +261,7 @@ class EventsCalendar extends ConsumerWidget {
   }
 }
 
-/// Liste des événements de la semaine : chargement, erreur, état vide, puis une ligne par événement avec son inscription.
+/// Liste des événements : hors calendrier, les événements à venir (ou ceux du jour de la semaine touché) ; chargement, erreur, état vide, puis une ligne par événement avec son inscription.
 class EventsList extends ConsumerWidget {
   const EventsList({super.key, this.width = 342, this.height = 480, this.calendar = false});
   final double width, height;
@@ -281,10 +284,12 @@ class EventsList extends ConsumerWidget {
     if (ref.read(eventsProvider.notifier).error) return note('Les événements ne peuvent pas être chargés pour le moment.');
     final month = ref.watch(eventMonthProvider);
     final date = ref.watch(eventDateProvider);
+    final now = ref.watch(nowProvider);
+    final weekDay = sel == null ? null : weekStart(now).add(Duration(days: sel));
     final list = calendar
         ? [for (final e in all) if (date != null ? DateUtils.isSameDay(e.startsAt, date) : (e.startsAt.year == month.year && e.startsAt.month == month.month)) e]
-        : [for (final e in all) if (sel == null || e.startsAt.weekday == sel + 1) e];
-    if (list.isEmpty) return note(calendar ? (date == null ? 'Aucun événement ce mois-ci.\nLes expositions, ateliers et conférences de l’établissement apparaîtront ici.' : 'Aucun événement ce jour-là.') : (sel == null ? 'Aucun événement cette semaine.\nLes expositions, ateliers et conférences de l’établissement apparaîtront ici.' : 'Aucun événement ce jour-là.'));
+        : [for (final e in all) if (weekDay != null ? DateUtils.isSameDay(e.startsAt, weekDay) : !e.endedAt(now)) e];
+    if (list.isEmpty) return note(calendar ? (date == null ? 'Aucun événement ce mois-ci.\nLes expositions, ateliers et conférences de l’établissement apparaîtront ici.' : 'Aucun événement ce jour-là.') : (sel == null ? 'Aucun événement à venir.\nLes expositions, ateliers et conférences de l’établissement apparaîtront ici.' : 'Aucun événement ce jour-là.'));
     return SizedBox(
       width: width,
       height: height,
@@ -294,7 +299,8 @@ class EventsList extends ConsumerWidget {
         separatorBuilder: (_, _) => const Divider(height: 22, thickness: 1, color: Color(0xFFF2EFF6)),
         itemBuilder: (_, i) {
           final e = list[i];
-          final label = e.mine ? 'Inscrit(e)' : (e.full ? 'Complet' : 'Inscription');
+          final ended = e.endedAt(now);
+          final label = ended ? 'Terminé' : (e.mine ? 'Inscrit(e)' : (e.full ? 'Complet' : 'Inscription'));
           return Row(children: [
             Expanded(
               child: GestureDetector(
@@ -312,11 +318,11 @@ class EventsList extends ConsumerWidget {
             const SizedBox(width: 10),
             GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: e.full && !e.mine ? null : () => toggleRegistration(context, ref, e),
+              onTap: ended || (e.full && !e.mine) ? null : () => toggleRegistration(context, ref, e),
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(color: e.mine ? const Color(0xFFEEE9FF) : (e.full ? const Color(0xFFF2EFF6) : _ink), borderRadius: BorderRadius.circular(16)),
-                child: Text(label, style: _st(11.5, w: FontWeight.w600, c: e.mine ? const Color(0xFF5A3FE0) : (e.full ? _grey : Colors.white))),
+                decoration: BoxDecoration(color: ended ? const Color(0xFFF2EFF6) : (e.mine ? const Color(0xFFEEE9FF) : (e.full ? const Color(0xFFF2EFF6) : _ink)), borderRadius: BorderRadius.circular(16)),
+                child: Text(label, style: _st(11.5, w: FontWeight.w600, c: ended ? _grey : (e.mine ? const Color(0xFF5A3FE0) : (e.full ? _grey : Colors.white)))),
               ),
             ),
           ]);

@@ -11,9 +11,9 @@ import 'store.dart' show fcfa;
 /// explicites, aucune ligne de maquette hors démonstration. Les droits de lecture sont ceux des tables (RLS).
 
 final institutionsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('institutions', 'name,short_name,kind,city,status', order: 'created_at'));
-final departmentsListProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('departments', 'name,status,institutions(name)', order: 'created_at'));
-final wishesListProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('wishes', 'title,description,price,threshold,duration_days,status', order: 'created_at'));
-final livesListProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('scheduled_lives', 'title,starts_at,product_title,status', order: 'created_at'));
+final departmentsListProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('departments', 'name,status,institutions(name)', order: 'name', ascending: true, eq: {'status': 'verified'}, limit: 500, publicRead: true));
+final wishesListProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('wishes', 'title,description,price,threshold,duration_days,status', order: 'created_at', anyOf: ('status', ['approved', 'scheduled']), publicRead: true));
+final livesListProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('scheduled_lives', 'title,starts_at,product_title,status', order: 'created_at', eq: {'status': 'scheduled'}, publicRead: true));
 final claimsListProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('claims', 'reason,details,status,created_at', order: 'created_at'));
 
 String institutionStatus(Object? s) => switch ('$s') { 'verified' => 'Vérifié', 'rejected' => 'Refusé', _ => 'Proposé' };
@@ -36,7 +36,7 @@ Widget institutionsList({double width = 984, double height = 640}) => MobileList
 
 Widget departmentsList({double width = 342, double height = 600}) => MobileList(
       provider: departmentsListProvider,
-      where: (r) => '${r['status']}' == 'verified',
+      where: (r) => '${r['status']}' == 'verified', // déjà filtré par le serveur ; garde-fou si un compte du département voit aussi les propositions
       title: (r) => '${r['name']}',
       subtitle: (r) => '${(r['institutions'] as Map?)?['name'] ?? ''}',
       emptyText: 'Aucun département publié pour le moment.',
@@ -46,7 +46,7 @@ Widget departmentsList({double width = 342, double height = 600}) => MobileList(
 
 Widget wishesMarket({double width = 342, double height = 600}) => MobileList(
       provider: wishesListProvider,
-      where: (r) => '${r['status']}' == 'approved' || '${r['status']}' == 'scheduled' || '${r['status']}' == 'published',
+      where: (r) => '${r['status']}' == 'approved' || '${r['status']}' == 'scheduled',
       title: (r) => '${r['title']}',
       subtitle: (r) => [if (r['price'] != null) fcfa((r['price'] as num).toInt()), if (r['threshold'] != null) 'seuil : ${r['threshold']} personnes'].join(' · '),
       emptyText: 'Aucun vœu ouvert pour le moment.\nLes vœux validés par l’administration apparaissent ici.',

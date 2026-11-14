@@ -3,6 +3,7 @@ import 'package:boutik_ecole/figma/g/g_252.dart';
 import 'package:boutik_ecole/figma/gsound.dart';
 import 'package:boutik_ecole/figma/live/backend.dart';
 import 'package:boutik_ecole/figma/live/reels.dart';
+import 'package:boutik_ecole/figma/live/social_posts.dart' show PostComment, postCommentsProvider;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -25,15 +26,6 @@ class _Fil extends ReelsNotifier {
   final List<Reel> items;
   @override
   List<Reel>? build() => items;
-}
-
-class _Commentaires extends ReelCommentsNotifier {
-  _Commentaires(this.items);
-  final List<ReelComment>? items;
-  @override
-  List<ReelComment>? build() => items;
-  @override
-  Future<void> load() async {}
 }
 
 void main() {
@@ -60,11 +52,12 @@ void main() {
       expect(rankReels([a, b], _now).map((r) => r.id), ['b', 'a']);
     });
 
-    test('au plus 2 reels du même auteur parmi les premiers, les autres auteurs apparaissent', () {
+    test('au plus 2 reels du même auteur parmi les premiers, les autres auteurs apparaissent, aucune publication n’est écartée', () {
       final memes = [for (var i = 0; i < 5; i++) _reel('m$i', hours: i + 1, authorId: 'meme')];
       final r = rankReels([...memes, _reel('autre', hours: 30, authorId: 'autre')], _now);
-      expect(r.where((x) => x.authorId == 'meme').length, 2);
-      expect(r.map((x) => x.id), contains('autre'));
+      expect(r.length, 6);
+      expect(r.take(3).where((x) => x.authorId == 'meme').length, 2);
+      expect(r.take(3).map((x) => x.id), contains('autre'));
     });
 
     test('temps écoulé', () {
@@ -81,28 +74,29 @@ void main() {
     t.view.physicalSize = const Size(390, 900);
     t.view.devicePixelRatio = 1;
     addTearDown(t.view.reset);
-    await t.pumpWidget(ProviderScope(overrides: overrides, child: MaterialApp(home: Scaffold(body: w))));
+    await t.pumpWidget(ProviderScope(retry: (_, _) => null, overrides: overrides, child: MaterialApp(home: Scaffold(body: w))));
     await t.pumpAndSettle();
   }
 
-  testWidgets('252 connecté : les commentaires affichés sont ceux du serveur, aucun commentaire de maquette', (t) async {
+  testWidgets('252 connecté : la feuille affiche les commentaires du serveur, aucun commentaire ni barre de saisie de maquette', (t) async {
     final comms = [
-      ReelComment(id: 'c1', author: 'Awa T.', body: 'Superbe réalisation, bravo !', mine: false, createdAt: DateTime.now().subtract(const Duration(minutes: 5))),
-      ReelComment(id: 'c2', author: 'Moi M.', body: 'Merci à tous', mine: true, createdAt: DateTime.now()),
+      PostComment(id: 'c1', parentId: '', author: 'Awa T.', authorId: 'u1', avatar: '', verified: false, mine: false, body: 'Superbe réalisation, bravo !', createdAt: DateTime.now().subtract(const Duration(minutes: 5)), likes: 0, liked: false, attachment: ''),
+      PostComment(id: 'c2', parentId: '', author: 'Moi M.', authorId: 'u2', avatar: '', verified: false, mine: true, body: 'Merci à tous', createdAt: DateTime.now(), likes: 0, liked: false, attachment: ''),
     ];
-    await monter(t, const G_252(), [reelsProvider.overrideWith(() => _Fil([_reel('p1')])), reelCommentsProvider.overrideWith(() => _Commentaires(comms))]);
+    await monter(t, const G_252(), [reelsProvider.overrideWith(() => _Fil([_reel('p1')])), postCommentsProvider('p1').overrideWith((ref) async => comms)]);
     expect(find.text('Superbe réalisation, bravo !'), findsOneWidget);
     expect(find.text('Awa T.'), findsOneWidget);
     expect(find.text('Merci à tous'), findsOneWidget);
-    expect(find.byIcon(Icons.delete_outline), findsOneWidget, reason: 'seul son propre commentaire peut être supprimé');
-    for (final faux in ['Mbella SARL', 'Carine Mbarga', 'Kouassi Tagne', '4,8', '12 avis vérifiés', 'Donner mon avis']) {
+    expect(find.byIcon(Icons.delete_outline), findsNothing, reason: 'la suppression est proposée en texte, uniquement sur son propre commentaire');
+    expect(find.text('Supprimer'), findsOneWidget);
+    for (final faux in ['Mbella SARL', 'Carine Mbarga', 'Kouassi Tagne', '4,8', '12 avis vérifiés', 'Donner mon avis', 'Ajouter un commentaire… (@ pour citer)']) {
       expect(find.text(faux), findsNothing, reason: faux);
     }
     expect(find.text('par Brice N.'), findsOneWidget);
   });
 
   testWidgets('252 connecté : état vide lisible quand il n\'y a aucun commentaire', (t) async {
-    await monter(t, const G_252(), [reelsProvider.overrideWith(() => _Fil([_reel('p1')])), reelCommentsProvider.overrideWith(() => _Commentaires(const []))]);
+    await monter(t, const G_252(), [reelsProvider.overrideWith(() => _Fil([_reel('p1')])), postCommentsProvider('p1').overrideWith((ref) async => const <PostComment>[])]);
     expect(find.textContaining('Aucun commentaire pour le moment'), findsOneWidget);
     expect(find.text('Mbella SARL'), findsNothing);
   });
@@ -110,11 +104,33 @@ void main() {
   testWidgets('252 connecté : un échec de chargement montre un message lisible, jamais un texte technique', (t) async {
     await monter(t, const G_252(), [
       reelsProvider.overrideWith(() => _Fil([_reel('p1')])),
-      reelCommentsProvider.overrideWith(() => _Commentaires(const [])),
-      commentsErrorProvider.overrideWith(_Erreur.new),
+      postCommentsProvider('p1').overrideWith((ref) async => throw Exception('permission denied for table post_comments')),
     ]);
     expect(find.text('Les commentaires ne peuvent pas être chargés pour le moment.'), findsOneWidget);
+    expect(find.text('Réessayer'), findsOneWidget);
     expect(find.textContaining('permission'), findsNothing);
+  });
+
+  testWidgets('252 sans aucune publication : message clair et bouton Retour, jamais un retour immédiat', (t) async {
+    await monter(t, const G_252(), [reelsProvider.overrideWith(() => _Fil(const []))]);
+    expect(find.text('Aucune publication à commenter.'), findsOneWidget);
+    expect(find.text('Retour'), findsOneWidget);
+  });
+
+  testWidgets('252 : fil en cours de chargement = indicateur, fil en échec = message et Réessayer', (t) async {
+    Backend.ready = true;
+    GAnim.enabled = false;
+    t.view.physicalSize = const Size(390, 900);
+    t.view.devicePixelRatio = 1;
+    addTearDown(t.view.reset);
+    await t.pumpWidget(ProviderScope(overrides: [reelsProvider.overrideWith(() => _FilNul())], child: const MaterialApp(home: Scaffold(body: G_252()))));
+    await t.pump();
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(find.text('Aucune publication à commenter.'), findsNothing);
+    await t.pumpWidget(ProviderScope(key: UniqueKey(), overrides: [reelsProvider.overrideWith(() => _FilNul()), reelsLoadErrorProvider.overrideWith(_ChargementEnEchec.new)], child: const MaterialApp(home: Scaffold(body: G_252()))));
+    await t.pump();
+    expect(find.text('Les publications ne peuvent pas être chargées pour le moment.'), findsOneWidget);
+    expect(find.text('Réessayer'), findsOneWidget);
   });
 
   testWidgets('245 connecté : compteurs de commentaires et d\'enregistrements du serveur, pas 312 ni 4,9', (t) async {
@@ -140,7 +156,12 @@ void main() {
   });
 }
 
-class _Erreur extends ReelsMessage {
+class _FilNul extends ReelsNotifier {
   @override
-  String build() => 'Les commentaires ne peuvent pas être chargés pour le moment.';
+  List<Reel>? build() => null;
+}
+
+class _ChargementEnEchec extends ReelsLoadError {
+  @override
+  bool build() => true;
 }

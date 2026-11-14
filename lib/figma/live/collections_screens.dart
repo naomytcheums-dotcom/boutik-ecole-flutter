@@ -9,7 +9,8 @@ import 'store.dart' show favoritesProvider;
 import 'marche/marche_data.dart';
 import 'marche/marche_widgets.dart';
 
-/// Mes collections : listes nommées de favoris (privée, partagée par lien, publique). Tout vient du serveur (migration 20261114001600).
+/// Mes collections : listes nommées de favoris, privées (le partage par lien et la publication ne sont pas encore proposés : aucune page ne les lit).
+/// Tout vient du serveur (migration 20261114001600). Les produits d'une liste sont retenus par leur titre.
 
 const collectionVisibilities = {'private': 'Privée', 'shared': 'Partagée', 'public': 'Publique'};
 
@@ -61,10 +62,11 @@ Future<void> editCollection(BuildContext context, WidgetRef ref, {ProductCollect
           const SizedBox(height: 12),
           TextField(controller: name, autofocus: true, maxLength: 60, decoration: InputDecoration(labelText: 'Nom', hintText: 'Cadeaux d’anniversaire', border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)))),
           const SizedBox(height: 6),
-          MDropdown(label: 'Visibilité', value: vis, items: collectionVisibilities, onChanged: (v) => setS(() => vis = v)),
+          // Aucune page ne lit encore les collections d'autrui : seule « Privée » est proposée (une collection déjà partagée garde son état tant qu'on ne la modifie pas).
+          MDropdown(label: 'Visibilité', value: vis, items: {'private': 'Privée', if (vis != 'private') vis: collectionVisibilities[vis] ?? vis}, onChanged: (v) => setS(() => vis = v)),
           Padding(
             padding: const EdgeInsets.only(top: 6),
-            child: Text(vis == 'private' ? 'Vous seul la voyez.' : vis == 'shared' ? 'Ceux qui ont le lien peuvent la voir.' : 'Tout le monde peut la voir.', style: mst(12, c: kGrey)),
+            child: Text(vis == 'private' ? 'Vous seul la voyez. Le partage par lien sera proposé ultérieurement.' : 'Cette collection est marquée comme partagée, mais aucune page ne l’affiche encore. Privée, elle reste visible par vous seul.', style: mst(12, c: kGrey)),
           ),
           const SizedBox(height: 12),
           Row(children: [

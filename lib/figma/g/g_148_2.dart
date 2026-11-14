@@ -30,6 +30,8 @@ class G_148_2 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // La rubrique « Appareils et sessions » décrit la session réelle : elle n'existe que pour un compte connecté (la maquette reste visible en démonstration).
+    final signedIn = demoContent || ref.watch(authProvider).current != null;
     return GScreen(w: 390, h: 900, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 147, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 624, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
@@ -88,11 +90,11 @@ class G_148_2 extends ConsumerWidget {
       gP(40, 400, 306, 17, gText('Authentification à deux facteurs', 13.5, Color(0xFF111015), weight: 600), show: !demoContent),
       gP(40, 421, 306, 14, Consumer(builder: (context, ref, _) { final on = ref.watch(mfaActiveProvider).value; return gText(on == null ? '' : (on ? 'Activée sur ce compte' : 'Désactivée · toucher pour activer'), 11.5, on == true ? Color(0xFF0F7A52) : Color(0xFF57545F)); }), show: !demoContent),
       if (!demoContent) gTap(24, 392, 342, 52, () { gOpen(context, '272'); }),
-      gP(40, 512, 250, 17, gText(currentDeviceLabel(), 13.5, Color(0xFF111015), weight: 600), show: !demoContent),
-      gP(40, 533, 250, 14, gText('Session active maintenant', 11.5, Color(0xFF57545F)), show: !demoContent),
-      gP(341, 525, 10, 10, gBox(color: Color(0xFF1F9D6B), oval: true), show: !demoContent),
-      gP(24, 466.5, 153, 19, gText('Appareils et sessions', 15, Color(0xFF111015), weight: 700)),
-      gP(322, 468, 44, 16, gText(demoContent ? '2 actifs' : '1 actif', 12.5, Color(0xFF57545F), weight: 500, align: TextAlign.right)),
+      gP(40, 512, 250, 17, gText(currentDeviceLabel(), 13.5, Color(0xFF111015), weight: 600), show: !demoContent && signedIn),
+      gP(40, 533, 250, 14, gText('Session active maintenant', 11.5, Color(0xFF57545F)), show: !demoContent && signedIn),
+      gP(341, 525, 10, 10, gBox(color: Color(0xFF1F9D6B), oval: true), show: !demoContent && signedIn),
+      gP(24, 466.5, 153, 19, gText('Appareils et sessions', 15, Color(0xFF111015), weight: 700), show: signedIn),
+      gP(322, 468, 44, 16, gText(demoContent ? '2 actifs' : '1 actif', 12.5, Color(0xFF57545F), weight: 500, align: TextAlign.right), show: signedIn),
       gP(40, 512, 36, 36, gBox(color: Color(0xFFF1EEFB), radii: [12, 12, 12, 12]), show: demoContent),
       gP(49.75, 519.5, 16.5, 21, gImg('assets/figma/v/f88bf1acb4da04.svg'), show: demoContent),
       gP(55, 531.5, 6.008, 6, gImg('assets/figma/v/f943396fb20219.svg'), show: demoContent),

@@ -38,12 +38,16 @@ List<Reel> filterCircle(List<Reel> all, int tab, {Set<String>? following}) => sw
     };
 
 class CircleFeed extends ConsumerWidget {
-  const CircleFeed({super.key, this.width = 350, this.height = 560});
+  const CircleFeed({super.key, this.width = 350, this.height = 560, this.focusPostId = ''});
   final double width, height;
+
+  /// Publication visée par un lien partagé (`?post=<id>`) : remontée en tête du fil si elle s'y trouve, sinon ignorée.
+  final String focusPostId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final all = ref.watch(reelsProvider);
+    final failed = ref.watch(reelsLoadErrorProvider);
     final tab = ref.watch(circleTabProvider);
     final following = ref.watch(followingIdsProvider);
     Widget note(String t, {String? action, VoidCallback? onTap}) => Container(
@@ -63,15 +67,24 @@ class CircleFeed extends ConsumerWidget {
             ],
           ]),
         );
-    if (all == null) return note('Chargement des publications…');
+    if (all == null) {
+      if (failed) return note('Les publications ne peuvent pas être chargées pour le moment.', action: 'Réessayer', onTap: () => ref.read(reelsProvider.notifier).retry());
+      return note('Chargement des publications…');
+    }
     if (tab == 1 && following == null) return note('Chargement des abonnements…');
-    final list = filterCircle(all, tab, following: following);
+    var list = filterCircle(all, tab, following: following);
     if (list.isEmpty) {
       if (tab == 1) {
         return note(following!.isEmpty ? 'Vous ne suivez personne pour le moment.\nSuivez un créateur pour retrouver ses publications ici.' : 'Aucune publication récente des créateurs que vous suivez.', action: 'Découvrir', onTap: () => gOpen(context, '251'));
       }
+      if (tab == 3 && all.isNotEmpty) return note('Aucune publication liée à une boutique pour le moment.', action: 'Publier', onTap: () => publishPost(context, ref));
       return note(all.isEmpty ? 'Aucune publication pour le moment.\nSoyez le premier à partager une photo ou une vidéo.' : 'Aucune publication dans cette catégorie.', action: 'Publier', onTap: () => publishPost(context, ref));
     }
+    if (focusPostId.isNotEmpty) {
+      final target = list.where((r) => r.id == focusPostId).firstOrNull;
+      if (target != null) list = [target, ...list.where((r) => r.id != focusPostId)];
+    }
+    final canMore = ref.read(reelsProvider.notifier).canLoadMore;
     // publicités validées, toujours marquées « Sponsorisé » : une après la 2e publication, une après la 5e
     final ads = tab == 0 ? ref.watch(adFeedProvider) : const <Map<String, dynamic>>[];
     final items = <Object>[];
@@ -85,7 +98,7 @@ class CircleFeed extends ConsumerWidget {
       height: height,
       child: ListView.separated(
         padding: const EdgeInsets.only(bottom: 120),
-        itemCount: items.length + 1,
+        itemCount: items.length + 1 + (canMore ? 1 : 0),
         separatorBuilder: (_, _) => const SizedBox(height: 16),
         itemBuilder: (_, i) {
           if (i == 0) {
@@ -100,6 +113,7 @@ class CircleFeed extends ConsumerWidget {
               ),
             );
           }
+          if (i > items.length) return const _MoreButton();
           final it = items[i - 1];
           if (it is Map<String, dynamic>) return SponsoredCard(key: ValueKey('ad-${it['id']}'), ad: it);
           final post = it as Reel;
@@ -108,6 +122,36 @@ class CircleFeed extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// « Voir plus » : relit le fil avec la limite supérieure du serveur (60 publications).
+class _MoreButton extends ConsumerStatefulWidget {
+  const _MoreButton();
+  @override
+  ConsumerState<_MoreButton> createState() => _MoreButtonState();
+}
+
+class _MoreButtonState extends ConsumerState<_MoreButton> {
+  bool _busy = false;
+
+  Future<void> _more() async {
+    if (_busy) return;
+    setState(() => _busy = true);
+    await ref.read(reelsProvider.notifier).loadMore();
+    if (mounted) setState(() => _busy = false);
+  }
+
+  @override
+  Widget build(BuildContext context) => GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: _more,
+        child: Container(
+          height: 48,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(color: Colors.white, border: Border.all(color: const Color(0xFFECE8F2))),
+          child: _busy ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2)) : Text('Voir plus', style: _st(13, w: FontWeight.w600)),
+        ),
+      );
 }
 
 /// Les trois couvertures du profil (écran 10, derrière la photo) : photos ou vidéos de la personne, enregistrées tout de suite (table

@@ -8,7 +8,6 @@ import 'package:video_player/video_player.dart';
 
 import '../../core/router/paths.dart';
 import '../gen.dart';
-import '../nav.dart';
 import 'auth.dart';
 import 'backend.dart';
 import 'reels.dart' show relativeTime;
@@ -187,8 +186,15 @@ class StoriesBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final groups = ref.watch(storiesProvider).value ?? const <StoryGroup>[];
     final me = ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
+    final myName = ref.watch(authProvider.select((a) => a.current?.name ?? ''));
+    final myAvatar = ref.watch(authProvider.select((a) => a.current?.avatarUrl ?? ''));
     final mine = groups.where((g) => g.authorId == me).firstOrNull;
     final others = [for (final g in groups) if (g.authorId != me) g];
+    final myPhoto = (mine?.avatar ?? '').isNotEmpty ? mine!.avatar : myAvatar;
+    // visiteur : icône neutre ; compte connecté : sa photo, à défaut l'initiale de son nom
+    final Widget meAvatar = me.isEmpty && myName.isEmpty
+        ? Container(width: 52, height: 52, decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFFEDE9F6)), child: const Icon(Icons.person_outline, size: 26, color: Color(0xFF4A4854)))
+        : socialAvatar(myPhoto, myName, 52);
     Widget ring(Widget child, bool unseen) => Container(
           width: 62,
           height: 62,
@@ -206,7 +212,7 @@ class StoriesBar extends ConsumerWidget {
       child: ListView(scrollDirection: Axis.horizontal, padding: const EdgeInsets.symmetric(horizontal: 14), children: [
         item(
           Stack(clipBehavior: Clip.none, children: [
-            ring(socialAvatar(me.isEmpty ? '' : (mine?.avatar ?? ''), 'Moi', 52), mine?.hasUnseen ?? false),
+            ring(meAvatar, mine?.hasUnseen ?? false),
             Positioned(right: -8, bottom: -8, child: Semantics(button: true, label: 'Ajouter une histoire', child: GestureDetector(behavior: HitTestBehavior.opaque, onTap: () => addStory(context, ref), child: Padding(padding: const EdgeInsets.all(8), child: Container(width: 22, height: 22, decoration: BoxDecoration(color: kInk, shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 2)), child: const Icon(Icons.add, size: 14, color: Colors.white)))))),
           ]),
           'Votre histoire',
@@ -337,6 +343,15 @@ class _StoryViewerState extends ConsumerState<StoryViewer> with SingleTickerProv
     if (mounted) Navigator.of(context).maybePop();
   }
 
+  /// Ferme la visionneuse (route racine) puis ouvre le profil du créateur : sans cela, le profil s'ouvrirait caché derrière les histoires.
+  void _openProfile(String userId) {
+    final id = userId.trim();
+    if (id.isEmpty) return;
+    final router = GoRouter.of(context);
+    _close();
+    router.push('${screenPath('247')}?user=${Uri.encodeQueryComponent(id)}');
+  }
+
   Future<void> _delete() async {
     _timer.stop();
     final r = await Backend.rpc('hide_story', {'p_story': _story.id});
@@ -398,7 +413,7 @@ class _StoryViewerState extends ConsumerState<StoryViewer> with SingleTickerProv
               ]),
               const SizedBox(height: 10),
               Row(children: [
-                GestureDetector(onTap: () => gOpenProfile(context, g.authorId), child: socialAvatar(g.avatar, g.author, 36)),
+                GestureDetector(onTap: () => _openProfile(g.authorId), child: socialAvatar(g.avatar, g.author, 36)),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Row(children: [

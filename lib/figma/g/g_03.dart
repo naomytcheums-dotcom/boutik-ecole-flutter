@@ -108,7 +108,11 @@ class G_03 extends ConsumerWidget {
       gP(347.503, 263.771, 10.965, 6, gImg('assets/figma/v/c94e1e4a8135f4.svg')),
       gP(348.331, 267.081, 9.31, 6, gImg('assets/figma/v/188f8a4ee0e095.svg')),
       gP(334.986, 287.806, 36, 13, gText('Projets', 10.382, Color(0xFF111015), weight: 500, align: TextAlign.center)),
-      gTap(338, 184, 38, 32, () => gEspace(context)),
+      gTap(336, 182, 44, 38, () => gOpen(context, '23')), // icône filtre : écran 23 « Filtres »
+      gTap(298, 60, 36, 38, () async {
+        if (await requireLogin(context, ref, 'voir vos notifications') && context.mounted) gOpen(context, '50');
+      }), // cloche
+      gTap(344, 60, 40, 40, () => gOpen(context, '10')), // avatar
       gTap(18.056, 238.333, 57.778, 62.0, () => gOpen(context, '04')), gTap(94.792, 238.333, 57.778, 62.0, () => gOpen(context, '22')), gTap(171.528, 238.333, 57.778, 62.0, () => gOpen(context, '22b')), gTap(248.264, 238.333, 57.778, 62.0, () => gOpen(context, '70')), gTap(324.097, 238.333, 57.778, 62.0, () => gOpen(context, '78')),
       gP(14.444, 322.292, 372.847, 185.069, heroSlot((s, _) => gBox(image: s.image, fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 6), blurRadius: 16, spreadRadius: 0)], radii: [18.056, 18.056, 18.056, 18.056]))),
       gP(37.917, 346.667, 54.167, 18.056, gBox(color: Color(0xFF111015), radii: [9.028, 9.028, 9.028, 9.028])),
@@ -165,7 +169,7 @@ class G_03 extends ConsumerWidget {
       
       if (demoContent) gTap(14, 559, 178, 229, () { ref.read(selectedProductProvider.notifier).select('Lampe en bois recyclé'); gOpen(context, '05'); }),
       
-      gTap(24, 180, 342, 48, () => gOpen(context, '19')),
+      gTap(24, 180, 308, 48, () => gOpen(context, '19')),
       if (demoContent) gTap(198, 559, 178, 229, () { ref.read(selectedProductProvider.notifier).select('Drone éducatif'); gOpen(context, '05'); }),
       gTap(10.1, 107.1, 133, 44, () { gOpen(context, '177'); }), // parcours 03 -> 177
       gTap(303, 523, 56, 32, () { gOpen(context, '22'); }), // audit 01/11 : « Voir tout » n'avait aucun effet

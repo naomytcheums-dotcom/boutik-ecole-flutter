@@ -133,14 +133,33 @@ void main() {
     expect(find.text('Drone éducatif connecté'), findsNothing);
   });
 
-  testWidgets('87 connecté : certificats réels du registre', (t) async {
+  testWidgets('87 connecté : innovations validées du registre, recherche et fiche', (t) async {
     await monter(t, const G_87(), connecte: true, overrides: [
-      certificatesProvider.overrideWith(() => _Rows('table:certificates', [{'subject_title': 'Serre intelligente', 'code': 'BE-CERT-0021', 'issued_at': '2026-10-02T10:00:00Z', 'revoked': false}]))
+      innovationsRegistryProvider.overrideWith(() => _Rows('table:projects', [
+            {'id': '1', 'kind': 'innovation', 'title': 'Serre intelligente', 'summary': 'Une serre pilotée par capteurs', 'department': 'Agronomie', 'created_at': '2026-10-02T12:00:00Z', 'status': 'approved', 'media': const [], 'details': {'problem': 'Les récoltes chauffent.'}},
+            {'id': '2', 'kind': 'innovation', 'title': 'Filtre solaire', 'summary': 'Eau potable', 'department': '', 'created_at': '2026-10-03T12:00:00Z', 'status': 'approved', 'media': const [], 'details': const {}},
+          ]))
     ]);
     expect(find.text('Serre intelligente'), findsOneWidget);
-    expect(find.text('Certifié'), findsOneWidget);
-    expect(find.textContaining('BE-CERT-0021'), findsOneWidget);
+    expect(find.text('Agronomie · 2 oct. 2026'), findsOneWidget);
     expect(find.text('Filtre à sable modulaire'), findsNothing);
+    await t.enterText(find.byType(TextField).first, 'eau');
+    await t.pumpAndSettle();
+    expect(find.text('Serre intelligente'), findsNothing);
+    expect(find.text('Filtre solaire'), findsOneWidget);
+    await t.enterText(find.byType(TextField).first, 'inconnu');
+    await t.pumpAndSettle();
+    expect(find.textContaining('ne correspond à votre recherche'), findsOneWidget);
+    await t.enterText(find.byType(TextField).first, 'serre');
+    await t.pumpAndSettle();
+    await t.tap(find.text('Serre intelligente'));
+    await t.pumpAndSettle();
+    expect(find.text('Les récoltes chauffent.'), findsOneWidget);
+  });
+
+  testWidgets('87 connecté sans innovation validée : état vide', (t) async {
+    await monter(t, const G_87(), connecte: true, overrides: [innovationsRegistryProvider.overrideWith(() => _Rows('table:projects', const []))]);
+    expect(find.text('Aucune innovation validée pour le moment.'), findsOneWidget);
   });
 
   testWidgets('85 connecté sans campagne : état vide, aucun montant de maquette', (t) async {

@@ -23,6 +23,7 @@ import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
 import '../live/sync.dart';
+import '../live/device_prefs.dart' show dataPrefsProvider;
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_150_1 extends ConsumerWidget {
@@ -136,15 +137,16 @@ class G_150_1 extends ConsumerWidget {
       gP(80.667, 241.083, 14.667, 16.833, gImg('assets/figma/v/fb0d9d095f4d85.svg')),
       gP(61, 259, 54, 33, gText(real ? '${r.percent}%' : '72%', 27, Color(0xFF9BE88A), weight: 300, inter: true)),
       gP(154, 247, 199, 19, gText(real ? (r.running ? 'Synchronisation en cours' : (r.at == null ? 'Pas encore synchronisé' : (r.allOk ? 'Synchronisation terminée' : 'Synchronisation incomplète'))) : 'Synchronisation en cours', 15, Color(0xFF111015), weight: 700, wrap: true)),
-      gP(154, 273, 199, 17, gText(real ? '${r.upToDate} éléments sur 3 à jour' : '3 éléments sur 4 envoyés', 12, Color(0xFF57545F), lh: 17, wrap: true)),
+      gP(154, 273, 199, 17, gText(real ? '${r.upToDate} ${r.upToDate > 1 ? 'éléments' : 'élément'} sur 2 à jour' : '3 éléments sur 4 envoyés', 12, Color(0xFF57545F), lh: 17, wrap: true)),
       gP(36, 360, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(48.833, 383.667, 7.667, 7.667, gImg('assets/figma/v/1494b1f7d3ff5c.svg')),
       gP(58, 383.667, 7.667, 7.667, gImg('assets/figma/v/1494b1f7d3ff5c.svg')),
       gP(44.708, 368.708, 22.7, 17.667, gImg('assets/figma/v/e60f95351ae701.svg')),
       gP(88, 359, 41, 17, gText('Panier', 13.5, Color(0xFF111015), weight: 600)),
-      gP(88, 381, 160, 14, gText(real ? 'Conservé sur cet appareil' : 'Synchronisé', 11.5, Color(0xFF57545F))),
-      gP(319.2, 369, 32.8, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
-      gP(326.6, 373, 18, 14, gText('OK', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
+      // Le panier n'est enregistré nulle part (mémoire de la session) : aucun « OK » ni « Conservé sur cet appareil » avec le serveur.
+      gP(88, 381, 160, 14, gText(real ? 'Session en cours uniquement' : 'Synchronisé', 11.5, Color(0xFF57545F))),
+      gP(319.2, 369, 32.8, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11]), show: !real),
+      gP(326.6, 373, 18, 14, gText('OK', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center), show: !real),
       gP(88, 413, 266, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(36, 426, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(44.667, 435.5, 22.667, 21, gImg('assets/figma/v/7565149e296580.svg')),
@@ -163,7 +165,7 @@ class G_150_1 extends ConsumerWidget {
       gP(282.5, 505, 55, 14, gText(real ? (r.messages == true ? 'OK' : (r.messages == null ? 'À vérifier' : 'Échec')) : 'En attente', 11, Color(0xFF8F5400), weight: 600, align: TextAlign.center)),
       gP(40, 571, 186, 17, gText('Mode économie de données', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 593, 133, 14, gText('Charger moins d’images', 11.5, Color(0xFF57545F))),
-      gP(308, 580, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
+      gP(308, 580, 42, 24, GToggle(on: ref.watch(dataPrefsProvider)['data_saver'] ?? true, onChanged: (v) => ref.read(dataPrefsProvider.notifier).set('data_saver', v), onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
       gP(40, 651, 147, 16, gText('Dernière synchronisation', 12.5, Color(0xFF57545F))),
       gP(245, 651, 105, 16, gText(real ? syncTime(ref.watch(lastSyncProvider), DateTime.now()) : 'Aujourd’hui 10:24', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
       gP(40, 676, 310, 1, gBox(color: Color(0xFFF2EFF6))),

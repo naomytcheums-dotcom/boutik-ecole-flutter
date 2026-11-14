@@ -98,7 +98,7 @@ class G_243 extends ConsumerWidget {
       gP(92, 687, 71, 24, gBox(color: Color(0xFFFFF1D6), radii: [100, 100, 100, 100]), show: demoContent),
       gP(104, 693, 47, 12, gText('En attente', 9.5, Color(0xFFB26A00), weight: 600), show: demoContent),
       gP(333, 676, 13, 16, gText('', 13, Color(0xFF57545F), weight: 700), show: demoContent),
-      gP(40, 432, 310, 300, Consumer(builder: (context, ref, _) => refereeList(ref.watch(referralProvider) ?? const ReferralSummary())), show: !demoContent),
+      gP(40, 432, 310, 300, Consumer(builder: (context, ref, _) => refereeList(ref.watch(referralProvider), signedOut: referralSignedOut(ref))), show: !demoContent),
       gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
       gP(47.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(47.125, 777.125, 20, 20, gImg('assets/figma/v/96285515fb0e14.svg')),

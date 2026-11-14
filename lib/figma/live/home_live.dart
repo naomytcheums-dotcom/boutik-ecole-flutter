@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../nav.dart';
-import 'auth.dart' show authProvider;
+import 'auth.dart' show authProvider, requireLogin;
 import 'backend.dart';
-import 'seller.dart' show allProductsProvider;
+import 'seller.dart' show allProductsProvider, platformListingsProvider;
 import 'store.dart';
 import 'talents.dart' show visibleTalentsProvider;
 
@@ -50,6 +50,8 @@ class TalentsNotifier extends Notifier<List<LiveTalent>?> {
   @override
   List<LiveTalent>? build() {
     if (!Backend.ready) return null;
+    // Relue à la connexion et à la déconnexion : la liste des talents est réservée aux comptes connectés.
+    ref.watch(authProvider.select((a) => a.current?.serverId));
     Future.microtask(refresh);
     return null;
   }
@@ -64,7 +66,8 @@ class TalentsNotifier extends Notifier<List<LiveTalent>?> {
 
 final liveTalentsProvider = NotifierProvider<TalentsNotifier, List<LiveTalent>?>(TalentsNotifier.new);
 
-/// « Talents à découvrir » : cartes défilantes horizontalement, avec chargement, état vide et invitation à se connecter.
+/// « Talents à découvrir » : cartes défilantes horizontalement, avec chargement, état vide, échec et, pour un visiteur
+/// (le serveur réserve la liste aux comptes connectés), un bouton « Se connecter ».
 class HomeTalents extends ConsumerWidget {
   const HomeTalents({super.key, this.width = 368, this.height = 200});
   final double width, height;
@@ -88,6 +91,8 @@ class HomeTalents extends ConsumerWidget {
             ],
           ]),
         );
+    final signedIn = ref.watch(authProvider.select((a) => a.current != null));
+    if (!signedIn) return note('Connectez-vous pour découvrir les talents.', action: 'Se connecter', onTap: () => requireLogin(context, ref, 'découvrir les talents'));
     final list = ref.watch(liveTalentsProvider);
     if (list == null) return note('Chargement des talents…');
     final failed = ref.read(liveTalentsProvider.notifier).error;
@@ -219,7 +224,13 @@ class _Avatar extends StatelessWidget {
   }
 }
 
-/// Deux produits publiés (les plus récents du catalogue), ou un état vide ; la photo vient de l'annonce, sinon un visuel neutre.
+/// Lecture du catalogue de la plateforme pour l'accueil : distingue « en cours » de « échec » (la liste vide seule ne le permet pas).
+final homeProductsReadProvider = FutureProvider.autoDispose<bool>((ref) async {
+  await ref.read(platformListingsProvider.notifier).refresh();
+  return ref.read(platformListingsProvider) != null;
+});
+
+/// Deux produits publiés (les plus récents du catalogue), ou un état de chargement, d'échec ou vide ; la photo vient de l'annonce, sinon un visuel neutre.
 class HomeProducts extends ConsumerWidget {
   const HomeProducts({super.key, this.width = 368, this.height = 229});
   final double width, height;
@@ -228,13 +239,25 @@ class HomeProducts extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final list = ref.watch(allProductsProvider).take(2).toList();
     if (list.isEmpty) {
-      return Container(
-        width: width,
-        height: height,
-        alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Text('Aucun produit publié pour le moment.\nLes créations des étudiants apparaîtront ici dès leur publication.', textAlign: TextAlign.center, style: _st(12.5, c: _grey).copyWith(height: 1.5)),
-      );
+      Widget note(String t, {VoidCallback? onTap}) => GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: onTap,
+            child: Container(
+              width: width,
+              height: height,
+              alignment: Alignment.center,
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Text(t, textAlign: TextAlign.center, style: _st(12.5, c: _grey).copyWith(height: 1.5)),
+            ),
+          );
+      if (ref.watch(platformListingsProvider) == null) {
+        final read = ref.watch(homeProductsReadProvider);
+        if (read.isLoading) return note('Chargement des produits…');
+        if (read.hasError || read.value == false) {
+          return note('Les produits ne peuvent pas être chargés pour le moment.\nToucher pour réessayer.', onTap: () => ref.invalidate(homeProductsReadProvider));
+        }
+      }
+      return note('Aucun produit publié pour le moment.\nLes créations des étudiants apparaîtront ici dès leur publication.');
     }
     return Row(children: [
       for (var i = 0; i < list.length; i++) ...[

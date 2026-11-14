@@ -17,9 +17,9 @@ class SyncReport {
   /// null : pas encore vérifié ; vrai : relu sur le serveur ; faux : lecture échouée.
   final bool? favorites, messages, orders;
 
-  /// Panier (conservé sur l'appareil, toujours à jour), favoris et messages : éléments à jour sur 3.
-  int get upToDate => 1 + (favorites == true ? 1 : 0) + (messages == true ? 1 : 0);
-  int get percent => (upToDate * 100 / 3).round();
+  /// Favoris et messages relus sur le serveur : éléments à jour sur 2 (le panier n'est pas enregistré : il n'est pas synchronisable).
+  int get upToDate => (favorites == true ? 1 : 0) + (messages == true ? 1 : 0);
+  int get percent => (upToDate * 100 / 2).round();
   bool get allOk => favorites == true && messages == true && orders == true;
 }
 

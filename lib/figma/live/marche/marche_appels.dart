@@ -62,6 +62,23 @@ String _budget(Map<String, dynamic> c) {
   return 'Budget : ${mFcfa(b ?? a)}';
 }
 
+/// Écran réservé aux comptes : invite le visiteur à se connecter plutôt que d'afficher le refus brut du serveur.
+Widget marcheLoginRequired(BuildContext context, WidgetRef ref, {required String title, required String pour}) => MarchePage(
+      title: title,
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            Text('Connexion requise', style: mst(17, w: FontWeight.w800)),
+            const SizedBox(height: 8),
+            Text('Connectez-vous pour $pour.', textAlign: TextAlign.center, style: mst(14, c: kGrey).copyWith(height: 1.5)),
+            const SizedBox(height: 16),
+            mButton('Se connecter', () => requireLogin(context, ref, pour)),
+          ]),
+        ),
+      ),
+    );
+
 class AppelsScreen extends ConsumerWidget {
   const AppelsScreen({super.key});
 
@@ -107,6 +124,7 @@ class AppelsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (Backend.ready && ref.watch(authProvider.select((a) => a.current == null))) return marcheLoginRequired(context, ref, title: 'Appel à entreprises', pour: 'consulter les appels à entreprises');
     return MarchePage(
       title: 'Appel à entreprises',
       child: ListView(padding: const EdgeInsets.only(bottom: 90), children: [
@@ -225,7 +243,7 @@ class ProjetsIutScreen extends ConsumerWidget {
                       Row(children: [
                         const Icon(Icons.verified_outlined, size: 16, color: kGreen),
                         const SizedBox(width: 6),
-                        Flexible(child: Text('Projet validé par l’IUT de Douala · ${p['owner']}', style: mst(11.5, w: FontWeight.w700, c: kGreen))),
+                        Flexible(child: Text('Projet validé par ${'${p['institution'] ?? ''}'.trim().isEmpty ? 'l’établissement' : '${p['institution']}'.trim()} · ${p['owner']}', style: mst(11.5, w: FontWeight.w700, c: kGreen))),
                       ]),
                       const SizedBox(height: 10),
                       Align(alignment: Alignment.centerLeft, child: mButton(p['voted'] == true ? 'Soutenu · ${mInt(p['votes'])}' : 'Soutenir · ${mInt(p['votes'])}', () => _support(context, ref, p), dark: p['voted'] != true, icon: p['voted'] == true ? Icons.thumb_up : Icons.thumb_up_outlined)),

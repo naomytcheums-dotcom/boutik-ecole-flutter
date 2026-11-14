@@ -69,12 +69,31 @@ void main() {
 
   testWidgets('31 connecté : avis réels du produit choisi', (t) async {
     final c = await monter(t, const G_31(), connecte: true, overrides: [
-      productReviewsProvider.overrideWith(() => _Rows('table:reviews', const []))
+      productReviewsProvider.overrideWith((ref, title) async => const <Map<String, dynamic>>[])
     ]);
     final titre = c.read(selectedProductProvider).title;
     expect(find.textContaining('Aucun avis pour'), findsOneWidget);
+    expect(find.textContaining('dont l’article a été préparé'), findsOneWidget);
     expect(find.textContaining(titre), findsWidgets);
     expect(find.text('(24 avis)'), findsNothing);
+  });
+
+  testWidgets('31 : erreur de lecture distinguée du vide', (t) async {
+    await monter(t, const G_31(), connecte: true, overrides: [
+      productReviewsProvider.overrideWith((ref, title) async => throw StateError('x'))
+    ]);
+    expect(find.textContaining('Les avis ne peuvent pas être chargés'), findsOneWidget);
+    expect(find.textContaining('Aucun avis pour'), findsNothing);
+  });
+
+  testWidgets('31 : avis publics affichés et texte vide exact', (t) async {
+    await monter(t, const G_31(), connecte: true, overrides: [
+      productReviewsProvider.overrideWith((ref, title) async => [
+            {'rating': 4, 'comment': 'Très bien fini', 'created_at': '2026-11-01T10:00:00Z'}
+          ])
+    ]);
+    expect(find.text('Très bien fini'), findsOneWidget);
+    expect(find.text('1 avis'), findsOneWidget);
   });
 
   testWidgets('27 et 31 hors connexion : la démonstration reste affichée', (t) async {

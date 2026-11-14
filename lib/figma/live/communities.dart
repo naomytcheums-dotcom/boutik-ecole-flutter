@@ -4,9 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gen.dart';
+import 'access.dart' show roleKey;
 import 'auth.dart';
 import 'backend.dart';
 import 'communities_screens.dart';
+import 'store.dart' show IntV;
 
 export 'communities_screens.dart';
 
@@ -176,6 +178,8 @@ class CommunitiesNotifier extends Notifier<List<Community>?> {
   @override
   List<Community>? build() {
     if (!Backend.ready) return null;
+    // l'état de la personne (membre, demande en attente…) dépend du compte : la liste est relue à chaque connexion ou déconnexion
+    ref.watch(authProvider.select((a) => a.current?.serverId));
     Future.microtask(refresh);
     return null;
   }
@@ -194,6 +198,9 @@ class CommunitiesNotifier extends Notifier<List<Community>?> {
 }
 
 final communitiesProvider = NotifierProvider<CommunitiesNotifier, List<Community>?>(CommunitiesNotifier.new);
+
+/// Pastille active de l'écran 103 : 0 Anciens (membres), 1 Mentors (ouvre le réseau des mentors), 2 Groupes (liste des communautés).
+final communityTabProvider = NotifierProvider<IntV, int>(IntV.new);
 
 class CommunitiesMessage extends Notifier<String> {
   @override
@@ -293,6 +300,8 @@ class CommunitiesList extends ConsumerWidget {
 /// Communautés en attente de validation (lecture réservée à l'équipe : le serveur renvoie une liste vide aux autres).
 final communitiesPendingProvider = FutureProvider<List<Map<String, dynamic>>>((ref) async {
   if (!Backend.ready) return const [];
+  // la liste n'est lue que par l'équipe : inutile d'interroger le serveur pour un visiteur ou un compte ordinaire
+  if (!const {'admin', 'support'}.contains(roleKey(ref.watch(authProvider.select((a) => a.current))))) return const [];
   final r = await Backend.rpc('communities_pending', {});
   if (r.error != null || r.data is! List) return const [];
   return [for (final x in r.data as List) Map<String, dynamic>.from(x as Map)];

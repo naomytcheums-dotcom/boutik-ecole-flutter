@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
+import '../i18n.dart' show I18n;
 import '../nav.dart';
 import '../live/payment_methods_page.dart';
 import '../live/profile_data.dart';
@@ -85,7 +86,7 @@ class G_148_1 extends ConsumerWidget {
       gP(49.667, 506.667, 12.667, 22.667, gImg('assets/figma/v/60f10615a145da.svg')),
       gP(44.667, 515, 22.667, 6, gImg('assets/figma/v/a036c8587a1cff.svg')),
       gP(88, 509, 129, 17, gText('Langue et affichage', 13.5, Color(0xFF111015), weight: 600)),
-      gP(295, 509, 55, 17, gText('Français', 13.5, Color(0xFF57545F), weight: 700, align: TextAlign.right)),
+      gP(295, 509, 55, 17, ValueListenableBuilder<String>(valueListenable: I18n.notifier, builder: (_, lang, _) => gText(lang == 'en' ? 'English' : 'Français', 13.5, Color(0xFF57545F), weight: 700, align: TextAlign.right))),
       gP(88, 544, 266, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(36, 550, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(44.667, 558.667, 22.667, 22.667, gImg('assets/figma/v/fea5b000abca5c.svg')),
@@ -93,7 +94,14 @@ class G_148_1 extends ConsumerWidget {
       gP(53, 571.167, 6.008, 6, gImg('assets/figma/v/7a0aba9eeb97a7.svg')),
       gP(88, 561, 101, 17, gText('Aide et support', 13.5, Color(0xFF111015), weight: 600)),
       gP(336.75, 562.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
-      gP(24, 610, 342, 50, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE5484D), bw: 1.5, radii: [25, 25, 25, 25])),
+      gP(24, 610, 342, 50, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE5484D), bw: 1.5, radii: [25, 25, 25, 25]), tap: () {
+        // Compte connecté : vraie déconnexion (remise à zéro de l'application) ; visiteur : rien à fermer, on propose de se connecter.
+        if (ref.read(authProvider).current != null) {
+          ref.read(authProvider.notifier).logout();
+        } else {
+          gOpen(context, '11');
+        }
+      }),
       gP(151, 626, 113, 18, gText('Se déconnecter', 14.5, Color(0xFFE5484D), weight: 600, align: TextAlign.center)),
       gP(125.125, 625.625, 10.25, 18.75, gImg('assets/figma/v/9fe923cd01fc4e.svg')),
       gP(134.333, 628.458, 9.542, 13.083, gImg('assets/figma/v/ec3a284b9561d3.svg')),

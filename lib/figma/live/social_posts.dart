@@ -18,6 +18,7 @@ import 'backend.dart';
 import 'dictation_stub.dart' if (dart.library.js_interop) 'dictation_web.dart';
 import 'download_stub.dart' if (dart.library.js_interop) 'download_web.dart' show saveRemoteFile;
 import 'reels.dart';
+import 'seller.dart' show Listing;
 import 'share.dart';
 import 'store.dart' show nowProvider;
 import 'talents.dart' show askText;
@@ -339,7 +340,7 @@ Future<({String path, String kind, String mime})?> uploadPostMedia(BuildContext 
   final bytes = await f.readAsBytes();
   if (!context.mounted) return null;
   if (bytes.length > 50 * 1024 * 1024) {
-    await gAlert(context, 'Fichier trop lourd', '50 Mo au maximum par fichier (vidéo de 60 secondes au plus).');
+    await gAlert(context, 'Fichier trop lourd', '50 Mo au maximum par fichier. Une vidéo verticale dure 3 min au plus, une vidéo horizontale 5 min au plus.');
     return null;
   }
   final uid = Supabase.instance.client.auth.currentUser?.id ?? '';
@@ -384,7 +385,7 @@ final postCommentsProvider = FutureProvider.autoDispose.family<List<PostComment>
   if (r.error != null || r.data is! List) r = await Backend.rpc('post_comment_list', {'p_post': postId, 'p_limit': 200});
   if (r.error != null || r.data is! List) throw Exception('Les commentaires ne peuvent pas être chargés pour le moment.');
   return [for (final x in r.data as List) PostComment.fromRow(x as Map)];
-});
+}, retry: (_, _) => null);
 
 /// « Commenter » : feuille inférieure par-dessus l'écran, la publication (ou la vidéo) reste visible au-dessus.
 Future<void> showCommentsSheet(BuildContext context, String postId) => showModalBottomSheet<void>(
@@ -411,9 +412,21 @@ class _CommentsSheetState extends ConsumerState<_CommentsSheet> {
   PlatformFile? _file;
   bool _sending = false, _listening = false;
   String _before = '';
+  DateTime _now = DateTime.now();
+  Timer? _tick;
+
+  @override
+  void initState() {
+    super.initState();
+    // les heures relatives (« 5 min ») se recalculent chaque minute tant que la feuille est ouverte
+    _tick = Timer.periodic(const Duration(minutes: 1), (_) {
+      if (mounted) setState(() => _now = DateTime.now());
+    });
+  }
 
   @override
   void dispose() {
+    _tick?.cancel();
     _dictation.stop();
     _text.dispose();
     _focus.dispose();
@@ -456,7 +469,7 @@ class _CommentsSheetState extends ConsumerState<_CommentsSheet> {
     final body = _text.text.trim();
     if (body.isEmpty && _file == null) return;
     if (!Backend.ready) return gToast(context, 'Les commentaires nécessitent la connexion au serveur.');
-    if (ref.read(authProvider).current == null) return gToast(context, 'Connectez-vous pour commenter.');
+    if (!await requireLogin(context, ref, 'commenter') || !mounted) return;
     setState(() => _sending = true);
     String? path, kind;
     if (_file != null) {
@@ -469,7 +482,8 @@ class _CommentsSheetState extends ConsumerState<_CommentsSheet> {
       kind = up.kind;
     }
     var res = await Backend.rpc('add_post_comment_v2', {'p_post': widget.postId, 'p_body': body, 'p_parent': _replyTo?.id, 'p_attachment_path': path, 'p_attachment_kind': kind});
-    if (res.error != null && path == null && (res.error!.toLowerCase().contains('add_post_comment_v2') || res.error!.toLowerCase().contains('could not find'))) {
+    // serveur pas encore migré : `Backend.rpc` renvoie alors le message normalisé « fonction non disponible » (code PGRST202)
+    if (res.error != null && path == null && _functionMissing(res.error!)) {
       res = await Backend.rpc('add_post_comment', {'p_post': widget.postId, 'p_body': body, 'p_parent': _replyTo?.id});
     }
     if (!mounted) return;
@@ -479,14 +493,21 @@ class _CommentsSheetState extends ConsumerState<_CommentsSheet> {
     setState(() {
       _replyTo = null;
       _file = null;
+      _now = DateTime.now();
     });
     FocusScope.of(context).unfocus();
     ref.invalidate(postCommentsProvider(widget.postId));
     ref.read(reelsProvider.notifier).patch(widget.postId, (x) => x.copyWith(comments: x.comments + 1));
   }
 
+  /// Fonction serveur absente : message normalisé par `Backend` (« pas disponible »), texte brut de PostgREST ou code PGRST202.
+  static bool _functionMissing(String e) {
+    final m = e.toLowerCase();
+    return m.contains('pas disponible') || m.contains('could not find') || m.contains('pgrst202') || m.contains('add_post_comment_v2');
+  }
+
   Future<void> _like(PostComment c) async {
-    if (ref.read(authProvider).current == null) return gToast(context, 'Connectez-vous pour réagir.');
+    if (!await requireLogin(context, ref, 'réagir à un commentaire') || !mounted) return;
     final r = await Backend.rpc('toggle_comment_like', {'p_comment': c.id});
     if (!mounted) return;
     if (r.error != null) return gToast(context, Backend.userMessage(r.error!));
@@ -564,7 +585,7 @@ class _CommentsSheetState extends ConsumerState<_CommentsSheet> {
       );
 
   Widget _row(PostComment c, int depth) {
-    final now = ref.watch(nowProvider);
+    final now = _now;
     return Padding(
       padding: EdgeInsets.only(left: depth * 38.0, top: 10, bottom: 4),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -587,6 +608,10 @@ class _CommentsSheetState extends ConsumerState<_CommentsSheet> {
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
+                  if (Backend.ready && ref.read(authProvider).current == null) {
+                    requireLogin(context, ref, 'répondre à un commentaire');
+                    return;
+                  }
                   setState(() => _replyTo = c);
                   _focus.requestFocus();
                 },
@@ -618,7 +643,11 @@ class _CommentsSheetState extends ConsumerState<_CommentsSheet> {
       decoration: const BoxDecoration(color: Colors.white, border: Border(top: BorderSide(color: kLine))),
       padding: EdgeInsets.fromLTRB(10, 8, 10, 10 + bottomZone),
       child: !signedIn
-          ? Padding(padding: const EdgeInsets.symmetric(vertical: 10), child: Center(child: Text('Connectez-vous pour commenter.', style: sty(13, c: kGrey))))
+          ? GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => requireLogin(context, ref, 'commenter'),
+              child: Padding(padding: const EdgeInsets.symmetric(vertical: 10), child: Center(child: Text('Connectez-vous pour commenter.', style: sty(13, c: kGrey)))),
+            )
           : Column(mainAxisSize: MainAxisSize.min, children: [
               if (_replyTo != null)
                 Padding(
@@ -695,7 +724,7 @@ Future<void> copyPostLink(BuildContext context, Reel r) async {
 
 Future<void> toggleSavePost(BuildContext context, WidgetRef ref, Reel r) async {
   if (!Backend.ready) return gToast(context, 'Publication enregistrée (démonstration)');
-  if (ref.read(authProvider).current == null) return gToast(context, 'Connectez-vous pour enregistrer une publication.');
+  if (!await requireLogin(context, ref, 'enregistrer une publication') || !context.mounted) return;
   ref.read(reelsProvider.notifier).patch(r.id, (x) => x.copyWith(saved: !x.saved, saves: x.saved ? (x.saves - 1).clamp(0, 1 << 30) : x.saves + 1));
   final res = await Backend.rpc('toggle_post_save', {'p_post': r.id});
   if (res.error != null) {
@@ -784,9 +813,8 @@ Future<void> showPostMenu(BuildContext context, WidgetRef ref, Reel r) {
 /// Médias d'une publication : défilement horizontal sans limite de nombre, indicateurs de pagination, proportions d'origine préservées
 /// (jamais rognées : l'image est contenue dans un cadre aux proportions de la première photo).
 class MediaCarousel extends StatefulWidget {
-  const MediaCarousel({super.key, required this.media, this.onOpenReels});
+  const MediaCarousel({super.key, required this.media});
   final List<ReelMedia> media;
-  final VoidCallback? onOpenReels;
   @override
   State<MediaCarousel> createState() => _MediaCarouselState();
 }
@@ -816,7 +844,7 @@ class _MediaCarouselState extends State<MediaCarousel> {
             itemCount: m.length,
             onPageChanged: (v) => setState(() => _i = v),
             itemBuilder: (_, k) => m[k].video
-                ? InlineVideo(url: m[k].url, onFull: widget.onOpenReels)
+                ? InlineVideo(url: m[k].url)
                 : gNetImage(m[k].url, fit: BoxFit.contain, width: double.infinity, height: double.infinity, errorBuilder: (_, _, _) => const Center(child: Icon(Icons.broken_image_outlined, color: kGrey)), loadingBuilder: (_, child, p) => p == null ? child : const Center(child: SizedBox(width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2)))),
           ),
         ),
@@ -839,9 +867,8 @@ class _MediaCarouselState extends State<MediaCarousel> {
 
 /// Vidéo lue dans le fil : l'image d'attente devient une lecture au toucher (le fichier n'est chargé qu'à la demande).
 class InlineVideo extends StatefulWidget {
-  const InlineVideo({super.key, required this.url, this.onFull});
+  const InlineVideo({super.key, required this.url});
   final String url;
-  final VoidCallback? onFull;
   @override
   State<InlineVideo> createState() => _InlineVideoState();
 }
@@ -920,11 +947,6 @@ class PostCard extends ConsumerStatefulWidget {
 
 class _PostCardState extends ConsumerState<PostCard> {
   bool _more = false;
-
-  void _openReels() {
-    ref.read(reelIndexProvider.notifier).set(widget.index < 0 ? 0 : widget.index);
-    gOpen(context, '245');
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -1014,7 +1036,7 @@ class _PostCardState extends ConsumerState<PostCard> {
               padding: const EdgeInsets.only(top: 10),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 if (rx != null) Padding(padding: const EdgeInsets.only(bottom: 6), child: Text(rx.kind == 'duet' ? 'Duo${orig == null || orig.author.isEmpty ? '' : ' avec ${orig.author}'}' : 'Remix${orig == null || orig.author.isEmpty ? '' : ' de ${orig.author}'}', style: sty(12, w: FontWeight.w700, c: const Color(0xFF5A3FE0)))),
-                if (rx != null && rx.kind == 'duet' && post.allMedia.first.video) DuetView(originalId: rx.of, url: post.allMedia.first.url) else MediaCarousel(media: post.allMedia, onOpenReels: _openReels),
+                if (rx != null && rx.kind == 'duet' && post.allMedia.first.video) DuetView(originalId: rx.of, url: post.allMedia.first.url) else MediaCarousel(media: post.allMedia),
               ]),
             );
           }),
@@ -1075,11 +1097,27 @@ class _ComposerSheet extends ConsumerStatefulWidget {
 }
 
 class _ComposerSheetState extends ConsumerState<_ComposerSheet> {
+  static const _captionWithMedia = 300; // le serveur tronque la légende à 300 caractères dès qu'un média est joint
   final _text = TextEditingController(), _link = TextEditingController();
   final List<PlatformFile> _files = [];
+  List<Listing> _listings = const []; // annonces approuvées du compte, à relier à la publication (facultatif)
+  String? _listingId;
   DateTime? _at; // publication programmée (jusqu'à 6 mois)
   bool _busy = false;
   String _step = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadListings();
+  }
+
+  Future<void> _loadListings() async {
+    if (!Backend.ready || ref.read(authProvider).current == null) return;
+    final all = await Backend.myListings();
+    if (!mounted) return;
+    setState(() => _listings = [for (final l in all) if (l.status == 'approved' && !l.platform && l.id.isNotEmpty) l]);
+  }
 
   @override
   void dispose() {
@@ -1089,6 +1127,7 @@ class _ComposerSheetState extends ConsumerState<_ComposerSheet> {
   }
 
   Future<void> _pick() async {
+    if (!await requireLogin(context, ref, 'publier') || !mounted) return;
     final p = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: const ['mp4', 'mov', 'jpg', 'jpeg', 'png', 'webp', 'gif']);
     if (p.isEmpty || !mounted) return;
     setState(() {
@@ -1104,6 +1143,7 @@ class _ComposerSheetState extends ConsumerState<_ComposerSheet> {
   /// Choix de la date et de l'heure de publication (de dans 5 minutes à 6 mois) ; un second appui annule la programmation.
   Future<void> _pickSchedule() async {
     if (_at != null) return setState(() => _at = null);
+    if (!await requireLogin(context, ref, 'publier') || !mounted) return;
     final now = DateTime.now();
     final d = await pickDate(context: context, initialDate: now.add(const Duration(days: 1)), firstDate: now, lastDate: now.add(const Duration(days: 183)), helpText: 'Date de publication');
     if (d == null || !mounted) return;
@@ -1117,7 +1157,10 @@ class _ComposerSheetState extends ConsumerState<_ComposerSheet> {
   Future<void> _publish() async {
     final txt = _text.text.trim(), link = _link.text.trim();
     if (txt.isEmpty && link.isEmpty && _files.isEmpty) return gToast(context, 'Écrivez un texte ou ajoutez un média ou un lien.');
+    if (_files.isNotEmpty && txt.length > _captionWithMedia) return gToast(context, 'Avec un média, la légende fait $_captionWithMedia caractères au plus (la vôtre : ${txt.length}).');
     if (link.isNotEmpty && !RegExp(r'^https?://\S+$', caseSensitive: false).hasMatch(link)) return gToast(context, 'Le lien doit commencer par http:// ou https://');
+    if (!await requireLogin(context, ref, 'publier') || !mounted) return;
+    final feed = ref.read(reelsProvider.notifier);
     setState(() => _busy = true);
     final uploaded = <Map<String, dynamic>>[];
     for (var i = 0; i < _files.length; i++) {
@@ -1167,11 +1210,12 @@ class _ComposerSheetState extends ConsumerState<_ComposerSheet> {
       final when = _at!;
       widget.page ? gBack(context) : nav.pop();
       messenger?.showSnackBar(SnackBar(content: Text('Publication programmée le ${_fmt(when)}'), behavior: SnackBarBehavior.floating));
+      unawaited(feed.refresh());
       return;
     }
     setState(() => _step = 'Publication…');
     final tags = [for (final m in RegExp(r'#([\p{L}\p{N}_-]{2,30})', unicode: true).allMatches(txt)) m.group(1)!];
-    final res = await Backend.rpc('create_post_v2', {'p_caption': txt, 'p_media': uploaded, 'p_link': link.isEmpty ? null : link, 'p_tags': tags, 'p_listing': null, 'p_repost_of': null});
+    final res = await Backend.rpc('create_post_v2', {'p_caption': txt, 'p_media': uploaded, 'p_link': link.isEmpty ? null : link, 'p_tags': tags, 'p_listing': _listingId, 'p_repost_of': null});
     if (!mounted) return;
     if (res.error != null) {
       try {
@@ -1195,10 +1239,42 @@ class _ComposerSheetState extends ConsumerState<_ComposerSheet> {
               Expanded(child: Text('Nouvelle publication', style: sty(16, w: FontWeight.w700))),
               IconButton(onPressed: _busy ? null : () => Navigator.of(context).pop(), icon: const Icon(Icons.close)),
             ]),
-            TextField(controller: _text, minLines: 4, maxLines: 8, maxLength: 2000, enabled: !_busy, style: sty(14), decoration: InputDecoration(hintText: 'Quoi de neuf ? Ajoutez des mots-clés avec #', hintStyle: sty(14, c: kGrey), border: const OutlineInputBorder(), counterText: '')),
+            TextField(
+              controller: _text,
+              minLines: 4,
+              maxLines: 8,
+              maxLength: _files.isEmpty ? 2000 : _captionWithMedia,
+              enabled: !_busy,
+              onChanged: (_) {
+                if (_files.isNotEmpty) setState(() {});
+              },
+              style: sty(14),
+              decoration: InputDecoration(
+                hintText: 'Quoi de neuf ? Ajoutez des mots-clés avec #',
+                hintStyle: sty(14, c: kGrey),
+                border: const OutlineInputBorder(),
+                counterText: _files.isEmpty ? '' : null,
+                helperText: _files.isEmpty ? null : '$_captionWithMedia caractères au plus avec un média',
+                helperStyle: sty(12, c: kGrey),
+              ),
+            ),
             const SizedBox(height: 10),
             TextField(controller: _link, enabled: !_busy, keyboardType: TextInputType.url, style: sty(14), decoration: InputDecoration(prefixIcon: const Icon(Icons.link), hintText: 'Lien (facultatif)', hintStyle: sty(14, c: kGrey), border: const OutlineInputBorder(), isDense: true)),
             const SizedBox(height: 10),
+            if (_at == null && _listings.isNotEmpty) ...[
+              DropdownButtonFormField<String?>(
+                initialValue: _listingId,
+                isExpanded: true,
+                decoration: InputDecoration(prefixIcon: const Icon(Icons.storefront_outlined), hintStyle: sty(14, c: kGrey), border: const OutlineInputBorder(), isDense: true),
+                hint: Text('Relier à une annonce (facultatif)', style: sty(14, c: kGrey)),
+                items: [
+                  DropdownMenuItem<String?>(value: null, child: Text('Aucune annonce', style: sty(14))),
+                  for (final l in _listings) DropdownMenuItem<String?>(value: l.id, child: Text(l.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: sty(14))),
+                ],
+                onChanged: _busy ? null : (v) => setState(() => _listingId = v),
+              ),
+              const SizedBox(height: 10),
+            ],
             if (_files.isNotEmpty)
               SizedBox(
                 height: 74,

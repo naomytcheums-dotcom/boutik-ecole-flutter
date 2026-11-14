@@ -63,7 +63,11 @@ Deno.serve(async (req) => {
           user_id: user.id, phone, channel, code_hash: await hashCode(user.id, code), expires_at: new Date(Date.now() + CODE_TTL_MS).toISOString(),
         });
         if (error) throw error;
-        try { await sendTwilio(channel, phone, smsText(code)); } catch (e) { console.error("envoi du code", String(e)); }
+        // Envoi en arrière-plan, sans l'attendre : un compte inconnu répond instantanément, un compte existant doit répondre aussi vite
+        // (sinon l'écart de durée révélerait l'existence du compte). Un échec d'envoi est seulement journalisé.
+        const envoi = sendTwilio(channel, phone, smsText(code)).catch((e) => console.error("envoi du code", String(e)));
+        const runtime = (globalThis as unknown as { EdgeRuntime?: { waitUntil?: (p: Promise<unknown>) => void } }).EdgeRuntime;
+        if (runtime?.waitUntil) runtime.waitUntil(envoi);
         return jsonResponse(req, same);
       }
 

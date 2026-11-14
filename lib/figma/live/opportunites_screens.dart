@@ -7,9 +7,12 @@ import 'package:go_router/go_router.dart';
 
 import '../gen.dart' show gToast;
 import '../i18n.dart' show Text;
+import 'access.dart' show roleKey;
 import 'auth.dart';
 import 'backend.dart';
+import 'talents.dart' show askText;
 import 'marche/marche_data.dart';
+import 'marche/marche_appels.dart' show marcheLoginRequired;
 import 'marche/marche_widgets.dart';
 import 'share.dart' show openUrl, shareText, siteUrl;
 import 'social_posts.dart' show uploadPostMedia;
@@ -115,6 +118,7 @@ final oppAlertProvider = FutureProvider.autoDispose<bool>((ref) async {
 });
 
 Widget _box(Widget child, {EdgeInsets margin = const EdgeInsets.fromLTRB(16, 0, 16, 10)}) => Container(margin: margin, padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(4), border: Border.all(color: kLine)), child: child);
+
 
 Widget _pill(String s, Color c) => Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3), decoration: BoxDecoration(color: c.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(4)), child: Text(s, style: mst(10.5, w: FontWeight.w700, c: c)));
 
@@ -227,9 +231,13 @@ class _OppsState extends ConsumerState<OpportunitiesScreen> {
   Future<void> _alert(bool on) async {
     if (!await requireLogin(context, ref, 'activer l’alerte filière') || !mounted) return;
     final dept = ref.read(authProvider).current?.department ?? '';
-    if (await _call(context, 'opp_alert_set', {'p_department': dept, 'p_on': on}, ok: on ? 'Alerte activée : vous serez prévenu des nouvelles offres de votre filière.' : 'Alerte désactivée.')) {
-      ref.invalidate(oppAlertProvider);
-    }
+    // le serveur retrouve l'alerte par la filière : sans filière au profil, il refuse même la désactivation
+    if (!on && dept.trim().length < 2) return gToast(context, 'Pour désactiver l’alerte, renseignez d’abord votre filière dans votre profil : elle sert à retrouver votre alerte.');
+    if (!await _call(context, 'opp_alert_set', {'p_department': dept, 'p_on': on}, ok: on ? 'Alerte activée : vous serez prévenu des nouvelles offres de votre filière.' : null)) return;
+    ref.invalidate(oppAlertProvider);
+    if (on) return;
+    final still = await ref.read(oppAlertProvider.future);
+    if (mounted) gToast(context, still ? 'L’alerte n’a pas pu être retirée : elle porte sur une autre filière que celle de votre profil.' : 'Alerte désactivée.');
   }
 
   Widget _section(String title, OppQuery q, {int max = 3}) {
@@ -240,7 +248,7 @@ class _OppsState extends ConsumerState<OpportunitiesScreen> {
       data: (l) => l.isEmpty
           ? const SizedBox.shrink()
           : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              mSectionTitle(title, trailing: l.length > max ? GestureDetector(onTap: () => _set(_query.copy(section: q.section)), child: Text('Voir tout', style: mst(12.5, w: FontWeight.w600, c: kViolet))) : null),
+              mSectionTitle(title, trailing: l.length > max ? GestureDetector(onTap: () => _set(_query.copy(section: q.section, paid: q.paid ? true : null, iut: q.iut ? true : null)), child: Text('Voir tout', style: mst(12.5, w: FontWeight.w600, c: kViolet))) : null),
               for (final o in l.take(max)) OpportunityCard(o: o, onTap: () => context.push('/opportunites/${o['id']}'), onSave: () => _save(o)),
             ]),
     );
@@ -393,8 +401,8 @@ class OpportunityDetailScreen extends ConsumerWidget {
   static final _tracked = <String>{};
 
   /// Enregistre la vue une seule fois par ouverture de l'écran (le serveur la compte une fois par personne et par jour).
-  static void _trackView(String id) {
-    if (!Backend.ready || !_tracked.add(id)) return;
+  static void _trackView(String id, bool signedIn) {
+    if (!Backend.ready || !signedIn || !_tracked.add(id)) return;
     marcheCall('opp_view_track', {'p_id': id});
   }
 
@@ -411,7 +419,7 @@ class OpportunityDetailScreen extends ConsumerWidget {
     return MarchePage(
       title: 'Offre',
       child: mAsync<Map<String, dynamic>>(ref.watch(oppDetailProvider(id)), (o) {
-        if (o['mine'] != true && o['status'] == 'published') _trackView(id);
+        if (o['mine'] != true && o['status'] == 'published') _trackView(id, ref.read(authProvider).current != null);
         final app = o['my_application'] is Map ? Map<String, dynamic>.from(o['my_application'] as Map) : null;
         final wa = '${o['apply_whatsapp']}';
         final deadline = DateTime.tryParse('${o['deadline']}');
@@ -507,6 +515,7 @@ class MyOpportunitiesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (Backend.ready && ref.watch(authProvider.select((a) => a.current == null))) return marcheLoginRequired(context, ref, title: 'Mes opportunités', pour: 'voir vos candidatures, vos favoris et vos offres');
     final posted = ref.watch(oppMyPostedProvider).value ?? const <Map<String, dynamic>>[];
     final staff = (ref.watch(authProvider).current?.staff ?? '').isNotEmpty;
     return MarchePage(
@@ -578,7 +587,9 @@ class _PostedCard extends ConsumerWidget {
       if (pending && (ref.watch(authProvider).current?.staff ?? '').isNotEmpty)
         Row(children: [
           Expanded(child: mButton('Refuser', () async {
-            if (await _call(context, 'opp_decide', {'p_id': o['id'], 'p_approve': false, 'p_note': 'Offre non conforme aux règles de publication'}, ok: 'Offre refusée.')) ref.invalidate(oppMyPostedProvider);
+            final why = await askText(context, title: 'Refuser cette offre', body: 'Le motif sera communiqué à l’organisation qui l’a déposée.', hint: 'Motif du refus', ok: 'Refuser', min: 3);
+            if (why == null || !context.mounted) return;
+            if (await _call(context, 'opp_decide', {'p_id': o['id'], 'p_approve': false, 'p_note': why}, ok: 'Offre refusée.')) ref.invalidate(oppMyPostedProvider);
           }, dark: false)),
           const SizedBox(width: 8),
           Expanded(child: mButton('Publier', () async {
@@ -821,6 +832,11 @@ class _EditState extends ConsumerState<OpportunityEditScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final account = ref.watch(authProvider).current;
+    if (Backend.ready && account == null) return marcheLoginRequired(context, ref, title: 'Publier une offre', pour: 'publier une offre');
+    if (Backend.ready && const ['student', 'client'].contains(roleKey(account))) {
+      return MarchePage(title: 'Publier une offre', child: mNote('Réservé aux entreprises, ONG, startups et à l’équipe de l’IUT.'));
+    }
     return MarchePage(
       title: 'Publier une offre',
       child: ListView(padding: const EdgeInsets.fromLTRB(16, 4, 16, 90), children: [

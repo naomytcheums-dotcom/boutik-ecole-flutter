@@ -291,8 +291,14 @@ class TalentAvatar extends ConsumerWidget {
 /// Membres de la communauté (écran 103) : les vrais profils étudiants, avec ouverture de leur profil public.
 /// Chargement, état vide et erreur ; aucun nom de maquette hors démonstration.
 class CommunityMembers extends ConsumerWidget {
-  const CommunityMembers({super.key, this.width = 342, this.height = 190, this.studentProfile = false});
+  const CommunityMembers({super.key, this.width = 342, this.height = 190, this.studentProfile = false, this.onlyIds, this.trailing});
   final double width, height;
+
+  /// Quand il est renseigné, seuls ces étudiants sont affichés (une liste du vivier).
+  final Set<String>? onlyIds;
+
+  /// Bouton affiché à droite de chaque ligne (l'étoile « Enregistrer » du vivier).
+  final Widget Function(LiveTalent talent)? trailing;
 
   /// Vrai depuis « Rechercher des talents » : ouvre le profil étudiant, pas le profil du réseau social.
   final bool studentProfile;
@@ -301,7 +307,8 @@ class CommunityMembers extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final me = ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
     final all = ref.watch(liveTalentsProvider);
-    final list = all == null ? null : [for (final t in all) if (t.id != me) t]; // son propre profil n'est jamais proposé comme un autre membre
+    final only = onlyIds;
+    final list = all == null ? null : [for (final t in all) if (t.id != me && (only == null || only.contains(t.id))) t]; // son propre profil n'est jamais proposé comme un autre membre
     final failed = ref.read(liveTalentsProvider.notifier).error;
     Widget note(String t) => Container(
           width: width,
@@ -337,6 +344,7 @@ class CommunityMembers extends ConsumerWidget {
                   Text([if (t.department.isNotEmpty) t.department, t.skills].join(' · '), maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(11.5, c: _grey)),
                 ]),
               ),
+              if (trailing != null) trailing!(t),
               const SizedBox(width: 8),
               Container(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6), decoration: BoxDecoration(color: const Color(0xFFEFEBFA), borderRadius: BorderRadius.circular(11)), child: Text('Voir le profil', style: _st(11, w: FontWeight.w600, c: const Color(0xFF5A3FE0)))),
             ]),

@@ -6,6 +6,7 @@ import 'auth.dart';
 import 'backend.dart';
 import 'console.dart';
 import 'home_live.dart';
+import 'talent_pool.dart';
 import 'store.dart' show fcfa;
 
 /// Espace entreprise (écrans 91, 93, 95, 96, 98, 99) : besoins publiés, propositions reçues, devis, défis et collaborations lus sur
@@ -159,12 +160,55 @@ Widget contestsListWidget() => MobileList(
     );
 
 /// Recherche de talents (écran 91) : les vrais profils étudiants, avec accès à leur profil public.
-class TalentSearchList extends ConsumerWidget {
+class TalentSearchList extends ConsumerStatefulWidget {
   const TalentSearchList({super.key, this.width = 342, this.height = 500});
   final double width, height;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => CommunityMembers(width: width, height: height, studentProfile: true);
+  ConsumerState<TalentSearchList> createState() => _TalentSearchListState();
+}
+
+class _TalentSearchListState extends ConsumerState<TalentSearchList> {
+  String _list = ''; // vide : tous les étudiants ; sinon l'identifiant d'une liste du vivier
+
+  @override
+  Widget build(BuildContext context) {
+    final lists = ref.watch(talentListsProvider).asData?.value ?? const <Map<String, dynamic>>[];
+    final saved = ref.watch(talentSavedIdsProvider).asData?.value ?? const <String>{};
+    final only = _list.isEmpty ? null : (ref.watch(talentListMembersProvider(_list)).asData?.value ?? const <String>{});
+    Widget chip(String id, String label) => Padding(
+          padding: const EdgeInsets.only(right: 6),
+          child: ChoiceChip(label: Text(label), selected: _list == id, onSelected: (_) => setState(() => _list = id), visualDensity: VisualDensity.compact),
+        );
+    return SizedBox(
+      width: widget.width,
+      height: widget.height,
+      child: Column(children: [
+        SizedBox(
+          height: 40,
+          child: ListView(scrollDirection: Axis.horizontal, children: [
+            chip('', 'Tous'),
+            for (final l in lists) chip('${l['id']}', '${l['name']} (${(l['count'] as num?)?.toInt() ?? 0})'),
+          ]),
+        ),
+        const SizedBox(height: 6),
+        Expanded(
+          child: CommunityMembers(
+            width: widget.width,
+            height: widget.height - 46,
+            studentProfile: true,
+            onlyIds: only,
+            trailing: (t) => IconButton(
+              tooltip: saved.contains(t.id) ? 'Dans mes listes' : 'Enregistrer dans une liste',
+              visualDensity: VisualDensity.compact,
+              onPressed: () => showTalentListsSheet(context, ref, studentId: t.id, studentName: t.name),
+              icon: Icon(saved.contains(t.id) ? Icons.star_rounded : Icons.star_border_rounded, color: saved.contains(t.id) ? const Color(0xFFF5A623) : const Color(0xFF57545F)),
+            ),
+          ),
+        ),
+      ]),
+    );
+  }
 }
 
 String projectStatus(Object? s) => switch ('$s') { 'approved' => 'Validé', 'submitted' => 'À valider', 'draft' => 'Brouillon', 'rejected' => 'Refusé', _ => '$s' };

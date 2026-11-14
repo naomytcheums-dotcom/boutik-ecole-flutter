@@ -1,0 +1,36 @@
+let ok = 0, ko = 0;
+export async function run(db) {
+  const E = '00000000-0000-0000-0000-0000000000e1', A = '00000000-0000-0000-0000-0000000000a1', B = '00000000-0000-0000-0000-0000000000b1', X = '00000000-0000-0000-0000-0000000000d1', C = '00000000-0000-0000-0000-0000000000c1';
+  const O = '00000000-0000-0000-0000-00000000f001', P = '00000000-0000-0000-0000-00000000f002';
+  const as = async (uid) => { await db.exec(`reset role; select set_config('request.jwt.claim.sub', '${uid ?? ''}', false); set role authenticated`); };
+  const q = async (sql) => (await db.query(sql)).rows;
+  const check = (name, cond, extra = '') => { if (cond) { ok++; console.log('OK', name); } else { ko++; console.log('ECHEC', name, extra); } };
+  const fails = async (name, sql, re) => { try { await q(sql); check(name, false, 'aurait du echouer'); } catch (e) { check(name, re.test(e.message), e.message); } };
+  await db.exec('reset role');
+  for (const [id, nm, role] of [[E, 'Orange', 'company'], [A, 'Alice', 'student'], [B, 'Bob', 'student'], [X, 'Xena', 'company'], [C, 'Carl', 'client']]) await db.exec(`insert into auth.users(id,email) values ('${id}','${nm}@t.cm'); insert into profiles(id,name,role,email) values ('${id}','${nm}','${role}','${nm}@t.cm')`);
+  await db.exec(`update profiles set skills='Flutter', bio='dev' where id in ('${A}','${B}')`);
+  await db.exec(`insert into opportunities (id, poster_id, org_name, kind, title, status, skills) values ('${O}', '${E}', 'Orange', 'stage', 'Stage Flutter', 'published', array['Flutter']), ('${P}', '${E}', 'Orange', 'stage', 'Brouillon', 'pending', array[]::text[])`);
+  await as(E);
+  check('invitation envoyee', (await q(`select opp_invite('${O}', '${A}', 'Venez !') r`))[0].r === 'invited');
+  await fails('deja invite', `select opp_invite('${O}', '${A}')`, /déjà invité/);
+  await fails('offre non publiee', `select opp_invite('${P}', '${B}')`, /Publiez/);
+  await fails('un client n est pas invitable', `select opp_invite('${O}', '${C}')`, /Étudiant introuvable/);
+  const sug = (await q(`select opp_suggested_students('${O}') r`))[0].r;
+  check('suggestions : Alice marquee invitee, Bob non', sug.find(x => x.id === A).invited === true && sug.find(x => x.id === B).invited === false, JSON.stringify(sug.map(x => [x.id.slice(-2), x.invited])));
+  await as(X);
+  await fails('une autre entreprise ne peut pas inviter', `select opp_invite('${O}', '${B}')`, /Offre introuvable/);
+  await as(A);
+  const n = (await q(`select count(*)::int n from notifications where user_id='${A}' and kind='opportunity_invite'`))[0].n;
+  check('notification recue par l etudiant', n === 1);
+  const mine = (await q(`select opp_my_invite('${O}') r`))[0].r;
+  check('l etudiant voit son invitation', mine && mine.status === 'invited' && mine.org === 'Orange' && mine.message === 'Venez !', JSON.stringify(mine));
+  await as(B);
+  check('Bob n a pas d invitation', (await q(`select opp_my_invite('${O}') r`))[0].r === null);
+  await db.exec(`reset role; insert into opportunity_applications (opportunity_id, applicant_id) values ('${O}', '${A}')`);
+  await as(A);
+  check('la candidature passe l invitation a envoyee', (await q(`select opp_my_invite('${O}') r`))[0].r.status === 'applied');
+  await as(E);
+  await fails('invitation apres candidature : refusee', `select opp_invite('${O}', '${A}')`, /déjà postulé/);
+  await db.exec('reset role');
+  console.log(`\n${ok}/${ok + ko}`);
+}

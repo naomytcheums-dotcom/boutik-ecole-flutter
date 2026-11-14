@@ -94,6 +94,14 @@ final oppStatsProvider = FutureProvider.autoDispose<Map<String, Map<String, dyna
   return {for (final x in r.data as List) '${(x as Map)['id']}': Map<String, dynamic>.from(x)};
 });
 
+/// Invitation reçue pour une offre (null si la personne n'a pas été invitée).
+final oppInviteProvider = FutureProvider.autoDispose.family<Map<String, dynamic>?, String>((ref, id) async {
+  ref.watch(authProvider.select((a) => a.current?.serverId));
+  if (!Backend.ready) return null;
+  final r = await marcheCall('opp_my_invite', {'p_id': id});
+  return r.error == null && r.data is Map ? Map<String, dynamic>.from(r.data as Map) : null;
+});
+
 final oppDetailProvider = FutureProvider.autoDispose.family<Map<String, dynamic>, String>((ref, id) async {
   final r = await marcheCall('opp_detail', {'p_id': id});
   if (r.error != null) throw MarcheException(r.error);
@@ -410,6 +418,24 @@ class OpportunityDetailScreen extends ConsumerWidget {
         final closed = o['status'] != 'published' || (deadline != null && oppDeadlineLabel(deadline, DateTime.now()) == 'Clôturée');
         return ListView(padding: const EdgeInsets.only(bottom: 90), children: [
           OpportunityCard(o: o),
+          Builder(builder: (context) {
+            final inv = ref.watch(oppInviteProvider(id)).asData?.value;
+            if (inv == null || inv['status'] != 'invited' || o['mine'] == true) return const SizedBox.shrink();
+            return _box(Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(children: [const Icon(Icons.mark_email_read_outlined, color: kViolet), const SizedBox(width: 8), Expanded(child: Text('${inv['org']} vous invite à postuler', style: mst(14, w: FontWeight.w800)))]),
+              if ('${inv['message'] ?? ''}'.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 6), child: Text('« ${inv['message']} »', style: mst(13).copyWith(height: 1.4))),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () async {
+                    await marcheCall('opp_invite_decline', {'p_id': id});
+                    ref.invalidate(oppInviteProvider(id));
+                  },
+                  child: Text('Non merci', style: mst(12.5, w: FontWeight.w700, c: kGrey)),
+                ),
+              ),
+            ]));
+          }),
           if (o['status'] == 'pending') _box(Text('Cette offre est en attente de validation par l’équipe.', style: mst(13, w: FontWeight.w700, c: const Color(0xFFB45309)))),
           if (o['status'] == 'rejected') _box(Text('Offre refusée${'${o['review_note'] ?? ''}'.isEmpty ? '' : ' : ${o['review_note']}'}', style: mst(13, w: FontWeight.w700, c: kRed))),
           if ('${o['description']}'.isNotEmpty) _box(Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('Description', style: mst(14, w: FontWeight.w800)), const SizedBox(height: 6), Text('${o['description']}', style: mst(13.5).copyWith(height: 1.5))])),
@@ -631,6 +657,22 @@ class _AppsState extends ConsumerState<OpportunityApplicationsScreen> {
     setState(() => _suggested = sg.error != null ? const [] : [for (final x in (sg.data as List? ?? const [])) Map<String, dynamic>.from(x as Map)]);
   }
 
+  Future<void> _invite(Map<String, dynamic> st) async {
+    final msg = TextEditingController();
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (c) => AlertDialog(
+        title: Text('Inviter ${st['name']} ?'),
+        content: TextField(controller: msg, maxLength: 300, maxLines: 3, decoration: const InputDecoration(labelText: 'Un mot pour l’étudiant (facultatif)', hintText: 'Votre profil nous intéresse, venez postuler.')),
+        actions: [TextButton(onPressed: () => Navigator.pop(c, false), child: Text('Annuler')), TextButton(onPressed: () => Navigator.pop(c, true), child: Text('Inviter'))],
+      ),
+    );
+    final text = msg.text;
+    msg.dispose();
+    if (ok != true || !mounted) return;
+    if (await _call(context, 'opp_invite', {'p_opp': widget.id, 'p_student': st['id'], 'p_message': text}, ok: 'Invitation envoyée : l’étudiant est prévenu.')) await _load();
+  }
+
   Future<void> _decide(Map<String, dynamic> a, String status) async {
     if (await _call(context, 'opp_application_decide', {'p_id': a['id'], 'p_status': status}, ok: 'Décision enregistrée : le candidat est prévenu.')) await _load();
   }
@@ -676,7 +718,9 @@ class _AppsState extends ConsumerState<OpportunityApplicationsScreen> {
                               matchBadge(st['match']),
                             ]),
                           ),
-                          const Icon(Icons.chevron_right, color: kGrey),
+                          st['invited'] == true
+                              ? Padding(padding: const EdgeInsets.only(left: 8), child: Text('Invité', style: mst(12.5, w: FontWeight.w800, c: kGreen)))
+                              : SizedBox(width: 92, child: mButton('Inviter', () => _invite(st), dark: false)),
                         ])),
                       ),
                   ],

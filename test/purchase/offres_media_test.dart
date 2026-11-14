@@ -24,6 +24,7 @@ void main() {
 
   statsTests();
   matchTests();
+  inviteTests();
 
   testWidgets('valeur « null » du serveur : traitée comme absente', (t) async {
     await t.pumpWidget(_wrap(OpportunityCard(o: {...base, 'media_path': null, 'media_kind': null})));
@@ -70,5 +71,35 @@ void matchTests() {
   testWidgets('score absent : aucune pastille affichée', (t) async {
     await t.pumpWidget(_wrap(matchBadge(null)));
     expect(find.textContaining('Correspondance'), findsNothing);
+  });
+}
+
+void inviteTests() {
+  Future<void> pumpDetail(WidgetTester t, Map<String, dynamic>? invite) async {
+    t.view.physicalSize = const Size(420, 3000);
+    t.view.devicePixelRatio = 1;
+    addTearDown(t.view.reset);
+    await t.pumpWidget(ProviderScope(
+      overrides: [
+        oppDetailProvider.overrideWith((ref, id) async => {'id': 'o1', 'org': 'Orange', 'kind': 'stage', 'title': 'Stage Flutter', 'status': 'published', 'mine': false, 'skills': [], 'missions': [], 'gains': [], 'mode': 'onsite', 'pay_kind': 'paid'}),
+        oppInviteProvider.overrideWith((ref, id) async => invite),
+      ],
+      child: const MaterialApp(home: OpportunityDetailScreen(id: 'o1')),
+    ));
+    await t.pumpAndSettle();
+  }
+
+  testWidgets('étudiant invité : bandeau avec le mot de l’entreprise', (t) async {
+    await pumpDetail(t, {'status': 'invited', 'org': 'Orange', 'message': 'Venez !'});
+    expect(find.text('Orange vous invite à postuler'), findsOneWidget);
+    expect(find.textContaining('Venez !'), findsOneWidget);
+    expect(find.text('Non merci'), findsOneWidget);
+  });
+
+  testWidgets('sans invitation, ou déjà postulé : aucun bandeau', (t) async {
+    await pumpDetail(t, null);
+    expect(find.textContaining('vous invite à postuler'), findsNothing);
+    await pumpDetail(t, {'status': 'applied', 'org': 'Orange', 'message': ''});
+    expect(find.textContaining('vous invite à postuler'), findsNothing);
   });
 }

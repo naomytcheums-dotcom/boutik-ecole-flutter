@@ -23,6 +23,7 @@ void main() {
   });
 
   statsTests();
+  matchTests();
 
   testWidgets('valeur « null » du serveur : traitée comme absente', (t) async {
     await t.pumpWidget(_wrap(OpportunityCard(o: {...base, 'media_path': null, 'media_kind': null})));
@@ -54,5 +55,20 @@ void statsTests() {
     expect(find.text('75 %'), findsOneWidget);
     expect(find.text('Réponses'), findsOneWidget);
     expect(find.text('Recrutés'), findsOneWidget);
+  });
+}
+
+void matchTests() {
+  testWidgets('score de correspondance : pourcentage et détail lisible', (t) async {
+    await t.pumpWidget(_wrap(matchBadge({'score': 82, 'skills': 50, 'skills_found': 2, 'skills_wanted': 2, 'department': 25, 'availability': 15, 'profile': 5})));
+    expect(find.text('Correspondance 82 %'), findsOneWidget);
+    expect(find.textContaining('Compétences 2/2'), findsOneWidget);
+    expect(find.textContaining('Filière ✓'), findsOneWidget);
+    expect(find.textContaining('Disponible'), findsOneWidget);
+  });
+
+  testWidgets('score absent : aucune pastille affichée', (t) async {
+    await t.pumpWidget(_wrap(matchBadge(null)));
+    expect(find.textContaining('Correspondance'), findsNothing);
   });
 }

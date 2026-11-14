@@ -588,8 +588,30 @@ class OpportunityApplicationsScreen extends ConsumerStatefulWidget {
   ConsumerState<OpportunityApplicationsScreen> createState() => _AppsState();
 }
 
+/// Pastille « Correspondance 85 % » avec le détail (compétences, filière, disponibilité) : une aide au tri, jamais une décision.
+Widget matchBadge(Object? raw) {
+  if (raw is! Map) return const SizedBox.shrink();
+  final m = Map<String, dynamic>.from(raw);
+  final score = mInt(m['score']);
+  final color = score >= 75 ? kGreen : (score >= 50 ? kViolet : kGrey);
+  final wanted = mInt(m['skills_wanted']);
+  final detail = [
+    if (wanted > 0) 'Compétences ${mInt(m['skills_found'])}/$wanted',
+    if (mInt(m['department']) >= 25) 'Filière ✓',
+    if (mInt(m['availability']) >= 15) 'Disponible',
+  ].join(' · ');
+  return Padding(
+    padding: const EdgeInsets.only(top: 6),
+    child: Row(children: [
+      Container(padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4), decoration: BoxDecoration(color: color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(100)), child: Text('Correspondance $score %', style: mst(11.5, w: FontWeight.w800, c: color))),
+      if (detail.isNotEmpty) Flexible(child: Padding(padding: const EdgeInsets.only(left: 8), child: Text(detail, maxLines: 1, overflow: TextOverflow.ellipsis, style: mst(11, c: kGrey)))),
+    ]),
+  );
+}
+
 class _AppsState extends ConsumerState<OpportunityApplicationsScreen> {
   List<Map<String, dynamic>>? _apps;
+  List<Map<String, dynamic>> _suggested = const [];
 
   @override
   void initState() {
@@ -600,7 +622,13 @@ class _AppsState extends ConsumerState<OpportunityApplicationsScreen> {
   Future<void> _load() async {
     final r = await marcheCall('opp_applications_for', {'p_id': widget.id});
     if (!mounted) return;
-    setState(() => _apps = r.error != null ? const [] : [for (final x in (r.data as List? ?? const [])) Map<String, dynamic>.from(x as Map)]);
+    final list = r.error != null ? <Map<String, dynamic>>[] : [for (final x in (r.data as List? ?? const [])) Map<String, dynamic>.from(x as Map)];
+    // les candidats qui correspondent le mieux d'abord (à égalité : les plus récents)
+    list.sort((a, b) => mInt((b['match'] as Map?)?['score']).compareTo(mInt((a['match'] as Map?)?['score'])));
+    setState(() => _apps = list);
+    final sg = await marcheCall('opp_suggested_students', {'p_id': widget.id, 'p_limit': 8});
+    if (!mounted) return;
+    setState(() => _suggested = sg.error != null ? const [] : [for (final x in (sg.data as List? ?? const [])) Map<String, dynamic>.from(x as Map)]);
   }
 
   Future<void> _decide(Map<String, dynamic> a, String status) async {
@@ -614,13 +642,15 @@ class _AppsState extends ConsumerState<OpportunityApplicationsScreen> {
       title: 'Candidatures',
       child: apps == null
           ? const Center(child: CircularProgressIndicator())
-          : apps.isEmpty
+          : (apps.isEmpty && _suggested.isEmpty)
               ? mNote('Aucune candidature pour le moment.')
               : ListView(padding: const EdgeInsets.only(bottom: 90), children: [
+                  if (apps.isEmpty) mNote('Aucune candidature pour le moment.'),
                   for (final a in apps)
                     _box(Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text('${a['name']}${'${a['department'] ?? ''}'.isEmpty ? '' : ' · ${a['department']}'}', style: mst(14, w: FontWeight.w800)),
                       Text('Statut : ${MyOpportunitiesScreen._status['${a['status']}'] ?? a['status']}', style: mst(12, c: kGrey)),
+                      matchBadge(a['match']),
                       const SizedBox(height: 6),
                       Text('${a['message']}', style: mst(13).copyWith(height: 1.45)),
                       if ('${a['cv_link']}'.isNotEmpty) GestureDetector(onTap: () => openUrl(context, '${a['cv_link']}'), child: Padding(padding: const EdgeInsets.only(top: 6), child: Text('Voir le CV', style: mst(12.5, w: FontWeight.w700, c: kViolet)))),
@@ -633,6 +663,23 @@ class _AppsState extends ConsumerState<OpportunityApplicationsScreen> {
                         Expanded(child: mButton('Recruter', () => _decide(a, 'hired'))),
                       ]),
                     ])),
+                  if (_suggested.isNotEmpty) ...[
+                    mSectionTitle('Étudiants qui correspondent'),
+                    for (final st in _suggested)
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () => context.push('/etudiant/${st['id']}'),
+                        child: _box(Row(children: [
+                          Expanded(
+                            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                              Text('${st['name']}${'${st['department'] ?? ''}'.isEmpty ? '' : ' · ${st['department']}'}', style: mst(14, w: FontWeight.w800)),
+                              matchBadge(st['match']),
+                            ]),
+                          ),
+                          const Icon(Icons.chevron_right, color: kGrey),
+                        ])),
+                      ),
+                  ],
                 ]),
     );
   }

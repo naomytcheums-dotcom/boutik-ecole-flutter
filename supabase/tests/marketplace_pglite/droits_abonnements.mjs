@@ -32,7 +32,7 @@ export async function run(db) {
   p = await feats('entreprise');
   check('entreprise : campagnes et équipe, plus de stats avancées', p.f.includes('boost_campagnes') && p.f.includes('gestion_equipe') && !p.f.includes('stats_avancees'));
   p = await feats('createur_pro');
-  check('createur_pro : portfolio enrichi seul, vendable', p.f.length === 1 && p.f[0] === 'portfolio_enrichi' && p.s === true);
+  check('createur_pro : portfolio enrichi seul, non vendable tant que le propriétaire ne l\'ouvre pas', p.f.length === 1 && p.f[0] === 'portfolio_enrichi' && p.s === false);
   p = await feats('admin_communaute');
   check('admin_communaute : aucun droit, non vendable', p.f.length === 0 && p.s === false);
   check('aucun plan ne promet un droit sans code', (await q(`select count(*)::int n from plans where features && array['visiteurs_profil', 'outils_vendeur_pro', 'gestion_communaute']`))[0].n === 0);
@@ -100,7 +100,7 @@ export async function run(db) {
   await fails('portfolio : 100 éléments au plus sans le droit', add('Un de trop'), /Limite de 100 éléments atteinte/);
   check('portfolio : une modification reste possible à la limite', (await q(`select portfolio_save((select id from portfolio_items where owner_id = '${U(37)}' limit 1), 'realisation', 'Renommé', '', '', '', '', null, false) id`)).length === 1);
   await db.exec('reset role');
-  await db.exec(`update plans set price_xaf = 4000 where code = 'createur_pro'`);
+  await db.exec(`update plans set price_xaf = 4000, sellable = true where code = 'createur_pro'`);
   await as(U(37));
   await fails('portfolio : le message indique l\'offre qui lève la limite', add('Encore'), /300 avec l'offre Créateur professionnel/);
   await as(U(38));

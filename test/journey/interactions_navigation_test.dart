@@ -49,7 +49,15 @@ void main() {
     final file = File('lib/figma/g/g_${s.id.replaceAll('-', '_')}.dart');
     if (!file.existsSync()) continue;
     final taps = <(double, double, String)>[];
+    var connectedOnly = false;
     for (final l in file.readAsLinesSync()) {
+      // zones réservées au mode connecté (branche « else ...[ » ou « !demoContent ») : absentes de ce test, qui tourne en démonstration
+      if (l.contains('else ...[')) connectedOnly = true;
+      if (connectedOnly) {
+        if (l.trimLeft().startsWith('],')) connectedOnly = false;
+        continue;
+      }
+      if (l.contains('!demoContent')) continue;
       // zones dont l'action est uniquement une navigation (gTap simple, ou gP terminé par tap: () => gOpen/gTab)
       final m = num4.firstMatch(l);
       if (m == null || !(simpleTap.hasMatch(l) || (l.trimLeft().startsWith('gP(') && simpleP.hasMatch(l)))) continue;

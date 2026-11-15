@@ -25,6 +25,7 @@ import '../live/share.dart';
 import '../live/pay.dart';
 import '../live/engage.dart';
 import '../live/lots.dart';
+import '../live/produit_fiche.dart' show ProductPassport, productShareLink;
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_211 extends ConsumerWidget {
@@ -82,18 +83,19 @@ class G_211 extends ConsumerWidget {
       gP(56, 688, 175, 14, gText(gm('Validé par Dr Tchoupo', ''), 11.5, Color(0xFF57545F), wrap: true), show: demoContent),
       gP(24, 744, 342, 62, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20]), show: demoContent),
       gP(36, 759, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11]), show: demoContent),
-      gP(43.333, 764.943, 17.333, 20.173, gImg('assets/figma/v/b35e336eb0a1dc.svg')),
-      gP(46.875, 770.583, 10.25, 8.833, gImg('assets/figma/v/2bdcafa88f7a43.svg')),
+      gP(43.333, 764.943, 17.333, 20.173, gImg('assets/figma/v/b35e336eb0a1dc.svg'), show: demoContent),
+      gP(46.875, 770.583, 10.25, 8.833, gImg('assets/figma/v/2bdcafa88f7a43.svg'), show: demoContent),
       gP(76, 758, 277, 34, gText('Le certificat est ancré par empreinte numérique ; aucune donnée personnelle n’est publiée.', 12, Color(0xFF4A4854), lh: 17, wrap: true), show: demoContent),
-      gP(0, 830, 390, 100, gBox(color: Color(0x00FFFFFF))),
-      gP(24, 846, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => verifyCertificateDialog(context, ref, code: 'BE-CERT-0021')),
-      gP(140, 864, 110, 18, gText('Voir le certificat', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
+      gP(0, 830, 390, 100, gBox(color: Color(0x00FFFFFF)), show: demoContent),
+      gP(24, 846, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => verifyCertificateDialog(context, ref, code: 'BE-CERT-0021'), show: demoContent),
+      gP(140, 864, 110, 18, gText('Voir le certificat', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center), show: demoContent),
       gP(125, 916, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(341.667, 79, 20.667, 15.167, gImg('assets/figma/v/38cc299702e092.svg')),
       gP(345.333, 69.833, 13.333, 9.667, gImg('assets/figma/v/d83f01d420bc41.svg')),
       gP(349, 69.833, 6, 17.917, gImg('assets/figma/v/7c9d8fa2b191bd.svg')),
       if (demoContent) gTap(16, 498, 172, 35, () { gOpen(context, '34'); }), // lien métier 211 -> 34
-      if (!demoContent) gP(24, 125, 342, 620, const SelectedProductInfo(width: 342)),
+      if (!demoContent) gTap(318, 56, 60, 56, () { final p = ref.read(selectedProductProvider); shareText(context, 'Passeport du produit « ' + p.title + ' » sur Boutik-École : ' + ((p.id ?? '').isEmpty ? siteUrl : productShareLink(p.id!))); }),
+      if (!demoContent) gP(24, 125, 342, 700, const ProductPassport(width: 342)),
     ]);
   }
 }

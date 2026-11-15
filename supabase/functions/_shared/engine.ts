@@ -22,7 +22,7 @@ export async function startAuthorization(admin: Admin, userId: string, providerI
   const c = creds(p);
   const state = randomToken(24);
   await admin.from("integration_oauth_states").delete().lt("expires_at", new Date().toISOString());
-  const ret = returnTo && returnTo.startsWith(APP_ORIGIN + "/") ? returnTo : `${APP_ORIGIN}/s/P5`;
+  const ret = returnTo && returnTo.startsWith(APP_ORIGIN + "/") ? returnTo : `${APP_ORIGIN}/#/s/P5`;
 
   if (p.kind === "oauth1a") {
     const cb = `${redirectUri()}?state=${state}`;
@@ -71,9 +71,9 @@ export async function completeAuthorization(admin: Admin, params: URLSearchParam
   const state = params.get("state") ?? "";
   const { data: st } = await admin.from("integration_oauth_states").select("*").eq("state", state).maybeSingle();
   const fail = (ret: string, why: string, prov = "") => `${ret}?connexion=erreur&p=${encodeURIComponent(prov)}&m=${encodeURIComponent(why)}`;
-  if (!st) return fail(`${APP_ORIGIN}/s/P5`, "Demande expirée ou inconnue : recommencez la connexion.");
+  if (!st) return fail(`${APP_ORIGIN}/#/s/P5`, "Demande expirée ou inconnue : recommencez la connexion.");
   await admin.from("integration_oauth_states").delete().eq("state", state); // usage unique
-  const ret = String(st.return_to ?? `${APP_ORIGIN}/s/P5`).split("?")[0];
+  const ret = String(st.return_to ?? `${APP_ORIGIN}/#/s/P5`).split("?")[0];
   if (new Date(st.expires_at).getTime() < Date.now()) return fail(ret, "Demande expirée : recommencez la connexion.", st.provider);
   const p = PROVIDERS[st.provider as string];
   if (!p) return fail(ret, "Fournisseur inconnu.");

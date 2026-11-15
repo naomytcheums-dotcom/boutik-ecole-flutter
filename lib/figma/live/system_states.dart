@@ -9,6 +9,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/router/paths.dart';
 import 'backend.dart';
 import 'connectivity_stub.dart' if (dart.library.js_interop) 'connectivity_web.dart';
+import 'drafts.dart' show Drafts;
 import 'sync.dart';
 
 /// États système affichés lorsqu'ils se produisent réellement (et non par un lien) :
@@ -97,6 +98,8 @@ class _SystemStatesState extends State<SystemStates> {
 
   void _sessionExpired() {
     if (!mounted) return;
+    Backend.sessionWasLost = true;
+    Drafts.clearAll(); // brouillons de formulaire : jamais visibles par le compte suivant sur cet appareil
     if (widget.onSessionExpired != null) {
       widget.onSessionExpired!();
     } else {

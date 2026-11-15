@@ -10,7 +10,7 @@ import 'auth.dart';
 import 'backend.dart';
 import 'drafts.dart';
 import 'engage.dart' show unavailableAction;
-import 'lots.dart' show publishMissionBrief, myNeedsDialog, myMissionsDialog;
+import 'lots.dart' show firstInt, formDialog, lastInt, publishMissionBrief, myNeedsDialog, myMissionsDialog;
 import 'qr.dart';
 import 'seller.dart';
 import 'store.dart';
@@ -20,17 +20,20 @@ import '../../data/repositories/repositories.dart' show cartProvider;
 
 /// Session de transfert borne → téléphone : code signé, valable 5 minutes, à usage unique.
 class QrSession {
-  const QrSession(this.token, this.product, this.createdAt, {this.used = false});
+  const QrSession(this.token, this.product, this.createdAt, {this.used = false, this.server = false});
   final String token;
   final LiveProduct product;
   final DateTime createdAt;
   final bool used;
 
+  /// Jeton créé par le serveur (donc réellement scannable) et non code de démonstration local.
+  final bool server;
+
   /// Code de suivi affiché sur le ticket (BE-xxxx-XXXX).
   String get tracking => 'BE-${token.substring(0, 4)}-${token.substring(4, 8).toUpperCase()}';
   int secondsLeft([DateTime? now]) => (300 - (now ?? DateTime.now()).difference(createdAt).inSeconds).clamp(0, 300);
   bool get expired => secondsLeft() == 0;
-  QrSession consumed() => QrSession(token, product, createdAt, used: true);
+  QrSession consumed() => QrSession(token, product, createdAt, used: true, server: server);
 }
 
 /// Jeton pseudo-signé (démonstration) : empreinte du produit + heure + secret.
@@ -48,19 +51,32 @@ class KioskSession extends Notifier<QrSession?> {
   @override
   QrSession? build() => null;
 
+  /// Code de démonstration (hors connexion au serveur uniquement).
   void start(LiveProduct p) {
     final now = DateTime.now();
     state = QrSession(signToken(p.title, now), p, now);
-    if (Backend.ready) {
-      // connecté : le code est créé et signé par le serveur (jeton aléatoire unique, 5 minutes, usage unique)
-      Future<void>(() async {
-        final r = await issueQr('kiosk_transfer', p.title, label: p.title, ttlSeconds: 300);
-        if (r.token != null && ref.mounted && state?.product.title == p.title && state?.createdAt == now) state = QrSession(r.token!, p, now);
-      });
-    }
+  }
+
+  /// Connecté : le code est créé par le serveur (jeton aléatoire unique, 5 minutes, usage unique). Retourne le message d'erreur, ou null.
+  Future<String?> issue(LiveProduct p) async {
+    final r = await issueQr('kiosk_transfer', p.title, label: p.title, ttlSeconds: 300);
+    final t = r.token;
+    if (t == null) return r.error ?? 'Code QR indisponible pour le moment.';
+    if (ref.mounted) state = QrSession(t, p, DateTime.now(), server: true);
+    return null;
   }
 
   void clear() => state = null;
+
+  /// Téléphone qui vient de scanner le code d'une borne : la confirmation reprend le produit et le code réellement transférés.
+  void confirm(LiveProduct p, String token) => state = QrSession(token, p, DateTime.now(), used: true, server: true);
+  /// Abandon par l'utilisateur de la borne : le code serveur encore valable est révoqué.
+  void cancel() {
+    final s = state;
+    state = null;
+    if (s != null && s.server && !s.used) Backend.rpc('qr_revoke', {'p_token': s.token});
+  }
+
   void use() => state = state?.consumed();
 }
 
@@ -77,13 +93,27 @@ class KioskKind extends Notifier<int> {
 
 final kioskKindProvider = NotifierProvider<KioskKind, int>(KioskKind.new);
 
-final kioskProductsProvider = Provider<List<LiveProduct>>((ref) {
+/// Page affichée de la grille de la borne (4 articles par page).
+final kioskPageProvider = NotifierProvider<IntV, int>(IntV.new);
+const kioskPageSize = 4;
+
+/// Tous les résultats de la recherche (filtre et texte), avant découpage en pages.
+final kioskMatchesProvider = Provider<List<LiveProduct>>((ref) {
   final q = normText(ref.watch(kioskQueryProvider).trim());
   final k = ref.watch(kioskKindProvider);
   return [
     for (final p in ref.watch(allProductsProvider))
       if ((q.isEmpty || normText('${p.title} ${p.department}').contains(q)) && (k == 0 || (k == 2) == (p.category == 'Services'))) p,
   ];
+});
+
+int kioskPageCount(int total) => total == 0 ? 1 : (total + kioskPageSize - 1) ~/ kioskPageSize;
+
+/// Articles de la page courante.
+final kioskProductsProvider = Provider<List<LiveProduct>>((ref) {
+  final all = ref.watch(kioskMatchesProvider);
+  final page = ref.watch(kioskPageProvider).clamp(0, kioskPageCount(all.length) - 1).toInt();
+  return all.skip(page * kioskPageSize).take(kioskPageSize).toList();
 });
 
 final kioskCurrentProvider = Provider<LiveProduct>((ref) {
@@ -108,14 +138,70 @@ LiveProduct kioskView(WidgetRef ref) {
 
 String countdown(WidgetRef ref) {
   ref.watch(kioskTickProvider);
-  final s = ref.watch(kioskSessionProvider)?.secondsLeft() ?? 300;
+  final s = ref.watch(kioskSessionProvider)?.secondsLeft();
+  if (s == null) return Backend.ready ? '--:--' : '5:00';
   return '${s ~/ 60}:${(s % 60).toString().padLeft(2, '0')}';
 }
 
-void startPhoneTransfer(WidgetRef ref, BuildContext context) {
-  ref.read(kioskSessionProvider.notifier).start(ref.read(kioskCurrentProvider));
-  ref.read(auditProvider.notifier).log('Borne n°2', 'Code de transfert créé', ref.read(kioskCurrentProvider).title, 'Connexions');
+Future<void> startPhoneTransfer(WidgetRef ref, BuildContext context) async {
+  final p = ref.read(kioskCurrentProvider);
+  if (Backend.ready && p.showcase) {
+    gToast(context, 'Produit d’exemple : aucun code possible pour le moment.');
+    return;
+  }
+  if (Backend.ready) {
+    final err = await ref.read(kioskSessionProvider.notifier).issue(p);
+    if (!context.mounted) return;
+    if (err != null) {
+      await gAlert(context, 'Code indisponible', Backend.userMessage(err));
+      return;
+    }
+  } else {
+    ref.read(kioskSessionProvider.notifier).start(p);
+  }
+  ref.read(auditProvider.notifier).log('Borne n°2', 'Code de transfert créé', p.title, 'Connexions');
   gOpen(context, '209');
+}
+
+/// Surveille le code affiché à la borne : dès que le téléphone l'a scanné (le serveur le déclare « utilisé »), la confirmation s'ouvre.
+/// Hors connexion au serveur, il n'y a rien à surveiller.
+class KioskTransferWatcher extends ConsumerStatefulWidget {
+  const KioskTransferWatcher({super.key});
+
+  @override
+  ConsumerState<KioskTransferWatcher> createState() => _KioskTransferWatcherState();
+}
+
+class _KioskTransferWatcherState extends ConsumerState<KioskTransferWatcher> {
+  Timer? _timer;
+  bool _busy = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (Backend.ready) _timer = Timer.periodic(const Duration(seconds: 3), (_) => _poll());
+  }
+
+  Future<void> _poll() async {
+    final s = ref.read(kioskSessionProvider);
+    if (_busy || s == null || !s.server || s.used || s.expired) return;
+    _busy = true;
+    final r = await Backend.rpc('qr_resolve', {'p_token': s.token, 'p_consume': false});
+    _busy = false;
+    final d = r.data;
+    if (!mounted || d is! Map || d['reason'] != 'used' || ref.read(kioskSessionProvider)?.token != s.token) return;
+    ref.read(kioskSessionProvider.notifier).use();
+    gOpen(context, '210');
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => const SizedBox.shrink();
 }
 
 /// Le téléphone scanne le code : vérifie la validité, l'usage unique et envoie l'article dans le panier.
@@ -167,11 +253,15 @@ class Mission {
     this.milestoneAmounts = const [],
     this.steps = const [],
     this.real = false,
+    this.uuid = '',
   });
   final String id, kind, desc, date;
   final int total;
   final bool accepted;
   final int funded, proof, released; // nombre de jalons financés / avec preuve / libérés
+
+  /// Identifiant serveur de la mission réelle (vide pour la mission d'exemple).
+  final String uuid;
 
   /// Mission lue sur le serveur : équipe attribuée, échéance, statut serveur et montants réels des jalons.
   final String team, deadline, status;
@@ -218,6 +308,7 @@ class Mission {
           ),
       ],
       real: true,
+      uuid: (m['id'] ?? '').toString(),
     );
   }
 
@@ -234,7 +325,7 @@ class Mission {
       : ((released * 3 + proof * 2 + funded) * 100 / 9).round().clamp(0, 100);
 
   Mission copyWith({bool? accepted, int? funded, int? proof, int? released}) => Mission(
-        id: id, kind: kind, desc: desc, total: total, date: date, team: team, deadline: deadline, status: status, milestoneAmounts: milestoneAmounts, steps: steps, real: real,
+        id: id, kind: kind, desc: desc, total: total, date: date, team: team, deadline: deadline, status: status, milestoneAmounts: milestoneAmounts, steps: steps, real: real, uuid: uuid,
         accepted: accepted ?? this.accepted, funded: funded ?? this.funded, proof: proof ?? this.proof, released: released ?? this.released);
 }
 
@@ -259,6 +350,17 @@ String missionStatusLabel(String s) => switch (s) {
     };
 
 const missionKinds = ['Identité visuelle', 'Savons et parfums', 'Vidéo et photo', 'Site ou application', 'Prototype', 'Étude ou audit'];
+
+/// Pastille d'un jalon dans la frise de la mission : validé (coche verte), livré à valider (point sombre), à venir (anneau).
+/// En démonstration, l'état de la maquette (premier jalon fait, deuxième en cours).
+List<Widget> missionDot(Mission m, int i, double y) {
+  final state = demoContent ? const ['Validé', 'Livré, à valider', 'À venir', 'À venir'][i] : m.step(i).$2;
+  if (state == 'Validé') {
+    return [gP(24, y, 20, 20, gBox(color: const Color(0xFF1F9D6B), oval: true)), gP(27.333, y + 4.25, 13.333, 11.042, gImg('assets/figma/v/23149818a3337a.svg'))];
+  }
+  if (state == 'Livré, à valider') return [gP(24, y, 20, 20, gBox(color: const Color(0xFF111015), oval: true))];
+  return [gP(24, y, 20, 20, gBox(color: const Color(0xFFFFFFFF), border: const Color(0xFFE6E1EE), bw: 2, oval: true))];
+}
 
 class MissionNotifier extends Notifier<Mission> {
   @override
@@ -309,6 +411,13 @@ final missionLoadedProvider = NotifierProvider<_MissionLoaded, bool>(_MissionLoa
 const missionScreens = {'192', '193', '194', '195', '196', '197', '201'};
 
 bool redirectMissionScreen({required bool ready, required bool loaded, required Mission mission}) => ready && loaded && !mission.real;
+
+/// Écrans du prestataire (195 « Ajouter une preuve », 201 « Mes missions ») : un compte qui n'est pas talent (Client, entreprise) est renvoyé
+/// vers le suivi de sa propre mission (194), qui redirige à son tour vers « Votre besoin » (191) s'il n'en a aucune.
+const providerMissionScreens = {'195', '201'};
+
+bool redirectProviderScreen({required bool ready, required String screen, required String role}) =>
+    ready && providerMissionScreens.contains(screen) && !const {'student', 'dept', 'admin'}.contains(role);
 final missionKindProvider = NotifierProvider<IntV, int>(IntV.new);
 
 String _today() {
@@ -317,18 +426,41 @@ String _today() {
   return '${d.day} ${m[d.month - 1]} ${d.year}';
 }
 
+/// Fourchette de budget saisie : « 100 000 » ou « 100 000 – 150 000 FCFA » ; null si aucun montant exploitable.
+({int min, int max})? parseBudgetRange(String s) {
+  final a = firstInt(s), b = lastInt(s);
+  if (a == null || b == null || a <= 0 || b <= 0 || a > 100000000 || b > 100000000) return null;
+  return a <= b ? (min: a, max: b) : (min: b, max: a);
+}
+
+/// Date souhaitée « JJ/MM/AAAA » (aujourd'hui ou plus tard) ; null si elle est mal écrite, inexistante ou passée.
+DateTime? parseBriefDate(String s, [DateTime? now]) {
+  final m = RegExp(r'^(\d{2})/(\d{2})/(\d{4})$').firstMatch(s.trim());
+  if (m == null) return null;
+  final d = int.parse(m.group(1)!), mo = int.parse(m.group(2)!), y = int.parse(m.group(3)!);
+  final date = DateTime(y, mo, d);
+  if (date.year != y || date.month != mo || date.day != d) return null;
+  final t = now ?? DateTime.now();
+  return date.isBefore(DateTime(t.year, t.month, t.day)) ? null : date;
+}
+
 void submitBrief(WidgetRef ref, BuildContext context) {
   final f = ref.read(formProvider);
   final desc = (f['ms_desc'] ?? '').trim();
-  if (desc.length < 20) {
-    ref.read(errorsProvider.notifier).setAll({'ms_desc': 'Décrivez votre besoin (20 caractères minimum).'});
+  final bud = (f['ms_budget'] ?? '').trim(), when = (f['ms_date'] ?? '').trim();
+  final errors = <String, String>{};
+  if (desc.length < 20) errors['ms_desc'] = 'Décrivez votre besoin (20 caractères minimum).';
+  final range = bud.isEmpty ? null : parseBudgetRange(bud);
+  if (bud.isNotEmpty && range == null) errors['ms_budget'] = 'Indiquez un montant en FCFA (ex. 100 000 ou 100 000 – 150 000).';
+  if (when.isNotEmpty && parseBriefDate(when) == null) errors['ms_date'] = 'Date invalide : JJ/MM/AAAA, à partir d’aujourd’hui.';
+  if (errors.isNotEmpty) {
+    ref.read(errorsProvider.notifier).setAll(errors);
     return;
   }
   ref.read(errorsProvider.notifier).clear();
   final kind = missionKinds[ref.read(missionKindProvider).clamp(0, 5)];
   if (Backend.ready) {
-    final bud = (f['ms_budget'] ?? '').trim(), when = (f['ms_date'] ?? '').trim();
-    _serverBrief(context, ref, kind, [desc, if (bud.isNotEmpty) 'Budget estimé : $bud', if (when.isNotEmpty) 'Date souhaitée : $when'].join('\n'));
+    _serverBrief(context, ref, kind, desc, range, when);
     return;
   }
   final id = '#BR-${(413 + DateTime.now().second).toString().padLeft(4, '0')}';
@@ -340,15 +472,16 @@ void submitBrief(WidgetRef ref, BuildContext context) {
 
 /// Avec le serveur, le parcours de mission (191 à 201) passe par les fonctions serveur (missions, propositions, jalons) :
 /// la mission d'exemple de la maquette n'est jamais modifiée ni présentée comme réelle, et aucun paiement n'est simulé.
-Future<void> _serverBrief(BuildContext context, WidgetRef ref, String kind, String desc) async {
-  if (!await publishMissionBrief(context, ref, kind, desc) || !context.mounted) return;
+Future<void> _serverBrief(BuildContext context, WidgetRef ref, String kind, String desc, ({int min, int max})? range, String when) async {
+  if (!await publishMissionBrief(context, ref, kind, desc, budgetMin: range?.min, budgetMax: range?.max, deadline: when) || !context.mounted) return;
   ref.read(formProvider.notifier).clear(const ['ms_desc', 'ms_budget', 'ms_date']);
-  gToast(context, 'Besoin envoyé : le département qualifie les équipes et vous transmet les propositions.');
+  ref.read(missionProvider.notifier).refresh();
+  gToast(context, 'Besoin envoyé : le département est prévenu et qualifie les équipes ; vous recevrez les propositions.');
   await myNeedsDialog(context, ref);
 }
 
-Future<void> _milestonePaymentUnavailable(BuildContext context) => unavailableAction(context, 'Paiement du jalon indisponible',
-    'Le financement des jalons en séquestre passe par le paiement Mobile Money, qui n’est pas encore activé : aucun montant n’a été prélevé ni bloqué.');
+Future<void> _milestonePaymentUnavailable(BuildContext context) => unavailableAction(context, 'Paiement du jalon non géré ici',
+    'Boutik-École ne bloque ni ne verse l’argent d’une mission : le paiement de chaque jalon se convient directement avec le prestataire. L’application suit seulement la livraison et la validation des jalons.');
 
 void acceptQuote(WidgetRef ref, BuildContext context) {
   if (Backend.ready) {
@@ -406,9 +539,53 @@ void submitProof(WidgetRef ref, BuildContext context) {
   gOpen(context, '201');
 }
 
+/// Jalon livré à valider de la mission réelle (1er jalon « Livré, à valider »), position serveur comprise ; null s'il n'y en a pas.
+({String uuid, int position, String title})? deliveredMilestone(Mission m) {
+  if (!m.real || m.uuid.isEmpty) return null;
+  for (var i = 0; i < m.steps.length; i++) {
+    if (m.steps[i].$2 == 'Livré, à valider') return (uuid: m.uuid, position: i + 1, title: m.steps[i].$1);
+  }
+  return null;
+}
+
+/// Décision du client sur le jalon affiché : valide (statut seulement : aucun argent n'est libéré par l'application) ou demande une correction.
+Future<void> _decideDelivered(WidgetRef ref, BuildContext context, {required bool validate}) async {
+  final j = deliveredMilestone(ref.read(missionProvider));
+  if (j == null) {
+    gToast(context, 'Aucun jalon livré à valider pour le moment.');
+    return;
+  }
+  var note = '';
+  if (validate) {
+    final yes = await gDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Valider « ${j.title} » ?'),
+        content: const Text('Vous acceptez la livraison de ce jalon. Boutik-École ne verse aucun argent : le paiement se règle directement avec le prestataire.'),
+        actions: [TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuler')), FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Valider la livraison'))],
+      ),
+    );
+    if (yes != true || !context.mounted) return;
+  } else {
+    final v = await formDialog(context, 'Demander une correction', [('Correction attendue', '')], submit: 'Envoyer');
+    if (v == null || !context.mounted) return;
+    note = v.first;
+  }
+  final r = await Backend.rpc('decide_milestone', {'p_mission': j.uuid, 'p_position': j.position, 'p_validate': validate, 'p_note': note});
+  if (!context.mounted) return;
+  if (r.error != null) {
+    await gAlert(context, 'Action impossible', r.error!);
+    return;
+  }
+  await ref.read(missionProvider.notifier).refresh();
+  if (!context.mounted) return;
+  gToast(context, validate ? 'Jalon validé : la livraison est acceptée.' : 'Correction demandée au prestataire.');
+  gOpen(context, '194');
+}
+
 void releaseMilestone(WidgetRef ref, BuildContext context) {
   if (Backend.ready) {
-    myNeedsDialog(context, ref); // jalons réellement livrés : valider (decide_milestone) ou demander une correction
+    _decideDelivered(ref, context, validate: true);
     return;
   }
   final m = ref.read(missionProvider);
@@ -425,7 +602,7 @@ void releaseMilestone(WidgetRef ref, BuildContext context) {
 
 void askCorrection(WidgetRef ref, BuildContext context) {
   if (Backend.ready) {
-    myNeedsDialog(context, ref); // « demander une correction » sur un jalon réellement livré (decide_milestone)
+    _decideDelivered(ref, context, validate: false);
     return;
   }
   final m = ref.read(missionProvider);

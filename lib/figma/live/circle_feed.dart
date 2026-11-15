@@ -28,6 +28,70 @@ class CircleTab extends Notifier<int> {
 /// Onglet choisi : 0 Pour toi · 1 Abonnements · 2 Vidéos · 3 Boutique · autres : tout.
 final circleTabProvider = NotifierProvider<CircleTab, int>(CircleTab.new);
 
+/// Publications du compte qui attendent la validation du département (ou ont été masquées) : invisibles dans le fil tant qu'elles ne sont pas validées.
+final myPendingPostsProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
+  if (ref.watch(authProvider.select((a) => a.current == null))) return const [];
+  final r = await Backend.rpc('my_posts_status', {'p_limit': 20});
+  if (r.error != null || r.data is! List) return const [];
+  return [for (final x in r.data as List) Map<String, dynamic>.from(x as Map)];
+}, retry: (_, _) => null);
+
+/// Bandeau « Mes publications en attente » au-dessus du fil : visible seulement s'il y en a ; ouvre le détail avec le motif d'un éventuel masquage.
+class PendingPostsBanner extends ConsumerWidget {
+  const PendingPostsBanner({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final rows = ref.watch(myPendingPostsProvider).value ?? const [];
+    if (rows.isEmpty) return const SizedBox.shrink();
+    final waiting = rows.where((r) => r['status'] == 'pending').length;
+    final hidden = rows.length - waiting;
+    final label = [
+      if (waiting > 0) '$waiting publication${waiting > 1 ? 's' : ''} en attente de validation',
+      if (hidden > 0) '$hidden masquée${hidden > 1 ? 's' : ''}',
+    ].join(' · ');
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => showModalBottomSheet<void>(
+        context: context,
+        backgroundColor: Colors.white,
+        isScrollControlled: true,
+        builder: (ctx) => SafeArea(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(ctx).height * 0.7),
+            child: ListView(padding: const EdgeInsets.fromLTRB(20, 18, 20, 20), shrinkWrap: true, children: [
+              Text('Mes publications en attente', style: _st(16, w: FontWeight.w700)),
+              const SizedBox(height: 6),
+              Text('Une publication d’un compte non certifié est visible dans le fil après validation par le département.', style: _st(12.5, c: _grey).copyWith(height: 1.45)),
+              const SizedBox(height: 10),
+              for (final r in rows)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text('${r['text']}'.isEmpty ? (r['media_kind'] == 'video' ? 'Vidéo' : 'Publication') : '${r['text']}', maxLines: 2, overflow: TextOverflow.ellipsis, style: _st(13.5, w: FontWeight.w600)),
+                    const SizedBox(height: 2),
+                    Text(r['status'] == 'pending' ? 'En attente de validation' : 'Masquée${'${r['note'] ?? ''}'.isEmpty ? '' : ' : ${r['note']}'}', style: _st(12, c: r['status'] == 'pending' ? const Color(0xFFB26A00) : const Color(0xFFB3261E))),
+                  ]),
+                ),
+            ]),
+          ),
+        ),
+      ),
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+        decoration: BoxDecoration(color: const Color(0xFFFFF1D6), borderRadius: BorderRadius.circular(14)),
+        child: Row(children: [
+          const Icon(Icons.hourglass_top_rounded, size: 16, color: Color(0xFFB26A00)),
+          const SizedBox(width: 8),
+          Expanded(child: Text(label, style: _st(12.5, w: FontWeight.w600, c: const Color(0xFF7A4A00)))),
+          const Icon(Icons.chevron_right, size: 18, color: Color(0xFF7A4A00)),
+        ]),
+      ),
+    );
+  }
+}
+
 /// Publications visibles selon l'onglet. « Abonnements » ne garde que les auteurs réellement suivis
 /// (`engagements.follow`) ; `following` vaut null tant que la liste n'est pas lue.
 List<Reel> filterCircle(List<Reel> all, int tab, {Set<String>? following}) => switch (tab) {
@@ -50,7 +114,9 @@ class CircleFeed extends ConsumerWidget {
     final failed = ref.watch(reelsLoadErrorProvider);
     final tab = ref.watch(circleTabProvider);
     final following = ref.watch(followingIdsProvider);
-    Widget note(String t, {String? action, VoidCallback? onTap}) => Container(
+    Widget note(String t, {String? action, VoidCallback? onTap}) => Column(mainAxisSize: MainAxisSize.min, children: [
+          SizedBox(width: width, child: const PendingPostsBanner()),
+          Container(
           width: width,
           height: 260,
           alignment: Alignment.center,
@@ -66,7 +132,8 @@ class CircleFeed extends ConsumerWidget {
               ),
             ],
           ]),
-        );
+        ),
+        ]);
     if (all == null) {
       if (failed) return note('Les publications ne peuvent pas être chargées pour le moment.', action: 'Réessayer', onTap: () => ref.read(reelsProvider.notifier).retry());
       return note('Chargement des publications…');
@@ -102,16 +169,19 @@ class CircleFeed extends ConsumerWidget {
         separatorBuilder: (_, _) => const SizedBox(height: 16),
         itemBuilder: (_, i) {
           if (i == 0) {
-            return GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () => publishPost(context, ref),
-              child: Container(
-                height: 48,
-                alignment: Alignment.center,
-                decoration: const BoxDecoration(color: _ink),
-                child: Row(mainAxisSize: MainAxisSize.min, children: [const Icon(Icons.add, color: Colors.white, size: 20), const SizedBox(width: 6), Text('Nouvelle publication', style: _st(13, w: FontWeight.w600, c: Colors.white))]),
+            return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => publishPost(context, ref),
+                child: Container(
+                  height: 48,
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(color: _ink),
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [const Icon(Icons.add, color: Colors.white, size: 20), const SizedBox(width: 6), Text('Nouvelle publication', style: _st(13, w: FontWeight.w600, c: Colors.white))]),
+                ),
               ),
-            );
+              const PendingPostsBanner(),
+            ]);
           }
           if (i > items.length) return const _MoreButton();
           final it = items[i - 1];
@@ -219,18 +289,35 @@ class FeaturedVideo extends ConsumerWidget {
       return mineView ? GestureDetector(behavior: HitTestBehavior.opaque, onTap: () => _addCover(context, ref, slot), child: box) : box;
     }
     final video = c.kind == 'video';
+    if (video) {
+      // Vidéo : lecture réelle au toucher ; pour mon profil, le menu Remplacer / Supprimer est sur le bouton d'angle.
+      return ClipRRect(
+        borderRadius: radius,
+        child: Stack(fit: StackFit.expand, children: [
+          InlineVideo(url: Backend.postMediaUrl(c.path)),
+          if (mineView)
+            Positioned(
+              top: 4,
+              right: 4,
+              child: Semantics(
+                button: true,
+                label: 'Modifier la couverture',
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => _coverMenu(context, ref, slot),
+                  child: const SizedBox(width: 44, height: 44, child: Center(child: CircleAvatar(radius: 14, backgroundColor: Color(0x99000000), child: Icon(Icons.more_horiz, color: Colors.white, size: 18)))),
+                ),
+              ),
+            ),
+        ]),
+      );
+    }
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: mineView ? () => _coverMenu(context, ref, slot) : null,
       child: ClipRRect(
         borderRadius: radius,
-        child: Stack(fit: StackFit.expand, children: [
-          if (video)
-            const DecoratedBox(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0xFF2A2833), Color(0xFF0E0F14)])))
-          else
-            gNetImage(Backend.postMediaUrl(c.path), fit: BoxFit.cover, errorBuilder: (_, _, _) => const ColoredBox(color: Color(0xFFEDE9F6))),
-          if (video) const Center(child: Icon(Icons.play_circle_fill, color: Colors.white, size: 40)),
-        ]),
+        child: gNetImage(Backend.postMediaUrl(c.path), fit: BoxFit.cover, errorBuilder: (_, _, _) => const ColoredBox(color: Color(0xFFEDE9F6))),
       ),
     );
   }

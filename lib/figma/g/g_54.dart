@@ -49,6 +49,7 @@ class G_54 extends ConsumerWidget {
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       chatHeaderOrder('Commande #BE-2026-0142'),
       chatHeaderOrderSub('Mouanga Yannick · En ligne'),
+      chatOrderLink(),
       gP(36, 128, 50, 50, gBox(image: 'assets/figma/img/84a49a20614dc5f12ab62f18400caa2290c40ec0.png', fit: BoxFit.cover, radii: [12, 12, 12, 12]), show: demoContent),
       gP(98, 132, 145, 17, gText(gm('Lampe en bois recyclé', ''), 13.5, Color(0xFF111015), weight: 600), show: demoContent),
       gP(98, 154, 160, 14, gText(gm('Prête au retrait · 25 000 FCFA', ''), 11.5, Color(0xFF57545F)), show: demoContent),
@@ -64,10 +65,6 @@ class G_54 extends ConsumerWidget {
       
       
       
-      
-      
-      
-      gP(328.5, 766.5, 19, 19, const SizedBox.expand(), tap: () => gTab(context, '230')),
       
       
       

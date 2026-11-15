@@ -29,7 +29,7 @@ final sectionADScreens = <ScreenEntry>[
   ScreenEntry('223', 'Ateliers en direct', (_) => const AteliersDirectScreen(), section: _s, node: '87:468'),
   ScreenEntry(
     '224',
-    'Validation des vœux',
+    'Programmer un live',
     (_) => const ValidationVoeuxScreen(),
     section: _s,
     node: '87:532',
@@ -38,7 +38,7 @@ final sectionADScreens = <ScreenEntry>[
   ScreenEntry('225', 'Jumeau 3D', (_) => const Jumeau3dScreen(), section: _s, node: '87:582'),
   ScreenEntry(
     '226',
-    'Modération des duels',
+    'Voir chez moi (réalité augmentée)',
     (_) => const ModerationDuelsScreen(),
     section: _s,
     node: '87:629',
@@ -46,7 +46,7 @@ final sectionADScreens = <ScreenEntry>[
   ),
   ScreenEntry(
     '227',
-    'Régie des ateliers en direct',
+    'Mon CV vivant',
     (_) => const RegieAteliersScreen(),
     section: _s,
     node: '87:673',

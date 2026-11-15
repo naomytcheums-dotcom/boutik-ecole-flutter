@@ -62,6 +62,9 @@ class _ServerChatPanelState extends ConsumerState<ServerChatPanel> {
   DateTime? _otherRead;
   String _otherId = '';
   bool _blocked = false;
+  int _limit = 100;
+  bool _hasMore = false;
+  bool _keepScroll = false;
   AudioRecorder? _rec;
   AudioRecorder get rec => _rec ??= AudioRecorder();
   bool recording = false;
@@ -93,11 +96,12 @@ class _ServerChatPanelState extends ConsumerState<ServerChatPanel> {
 
   Future<void> _load() async {
     final cid = ref.read(selectedConversationProvider);
+    if (cid.isNotEmpty && _cid.isNotEmpty && cid != _cid) _limit = 100;
     if (cid.isEmpty) {
       if (mounted && loading) setState(() => loading = false);
       return;
     }
-    final rows = await Backend.messages(cid);
+    final rows = await Backend.messages(cid, limit: _limit);
     final parts = await Backend.rows('conversation_participants', 'user_id,last_read_at', eq: {'conversation_id': cid});
     final bl = await Backend.rows('user_blocks', 'blocked_id');
     if (!mounted) return;
@@ -114,9 +118,12 @@ class _ServerChatPanelState extends ConsumerState<ServerChatPanel> {
     _otherId = otherId;
     _blocked = bl.rows.any((x) => '${x['blocked_id']}' == otherId);
     final grew = rows.length != msgs.length || cid != _cid;
+    final older = _keepScroll;
+    _keepScroll = false;
     setState(() {
       _cid = cid;
       loading = false;
+      _hasMore = rows.length >= _limit;
       msgs = [
         for (final r in rows)
           SMsg(
@@ -132,10 +139,17 @@ class _ServerChatPanelState extends ConsumerState<ServerChatPanel> {
           ),
       ];
     });
-    if (grew) {
+    if (grew && !older) {
       Backend.markConversationRead(cid).then((_) => ref.read(conversationsProvider.notifier).refresh());
       _toEnd();
     }
+  }
+
+  /// Charge les 100 messages précédents sans quitter la position de lecture.
+  Future<void> _loadOlder() async {
+    _limit += 100;
+    _keepScroll = true;
+    await _load();
   }
 
   Future<void> _menu(String v, String cid) async {
@@ -188,6 +202,7 @@ class _ServerChatPanelState extends ConsumerState<ServerChatPanel> {
     final t = c.text.trim();
     final cid = ref.read(selectedConversationProvider);
     if (t.isEmpty || cid.isEmpty) return;
+    if (t.length > 4000) return gToast(context, 'Message trop long : ${t.length} caractères saisis, 4 000 au maximum. Raccourcissez-le ou envoyez-le en deux messages.');
     c.clear();
     setState(() {});
     _run(SMsg(id: 'p${DateTime.now().microsecondsSinceEpoch}', mine: true, time: '', kind: 'text', body: t, status: 'sending'), () => Backend.sendMessage(cid, t));
@@ -382,7 +397,12 @@ class _ServerChatPanelState extends ConsumerState<ServerChatPanel> {
             ? Center(child: Text('Chargement…', style: _st(13, w: FontWeight.w500, c: const Color(0xFF57545F))))
             : all.isEmpty
                 ? Center(child: Text('Aucun message pour le moment.', style: _st(13, w: FontWeight.w500, c: const Color(0xFF57545F))))
-                : ListView.builder(controller: scroll, padding: const EdgeInsets.fromLTRB(24, 6, 24, 20), itemCount: all.length, itemBuilder: (_, i) => _bubble(all[i])),
+                : ListView.builder(controller: scroll, padding: const EdgeInsets.fromLTRB(24, 6, 24, 20), itemCount: all.length + (_hasMore ? 1 : 0), itemBuilder: (_, i) {
+                    if (_hasMore && i == 0) {
+                      return Padding(padding: const EdgeInsets.only(bottom: 12), child: Center(child: TextButton(onPressed: _loadOlder, child: Text('Charger les messages précédents', style: _st(12, w: FontWeight.w600, c: const Color(0xFF5A3FE0))))));
+                    }
+                    return _bubble(all[_hasMore ? i - 1 : i]);
+                  }),
       ),
       if (recording)
         Positioned(

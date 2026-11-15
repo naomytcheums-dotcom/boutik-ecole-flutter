@@ -42,7 +42,7 @@ class G_06 extends ConsumerWidget {
       gP(335.836, 21.921, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(357.336, 23.421, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
       gP(15.090, 67.970, 40, 40, const GGlassCircle()),
-      gP(24.291, 77.174, 21.592, 21.592, const SizedBox.expand(), tap: () => gOpen(context, '05')),
+      gP(24.291, 77.174, 21.592, 21.592, const SizedBox.expand(), tap: () => gBack(context)),
       gP(25.789, 78.672, 12.298, 18.595, gImg('assets/figma/v/ade208fa1ee3f1.svg')),
       gP(25.789, 84.97, 18.595, 6, gImg('assets/figma/v/12688bd81c8c1e.svg')),
       gP(66.125, 74.97, 113, 26, gText('Mon panier', 20.917, Color(0xFF111015), weight: 700)),
@@ -64,7 +64,7 @@ class G_06 extends ConsumerWidget {
       gP(169, 818, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gOpen(context, '03')),
       gP(184, 833, 22, 22, const SizedBox.expand(), tap: () => gOpen(context, '03')),
       gP(183.75, 831.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
-      gTap(24, 77, 22, 22, () => gOpen(context, '05')),
+      gTap(24, 77, 22, 22, () => gBack(context)),
     ]);
   }
 }

@@ -47,7 +47,7 @@ class G_185 extends ConsumerWidget {
       gP(21.98, 61.98, 40, 40, const GGlassCircle()),
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
-      gP(76, 70, 101, 26, gText('Language', 21, Color(0xFF111015), weight: 700)),
+      gP(76, 70, 101, 26, gText(gm('Language', 'Langue'), 21, Color(0xFF111015), weight: 700)),
       gP(40, 132, 55, 17, gText('Français', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
       gP(40, 154, 94, 14, gText(gm('Default language', ''), 11.5, Color(0xFF57545F)), show: demoContent),
       gP(40, 186, 314, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),

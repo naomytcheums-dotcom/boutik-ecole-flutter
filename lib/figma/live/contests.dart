@@ -31,9 +31,14 @@ Hackathon contestFromRow(Map<String, dynamic> r, int teams) {
     (r['prize'] as num?)?.toInt() ?? 0,
     (r['places'] as num?)?.toInt() ?? 0,
     switch (st) { 'judging' => 'Jury', 'results' => 'Résultats', 'cancelled' => 'Annulé', _ => open ? 'Ouvert' : 'Clos' },
-    free: true,
+    free: ((r['entry_fee'] as num?)?.toInt() ?? 0) == 0,
+    fee: (r['entry_fee'] as num?)?.toInt() ?? 0,
     hours: s != null && e != null ? (e.difference(s).inDays + 1) * 24 : 48,
     desc: '${r['description'] ?? ''}',
+    theme: '${r['theme'] ?? ''}',
+    rules: '${r['rules'] ?? ''}',
+    regClose: close,
+    submitClose: DateTime.tryParse('${r['submit_close_at'] ?? ''}')?.toLocal(),
     taken: teams,
     serverStatus: st,
   );
@@ -44,12 +49,13 @@ class ServerContests extends Notifier<List<Hackathon>?> {
   @override
   List<Hackathon>? build() {
     if (!Backend.ready) return null;
+    ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
     Future.microtask(refresh);
     return null;
   }
 
   Future<String?> refresh() async {
-    final c = await Backend.rows('contests', 'id,title,description,city,reg_close_at,submit_close_at,starts_on,ends_on,prize,places,status', order: 'reg_close_at', ascending: true, limit: 100);
+    final c = await Backend.rows('contests', 'id,title,description,theme,rules,city,reg_close_at,submit_close_at,starts_on,ends_on,prize,places,status,entry_fee', order: 'reg_close_at', ascending: true, limit: 100);
     if (!ref.mounted) return null;
     final errors = ref.read(contestsErrorProvider.notifier);
     if (c.error != null) {
@@ -154,9 +160,9 @@ Future<String?> _call(BuildContext context, String fn, Map<String, dynamic> para
 }
 
 /// 162 : inscription réelle (le serveur vérifie règlement, places, échéance et rôle étudiant).
-Future<bool> registerContestTeam(BuildContext context, WidgetRef ref, Hackathon ev, String name, String theme) async {
-  if (!await requireLogin(context, ref, 'inscrire votre équipe') || !context.mounted) return false;
-  final err = await _call(context, 'register_contest_team', {'p_contest': ev.id, 'p_name': name, 'p_theme': theme, 'p_solo': false, 'p_rules': true}, 'Inscription refusée');
+Future<bool> registerContestTeam(BuildContext context, WidgetRef ref, Hackathon ev, String name, String theme, {bool solo = false}) async {
+  if (!await requireLogin(context, ref, 'vous inscrire') || !context.mounted) return false;
+  final err = await _call(context, 'register_contest_team', {'p_contest': ev.id, 'p_name': name, 'p_theme': theme, 'p_solo': solo, 'p_rules': true}, 'Inscription refusée');
   if (err != null) return false;
   await ref.read(myContestTeamsProvider.notifier).refresh();
   if (context.mounted) await reloadContests(context, ref);

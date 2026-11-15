@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
+import 'package:go_router/go_router.dart';
 
-import '../nav.dart';
 import 'tp_ui.dart';
 
 /// Les quatre guides du Centre de confiance : une page chacun, avec les points à retenir et, au besoin, un accès direct au support.
@@ -81,7 +81,7 @@ Future<void> showTrustGuide(BuildContext context, String id) {
           const SizedBox(height: 8),
           TpButton(g.action!, () {
             Navigator.of(ctx).pop();
-            gOpen(context, '49');
+            GoRouter.of(context).push('/aide/contact');
           }),
         ],
       ],

@@ -23,6 +23,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/l8_opportunites.dart';
 import '../live/engage.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -48,7 +49,7 @@ class G_76 extends ConsumerWidget {
       gP(21.98, 61.98, 40, 40, const GGlassCircle()),
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
-      gP(76, 70, 160, 26, gText('Ma candidature', 21, Color(0xFF111015), weight: 700)),
+      gP(76, 70, 200, 26, gText(demoContent ? 'Ma candidature' : 'Mes candidatures', 21, Color(0xFF111015), weight: 700)),
       gP(36, 133, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13]), show: demoContent),
       gP(44.667, 145.833, 22.667, 17.667, gImg('assets/figma/v/0b1915710c6b88.svg'), show: demoContent),
       gP(49.667, 142.5, 12.667, 21, gImg('assets/figma/v/baf18a4f525e16.svg'), show: demoContent),
@@ -96,12 +97,12 @@ class G_76 extends ConsumerWidget {
       gP(40, 684, 104, 16, gText('Documents joints', 12.5, Color(0xFF57545F)), show: demoContent),
       gP(293, 684, 57, 16, gText('CV, lettre', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right), show: demoContent),
       gP(0, 746, 390, 100, gBox(color: Color(0x00FFFFFF)), show: demoContent),
-      gP(24, 762, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE5484D), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => withdrawLatestApplication(context, ref)),
-      gP(82, 780, 47, 18, gText('Retirer', 14.5, Color(0xFFE5484D), weight: 600, align: TextAlign.center)),
-      gP(203, 762, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gOpen(context, '55')),
-      gP(248.5, 780, 72, 18, gText('Contacter', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
+      gP(24, 762, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE5484D), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => withdrawLatestApplication(context, ref), show: demoContent),
+      gP(82, 780, 47, 18, gText('Retirer', 14.5, Color(0xFFE5484D), weight: 600, align: TextAlign.center), show: demoContent),
+      gP(203, 762, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gOpen(context, '55'), show: demoContent),
+      gP(248.5, 780, 72, 18, gText('Contacter', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center), show: demoContent),
       gP(125, 832, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
-      if (!demoContent) gP(24, 125, 342, 620, applicationsListing(height: 620)),
+      if (!demoContent) gP(24, 125, 342, 690, const MyApplicationsPanel(width: 342, height: 690)),
     ]);
   }
 }

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../gen.dart' show gAlert, gToast;
 import '../i18n.dart' show Text;
 import 'auth.dart';
+import 'access.dart' show canOpen, roleKey;
 import 'backend.dart';
 import 'account_menu.dart' show accountMenu;
 import 'coequipiers_screens.dart' show MateNavPill;
@@ -18,7 +19,7 @@ import 'tara_payment.dart';
 final companyDashboardProvider = FutureProvider.autoDispose<Map<String, dynamic>>((ref) async {
   ref.watch(authProvider.select((a) => a.current?.serverId));
   final ctx = ref.watch(companyContextProvider);
-  final r = await marcheCall('company_dashboard', {if (ctx != null) 'p_owner': ctx});
+  final r = await marcheCall('company_dashboard', {'p_owner': ?ctx});
   if (r.error != null) throw MarcheException(r.error);
   return Map<String, dynamic>.from(r.data as Map);
 });
@@ -33,7 +34,7 @@ final companyPlansProvider = FutureProvider.autoDispose<List<Map<String, dynamic
 final companyPlanStatusProvider = FutureProvider.autoDispose<Map<String, dynamic>>((ref) async {
   ref.watch(authProvider.select((a) => a.current?.serverId));
   final ctx = ref.watch(companyContextProvider);
-  final r = await marcheCall('company_plan_status', {if (ctx != null) 'p_owner': ctx});
+  final r = await marcheCall('company_plan_status', {'p_owner': ?ctx});
   if (r.error != null) throw MarcheException(r.error);
   return Map<String, dynamic>.from(r.data as Map);
 });
@@ -67,10 +68,10 @@ class CompanyHomeScreen extends ConsumerWidget {
   /// Espace partagé : on consulte l'entreprise dont on est membre (pas de publication au nom de l'entreprise pour l'instant).
   final bool shared;
 
-  Widget _tile(BuildContext context, IconData icon, String value, String label, String route) => Expanded(
+  Widget _tile(BuildContext context, IconData icon, String value, String label, String? route) => Expanded(
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: () => context.push(route),
+          onTap: route == null ? null : () => context.push(route),
           child: Container(
             margin: const EdgeInsets.all(5),
             padding: const EdgeInsets.all(12),
@@ -83,6 +84,9 @@ class CompanyHomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final d = ref.watch(companyDashboardProvider);
+    final account = ref.watch(authProvider.select((a) => a.current));
+    final org = const {'company', 'other', 'admin'}.contains(roleKey(account));
+    final open99 = canOpen(account, '99');
     return Scaffold(
       backgroundColor: const Color(0xFFF7F4FA),
       body: SafeArea(
@@ -126,16 +130,16 @@ class CompanyHomeScreen extends ConsumerWidget {
                 ),
               ),
               Row(children: [
-                _tile(context, Icons.assignment_outlined, '${n('needs_open')}', 'Besoins ouverts', '/s/99'),
-                _tile(context, Icons.mark_email_unread_outlined, '${n('proposals_new')}', 'Propositions à traiter', '/s/93'),
+                _tile(context, Icons.assignment_outlined, '${n('needs_open')}', 'Besoins ouverts', open99 ? '/s/99' : null),
+                _tile(context, Icons.mark_email_unread_outlined, '${n('proposals_new')}', 'Propositions à traiter', open99 ? '/s/93' : null),
               ]),
               Row(children: [
-                _tile(context, Icons.work_outline, '${n('offers_active')}', 'Offres actives', '/opportunites/mes'),
-                _tile(context, Icons.how_to_reg_outlined, '${n('applications_new')}', 'Candidatures reçues', '/opportunites/mes'),
+                _tile(context, Icons.work_outline, '${n('offers_active')}', 'Offres actives', org ? '/opportunites/mes' : null),
+                _tile(context, Icons.how_to_reg_outlined, '${n('applications_new')}', 'Candidatures reçues', org ? '/opportunites/mes' : null),
               ]),
               Row(children: [
-                _tile(context, Icons.emoji_events_outlined, '${n('contests_active')}', 'Concours actifs', '/concours/mes'),
-                _tile(context, Icons.celebration_outlined, '${n('recruits')}', 'Recrutés', '/opportunites/mes'),
+                _tile(context, Icons.emoji_events_outlined, '${n('contests_active')}', 'Concours actifs', org ? '/concours/mes' : null),
+                _tile(context, Icons.celebration_outlined, '${n('recruits')}', 'Recrutés', org ? '/opportunites/mes' : null),
               ]),
               Padding(padding: const EdgeInsets.fromLTRB(5, 6, 5, 0), child: mButton('Équipe de l’entreprise · ${n('members')} personne${n('members') > 1 ? 's' : ''}', () => context.push('/entreprise/equipe'), dark: false, icon: Icons.groups_2_outlined)),
               if (!shared) ...[
@@ -200,7 +204,7 @@ class CompanyPlansSheet extends ConsumerWidget {
     Future<void> pay(Map<String, dynamic> p) async {
       if (!Backend.ready) return gAlert(context, 'Paiement indisponible', 'Le paiement nécessite la connexion au serveur. Reconnectez-vous puis réessayez.');
       final ctx = ref.read(companyContextProvider);
-      final r = await marcheCall('company_plan_checkout', {'p_plan': p['code'], if (ctx != null) 'p_owner': ctx});
+      final r = await marcheCall('company_plan_checkout', {'p_plan': p['code'], 'p_owner': ?ctx});
       if (!context.mounted) return;
       if (r.error != null) return gAlert(context, 'Paiement impossible', Backend.userMessage('${r.error}'));
       if (r.data is! Map) return gAlert(context, 'Paiement impossible', 'Le serveur n’a pas renvoyé la transaction. Réessayez dans un instant.');

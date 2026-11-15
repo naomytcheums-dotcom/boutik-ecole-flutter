@@ -1058,7 +1058,7 @@ class _PostCardState extends ConsumerState<PostCard> {
             action(const Icon(Icons.repeat, size: 22, color: kInk), post.reposts == 0 ? '' : compactCount(post.reposts), () => repostPost(context, ref, post)),
             action(const Icon(Icons.ios_share, size: 21, color: kInk), '', () => sharePost(context, ref, post)),
             const Spacer(),
-            if (post.listing.isNotEmpty) action(const Icon(Icons.storefront_outlined, size: 21, color: kInk), 'Boutique', () => gOpen(context, '22')),
+            if (post.listing.isNotEmpty) action(const Icon(Icons.storefront_outlined, size: 21, color: kInk), 'Boutique', () => openPostShop(context, post.id)),
             action(Icon(post.saved ? Icons.bookmark : Icons.bookmark_border, size: 22, color: kInk), compactCount(post.saves), () => toggleSavePost(context, ref, post)),
           ]),
         ),

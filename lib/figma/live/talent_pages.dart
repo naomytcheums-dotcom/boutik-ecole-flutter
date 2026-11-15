@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gen.dart' show gToast;
 import 'auth.dart';
+import 'access.dart' show roleKey;
+import 'dossier.dart' show isStudentDossier;
 import 'profile_extras.dart';
 import 'backend.dart';
 import 'profile_data.dart';
@@ -345,13 +347,21 @@ class _DocumentsPageState extends ConsumerState<DocumentsPage> {
       ]);
     }
 
+    final acc = ref.watch(authProvider).current;
+    final student = acc != null && isStudentDossier(acc);
+    final kinds = [
+      'cv', 'diploma', 'certificate', 'other',
+      if (student) ...['student_card', 'enrollment_certificate'],
+    ];
     return TpPage(
       title: 'Mes documents',
       subtitle: busy ? 'Envoi en cours…' : null,
       children: [
-        tpNote('Formats : PDF, JPG, PNG ou WebP, 10 Mo au maximum. Les documents vérifiés affichent un badge de confiance sur votre profil. Vos fichiers sont privés : seule l’équipe de validation peut les consulter avec vous.'),
+        tpNote(student
+            ? 'Formats : PDF, JPG, PNG ou WebP, 10 Mo au maximum. Les documents vérifiés affichent un badge de confiance sur votre profil. Vos fichiers sont privés : seule l’équipe de validation peut les consulter avec vous.'
+            : 'Formats : PDF, JPG, PNG ou WebP, 10 Mo au maximum. Vos fichiers sont privés : seule l’équipe de validation peut les consulter avec vous. La carte d’étudiant et le certificat de scolarité ne concernent que les étudiants.'),
         if (docs == null) const Padding(padding: EdgeInsets.all(30), child: Center(child: CircularProgressIndicator())) else ...[
-          for (final k in const ['cv', 'diploma', 'certificate', 'other', 'student_card', 'enrollment_certificate']) section(k),
+          for (final k in kinds) section(k),
         ],
       ],
     );
@@ -365,6 +375,18 @@ class AddToProfilePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (_loggedOut(ref)) return _needLogin(context, ref, 'Ajouter à mon profil', 'enrichir votre profil');
+    final role = roleKey(ref.watch(authProvider).current);
+    if (role != 'student' && role != 'admin') {
+      return TpPage(title: 'Ajouter à mon profil', children: [
+        TpEmpty(
+          title: 'Réservé aux étudiants',
+          text: 'Les compétences, réalisations et documents de cette page alimentent la liste des talents, qui présente les étudiants. Votre profil n’y apparaît pas : complétez plutôt votre description et votre ville.',
+          action: 'Modifier mon profil',
+          onAction: () => editProfileDialog(context, ref),
+          icon: Icons.school_outlined,
+        ),
+      ]);
+    }
     Widget tile(IconData i, String t, String s, Widget Function() page) => TpCard(
           onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => page())),
           child: Row(children: [

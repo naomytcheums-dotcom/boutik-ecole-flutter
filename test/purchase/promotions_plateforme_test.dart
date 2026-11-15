@@ -45,6 +45,9 @@ void main() {
   });
 
   testWidgets('panier : promotion automatique = champ verrouillé, rempli, sans bouton Appliquer', (t) async {
+    t.view.physicalSize = const Size(800, 2400); // le panier par boutique est plus haut (quantités, suppression) : tout est construit
+    t.view.devicePixelRatio = 1;
+    addTearDown(t.view.reset);
     await _pump(t, const CartByShopScreen(), overrides: [
       marcheAutoPromoProvider.overrideWith((ref) async => {'code': 'NOUVELAN', 'label': 'Nouvel An', 'kind': 'percent', 'value': 15}),
     ]);

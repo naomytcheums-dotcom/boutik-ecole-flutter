@@ -71,7 +71,6 @@ class G_53 extends ConsumerWidget {
       
       
       
-      gP(328.5, 766.5, 19, 19, const SizedBox.expand(), tap: () => gTab(context, '230')),
       
       
       

@@ -175,7 +175,7 @@ Future<void> submitClaimForm(BuildContext context, WidgetRef ref) async {
   if (!context.mounted) return;
   if (err != null) return gAlert(context, 'Réclamation non envoyée', err);
   ref.read(formProvider.notifier).clear(const ['claim_details']);
-  gToast(context, 'Réclamation envoyée. Le vendeur a été prévenu.');
+  gToast(context, 'Réclamation envoyée. Le support de la plateforme et les vendeurs concernés ont été prévenus.');
   gBack(context);
 }
 

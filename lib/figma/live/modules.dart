@@ -7,11 +7,14 @@ import 'tp_ui.dart' show TpButton;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gen.dart' show gToast;
+import '../nav.dart' show gOpenProfile;
+import 'access.dart' show roleKey;
 import 'auth.dart';
 import 'backend.dart';
 import 'console.dart';
 import 'entreprise.dart';
 import 'impact.dart' show RpcMap;
+import 'l10_ateliers.dart' show LiveNowList;
 
 /// Modules ajoutés par la migration 20261105001000 : réglages de la plateforme, contenus éditoriaux, duels de talents, lives et casiers de
 /// retrait, radar des compétences, code de parrainage. Chargement, état vide et erreur explicites ; rien n'est inventé.
@@ -253,7 +256,7 @@ class ReferralKit extends ConsumerWidget {
         const SizedBox(height: 6),
         Text('« $msg »', textAlign: TextAlign.center, style: _st(12.5, c: _grey).copyWith(height: 1.5)),
         const SizedBox(height: 18),
-        TpButton('Choisir dans mes contacts', () => inviteFromContacts(context, ref, msg), icon: Icons.contacts_outlined),
+        TpButton(contactPickerSupported ? 'Choisir dans mes contacts' : 'Inviter par message ou réseau social', () => inviteFromContacts(context, ref, msg), icon: contactPickerSupported ? Icons.contacts_outlined : Icons.send_outlined),
         const SizedBox(height: 10),
         TpButton('Partager avec une application', () => shareInvitation(context, ref, 'system'), dark: false, icon: Icons.ios_share),
         const SizedBox(height: 10),
@@ -300,7 +303,11 @@ class _DuelsBase extends ConsumerWidget {
         itemBuilder: (_, i) {
           final d = rows[i];
           final entries = [for (final e in (d['entries'] as List? ?? const [])) Map<String, dynamic>.from(e as Map)];
-          final best = entries.isEmpty ? null : entries.reduce((a, b) => (b['votes'] as num) > (a['votes'] as num) ? b : a);
+          final winnerEntry = '${d['winner_entry'] ?? ''}';
+          final winnerId = '${d['winner_id'] ?? ''}';
+          final myVote = entries.any((e) => e['my_vote'] == true);
+          final iAmCreator = d['mine'] == true;
+          final me = Backend.userId;
           return Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(22), border: Border.all(color: const Color(0xFFECE8F2))),
@@ -308,18 +315,37 @@ class _DuelsBase extends ConsumerWidget {
               Text('${d['need']}', style: _st(15, w: FontWeight.w700)),
               const SizedBox(height: 2),
               Text([if ('${d['prize']}'.isNotEmpty) 'Prix : ${d['prize']}', if (open) 'fin le ${dateCourte(d['ends_at'])}' else 'terminé le ${dateCourte(d['ends_at'])}'].join(' · '), style: _st(11.5, c: _grey)),
+              if ('${d['prize']}'.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 2), child: Text('Prix convenu avec le créateur du duel : la plateforme ne le garde pas en séquestre.', style: _st(10.5, c: _grey))),
               const SizedBox(height: 10),
               if (entries.isEmpty) Text('Aucune participation pour le moment.', style: _st(12.5, c: _grey)),
               for (final e in entries)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 6),
                   child: Row(children: [
-                    Expanded(child: Text('${e['author']} · ${e['title']}${!open && best != null && e['id'] == best['id'] && (e['votes'] as num) > 0 ? '  🏆' : ''}', style: _st(13, w: FontWeight.w600))),
+                    Expanded(child: Text('${e['author']} · ${e['title']}${!open && winnerEntry.isNotEmpty && '${e['id']}' == winnerEntry ? '  🏆' : ''}', style: _st(13, w: FontWeight.w600))),
                     Text('${e['votes']} vote${(e['votes'] as num) == 1 ? '' : 's'}', style: _st(11.5, c: _grey)),
-                    if (open) ...[const SizedBox(width: 8), _btn('Voter', () async { if (!await requireLogin(context, ref, 'voter') || !context.mounted) return; if (await _run(context, 'duel_vote', {'p_entry': '${e['id']}'}, 'Vote enregistré.')) await ref.read(duelsProvider.notifier).refresh(); })],
+                    if (open && e['my_vote'] == true) ...[const SizedBox(width: 8), Text('Voté ✓', style: _st(11.5, w: FontWeight.w700, c: const Color(0xFF0F7A52)))]
+                    else if (open && !myVote && !iAmCreator && (me == null || '${e['author_id']}' != me)) ...[const SizedBox(width: 8), _btn('Voter', () async { if (!await requireLogin(context, ref, 'voter') || !context.mounted) return; if (await _run(context, 'duel_vote', {'p_entry': '${e['id']}'}, 'Vote enregistré.')) await ref.read(duelsProvider.notifier).refresh(); })],
                   ]),
                 ),
-              if (open) Padding(padding: const EdgeInsets.only(top: 8), child: _btn('Participer', () async { if (await requireLogin(context, ref, 'participer à un duel') && context.mounted) await enterDuelDialog(context, ref, '${d['id']}'); }, dark: false)),
+              if (!open && entries.isNotEmpty && winnerEntry.isEmpty) Text('Aucun gagnant : aucun vote n’a été enregistré.', style: _st(12.5, c: _grey)),
+              if (!open && winnerEntry.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: _btn('Voir le dossier du gagnant', () async {
+                    if (winnerId.isEmpty) {
+                      if (!await requireLogin(context, ref, 'ouvrir le dossier du gagnant') || !context.mounted) return;
+                      return gToast(context, 'Rechargez la liste pour afficher le dossier du gagnant.');
+                    }
+                    gOpenProfile(context, winnerId);
+                  }, dark: false),
+                ),
+              if (open && !iAmCreator) Padding(padding: const EdgeInsets.only(top: 8), child: _btn('Participer', () async {
+                if (!await requireLogin(context, ref, 'participer à un duel') || !context.mounted) return;
+                if (roleKey(ref.read(authProvider).current) != 'student') return gToast(context, 'Seuls les étudiants peuvent participer à un duel.');
+                await enterDuelDialog(context, ref, '${d['id']}');
+              }, dark: false)),
+              if (open && iAmCreator) Text('C’est votre duel : vous ne votez pas et vous ne participez pas.', style: _st(11.5, c: _grey)),
             ]),
           );
         },
@@ -340,7 +366,8 @@ Future<void> enterDuelDialog(BuildContext context, WidgetRef ref, String duel) a
   final t = TextEditingController();
   final ok = await showDialog<bool>(context: context, builder: (c) => AlertDialog(title: const Text('Ma proposition'), content: TextField(controller: t, decoration: const InputDecoration(labelText: 'Titre de ma proposition')), actions: [TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('Annuler')), TextButton(onPressed: () => Navigator.pop(c, true), child: const Text('Envoyer'))]));
   if (ok != true || !context.mounted) return;
-  if (await _run(context, 'duel_enter', {'p_duel': duel, 'p_title': t.text}, 'Participation enregistrée.')) await ref.read(duelsProvider.notifier).refresh();
+  if (t.text.trim().length < 2) return gToast(context, 'Donnez un titre à votre proposition (2 caractères au moins).');
+  if (await _run(context, 'duel_enter', {'p_duel': duel, 'p_title': t.text.trim()}, 'Participation enregistrée.')) await ref.read(duelsProvider.notifier).refresh();
 }
 
 class DuelCreateForm extends ConsumerStatefulWidget {
@@ -356,16 +383,23 @@ class _DuelCreateFormState extends ConsumerState<DuelCreateForm> {
   @override
   Widget build(BuildContext context) {
     if (_signedOut(ref)) return _note(widget.width, 'Connectez-vous avec un compte client ou entreprise pour lancer un duel.');
+    if (!const {'client', 'company', 'dept', 'direction', 'admin'}.contains(roleKey(ref.watch(authProvider).current))) {
+      return _note(widget.width, 'Seuls les clients, les entreprises et le département peuvent lancer un duel. Les étudiants y participent depuis « Duels de talents ».');
+    }
     return SizedBox(
       width: widget.width,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        TextField(controller: _need, decoration: const InputDecoration(labelText: 'Besoin (ex. logo pour ma marque)')),
-        TextField(controller: _prize, decoration: const InputDecoration(labelText: 'Prix (facultatif)')),
+      child: ListView(padding: const EdgeInsets.only(bottom: 24), children: [
+        TextField(controller: _need, maxLength: 160, decoration: const InputDecoration(labelText: 'Besoin (ex. logo pour ma marque)')),
+        TextField(controller: _prize, maxLength: 120, decoration: const InputDecoration(labelText: 'Prix (facultatif)')),
         TextField(controller: _hours, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'Durée en heures (1 à 336)')),
+        const SizedBox(height: 12),
+        Text('Le duel est publié tout de suite. Le prix est un montant que vous convenez directement avec le gagnant : la plateforme ne le garde pas en séquestre et ne demande aucun paiement à la création. À la fin du duel, la proposition qui a reçu le plus de votes gagne ; vous et les participants êtes prévenus.', style: _st(12, c: _grey).copyWith(height: 1.5)),
         const SizedBox(height: 18),
         _btn('Lancer le duel', () async {
           final h = int.tryParse(_hours.text.trim()) ?? 0;
-          if (await _run(context, 'duel_create', {'p_need': _need.text, 'p_prize': _prize.text, 'p_hours': h}, 'Duel lancé.')) {
+          if (_need.text.trim().length < 3) return gToast(context, 'Décrivez votre besoin (3 caractères au moins).');
+          if (h < 1 || h > 336) return gToast(context, 'La durée va de 1 à 336 heures.');
+          if (await _run(context, 'duel_create', {'p_need': _need.text.trim(), 'p_prize': _prize.text.trim(), 'p_hours': h}, 'Duel lancé.')) {
             _need.clear();
             _prize.clear();
             await ref.read(duelsProvider.notifier).refresh();
@@ -378,72 +412,13 @@ class _DuelCreateFormState extends ConsumerState<DuelCreateForm> {
 
 // ------------------------------------------------------------------ lives
 
-final livesAllProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('scheduled_lives', 'id,host_id,title,starts_at,product_title,status', order: 'created_at', anyOf: ('status', ['scheduled', 'live']), limit: 100, publicRead: true));
-/// Lives programmés ou en cours du compte connecté (lecture filtrée par le serveur sur l'hôte).
-final livesMineProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('scheduled_lives', 'id,host_id,title,starts_at,product_title,status', order: 'created_at', anyOf: ('status', ['scheduled', 'live']), ownerColumn: 'host_id', limit: 100));
-final liveCommentsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('live_comments', 'live_id,body,created_at', order: 'created_at', limit: 200, publicRead: true));
-
-/// Lives en cours avec leurs commentaires (écran 222) ou lives du compte à démarrer (écran l1).
-class LiveRoom extends ConsumerWidget {
-  const LiveRoom({super.key, this.mine = false, this.width = 342, this.height = 600});
-  final bool mine;
+/// Lives réellement en cours (écran 222 sans identifiant, V1) : voir LiveNowList (l10_ateliers.dart).
+class LiveRoom extends StatelessWidget {
+  const LiveRoom({super.key, this.width = 342, this.height = 600});
   final double width, height;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final source = mine ? livesMineProvider : livesAllProvider;
-    if (mine && _signedOut(ref)) return _note(width, 'Connectez-vous pour gérer vos lives.');
-    final all = ref.watch(source);
-    final comments = mine ? const <Map<String, dynamic>>[] : ref.watch(liveCommentsProvider) ?? const <Map<String, dynamic>>[];
-    if (all == null) return _note(width, 'Chargement…');
-    if (ref.read(source.notifier).error) return _note(width, 'Les lives ne peuvent pas être chargés pour le moment.');
-    final rows = [for (final l in all) if (mine || '${l['status']}' == 'live') l];
-    if (rows.isEmpty) return _note(width, mine ? 'Aucun live programmé à démarrer.\nProgrammez-en un depuis votre profil.' : 'Aucun live en cours pour le moment.');
-    return SizedBox(
-      width: width,
-      height: height,
-      child: ListView.separated(
-        padding: EdgeInsets.zero,
-        itemCount: rows.length,
-        separatorBuilder: (_, _) => const SizedBox(height: 16),
-        itemBuilder: (_, i) {
-          final l = rows[i];
-          final live = '${l['status']}' == 'live';
-          final mineComments = [for (final c in comments) if ('${c['live_id']}' == '${l['id']}') c];
-          return Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(22), border: Border.all(color: const Color(0xFFECE8F2))),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(children: [Expanded(child: Text('${l['title']}', style: _st(15, w: FontWeight.w700))), if (live) Text('EN DIRECT', style: _st(11, w: FontWeight.w800, c: const Color(0xFFE5484D)))]),
-              if ('${l['product_title'] ?? ''}'.isNotEmpty) Text('Produit : ${l['product_title']}', style: _st(12, c: _grey)),
-              const SizedBox(height: 10),
-              if (mine)
-                Row(children: [
-                  if (!live) _btn('Démarrer', () async { if (await _run(context, 'live_set_state', {'p_id': '${l['id']}', 'p_state': 'live'}, 'Live démarré.')) await ref.read(source.notifier).refresh(); }),
-                  if (live) _btn('Terminer', () async { if (await _run(context, 'live_set_state', {'p_id': '${l['id']}', 'p_state': 'ended'}, 'Live terminé.')) await ref.read(source.notifier).refresh(); }),
-                ])
-              else ...[
-                Text('Commentaires (${mineComments.length})', style: _st(12.5, w: FontWeight.w700)),
-                const SizedBox(height: 6),
-                if (mineComments.isEmpty) Text('Aucun commentaire pour le moment.', style: _st(12, c: _grey)),
-                for (final c in mineComments.take(8)) Padding(padding: const EdgeInsets.only(bottom: 4), child: Text('${c['body']}', style: _st(12.5))),
-                const SizedBox(height: 8),
-                _btn('Commenter', () => commentDialog(context, ref, '${l['id']}'), dark: false),
-              ],
-            ]),
-          );
-        },
-      ),
-    );
-  }
-}
-
-Future<void> commentDialog(BuildContext context, WidgetRef ref, String live) async {
-  if (!await requireLogin(context, ref, 'commenter') || !context.mounted) return;
-  final t = TextEditingController();
-  final ok = await showDialog<bool>(context: context, builder: (c) => AlertDialog(title: const Text('Commenter'), content: TextField(controller: t, maxLength: 300, decoration: const InputDecoration(labelText: 'Votre message')), actions: [TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('Annuler')), TextButton(onPressed: () => Navigator.pop(c, true), child: const Text('Envoyer'))]));
-  if (ok != true || !context.mounted) return;
-  if (await _run(context, 'live_comment', {'p_live': live, 'p_body': t.text}, 'Commentaire publié.')) await ref.read(liveCommentsProvider.notifier).refresh();
+  Widget build(BuildContext context) => LiveNowList(width: width, height: height);
 }
 
 // ------------------------------------------------------------------ retraits en borne (casiers)

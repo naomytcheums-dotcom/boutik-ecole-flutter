@@ -45,7 +45,7 @@ class G_248 extends ConsumerWidget {
       gP(316, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
       gP(327.987, 81.208, 20.025, 21.583, gImg('assets/figma/v/db754939a6b043.svg')),
       gP(327.987, 84.325, 20.025, 12.233, gImg('assets/figma/v/b1f8fe8dfa2b2f.svg')),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 130, 92.4, 34, 'Produits', 12, 500), GChip(124.4, 130, 92.4, 34, 'Services', 12, 400), GChip(224.8, 130, 162.6, 34, 'Offres de clients', 12, 400)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFFFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 17)),
+      if (demoContent) Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 130, 92.4, 34, 'Produits', 12, 500), GChip(124.4, 130, 92.4, 34, 'Services', 12, 400), GChip(224.8, 130, 162.6, 34, 'Offres de clients', 12, 400)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFFFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 17)),
       gP(24, 176, 342, 52, gBox(color: Color(0x99FFFFFF), border: Color(0xFF6A4DFF), bw: 1.5, radii: [26, 26, 26, 26]), show: demoContent),
       gP(43, 187, 30, 30, gBox(color: Color(0xFFEEE9FF), oval: true), show: demoContent),
       gP(50.625, 199, 14.75, 6, gImg('assets/figma/v/4a21eafe2f996f.svg'), show: demoContent),
@@ -105,7 +105,7 @@ class G_248 extends ConsumerWidget {
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gOpen(context, '244')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       if (demoContent) gTap(24, 176, 342, 52, () => gOpen(context, '249')),
-      gTap(144, 94, 102, 32, () { gOpen(context, 'd1'); }), // lien métier 248 -> d1
+      if (demoContent) gTap(144, 94, 102, 32, () { gOpen(context, 'd1'); }), // lien métier 248 -> d1
       if (!demoContent) gP(24, 176, 342, 580, const MyListings(width: 342, height: 580)),
     ]);
   }

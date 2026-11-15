@@ -12,7 +12,8 @@ import 'package:go_router/go_router.dart';
 /// Deux segments : l'acheteur (jusqu'à « Ma commande ») puis le département depuis son tableau de bord ; l'ancien
 /// raccourci caché 09 → 111 masquait la flèche retour de « Ma commande » (audit du 01/11).
 const segments = [
-  ['03', '19', '22', '05', '33', '10', '40', '06', '07', '08', '257', '259', '260', '44', '09'],
+  ['03', '19', '22', '05', '33', '10', '40', '06', '07', '08', '257', '259', '260', '09'],
+  ['44', '09'],
   ['108', '111', '213', '212', '206', '207', '208', '209', '210', '237'],
 ];
 

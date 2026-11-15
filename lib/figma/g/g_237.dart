@@ -36,6 +36,7 @@ class G_237 extends ConsumerWidget {
       gP(40, 40, 220, 740, gBox(color: Color(0x99FFFFFF), border: Color(0xFFFFFFFF), bw: 1, backBlur: 24, radii: [28, 28, 28, 28])),
       gP(56, 54, 44, 40, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(106, 64, 94, 18, gText('Boutik-École', 14.5, Color(0xFF111015), weight: 600)),
+      if (demoContent) ...[
       gP(64.625, 132.625, 10.958, 10.958, gImg('assets/figma/v/d7d4b08b8877d1.svg')),
       gP(72.417, 132.625, 10.958, 10.958, gImg('assets/figma/v/d7d4b08b8877d1.svg')),
       gP(72.417, 140.417, 10.958, 10.958, gImg('assets/figma/v/d7d4b08b8877d1.svg')),
@@ -64,9 +65,11 @@ class G_237 extends ConsumerWidget {
       gP(68.875, 424.875, 10.25, 10.25, gImg('assets/figma/v/7a056701264e03.svg')),
       gP(63.917, 419.917, 20.167, 20.167, gImg('assets/figma/v/03ec0ff2767ce9.svg')),
       gP(98, 421, 71, 16, gText('Paramètres', 13, Color(0xFF111015))),
+      ],
+      if (!demoContent) gP(56, 133, 160, 24, gText('← Retour', 13, Color(0xFF111015), weight: 600), tap: () => gBack(context)),
       gP(290, 52, 232, 30, gText('Impact par territoire', 24, Color(0xFF111015), weight: 600)),
       gP(290, 86, 344, 16, gText('Où les talents de l’IUT créent de la valeur, région par région.', 12.5, Color(0xFF57545F))),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(290, 120, 148.4, 34, 'Missions livrées', 12, 600), GChip(446.4, 120, 148.4, 34, 'Étudiants actifs', 12, 400), GChip(602.8, 120, 133.6, 34, 'Revenus versés', 12, 400)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFFFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 17)),
+      if (demoContent) Positioned.fill(child: GChoiceGroup(chips: [GChip(290, 120, 148.4, 34, 'Missions livrées', 12, 600), GChip(446.4, 120, 148.4, 34, 'Étudiants actifs', 12, 400), GChip(602.8, 120, 133.6, 34, 'Revenus versés', 12, 400)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFFFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 17)),
       gP(1096, 120, 140, 34, gBox(color: Color(0xFFFFFFFF), radii: [17, 17, 17, 17]), show: demoContent),
       gP(1124.5, 128, 83, 15, gText(gm('Octobre 2026', ''), 12, Color(0xFF111015), weight: 500), show: demoContent),
       gP(290, 172, 560, 606, gBox(color: Color(0x99FFFFFF), border: Color(0xFFFFFFFF), bw: 1, backBlur: 24, radii: [32, 32, 32, 32]), show: demoContent),
@@ -168,7 +171,7 @@ class G_237 extends ConsumerWidget {
       gP(1052, 730, 168, 34, gBox(color: Color(0xFF111015), radii: [17, 17, 17, 17]), show: demoContent),
       gP(1100, 738, 72, 14, gText('Voir la région', 11.5, Color(0xFFFFFFFF), weight: 600), show: demoContent),
       gP(290, 784, 130, 13, gText('Données de démonstration', 10, Color(0xFF57545F)), show: demoContent),
-      gTap(86, 123, 232, 36, () { gOpen(context, '238'); }), // parcours 237 -> 238
+      if (demoContent) gTap(86, 123, 232, 36, () { gOpen(context, '238'); }), // parcours 237 -> 238
       if (demoContent) gTap(306, 188, 54, 32, () { gOpen(context, '107'); }), // parcours 237 -> 107
       if (!demoContent) gP(240, 140, 980, 640, const PlatformImpactPanel(width: 520, height: 640)),
     ]);

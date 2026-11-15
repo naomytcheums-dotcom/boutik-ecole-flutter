@@ -17,6 +17,7 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/qr.dart' show QrView, qrPayload;
 import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
@@ -355,8 +356,17 @@ class G_209 extends ConsumerWidget {
       gP(171, 613.207, 95.793, 95.793, gImg('assets/figma/v/5928f0e766bc7c.svg')),
       gP(183.828, 626.034, 70.138, 70.138, gImg('assets/figma/v/200c055a44798f.svg')),
       gP(196.655, 638.862, 44.483, 44.483, gImg('assets/figma/v/705255b125fd1d.svg')),
-      gP(326, 486, 68, 68, gBox(color: Color(0xFFFFFFFF), oval: true)),
-      gP(334, 496, 52, 48, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
+      if (!demoContent) ...[
+        gP(130, 290, 460, 460, gBox(color: Color(0xFFFFFFFF), radii: [56, 56, 56, 56])),
+        gP(150, 310, 420, 420, Consumer(builder: (context, ref, _) {
+          final s = ref.watch(kioskSessionProvider);
+          if (s == null || !s.server) return Center(child: gText('Aucun code actif : choisissez un produit sur la borne.', 22, Color(0xFF57545F), align: TextAlign.center, wrap: true));
+          return QrView(data: qrPayload(s.token), size: 420, logo: false);
+        })),
+        gP(0, 0, 1, 1, const KioskTransferWatcher()),
+      ],
+      gP(326, 486, 68, 68, gBox(color: Color(0xFFFFFFFF), oval: true), show: demoContent),
+      gP(334, 496, 52, 48, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain), show: demoContent),
       gP(311, 776, 98, 98, gImg('assets/figma/v/a1196a0ad770a6.svg')),
       gP(311, 868, 98, 98, gImg('assets/figma/v/eddce2566388cb.svg'), rot: -1.571),
       gP(335, 806, 50, 28, Consumer(builder: (context, ref, _) => gText(countdown(ref), 22, Color(0xFF111015), weight: 700))),
@@ -375,9 +385,9 @@ class G_209 extends ConsumerWidget {
       gP(496, 1014, 173, 25, gText('Commandez', 20, Color(0xFF111015), weight: 600, wrap: true)),
       gP(230, 1130, 260, 84, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x14403366), offset: Offset(0, 6), blurRadius: 16, spreadRadius: 0)], radii: [42, 42, 42, 42])),
       gP(315.5, 1152, 89, 30, gText('Annuler', 24, Color(0xFF111015), weight: 600)),
-      gP(130, 290, 460, 460, const SizedBox.expand(), tap: () => gOpen(context, '210')),
-      gTap(130, 290, 460, 460, () { scanQr(ref, context); }),
-      gTap(230, 1130, 260, 84, () { ref.read(kioskSessionProvider.notifier).clear(); gOpen(context, '207'); }),
+      if (demoContent) gP(130, 290, 460, 460, const SizedBox.expand(), tap: () => gOpen(context, '210')),
+      if (demoContent) gTap(130, 290, 460, 460, () { scanQr(ref, context); }),
+      gTap(230, 1130, 260, 84, () { ref.read(kioskSessionProvider.notifier).cancel(); gOpen(context, '207'); }),
     ]);
   }
 }

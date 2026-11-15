@@ -35,7 +35,7 @@ final promoDiscountProvider = FutureProvider.autoDispose<int>((ref) async {
     code = '${auto?['code'] ?? ''}';
   }
   if (code.isEmpty) return 0;
-  final r = await marcheCall('promo_preview', {'p_code': code, 'p_items': [for (final l in lines) {'title': l.title, 'qty': l.qty}]});
+  final r = await marcheCall('promo_preview', {'p_code': code, 'p_items': Backend.orderItems(lines)});
   if (r.error != null || r.data is! Map) return 0;
   final m = Map<String, dynamic>.from(r.data as Map);
   return m['valid'] == true ? ((m['discount'] as num?)?.toInt() ?? 0) : 0;

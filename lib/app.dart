@@ -10,14 +10,15 @@ import 'core/state/app_settings.dart';
 import 'core/theme/app_theme.dart';
 import 'figma/gsound.dart' show GAnim;
 import 'figma/i18n.dart' show I18n, I18nScope;
-import 'figma/live/auth.dart' show appSessionExpired;
+import 'figma/live/auth.dart' show appSessionExpired, authProvider;
+import 'figma/live/access.dart' show roleKey;
 import 'figma/live/test_accounts.dart' show TestAccountBanner;
 import 'figma/gdata.dart';
 import 'figma/live/device_prefs.dart' show accessPrefs149Provider, accessPrefsProvider, dataPrefsProvider, textSizeProvider;
 import 'figma/gaccess.dart';
 import 'figma/live/backend.dart';
 import 'figma/live/connectivity_stub.dart' if (dart.library.js_interop) 'figma/live/connectivity_web.dart';
-import 'figma/live/missions.dart' show missionLoadedProvider, missionProvider, missionScreens, redirectMissionScreen;
+import 'figma/live/missions.dart' show missionLoadedProvider, missionProvider, missionScreens, redirectMissionScreen, redirectProviderScreen;
 import 'figma/live/store.dart' show ordersProvider, ordersLoadedProvider, showEmptyOrders, redirectOrderDetail;
 import 'figma/live/system_states.dart';
 import 'l10n/gen/app_localizations.dart';
@@ -82,6 +83,14 @@ class _BoutikEcoleAppState extends ConsumerState<BoutikEcoleApp> {
     if (!mounted) return;
     final here = screenOf(_router);
     if (!missionScreens.contains(here)) return;
+    if (redirectProviderScreen(ready: Backend.ready, screen: here, role: roleKey(ref.read(authProvider).current))) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted || screenOf(_router) != here) return;
+        _router.pushReplacement(screenPath('194'));
+        _messenger.currentState?.showSnackBar(const SnackBar(content: Text('Cet écran est destiné aux prestataires : voici le suivi de votre mission.'), behavior: SnackBarBehavior.floating));
+      });
+      return;
+    }
     if (!redirectMissionScreen(ready: Backend.ready, loaded: ref.read(missionLoadedProvider), mission: ref.read(missionProvider))) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || screenOf(_router) != here) return;
@@ -107,8 +116,8 @@ class _BoutikEcoleAppState extends ConsumerState<BoutikEcoleApp> {
     final a1 = ref.watch(accessPrefs149Provider);
     final a2 = ref.watch(accessPrefsProvider);
     bool acc(String k149, String k) => (a1[k149] ?? false) || (a2[k] ?? false);
-    final size = ref.watch(textSizeProvider); // 0 petit, 1 normal, 2 grand
-    final accScale = (acc('a149_large_text', 'large_text') ? 1.2 : 1.0) * (size == 0 ? 0.9 : (size == 2 ? 1.12 : 1.0));
+    final size = ref.watch(textSizeProvider); // 0 petit, 1 normal, 2 grand, 3 très grand
+    final accScale = (acc('a149_large_text', 'large_text') ? 1.2 : 1.0) * (size == 0 ? 0.9 : (size == 2 ? 1.12 : (size >= 3 ? 1.25 : 1.0)));
     final accContrast = acc('a149_contrast', 'contrast');
     final accMotion = acc('a149_reduce_motion', 'reduce_motion');
     GAccess.voice = acc('a149_screen_reader', 'screen_reader');

@@ -60,8 +60,11 @@ Future<Map<String, dynamic>> _map(String fn, Map<String, dynamic> p) async {
 const marcheSorts = {'popular': 'Popularité', 'recent': 'Nouveautés', 'price_asc': 'Prix croissant', 'price_desc': 'Prix décroissant', 'rating': 'Mieux notés'};
 
 class MarcheFilters {
-  const MarcheFilters({this.q = '', this.category = '', this.city = '', this.min, this.max, this.sort = 'popular', this.shops = false, this.offerType = '', this.department = '', this.need = ''});
+  const MarcheFilters({this.q = '', this.category = '', this.city = '', this.min, this.max, this.sort = 'popular', this.shops = false, this.offerType = '', this.department = '', this.need = '', this.inStock = false, this.verified = false});
   final String q, category, city, sort;
+
+  /// Disponibilité (offres en stock) et vendeurs vérifiés : filtres de la recherche avancée.
+  final bool inStock, verified;
 
   /// Filière (mot recherché, voir [marcheFilieres]) et besoin (clé de [marcheBesoins]) ; vides : aucun filtre.
   final String department, need;
@@ -73,7 +76,7 @@ class MarcheFilters {
   /// Vrai : l'onglet « Boutiques » est affiché à la place des produits.
   final bool shops;
 
-  MarcheFilters copy({String? q, String? category, String? city, Object? min = _keep, Object? max = _keep, String? sort, bool? shops, String? offerType, String? department, String? need}) => MarcheFilters(
+  MarcheFilters copy({String? q, String? category, String? city, Object? min = _keep, Object? max = _keep, String? sort, bool? shops, String? offerType, String? department, String? need, bool? inStock, bool? verified}) => MarcheFilters(
         q: q ?? this.q,
         category: category ?? this.category,
         city: city ?? this.city,
@@ -84,6 +87,8 @@ class MarcheFilters {
         offerType: offerType ?? this.offerType,
         department: department ?? this.department,
         need: need ?? this.need,
+        inStock: inStock ?? this.inStock,
+        verified: verified ?? this.verified,
       );
 
   /// Mots recherchés par problème : ceux du besoin choisi, sinon ceux d'une phrase de plusieurs mots.
@@ -98,10 +103,23 @@ class MarcheFilters {
         if (city.isNotEmpty) 'p_city': city,
         if (min != null) 'p_min': min,
         if (max != null) 'p_max': max,
+        if (inStock) 'p_in_stock': true,
+        if (verified) 'p_verified': true,
         'p_sort': sort,
       };
 
-  bool get active => category.isNotEmpty || offerType.isNotEmpty || department.isNotEmpty || need.isNotEmpty || city.isNotEmpty || min != null || max != null;
+  /// Paramètres de `marketplace_shops` : la recherche et la catégorie du filtre commun, le tri adapté aux boutiques.
+  Map<String, dynamic> get shopParams => {
+        if (q.trim().isNotEmpty) 'p_q': q.trim(),
+        if (category.isNotEmpty) 'p_category': category,
+        if (city.isNotEmpty) 'p_city': city,
+        'p_sort': sort == 'recent' || sort == 'rating' ? sort : 'popular',
+      };
+
+  bool get active => category.isNotEmpty || offerType.isNotEmpty || department.isNotEmpty || need.isNotEmpty || city.isNotEmpty || min != null || max != null || inStock || verified;
+
+  /// Nombre de filtres appliqués (hors mot-clé et tri), affiché sur la pastille « Filtres ».
+  int get activeCount => [category, offerType, department, need, city].where((e) => e.isNotEmpty).length + (min != null ? 1 : 0) + (max != null ? 1 : 0) + (inStock ? 1 : 0) + (verified ? 1 : 0);
 }
 
 const _keep = Object();
@@ -119,27 +137,22 @@ final marcheFiltersProvider = NotifierProvider<MarcheFiltersNotifier, MarcheFilt
 final marcheProductsProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) {
   final f = ref.watch(marcheFiltersProvider);
   return _list('marketplace_search', f.productParams);
-});
+}, retry: (_, _) => null);
 
 final marcheShopsProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) {
   final f = ref.watch(marcheFiltersProvider);
-  return _list('marketplace_shops', {
-    if (f.q.trim().isNotEmpty) 'p_q': f.q.trim(),
-    if (f.category.isNotEmpty) 'p_category': f.category,
-    if (f.city.isNotEmpty) 'p_city': f.city,
-    'p_sort': f.sort == 'recent' || f.sort == 'rating' ? f.sort : 'popular',
-  });
-});
+  return _list('marketplace_shops', f.shopParams);
+}, retry: (_, _) => null);
 
-final marcheTrendingProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) => _list('trending_products', const {'p_limit': 10}));
-final marcheNewProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) => _list('marketplace_search', const {'p_sort': 'recent', 'p_limit': 10}));
+final marcheTrendingProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) => _list('trending_products', const {'p_limit': 10}), retry: (_, _) => null);
+final marcheNewProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) => _list('marketplace_search', const {'p_sort': 'recent', 'p_limit': 10}), retry: (_, _) => null);
 final marcheRecoProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) {
   ref.watch(authProvider.select((a) => a.current?.serverId));
   return _list('recommended_offers', const {'p_limit': 10});
-});
-final marcheFlashProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) => _list('flash_sales_active', const {}));
-final marcheShopProvider = FutureProvider.autoDispose.family<Map<String, dynamic>, String>((ref, slug) => _map('shop_public', {'p_slug': slug}));
-final marcheProductProvider = FutureProvider.autoDispose.family<Map<String, dynamic>, String>((ref, id) => _map('product_detail', {'p_id': id}));
+}, retry: (_, _) => null);
+final marcheFlashProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) => _list('flash_sales_active', const {}), retry: (_, _) => null);
+final marcheShopProvider = FutureProvider.autoDispose.family<Map<String, dynamic>, String>((ref, slug) => _map('shop_public', {'p_slug': slug}), retry: (_, _) => null);
+final marcheProductProvider = FutureProvider.autoDispose.family<Map<String, dynamic>, String>((ref, id) => _map('product_detail', {'p_id': id}), retry: (_, _) => null);
 final marcheMyShopProvider = FutureProvider.autoDispose<Map<String, dynamic>>((ref) {
   ref.watch(authProvider.select((a) => a.current?.serverId));
   return _map('my_shop', const {});
@@ -147,7 +160,18 @@ final marcheMyShopProvider = FutureProvider.autoDispose<Map<String, dynamic>>((r
 final marchePromotionsProvider = FutureProvider.autoDispose<Map<String, dynamic>>((ref) => _map('my_promotions', const {}));
 final marcheDashboardProvider = FutureProvider.autoDispose.family<Map<String, dynamic>, int>((ref, days) => _map('shop_dashboard', {'p_days': days}));
 final marcheModerationProvider = FutureProvider.autoDispose<Map<String, dynamic>>((ref) => _map('marketplace_moderation', const {}));
-final marcheFollowedProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) => _list('my_followed_shops', const {}));
+final marcheFollowedProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) {
+  ref.watch(authProvider.select((a) => a.current?.serverId));
+  return _list('my_followed_shops', const {});
+}, retry: (_, _) => null);
+
+/// Vrai si le compte connecté peut noter cette boutique (il y a acheté) : le contrôle est celui du serveur.
+final marcheCanReviewProvider = FutureProvider.autoDispose.family<bool, String>((ref, shopId) async {
+  if (ref.watch(authProvider.select((a) => a.current == null))) return false;
+  final r = await marcheCall('can_review_shop', {'p_shop': shopId});
+  if (r.error == 'missing') return true;
+  return r.error == null && r.data == true;
+}, retry: (_, _) => null);
 
 /// Offres choisies pour la comparaison (2 au maximum, identifiants d'annonces).
 class CompareNotifier extends Notifier<List<String>> {

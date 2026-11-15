@@ -22,6 +22,8 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/l8_opportunites.dart';
+import '../live/opportunites_screens.dart' show lastApplicationProvider;
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_159 extends ConsumerWidget {
@@ -29,6 +31,21 @@ class G_159 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (!demoContent) {
+      final sent = ref.watch(lastApplicationProvider) != null;
+      return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF5F0E8), Color(0xFFEFE9F4), Color(0xFFF7E9DB)], stops: [0, 0.55, 1]), children: [
+        gP(24, 70, 260, 26, gText(sent ? 'Candidature envoyée' : 'Candidature', 21, Color(0xFF111015), weight: 700)),
+        gP(159.433, 154.433, 84.333, 84.333, gImg('assets/figma/r/173_23.png'), show: sent),
+        gP(181.733, 183.058, 39.733, 31.3, gImg('assets/figma/v/b4c3db822589b8.svg'), show: sent),
+        gP(22.5, 270, 345, 24, gText('Merci pour votre candidature !', 19, Color(0xFF111015), weight: 800, align: TextAlign.center, wrap: true), show: sent),
+        gP(24, sent ? 330 : 150, 342, 300, const ApplicationSentCard(width: 342)),
+        gP(24, 760, 163, 54, gBox(color: Color(0x00FFFFFF), border: Color(0xFFD9D3E6), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gOpen(context, '76')),
+        gP(43, 778, 125, 18, gText('Mes candidatures', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
+        gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gOpen(context, '152')),
+        gP(239, 778, 91, 18, gText('Autres offres', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
+        gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      ]);
+    }
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF5F0E8), Color(0xFFEFE9F4), Color(0xFFF7E9DB)], stops: [0, 0.55, 1]), children: [
       gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),

@@ -5,7 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../gen.dart' show gToast;
+import '../gen.dart' show gToast, gDialog;
 import '../nav.dart';
 import 'auth.dart';
 import 'backend.dart';
@@ -13,6 +13,7 @@ import 'console.dart';
 import 'device_prefs.dart';
 import 'dictation_stub.dart' if (dart.library.js_interop) 'dictation_web.dart';
 import 'entreprise.dart';
+import 'l10_ui.dart' show l10Query;
 import 'store.dart';
 
 /// Écrans qui demandaient une décision : assistante Kéla (brief par écrit, la voix n'est pas disponible), double authentification par
@@ -241,17 +242,20 @@ class ProductNoModel extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final p = ref.watch(selectedProductProvider);
+    final title = l10Query(context, 'produit');
+    final p = title.isEmpty ? null : productByTitle(title);
     return SizedBox(
       width: width,
       child: SingleChildScrollView(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        ClipRRect(borderRadius: BorderRadius.circular(22), child: Image.asset(p.image, width: width, height: 220, fit: BoxFit.cover, errorBuilder: (_, _, _) => Container(width: width, height: 220, color: const Color(0xFFF2EFF6)))),
+        if (p != null) ...[
+          ClipRRect(borderRadius: BorderRadius.circular(22), child: Image.asset(p.image, width: width, height: 220, fit: BoxFit.cover, errorBuilder: (_, _, _) => Container(width: width, height: 220, color: const Color(0xFFF2EFF6)))),
+          const SizedBox(height: 14),
+          Text(p.title, style: _st(17, w: FontWeight.w800)),
+          const SizedBox(height: 6),
+        ],
+        Text('Le jumeau 3D et l’aperçu en réalité augmentée ne sont pas encore disponibles dans Boutik-École.${p == null ? '' : ' Seule la photo de l’annonce est affichée.'}', style: _st(13, c: _grey).copyWith(height: 1.5)),
         const SizedBox(height: 14),
-        Text(p.title, style: _st(17, w: FontWeight.w800)),
-        const SizedBox(height: 6),
-        Text('Aucun modèle 3D ni aperçu en réalité augmentée n’est disponible pour ce produit pour le moment. Seule la photo de l’annonce est affichée.', style: _st(12.5, c: _grey).copyWith(height: 1.5)),
-        const SizedBox(height: 14),
-        _btn('Voir la fiche du produit', () => gOpen(context, '05'), dark: false, w: width),
+        if (p != null) _btn('Voir la fiche du produit', () { ref.read(selectedProductProvider.notifier).select(p.title); gOpen(context, '05'); }, dark: false, w: width) else _btn('Parcourir les produits', () => gTab(context, '04'), dark: false, w: width),
       ])),
     );
   }
@@ -260,7 +264,10 @@ class ProductNoModel extends ConsumerWidget {
 // ------------------------------------------------------------------ double authentification (application)
 
 /// Vrai si la vérification en 2 étapes (application d'authentification) est active sur le compte connecté.
-final mfaActiveProvider = FutureProvider.autoDispose<bool>((ref) async => (await Backend.totpFactors()).any((f) => f.status == FactorStatus.verified));
+final mfaActiveProvider = FutureProvider.autoDispose<bool>(
+  (ref) async => (await Backend.totpFactors(strict: true)).any((f) => f.status == FactorStatus.verified),
+  retry: (_, _) => null,
+);
 
 class MfaPanel extends ConsumerStatefulWidget {
   const MfaPanel({super.key, this.width = 342});
@@ -312,6 +319,10 @@ class _MfaPanelState extends ConsumerState<MfaPanel> {
       _error = null;
     });
     try {
+      // un facteur jamais vérifié (activation abandonnée) est retiré avant d'en créer un nouveau
+      for (final x in (await c.auth.mfa.listFactors()).all) {
+        if (x.status == FactorStatus.unverified) await c.auth.mfa.unenroll(x.id);
+      }
       final r = await c.auth.mfa.enroll(factorType: FactorType.totp, issuer: 'Boutik-École', friendlyName: 'Application ${DateTime.now().millisecondsSinceEpoch}');
       if (!mounted) return;
       setState(() {
@@ -350,12 +361,49 @@ class _MfaPanelState extends ConsumerState<MfaPanel> {
     if (mounted) setState(() => _busy = false);
   }
 
+  /// Désactiver la protection exige la confirmation de la personne ET un code valide : sans cela, une session volée la retirerait.
   Future<void> _disable() async {
     final c = _c;
     if (c == null) return;
-    setState(() => _busy = true);
+    final code = await gDialog<String>(
+      context: context,
+      builder: (ctx) {
+        final ctrl = TextEditingController();
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text('Désactiver la vérification en 2 étapes ?', style: _st(16, w: FontWeight.w700)),
+          content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('Votre compte ne sera plus protégé que par le mot de passe. Saisissez le code à 6 chiffres affiché par votre application d’authentification pour confirmer.', style: _st(13, c: _grey).copyWith(height: 1.45)),
+            const SizedBox(height: 12),
+            TextField(controller: ctrl, autofocus: true, keyboardType: TextInputType.number, maxLength: 6, decoration: const InputDecoration(border: OutlineInputBorder(), counterText: '', labelText: 'Code à 6 chiffres')),
+          ]),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Garder la protection')),
+            FilledButton(onPressed: () => Navigator.pop(ctx, ctrl.text.replaceAll(' ', '')), child: const Text('Désactiver')),
+          ],
+        );
+      },
+    );
+    if (code == null || !mounted) return;
+    if (!RegExp(r'^\d{6}$').hasMatch(code)) {
+      setState(() => _error = 'Saisissez les 6 chiffres du code : la protection reste active.');
+      return;
+    }
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
     try {
       final f = await c.auth.mfa.listFactors();
+      final verified = f.totp.where((x) => x.status == FactorStatus.verified).toList();
+      if (verified.isNotEmpty) {
+        final err = await Backend.verifyTotp(verified.first.id, code);
+        if (err != null) {
+          if (mounted) setState(() => _error = '$err La protection reste active.');
+          if (mounted) setState(() => _busy = false);
+          return;
+        }
+      }
       for (final x in f.totp) {
         await c.auth.mfa.unenroll(x.id);
       }

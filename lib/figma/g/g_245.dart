@@ -73,7 +73,7 @@ class G_245 extends ConsumerWidget {
       gP(22, 612, 132, 40, const ReelAuthorRow(), show: !demoContent),
       gP(72, 614, 52, 17, gText(gm('Brice N.', ''), 13.5, Color(0xFFFFFFFF), weight: 600), show: demoContent),
       gP(160, 610, 77, 25, gBox(color: Color(0x40FFFFFF), radii: [100, 100, 100, 100])),
-      gP(172, 616, 53, 13, gText('S’abonner', 10.5, Color(0xFFFFFFFF), weight: 600)),
+      gP(172, 616, 53, 13, Consumer(builder: (context, ref, _) => gText(demoContent ? 'S’abonner' : followLabelFor(ref), 10.5, Color(0xFFFFFFFF), weight: 600))),
       gP(22, 664, 293, 34, gText(demoContent ? 'Pose d’un kit solaire sur le toit de l’atelier. Tout est fait par les étudiants d’Énergies renouvelables !' : (ref.watch(currentReelProvider)?.caption ?? (ref.watch(reelsProvider) == null ? '' : 'Aucun reel publié pour le moment. Publiez le premier depuis « Nouvelle publication ».')), 12, Color(0xFFFFFFFF), lh: 17, wrap: true)),
       gP(27.375, 708.125, 12.5, 14.125, gImg('assets/figma/v/8069565849e696.svg')),
       gP(24.125, 714.625, 9.25, 9.25, gImg('assets/figma/v/c928a326a5830e.svg')),

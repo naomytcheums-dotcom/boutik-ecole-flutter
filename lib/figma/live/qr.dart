@@ -9,6 +9,7 @@ import '../gen.dart';
 import '../nav.dart';
 import 'auth.dart';
 import 'backend.dart';
+import 'missions.dart' show kioskSessionProvider;
 import 'seller.dart' show allProductsProvider;
 import 'share.dart' show siteUrl;
 import '../../data/repositories/repositories.dart' show cartProvider;
@@ -200,6 +201,7 @@ Future<void> scanAndHandleQr(BuildContext context, WidgetRef ref) async {
       final hit = ref.read(allProductsProvider).where((p) => p.title == label).toList();
       if (hit.isEmpty) return gAlert(context, 'Article introuvable', 'L’article de ce code n’est plus au catalogue.');
       ref.read(cartProvider.notifier).add(hit.first.toLine());
+      ref.read(kioskSessionProvider.notifier).confirm(hit.first, token);
       gToast(context, '$label ajouté à votre panier.');
       return gOpen(context, '210');
     case 'order_pickup':

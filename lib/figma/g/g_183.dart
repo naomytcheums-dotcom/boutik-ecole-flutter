@@ -96,7 +96,9 @@ class G_183 extends ConsumerWidget {
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       if (demoContent) gTap(110, 360, 195, 48, () => retryNetwork(context)), // état réel : ne sort du hors-ligne qu'au retour du réseau
-      if (!demoContent) gP(24, 135, 342, 600, const MyOrdersList(width: 342, height: 600)),
+      if (!demoContent) gP(24, 190, 342, 545, const MyOrdersList(width: 342, height: 545)),
+      if (!demoContent) gP(24, 128, 342, 54, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20]), tap: () => retryNetwork(context)),
+      if (!demoContent) gP(40, 138, 310, 34, gText('Vous êtes hors ligne : seules les commandes déjà chargées s’affichent. Touchez ici pour réessayer.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
     ]);
   }
 }

@@ -377,6 +377,7 @@ class DocsNotifier extends Notifier<List<UserDoc>?> {
   @override
   List<UserDoc>? build() {
     if (!Backend.ready) return null;
+    ref.watch(authProvider.select((a) => a.current?.serverId));
     Future.microtask(refresh);
     return null;
   }

@@ -14,8 +14,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../helpers/render.dart';
 
-const _lampe = LiveProduct('Lampe en bois recyclé', 'Génie civil', 25000, 'Alice', 'Lampe fabriquée à partir de bois de récupération.', 'placeholder');
-const _sac = LiveProduct('Sac à dos', 'Design', 18000, 'Bruno', 'Sac neuf en toile.', 'placeholder');
+const _lampe = LiveProduct('Lampe en bois recyclé', 'Génie civil', 25000, 'Alice', 'Lampe fabriquée à partir de bois de récupération.', 'placeholder', id: 'a');
+const _sac = LiveProduct('Sac à dos', 'Design', 18000, 'Bruno', 'Sac neuf en toile.', 'placeholder', id: 'b');
+const _bocal = LiveProduct('Bocal en verre', 'Design', 5000, 'Carla', 'Bocal simple.', 'placeholder', id: 'c');
 
 class _Membres extends TalentsNotifier {
   _Membres(this.v);
@@ -32,13 +33,20 @@ void main() {
     Backend.ready = false;
   });
 
-  Future<void> monter(WidgetTester t, Widget ecran, {required bool connecte, List<LiveProduct> produits = const []}) async {
+  Future<void> monter(WidgetTester t, Widget ecran, {required bool connecte, List<LiveProduct> produits = const [], List<String> alHonneur = const [], Set<String> recycles = const {}}) async {
     Backend.ready = connecte;
     GAnim.enabled = false;
     t.view.physicalSize = const Size(393, 852);
     t.view.devicePixelRatio = 1;
     addTearDown(t.view.reset);
-    await t.pumpWidget(ProviderScope(overrides: [allProductsProvider.overrideWithValue(produits)], child: MaterialApp(home: ecran)));
+    await t.pumpWidget(ProviderScope(
+      overrides: [
+        allProductsProvider.overrideWithValue(produits),
+        showcaseIdsProvider.overrideWith((ref) async => alHonneur),
+        recycledIdsProvider.overrideWith((ref) async => recycles),
+      ],
+      child: MaterialApp(home: ecran),
+    ));
     await t.pumpAndSettle();
   }
 
@@ -59,17 +67,25 @@ void main() {
     expect(find.text('Sac à dos'), findsNothing);
   });
 
-  testWidgets('102 connecté : compteurs réels, aucun lancement ni collection inventés', (t) async {
-    await monter(t, const G_102(), connecte: true, produits: [_lampe, _sac]);
+  testWidgets('106 connecté : les annonces déclarées en matériaux récupérés s’ajoutent à celles dont le texte l’évoque', (t) async {
+    await monter(t, const G_106(), connecte: true, produits: [_lampe, _sac, _bocal], recycles: {'c'});
+    expect(find.text('Lampe en bois recyclé'), findsOneWidget);
+    expect(find.text('Bocal en verre'), findsOneWidget);
+    expect(find.text('Sac à dos'), findsNothing);
+  });
+
+  testWidgets('102 connecté : compteurs réels, aucun lancement ni collection inventés, seules les pièces à l’honneur du serveur sont mises en avant', (t) async {
+    await monter(t, const G_102(), connecte: true, produits: [_lampe, _sac], alHonneur: ['b']);
     expect(find.text('Lancement officiel le 24 octobre'), findsNothing);
     expect(find.text('Collection « Recyclé & Design »'), findsNothing);
     expect(find.text('2'), findsNWidgets(3), reason: '2 pièces, 2 créateurs, 2 départements');
     expect(find.text('Sac à dos'), findsOneWidget);
+    expect(find.text('Lampe en bois recyclé'), findsNothing);
   });
 
   testWidgets('102 connecté sans produit : état vide', (t) async {
     await monter(t, const G_102(), connecte: true);
-    expect(find.textContaining('Aucun produit publié'), findsOneWidget);
+    expect(find.textContaining('Aucune pièce à l’honneur'), findsOneWidget);
     expect(find.text('0'), findsNWidgets(3));
   });
 

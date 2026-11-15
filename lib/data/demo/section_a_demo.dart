@@ -3,7 +3,7 @@ import 'catalog_demo.dart';
 
 /// Article du panier.
 class CartLine {
-  const CartLine(this.title, this.department, this.price, this.image, {this.qty = 1});
+  const CartLine(this.title, this.department, this.price, this.image, {this.qty = 1, this.packId, this.variant});
 
   final String title;
   final String department;
@@ -11,8 +11,27 @@ class CartLine {
   final String image;
   final int qty;
 
-  CartLine withQty(int q) => CartLine(title, department, price, image, qty: q);
+  /// Identifiant du pack quand la ligne est un pack de boutique (le serveur le décompose en articles).
+  final String? packId;
+
+  /// Variante choisie sur la fiche (« Couleur : Rouge · Taille : M ») ; transmise à la commande.
+  final String? variant;
+
+  CartLine withQty(int q) => CartLine(title, department, price, image, qty: q, packId: packId, variant: variant);
+
+  Map<String, dynamic> toJson() => {'title': title, 'department': department, 'price': price, 'image': image, 'qty': qty, if (packId != null) 'packId': packId, if (variant != null) 'variant': variant};
+
+  static CartLine? fromJson(Object? j) {
+    if (j is! Map) return null;
+    final t = j['title'], d = j['department'], p = j['price'], q = j['qty'];
+    if (t is! String || p is! num || q is! num) return null;
+    final pk = j['packId'], v = j['variant'];
+    return CartLine(t, d is String ? d : '', p.toInt(), j['image'] is String ? j['image'] as String : '', qty: q.toInt().clamp(1, maxCartQty), packId: pk is String && pk.isNotEmpty ? pk : null, variant: v is String && v.isNotEmpty ? v : null);
+  }
 }
+
+/// Quantité maximale par ligne de panier (limite du serveur à la commande).
+const maxCartQty = 20;
 
 /// Carte du catalogue « Explorer » (04) : la pastille de type est sous la photo.
 class ExploreItem {

@@ -49,7 +49,7 @@ class G_11 extends ConsumerWidget {
       gP(117, 183, 156, 34, gText('Bon retour !', 27, Color(0xFF111015), weight: 800, align: TextAlign.center)),
       gP(43, 223, 304, 18, gText('Connectez-vous pour accéder à votre espace', 14, Color(0xFF57545F), align: TextAlign.center)),
       gP(24, 262, 342, 50, gBox(color: Color(0xFFEFF1F4), radii: [25, 25, 25, 25])),
-      Positioned.fill(child: GChoiceGroup(key: ValueKey('li_tab$modeMail'), chips: [GChip(28, 266, 168, 42, 'Téléphone', 14.5, 600), GChip(197, 266, 168, 42, 'E-mail', 14.5, 500)], selected: modeMail ? 1 : 0, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 21, onChanged: (i) { ref.read(loginModeProvider.notifier).set(i); })),
+      Positioned.fill(child: GChoiceGroup(key: ValueKey('li_tab$modeMail'), chips: [GChip(28, 266, 168, 42, 'Téléphone', 14.5, 600), GChip(197, 266, 168, 42, 'E-mail', 14.5, 500)], selected: modeMail ? 1 : 0, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 21, onChanged: (i) { ref.read(loginModeProvider.notifier).set(i); ref.read(formProvider.notifier).clear(const ['li_id']); ref.read(errorsProvider.notifier).clear(); })),
       gP(24, 338, 160, 16, gText(modeMail ? 'Adresse e-mail' : 'Numéro de téléphone', 13, Color(0xFF111015), weight: 600)),
       gP(24, 362, 342, 52, GField(key: ValueKey('li_id$modeMail'), hint: modeMail ? 'exemple@mail.com' : '6 XX XX XX XX', size: 14.5, hintColor: Color(0xFF57545F), weight: 500, padL: modeMail ? 52 : 100, onChanged: (v) { ref.read(formProvider.notifier).put('li_id', v); })),
       errorText('li_id', 28, 416),
@@ -80,6 +80,7 @@ class G_11 extends ConsumerWidget {
       gTap(24, 556, 342, 54, () { submitLogin(ref, context); }),
       gTap(24, 678, 342, 54, () { gOpen(context, '12'); }),
       gTap(231, 520, 135, 16, () { gOpen(context, '15'); }),
+      gTap(40.5, 773, 309, 34, () { gOpen(context, '17'); }),
     ]);
   }
 }

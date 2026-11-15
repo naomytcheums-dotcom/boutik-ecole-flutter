@@ -52,7 +52,7 @@ class G_106 extends ConsumerWidget {
       gP(331.5, 61.5, 40, 40, const GGlassCircle()),
       gP(340.75, 70.75, 20.667, 20.667, gImg('assets/figma/v/eeff0eb6fd6e24.svg')),
       gP(353.308, 83.308, 9.942, 9.942, gImg('assets/figma/v/34172806399cca.svg')),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 85.2, 34, 'Recyclés', 12.5, 600), GChip(117.2, 120, 100, 34, 'Réparables', 12.5, 500), GChip(225.2, 120, 122.2, 34, 'Réutilisables', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
+      if (demoContent) Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 85.2, 34, 'Recyclés', 12.5, 600), GChip(117.2, 120, 100, 34, 'Réparables', 12.5, 500), GChip(225.2, 120, 122.2, 34, 'Réutilisables', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
       gP(24, 168, 342, 150, gBox(image: 'assets/figma/img/285ea8d512e6fd1079056dd514be7a2ebad70bf2.png', fit: BoxFit.cover, radii: [24, 24, 24, 24])),
       gP(24, 168, 342, 150, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [24, 24, 24, 24])),
       gP(42, 256, 309, 23, gText('Seconde vie, premier choix', 18, Color(0xFFFFFFFF), weight: 700, wrap: true)),
@@ -89,7 +89,7 @@ class G_106 extends ConsumerWidget {
       gP(36, 744, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(43.318, 749.917, 18.057, 18.75, gImg('assets/figma/v/6b32e99463f5ba.svg')),
       gP(41.917, 757, 13.792, 12.375, gImg('assets/figma/v/5a42605c735300.svg')),
-      gP(76, 743, 277, 34, gText('Chaque achat évite des déchets : retrouvez l’impact dans « Mon impact ».', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
+      gP(76, 743, 277, 34, gText('Chaque achat évite des déchets : retrouvez l’impact dans « Mon impact ».', 12, Color(0xFF4A4854), lh: 17, wrap: true), tap: () => gOpen(context, '107')),
       gP(125, 903, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(22, 827, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
       gP(47.5, 848.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '19')),
@@ -107,7 +107,7 @@ class G_106 extends ConsumerWidget {
       gP(169, 833, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gTab(context, '03')),
       gP(184, 848, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 846.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
-      if (!demoContent) gP(24, 336, 342, 390, const ProductCards(width: 342, rows: 2, filter: isRecycled, emptyText: 'Aucune création en matériaux récupérés pour le moment.\nLes produits dont la description évoque le recyclage apparaîtront ici.')),
+      if (!demoContent) gP(24, 336, 342, 390, const ProductCards(width: 342, rows: 2, recycled: true, emptyText: 'Aucune création en matériaux récupérés pour le moment.\nLes annonces déclarées en matériaux récupérés apparaîtront ici.')),
     ]);
   }
 }

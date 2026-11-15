@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/delivery.dart' show selectedAddressDataProvider;
+import '../live/compte.dart' show addressLine;
 import '../live/order_summary.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
@@ -67,14 +69,14 @@ class G_42 extends ConsumerWidget {
       gP(45, 421, 22, 22, const Icon(Icons.home_outlined, size: 21, color: Color(0xFF5A3FE0))),
       
       gP(88, 412, 246, 17, Consumer(builder: (context, ref, _) => gText(deliveryChoice(ref.watch(homeDeliveryProvider)).title, 13.5, Color(0xFF111015), weight: 600))),
-      gP(88, 434, 246, 14, Consumer(builder: (context, ref, _) => gText(deliveryChoice(ref.watch(homeDeliveryProvider)).detail, 11.5, Color(0xFF57545F)))),
+      gP(88, 434, 246, 28, Consumer(builder: (context, ref, _) { final home = ref.watch(homeDeliveryProvider); final a = ref.watch(selectedAddressDataProvider); return gText(home && a != null ? addressLine(a) : deliveryChoice(home).detail, 11.5, Color(0xFF57545F), wrap: true, maxLines: 2); })),
       gP(336.75, 425.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
       gP(88, 466, 266, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(36, 479, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(45.5, 488.5, 21.833, 16.833, gImg('assets/figma/v/92f350858b638e.svg')),
       gP(45.5, 490.167, 21, 19.333, gImg('assets/figma/v/f6a87a84fa91d7.svg')),
       gP(88, 478, 246, 17, Consumer(builder: (context, ref, _) => gText(payMethodLabel(ref.watch(payMethodProvider)), 13.5, Color(0xFF111015), weight: 600))),
-      gP(88, 500, 246, 14, gText('Numéro Mobile Money saisi au paiement', 11.5, Color(0xFF57545F))),
+      gP(88, 500, 246, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(payMethodProvider) == 2 ? 'Vous payez à la remise de la commande' : 'Numéro Mobile Money saisi au paiement', 11.5, Color(0xFF57545F)))),
       gP(336.75, 491.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
       gP(40, 558, 64, 16, gText('Sous-total', 12.5, Color(0xFF57545F))),
       gP(200, 558, 150, 16, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(totalsProvider).subtotal), 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right))),
@@ -84,11 +86,9 @@ class G_42 extends ConsumerWidget {
       gP(40, 617, 310, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 626, 29, 16, gText('Total', 12.5, Color(0xFF57545F))),
       gP(200, 626, 150, 16, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(totalsProvider).total), 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right))),
-      gP(24, 678, 20, 20, gBox(color: Color(0xFF111015), radii: [6, 6, 6, 6])),
-      gP(26.667, 681.75, 14.667, 11.958, gImg('assets/figma/v/w_check.svg')),
-      gP(54, 679, 315, 36, gText('J’accepte les conditions de vente et la politique de retour.', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
+      gP(24, 672, 342, 40, const OrderTermsCheck()),
       gP(0, 744, 390, 100, gBox(color: Color(0x00FFFFFF))),
-      gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gOpen(context, '08')),
+      gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => confirmOrderSummary(ref, context)),
       gP(110.5, 778, 169, 18, gText('Confirmer la commande', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
     ]);

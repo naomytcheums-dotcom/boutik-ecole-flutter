@@ -18,7 +18,7 @@ const _ink = Color(0xFF111015);
 const _grey = Color(0xFF57545F);
 TextStyle _st(double size, {FontWeight w = FontWeight.w500, Color c = _ink}) => TextStyle(fontFamily: 'PlusJakartaSans', fontSize: size, fontWeight: w, color: c);
 
-final addressesProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('addresses', 'id,recipient,phone,city,district,line,landmark', order: 'created_at'));
+final addressesProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('addresses', 'id,recipient,phone,city,district,line,landmark', order: 'created_at', eq: const {'transient': false}));
 
 /// Avis publics d'une annonce (lecture ouverte aux visiteurs par la fonction serveur `product_reviews`, filtrée par titre côté serveur).
 final productReviewsProvider = FutureProvider.autoDispose.family<List<Map<String, dynamic>>, String>((ref, title) async {
@@ -61,6 +61,11 @@ class AddressBook extends ConsumerWidget {
                 return Row(children: [
                   Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('${a['recipient']} · ${a['phone']}', style: _st(13.5, w: FontWeight.w700)), const SizedBox(height: 3), Text(addressLine(a), style: _st(12, c: _grey))])),
                   IconButton(
+                    icon: const Icon(Icons.edit_outlined, size: 20),
+                    tooltip: 'Modifier',
+                    onPressed: () => addAddressDialog(context, ref, existing: a),
+                  ),
+                  IconButton(
                     icon: const Icon(Icons.delete_outline, size: 20),
                     tooltip: 'Supprimer',
                     onPressed: () async {
@@ -89,19 +94,20 @@ class AddressBook extends ConsumerWidget {
 
 /// Fenêtre « Nouvelle adresse » : la position réelle de l'appareil remplit ville, quartier et rue ; le nom et le téléphone viennent du profil.
 /// Tout reste modifiable à la main si la personne le souhaite.
-Future<void> addAddressDialog(BuildContext context, WidgetRef ref) async {
+Future<void> addAddressDialog(BuildContext context, WidgetRef ref, {Map<String, dynamic>? existing}) async {
   final me = ref.read(authProvider).current;
+  String old(String k) => '${existing?[k] ?? ''}';
   final c = {
-    'recipient': TextEditingController(text: me?.name ?? ''),
-    'phone': TextEditingController(text: me?.phone ?? ''),
-    'city': TextEditingController(),
-    'district': TextEditingController(),
-    'line': TextEditingController(),
+    'recipient': TextEditingController(text: existing != null ? old('recipient') : (me?.name ?? '')),
+    'phone': TextEditingController(text: existing != null ? old('phone') : (me?.phone ?? '')),
+    'city': TextEditingController(text: old('city')),
+    'district': TextEditingController(text: old('district')),
+    'line': TextEditingController(text: old('line')),
   };
   GeoPlace? place;
   var gen = 0; // change quand la position détectée remplit le quartier : le champ est recréé avec la nouvelle valeur
-  String status = 'search';
-  var started = false;
+  String status = existing != null ? 'idle' : 'search';
+  var started = existing != null;
   Future<void> locate(StateSetter set) async {
     set(() => status = 'search');
     final r = await detectPlace();
@@ -179,6 +185,7 @@ Future<void> addAddressDialog(BuildContext context, WidgetRef ref) async {
         'ok' => place == null ? '' : 'Position détectée automatiquement. Corrigez-la si besoin.',
         'denied' => 'Localisation refusée : autorisez-la dans votre navigateur ou saisissez l’adresse.',
         'unsupported' => 'La localisation n’est pas disponible sur cet appareil : saisissez l’adresse.',
+        'idle' => 'Modifiez les champs voulus, ou utilisez votre position actuelle.',
         _ => 'Position introuvable : activez le GPS ou saisissez l’adresse.',
       };
       return Dialog(
@@ -189,7 +196,7 @@ Future<void> addAddressDialog(BuildContext context, WidgetRef ref) async {
           padding: const EdgeInsets.fromLTRB(20, 22, 20, 14),
           child: SingleChildScrollView(
             child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('Nouvelle adresse', style: _st(20, w: FontWeight.w800)),
+              Text(existing != null ? 'Modifier l’adresse' : 'Nouvelle adresse', style: _st(20, w: FontWeight.w800)),
               const SizedBox(height: 12),
               Row(children: [
                 Icon(status == 'ok' ? Icons.my_location : Icons.location_searching, size: 18, color: status == 'ok' ? const Color(0xFF2E9E5B) : _grey),
@@ -231,14 +238,15 @@ Future<void> addAddressDialog(BuildContext context, WidgetRef ref) async {
     gToast(context, 'Indiquez au moins la ville et l’adresse.');
     return;
   }
-  final gps = place == null ? '' : 'GPS ${place!.lat.toStringAsFixed(6)},${place!.lon.toStringAsFixed(6)}';
-  final r = await Backend.rpc('save_address', {'p_id': null, 'p_recipient': c['recipient']!.text, 'p_phone': c['phone']!.text, 'p_city': c['city']!.text, 'p_district': c['district']!.text, 'p_line': c['line']!.text, 'p_landmark': gps});
+  final gps = place == null ? (existing != null ? old('landmark') : '') : 'GPS ${place!.lat.toStringAsFixed(6)},${place!.lon.toStringAsFixed(6)}';
+  final r = await Backend.rpc('save_address', {'p_id': existing?['id'], 'p_recipient': c['recipient']!.text, 'p_phone': c['phone']!.text, 'p_city': c['city']!.text, 'p_district': c['district']!.text, 'p_line': c['line']!.text, 'p_landmark': gps});
   if (!context.mounted) return;
   if (r.error != null) {
     gToast(context, 'Enregistrement impossible : ${r.error}');
     return;
   }
   await ref.read(addressesProvider.notifier).refresh();
+  if (context.mounted && existing != null) gToast(context, 'Adresse modifiée');
 }
 
 /// Moyenne, répartition et commentaires des avis du produit choisi.
@@ -254,13 +262,14 @@ class ProductReviews extends ConsumerWidget {
     if (async.hasError && !async.hasValue) return _note(width, 'Les avis ne peuvent pas être chargés pour le moment.');
     final rows = async.value ?? const <Map<String, dynamic>>[];
     if (rows.isEmpty) return _note(width, 'Aucun avis pour « $title » pour le moment.\nSeuls les acheteurs d’une commande payée, dont l’article a été préparé, peuvent en publier.');
-    final avg = rows.fold<num>(0, (a, r) => a + (r['rating'] as num)) / rows.length;
+    final total = ((rows.first['total'] as num?) ?? rows.length).toInt();
+    final avg = rows.first['avg'] is num ? (rows.first['avg'] as num) : rows.fold<num>(0, (a, r) => a + (r['rating'] as num)) / rows.length;
     return SizedBox(
       width: width,
       height: height,
       child: ListView(padding: EdgeInsets.zero, children: [
         Text(avg.toStringAsFixed(1), style: _st(34, w: FontWeight.w800)),
-        Text('${rows.length} avis', style: _st(12.5, c: _grey)),
+        Text('$total avis${total > rows.length ? ' · les ${rows.length} plus récents ci-dessous' : ''}', style: _st(12.5, c: _grey)),
         const SizedBox(height: 14),
         for (var s = 5; s >= 1; s--)
           Padding(
@@ -276,7 +285,8 @@ class ProductReviews extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(children: [for (var i = 0; i < 5; i++) Icon(i < (r['rating'] as num) ? Icons.star_rounded : Icons.star_outline_rounded, size: 16, color: const Color(0xFFF5A524)), const SizedBox(width: 8), Text(dateCourte(r['created_at']), style: _st(11, c: _grey))]),
+              Row(children: [for (var i = 0; i < 5; i++) Icon(i < (r['rating'] as num) ? Icons.star_rounded : Icons.star_outline_rounded, size: 16, color: const Color(0xFFF5A524)), const SizedBox(width: 8), Flexible(child: Text('${'${r['author'] ?? ''}'.isEmpty ? '' : '${r['author']} · '}${dateCourte(r['created_at'])}', maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(11, c: _grey)))]),
+              if (r['verified'] == true) Padding(padding: const EdgeInsets.only(top: 2), child: Text('Achat vérifié', style: _st(11, w: FontWeight.w600, c: const Color(0xFF0F7A52)))),
               if ('${r['comment'] ?? ''}'.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 4), child: Text('${r['comment']}', style: _st(13).copyWith(height: 1.5))),
             ]),
           ),

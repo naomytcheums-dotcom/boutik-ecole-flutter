@@ -78,10 +78,10 @@ void main() {
       expect(normalizeReferralCode('ABCD2310'), isNull, reason: '0 et 1 ne font pas partie du code');
     });
 
-    test('le message dit où saisir le code (le formulaire d’inscription n’a pas de champ de parrainage)', () {
+    test('le message porte le lien qui applique le code et dit où saisir le code à défaut', () {
       final m = invitationMessage('ABCD2345');
-      expect(m, contains('après ton inscription'));
-      expect(m, contains('ABCD2345 dans Mon compte › J’ai un code de parrainage.'));
+      expect(m, contains('?ref=ABCD2345'));
+      expect(m, contains('saisis ABCD2345 dans Mon compte › J’ai un code de parrainage'));
     });
 
     test('le texte d’invitation distingue chargement, visiteur et code indisponible', () {

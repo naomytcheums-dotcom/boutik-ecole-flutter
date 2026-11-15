@@ -10,10 +10,11 @@ export async function run(db) {
     await db.exec(`insert into auth.users(id,email) values ('${id}','${nm.split(' ')[0]}@t.cm'); insert into profiles(id,name,role,email) values ('${id}','${nm}','${role}','${nm.split(' ')[0]}@t.cm')`);
   }
   await db.exec(`insert into company_profiles (owner_id, company_name, status, sector, city, phone, contact_name) values ('${E}', 'Orange Cameroun', 'approved', 'Telecoms', 'Douala', '699', 'Mme N')`);
+  const countMembers = async () => { await db.exec('reset role'); const n = (await q(`select count(*)::int n from company_members where owner_id='${E}'`))[0].n; await as(E); return n; };
   await as(E);
-  await fails('invitation : personne sans compte', `select company_invite('inconnu@t.cm', 'viewer')`, /d'abord créer son compte/);
+  check('invitation : personne sans compte, même réponse sans invitation', (await q(`select company_invite('inconnu@t.cm', 'viewer') r`))[0].r === 'invited' && (await countMembers()) === 0);
   await fails('invitation : role inconnu', `select company_invite('Alice@t.cm', 'chef')`, /Rôle inconnu/);
-  await fails('invitation : pas le proprietaire lui-meme', `select company_invite('Orange@t.cm', 'viewer')`, /propriétaire/);
+  check('invitation : le propriétaire lui-même, même réponse sans invitation', (await q(`select company_invite('Orange@t.cm', 'viewer') r`))[0].r === 'invited' && (await countMembers()) === 0);
   check('invitation : Alice (administratrice)', (await q(`select company_invite('Alice@t.cm', 'admin') r`))[0].r === 'invited');
   check('invitation : Fabrice (finance)', (await q(`select company_invite(' fabrice@T.cm ', 'finance') r`))[0].r === 'invited');
   check('invitation : Vero (lectrice)', (await q(`select company_invite('Vero@t.cm', 'viewer') r`))[0].r === 'invited');

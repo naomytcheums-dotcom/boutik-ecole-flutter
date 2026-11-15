@@ -112,9 +112,10 @@ void main() {
     expect(find.text('DEV-2026-014 · Borne solaire'), findsNothing);
   });
 
-  testWidgets('32 connecté : produit choisi, aucune caractéristique de maquette', (t) async {
+  testWidgets('32 connecté : fiche réelle du produit, sans produit choisi le dit et n’affiche aucune maquette', (t) async {
     await monter(t, const G_32(), connecte: true);
-    expect(find.textContaining('Vendeur :'), findsOneWidget);
+    expect(find.textContaining('Aucun produit n’est choisi'), findsOneWidget);
+    expect(find.textContaining('Vendeur :'), findsNothing);
     expect(find.text('LED E27 incluse'), findsNothing);
     expect(find.text('Mouanga Yannick'), findsNothing);
   });

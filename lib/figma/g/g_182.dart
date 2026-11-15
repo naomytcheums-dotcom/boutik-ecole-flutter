@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/system_states.dart' show retryNetwork;
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_182 extends ConsumerWidget {
@@ -44,7 +45,7 @@ class G_182 extends ConsumerWidget {
       gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
       gP(24, 70, 86, 26, gText('Explorer', 21, Color(0xFF111015), weight: 700)),
       gP(24, 120, 342, 48, GField(hint: 'Rechercher un produit, service, t…', size: 13.5, hintColor: Color(0xFF57545F), weight: 400, padL: 46, onSubmitted: (v) { ref.read(searchQueryProvider.notifier).set(v); gOpen(context, '22'); })),
-      gP(40.5, 134.5, 19, 19, const SizedBox.expand(), tap: () => gTab(context, '19')),
+      gP(40.5, 134.5, 19, 19, const SizedBox.expand(), show: demoContent, tap: () => gTab(context, '19')),
       gP(39.875, 133.875, 18.667, 18.667, gImg('assets/figma/v/50f467eb8a9b46.svg')),
       gP(50.721, 144.721, 9.404, 9.404, gImg('assets/figma/v/18d279137d73d9.svg')),
       gP(338.583, 134.667, 11.542, 6, gImg('assets/figma/v/e35f2f0eee5049.svg')),
@@ -56,7 +57,7 @@ class G_182 extends ConsumerWidget {
       gP(338.583, 133.083, 6, 9.167, gImg('assets/figma/v/3221f2f163c9f7.svg')),
       gP(333.833, 139.417, 6, 9.167, gImg('assets/figma/v/3221f2f163c9f7.svg')),
       gP(340.167, 145.75, 6, 9.167, gImg('assets/figma/v/3221f2f163c9f7.svg')),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 182, 55.6, 34, 'Tous', 12.5, 600), GChip(87.6, 182, 85.2, 34, 'Produits', 12.5, 500), GChip(180.8, 182, 85.2, 34, 'Services', 12.5, 500), GChip(274, 182, 77.8, 34, 'Talents', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
+      if (demoContent) Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 182, 55.6, 34, 'Tous', 12.5, 600), GChip(87.6, 182, 85.2, 34, 'Produits', 12.5, 500), GChip(180.8, 182, 85.2, 34, 'Services', 12.5, 500), GChip(274, 182, 77.8, 34, 'Talents', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
       gP(36, 240, 46, 46, gBox(color: Color(0xFFE9EDF2), radii: [12, 12, 12, 12])),
       gP(94, 246, 171, 12, gBox(color: Color(0xFFE9EDF2), radii: [6, 6, 6, 6])),
       gP(94, 268, 109.44, 10, gBox(color: Color(0xFFF2EFF6), radii: [5, 5, 5, 5])),
@@ -78,7 +79,9 @@ class G_182 extends ConsumerWidget {
       gP(51.833, 635.625, 9.542, 9.542, gImg('assets/figma/v/1bdada6d2922a2.svg')),
       gP(42.625, 642, 18.75, 12.375, gImg('assets/figma/v/4eac5b4499eb84.svg')),
       gP(42.625, 644.833, 9.542, 9.542, gImg('assets/figma/v/ff0a8029b488fe.svg')),
-      gP(76, 628, 277, 34, gText('Chargement en cours… les contenus apparaissent progressivement.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
+      gP(76, 628, 277, 34, gText(gm('Chargement en cours… les contenus apparaissent progressivement.', 'Vous êtes hors ligne : les contenus s’afficheront au retour du réseau.'), 12, Color(0xFF4A4854), lh: 17, wrap: true)),
+      gP(24, 690, 342, 50, gBox(color: Color(0xFF111015), radii: [25, 25, 25, 25]), tap: () => retryNetwork(context), show: !demoContent),
+      gP(24, 705, 342, 20, gText('Réessayer la connexion', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center), show: !demoContent),
       gP(125, 832, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
       gP(47.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '19')),

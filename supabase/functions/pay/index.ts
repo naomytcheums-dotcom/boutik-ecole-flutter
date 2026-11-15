@@ -17,7 +17,7 @@ Deno.serve(async (req) => {
 
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
   const key = Deno.env.get("NOTCHPAY_KEY");
-  if (!key) return json({ error: "not_configured", message: "Le paiement n'est pas encore configuré (clé Notch Pay manquante)." }, 503);
+  if (!key) return json({ error: "not_configured", message: "Le paiement en ligne est momentanément indisponible. Choisissez le paiement à la livraison ou réessayez plus tard." }, 503);
 
   const url = Deno.env.get("SUPABASE_URL")!;
   const authHeader = req.headers.get("Authorization") ?? "";
@@ -66,6 +66,7 @@ Deno.serve(async (req) => {
   if (body.action === "start") {
     if (order.paid) return json({ error: "already_paid", message: "Cette commande est déjà payée." }, 409);
     if (cancelled) return json({ error: "order_cancelled", message: "Cette commande est annulée : elle ne peut plus être payée." }, 409);
+    if (order.cod === true) return json({ error: "cod_order", message: "Cette commande se paie à la livraison : elle ne peut pas être payée en ligne." }, 409);
     // Un paiement déjà demandé et encore en attente n'est pas doublé (deux prélèvements possibles, et l'événement du
     // premier ne retrouverait plus la commande) ; s'il a abouti, il est confirmé au lieu d'en créer un autre.
     if (order.reference) {
@@ -88,10 +89,10 @@ Deno.serve(async (req) => {
     });
     const c = await created.json();
     const ref = c?.transaction?.reference ?? c?.payment?.reference ?? reference;
-    if (!created.ok) return json({ error: "provider_error", message: c?.message ?? "Création du paiement refusée." }, 502);
+    if (!created.ok) { console.error("création du paiement refusée", created.status, c?.message); return json({ error: "provider_error", message: "Le service de paiement a refusé la demande. Réessayez dans un instant." }, 502); }
     const charge = await fetch(`${NOTCH}/payments/${ref}`, { method: "POST", headers, body: JSON.stringify({ channel, data: { phone } }) });
     const ch = await charge.json();
-    if (!charge.ok) return json({ error: "provider_error", message: ch?.message ?? "Le prélèvement a été refusé." }, 502);
+    if (!charge.ok) { console.error("prélèvement refusé", charge.status, ch?.message); return json({ error: "provider_error", message: "Le prélèvement a été refusé. Vérifiez votre numéro et votre solde, puis réessayez." }, 502); }
     await admin.from("orders").update({ reference: ref, method: channel === "cm.mtn" ? "MTN Mobile Money" : "Orange Money" }).eq("id", order.id);
     return json({ reference: ref, status: "pending" });
   }
@@ -103,7 +104,11 @@ Deno.serve(async (req) => {
     const { tx } = await readTx(ref);
     const st = String(tx.status ?? "pending");
     if (st === "complete") return await confirmIfComplete(ref, tx);
-    if (["failed", "canceled", "expired", "rejected"].includes(st)) return json({ status: "failed", reference: ref });
+    if (["failed", "canceled", "expired", "rejected"].includes(st)) {
+      // Échec définitif chez le fournisseur : la référence est libérée pour permettre d'annuler la commande ou de payer à nouveau.
+      await admin.from("orders").update({ reference: null }).eq("id", order.id).eq("paid", false);
+      return json({ status: "failed", reference: ref });
+    }
     return json({ status: "pending", reference: ref });
   }
   return json({ error: "bad_action" }, 400);

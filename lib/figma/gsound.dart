@@ -184,9 +184,12 @@ class _GFxState extends State<GFx> with SingleTickerProviderStateMixin {
 
 /// Bouton micro : appui = démarre / arrête l'écoute, avec sons et ondes qui s'étendent.
 class GMic extends StatefulWidget {
-  const GMic({super.key, required this.child, this.onResult});
+  const GMic({super.key, required this.child, this.onResult, this.active});
   final Widget child;
   final void Function(bool listening)? onResult;
+
+  /// État réel de l'écoute quand l'appelant le connaît : le bouton le suit (un échec d'initialisation le désactive) au lieu de basculer seul.
+  final bool? active;
   @override
   State<GMic> createState() => _GMicState();
 }
@@ -194,23 +197,42 @@ class GMic extends StatefulWidget {
 class _GMicState extends State<GMic> with SingleTickerProviderStateMixin {
   bool on = false;
   late final AnimationController c = AnimationController(vsync: this, duration: const Duration(milliseconds: 1500));
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.active == true) _apply(true);
+  }
+
+  @override
+  void didUpdateWidget(GMic old) {
+    super.didUpdateWidget(old);
+    final a = widget.active;
+    if (a != null && a != on) _apply(a);
+  }
+
   @override
   void dispose() {
     c.dispose();
     super.dispose();
   }
 
-  void toggle() {
-    setState(() => on = !on);
-    GSound.play(on ? 'mic_start' : 'mic_stop');
-    HapticFeedback.mediumImpact();
+  void _apply(bool v) {
+    on = v;
     if (on && GAnim.enabled) {
       c.repeat();
     } else {
       c.stop();
       c.value = 0;
     }
-    widget.onResult?.call(on);
+  }
+
+  void toggle() {
+    final next = widget.active == null ? !on : !widget.active!;
+    if (widget.active == null) setState(() => _apply(next));
+    GSound.play(next ? 'mic_start' : 'mic_stop');
+    HapticFeedback.mediumImpact();
+    widget.onResult?.call(next);
   }
 
   @override

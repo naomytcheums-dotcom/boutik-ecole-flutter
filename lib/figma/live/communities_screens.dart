@@ -7,11 +7,13 @@ import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'tp_ui.dart' show tpBackground, GlassBack, TpFrame;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../gen.dart';
 import 'auth.dart' show authProvider, requireLogin;
 import 'backend.dart';
 import 'communities.dart';
+import 'l8_common.dart' show l8Confirm;
 import 'talents.dart' show askText;
 
 /// Écrans des communautés façon « groupes » : création (validation par l'administrateur, description de 500 mots au plus,
@@ -278,8 +280,95 @@ String roleLabel(String role) => switch (role) {
       _ => 'Membre',
     };
 
+/// Demandes d'adhésion en attente (lisibles par les responsables seulement ; le serveur renvoie une liste vide aux autres).
+final communityRequestsProvider = FutureProvider.autoDispose.family<List<Map<String, dynamic>>, String>((ref, id) async {
+  final r = await Backend.rpc('community_requests', {'p_community': id});
+  if (r.error != null || r.data is! List) throw Exception(r.error ?? 'Lecture impossible');
+  return [for (final x in r.data as List) Map<String, dynamic>.from(x as Map)];
+}, retry: (_, _) => null);
+
+/// Recherche d'une personne à inviter (nom abrégé et filière, trois lettres au moins), puis invitation par `invite_member`.
+class _InviteSheet extends StatefulWidget {
+  const _InviteSheet({required this.community});
+  final Community community;
+
+  @override
+  State<_InviteSheet> createState() => _InviteSheetState();
+}
+
+class _InviteSheetState extends State<_InviteSheet> {
+  final _q = TextEditingController();
+  List<Map<String, dynamic>> _found = const [];
+  String _message = 'Saisissez au moins 3 lettres du nom.';
+  bool _busy = false;
+  int _seq = 0;
+
+  @override
+  void dispose() {
+    _q.dispose();
+    super.dispose();
+  }
+
+  Future<void> _search(String v) async {
+    final seq = ++_seq;
+    if (v.trim().length < 3) return setState(() {
+      _found = const [];
+      _message = 'Saisissez au moins 3 lettres du nom.';
+    });
+    final r = await Backend.rpc('community_invite_search', {'p_community': widget.community.id, 'p_q': v.trim(), 'p_limit': 10});
+    if (!mounted || seq != _seq) return;
+    setState(() {
+      if (r.error != null || r.data is! List) {
+        _found = const [];
+        _message = r.error != null ? Backend.userMessage(r.error!) : 'Recherche indisponible.';
+      } else {
+        _found = [for (final x in r.data as List) Map<String, dynamic>.from(x as Map)];
+        _message = _found.isEmpty ? 'Personne ne correspond.' : '';
+      }
+    });
+  }
+
+  Future<void> _invite(Map<String, dynamic> p) async {
+    setState(() => _busy = true);
+    final r = await Backend.rpc('invite_member', {'p_community': widget.community.id, 'p_user': p['user_id']});
+    if (!mounted) return;
+    if (r.error != null) {
+      setState(() {
+        _busy = false;
+        _message = Backend.userMessage(r.error!);
+      });
+      return;
+    }
+    Navigator.pop(context, '${p['name']}');
+  }
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: EdgeInsets.fromLTRB(20, 20, 20, 20 + MediaQuery.of(context).viewInsets.bottom),
+        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text('Inviter dans « ${widget.community.name} »', style: _st(16, w: FontWeight.w800)),
+          const SizedBox(height: 12),
+          TextField(controller: _q, autofocus: true, onChanged: _search, decoration: InputDecoration(hintText: 'Nom de la personne', prefixIcon: const Icon(Icons.search), border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)))),
+          const SizedBox(height: 8),
+          if (_message.isNotEmpty) Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Text(_message, style: _st(12.5, c: _grey))),
+          for (final p in _found)
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text('${p['name']}', style: _st(14, w: FontWeight.w600)),
+              subtitle: '${p['department'] ?? ''}'.isEmpty ? null : Text('${p['department']}', style: _st(12, c: _grey)),
+              trailing: Text('Inviter', style: _st(12.5, w: FontWeight.w700, c: _violet)),
+              onTap: _busy ? null : () => _invite(p),
+            ),
+        ]),
+      );
+}
+
 class CommunityScreen extends ConsumerStatefulWidget {
-  const CommunityScreen({super.key});
+  const CommunityScreen({super.key, this.id = ''});
+
+  /// Identifiant dans l'adresse (`/communaute/:id`) : la communauté se rouvre après un rechargement ou depuis un lien.
+  final String id;
+
   @override
   ConsumerState<CommunityScreen> createState() => _CommunityScreenState();
 }
@@ -291,6 +380,37 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
   String? _style;
   bool _compose = false;
   PostAttachment? _attach;
+  bool _loading = false;
+  bool _missing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _ensure());
+  }
+
+  /// Charge la communauté de l'adresse si elle n'est pas déjà ouverte ; `force` relit aussi l'état d'adhésion (connexion rétablie).
+  Future<void> _ensure({bool force = false}) async {
+    final id = widget.id;
+    if (!mounted || id.isEmpty || !Backend.ready) return;
+    if (!force && ref.read(selectedCommunityProvider)?.id == id) return;
+    setState(() {
+      _loading = true;
+      _missing = false;
+    });
+    final r = await Backend.rpc('communities_list', {'p_id': id, 'p_limit': 1});
+    if (!mounted) return;
+    final rows = r.error == null && r.data is List ? r.data as List : const [];
+    if (rows.isEmpty) {
+      setState(() {
+        _loading = false;
+        _missing = true;
+      });
+      return;
+    }
+    ref.read(selectedCommunityProvider.notifier).select(Community.fromRow(rows.first as Map));
+    setState(() => _loading = false);
+  }
 
   @override
   void dispose() {
@@ -406,19 +526,32 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
   }
 
   Future<void> _changeRole(Community c, Map<String, dynamic> m) async {
+    final canRole = c.myRole == 'owner' || c.myRole == 'admin';
     final role = await showModalBottomSheet<String>(
       context: context,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (ctx) => SafeArea(
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Padding(padding: const EdgeInsets.all(16), child: Text('Rôle de ${m['name']}', style: _st(15, w: FontWeight.w700))),
-          for (final (v, t) in const [('mentor', 'Mentor'), ('moderator', 'Modérateur'), ('admin', 'Administrateur'), ('member', 'Membre simple')])
-            ListTile(title: Text(t, style: _st(14, w: FontWeight.w600)), trailing: m['role'] == v ? const Icon(Icons.check) : null, onTap: () => Navigator.pop(ctx, v)),
+          Padding(padding: const EdgeInsets.all(16), child: Text('${m['name']}', style: _st(15, w: FontWeight.w700))),
+          if (canRole)
+            for (final (v, t) in const [('mentor', 'Mentor'), ('moderator', 'Modérateur'), ('admin', 'Administrateur'), ('member', 'Membre simple')])
+              ListTile(title: Text(t, style: _st(14, w: FontWeight.w600)), trailing: m['role'] == v ? const Icon(Icons.check) : null, onTap: () => Navigator.pop(ctx, v)),
+          ListTile(title: Text('Bannir de la communauté', style: _st(14, w: FontWeight.w600, c: const Color(0xFFB42318))), onTap: () => Navigator.pop(ctx, 'ban')),
         ]),
       ),
     );
     if (role == null || role == m['role'] || !mounted) return;
+    if (role == 'ban') {
+      if (!await l8Confirm(context, 'Bannir ${m['name']} ?', 'Cette personne sera retirée de « ${c.name} » et ne pourra plus la rejoindre.', go: 'Bannir') || !mounted) return;
+      final b = await Backend.rpc('ban_member', {'p_community': c.id, 'p_user': m['user_id']});
+      if (!mounted) return;
+      if (b.error != null) return gAlert(context, 'Action impossible', Backend.userMessage(b.error!));
+      ref.invalidate(communityMembersProvider(c.id));
+      await ref.read(communitiesProvider.notifier).refresh();
+      if (mounted) gToast(context, '${m['name']} est banni(e)');
+      return;
+    }
     final r = await Backend.rpc('set_member_role', {'p_community': c.id, 'p_user': m['user_id'], 'p_role': role});
     if (!mounted) return;
     if (r.error != null) return gToast(context, Backend.userMessage(r.error!));
@@ -506,7 +639,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
 
   Widget _members(Community c, {required bool mentorsOnly}) {
     final async = ref.watch(communityMembersProvider(c.id));
-    return async.when(
+    final listing = async.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (_, _) {
         final visitor = _visitor;
@@ -518,7 +651,6 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
       data: (all) {
         final list = mentorsOnly ? [for (final m in all) if (m['role'] == 'mentor') m] : all;
         if (list.isEmpty) return Center(child: Padding(padding: const EdgeInsets.all(28), child: Text(mentorsOnly ? 'Aucun mentor pour le moment.' : 'Aucun membre.', textAlign: TextAlign.center, style: _st(13.5, c: _grey))));
-        final canRole = c.myRole == 'owner' || c.myRole == 'admin';
         final levels = ref.watch(communityLevelsProvider(c.id)).asData?.value ?? const <String, Map<String, dynamic>>{};
         return ListView.separated(
           padding: const EdgeInsets.all(16),
@@ -526,7 +658,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
           separatorBuilder: (_, _) => const SizedBox(height: 8),
           itemBuilder: (_, i) {
             final m = list[i];
-            final manageable = canRole && m['mine'] != true && m['role'] != 'owner';
+            final manageable = c.canManage && m['mine'] != true && m['role'] != 'owner';
             return _card(Row(children: [
               Container(width: 40, height: 40, alignment: Alignment.center, decoration: BoxDecoration(color: const Color(0xFFF1EEFB), borderRadius: BorderRadius.circular(13)), child: Text('${m['name']}'.characters.first.toUpperCase(), style: _st(15, w: FontWeight.w700, c: _violet))),
               const SizedBox(width: 12),
@@ -537,19 +669,83 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
         );
       },
     );
+    if (mentorsOnly || !c.canManage || c.status != 'active') return listing;
+    return Column(children: [_tools(c), Expanded(child: listing)]);
+  }
+
+  /// Demandes d'adhésion en attente (communauté sur approbation) et invitation d'une personne : réservées aux responsables.
+  Widget _tools(Community c) {
+    final requests = ref.watch(communityRequestsProvider(c.id)).asData?.value ?? const <Map<String, dynamic>>[];
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxHeight: 230),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          _button('Inviter une personne', () => _invite(c), dark: false),
+          if (requests.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            Text('Demandes d’adhésion (${requests.length})', style: _st(13.5, w: FontWeight.w700)),
+            for (final q in requests)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: _card(Row(children: [
+                  Expanded(child: Text('${q['name']}', style: _st(13.5, w: FontWeight.w600))),
+                  GestureDetector(behavior: HitTestBehavior.opaque, onTap: () => _decideRequest(c, q, false), child: Padding(padding: const EdgeInsets.all(10), child: Text('Refuser', style: _st(12.5, w: FontWeight.w700, c: const Color(0xFFB42318))))),
+                  GestureDetector(behavior: HitTestBehavior.opaque, onTap: () => _decideRequest(c, q, true), child: Padding(padding: const EdgeInsets.all(10), child: Text('Accepter', style: _st(12.5, w: FontWeight.w700, c: _violet)))),
+                ])),
+              ),
+          ],
+          const SizedBox(height: 8),
+        ]),
+      ),
+    );
+  }
+
+  Future<void> _decideRequest(Community c, Map<String, dynamic> q, bool accept) async {
+    final r = await Backend.rpc('decide_join_request', {'p_community': c.id, 'p_user': q['user_id'], 'p_accept': accept});
+    if (!mounted) return;
+    if (r.error != null) return gAlert(context, 'Décision impossible', Backend.userMessage(r.error!));
+    ref.invalidate(communityRequestsProvider(c.id));
+    ref.invalidate(communityMembersProvider(c.id));
+    await ref.read(communitiesProvider.notifier).refresh();
+    if (mounted) gToast(context, accept ? '${q['name']} a rejoint la communauté' : 'Demande de ${q['name']} refusée');
+  }
+
+  Future<void> _invite(Community c) async {
+    final name = await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (sheet) => _InviteSheet(community: c),
+    );
+    if (name == null || !mounted) return;
+    ref.invalidate(communityRequestsProvider(c.id));
+    gToast(context, 'Invitation envoyée à $name');
   }
 
   @override
   Widget build(BuildContext context) {
-    final c = ref.watch(selectedCommunityProvider);
+    ref.listen(authProvider.select((a) => a.current?.serverId), (prev, next) {
+      if (prev != next) _ensure(force: true);
+    });
+    final selected = ref.watch(selectedCommunityProvider);
+    final c = widget.id.isNotEmpty && selected?.id != widget.id ? null : selected;
     final feed = ref.watch(communityFeedProvider);
     if (c == null) {
-      return DecoratedBox(decoration: tpBackground, child: TpFrame(child: Scaffold(backgroundColor: Colors.transparent, appBar: _bar(context, 'Communauté'), body: const Center(child: Text('Aucune communauté ouverte.')))));
+      final Widget empty = _loading || (widget.id.isNotEmpty && !_missing)
+          ? const Center(child: CircularProgressIndicator())
+          : Center(child: Padding(padding: const EdgeInsets.all(28), child: Column(mainAxisSize: MainAxisSize.min, children: [
+              Text(_missing ? 'Cette communauté est introuvable ou n’est plus accessible.' : 'Aucune communauté ouverte.', textAlign: TextAlign.center, style: _st(13.5, c: _grey)),
+              const SizedBox(height: 12),
+              _button('Voir les communautés', () => GoRouter.of(context).go('/communautes')),
+            ])));
+      return DecoratedBox(decoration: tpBackground, child: TpFrame(child: Scaffold(backgroundColor: Colors.transparent, appBar: _bar(context, 'Communauté'), body: empty)));
     }
     final Widget body = switch (_tab) {
       1 => CommunityChatTab(key: ValueKey('chat-${c.id}-${c.isMember}'), communityId: c.id, isMember: c.isMember),
       2 => CommunityQaTab(key: ValueKey('qa-${c.id}'), communityId: c.id, isMember: c.isMember),
-      3 => CommunityEventsTab(key: ValueKey('ev-${c.id}'), communityId: c.id, isMember: c.isMember),
+      3 => CommunityEventsTab(key: ValueKey('ev-${c.id}'), communityId: c.id, isMember: c.isMember, canModerate: c.canManage),
       4 => CommunityFilesTab(key: ValueKey('files-${c.id}-${c.isMember}'), communityId: c.id, isMember: c.isMember),
       5 => _members(c, mentorsOnly: false),
       6 => _members(c, mentorsOnly: true),

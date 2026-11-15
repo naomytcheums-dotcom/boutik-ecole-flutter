@@ -24,6 +24,7 @@ import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/inert_actions.dart';
 import '../live/pay.dart';
+import '../live/decouverte_screens.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_22c extends ConsumerWidget {
@@ -31,6 +32,7 @@ class G_22c extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (!demoContent) return const TrendsScreen();
     return GScreen(w: 390, h: 1091, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF5F0E8), Color(0xFFEFE9F4), Color(0xFFF7E9DB)], stops: [0, 0.55, 1]), children: [
       gP(30, 14, 30, 18, gText('9:41', 14.5, Color(0xFF111015), weight: 700)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),

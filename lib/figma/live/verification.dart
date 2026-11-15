@@ -93,6 +93,17 @@ class DocBadge extends ConsumerWidget {
 }
 
 
+/// « Passer pour l'instant » : la vérification n'est jamais obligatoire pour entrer dans l'application. Un client rejoint son accueil, un étudiant la présentation.
+void skipVerification(WidgetRef ref, BuildContext context) {
+  final a = ref.read(authProvider).current;
+  if (a != null && a.role == 1 && a.staff.isEmpty) {
+    gToast(context, 'Vous pourrez envoyer vos pièces plus tard, depuis « Validations » de votre espace vendeur.');
+    gOpen(context, '175');
+  } else {
+    gTab(context, homeScreenFor(a));
+  }
+}
+
 /// « Envoyer pour validation » : le matricule est obligatoire pour un étudiant (jamais prérempli), au moins une pièce doit être envoyée.
 Future<void> submitVerification(WidgetRef ref, BuildContext context) async {
   if (!Backend.ready) {

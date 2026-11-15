@@ -15,6 +15,8 @@ import 'package:boutik_ecole/figma/gsound.dart';
 import 'package:boutik_ecole/figma/live/auth.dart';
 import 'package:boutik_ecole/figma/live/backend.dart';
 import 'package:boutik_ecole/figma/live/console.dart';
+import 'package:boutik_ecole/figma/live/l10_ateliers.dart';
+import 'package:boutik_ecole/figma/live/l10_voeux.dart';
 import 'package:boutik_ecole/figma/live/reseau.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -77,26 +79,23 @@ void main() {
     expect(find.text('Article endommagé ou non conforme'), findsOneWidget);
   });
 
-  testWidgets('216 connecté : vœux ouverts réels, brouillons exclus', (t) async {
+  testWidgets('216 connecté : vœux ouverts réels avec compteur de précommandes', (t) async {
     await monter(t, const G_216(), connecte: true, overrides: [
-      wishesListProvider.overrideWith(() => _Rows('table:wishes', [
-            {'title': 'Vœu Test', 'price': 5000, 'threshold': 20, 'status': 'approved'},
-            {'title': 'Brouillon Test', 'price': 1, 'threshold': 1, 'status': 'draft'},
-          ]))
+      wishesMarketProvider.overrideWith((ref) async => [
+            {'id': '00000000-0000-4000-8000-000000000001', 'title': 'Vœu Test', 'price': 5000, 'threshold': 20, 'count': 4, 'author': 'Awa E.', 'mine': false},
+          ])
     ]);
     expect(find.text('Vœu Test'), findsOneWidget);
-    expect(find.text('Brouillon Test'), findsNothing);
+    expect(find.text('4 / 20 précommandes'), findsOneWidget);
   });
 
-  testWidgets('223 connecté : seuls les lives programmés sont affichés', (t) async {
+  testWidgets('223 connecté : agenda des ateliers programmés réels', (t) async {
     await monter(t, const G_223(), connecte: true, overrides: [
-      livesListProvider.overrideWith(() => _Rows('table:scheduled_lives', [
-            {'title': 'Atelier Test', 'starts_at': 'Samedi 10 h', 'product_title': '', 'status': 'scheduled'},
-            {'title': 'Brouillon Live', 'starts_at': '', 'product_title': '', 'status': 'draft'},
-          ]))
+      livesAgendaProvider.overrideWith((ref) async => [
+            {'id': 'l1', 'title': 'Atelier Test', 'status': 'scheduled', 'scheduled_at': '2099-01-01T10:00:00Z', 'host': 'Awa E.', 'remind': false, 'mine': false},
+          ])
     ]);
     expect(find.text('Atelier Test'), findsOneWidget);
-    expect(find.text('Brouillon Live'), findsNothing);
   });
 
   for (final c in <(String, Widget, String, bool)>[

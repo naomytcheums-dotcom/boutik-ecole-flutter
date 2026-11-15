@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../gen.dart' show gToast;
 import '../i18n.dart' show Text;
 import 'auth.dart';
+import 'access.dart' show NotFoundView;
 import 'backend.dart';
 import 'marche/marche_data.dart';
 import 'marche/marche_widgets.dart';
@@ -87,10 +88,11 @@ class _PortalState extends ConsumerState<StaffPortalScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Clé incorrecte : aucune indication qu'un portail existe.
-    if (widget.portalKey != staffPortalKey) return const Scaffold(body: SizedBox.shrink());
+    // Clé incorrecte, ou compte connecté qui n'est pas de l'équipe : page 404 neutre, aucune indication qu'un portail existe,
+    // et aucun formulaire qui pourrait remplacer puis détruire la session en cours.
     final current = ref.watch(authProvider.select((a) => a.current));
-    final already = current != null && staffConsoleFor(current.staff) != null;
+    if (widget.portalKey != staffPortalKey || (current != null && staffConsoleFor(current.staff) == null)) return const NotFoundView();
+    final already = current != null;
     return Scaffold(
       backgroundColor: const Color(0xFFF7F4FA),
       body: Center(

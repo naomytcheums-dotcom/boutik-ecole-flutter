@@ -8,7 +8,7 @@ import '../gen.dart';
 import '../nav.dart';
 import 'auth.dart';
 import 'backend.dart';
-import 'seller.dart' show currentSellerOrderProvider;
+import 'seller.dart' show currentSellerOrderProvider, selectedSellerOrderProvider;
 import 'store.dart';
 
 /// Messagerie réelle : conversations et messages enregistrés sur le serveur, visibles des seuls participants (RLS).
@@ -81,7 +81,33 @@ Widget chatHeaderOrderSub(String demo) => gP(
       }),
     );
 
+/// Lien « Voir la commande » de l'écran 54 (conversation liée à une commande) : la commande de l'acheteur, ou celle que prépare le vendeur.
+Widget chatOrderLink() => gP(
+76, 114, 200, 18,
+      Consumer(builder: (context, ref, _) {
+        final c = ref.watch(selectedConversationItemProvider);
+        if (c == null || c.orderNumber.isEmpty) return const SizedBox.shrink();
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            final num = c.orderNumber.replaceAll('#', '');
+            final mine = ref.read(ordersProvider).where((o) => o.id.replaceAll('#', '') == num);
+            if (mine.isNotEmpty) {
+              ref.read(selectedOrderIdProvider.notifier).set(mine.first.id);
+              gOpen(context, '09');
+            } else {
+              ref.read(selectedSellerOrderProvider.notifier).set(c.orderNumber);
+              gOpen(context, '64');
+            }
+          },
+          child: Align(alignment: Alignment.centerLeft, child: Text('Voir la commande', style: _t(11.5, FontWeight.w600, const Color(0xFF5A3FE0)))),
+        );
+      }),
+      show: !demoContent,
+    );
+
 /// « Contacter le vendeur » depuis une commande : ouvre la conversation liée à cette commande (écran 54).
+/// Si cette conversation existe déjà, elle est simplement rouverte : la salutation n'est pas renvoyée à chaque fois.
 Future<void> contactOrderSeller(WidgetRef ref, BuildContext context) async {
   if (!Backend.ready) {
     gToast(context, 'La messagerie nécessite la connexion au serveur.');
@@ -90,12 +116,27 @@ Future<void> contactOrderSeller(WidgetRef ref, BuildContext context) async {
   if (!await requireLogin(context, ref, 'écrire au vendeur')) return;
   if (!context.mounted) return;
   final o = ref.read(viewedOrderProvider);
+  final existing = await _existingConversation(ref, (c) => c.orderNumber.isNotEmpty && c.orderNumber.replaceAll('#', '') == o.id.replaceAll('#', ''));
+  if (!context.mounted) return;
+  if (existing != null) {
+    ref.read(selectedConversationProvider.notifier).set(existing.id);
+    return gOpen(context, '54');
+  }
   final r = await Backend.startOrderConversation(o.id, 'Bonjour, je vous écris au sujet de la commande ${o.id}.');
   if (!context.mounted) return;
   if (r.error != null) return gAlert(context, 'Message non envoyé', r.error!);
   ref.read(selectedConversationProvider.notifier).set(r.id!);
   await ref.read(conversationsProvider.notifier).refresh();
   if (context.mounted) gOpen(context, '54');
+}
+
+/// Conversation déjà ouverte qui répond au critère, d'après la liste à jour du serveur.
+Future<ConversationItem?> _existingConversation(WidgetRef ref, bool Function(ConversationItem) test) async {
+  await ref.read(conversationsProvider.notifier).refresh();
+  for (final c in ref.read(conversationsProvider)) {
+    if (test(c)) return c;
+  }
+  return null;
 }
 
 /// 64 « Signaler un souci » pendant la préparation : le vendeur écrit à l'acheteur dans la conversation de la commande
@@ -230,7 +271,16 @@ Future<void> contactSeller(WidgetRef ref, BuildContext context, String productTi
   if (!info.hasSeller) {
     return gAlert(context, 'Produit de la plateforme', 'Ce produit est vendu directement par Boutik-École : il n’a pas de vendeur étudiant à qui écrire.');
   }
-  final body = (message ?? '').trim().isEmpty ? 'Bonjour, je vous contacte au sujet de « $productTitle ».' : 'À propos de « $productTitle » : ${message!.trim()}';
+  final custom = (message ?? '').trim().isNotEmpty;
+  if (!custom) {
+    final existing = await _existingConversation(ref, (c) => c.orderNumber.isEmpty && c.listingTitle == productTitle);
+    if (!context.mounted) return;
+    if (existing != null) {
+      ref.read(selectedConversationProvider.notifier).set(existing.id);
+      return gOpen(context, '53');
+    }
+  }
+  final body = !custom ? 'Bonjour, je vous contacte au sujet de « $productTitle ».' : 'À propos de « $productTitle » : ${message!.trim()}';
   final r = await Backend.startConversation(info.listingId, body);
   if (!context.mounted) return;
   if (r.error != null) return gAlert(context, 'Message non envoyé', r.error!);

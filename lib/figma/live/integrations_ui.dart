@@ -15,6 +15,7 @@ import 'integrations_model.dart';
 import 'integrations_momo.dart';
 import 'integrations_widgets.dart';
 import 'lots.dart' show addProfileLink, copyText, pendingLinksProvider, saveProfileLinks;
+import 'profile_links.dart' show SavedLinksList;
 
 /// Les quatre écrans de la rubrique « Applications connectées » partagent le même hub (mêmes données, mêmes composants).
 enum IntMode {
@@ -172,12 +173,19 @@ class _HubState extends ConsumerState<IntegrationsHubScreen> {
 
   List<Widget> _linksExtra() {
     final pending = ref.watch(pendingLinksProvider);
+    final signedIn = ref.watch(authProvider.select((a) => a.current != null));
     return [
-      const IntSectionTitle('Autres liens du profil', hint: 'Portfolio, site, Drive…'),
+      const IntSectionTitle('Autres liens du profil', hint: 'Portfolio, site, Drive… Les liens enregistrés s’affichent sur votre profil.'),
       IntCard(
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          if (signedIn) ...[
+            Text('Liens enregistrés', style: intText(13, weight: FontWeight.w700)),
+            const SizedBox(height: 6),
+            const SavedLinksList(),
+          ],
+          if (pending.isNotEmpty) Text('À enregistrer', style: intText(13, weight: FontWeight.w700)),
           for (final l in pending)
-            Padding(padding: const EdgeInsets.only(bottom: 8), child: Text('${l['label']} · ${l['url']}', style: intText(12.5, color: kMuted), maxLines: 1, overflow: TextOverflow.ellipsis)),
+            Padding(padding: const EdgeInsets.only(top: 4, bottom: 4), child: Text('${l['label']} · ${l['url']}', style: intText(12.5, color: kMuted), maxLines: 1, overflow: TextOverflow.ellipsis)),
           IntButton('+ Ajouter un autre lien', filled: false, onTap: () => addProfileLink(context, ref)),
           if (pending.isNotEmpty) ...[
             const SizedBox(height: 8),

@@ -24,6 +24,7 @@ import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
 import '../live/engage.dart';
+import '../live/legal.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_17 extends ConsumerWidget {
@@ -49,6 +50,7 @@ class G_17 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 292, 26, gText('Conditions et confidentialité', 21, Color(0xFF111015), weight: 700)),
+      if (demoContent) ...[
       gP(24, 156, 342, 1, gBox(color: Color(0xFFECE8F2))),
       gP(46, 130, 70, 16, gText('Conditions', 13, Color(0xFF111015), weight: 700, align: TextAlign.center)),
       gP(41.1, 154, 79.8, 3, gBox(color: Color(0xFF6A4DFF), radii: [2, 2, 2, 2])),
@@ -73,11 +75,14 @@ class G_17 extends ConsumerWidget {
       gP(24, 670, 20, 20, gBox(color: Color(0xFF111015), radii: [6, 6, 6, 6])),
       gP(26.667, 673.75, 14.667, 11.958, gImg('assets/figma/v/w_check.svg')),
       gP(54, 671, 315, 36, gText('J’ai lu et j’accepte les Conditions d’utilisation et la Politique de confidentialité.', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
+      ],
+      if (!demoContent) gP(24, 112, 342, 580, const TermsReader(height: 580)),
+      if (!demoContent) gP(24, 700, 342, 40, gText('En touchant « Accepter et continuer », vous acceptez les Conditions d’utilisation et la Politique de confidentialité en vigueur.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
       gP(0, 744, 390, 100, gBox(color: Color(0x00FFFFFF))),
       gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => acceptTerms(context, ref)),
       gP(118.5, 778, 153, 18, gText('Accepter et continuer', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
-      if (!demoContent) gP(0, 100, 390, 700, const CmsPageOverlay(title: 'Conditions et confidentialité', height: 700)),
+      if (!demoContent) gP(0, 100, 390, 650, const CmsPageOverlay(title: 'Conditions et confidentialité', height: 650)),
     ]);
   }
 }

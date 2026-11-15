@@ -34,8 +34,8 @@ class G_08 extends ConsumerWidget {
     ref.listen(defaultPaymentProvider, (_, v) {
       final d = v.value;
       if (d == null) return;
-      ref.read(payMethodProvider.notifier).set(d.provider == 'orange_money' ? 0 : 1);
-      ref.read(payPhoneProvider.notifier).set(d.phone);
+      ref.read(payMethodProvider.notifier).setDefault(d.provider == 'orange_money' ? 0 : 1);
+      ref.read(payPhoneProvider.notifier).setDefault(d.phone);
     });
     ref.watch(defaultPaymentProvider);
     return GScreen(w: 390, h: 900, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
@@ -73,11 +73,11 @@ class G_08 extends ConsumerWidget {
       gP(153.287, 383, 180, 14, gText('Espèces remises à la livraison', 10.852, Color(0xFF57545F))),
       gP(334.383, 372, 16.278, 16.278, gBox(border: ref.watch(payMethodProvider) == 2 ? Color(0xFF6A4DFF) : Color(0xFF57545F), bw: 1.696, oval: true)),
       gP(338.113, 375.73, 8.817, 8.817, gBox(color: Color(0xFF6A4DFF), oval: true), show: ref.watch(payMethodProvider) == 2),
-      gP(43, 412, 70, 20, gText('Numéro :', 12, Color(0xFF57545F), weight: 500), show: ref.watch(payMethodProvider) != 2), gP(100, 406, 240, 30, Consumer(builder: (context, ref, _) => ref.watch(payMethodProvider) == 2 ? const SizedBox.shrink() : GField(hint: '6XX XX XX XX', initial: ref.read(payPhoneProvider), size: 13, hintColor: Color(0xFF8C8A93), weight: 600, padL: 0, numeric: true, maxLength: 12, onChanged: (v) { ref.read(payPhoneProvider.notifier).set(v); }))), gP(43.409, 449.039, 94, 19, gText('Récapitulatif', 14.922, Color(0xFF111015), weight: 700)),
+      gP(43, 412, 70, 20, gText('Numéro :', 12, Color(0xFF57545F), weight: 500), show: ref.watch(payMethodProvider) != 2), gP(100, 406, 240, 30, Consumer(builder: (context, ref, _) => ref.watch(payMethodProvider) == 2 ? const SizedBox.shrink() : GField(hint: '6XX XX XX XX', initial: ref.read(payPhoneProvider), size: 13, hintColor: Color(0xFF8C8A93), weight: 600, padL: 0, numeric: true, maxLength: 12, onChanged: (v) { ref.read(payPhoneProvider.notifier).type(v); }))), gP(43.409, 449.039, 94, 19, gText('Récapitulatif', 14.922, Color(0xFF111015), weight: 700)),
       gP(43.409, 492.163, 61, 15, Consumer(builder: (context, ref, _) => gText('Articles (${ref.watch(totalsProvider).count})${ref.watch(totalsProvider).discount > 0 ? ' · promo' : ''}', 12.209, Color(0xFF57545F)))),
       gP(131.339, 492.163, 220, 15, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(totalsProvider).subtotal), 11.53, Color(0xFF5A3FE0), weight: 600, wrap: true, align: TextAlign.right))),
       gP(43.409, 525.197, 51, 15, gText('Livraison', 12.209, Color(0xFF57545F))),
-      gP(145.339, 525.197, 206, 15, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(totalsProvider).fee), 11.53, Color(0xFF5A3FE0), weight: 600, wrap: true, align: TextAlign.right))),
+      gP(145.339, 525.197, 206, 15, Consumer(builder: (context, ref, _) { final t = ref.watch(totalsProvider); return gText(t.feePending ? 'À calculer' : fcfa(t.fee), 11.53, Color(0xFF5A3FE0), weight: 600, wrap: true, align: TextAlign.right); })),
       gP(42.052, 561.011, 309.287, 0.674, gBox(color: Color(0xFFECE8F2))),
       gP(43.409, 577.803, 36, 19, gText('Total', 14.922, Color(0xFF111015), weight: 700)),
       gP(77.339, 573.955, 274, 24, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(totalsProvider).total), 18.991, Color(0xFF5A3FE0), weight: 700, wrap: true, align: TextAlign.right))),
@@ -85,7 +85,7 @@ class G_08 extends ConsumerWidget {
       gP(47.983, 654.593, 13.913, 13.122, gImg('assets/figma/v/de25b67eb8d42d.svg')),
       gP(82.07, 652.938, 91, 13, gText('Paiement sécurisé', 10.174, Color(0xFF111015), weight: 700)),
       gP(82.07, 674.798, 178, 34, gText('Vos informations sont protégées\net ne sont jamais partagées.', 11.53, Color(0xFF57545F), lh: 16.957)),
-      gP(23.061, 713.258, 343.878, 58.652, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x29122640), offset: Offset(0, 5), blurRadius: 12, spreadRadius: 0)], radii: [29.843, 29.843, 29.843, 29.843]), tap: () => gOpen(context, '09')),
+      gP(23.061, 713.258, 343.878, 58.652, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x29122640), offset: Offset(0, 5), blurRadius: 12, spreadRadius: 0)], radii: [29.843, 29.843, 29.843, 29.843])),
       gP(120.443, 739.917, 18.209, 13.461, gImg('assets/figma/v/315ff1a827be55.svg')),
       gP(123.157, 733.813, 12.783, 12.104, gImg('assets/figma/v/142954c25f755b.svg')),
       gP(146.504, 735.096, 114, 17, gText('Payer maintenant', 13.565, Color(0xFFFFFFFF), weight: 600), show: ref.watch(payMethodProvider) != 2),
@@ -110,9 +110,10 @@ class G_08 extends ConsumerWidget {
       gTap(27, 66, 22, 22, () => gOpen(context, '07')),
       gTap(23, 713, 344, 59, () { startPayment(ref, context); }),
       
-      gTap(22, 165, 345, 88, () { ref.read(payMethodProvider.notifier).set(0); gToast(context, 'Orange Money sélectionné'); }),
-      gTap(24, 264, 343, 91, () { ref.read(payMethodProvider.notifier).set(1); gToast(context, 'Mobile Money sélectionné'); }),
-      gTap(24, 352, 343, 56, () { ref.read(payMethodProvider.notifier).set(2); gToast(context, 'Paiement à la livraison sélectionné'); }),
+      gTap(22, 165, 345, 88, () { ref.read(payMethodProvider.notifier).choose(0); gToast(context, 'Orange Money sélectionné'); }),
+      gTap(24, 264, 343, 91, () { ref.read(payMethodProvider.notifier).choose(1); gToast(context, 'Mobile Money sélectionné'); }),
+      gTap(24, 352, 343, 56, () { ref.read(payMethodProvider.notifier).choose(2); gToast(context, 'Paiement à la livraison sélectionné'); }),
+      if (!demoContent) gP(24, 776, 342, 32, gText('Payer par messagerie (paiement manuel, vérifié par l’équipe)', 11.5, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center, wrap: true), tap: () => gOpen(context, '43')),
     ]);
   }
 }

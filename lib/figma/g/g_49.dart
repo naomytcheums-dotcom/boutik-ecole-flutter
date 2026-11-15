@@ -24,6 +24,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/support_screens.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_49 extends ConsumerWidget {
@@ -50,7 +51,6 @@ class G_49 extends ConsumerWidget {
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 159, 26, gText('Aide et support', 21, Color(0xFF111015), weight: 700)),
       gP(24, 120, 342, 48, GField(hint: 'Comment pouvons-nous vous aider ?', size: 13.5, hintColor: Color(0xFF57545F), weight: 400, padL: 46, onSubmitted: (v) { helpSearch(context, v); })),
-      gP(40.5, 134.5, 19, 19, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(39.875, 133.875, 18.667, 18.667, gImg('assets/figma/v/50f467eb8a9b46.svg')),
       gP(50.721, 144.721, 9.404, 9.404, gImg('assets/figma/v/18d279137d73d9.svg')),
       gP(24, 182, 126, 19, gText('Sujets populaires', 15, Color(0xFF111015), weight: 700)),
@@ -68,7 +68,6 @@ class G_49 extends ConsumerWidget {
       gP(336.75, 290.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
       gP(88, 324, 266, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(36, 330, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
-      gP(46, 340, 20, 20, const SizedBox.expand(), tap: () => gTab(context, '10')),
       gP(48.833, 339.5, 14.333, 14.333, gImg('assets/figma/v/89c36cb8c670bc.svg')),
       gP(46.333, 347.833, 19.333, 12.667, gImg('assets/figma/v/4e3ce9c030e64b.svg')),
       gP(88, 341, 126, 17, gText('Compte et sécurité', 13.5, Color(0xFF111015), weight: 600)),
@@ -86,9 +85,10 @@ class G_49 extends ConsumerWidget {
       gP(222.36, 598, 143.64, 132, gBox(image: 'assets/figma/img/93dff03913a5b9f3a8ba8bc190862ebc295fc28d.png', fit: BoxFit.cover, radii: [24, 24, 24, 24])),
       gP(190, 598, 110, 132, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xFF163B66), Color(0xBF163B66), Color(0x4D163B66), Color(0x00163B66)], stops: [0, 0.35, 0.7, 1]))),
       gP(42, 614, 174, 20, gText('Besoin d’aide ?', 15, Color(0xFFFFFFFF), weight: 700, lh: 20, wrap: true)),
-      gP(42, 660, 160.32, 30, gText('Notre équipe répond sous 24 h.', 11, Color(0xFFE9E4F5), lh: 15, wrap: true)),
-      gP(42, 690, 170, 28, gBox(color: Color(0xFF111015), radii: [14, 14, 14, 14])),
+      gP(42, 660, 160.32, 30, gText('Votre demande est transmise à l’équipe.', 11, Color(0xFFE9E4F5), lh: 15, wrap: true)),
+      gP(42, 690, 170, 28, gBox(color: Color(0xFF111015), radii: [14, 14, 14, 14]), tap: () => openSupportContact(context, ref)),
       gP(69, 696, 116, 14, gText('Contacter le support', 11.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
+      gP(24, 736, 342, 26, gText('Mes demandes d’aide', 12.5, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center), tap: () => openMyTickets(context, ref)),
       gP(125, 842, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(22, 766, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
       gP(47.5, 787.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '19')),
@@ -106,6 +106,12 @@ class G_49 extends ConsumerWidget {
       gP(169, 772, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gTab(context, '03')),
       gP(184, 787, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 785.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
+      gTap(24, 222, 342, 48, () => showHelpArticle(context, 'commandes')),
+      gTap(24, 274, 342, 48, () => showHelpArticle(context, 'paiements')),
+      gTap(24, 326, 342, 48, () => showHelpArticle(context, 'compte')),
+      gTap(24, 434, 342, 44, () => showHelpArticle(context, 'suivre')),
+      gTap(24, 486, 342, 44, () => showHelpArticle(context, 'vendeur')),
+      gTap(24, 538, 342, 44, () => showHelpArticle(context, 'retrait')),
       if (!demoContent) gP(0, 100, 390, 700, const CmsPageOverlay(title: 'Aide et support', height: 700)),
     ]);
   }

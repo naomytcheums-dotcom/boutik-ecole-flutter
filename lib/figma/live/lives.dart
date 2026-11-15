@@ -15,6 +15,7 @@ import '../../core/router/paths.dart';
 import '../gen.dart';
 import '../nav.dart';
 import 'auth.dart';
+import 'access.dart' show roleKey;
 import 'backend.dart';
 import 'live_transport.dart';
 import 'modules.dart' show LiveRoom;
@@ -65,14 +66,20 @@ final livesNowProvider = FutureProvider.autoDispose<List<LiveItem>>((ref) async 
   final r = await Backend.rpc('lives_now', {'p_limit': 40});
   if (r.error != null || r.data is! List) throw Exception('Les lives ne peuvent pas être chargés pour le moment.');
   return [for (final x in r.data as List) LiveItem.fromRow(x as Map)];
-});
+}, retry: (_, _) => null);
 
 final myLivesProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
   if (ref.watch(authProvider.select((a) => a.current == null))) return const [];
   final r = await Backend.rpc('my_lives', const {});
   if (r.error != null || r.data is! List) return const [];
   return [for (final x in r.data as List) Map<String, dynamic>.from(x as Map)];
-});
+}, retry: (_, _) => null);
+
+/// Qui peut diffuser : étudiant, département, administration ou compte certifié (même règle que le serveur). Regarder, commenter et réagir
+/// restent ouverts à tout compte non suspendu.
+bool canBroadcastLive(Account? a) => a != null && (a.certified || const {'student', 'dept', 'admin'}.contains(roleKey(a)));
+
+const liveBroadcastRule = 'La diffusion en direct est réservée aux étudiants, au département et aux comptes certifiés. Vous pouvez regarder tous les lives, commenter et réagir.';
 
 /// Jeton LiveKit émis par l'Edge Function (rôle hôte ou spectateur). Erreur lisible sinon.
 Future<({String? url, String? token, String? error, String role})> fetchLiveToken(String liveId) async {
@@ -122,6 +129,7 @@ class _LivesHomeState extends ConsumerState<LivesHome> {
       child: ListView(padding: const EdgeInsets.fromLTRB(20, 0, 20, 40), children: [
         _btn('Aller en direct', Icons.videocam_rounded, () async {
           if (!await requireLogin(context, ref, 'passer en direct') || !context.mounted) return;
+          if (!canBroadcastLive(ref.read(authProvider).current)) return gAlert(context, 'Diffusion réservée', liveBroadcastRule);
           gOpen(context, 'L1');
         }),
         const SizedBox(height: 10),
@@ -253,6 +261,8 @@ class _LiveCreateFormState extends ConsumerState<LiveCreateForm> {
   Future<void> _create() async {
     final t = _title.text.trim();
     if (t.length < 3) return gToast(context, 'Donnez un titre d’au moins 3 caractères.');
+    if (!canBroadcastLive(ref.read(authProvider).current)) return gAlert(context, 'Diffusion réservée', liveBroadcastRule);
+    if (_when != null && _when!.isBefore(DateTime.now().add(const Duration(minutes: 1)))) return gToast(context, 'Choisissez une date et une heure à venir.');
     setState(() => _busy = true);
     String? cover;
     if (_cover != null) {
@@ -502,7 +512,7 @@ class _LiveHostConsoleState extends ConsumerState<LiveHostConsole> {
   Map<String, dynamic>? _live;
   String? _error, _id;
   String _conn = 'idle';
-  bool _starting = false, _cam = true, _mic = true, _ended = false;
+  bool _starting = false, _cam = true, _mic = true, _ended = false, _reconnect = false;
   int _viewers = 0;
   List<Map<String, dynamic>> _guests = [];
   Timer? _guestPoll;
@@ -597,6 +607,7 @@ class _LiveHostConsoleState extends ConsumerState<LiveHostConsole> {
     setState(() {
       _live = live;
       _ended = live['status'] == 'ended';
+      _reconnect = live['status'] == 'live';
     });
     if (live['status'] == 'live') _attachFeed(id);
   }
@@ -686,6 +697,7 @@ class _LiveHostConsoleState extends ConsumerState<LiveHostConsole> {
       if (mounted) setState(() => _conn = s);
     }, onParticipants: (_) {}, onError: (e) => failure = e);
     if (mounted && failure != null) setState(() => _error = liveErrorMessage(failure!));
+    if (mounted && failure == null) setState(() => _reconnect = false);
   }
 
   Future<void> _end() async {
@@ -791,6 +803,11 @@ class _LiveHostConsoleState extends ConsumerState<LiveHostConsole> {
             }, 'Micro'),
           ])),
           _Floaters(key: _floaters),
+          if (_reconnect && _error == null)
+            Positioned(left: 16, right: 16, top: 100, child: Container(padding: const EdgeInsets.all(14), color: const Color(0xF2FFFFFF), child: Column(mainAxisSize: MainAxisSize.min, children: [
+              Text('Ce direct est toujours en cours, mais la caméra n’est plus connectée sur cet appareil. Reprenez la diffusion ou terminez le direct.', style: sty(12.5, c: kInk, h: 1.45)),
+              TextButton(onPressed: _resume, child: Text('Reprendre la diffusion', style: sty(13.5, w: FontWeight.w800))),
+            ]))),
         ],
         if (_conn == 'reconnecting') Positioned(top: 100, left: 0, right: 0, child: Center(child: Container(padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8), color: const Color(0xCCB26A00), child: Text('Reconnexion en cours…', style: sty(12.5, w: FontWeight.w600, c: Colors.white))))),
         if (_error != null)

@@ -1,18 +1,27 @@
+import 'dart:async' show Timer;
+
 import 'package:flutter/material.dart' hide Text;
 import '../../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../data/demo/section_a_demo.dart' show CartLine;
+import '../../../data/demo/section_a_demo.dart' show CartLine, maxCartQty;
 import '../../../data/repositories/repositories.dart' show cartProvider;
 import '../../gen.dart' show gToast;
+import '../../gsound.dart' show GAnim;
 import '../auth.dart';
 import '../backend.dart';
-import '../messages.dart' show contactSeller;
-import '../../nav.dart' show gOpenProfile;
+import '../lfav.dart' show FavoriteHeart;
 import '../offer_types.dart' show offerTypeLabels;
+import '../produit_fiche.dart';
 import '../promo_state.dart';
+import '../services.dart' show kMaxQuoteBudget, parseFcfa;
+import '../share.dart' show shareText;
+import '../store.dart' show productByTitle;
+import '../vendeur_public.dart' show openSellerProfile;
 import 'decouverte.dart';
+import 'marche_appels.dart' show marcheLoginRequired;
+import 'marche_catalogue.dart';
 import 'marche_data.dart';
 import 'marche_widgets.dart';
 
@@ -35,7 +44,7 @@ class MarketplaceScreen extends ConsumerStatefulWidget {
 }
 
 class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
-  final _q = TextEditingController();
+  late final _q = TextEditingController(text: ref.read(marcheFiltersProvider).q);
 
   @override
   void dispose() {
@@ -82,6 +91,9 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(marcheFiltersProvider, (_, n) {
+      if (_q.text.trim() != n.q.trim()) _q.text = n.q;
+    });
     final f = ref.watch(marcheFiltersProvider);
     final cats = ref.watch(marcheCategoriesProvider).value ?? const <String>[];
     final browsing = f.q.trim().isEmpty && !f.active && !f.shops;
@@ -151,9 +163,9 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
         ],
         mSectionTitle(f.shops ? 'Boutiques' : (browsing ? 'Tous les produits' : 'Résultats')),
         if (f.shops)
-          mAsyncList(ref.watch(marcheShopsProvider), (l) => l.isEmpty ? mNote('Aucune boutique ne correspond.') : Column(children: [for (final s in l) _ShopRow(shop: s)]))
+          PagedCatalog(fn: 'marketplace_shops', params: f.shopParams, emptyText: 'Aucune boutique ne correspond.', rowBuilder: (s) => _ShopRow(shop: s))
         else
-          mAsyncList(ref.watch(marcheProductsProvider), (l) => l.isEmpty ? mNote('Aucun produit ne correspond à votre recherche.') : MarcheGrid(cards: l)),
+          PagedCatalog(fn: 'marketplace_search', params: f.productParams),
       ]),
     );
   }
@@ -184,7 +196,7 @@ class _ShopRow extends StatelessWidget {
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text('${shop['name']}', maxLines: 1, overflow: TextOverflow.ellipsis, style: mst(14.5, w: FontWeight.w800)),
-                  Text([if ('${shop['city'] ?? ''}'.isNotEmpty) '${shop['city']}', '${mInt(shop['products'])} produit${mInt(shop['products']) > 1 ? 's' : ''}', '${mInt(shop['followers'])} abonné${mInt(shop['followers']) > 1 ? 's' : ''}'].join(' · '), style: mst(12, c: kGrey)),
+                  Text([if ('${shop['city'] ?? ''}'.isNotEmpty) '${shop['city']}', if (shop['products'] != null) '${mInt(shop['products'])} produit${mInt(shop['products']) > 1 ? 's' : ''}', if (shop['followers'] != null) '${mInt(shop['followers'])} abonné${mInt(shop['followers']) > 1 ? 's' : ''}'].join(' · '), style: mst(12, c: kGrey)),
                   if (shop['rating_avg'] != null) Text('★ ${shop['rating_avg']} (${mInt(shop['rating_count'])} avis)', style: mst(12, c: kGrey)),
                 ]),
               ),
@@ -239,6 +251,8 @@ class _ShopBodyState extends ConsumerState<_ShopBody> {
     final c1 = mHex(s['color_primary'], kInk), c2 = mHex(s['color_secondary'], kViolet);
     final following = _following ?? d['following'] == true;
     final isOwner = d['is_owner'] == true;
+    final signedIn = ref.watch(authProvider.select((a) => a.current != null));
+    final canReview = !isOwner && (ref.watch(marcheCanReviewProvider('${s['id']}')).value ?? false);
     if (!_recorded && s['status'] == 'active') {
       _recorded = true;
       Future.microtask(() => marcheCall('record_view', {'p_kind': 'shop', 'p_id': s['id']}));
@@ -281,9 +295,15 @@ class _ShopBodyState extends ConsumerState<_ShopBody> {
             const SizedBox(width: 10),
             Expanded(child: mButton('Écrire', () async {
               if (!await requireLogin(context, ref, 'écrire à cette boutique')) return;
-              final r = await Backend.startDirectConversation('${s['owner_id']}', 'Bonjour, je vous contacte au sujet de votre boutique ${s['name']}.');
+              final r = await marcheCall('contact_shop_owner', {'p_shop': s['id']});
               if (!context.mounted) return;
-              if (r.error != null) return gToast(context, r.error!);
+              if (r.error == 'missing') {
+                final old = await Backend.startDirectConversation('${s['owner_id']}', 'Bonjour, je vous contacte au sujet de votre boutique ${s['name']}.');
+                if (!context.mounted) return;
+                if (old.error != null) return gToast(context, old.error!);
+              } else if (r.error != null) {
+                return gToast(context, Backend.userMessage('${r.error}'));
+              }
               context.push('/s/53');
             }, dark: false)),
           ],
@@ -327,7 +347,8 @@ class _ShopBodyState extends ConsumerState<_ShopBody> {
         mSectionTitle('Réseaux'),
         Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: Wrap(spacing: 8, runSpacing: 6, children: [for (final e in socials.entries) if ('${e.value}'.trim().isNotEmpty) Chip(label: Text('${e.key} : ${e.value}', style: mst(12)))])),
       ],
-      mSectionTitle('Avis sur la boutique', trailing: isOwner ? null : TextButton(onPressed: () => _review('${s['id']}'), child: Text('Donner mon avis', style: mst(13, w: FontWeight.w700, c: kViolet)))),
+      mSectionTitle('Avis sur la boutique', trailing: canReview ? TextButton(onPressed: () => _review('${s['id']}'), child: Text('Donner mon avis', style: mst(13, w: FontWeight.w700, c: kViolet))) : null),
+      if (!isOwner && !canReview && signedIn) Padding(padding: const EdgeInsets.fromLTRB(16, 0, 16, 8), child: Text('Seuls les clients ayant acheté dans cette boutique peuvent donner leur avis.', style: mst(12.5, c: kGrey))),
       if (reviews.isEmpty) Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: Text('Aucun avis pour le moment.', style: mst(13, c: kGrey))),
       for (final r in reviews) Padding(padding: const EdgeInsets.fromLTRB(16, 0, 16, 10), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('${'★' * mInt(r['rating'])}  ${r['author']}', style: mst(13, w: FontWeight.w700)), if ('${r['comment'] ?? ''}'.isNotEmpty) Text('${r['comment']}', style: mst(13, c: kGrey))])),
       if (!isOwner) Padding(padding: const EdgeInsets.fromLTRB(16, 20, 16, 0), child: Align(alignment: Alignment.centerLeft, child: TextButton(onPressed: () => _report('${s['id']}'), child: Text('Signaler cette boutique', style: mst(12.5, c: kRed))))),
@@ -367,21 +388,66 @@ class _ShopBodyState extends ConsumerState<_ShopBody> {
 
   Future<void> _report(String shopId) async {
     if (!await requireLogin(context, ref, 'signaler cette boutique')) return;
-    final r = await marcheCall('report_shop', {'p_shop': shopId, 'p_reason': 'other'});
+    if (!mounted) return;
+    final details = TextEditingController();
+    String? reason;
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (c) => StatefulBuilder(builder: (c, set) => AlertDialog(
+            title: const Text('Signaler cette boutique'),
+            content: SingleChildScrollView(
+              child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text('Choisissez le motif : la modération examinera votre signalement.', style: mst(13, c: kGrey)),
+                const SizedBox(height: 12),
+                Wrap(spacing: 8, runSpacing: 4, children: [for (final e in shopReportReasons.entries) ChoiceChip(label: Text(e.value), selected: reason == e.key, onSelected: (_) => set(() => reason = e.key))]),
+                const SizedBox(height: 12),
+                TextField(controller: details, maxLines: 3, maxLength: 500, decoration: const InputDecoration(hintText: 'Détails (facultatif)', border: OutlineInputBorder())),
+              ]),
+            ),
+            actions: [TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('Annuler')), TextButton(onPressed: reason == null ? null : () => Navigator.pop(c, true), child: const Text('Signaler'))],
+          )),
+    );
+    if (ok != true) return;
+    final r = await marcheCall('report_shop', {'p_shop': shopId, 'p_reason': reason, 'p_details': details.text});
     if (!mounted) return;
     gToast(context, r.error != null ? Backend.userMessage('${r.error}') : 'Signalement transmis à la modération.');
   }
 }
 
+/// Motifs de signalement d'une boutique acceptés par le serveur.
+const shopReportReasons = {'fraud': 'Fraude ou arnaque', 'counterfeit': 'Contrefaçon', 'abuse': 'Comportement abusif', 'other': 'Autre motif'};
+
 // ------------------------------------------------------------------ ventes flash
 
-class FlashSalesScreen extends ConsumerWidget {
+class FlashSalesScreen extends ConsumerStatefulWidget {
   const FlashSalesScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => MarchePage(
+  ConsumerState<FlashSalesScreen> createState() => _FlashSalesScreenState();
+}
+
+class _FlashSalesScreenState extends ConsumerState<FlashSalesScreen> {
+  Timer? _t;
+
+  @override
+  void initState() {
+    super.initState();
+    // Les ventes terminées quittent la liste, les ventes « Bientôt » passent « En cours » : la liste est relue toutes les 30 secondes.
+    if (GAnim.enabled) _t = Timer.periodic(const Duration(seconds: 30), (_) => ref.invalidate(marcheFlashProvider));
+  }
+
+  @override
+  void dispose() {
+    _t?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => MarchePage(
         title: 'Ventes flash',
-        child: mAsync<List<Map<String, dynamic>>>(ref.watch(marcheFlashProvider), (l) {
+        child: mAsync<List<Map<String, dynamic>>>(ref.watch(marcheFlashProvider), (all) {
+          final now = DateTime.now();
+          final l = [for (final f in all) if (DateTime.tryParse('${f['ends_at']}')?.isAfter(now) ?? true) f];
           if (l.isEmpty) return mNote('Aucune vente flash en cours. Revenez bientôt.');
           return ListView(padding: const EdgeInsets.only(bottom: 90), children: [
             for (final f in l)
@@ -397,6 +463,7 @@ class FlashSalesScreen extends ConsumerWidget {
                       Text(f['live'] == true ? 'En cours' : 'Bientôt', style: mst(12, w: FontWeight.w700, c: f['live'] == true ? kRed : kGrey)),
                       const SizedBox(height: 4),
                       Countdown(end: DateTime.parse('${f[f['live'] == true ? 'ends_at' : 'starts_at']}'), prefix: f['live'] == true ? 'Fin dans ' : 'Début dans '),
+                      if (f['live'] != true && f['sale_price'] != null) Padding(padding: const EdgeInsets.only(top: 4), child: Text('Prix de la vente : ${mFcfa(f['sale_price'])}', style: mst(12.5, w: FontWeight.w700, c: kRed))),
                       const SizedBox(height: 10),
                       Text('${mInt(f['stock']) - mInt(f['sold'])} restant${mInt(f['stock']) - mInt(f['sold']) > 1 ? 's' : ''} sur ${mInt(f['stock'])}', style: mst(12.5, c: kGrey)),
                       const SizedBox(height: 6),
@@ -417,10 +484,31 @@ class ProductPageScreen extends ConsumerWidget {
   final String id;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => MarchePage(
-        title: 'Produit',
-        child: mAsync<Map<String, dynamic>>(ref.watch(marcheProductProvider(id)), (d) => d['found'] != true ? mNote('Ce produit n’est plus disponible.') : _ProductBody(d: d, id: id)),
-      );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final d = ref.watch(marcheProductProvider(id)).value;
+    final found = d != null && d['found'] == true;
+    return MarchePage(
+      title: 'Produit',
+      actions: !found
+          ? const []
+          : [
+              IconButton(
+                tooltip: 'Partager ce produit',
+                constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+                icon: const Icon(Icons.ios_share_rounded, color: kInk),
+                onPressed: () => shareText(context, '${(d['card'] as Map)['title']} sur Boutik-École : ${productShareLink(id)}'),
+              ),
+              if (d['is_owner'] != true)
+                IconButton(
+                  tooltip: 'Signaler cette annonce',
+                  constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+                  icon: const Icon(Icons.flag_outlined, color: kInk),
+                  onPressed: () => openForProduct(context, ref, liveProductFromDetail(d, id), '170'),
+                ),
+            ],
+      child: mAsync<Map<String, dynamic>>(ref.watch(marcheProductProvider(id)), (d) => d['found'] != true ? mNote('Ce produit n’est plus disponible.') : _ProductBody(d: d, id: id)),
+    );
+  }
 }
 
 class _ProductBody extends ConsumerStatefulWidget {
@@ -477,13 +565,21 @@ class _ProductBodyState extends ConsumerState<_ProductBody> {
     final isOwner = d['is_owner'] == true;
     final qs = _list(d['questions']), rs = _list(d['reviews']);
     final video = '${d['video_url'] ?? ''}';
+    final extras = ref.watch(marcheProductExtrasProvider(widget.id)).value ?? const <String, dynamic>{};
+    final showcase = extras['showcase'] == true;
+    final cert = extras['certificate'] is Map ? Map<String, dynamic>.from(extras['certificate'] as Map) : null;
+    final product = liveProductFromDetail(d, widget.id);
+    final hasSeller = d['seller'] is Map && '${d['seller_id'] ?? ''}'.isNotEmpty;
     return ListView(padding: const EdgeInsets.only(bottom: 100), children: [
       Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: AutoCarousel(urls: images, aspect: 1)),
       if (video.isNotEmpty) Padding(padding: const EdgeInsets.fromLTRB(16, 12, 16, 0), child: MarcheVideo(url: mImageUrlVideo(video))),
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('${card['title']}', style: mst(22, w: FontWeight.w800)),
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Expanded(child: Text('${card['title']}', style: mst(22, w: FontWeight.w800))),
+            if (!isOwner) FavoriteHeart(title: '${card['title']}'),
+          ]),
           const SizedBox(height: 6),
           Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
             Text(mFcfa(shown), style: mst(22, w: FontWeight.w800, c: flash != null ? kRed : kInk)),
@@ -498,8 +594,14 @@ class _ProductBodyState extends ConsumerState<_ProductBody> {
               seller: Map<String, dynamic>.from(d['seller'] as Map),
               supervisor: '${d['supervisor'] ?? ''}',
               validated: d['validated'] == true,
-              onTap: '${d['seller_id'] ?? ''}'.isEmpty ? null : () => gOpenProfile(context, '${d['seller_id']}'),
+              onTap: '${d['seller_id'] ?? ''}'.isEmpty ? null : () => openSellerProfile(context, ref, '${d['seller_id']}'),
             ),
+          if (hasSeller)
+            Row(children: [
+              Expanded(child: mButton('Réputation', () => openForProduct(context, ref, product, '38', seller: true), dark: false)),
+              const SizedBox(width: 10),
+              Expanded(child: mButton('Confiance', () => openForProduct(context, ref, product, '172', seller: true), dark: false)),
+            ]),
         ]),
       ),
       if (variants.isNotEmpty) ...[
@@ -516,10 +618,11 @@ class _ProductBodyState extends ConsumerState<_ProductBody> {
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
         child: Column(children: [
           Row(children: [
-            Expanded(flex: 3, child: mButton(stock <= 0 ? 'Épuisé' : 'Ajouter au panier', stock <= 0 || isOwner ? null : () => _addToCart(card, shown, variants))),
+            Expanded(flex: 3, child: mButton(stock <= 0 ? 'Épuisé' : (showcase ? 'Produit d’exemple' : 'Ajouter au panier'), stock <= 0 || isOwner || showcase ? null : () => _addToCart(card, shown, variants, stock))),
             const SizedBox(width: 10),
-            Expanded(flex: 2, child: mButton('Contacter', isOwner ? null : () => contactSeller(ref, context, '${card['title']}'), dark: false)),
+            Expanded(flex: 2, child: mButton('Contacter', isOwner ? null : () => openForProduct(context, ref, product, '39'), dark: false)),
           ]),
+          if (showcase) Padding(padding: const EdgeInsets.only(top: 8), child: Text('Produit d’exemple : il illustre le rendu d’une annonce et n’est pas disponible à la vente.', style: mst(12.5, c: kGrey))),
           if (offerTypeOf(card) != 'product') ...[
             const SizedBox(height: 10),
             mButton('Demander un devis', isOwner ? null : () => _askQuote(card), dark: false, icon: Icons.request_quote_outlined, width: double.infinity),
@@ -551,6 +654,12 @@ class _ProductBodyState extends ConsumerState<_ProductBody> {
         mSectionTitle('Caractéristiques'),
         for (final e in specs.entries) Padding(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5), child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [SizedBox(width: 130, child: Text(e.key, style: mst(13, c: kGrey))), Expanded(child: Text('${e.value}', style: mst(13, w: FontWeight.w600)))])),
       ],
+      if ((d['department'] ?? '').toString().isNotEmpty || extras['recycled'] == true || cert != null) ...[
+        mSectionTitle('Origine et passeport'),
+        if ((d['department'] ?? '').toString().isNotEmpty) Padding(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5), child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [SizedBox(width: 130, child: Text('Département', style: mst(13, c: kGrey))), Expanded(child: Text('${d['department']}', style: mst(13, w: FontWeight.w600)))])),
+        if (extras['recycled'] == true) Padding(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5), child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [SizedBox(width: 130, child: Text('Matériaux', style: mst(13, c: kGrey))), Expanded(child: Text(extras['recycled_kg'] == null ? 'Recyclés' : 'Recyclés (${extras['recycled_kg']} kg)', style: mst(13, w: FontWeight.w600)))])),
+        if (cert != null) Padding(padding: const EdgeInsets.fromLTRB(16, 8, 16, 0), child: mButton('Passeport du produit · ${cert['code']}', () => openForProduct(context, ref, product, '211'), dark: false, icon: Icons.verified_outlined, width: double.infinity)),
+      ],
       mSectionTitle('Questions et réponses (${qs.length})'),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -576,9 +685,9 @@ class _ProductBodyState extends ConsumerState<_ProductBody> {
             if ('${q['answer'] ?? ''}'.isNotEmpty) Text('R : ${q['answer']}', style: mst(13, c: kGrey)) else if (isOwner) TextButton(onPressed: () => _answer('${q['id']}'), child: const Text('Répondre')) else Text('En attente de réponse', style: mst(12, c: kGrey)),
           ]),
         ),
-      mSectionTitle('Avis (${rs.length})'),
-      if (rs.isEmpty) Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: Text('Aucun avis pour le moment. Seuls les acheteurs peuvent noter.', style: mst(13, c: kGrey))),
-      for (final r in rs) Padding(padding: const EdgeInsets.fromLTRB(16, 0, 16, 10), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('${'★' * mInt(r['rating'])}  ${r['author']}', style: mst(13, w: FontWeight.w700)), if ('${r['comment'] ?? ''}'.isNotEmpty) Text('${r['comment']}', style: mst(13, c: kGrey))])),
+      mSectionTitle('Avis (${mInt(card['rating_count']) > rs.length ? mInt(card['rating_count']) : rs.length})', trailing: mInt(card['rating_count']) > 0 ? TextButton(onPressed: () => openForProduct(context, ref, product, '31'), child: Text('Tous les avis', style: mst(12.5, w: FontWeight.w700, c: kViolet))) : null),
+      if (rs.isEmpty) Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: Text('Aucun avis pour le moment. Seuls les acheteurs d’une commande payée peuvent noter.', style: mst(13, c: kGrey))),
+      for (final r in rs) Padding(padding: const EdgeInsets.fromLTRB(16, 0, 16, 10), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('${'★' * mInt(r['rating'])}  ${r['author']} · ${reviewDate(r['created_at'])}', style: mst(13, w: FontWeight.w700)), if ('${r['comment'] ?? ''}'.isNotEmpty) Text('${r['comment']}', style: mst(13, c: kGrey))])),
     ]);
   }
 
@@ -589,36 +698,54 @@ class _ProductBodyState extends ConsumerState<_ProductBody> {
     if (!await requireLogin(context, ref, 'demander un devis') || !mounted) return;
     final brief = TextEditingController(), budget = TextEditingController(), deadline = TextEditingController();
     InputDecoration deco(String label, {String? hint}) => InputDecoration(labelText: label, hintText: hint, border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)));
+    String? err;
+    String? validate() {
+      if (brief.text.trim().length < 10) return 'Décrivez votre besoin en 10 caractères minimum.';
+      final raw = budget.text.trim();
+      if (raw.isEmpty) return null;
+      final b = parseFcfa(raw);
+      if (b == null) return 'Budget illisible : saisissez un montant en FCFA, par exemple 25 000.';
+      if (b > kMaxQuoteBudget) return 'Le budget ne peut pas dépasser ${mFcfa(kMaxQuoteBudget)}.';
+      return null;
+    }
+
     final ok = await showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(8))),
-      builder: (c) => Padding(
-        padding: EdgeInsets.fromLTRB(20, 20, 20, 20 + MediaQuery.of(c).viewInsets.bottom),
-        child: SingleChildScrollView(
-          child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('Demander un devis', style: mst(18, w: FontWeight.w800)),
-            const SizedBox(height: 4),
-            Text('${card['title']}', style: mst(13, c: kGrey)),
-            const SizedBox(height: 14),
-            TextField(controller: brief, maxLines: 4, decoration: deco('Votre besoin', hint: 'Décrivez ce que vous voulez, en quelques lignes')),
-            const SizedBox(height: 12),
-            TextField(controller: budget, keyboardType: TextInputType.number, decoration: deco('Budget (FCFA, facultatif)')),
-            const SizedBox(height: 12),
-            TextField(controller: deadline, decoration: deco('Échéance souhaitée (facultatif)', hint: 'Ex. fin du mois')),
-            const SizedBox(height: 16),
-            Row(children: [
-              Expanded(child: mButton('Annuler', () => Navigator.pop(c, false), dark: false)),
-              const SizedBox(width: 12),
-              Expanded(child: mButton('Envoyer', () => Navigator.pop(c, true))),
+      builder: (c) => StatefulBuilder(
+        builder: (c, set) => Padding(
+          padding: EdgeInsets.fromLTRB(20, 20, 20, 20 + MediaQuery.of(c).viewInsets.bottom),
+          child: SingleChildScrollView(
+            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text('Demander un devis', style: mst(18, w: FontWeight.w800)),
+              const SizedBox(height: 4),
+              Text('${card['title']}', style: mst(13, c: kGrey)),
+              const SizedBox(height: 14),
+              TextField(controller: brief, maxLines: 4, decoration: deco('Votre besoin', hint: 'Décrivez ce que vous voulez, en quelques lignes')),
+              const SizedBox(height: 12),
+              TextField(controller: budget, keyboardType: TextInputType.number, decoration: deco('Budget (FCFA, facultatif)')),
+              const SizedBox(height: 12),
+              TextField(controller: deadline, decoration: deco('Échéance souhaitée (facultatif)', hint: 'Ex. fin du mois')),
+              if (err != null) Padding(padding: const EdgeInsets.only(top: 12), child: Text(err!, style: mst(12.5, w: FontWeight.w600, c: kRed))),
+              const SizedBox(height: 16),
+              Row(children: [
+                Expanded(child: mButton('Annuler', () => Navigator.pop(c, false), dark: false)),
+                const SizedBox(width: 12),
+                Expanded(child: mButton('Envoyer', () {
+                  final e = validate();
+                  if (e != null) return set(() => err = e);
+                  Navigator.pop(c, true);
+                })),
+              ]),
             ]),
-          ]),
+          ),
         ),
       ),
     );
     if (ok != true || !mounted) return;
-    final b = int.tryParse(budget.text.replaceAll(RegExp(r'[^0-9]'), ''));
+    final b = budget.text.trim().isEmpty ? null : parseFcfa(budget.text);
     final r = await marcheCall('request_quote_offer', {'p_listing': widget.id, 'p_brief': brief.text, 'p_budget': b, 'p_deadline': deadline.text});
     if (!mounted) return;
     gToast(context, r.error != null ? Backend.userMessage('${r.error}') : 'Demande envoyée. Le vendeur vous répondra avec un devis : retrouvez-le dans « Mes devis ».');
@@ -636,10 +763,17 @@ class _ProductBodyState extends ConsumerState<_ProductBody> {
     _reload();
   }
 
-  void _addToCart(Map<String, dynamic> card, int price, List<Map<String, dynamic>> variants) {
+  void _addToCart(Map<String, dynamic> card, int price, List<Map<String, dynamic>> variants, int stock) {
     final missing = [for (final v in variants) if (!_chosen.containsKey('${v['name']}')) '${v['name']}'];
     if (missing.isNotEmpty) return gToast(context, 'Choisissez : ${missing.join(', ')}');
-    ref.read(cartProvider.notifier).add(CartLine('${card['title']}', 'Boutique : ${card['shop_name'] ?? 'Boutik-École'}', price, mImageUrl(card['image'])));
+    final title = '${card['title']}';
+    final variant = [for (final v in variants) '${v['name']} : ${_chosen['${v['name']}']}'].join(' · ');
+    final inCart = ref.read(cartProvider).where((l) => l.title == title).toList();
+    if (inCart.any((l) => (l.variant ?? '') != variant)) {
+      return gToast(context, 'Ce produit est déjà dans votre panier avec une autre variante : retirez-le du panier pour en changer.');
+    }
+    if (inCart.fold<int>(0, (a, l) => a + l.qty) >= stock) return gToast(context, 'Stock insuffisant : $stock exemplaire(s) disponible(s).');
+    ref.read(cartProvider.notifier).add(CartLine(title, 'Boutique : ${card['shop_name'] ?? 'Boutik-École'}', price, mImageUrl(card['image']), variant: variant.isEmpty ? null : variant));
     gToast(context, 'Ajouté au panier');
   }
 }
@@ -650,10 +784,13 @@ class FollowedShopsScreen extends ConsumerWidget {
   const FollowedShopsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => MarchePage(
-        title: 'Boutiques suivies',
-        child: mAsync<List<Map<String, dynamic>>>(ref.watch(marcheFollowedProvider), (l) => l.isEmpty ? mNote('Vous ne suivez encore aucune boutique. Touchez « Suivre la boutique » sur une vitrine.') : ListView(padding: const EdgeInsets.only(top: 8, bottom: 90), children: [for (final s in l) _ShopRow(shop: {...s, 'products': 0, 'followers': 0})])),
-      );
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (Backend.ready && ref.watch(authProvider.select((a) => a.current == null))) return marcheLoginRequired(context, ref, title: 'Boutiques suivies', pour: 'retrouver les boutiques que vous suivez');
+    return MarchePage(
+      title: 'Boutiques suivies',
+      child: mAsync<List<Map<String, dynamic>>>(ref.watch(marcheFollowedProvider), (l) => l.isEmpty ? mNote('Vous ne suivez encore aucune boutique. Touchez « Suivre la boutique » sur une vitrine.') : ListView(padding: const EdgeInsets.only(top: 8, bottom: 90), children: [for (final s in l) _ShopRow(shop: s)])),
+    );
+  }
 }
 
 // ------------------------------------------------------------------ panier par boutique
@@ -677,7 +814,7 @@ class _CartByShopScreenState extends ConsumerState<CartByShopScreen> {
 
   Future<void> _check() async {
     final lines = ref.read(cartProvider);
-    final r = await marcheCall('promo_preview', {'p_code': _code.text, 'p_items': [for (final l in lines) {'title': l.title, 'qty': l.qty}]});
+    final r = await marcheCall('promo_preview', {'p_code': _code.text, 'p_items': Backend.orderItems(lines)});
     if (!mounted) return;
     if (r.error != null) return gToast(context, Backend.userMessage('${r.error}'));
     final m = Map<String, dynamic>.from(r.data as Map);
@@ -688,9 +825,13 @@ class _CartByShopScreenState extends ConsumerState<CartByShopScreen> {
   @override
   Widget build(BuildContext context) {
     final lines = ref.watch(cartProvider);
+    ref.listen(cartProvider, (_, _) {
+      if (_preview != null && _code.text.isNotEmpty) _check();
+    });
     final groups = <String, List<CartLine>>{};
     for (final l in lines) {
-      final shop = l.department.startsWith('Boutique : ') ? l.department.substring(11) : 'Boutik-École';
+      final seller = productByTitle(l.title).seller.trim();
+      final shop = l.department.startsWith('Boutique : ') ? l.department.substring(11) : (seller.isNotEmpty ? seller : 'Boutik-École');
       (groups[shop] ??= []).add(l);
     }
     final sub = lines.fold<int>(0, (a, l) => a + l.price * l.qty);
@@ -702,7 +843,7 @@ class _CartByShopScreenState extends ConsumerState<CartByShopScreen> {
       child: lines.isEmpty
           ? mNote('Votre panier est vide.')
           : ListView(padding: const EdgeInsets.fromLTRB(16, 4, 16, 100), children: [
-              Text('Chaque boutique prépare sa propre commande : vous suivez et pouvez noter chaque vendeur séparément. Un seul paiement couvre le tout.', style: mst(12.5, c: kGrey).copyWith(height: 1.5)),
+              Text('Vos articles sont regroupés par vendeur. Une seule commande et un seul paiement couvrent le tout ; chaque vendeur prépare ses articles.', style: mst(12.5, c: kGrey).copyWith(height: 1.5)),
               const SizedBox(height: 12),
               for (final e in groups.entries)
                 Container(
@@ -710,9 +851,23 @@ class _CartByShopScreenState extends ConsumerState<CartByShopScreen> {
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18), border: Border.all(color: kLine)),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text('Commande ${e.key}', style: mst(14.5, w: FontWeight.w800)),
+                    Text(e.key, style: mst(14.5, w: FontWeight.w800)),
                     const SizedBox(height: 6),
-                    for (final l in e.value) Padding(padding: const EdgeInsets.symmetric(vertical: 3), child: Row(children: [Expanded(child: Text('${l.qty} × ${l.title}', style: mst(13))), Text(mFcfa(l.price * l.qty), style: mst(13, w: FontWeight.w600))])),
+                    for (final l in e.value)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 3),
+                        child: Row(children: [
+                          Expanded(child: Text(l.title, style: mst(13))),
+                          IconButton(visualDensity: VisualDensity.compact, tooltip: 'Moins', icon: const Icon(Icons.remove_circle_outline, size: 20), onPressed: () => ref.read(cartProvider.notifier).setQty(lines.indexOf(l), l.qty - 1)),
+                          Text('${l.qty}', style: mst(13, w: FontWeight.w700)),
+                          IconButton(visualDensity: VisualDensity.compact, tooltip: 'Plus', icon: const Icon(Icons.add_circle_outline, size: 20), onPressed: l.qty >= maxCartQty ? null : () => ref.read(cartProvider.notifier).setQty(lines.indexOf(l), l.qty + 1)),
+                          SizedBox(width: 78, child: Text(mFcfa(l.price * l.qty), textAlign: TextAlign.right, style: mst(13, w: FontWeight.w600))),
+                          IconButton(visualDensity: VisualDensity.compact, tooltip: 'Retirer', icon: const Icon(Icons.delete_outline, size: 20), onPressed: () {
+                            ref.read(cartProvider.notifier).remove(lines.indexOf(l));
+                            gToast(context, '« ${l.title} » retiré du panier');
+                          }),
+                        ]),
+                      ),
                     const Divider(),
                     Row(children: [Expanded(child: Text('Sous-total', style: mst(12.5, c: kGrey))), Text(mFcfa(e.value.fold<int>(0, (a, l) => a + l.price * l.qty)), style: mst(13, w: FontWeight.w800))]),
                   ]),

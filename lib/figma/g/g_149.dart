@@ -1,6 +1,7 @@
 // GÉNÉRÉ par tool/figma_export/convert.py — écran 149 (nœud Figma 40:862). Ne pas éditer à la main.
 // ignore_for_file: camel_case_types, prefer_is_empty, prefer_interpolation_to_compose_strings, unnecessary_string_interpolations, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
@@ -58,22 +59,22 @@ class G_149 extends ConsumerWidget {
       gP(40, 236, 47, 17, gText('English', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
       gP(40, 258, 107, 14, gText('English (Cameroon)', 11.5, Color(0xFF57545F)), show: demoContent),
       gP(336.75, 249.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg'), show: demoContent),
-      gP(24, 304, 94, 19, gText('Accessibilité', 15, Color(0xFF111015), weight: 700), show: demoContent),
+      gP(24, 304, 94, 19, gText('Accessibilité', 15, Color(0xFF111015), weight: 700)),
       gP(40, 354, 88, 17, gText('Texte agrandi', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 376, 159, 14, gText('Augmenter la taille des textes', 11.5, Color(0xFF57545F))),
-      gP(308, 363, 42, 24, GToggle(on: ref.watch(accessPrefs149Provider)['a149_large_text'] ?? false, onChanged: (v) => ref.read(accessPrefs149Provider.notifier).set('a149_large_text', v), onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18)),
+      gP(308, 363, 42, 24, GToggle(on: accessOn(ref, 'large_text'), onChanged: (v) => accessSet(ref, 'large_text', v), onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18)),
       gP(40, 408, 314, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 420, 125, 17, gText('Contraste renforcé', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 442, 107, 14, gText('Améliorer la lisibilité', 11.5, Color(0xFF57545F))),
-      gP(308, 429, 42, 24, GToggle(on: ref.watch(accessPrefs149Provider)['a149_contrast'] ?? true, onChanged: (v) => ref.read(accessPrefs149Provider.notifier).set('a149_contrast', v), onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
+      gP(308, 429, 42, 24, GToggle(on: accessOn(ref, 'contrast'), onChanged: (v) => accessSet(ref, 'contrast', v), onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
       gP(40, 474, 314, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 486, 145, 17, gText('Réduire les animations', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 508, 129, 14, gText('Limiter les mouvements', 11.5, Color(0xFF57545F))),
-      gP(308, 495, 42, 24, GToggle(on: ref.watch(accessPrefs149Provider)['a149_reduce_motion'] ?? false, onChanged: (v) => ref.read(accessPrefs149Provider.notifier).set('a149_reduce_motion', v), onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18)),
+      gP(308, 495, 42, 24, GToggle(on: accessOn(ref, 'reduce_motion'), onChanged: (v) => accessSet(ref, 'reduce_motion', v), onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18)),
       gP(40, 540, 314, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 552, 97, 17, gText('Lecture vocale', 13.5, Color(0xFF111015), weight: 600)),
-      gP(40, 574, 150, 14, gText('Compatible lecteur d’écran', 11.5, Color(0xFF57545F))),
-      gP(308, 561, 42, 24, GToggle(on: ref.watch(accessPrefs149Provider)['a149_screen_reader'] ?? false, onChanged: (v) => ref.read(accessPrefs149Provider.notifier).set('a149_screen_reader', v), onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18)),
+      gP(40, 574, 250, 14, gText(kIsWeb ? 'Lit à voix haute les messages de l’application' : 'Disponible dans le navigateur uniquement', 11.5, Color(0xFF57545F))),
+      gP(308, 561, 42, 24, GToggle(on: accessOn(ref, 'screen_reader'), onChanged: (v) => kIsWeb ? accessSet(ref, 'screen_reader', v) : gToast(context, 'La lecture vocale n’est disponible que dans le navigateur. Votre lecteur d’écran (TalkBack, VoiceOver) fonctionne déjà avec l’application.'), onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18)),
       gP(24, 620, 100, 19, gText('Taille du texte', 15, Color(0xFF111015), weight: 700)),
       Positioned.fill(child: GChoiceGroup(key: ValueKey('size${ref.watch(textSizeProvider)}'), onChanged: (i) => ref.read(textSizeProvider.notifier).set(i), chips: [GChip(24, 658, 63, 34, 'Petit', 12.5, 500), GChip(95, 658, 70.4, 34, 'Normal', 12.5, 600), GChip(173.4, 658, 63, 34, 'Grand', 12.5, 500)], selected: ref.watch(textSizeProvider), selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),

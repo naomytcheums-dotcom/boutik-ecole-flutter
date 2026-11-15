@@ -269,13 +269,20 @@ Future<void> syncNativePushForCurrentUser() async {
 
     await messaging.setAutoInitEnabled(true);
     await messaging.register();
+    // Le jeton retiré à la déconnexion n'est pas forcément réémis par Firebase : on le réinscrit explicitement (opération idempotente).
+    final token = await messaging.getToken();
+    if (token != null && token.isNotEmpty && Backend.currentUserId == uid) {
+      await prefs.setString('boutik_fcm_token_$uid', token);
+      await _registerFid(uid, token);
+    }
   } catch (_) {
     // Une erreur de synchronisation ne bloque jamais la connexion.
   }
 }
 
-/// La déconnexion globale nettoie les appareils via unregister_all_devices.
-/// Cette fonction est conservée pour compatibilité avec les anciens appels.
+/// Déconnexion simple : retire du serveur le jeton de cette installation (appelé tant que la session est valide), pour que les
+/// notifications du compte ne parviennent plus à cet appareil. Le consentement local est conservé : la reconnexion du même compte
+/// réinscrit l'appareil (syncNativePushForCurrentUser).
 Future<void> unregisterNativePushForCurrentUser() async {
   if (!_supported || !_initialized || !Backend.ready) return;
 
@@ -283,13 +290,12 @@ Future<void> unregisterNativePushForCurrentUser() async {
   if (uid == null) return;
 
   try {
-    // Retire uniquement l'association de cette installation.
-    // Ne désactive pas la préférence push globale du compte.
     final prefs = await SharedPreferences.getInstance();
-    if (prefs.getBool(_consentKey(uid)) != true) return;
-
-    // Le FID est obtenu par l'événement onRegistered.
-    // Aucune API getToken() dépréciée n'est utilisée ici.
+    var token = prefs.getString('boutik_fcm_token_$uid');
+    if (token == null || token.isEmpty) token = await FirebaseMessaging.instance.getToken();
+    if (token == null || token.isEmpty) return;
+    final r = await Backend.rpc('unregister_device', {'p_token': token});
+    if (r.error == null) await prefs.remove('boutik_fcm_token_$uid');
   } catch (_) {
     // La déconnexion ne doit jamais être bloquée.
   }

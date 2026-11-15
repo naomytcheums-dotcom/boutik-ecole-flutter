@@ -7,9 +7,17 @@ import '../../features/screens.dart';
 import '../../features/design_lab/design_lab_screen.dart';
 import '../../figma/gsound.dart' show GAnim;
 import '../../figma/live/access.dart';
+import '../../figma/live/backend.dart' show Backend;
+import '../../figma/live/produit_fiche.dart' show listingIdByTitle;
+import '../../figma/live/start_gate.dart' show SignedInRedirect;
 import '../../figma/g/g_280.dart';
 import '../../figma/live/espace.dart';
+import '../../figma/live/payment_methods_page.dart' show PaymentMethodsPage;
+import '../../figma/live/personal_info.dart';
 import '../../figma/live/shared_cv.dart';
+import '../../figma/live/notifs.dart' show NotificationLauncher;
+import '../../figma/live/support_screens.dart';
+import '../../figma/live/support_staff.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_theme.dart';
 import '../widgets/app_card.dart';
@@ -60,24 +68,31 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     // Outils internes : administrateur, ou mode debug (revue de maquette) ; jamais publics.
     GoRoute(path: '/catalogue', builder: (_, _) => const RouteGuard(name: '/catalogue', roles: {'admin'}, debugOpen: true, child: ScreenCatalogue())),
     GoRoute(path: '/espace', builder: (_, _) => const EspaceScreen()),
+    GoRoute(path: '/parametres/informations', builder: (_, _) => const PersonalInfoPage()),
+    GoRoute(path: '/parametres/paiement', builder: (_, _) => const PaymentMethodsPage()),
     GoRoute(path: '/offres', builder: (_, _) => const PlansScreen()),
     GoRoute(path: '/campagnes', builder: (_, _) => const AdsScreen()),
     GoRoute(path: '/campagnes/validation', builder: (_, _) => const RouteGuard(name: '/campagnes/validation', roles: {'admin', 'direction'}, child: AdReviewScreen())),
     GoRoute(path: '/communaute', builder: (_, _) => const CommunityScreen()),
+    GoRoute(path: '/communaute/:id', builder: (_, s) => CommunityScreen(id: s.pathParameters['id'] ?? '')),
     GoRoute(path: '/marche', builder: (_, _) => const MarketplaceScreen()),
-    GoRoute(path: '/marche/livraison', builder: (_, state) => LivraisonTarifsScreen(platform: state.uri.queryParameters['plateforme'] == '1')),
-    GoRoute(path: '/marche/promotions', builder: (_, _) => const PromotionsAdminScreen()),
+    GoRoute(path: '/marche/livraison', builder: (_, state) {
+      final platform = state.uri.queryParameters['plateforme'] == '1';
+      final screen = LivraisonTarifsScreen(platform: platform);
+      return platform ? RouteGuard(name: '/marche/livraison?plateforme=1', roles: const {'admin'}, child: screen) : LoginGuard(child: RouteGuard(name: '/marche/livraison', roles: const {'student', 'dept', 'admin'}, child: screen));
+    }),
+    GoRoute(path: '/marche/promotions', builder: (_, _) => const RouteGuard(name: '/marche/promotions', roles: {'admin'}, child: PromotionsAdminScreen())),
     GoRoute(path: '/concours', builder: (_, _) => const ContestAnnouncementsScreen()),
     GoRoute(path: '/litiges', builder: (_, _) => const DisputesScreen()),
-    GoRoute(path: '/entreprise/profil', builder: (_, _) => const LoginGuard(child: CompanyProfileScreen())),
+    GoRoute(path: '/entreprise/profil', builder: (_, _) => const CompanyGuard(useContext: true, child: CompanyProfileScreen())),
     GoRoute(path: '/admin/entreprises', builder: (_, _) => const RouteGuard(name: '/admin/entreprises', roles: {'admin'}, child: CompanyReviewScreen())),
     GoRoute(path: '/admin/forfaits', builder: (_, _) => const RouteGuard(name: '/admin/forfaits', roles: {'admin'}, child: CompanyPlansAdminScreen())),
     GoRoute(path: '/admin/sequestre', builder: (_, _) => const RouteGuard(name: '/admin/sequestre', roles: {'admin', 'finance'}, child: MoneyAdminScreen())),
     GoRoute(path: '/etudiant/:id', builder: (_, s) => StudentProfileScreen(userId: s.pathParameters['id'] ?? '')),
-    GoRoute(path: '/entreprise/equipe', builder: (_, _) => const LoginGuard(child: CompanyMembersScreen())),
+    GoRoute(path: '/entreprise/equipe', builder: (_, _) => const CompanyGuard(useContext: true, child: CompanyMembersScreen())),
     GoRoute(path: '/mes-entreprises', builder: (_, _) => const LoginGuard(child: MyCompaniesScreen())),
-    GoRoute(path: '/entreprise/espace/:owner', builder: (_, s) => LoginGuard(child: CompanySpaceScreen(owner: s.pathParameters['owner'] ?? ''))),
-    GoRoute(path: '/comptes-test', builder: (_, _) => const TestAccountsScreen()),
+    GoRoute(path: '/entreprise/espace/:owner', builder: (_, s) => CompanyGuard(owner: s.pathParameters['owner'] ?? '', child: CompanySpaceScreen(owner: s.pathParameters['owner'] ?? ''))),
+    GoRoute(path: '/comptes-test', builder: (_, _) => const RouteGuard(name: '/comptes-test', roles: {'admin'}, child: TestAccountsScreen())),
     GoRoute(path: '/equipe/:key', builder: (_, s) => StaffPortalScreen(portalKey: s.pathParameters['key'] ?? '')),
     GoRoute(path: '/concours/publier', builder: (_, _) => const AnnouncementEditScreen()),
     GoRoute(path: '/concours/mes', builder: (_, _) => const MyAnnouncementsScreen()),
@@ -94,8 +109,8 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/innovations/competences', builder: (_, _) => const SkillsScreen()),
     GoRoute(path: '/innovations/victoires', builder: (_, _) => const VictoriesScreen()),
     GoRoute(path: '/mentors', builder: (_, _) => const MentorsScreen()),
-    GoRoute(path: '/mentors/profil', builder: (_, _) => const MentorProfileScreen()),
-    GoRoute(path: '/mentors/demandes', builder: (_, _) => const MentorRequestsScreen()),
+    GoRoute(path: '/mentors/profil', builder: (_, _) => const LoginGuard(child: MentorProfileScreen())),
+    GoRoute(path: '/mentors/demandes', builder: (_, _) => const LoginGuard(child: MentorRequestsScreen())),
     GoRoute(path: '/mentors/:id', builder: (_, state) => MentorDetailScreen(id: state.pathParameters['id'] ?? '')),
     GoRoute(path: '/communautes', builder: (_, _) => const CommunityExploreScreen()),
     GoRoute(path: '/marche/appels', builder: (_, _) => const AppelsScreen()),
@@ -106,20 +121,35 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/marche/comparer', builder: (_, _) => const CompareScreen()),
     GoRoute(path: '/marche/suivies', builder: (_, _) => const FollowedShopsScreen()),
     GoRoute(path: '/marche/panier', builder: (_, _) => const CartByShopScreen()),
-    GoRoute(path: '/marche/ma-boutique', builder: (_, _) => const ShopEditorScreen()),
-    GoRoute(path: '/marche/vendeur', builder: (_, _) => const SellerHubScreen()),
+    GoRoute(path: '/marche/ma-boutique', builder: (_, _) => const LoginGuard(child: RouteGuard(name: '/marche/ma-boutique', roles: {'student', 'dept', 'admin'}, child: ShopEditorScreen()))),
+    GoRoute(path: '/marche/vendeur', builder: (_, _) => const LoginGuard(child: RouteGuard(name: '/marche/vendeur', roles: {'student', 'dept', 'admin'}, child: SellerHubScreen()))),
     GoRoute(path: '/marche/moderation', builder: (_, _) => const RouteGuard(name: '/marche/moderation', roles: {'admin', 'dept', 'support'}, child: ModerationScreen())),
     GoRoute(path: '/paiement', builder: (_, _) => const PaymentChatScreen()),
     GoRoute(path: '/paiements', builder: (_, _) => const MyPaymentsScreen()),
+    GoRoute(path: '/aide/contact', builder: (_, _) => const LoginGuard(child: SupportContactScreen())),
+    GoRoute(path: '/aide/demandes', builder: (_, _) => const LoginGuard(child: MyTicketsScreen())),
+    GoRoute(path: '/support/boite', builder: (_, _) => const RouteGuard(name: '/support/boite', roles: {'admin', 'support'}, child: SupportInboxScreen())),
+    GoRoute(path: '/notif', builder: (_, state) => NotificationLauncher(id: state.uri.queryParameters['n'] ?? '')),
     GoRoute(path: '/integrations/api', builder: (_, _) => const RouteGuard(name: '/integrations/api', roles: {'admin'}, child: G_280())),
     GoRoute(path: '/design', builder: (_, _) => const RouteGuard(name: '/design', roles: {'admin'}, debugOpen: true, child: DesignLabScreen())),
     GoRoute(path: '/cv/:token', builder: (_, state) => SharedCvScreen(token: state.pathParameters['token'] ?? '')),
     GoRoute(
       path: '/s/:id',
+      redirect: (context, state) async {
+        // Ancien lien de partage de profil (« /s/10?user=<id> ») : il ouvre le profil de cette personne, pas celui du visiteur.
+        final shared = (state.uri.queryParameters['user'] ?? '').trim();
+        if (state.pathParameters['id'] == '10' && shared.isNotEmpty) return '/etudiant/${Uri.encodeComponent(shared)}';
+        // Lien partagé d'un produit (« /s/05?product=Titre ») : le routeur ouvre la fiche réelle de l'annonce.
+        final product = (state.uri.queryParameters['product'] ?? '').trim();
+        if (product.isEmpty || !Backend.ready || !const {'05', '32', '33', '34', '35'}.contains(state.pathParameters['id'])) return null;
+        final id = await listingIdByTitle(product);
+        return id == null ? null : '/marche/produit/$id';
+      },
       pageBuilder: (context, state) {
         final entry = screenById(state.pathParameters['id']);
         final sid = entry?.id ?? state.pathParameters['id'] ?? '?';
-        final child = entry == null ? MissingScreen(id: sid) : AccessGuard(id: sid, child: entry.builder(context));
+        final guarded = entry == null ? MissingScreen(id: sid) : AccessGuard(id: sid, child: entry.builder(context));
+        final child = (sid == '11' || sid == '12') ? SignedInRedirect(child: guarded) : guarded;
         // S1 « Démarrage animé » : écran de lancement, puis passage automatique à l'accueil (01).
         final page = sid == 'S1' ? SplashAdvance(child: child) : child;
         return CustomTransitionPage<void>(

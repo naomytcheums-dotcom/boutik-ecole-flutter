@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+const _client = Account(name: 'Cli Ent', phone: '690000000', email: 'client@t.cm', password: 'Boutik2026', role: 0);
+
 Account _by(String staff) => seedAccounts.firstWhere((a) => a.staff == staff);
 
 Future<ProviderContainer> _monter(WidgetTester t, Widget child, {Account? compte}) async {
@@ -96,5 +98,23 @@ void main() {
     for (final id in ['58', '90', '110', '126', '128', '139', '145', '213']) {
       expect(canOpen(admin, id), isTrue, reason: 'écran $id');
     }
+    // formulaire de projet : le serveur refuse tout autre rôle que talent, département et administrateur
+    const client = _client;
+    expect(canOpen(client, '205'), isFalse);
+    expect(canOpen(company, '205'), isFalse);
+    expect(canOpen(student, '205'), isTrue);
+    expect(canOpen(dept, '205'), isTrue);
+    expect(canOpen(admin, '205'), isTrue);
+    // missions du prestataire : département et administrateur seulement
+    expect(canOpen(client, '199'), isFalse);
+    expect(canOpen(dept, '199'), isTrue);
+  });
+
+  test('« Mes rubriques » d’un Client ne propose ni les bornes ni les outils de prestataire', () {
+    const client = _client;
+    for (final id in ['206', '207', '208', '209', '210', '276', '197', '233']) {
+      expect(listedInEspace(client, id), isFalse, reason: 'écran $id');
+    }
+    expect(listedInEspace(client, '03'), isTrue);
   });
 }

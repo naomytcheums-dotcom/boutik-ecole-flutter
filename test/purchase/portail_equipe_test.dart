@@ -1,3 +1,4 @@
+import 'package:boutik_ecole/figma/live/auth.dart';
 import 'package:boutik_ecole/figma/live/staff_portal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,5 +39,20 @@ void main() {
     await _pump(t, const StaffPortalScreen(portalKey: 'devine'));
     expect(find.text('Espace équipe'), findsNothing);
     expect(find.byType(TextField), findsNothing);
+  });
+
+  testWidgets('compte connecté hors équipe : page neutre, sa session n’est pas touchée', (t) async {
+    t.view.physicalSize = const Size(1200, 800);
+    t.view.devicePixelRatio = 1;
+    addTearDown(t.view.reset);
+    final c = ProviderContainer();
+    addTearDown(c.dispose);
+    const client = Account(name: 'Cli Ent', phone: '690000000', email: 'client@t.cm', password: 'Boutik2026', role: 0);
+    c.read(authProvider.notifier).login(client);
+    await t.pumpWidget(UncontrolledProviderScope(container: c, child: const MaterialApp(home: StaffPortalScreen(portalKey: staffPortalKey))));
+    await t.pumpAndSettle();
+    expect(find.text('Espace équipe'), findsNothing);
+    expect(find.byType(TextField), findsNothing);
+    expect(c.read(authProvider).current, isNotNull);
   });
 }

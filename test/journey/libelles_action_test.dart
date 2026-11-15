@@ -33,6 +33,7 @@ void main() {
     '41>Enregistrer cette adresse dans mon carnet', '50>Nouveau', '58>Nouveau produit', '59>Nouveau service', '60>Modifier',
     '72>Ajouter à mon profil', '84>Nouvelle campagne', '249>Créer', '250>Nouvelle publication', '219>Nouveau duel',
     '195>Ajouter une preuve', '198>Nouveau', 'P4>Nouvelle publication', '43>Payer par messagerie',
+    '08>Payer par messagerie (paiement manuel, vérifié par l’équipe)', // lien réel hors démonstration (if (!demoContent)) : absent de la maquette de test
   };
   final rows = <String>['ecran;libelle;x;y;effet'];
   var actifs = 0, inertes = 0;

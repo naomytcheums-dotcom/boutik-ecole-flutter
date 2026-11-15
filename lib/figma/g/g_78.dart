@@ -20,6 +20,7 @@ import '../live/admin.dart';
 import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
+import '../live/l9_common.dart' show requireProjectOwner;
 import '../live/missions.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
@@ -111,7 +112,7 @@ class G_78 extends ConsumerWidget {
       if (demoContent) gTap(24, 590, 342, 62, () { final l = ref.read(visibleProjectsProvider); if (l.length > 3) { ref.read(selectedProjectProvider.notifier).set(l[3].title); gOpen(context, '79'); } }),
       if (demoContent) gTap(295.5, 346, 61, 32, () { gOpen(context, '87'); }), // audit 01/11 : « Voir tout » n'avait aucun effet
       if (!demoContent) gP(24, 214, 342, 482, const ProjectCards(width: 342, height: 482)),
-      if (!demoContent) gP(24, 162, 342, 44, TpButton('Soumettre un projet ou une innovation', () async { if (!await requireLogin(context, ref, 'soumettre un projet') || !context.mounted) return; Navigator.of(context).push(MaterialPageRoute(builder: (_) => const MyProjectsPage())); }, compact: true, icon: Icons.add_rounded)),
+      if (!demoContent) gP(24, 162, 342, 44, TpButton('Soumettre un projet ou une innovation', () async { if (!await requireProjectOwner(context, ref, 'soumettre un projet') || !context.mounted) return; Navigator.of(context).push(MaterialPageRoute(builder: (_) => const MyProjectsPage())); }, compact: true, icon: Icons.add_rounded)),
     ]);
   }
 }

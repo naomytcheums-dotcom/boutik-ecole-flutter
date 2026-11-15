@@ -108,6 +108,7 @@ class EventsNotifier extends Notifier<List<AppEvent>?> {
   @override
   List<AppEvent>? build() {
     if (!Backend.ready) return null;
+    ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
     final kind = ref.watch(eventKindProvider);
     final start = gridStart(ref.watch(eventMonthProvider));
     Future.microtask(() => _load(start, kind));
@@ -126,12 +127,37 @@ class EventsNotifier extends Notifier<List<AppEvent>?> {
 
 final eventsProvider = NotifierProvider<EventsNotifier, List<AppEvent>?>(EventsNotifier.new);
 
+/// Événements à venir sans limite de grille de calendrier (écrans 101 et 104) : `null` pendant la lecture, `error` si elle échoue.
+class UpcomingEventsNotifier extends Notifier<List<AppEvent>?> {
+  bool error = false;
+
+  @override
+  List<AppEvent>? build() {
+    if (!Backend.ready) return null;
+    ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
+    final kind = ref.watch(eventKindProvider);
+    Future.microtask(() => _load(kind));
+    return null;
+  }
+
+  Future<void> _load(int kind) async {
+    final r = await Backend.rpc('events_upcoming', {'p_limit': 50, 'p_kind': _types[kind.clamp(0, 3)]});
+    if (!ref.mounted) return;
+    error = r.error != null || r.data is! List;
+    state = error ? const [] : [for (final x in r.data as List) AppEvent.fromRow(x as Map)];
+  }
+
+  Future<void> refresh() => _load(ref.read(eventKindProvider));
+}
+
+final upcomingEventsProvider = NotifierProvider<UpcomingEventsNotifier, List<AppEvent>?>(UpcomingEventsNotifier.new);
+
 Future<void> toggleRegistration(BuildContext context, WidgetRef ref, AppEvent e) async {
   if (!await requireLogin(context, ref, 'vous inscrire à un événement') || !context.mounted) return;
   final r = e.mine ? await Backend.rpc('event_unregister', {'p_event': e.id}) : await Backend.rpc('event_register', {'p_event': e.id});
   if (!context.mounted) return;
   if (r.error != null) return gAlert(context, 'Inscription impossible', Backend.userMessage(r.error!));
-  await ref.read(eventsProvider.notifier).refresh();
+  await Future.wait([ref.read(eventsProvider.notifier).refresh(), ref.read(upcomingEventsProvider.notifier).refresh()]);
   if (context.mounted) gToast(context, e.mine ? 'Inscription annulée' : 'Vous êtes inscrit(e) : ${e.title}');
 }
 
@@ -271,7 +297,8 @@ class EventsList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final all = ref.watch(eventsProvider);
+    final all = ref.watch(calendar ? eventsProvider : upcomingEventsProvider);
+    final failed = calendar ? ref.read(eventsProvider.notifier).error : ref.read(upcomingEventsProvider.notifier).error;
     final sel = ref.watch(eventDayProvider);
     Widget note(String t) => Container(
           width: width,
@@ -281,7 +308,7 @@ class EventsList extends ConsumerWidget {
           child: Text(t, textAlign: TextAlign.center, style: _st(13, c: _grey).copyWith(height: 1.5)),
         );
     if (all == null) return note('Chargement des événements…');
-    if (ref.read(eventsProvider.notifier).error) return note('Les événements ne peuvent pas être chargés pour le moment.');
+    if (failed) return note('Les événements ne peuvent pas être chargés pour le moment.');
     final month = ref.watch(eventMonthProvider);
     final date = ref.watch(eventDateProvider);
     final now = ref.watch(nowProvider);
@@ -429,6 +456,7 @@ Future<void> eventDetail(BuildContext context, WidgetRef ref, AppEvent e) async 
         Text(e.when, style: _st(13.5)),
         const SizedBox(height: 6),
         Text(e.price == 0 ? 'Entrée gratuite' : 'Tarif : ${fcfa(e.price)}', style: _st(13)),
+        if (e.price > 0) Padding(padding: const EdgeInsets.only(top: 4), child: Text('Le règlement du tarif n’est pas encore pris en charge par l’application : l’inscription réserve votre place seulement.', style: _st(12, c: _grey))),
         if (e.left != null) Text(e.full ? 'Complet' : '${e.left} place${e.left == 1 ? '' : 's'} restante${e.left == 1 ? '' : 's'}', style: _st(13)),
         if (soon) Padding(padding: const EdgeInsets.only(top: 8), child: Text('Bientôt : cet événement a lieu dans moins de 7 jours.', style: _st(12, c: const Color(0xFF8F5400)))),
       ]),

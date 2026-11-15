@@ -19,7 +19,7 @@ class _Docs extends DocsNotifier {
   List<UserDoc>? build() => v;
 }
 
-UserDoc _d(String kind, String name) => UserDoc(id: kind, kind: kind, name: name, path: 'p/$kind', size: 10, status: 'pending', note: '', createdAt: DateTime(2026, 11, 1));
+UserDoc _d(String kind, String name, {String status = 'pending'}) => UserDoc(id: kind, kind: kind, name: name, path: 'p/$kind', size: 10, status: status, note: '', createdAt: DateTime(2026, 11, 1));
 
 void main() {
   setUpAll(loadAppFonts);
@@ -44,16 +44,25 @@ void main() {
     }
   }
 
-  test('pourcentage calculé sur les pièces', () {
-    final items = dossierItems([_d('cv', 'cv.pdf'), _d('student_card', 'carte.jpg')], demoAccount);
+  test('pourcentage calculé sur les pièces vérifiées, selon le rôle', () {
+    final student = demoAccount;
+    final verified = [_d('cv', 'cv.pdf', status: 'verified'), _d('student_card', 'carte.jpg', status: 'verified')];
+    final items = dossierItems(verified, student);
     expect(items.length, 6);
-    expect(dossierPercent(items), greaterThanOrEqualTo(33));
+    expect(dossierPercent(items), 33);
     expect(dossierPercent(const []), 0);
+    // une pièce en attente n'est jamais comptée comme faite
+    expect(dossierPercent(dossierItems([_d('cv', 'cv.pdf'), _d('student_card', 'carte.jpg')], student)), 0);
+    // un Client n'a ni carte d'étudiant, ni certificat de scolarité, ni matricule
+    final client = dossierItems([_d('cv', 'cv.pdf', status: 'verified')], demoAccount.copyWith(role: 0));
+    expect(client.map((i) => i.label), ['CV', 'Diplôme ou certificat', 'Photo de profil']);
+    expect(dossierPercent(client), 33);
   });
 
   testWidgets('connecté : checklist réelle, aucun fichier de maquette', (t) async {
     await monter(t, connecte: true, overrides: [myDocsProvider.overrideWith(() => _Docs([_d('cv', 'MonCV.pdf')]))]);
-    expect(find.text('MonCV.pdf'), findsOneWidget);
+    expect(find.textContaining('MonCV.pdf'), findsOneWidget);
+    expect(find.textContaining('en attente de vérification'), findsWidgets);
     expect(find.text('CV_Mariam_Essono.pdf'), findsNothing);
     expect(find.text('Dossier complet à 78 %'), findsNothing);
   });

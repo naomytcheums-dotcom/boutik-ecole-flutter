@@ -77,7 +77,7 @@ class G_197 extends ConsumerWidget {
       gP(24, 760, 163, 54, gBox(color: Color(0x00FFFFFF), border: Color(0xFFD9D3E6), bw: 1.5, radii: [27, 27, 27, 27])),
       gP(16, 778, 179, 18, gText('Demander une correction', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
       gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27])),
-      gP(227.5, 778, 114, 18, gText('Valider et libérer', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
+      gP(203, 778, 163, 18, gText(demoContent ? 'Valider et libérer' : 'Valider la livraison', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gTap(203, 760, 163, 54, () { releaseMilestone(ref, context); }),
       gTap(24, 760, 163, 54, () { askCorrection(ref, context); }),

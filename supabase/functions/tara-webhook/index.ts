@@ -39,7 +39,7 @@ Deno.serve(async (req) => {
       return new Response("mismatch");
     }
     const up = await admin.from("payment_transactions").update({ status: "confirmed", decided_at: new Date().toISOString(), note: "Confirmé par Tara Money" })
-      .eq("id", tx.id).in("status", ["pending", "created", "failed"]).select("id");
+      .eq("id", tx.id).in("status", ["pending", "failed"]).select("id");
     if (up.data?.length) await admin.from("payment_messages").insert({ transaction_id: tx.id, sender: "system", body: "Paiement confirmé. Merci !" });
     return new Response("confirmed");
   }

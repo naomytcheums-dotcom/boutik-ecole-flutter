@@ -80,7 +80,7 @@ class G_196 extends ConsumerWidget {
       gP(24, 760, 163, 54, gBox(color: Color(0x00FFFFFF), border: Color(0xFFD9D3E6), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => missionFileUpload(context, ref)),
       gP(46.5, 778, 118, 18, gText('Ajouter un fichier', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
       gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => missionDossierDialog(context, ref)),
-      gP(256, 778, 57, 18, gText('Envoyer', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
+      gP(256, 778, 57, 18, gText(demoContent ? 'Envoyer' : 'Écrire', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
     ]);
   }

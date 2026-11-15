@@ -94,6 +94,6 @@ void main() {
     const s = 412 / 390;
     await tester.tapAt(Offset(284 * s, 839 - (844 - 787) * s));
     await tester.pumpAndSettle();
-    expect(r.state.uri.path, '/s/57');
+    expect(r.state.uri.path, '/s/03');
   });
 }

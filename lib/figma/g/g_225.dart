@@ -67,12 +67,12 @@ class G_225 extends ConsumerWidget {
       gP(208, 704, 57, 29, gBox(color: Color(0xFFF1EEFB), radii: [100, 100, 100, 100]), show: demoContent),
       gP(222, 712, 29, 13, gText(gm('1,2 kg', ''), 10.5, Color(0xFF5A3FE0), weight: 600), show: demoContent),
       gP(44, 746, 303, 28, gText('Bois de récupération, finition huile naturelle. Fabriquée par l’atelier Génie civil.', 11.5, Color(0xFF5B5963), wrap: true), show: demoContent),
-      gP(44, 788, 302, 40, gBox(color: Color(0xFF111015), radii: [100, 100, 100, 100])),
-      gP(90.5, 800, 209, 16, gText('Voir chez moi en réalité augmentée', 12.5, Color(0xFFFFFFFF), weight: 600)),
+      gP(44, 788, 302, 40, gBox(color: Color(0xFF111015), radii: [100, 100, 100, 100]), show: demoContent),
+      gP(90.5, 800, 209, 16, gText('Voir chez moi en réalité augmentée', 12.5, Color(0xFFFFFFFF), weight: 600), show: demoContent),
       gP(328.333, 89, 19.333, 14.333, gImg('assets/figma/v/9c92298f9fd6b2.svg')),
       gP(331.667, 80.667, 12.667, 9.333, gImg('assets/figma/v/bb8ad3c4792df6.svg')),
       gP(335, 80.667, 6, 16.833, gImg('assets/figma/v/5bb53be308dfb1.svg')),
-      gTap(82.5, 792, 225, 32, () { gOpen(context, '226'); }), // lien métier 225 -> 226
+      if (demoContent) gTap(82.5, 792, 225, 32, () { gOpen(context, '226'); }), // lien métier 225 -> 226
       if (!demoContent) gP(24, 125, 342, 620, const ProductNoModel(width: 342)),
     ]);
   }

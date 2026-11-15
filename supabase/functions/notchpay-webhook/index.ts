@@ -68,6 +68,17 @@ Deno.serve(async (req) => {
 
   const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
+  // Un paiement reçu sur une commande annulée doit être remboursé : la finance est prévenue.
+  const alertFinance = async (orderNumber: string, reference: string) => {
+    const { data: staff } = await admin.from("profiles").select("id").in("role", ["finance", "admin"]);
+    if (staff?.length) {
+      await admin.from("notifications").insert(staff.map((s: { id: string }) => ({
+        user_id: s.id, kind: "payment", title: "Paiement reçu sur une commande annulée",
+        body: `Commande ${orderNumber}, référence ${reference} : à rembourser.`, data: { order_number: orderNumber, reference },
+      })));
+    }
+  };
+
   // 2. Rejeu : le même contenu signé n'est traité qu'une fois (clé primaire sur l'empreinte du corps).
   const eventId = await sha256Hex(raw);
   const ins = await admin.from("payment_events").insert({ id: eventId, event_type: type, reference: ref });
@@ -97,6 +108,7 @@ Deno.serve(async (req) => {
   if (order.cancelled === true || order.cancelled_at != null) {
     console.error("paiement reçu sur une commande annulée", { order: order.number });
     await admin.from("payment_events").update({ outcome: "paid_after_cancellation" }).eq("id", eventId);
+    await alertFinance(order.number, ref);
     return reply(200, { confirmed: false, problems: ["order_cancelled"] });
   }
 
@@ -116,6 +128,11 @@ Deno.serve(async (req) => {
     await admin.from("payment_events").delete().eq("id", eventId);
     return reply(503, { error: "provider_unreachable" });
   }
+  if (problems.length === 1 && problems[0] === "not_complete") {
+    // Le fournisseur n'a pas encore passé le paiement à « terminé » : on libère l'événement pour que Notch Pay réessaie.
+    await admin.from("payment_events").delete().eq("id", eventId);
+    return reply(503, { error: "not_complete_yet" });
+  }
   if (problems.length) {
     console.error("paiement non confirmé", { order: order.number, due, amount, problems });
     await admin.from("payment_events").update({ outcome: problems.join(",") }).eq("id", eventId);
@@ -133,6 +150,7 @@ Deno.serve(async (req) => {
   if (now && !now.paid && now.cancelled_at != null) {
     console.error("paiement reçu sur une commande annulée pendant sa vérification", { order: order.number });
     await admin.from("payment_events").update({ outcome: "paid_after_cancellation" }).eq("id", eventId);
+    await alertFinance(order.number, ref);
     return reply(200, { confirmed: false, problems: ["order_cancelled"] });
   }
   await admin.from("payment_events").update({ outcome: "already_paid" }).eq("id", eventId);

@@ -67,7 +67,8 @@ void main() {
     await monter(t, const G_232(), connecte: true);
     expect(find.text('Voix en texte'), findsOneWidget);
     expect(find.textContaining('Compris ! Je lance ton brief'), findsNothing);
-    expect(find.textContaining('Parle à Kéla depuis l’écran d’écoute'), findsOneWidget);
+    expect(find.textContaining('Décris-moi ton besoin'), findsOneWidget);
+    expect(find.byType(TextField), findsOneWidget);
     expect(find.textContaining('parfum'), findsNothing);
   });
 
@@ -80,7 +81,7 @@ void main() {
 
   testWidgets('225 connecté : pas de faux modèle 3D', (t) async {
     await monter(t, const G_225(), connecte: true);
-    expect(find.textContaining('Aucun modèle 3D'), findsOneWidget);
+    expect(find.textContaining('ne sont pas encore disponibles'), findsOneWidget);
     expect(find.text('H 42 cm'), findsNothing);
   });
 
@@ -112,10 +113,11 @@ void main() {
     expect(find.text('12 / 12 réussis'), findsNothing);
   });
 
-  testWidgets('279 connecté : plus de fichiers de maquette', (t) async {
+  testWidgets('279 connecté : aucun fichier de maquette, dépôt lié à MES projets', (t) async {
     await monter(t, const G_279(), connecte: true);
     expect(find.text('plan-lampe.pdf'), findsNothing);
-    expect(find.text('Règles de dépôt'), findsWidgets);
+    expect(find.text('Ajouter des fichiers'), findsWidgets);
+    expect(find.text('Aucun projet'), findsOneWidget);
   });
 
   testWidgets('281 connecté : institution du compte', (t) async {

@@ -4,14 +4,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gen.dart';
 import '../nav.dart';
+import 'access.dart' show canOpen;
+import 'auth.dart' show authProvider;
 import 'backend.dart';
+import 'messages.dart' show selectedConversationProvider;
 import 'store.dart' show favoritesProvider, normText, productByTitle, selectedProductProvider;
+import 'support_screens.dart' show openHelpTarget;
 import 'talents.dart' show talentQueryProvider;
 
 /// Recherches des écrans 49 (aide), 179 (guide), 52 (messages), 25b (mes listes) et 104 (carte de l'innovation) :
 /// chaque saisie produit un vrai résultat (articles du guide, conversations, favoris, talents) ou dit qu'il n'y en a pas.
 
-/// Articles d'aide : chacun ouvre l'écran qui réalise l'action décrite.
+/// Articles d'aide : chacun ouvre l'écran qui réalise l'action décrite (« Contacter le support » : la demande d'aide réelle).
 const helpArticles = <(String, String, String)>[
   ('Créer et publier une annonce', 'annonce produit vendre publier stock prix photo', '58'),
   ('Suivre ma commande', 'commande suivi livraison retrait code', '45'),
@@ -24,14 +28,31 @@ const helpArticles = <(String, String, String)>[
   ('Parrainer un ami', 'parrainage filleul gains code', '240'),
   ('Publier un reel', 'reel vidéo publication', '250'),
   ('Changer mon mot de passe', 'mot de passe sécurité compte connexion', '15'),
-  ('Contacter le support', 'support aide réclamation problème', '53'),
+  ('Contacter le support', 'support aide réclamation problème', '49'),
+];
+
+/// Articles d'aide rédigés (ouverts dans l'application, sans quitter l'aide).
+const _topicSearch = <(String, String, String)>[
+  ('Commandes et livraisons', 'commande livraison retrait suivi colis réclamation', 'faq:commandes'),
+  ('Paiements et remboursements', 'paiement rembourser remboursement mobile money orange mtn', 'faq:paiements'),
+  ('Compte et sécurité', 'compte sécurité mot de passe code vérification', 'faq:compte'),
+  ('Comment devenir vendeur ?', 'vendeur vendre boutique annonce', 'faq:vendeur'),
+  ('Quels sont les délais de retrait ?', 'délai retrait prête commande', 'faq:retrait'),
 ];
 
 List<(String, String, String)> searchHelp(String q) {
   final n = normText(q.trim());
   if (n.length < 2) return const [];
   final words = n.split(RegExp(r'\s+')).where((w) => w.length >= 2);
-  return [for (final a in helpArticles) if (words.any((w) => normText('${a.$1} ${a.$2}').contains(w))) a];
+  return [for (final a in [...helpArticles, ..._topicSearch]) if (words.any((w) => normText('${a.$1} ${a.$2}').contains(w))) a];
+}
+
+/// Destination d'un résultat d'aide : la demande au support, un article rédigé, ou l'écran concerné s'il est ouvert au rôle du compte.
+void _openHelpResult(BuildContext context, (String, String, String) a) {
+  if (a.$3 == '49') return openHelpTarget(context, '/aide/contact');
+  // « Mot de passe oublié » n'a pas de sens pour un compte connecté : l'article « Compte et sécurité » explique le changement de mot de passe.
+  if (a.$3 == '15' && ProviderScope.containerOf(context).read(authProvider).current != null) return openHelpTarget(context, 'faq:compte');
+  openHelpTarget(context, a.$3, fallback: a.$3 == '58' ? 'vendeur' : '');
 }
 
 Future<void> _sheet(BuildContext context, String title, List<Widget> items, String empty) => showModalBottomSheet<void>(
@@ -46,30 +67,35 @@ Future<void> _sheet(BuildContext context, String title, List<Widget> items, Stri
       ),
     );
 
-/// 49 et 179 : articles d'aide correspondants ; chacun ouvre l'écran concerné.
+/// 49 et 179 : articles d'aide correspondants ; chacun ouvre l'écran concerné (ou un article rédigé si l'écran n'est pas ouvert à ce compte).
 Future<void> helpSearch(BuildContext context, String q) async {
   if (q.trim().length < 2) return gToast(context, 'Saisissez au moins 2 caractères.');
-  final r = searchHelp(q);
+  final account = ProviderScope.containerOf(context).read(authProvider).current;
+  final r = [
+    for (final a in searchHelp(q))
+      if (a.$3 == '49' || a.$3.startsWith('faq:') || a.$3 == '58' || canOpen(account, a.$3)) a,
+  ];
   await _sheet(context, 'Aide : « ${q.trim()} »', [
     for (final a in r)
       ListTile(leading: const Icon(Icons.help_outline), title: Text(a.$1), onTap: () {
         Navigator.of(context).pop();
-        gOpen(context, a.$3);
+        _openHelpResult(context, a);
       }),
   ], 'Aucun article. Écrivez au support depuis « Contacter le support ».');
 }
 
-/// 52 : conversations réelles dont l'interlocuteur ou l'annonce correspond.
+/// 52 : conversations réelles dont l'interlocuteur ou l'annonce correspond ; le résultat ouvre cette conversation.
 Future<void> conversationSearch(BuildContext context, String q) async {
   if (q.trim().length < 2) return gToast(context, 'Saisissez au moins 2 caractères.');
   if (!Backend.ready) return gToast(context, 'Recherche disponible avec un compte connecté.');
   final rows = await Backend.conversations();
   if (!context.mounted) return;
   final n = normText(q.trim());
-  final hits = [for (final c in rows) if (normText('${c['other_name'] ?? ''} ${c['listing_title'] ?? ''} ${c['last_body'] ?? ''}').contains(n)) c];
+  final hits = [for (final c in rows) if (normText('${c['other_name'] ?? ''} ${c['listing_title'] ?? ''} ${c['order_number'] ?? ''} ${c['last_body'] ?? ''}').contains(n)) c];
   await _sheet(context, 'Conversations : « ${q.trim()} »', [
     for (final c in hits)
       ListTile(leading: const Icon(Icons.chat_bubble_outline), title: Text('${c['other_name'] ?? 'Conversation'}'), subtitle: Text('${c['listing_title'] ?? ''}'), onTap: () {
+        ProviderScope.containerOf(context).read(selectedConversationProvider.notifier).set('${c['id']}');
         Navigator.of(context).pop();
         gOpen(context, '53');
       }),
@@ -153,9 +179,9 @@ class _GuideBrowserState extends State<GuideBrowser> {
             contentPadding: const EdgeInsets.symmetric(horizontal: 4),
             leading: Container(width: 40, height: 40, decoration: BoxDecoration(color: const Color(0xFFF1EEFB), borderRadius: BorderRadius.circular(13)), child: const Icon(Icons.menu_book_outlined, size: 20, color: Color(0xFF5A3FE0))),
             title: Text(rows[i].$1, style: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w600, color: Color(0xFF111015))),
-            subtitle: const Text('Guide pas à pas', style: TextStyle(fontSize: 11.5, color: Color(0xFF57545F))),
+            subtitle: const Text('Ouvrir l’écran concerné', style: TextStyle(fontSize: 11.5, color: Color(0xFF57545F))),
             trailing: const Icon(Icons.chevron_right, color: Color(0xFF57545F)),
-            onTap: () => gOpen(context, rows[i].$3),
+            onTap: () => _openHelpResult(context, rows[i]),
           ),
         ),
       ),

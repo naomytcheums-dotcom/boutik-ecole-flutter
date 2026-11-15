@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/inert_actions.dart';
+import '../live/notif_client.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -30,6 +31,27 @@ class G_56 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(notifSettingsProvider).value ?? const NotifSettings();
+    final rev = ref.watch(notifSettingsRevisionProvider);
+    // Interrupteur d'une catégorie : enregistré sur le serveur ; en cas de refus, l'état réel est relu et le refus est annoncé.
+    Widget category(String cat, double y, {bool demoOn = true}) => gP(
+          308, y, 42, 24,
+          GToggle(
+            key: ValueKey('$cat-$rev'),
+            on: demoContent ? demoOn : settings.category(cat),
+            onChanged: (v) async {
+              if (demoContent) return;
+              if (!await requireLogin(context, ref, 'régler vos notifications')) return ref.read(notifSettingsRevisionProvider.notifier).set(rev + 1);
+              final err = await setNotificationCategory(cat, v);
+              if (err != null && context.mounted) gToast(context, err);
+              ref.invalidate(notifSettingsProvider);
+              if (err != null) ref.read(notifSettingsRevisionProvider.notifier).set(rev + 1);
+            },
+            onColor: Color(0xFF111015),
+            offColor: Color(0xFFDAD8DF),
+            knob: 18,
+          ),
+        );
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
@@ -50,37 +72,39 @@ class G_56 extends ConsumerWidget {
       gP(76, 70, 311, 26, gText('Notifications et confidentialité', 21, Color(0xFF111015), weight: 700)),
       gP(24, 120, 95, 19, gText('Notifications', 15, Color(0xFF111015), weight: 700)),
       gP(40, 170, 142, 17, gText('Suivi des commandes', 13.5, Color(0xFF111015), weight: 600)),
-      gP(40, 192, 147, 14, gText('Expédition, retrait, livraison', 11.5, Color(0xFF57545F))),
-      gP(308, 179, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
+      gP(40, 192, 260, 14, gText('Commandes, paiements, litiges et devis', 11.5, Color(0xFF57545F))),
+      category('orders', 179),
       gP(40, 224, 314, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 236, 66, 17, gText('Messages', 13.5, Color(0xFF111015), weight: 600)),
       gP(40, 258, 145, 14, gText('Nouveaux messages reçus', 11.5, Color(0xFF57545F))),
-      gP(308, 245, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
+      category('messages', 245),
       gP(40, 290, 314, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(40, 302, 176, 17, gText('Promotions et événements', 13.5, Color(0xFF111015), weight: 600)),
-      gP(40, 324, 146, 14, gText('Offres et actualités de l’IUT', 11.5, Color(0xFF57545F))),
-      gP(308, 311, 42, 24, GToggle(on: false, onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18)),
+      gP(40, 302, 176, 17, gText('Alertes et promotions', 13.5, Color(0xFF111015), weight: 600)),
+      gP(40, 324, 260, 14, gText('Alertes de prix, offres et campagnes', 11.5, Color(0xFF57545F))),
+      category('promotions', 311, demoOn: false),
       gP(40, 356, 314, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(40, 368, 120, 17, gText('Avis et évaluations', 13.5, Color(0xFF111015), weight: 600)),
-      gP(40, 390, 134, 14, gText('Rappels après réception', 11.5, Color(0xFF57545F))),
-      gP(308, 377, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
+      gP(40, 368, 120, 17, gText('Avis et questions', 13.5, Color(0xFF111015), weight: 600)),
+      gP(40, 390, 260, 14, gText('Avis et questions sur vos produits', 11.5, Color(0xFF57545F))),
+      category('reviews', 377),
       gP(24, 436, 110, 19, gText('Confidentialité', 15, Color(0xFF111015), weight: 700)),
-      gP(40, 486, 77, 17, gText('Profil public', 13.5, Color(0xFF111015), weight: 600)),
-      gP(40, 508, 138, 14, gText('Visible par les entreprises', 11.5, Color(0xFF57545F))),
-      gP(308, 495, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
-      gP(40, 540, 314, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(40, 552, 180, 17, gText('Afficher mon établissement', 13.5, Color(0xFF111015), weight: 600)),
-      gP(40, 574, 75, 14, gText('Sur mon profil', 11.5, Color(0xFF57545F))),
-      gP(308, 561, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18)),
-      gP(40, 606, 314, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(40, 618, 149, 17, gText('Statistiques anonymes', 13.5, Color(0xFF111015), weight: 600)),
-      gP(40, 640, 122, 14, gText('Améliorer l’application', 11.5, Color(0xFF57545F))),
-      gP(308, 627, 42, 24, GToggle(on: false, onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18)),
+      gP(40, 486, 77, 17, gText('Profil public', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(40, 508, 138, 14, gText('Visible par les entreprises', 11.5, Color(0xFF57545F)), show: demoContent),
+      gP(308, 495, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18), show: demoContent),
+      gP(40, 540, 314, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(40, 552, 180, 17, gText('Afficher mon établissement', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(40, 574, 75, 14, gText('Sur mon profil', 11.5, Color(0xFF57545F)), show: demoContent),
+      gP(308, 561, 42, 24, GToggle(on: true, onColor: Color(0xFF111015), offColor: Color(0xFFDAD8DF), knob: 18), show: demoContent),
+      gP(40, 606, 314, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent),
+      gP(40, 618, 149, 17, gText('Statistiques anonymes', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
+      gP(40, 640, 122, 14, gText('Améliorer l’application', 11.5, Color(0xFF57545F)), show: demoContent),
+      gP(308, 627, 42, 24, GToggle(on: false, onColor: Color(0xFF111015), offColor: Color(0xFFE6E1EE), knob: 18), show: demoContent),
+      gP(40, 486, 314, 80, gText('Aucun réglage de visibilité n’est encore proposé. Vos informations ne sont montrées que selon les règles de la plateforme, et vous pouvez télécharger toutes vos données ci-dessous.', 12.5, Color(0xFF4A4854), lh: 18, wrap: true), show: !demoContent),
       gP(24, 686, 342, 50, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [25, 25, 25, 25])),
       gP(118, 702, 179, 18, gText('Télécharger mes données', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
       gP(92.125, 710.125, 18.75, 10.25, gImg('assets/figma/v/e0834926a737bf.svg')),
       gP(94.958, 706.583, 13.083, 9.542, gImg('assets/figma/v/3ee7d7ad9e826a.svg')),
       gP(98.5, 701.625, 6, 14.5, gImg('assets/figma/v/c6f78b73bf1246.svg')),
+      gP(24, 748, 342, 24, gText('Canaux : SMS, WhatsApp, e-mail, navigateur', 12.5, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center), tap: () => gOpen(context, '236')),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gTap(24, 686, 342, 50, () { gOpen(context, '273'); }), // audit 01/11 : « Télécharger mes données » n'avait aucun effet
     ]);

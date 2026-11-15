@@ -64,6 +64,8 @@ Set<String>? allowedRoles(String id) {
   if (n >= 145 && n <= 147) return {'support', admin};
   if (n == 167 || n == 168 || n == 169) return {'dept', admin};
   if (n >= 198 && n <= 200) return {'dept', admin};
+  // Formulaire de projet : le serveur (project_save_full) refuse tout autre rôle ; mieux vaut ne pas l'ouvrir que le refuser à l'envoi.
+  if (n == 205) return {'student', 'dept', admin};
   if (n == 213) return {'dept', admin};
   if (n == 239) return {'direction', 'dept', admin};
   switch (n) {
@@ -99,6 +101,17 @@ bool canOpen(Account? a, String id) {
   final r = allowedRoles(id);
   return r == null || r.contains(roleKey(a));
 }
+
+/// Écrans qu'un Client peut atteindre par une adresse directe (le serveur reste l'autorité) mais que « Mes rubriques » ne lui propose pas :
+/// outils d'étudiant-vendeur, de prestataire, de jury et d'équipe, bornes, discussions de mission et maquettes de référence.
+const _hiddenInEspaceForClient = {
+  '73', '75', '82', '84', '87', '164', '178', '197', '218', '224', '227', '233', '234', '235',
+  '206', '207', '208', '209', '210', '276',
+  'A1', 'A2', 'A3', 'P1', 'P2', 'P4', 'P5', 'V1', 'L1', '250b', 'S1',
+};
+
+/// Écran proposé dans « Mes rubriques » : ouvert au rôle, et pertinent pour lui.
+bool listedInEspace(Account? a, String id) => canOpen(a, id) && !(roleKey(a) == 'client' && _hiddenInEspaceForClient.contains(id));
 
 /// Enveloppe d'un écran : affiche l'écran si le rôle l'autorise, sinon « Accès réservé ».
 class AccessGuard extends ConsumerWidget {
@@ -201,10 +214,17 @@ class _AccessDeniedState extends ConsumerState<AccessDenied> {
   }
 
   @override
+  Widget build(BuildContext context) => const NotFoundView();
+}
+
+/// Page 404 neutre, sans journalisation : ne révèle ni l'existence de l'écran ni les rôles qui y ont accès.
+class NotFoundView extends StatelessWidget {
+  const NotFoundView({super.key});
+
+  @override
   Widget build(BuildContext context) {
     const f = 'PlusJakartaSans';
     TextStyle st(double s, FontWeight w, Color c) => TextStyle(inherit: false, fontFamily: f, fontSize: s, fontWeight: w, color: c, textBaseline: TextBaseline.alphabetic);
-    // Page 404 neutre : ne révèle ni l'existence de l'écran ni les rôles qui y ont accès.
     return Scaffold(
       backgroundColor: const Color(0xFFF4EFE6),
       body: SafeArea(

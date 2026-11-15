@@ -35,7 +35,7 @@ void main() {
     expect(const ReferralSummary(tier: 'Bronze', active: 4).nextLabel, 'Le barème de récompense n’est pas encore publié.');
     expect(refereeStatus('pending'), 'En attente');
     expect(invitationText(''), contains('Connectez-vous'));
-    expect(invitationText('ABCD2345'), 'Code de parrainage : ABCD2345');
+    expect(invitationText('ABCD2345'), 'boutik-ecole.vercel.app/?ref=ABCD2345');
   });
 
   testWidgets('243 connecté : solde réel, aucun filleul ni montant fictif', (tester) async {

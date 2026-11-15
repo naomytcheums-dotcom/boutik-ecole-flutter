@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../gen.dart' show gToast;
 import '../i18n.dart' show Text;
+import 'access.dart' show roleKey;
 import 'auth.dart';
 import 'backend.dart';
 import 'marche/marche_data.dart';
@@ -25,10 +26,14 @@ Future<List<Map<String, dynamic>>> _list(String fn, Map<String, dynamic> p) asyn
 
 final myPointsProvider = FutureProvider.autoDispose<Map<String, dynamic>?>((ref) async {
   ref.watch(authProvider.select((a) => a.current?.serverId));
-  if (!Backend.ready) return null;
+  if (!Backend.ready || ref.read(authProvider).current == null) return null;
   final r = await marcheCall('my_points', const {});
-  return r.error != null || r.data is! Map ? null : Map<String, dynamic>.from(r.data as Map);
-});
+  if (r.error != null) throw MarcheException(r.error);
+  return r.data is! Map ? null : Map<String, dynamic>.from(r.data as Map);
+}, retry: (_, _) => null);
+
+/// Réussites masquées (personnel de modération) : pour les relire et les rétablir.
+final hiddenVictoriesProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) => _list('victories_list', const {'p_limit': 40, 'p_hidden': true}), retry: (_, _) => null);
 final topHelpersProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) => _list('top_helpers', const {'p_limit': 10}));
 final sosProvider = FutureProvider.autoDispose.family<List<Map<String, dynamic>>, String>((ref, scope) => _list('sos_list', {'p_scope': scope}));
 final challengesProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) => _list('challenges_list', const {}));
@@ -114,13 +119,15 @@ class InnovationsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pts = ref.watch(myPointsProvider).value;
+    final ptsAsync = ref.watch(myPointsProvider);
+    final pts = ptsAsync.value;
     final level = '${pts?['level'] ?? 'none'}';
     return MarchePage(
       title: 'Innovations',
       child: ListView(padding: const EdgeInsets.only(bottom: 90), children: [
         Padding(padding: const EdgeInsets.fromLTRB(16, 0, 16, 10), child: Text('Entraide, défis et réussites de la communauté IUT.', style: mst(13, c: kGrey))),
-        if (pts != null) _tile(context, Icons.military_tech_outlined, '${mInt(pts['total'])} points · ${levelLabels[level]}', 'Points et badges IUT : chaque aide, partage ou réponse compte.', () => context.push('/innovations/points')),
+        if (pts != null) _tile(context, Icons.military_tech_outlined, '${mInt(pts['total'])} points · ${levelLabels[level]}', 'Points et badges IUT : chaque aide, partage ou réponse compte.', () => context.push('/innovations/points'))
+        else if (ptsAsync.hasError) _tile(context, Icons.military_tech_outlined, 'Points et badges', 'Vos points ne peuvent pas être chargés pour le moment. Touchez pour réessayer.', () => ref.invalidate(myPointsProvider)),
         _tile(context, Icons.sos_outlined, 'SOS Cours', 'Bloqué sur un TP ? Toute votre filière est prévenue ; le premier qui répond gagne des points.', () => context.push('/innovations/sos')),
         _tile(context, Icons.emoji_events_outlined, 'Défis hebdomadaires', 'Un défi par semaine : réalisez, votez, le gagnant est mis en avant.', () => context.push('/innovations/defis')),
         _tile(context, Icons.swap_horiz_rounded, 'Marché des compétences', 'Je cherche quelqu’un qui sait faire… je paie ou j’échange un service.', () => context.push('/innovations/competences')),
@@ -149,10 +156,14 @@ class PointsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pts = ref.watch(myPointsProvider).value;
+    final ptsAsync = ref.watch(myPointsProvider);
+    final pts = ptsAsync.value;
     final level = '${pts?['level'] ?? 'none'}';
     final next = pts?['next_at'] as num?;
     final total = mInt(pts?['total']);
+    if (ptsAsync.hasError) {
+      return MarchePage(title: 'Points et badges', child: mNote('Vos points ne peuvent pas être chargés pour le moment. Réessayez dans un instant.'));
+    }
     return MarchePage(
       title: 'Points et badges',
       child: ListView(padding: const EdgeInsets.only(bottom: 90), children: [
@@ -219,6 +230,7 @@ class SosScreen extends ConsumerWidget {
       title: 'SOS Cours',
       child: ListView(padding: const EdgeInsets.only(bottom: 90), children: [
         Padding(padding: const EdgeInsets.fromLTRB(16, 0, 16, 8), child: mButton('Lancer un SOS', () => _create(context, ref), icon: Icons.sos_outlined)),
+        Padding(padding: const EdgeInsets.fromLTRB(16, 0, 16, 8), child: Text('Votre SOS n’est visible que des étudiants de votre filière : renseignez-la dans votre profil, sinon personne ne pourrait le voir.', style: mst(12, c: kGrey).copyWith(height: 1.4))),
         mSectionTitle('Mes SOS'),
         mAsync<List<Map<String, dynamic>>>(
           ref.watch(sosProvider('mine')),
@@ -307,24 +319,28 @@ class ChallengesScreen extends ConsumerWidget {
 
   Future<void> _submit(BuildContext context, WidgetRef ref, Map<String, dynamic> c) async {
     if (!await requireLogin(context, ref, 'participer à un défi') || !context.mounted) return;
-    final title = TextEditingController(), desc = TextEditingController(), url = TextEditingController();
-    if (!await _sheet(context, 'Ma réalisation', [
+    final mine = [for (final e in (c['entries'] as List? ?? const [])) if (e is Map && e['mine'] == true) e].firstOrNull;
+    final title = TextEditingController(text: '${mine?['title'] ?? ''}'), desc = TextEditingController(text: '${mine?['description'] ?? ''}'), url = TextEditingController(text: '${mine?['url'] ?? ''}');
+    if (!await _sheet(context, mine == null ? 'Ma réalisation' : 'Modifier ma réalisation', [
       TextField(controller: title, maxLength: 120, decoration: _deco('Titre')),
       TextField(controller: desc, maxLines: 3, decoration: _deco('Description (facultatif)')),
       const SizedBox(height: 10),
       TextField(controller: url, keyboardType: TextInputType.url, decoration: _deco('Lien (facultatif)', hint: 'https://…')),
-    ], 'Envoyer') || !context.mounted) {
+    ], mine == null ? 'Envoyer' : 'Enregistrer') || !context.mounted) {
       return;
     }
-    if (await _call(context, 'challenge_submit', {'p_challenge': c['id'], 'p_title': title.text, 'p_description': desc.text, 'p_url': url.text}, ok: 'Réalisation envoyée : +5 points.')) {
-      ref.invalidate(challengesProvider);
-    }
+    final r = await marcheCall('challenge_enter', {'p_challenge': c['id'], 'p_title': title.text, 'p_description': desc.text, 'p_url': url.text});
+    if (!context.mounted) return;
+    if (r.error != null) return gToast(context, Backend.userMessage('${r.error}'));
+    final pts = r.data is Map ? mInt((r.data as Map)['points']) : 0;
+    gToast(context, mine != null ? 'Réalisation mise à jour.' : (pts > 0 ? 'Réalisation envoyée : +$pts points.' : 'Réalisation envoyée.'));
+    ref.invalidate(challengesProvider);
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final role = ref.watch(authProvider.select((a) => a.current?.staff ?? ''));
-    final canCreate = role.isNotEmpty;
+    final role = ref.watch(authProvider.select((a) => roleKey(a.current)));
+    final canCreate = const {'admin', 'dept'}.contains(role);
     final streak = Backend.ready ? ref.watch(reels.challengesProvider) : null;
     return MarchePage(
       title: 'Défis hebdomadaires',
@@ -348,7 +364,7 @@ class ChallengesScreen extends ConsumerWidget {
                       Text('${c['title']}', style: mst(15, w: FontWeight.w800)),
                       if ('${c['description']}'.isNotEmpty) Text('${c['description']}', style: mst(12.5, c: kGrey).copyWith(height: 1.4)),
                       const SizedBox(height: 8),
-                      if (c['ended'] != true && c['i_entered'] != true) mButton('Participer', () => _submit(context, ref, c), dark: false),
+                      if (c['ended'] != true) mButton(c['i_entered'] == true ? 'Modifier ma réalisation' : 'Participer', () => _submit(context, ref, c), dark: false),
                       for (final e in (c['entries'] as List? ?? const []))
                         Container(
                           margin: const EdgeInsets.only(top: 8),
@@ -447,12 +463,49 @@ class _SkillsState extends ConsumerState<SkillsScreen> {
     }
   }
 
+  Future<void> _showResponses(Map<String, dynamic> s) async {
+    final r = await marcheCall('skill_responses_list', {'p_id': s['id']});
+    if (!mounted) return;
+    if (r.error != null) return gToast(context, Backend.userMessage('${r.error}'));
+    final rows = [for (final x in (r.data as List? ?? const [])) if (x is Map) x];
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(8))),
+      builder: (c) => Padding(
+        padding: const EdgeInsets.all(20),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: MediaQuery.of(c).size.height * .7),
+          child: ListView(shrinkWrap: true, children: [
+            Text('Réponses à « ${s['title']} »', style: mst(17, w: FontWeight.w800)),
+            const SizedBox(height: 12),
+            if (rows.isEmpty) Text('Aucune réponse pour le moment.', style: mst(13, c: kGrey)),
+            for (final x in rows)
+              Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(color: const Color(0xFFF7F4FA), borderRadius: BorderRadius.circular(4)),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text('${x['name']}', style: mst(13.5, w: FontWeight.w800)),
+                  if ('${x['message']}'.trim().isNotEmpty) Padding(padding: const EdgeInsets.only(top: 4), child: Text('${x['message']}', style: mst(13).copyWith(height: 1.4))),
+                  const SizedBox(height: 4),
+                  Text(DateTime.tryParse('${x['created_at']}')?.toLocal().toString().substring(0, 16) ?? '', style: mst(11, c: kGrey)),
+                ]),
+              ),
+          ]),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MarchePage(
       title: 'Marché des compétences',
       child: ListView(padding: const EdgeInsets.only(bottom: 90), children: [
         Padding(padding: const EdgeInsets.fromLTRB(16, 0, 16, 8), child: mButton('Publier une annonce', _post, icon: Icons.add)),
+        Padding(padding: const EdgeInsets.fromLTRB(16, 0, 16, 8), child: Text('Les annonces ne comportent aucun paiement : le prix indiqué est une indication, les modalités se conviennent directement entre vous.', style: mst(12, c: kGrey).copyWith(height: 1.4))),
         Padding(padding: const EdgeInsets.fromLTRB(16, 0, 16, 8), child: MDropdown(label: 'Type d’annonce', value: _kind, items: kinds, onChanged: (v) => setState(() => _kind = v))),
         mAsync<List<Map<String, dynamic>>>(
           ref.watch(skillsProvider(_kind)),
@@ -472,11 +525,12 @@ class _SkillsState extends ConsumerState<SkillsScreen> {
                         if (s['mine'] == true) '${mInt(s['responses'])} réponse${mInt(s['responses']) > 1 ? 's' : ''}',
                       ].join(' · '), style: mst(12, c: kGrey)),
                       const SizedBox(height: 8),
-                      if (s['mine'] == true)
+                      if (s['mine'] == true) ...[
+                        if (mInt(s['responses']) > 0) ...[mButton('Voir les réponses (${mInt(s['responses'])})', () => _showResponses(s)), const SizedBox(height: 8)],
                         mButton('Clôturer mon annonce', () async {
                           if (await _call(context, 'skill_close', {'p_id': s['id']})) ref.invalidate(skillsProvider(_kind));
-                        }, dark: false)
-                      else
+                        }, dark: false),
+                      ] else
                         mButton(s['responded'] == true ? 'Réponse envoyée' : 'Répondre', s['responded'] == true ? null : () => _respond(s), dark: false),
                     ])),
                 ]),
@@ -527,8 +581,35 @@ class VictoriesScreen extends ConsumerWidget {
     }
   }
 
+  Widget _link(String label, VoidCallback onTap) => GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Text(label, style: mst(12, w: FontWeight.w700, c: kViolet))),
+      );
+
+  Future<void> _report(BuildContext context, WidgetRef ref, Map<String, dynamic> v) async {
+    if (!await requireLogin(context, ref, 'signaler une réussite') || !context.mounted) return;
+    final reason = TextEditingController();
+    if (!await _sheet(context, 'Signaler cette réussite', [
+      Text('Elle sera examinée par l’équipe ; après plusieurs signalements elle est masquée automatiquement.', style: mst(12.5, c: kGrey)),
+      const SizedBox(height: 10),
+      TextField(controller: reason, maxLines: 2, maxLength: 300, decoration: _deco('Motif (facultatif)')),
+    ], 'Signaler') || !context.mounted) {
+      return;
+    }
+    if (await _call(context, 'victory_report', {'p_id': v['id'], 'p_reason': reason.text}, ok: 'Merci : le signalement est transmis.')) ref.invalidate(victoriesProvider);
+  }
+
+  Future<void> _moderate(BuildContext context, WidgetRef ref, Map<String, dynamic> v, bool hide) async {
+    if (await _call(context, 'victory_moderate', {'p_id': v['id'], 'p_hide': hide}, ok: hide ? 'Réussite masquée.' : 'Réussite rétablie.')) {
+      ref.invalidate(victoriesProvider);
+      ref.invalidate(hiddenVictoriesProvider);
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final staff = const {'admin', 'support'}.contains(ref.watch(authProvider.select((a) => roleKey(a.current))));
     return MarchePage(
       title: 'Mur des victoires',
       child: ListView(padding: const EdgeInsets.only(bottom: 90), children: [
@@ -544,16 +625,46 @@ class VictoriesScreen extends ConsumerWidget {
                       const SizedBox(height: 4),
                       Text('${v['body']}', style: mst(14.5, w: FontWeight.w700).copyWith(height: 1.4)),
                       const SizedBox(height: 8),
-                      GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () async {
-                          if (await _call(context, 'victory_cheer', {'p_id': v['id']})) ref.invalidate(victoriesProvider);
-                        },
-                        child: Row(children: [Icon(v['cheered'] == true ? Icons.celebration : Icons.celebration_outlined, size: 20, color: v['cheered'] == true ? const Color(0xFFD99A00) : kGrey), const SizedBox(width: 6), Text('${v['cheers']} félicitation${mInt(v['cheers']) > 1 ? 's' : ''}', style: mst(12.5, w: FontWeight.w700))]),
-                      ),
+                      Row(children: [
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () async {
+                            if (await _call(context, 'victory_cheer', {'p_id': v['id']})) ref.invalidate(victoriesProvider);
+                          },
+                          child: Row(children: [Icon(v['cheered'] == true ? Icons.celebration : Icons.celebration_outlined, size: 20, color: v['cheered'] == true ? const Color(0xFFD99A00) : kGrey), const SizedBox(width: 6), Text('${v['cheers']} félicitation${mInt(v['cheers']) > 1 ? 's' : ''}', style: mst(12.5, w: FontWeight.w700))]),
+                        ),
+                        const Spacer(),
+                        if (v['mine'] == true)
+                          _link('Supprimer', () async {
+                            if (await _call(context, 'victory_delete', {'p_id': v['id']}, ok: 'Réussite supprimée.')) ref.invalidate(victoriesProvider);
+                          })
+                        else if (v['reported'] == true)
+                          Text('Signalée', style: mst(12, c: kGrey))
+                        else
+                          _link('Signaler', () => _report(context, ref, v)),
+                        if (staff) ...[const SizedBox(width: 14), _link('Masquer', () => _moderate(context, ref, v, true))],
+                      ]),
                     ])),
                 ]),
         ),
+        if (staff) ...[
+          mSectionTitle('Réussites masquées (modération)'),
+          mAsync<List<Map<String, dynamic>>>(
+            ref.watch(hiddenVictoriesProvider),
+            (l) => l.isEmpty
+                ? Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: Text('Aucune réussite masquée.', style: mst(13, c: kGrey)))
+                : Column(children: [
+                    for (final v in l)
+                      _box(Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text('${v['author']} · ${mInt(v['reports'])} signalement${mInt(v['reports']) > 1 ? 's' : ''}', style: mst(11.5, w: FontWeight.w700, c: kGrey)),
+                        const SizedBox(height: 4),
+                        Text('${v['body']}', style: mst(13.5).copyWith(height: 1.4)),
+                        const SizedBox(height: 6),
+                        Align(alignment: Alignment.centerRight, child: _link('Rétablir', () => _moderate(context, ref, v, false))),
+                      ])),
+                  ]),
+          ),
+        ],
       ]),
     );
   }

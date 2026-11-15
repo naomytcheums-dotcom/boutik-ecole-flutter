@@ -23,6 +23,7 @@ import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
 import '../live/services.dart';
+import '../live/produit_fiche.dart' show productShareLink;
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_36 extends ConsumerWidget {
@@ -98,7 +99,7 @@ class G_36 extends ConsumerWidget {
       gP(265, 794, 85, 16, gText('Mobile Money', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right), show: demoContent),
       gP(24, 120, 342, 170, Consumer(builder: (context, ref, _) => gBox(image: servicePhoto(currentService(ref)), fit: BoxFit.cover, radii: [24, 24, 24, 24])), show: !demoContent),
       gP(42, 228, 309, 23, Consumer(builder: (context, ref, _) => gText(currentService(ref)?.title ?? 'Service', 18, Color(0xFFFFFFFF), weight: 700, wrap: true)), show: !demoContent),
-      gP(42, 256, 309, 15, gText('Prestataire : étudiant de l’IUT de Douala', 12, Color(0xFFE3ECF7), wrap: true), show: !demoContent),
+      gP(42, 256, 309, 15, Consumer(builder: (context, ref, _) => gText(providerLine(ref, currentService(ref)), 12, Color(0xFFE3ECF7), wrap: true)), show: !demoContent),
       gP(24, 320, 342, 24, Consumer(builder: (context, ref, _) { final l = currentService(ref); return gText(l == null ? '' : servicePriceLine(l), 18, Color(0xFF111015), weight: 800); }), show: !demoContent),
       gP(24, 360, 342, 120, Consumer(builder: (context, ref, _) { final l = currentService(ref); return gText(l == null || l.description.isEmpty ? 'Demandez un devis pour préciser votre besoin, le délai et le tarif final avec le prestataire.' : l.description, 13.5, Color(0xFF4A4854), lh: 21, wrap: true); }), show: !demoContent),
       gP(24, 500, 342, 90, gText('« Commander au tarif affiché » ajoute le service au panier au prix « À partir de ». Pour un tarif sur mesure, « Demander un devis » : le prestataire vous répond avec un montant et un délai, vous acceptez ou refusez.', 12, Color(0xFF57545F), lh: 17, wrap: true), show: !demoContent),
@@ -109,7 +110,8 @@ class G_36 extends ConsumerWidget {
       gP(213, 882, 143, 34, gText(demoContent ? 'Commander' : 'Commander au tarif affiché', demoContent ? 14.5 : 12.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center, lh: 16, wrap: true)),
       gP(125, 942, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       if (demoContent) gTap(59, 340, 44, 32, () { gOpen(context, '31'); }), // parcours 36 -> 31 (zone vide hors démo)
-      gTap(318, 56, 60, 56, () { final l = currentService(ref); shareText(context, (l == null ? 'Découvrez les services de Boutik-École' : 'Service « ' + l.title + ' » sur Boutik-École') + ' : ' + siteUrl); }),
+      gTap(318, 56, 60, 56, () { final l = currentService(ref); shareText(context, (l == null ? 'Découvrez les services de Boutik-École' : 'Service « ' + l.title + ' » sur Boutik-École') + ' : ' + (l == null || l.id.isEmpty ? siteUrl : productShareLink(l.id))); }),
+      if (!demoContent) gP(24, 600, 342, 170, const ServiceTrustBlock(width: 342)),
       if (demoContent) gTap(32, 786, 73, 32, () { gOpen(context, '171'); }), // parcours 36 -> 171 (zone vide hors démo)
     ]);
   }

@@ -23,6 +23,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/challenges_panel.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_253 extends ConsumerWidget {
@@ -126,8 +127,9 @@ class G_253 extends ConsumerWidget {
       gP(223.767, 690.167, 27.667, 26.583, gImg('assets/figma/v/178e2ca53bcb73.svg')),
       gP(310.15, 699.917, 25.5, 17.917, gImg('assets/figma/v/4ff26848f1fd07.svg')),
       gP(314.483, 690.167, 16.833, 15.75, gImg('assets/figma/v/fa389fd66db971.svg')),
-      gTap(272, 336, 80, 26, () => demoContent ? gOpen(context, '253b') : claimReward(context, ref)),
-      gTap(16, 648, 105, 35, () { gOpen(context, '253b'); }), // parcours 253 -> 253b
+      if (demoContent) gTap(272, 336, 80, 26, () => gOpen(context, '253b')),
+      if (demoContent) gTap(16, 648, 105, 35, () { gOpen(context, '253b'); }), // parcours 253 -> 253b
+      if (!demoContent) gP(0, 124, 390, 632, const DecoratedBox(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF3EEE9), Color(0xFFEEE8F3), Color(0xFFF7E8DA)], stops: [0, 0.5, 1])), child: ChallengesPanel())),
     ]);
   }
 }

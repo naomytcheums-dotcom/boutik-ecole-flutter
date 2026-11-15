@@ -38,7 +38,16 @@ final accessPrefsProvider = NotifierProvider<DevicePrefs, Map<String, bool>>(() 
 const accessPrefs149Defaults = {'a149_large_text': false, 'a149_contrast': false, 'a149_reduce_motion': false, 'a149_screen_reader': false};
 final accessPrefs149Provider = NotifierProvider<DevicePrefs, Map<String, bool>>(() => DevicePrefs(accessPrefs149Defaults));
 
-/// Taille du texte choisie : 0 petit, 1 normal, 2 grand (enregistrée sur l'appareil).
+/// Les écrans 149 et 186 pilotent les mêmes réglages d'accessibilité (clé : large_text, contrast, reduce_motion, screen_reader) :
+/// un réglage est actif si l'un des deux l'est, et un changement est écrit dans les deux, sinon le désactiver ici ne suffirait pas.
+bool accessOn(WidgetRef ref, String key) => (ref.watch(accessPrefs149Provider)['a149_$key'] ?? false) || (ref.watch(accessPrefsProvider)[key] ?? false);
+
+void accessSet(WidgetRef ref, String key, bool on) {
+  ref.read(accessPrefs149Provider.notifier).set('a149_$key', on);
+  ref.read(accessPrefsProvider.notifier).set(key, on);
+}
+
+/// Taille du texte choisie : 0 petit, 1 normal, 2 grand, 3 très grand (enregistrée sur l'appareil).
 class TextSize extends Notifier<int> {
   @override
   int build() {

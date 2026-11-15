@@ -46,11 +46,11 @@ class G_240 extends ConsumerWidget {
       gP(24, 124, 342, 190, gBox(gradient: LinearGradient(begin: Alignment(-1.24, -0.68), end: Alignment(0.36, 0.52), colors: [Color(0xFF1B1630), Color(0xFF4A38B8)], stops: [0, 1]), shadows: [BoxShadow(color: Color(0x40403366), offset: Offset(0, 12), blurRadius: 26, spreadRadius: 0)], radii: [36, 36, 36, 36])),
       gP(156, 127, 210, 190, gBox(image: 'assets/figma/img/dcc189ec3061c0a7f846c33f817967caebc73f00.png', fit: BoxFit.contain, shadows: [BoxShadow(color: Color(0x66403366), offset: Offset(0, 16), blurRadius: 24, spreadRadius: 0)])),
       gP(44, 146, 203, 56, gText('Invite, partage,\ngagne.', 22, Color(0xFFFFFFFF), weight: 600, lh: 28, wrap: true)),
-      gP(44, 218, 153, 32, gText('Chaque ami inscrit te rapporte des FCFA.', 11.5, Color(0xFFFFFFFF), lh: 16, wrap: true)),
+      gP(44, 214, 150, 48, gText(gm('Chaque ami inscrit te rapporte des FCFA.', 'Une prime dès la 1ʳᵉ commande payée de chaque ami (10 000 FCFA minimum).'), demoContent ? 11.5 : 10.5, Color(0xFFFFFFFF), lh: demoContent ? 16 : 14, wrap: true)),
       gP(44, 266, 170, 32, gBox(color: Color(0x29FFFFFF), radii: [16, 16, 16, 16])),
-      gP(66, 274, 126, 14, gText(demoContent ? 'Mes gains · 12 500 FCFA' : 'Mes gains · ${fcfa(ref.watch(referralProvider)?.total ?? 0)}', 11, Color(0xFFFFFFFF), weight: 600)),
+      gP(66, 274, 140, 14, gText(demoContent ? 'Mes gains · 12 500 FCFA' : referralGainsText(ref), 11, Color(0xFFFFFFFF), weight: 600)),
       gP(44, 344, 109, 15, gText('Ton lien d’invitation', 12, Color(0xFF57545F), weight: 500)),
-      gP(44, 366, 222, 40, (demoContent ? GField(hint: '', initial: 'boutik-ecole.cm/r/mariam24', size: 12, hintColor: Color(0xFF111015), weight: 500, padL: 14) : Align(alignment: Alignment.centerLeft, child: Padding(padding: const EdgeInsets.only(left: 14), child: gText(invitationText(ref.watch(referralCodeProvider), signedOut: referralSignedOut(ref)), 12, Color(0xFF111015), weight: 500))))),
+      gP(44, 366, 222, 40, (demoContent ? GField(hint: '', initial: 'boutik-ecole.cm/r/mariam24', size: 12, hintColor: Color(0xFF111015), weight: 500, padL: 14) : Padding(padding: const EdgeInsets.only(left: 14, right: 6), child: Align(alignment: Alignment.centerLeft, child: SelectableText(invitationText(ref.watch(referralCodeProvider), signedOut: referralSignedOut(ref)), maxLines: 2, style: TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 11.5, height: 1.25, fontWeight: FontWeight.w500, color: Color(0xFF111015))))))),
       gP(274, 366, 74, 40, gBox(color: Color(0xFF111015), radii: [20, 20, 20, 20])),
       gP(287.375, 381.375, 13.042, 13.042, gImg('assets/figma/v/a5ad75fcb14e8a.svg')),
       gP(283.583, 377.583, 13.042, 13.042, gImg('assets/figma/v/872da465016e01.svg')),
@@ -122,7 +122,7 @@ class G_240 extends ConsumerWidget {
       gP(328.817, 89.15, 18.667, 13.917, gImg('assets/figma/v/e486edd57af1c1.svg')),
       gP(331.983, 81.233, 12.333, 9.167, gImg('assets/figma/v/838f21166f81b6.svg')),
       gP(335.15, 81.233, 6, 16.292, gImg('assets/figma/v/d9aa0c7d61ed0e.svg')),
-      gTap(16, 430, 97, 34, () { gOpen(context, '173'); }), // parcours 240 -> 173
+      gTap(16, 430, 97, 34, () { shareInvitation(context, ref, 'system'); }), // « Partager via » : feuille de partage du téléphone, avec le lien et le code
       gTap(58, 266, 142, 32, () { gOpen(context, '243'); }), // parcours 240 -> 243
       gTap(26, 458, 52, 66, () { shareInvitation(context, ref, 'whatsapp'); }),
       gTap(83, 458, 52, 66, () { shareInvitation(context, ref, 'facebook'); }),

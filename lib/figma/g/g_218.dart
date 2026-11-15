@@ -24,6 +24,7 @@ import '../live/share.dart';
 import '../live/pay.dart';
 import '../live/engage.dart';
 import '../live/lots.dart';
+import '../live/l10_voeux.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_218 extends ConsumerWidget {
@@ -31,6 +32,11 @@ class G_218 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final eid = wishEditId(context);
+    final draft = eid.isEmpty ? null : ref.watch(wishDraftProvider(eid)).value;
+    final typed = ref.read(formProvider);
+    String shown(String k, String dk) => eid.isNotEmpty ? wishDraftValue(draft, dk) : (typed[k] ?? '');
+    final seed = '$eid-${draft == null}';
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
@@ -61,24 +67,24 @@ class G_218 extends ConsumerWidget {
       gP(331, 120, 30, 30, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true)),
       gP(331.5, 158, 29, 14, gText('Envoi', 11, Color(0xFF57545F), weight: 500, align: TextAlign.center)),
       gP(24, 188, 170, 16, gText('Que voulez-vous fabriquer ?', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 208, 342, 48, GField(onChanged: (v) => ref.read(formProvider.notifier).put('w_title', v), hint: '', initial: 'Lampe en bois recyclé', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
+      gP(24, 208, 342, 48, GField(key: ValueKey('w_title-$seed'), onChanged: (v) => ref.read(formProvider.notifier).put('w_title', v), hint: demoContent ? '' : 'Ex. lampe en bois recyclé', initial: demoContent ? 'Lampe en bois recyclé' : shown('w_title', 'title'), size: 13.5, hintColor: demoContent ? Color(0xFF111015) : Color(0xFF57545F), weight: 500, padL: 48, maxLength: 120)),
       gP(40.5, 221.5, 15, 15, gImg('assets/figma/v/a49ecdd3bef596.svg')),
       gP(42.75, 233.5, 10.5, 6, gImg('assets/figma/v/2e2c4a27235860.svg')),
       gP(43.5, 236.5, 9, 6, gImg('assets/figma/v/ab681c73d5c7eb.svg')),
-      gP(24, 270, 131, 16, gText('Description et photos', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 290, 342, 96, GField(onChanged: (v) => ref.read(formProvider.notifier).put('w_desc', v), hint: 'Dessin, matériaux, taille, cible…', size: 13.5, hintColor: Color(0xFF57545F), weight: 500, padL: 16, multiline: true, padT: 14)),
+      gP(24, 270, 131, 16, gText(gm('Description et photos', 'Description'), 12.5, Color(0xFF111015), weight: 600)),
+      gP(24, 290, 342, 96, GField(key: ValueKey('w_desc-$seed'), onChanged: (v) => ref.read(formProvider.notifier).put('w_desc', v), hint: 'Dessin, matériaux, taille, cible… (2 000 caractères au plus)', initial: demoContent ? '' : shown('w_desc', 'description'), size: 13.5, hintColor: Color(0xFF57545F), weight: 500, padL: 16, multiline: true, padT: 14, maxLength: 2000)),
       gP(24, 400, 60, 16, gText('Prix prévu', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 420, 342, 48, GField(onChanged: (v) => ref.read(formProvider.notifier).put('w_price', v), hint: '', initial: '25 000 FCFA', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
+      gP(24, 420, 342, 48, GField(key: ValueKey('w_price-$seed'), onChanged: (v) => ref.read(formProvider.notifier).put('w_price', v), hint: demoContent ? '' : 'Ex. 25 000 (FCFA)', initial: demoContent ? '25 000 FCFA' : shown('w_price', 'price'), size: 13.5, hintColor: demoContent ? Color(0xFF111015) : Color(0xFF57545F), weight: 500, padL: 48)),
       gP(38.25, 434.25, 20.25, 15.75, gImg('assets/figma/v/16ec94a7384869.svg')),
       gP(38.25, 435.75, 19.5, 18, gImg('assets/figma/v/fbc7a9ade9c600.svg')),
       gP(24, 482, 204, 16, gText('Seuil minimum de précommandes', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 502, 342, 48, GField(onChanged: (v) => ref.read(formProvider.notifier).put('w_threshold', v), hint: '', initial: '200', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
+      gP(24, 502, 342, 48, GField(key: ValueKey('w_threshold-$seed'), onChanged: (v) => ref.read(formProvider.notifier).put('w_threshold', v), hint: demoContent ? '' : 'Ex. 200', initial: demoContent ? '200' : shown('w_threshold', 'threshold'), size: 13.5, hintColor: demoContent ? Color(0xFF111015) : Color(0xFF57545F), weight: 500, padL: 48)),
       gP(37.5, 525.25, 16.5, 10.5, gImg('assets/figma/v/9554e493730083.svg')),
       gP(39.75, 516.25, 12, 12, gImg('assets/figma/v/843504f34e5472.svg')),
       gP(50.25, 525.325, 8.25, 10.425, gImg('assets/figma/v/620f31fd0c3b10.svg')),
       gP(48, 516.325, 8.333, 11.85, gImg('assets/figma/v/7f96d83a4c252a.svg')),
       gP(24, 564, 135, 16, gText('Durée de la campagne', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 584, 342, 48, GField(onChanged: (v) => ref.read(formProvider.notifier).put('w_duration', v), hint: '', initial: '30 jours', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48)),
+      gP(24, 584, 342, 48, GField(key: ValueKey('w_duration-$seed'), onChanged: (v) => ref.read(formProvider.notifier).put('w_duration', v), hint: demoContent ? '' : 'Ex. 30 (jours)', initial: demoContent ? '30 jours' : shown('w_duration', 'duration_days'), size: 13.5, hintColor: demoContent ? Color(0xFF111015) : Color(0xFF57545F), weight: 500, padL: 48)),
       gP(38.25, 599, 19.5, 19.5, gImg('assets/figma/v/99b18d1a251e8c.svg')),
       gP(48, 597.5, 6, 9, gImg('assets/figma/v/4d0c4aa2d5e373.svg')),
       gP(42, 597.5, 6, 9, gImg('assets/figma/v/4d0c4aa2d5e373.svg')),
@@ -88,11 +94,11 @@ class G_218 extends ConsumerWidget {
       gP(36, 661, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(41.909, 666.92, 20.171, 20.165, gImg('assets/figma/v/e183fc825ad532.svg')),
       gP(46.875, 672.583, 10.25, 8.833, gImg('assets/figma/v/2bdcafa88f7a43.svg')),
-      gP(76, 660, 277, 34, gText('Votre département valide le vœu avant sa mise en ligne.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
+      gP(76, 660, 277, 34, gText(gm('Votre département valide le vœu avant sa mise en ligne.', 'Le département de votre établissement valide le vœu avant sa mise en ligne (à défaut, l’équipe de la plateforme).'), 12, Color(0xFF4A4854), lh: 17, wrap: true)),
       gP(0, 744, 390, 100, gBox(color: Color(0x00FFFFFF))),
-      gP(24, 760, 163, 54, gBox(color: Color(0x00FFFFFF), border: Color(0xFFD9D3E6), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => saveWish(context, ref, submit: false)),
+      gP(24, 760, 163, 54, gBox(color: Color(0x00FFFFFF), border: Color(0xFFD9D3E6), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => saveWish(context, ref, submit: false, editId: eid)),
       gP(74.5, 778, 62, 18, gText('Brouillon', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
-      gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => saveWish(context, ref, submit: true)),
+      gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => saveWish(context, ref, submit: true, editId: eid)),
       gP(260, 778, 49, 18, gText('Publier', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
     ]);

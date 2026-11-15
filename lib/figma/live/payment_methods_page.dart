@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gen.dart' show gAlert, gToast;
+import '../nav.dart' show gOpen;
 import 'auth.dart' show authProvider, requireLogin;
 import 'backend.dart';
 import 'tp_ui.dart';
@@ -127,6 +128,8 @@ class _PaymentMethodsPageState extends ConsumerState<PaymentMethodsPage> {
           const SizedBox(height: 14),
           TpButton('Enregistrer ce numéro', _busy ? null : _add, busy: _busy),
           tpNote('Aucun code secret n’est jamais demandé ici : la confirmation du paiement se fait sur votre téléphone, au moment de la commande.'),
+          tpSection('Mobile Money', hint: 'Ces numéros servent à payer vos commandes. Pour vérifier un numéro par SMS ou envoyer de l’argent, ouvrez « Connecter mes outils » puis « Mobile Money » : c’est un autre carnet, avec vérification.'),
+          TpButton('Ouvrir Mobile Money', () => gOpen(context, 'P5'), dark: false, compact: true),
         ],
       ],
     );

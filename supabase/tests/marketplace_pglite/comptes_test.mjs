@@ -12,9 +12,9 @@ export async function run(db) {
   await db.exec(`update profiles set is_test = true where id = '${T}'`);
   await as(S);
   await fails('liste : reservee a l administrateur', `select test_accounts_list()`, /Réservé/);
-  await fails('un compte ne se declare pas test lui-meme', `update profiles set is_test = true where id = '${S}'`, /réservée à l'administrateur/);
+  await fails('un compte ne se declare pas test lui-meme', `update profiles set is_test = true where id = '${S}'`, /réservée à l'administrateur|permission denied/);
   await as(T);
-  await fails('un compte de test ne retire pas son marquage', `update profiles set is_test = false where id = '${T}'`, /réservée à l'administrateur/);
+  await fails('un compte de test ne retire pas son marquage', `update profiles set is_test = false where id = '${T}'`, /réservée à l'administrateur|permission denied/);
   await as(M);
   const l = (await q(`select test_accounts_list() r`))[0].r;
   check('liste : seulement les comptes marques test', l.length === 1 && l[0].id === T && l[0].role === 'student' && l[0].last_login === null);

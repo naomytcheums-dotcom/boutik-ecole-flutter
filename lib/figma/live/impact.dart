@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import 'auth.dart';
 import 'backend.dart';
-import 'store.dart' show fcfa;
+import 'store.dart' show IntV, fcfa;
 
 /// Impact et sponsoring (écrans 105, 107, 237, 238, 239), lus sur le serveur (migration 20261105000100) :
 /// impact de la plateforme et de la personne calculés sur les commandes payées et les missions livrées, rapport de sponsoring,
@@ -81,6 +82,7 @@ class OtherListings extends Notifier<List<Map<String, dynamic>>?> {
   @override
   List<Map<String, dynamic>>? build() {
     if (!Backend.ready) return null;
+    ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
     Future.microtask(refresh);
     return null;
   }
@@ -94,6 +96,10 @@ class OtherListings extends Notifier<List<Map<String, dynamic>>?> {
 }
 
 final otherListingsProvider = NotifierProvider<OtherListings, List<Map<String, dynamic>>?>(OtherListings.new);
+
+/// Ville choisie sur le showroom national (270) : 0 tous, puis Douala, Bandjoun, Ngaoundéré.
+final showroomCityProvider = NotifierProvider<IntV, int>(IntV.new);
+const showroomCities = ['', 'douala', 'bandjoun', 'ngaound'];
 
 Widget _note(String t, double width, {double height = 200}) => Container(
       width: width,
@@ -114,12 +120,20 @@ Widget _kpi(String label, String value, double w) => Container(
       ]),
     );
 
+const _moisCourts = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+
+/// « 2026-07 » → « juil. ».
+String _monthLabel(String ym) {
+  final m = int.tryParse(ym.length >= 7 ? ym.substring(5, 7) : '');
+  return m == null || m < 1 || m > 12 ? ym : _moisCourts[m - 1];
+}
+
 String _kg(Object? v) {
   final n = (v as num?)?.toDouble() ?? 0;
   return '${n.toStringAsFixed(n == n.roundToDouble() ? 0 : 1).replaceAll('.', ',')} kg';
 }
 
-/// Impact de la plateforme : FCFA versés aux vendeurs, étudiants payés, missions livrées, commandes payées, et villes actives.
+/// Impact de la plateforme : chiffre des commandes payées, étudiants payés, missions livrées, commandes payées, et villes actives.
 class PlatformImpactPanel extends ConsumerWidget {
   const PlatformImpactPanel({super.key, this.width = 342, this.height = 440});
   final double width, height;
@@ -137,7 +151,7 @@ class PlatformImpactPanel extends ConsumerWidget {
       child: SingleChildScrollView(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Wrap(spacing: 12, runSpacing: 12, children: [
-            _kpi('FCFA versés aux vendeurs', fcfa(((d['revenue_paid'] as num?) ?? 0).toInt()), w),
+            _kpi('Chiffre des commandes payées', fcfa(((d['revenue_paid'] as num?) ?? 0).toInt()), w),
             _kpi('Étudiants payés', '${d['students_paid'] ?? 0}', w),
             _kpi('Missions livrées', '${d['missions_delivered'] ?? 0}', w),
             _kpi('Commandes payées', '${d['orders_paid'] ?? 0}', w),
@@ -202,7 +216,7 @@ class MyImpactPanel extends ConsumerWidget {
                     child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
                       Container(height: 80 * (((m['recycled_kg'] as num?)?.toDouble() ?? 0) / maxKg) + 2, margin: const EdgeInsets.symmetric(horizontal: 6), decoration: BoxDecoration(color: const Color(0xFF5A3FE0), borderRadius: BorderRadius.circular(6))),
                       const SizedBox(height: 4),
-                      Text('${m['month']}'.substring(5), style: _st(10.5, c: _grey)),
+                      Text(_monthLabel('${m['month']}'), style: _st(10.5, c: _grey)),
                     ]),
                   ),
               ]),
@@ -262,9 +276,15 @@ class OtherInstitutionsGrid extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final list = ref.watch(otherListingsProvider);
-    if (list == null) return _note('Chargement des créations…', width);
+    final all = ref.watch(otherListingsProvider);
+    if (all == null) return _note('Chargement des créations…', width);
     if (ref.read(otherListingsProvider.notifier).error) return _note('Les créations ne peuvent pas être chargées pour le moment.', width);
+    final city = showroomCities[ref.watch(showroomCityProvider).clamp(0, showroomCities.length - 1)];
+    final list = [
+      for (final x in all)
+        if (city.isEmpty || '${x['institution']}'.toLowerCase().contains(city)) x,
+    ];
+    if (list.isEmpty && city.isNotEmpty) return _note('Aucune création de cet établissement pour le moment.', width);
     if (list.isEmpty) return _note('Aucune création d’un autre établissement pour le moment.\nLes annonces des étudiants des autres établissements apparaîtront ici.', width);
     return SizedBox(
       width: width,
@@ -275,16 +295,20 @@ class OtherInstitutionsGrid extends ConsumerWidget {
         separatorBuilder: (_, _) => const Divider(height: 18, thickness: 1, color: Color(0xFFF2EFF6)),
         itemBuilder: (_, i) {
           final x = list[i];
-          return Row(children: [
-            Expanded(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text('${x['title']}', maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(13.5, w: FontWeight.w600)),
-                const SizedBox(height: 2),
-                Text('${x['institution']}', maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(11.5, c: const Color(0xFF5A3FE0))),
-              ]),
-            ),
-            Text(fcfa(((x['price'] as num?) ?? 0).toInt()), style: _st(12.5, w: FontWeight.w700)),
-          ]);
+          return GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: '${x['id'] ?? ''}'.isEmpty ? null : () => GoRouter.of(context).push('/marche/produit/${x['id']}'),
+            child: Row(children: [
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text('${x['title']}', maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(13.5, w: FontWeight.w600)),
+                  const SizedBox(height: 2),
+                  Text('${x['institution']}', maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(11.5, c: const Color(0xFF5A3FE0))),
+                ]),
+              ),
+              Text(fcfa(((x['price'] as num?) ?? 0).toInt()), style: _st(12.5, w: FontWeight.w700)),
+            ]),
+          );
         },
       ),
     );

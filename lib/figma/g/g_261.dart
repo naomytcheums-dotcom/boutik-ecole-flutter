@@ -6,6 +6,7 @@ import '../gen.dart';
 import '../nav.dart';
 import '../live/tp_ui.dart' show GlassBack;
 import '../live/store.dart';
+import '../live/orders_list.dart' show ClientSummary;
 import '../live/paiement_messagerie.dart';
 import '../live/premium_pub.dart';
 import 'package:go_router/go_router.dart';
@@ -107,7 +108,7 @@ class G_261 extends ConsumerWidget {
       if (demoContent) gTap(64, 740, 219, 48, () { gOpen(context, '30'); }), // parcours 261 -> 30
       if (demoContent) gTap(92, 444, 156, 32, () { gOpen(context, '252'); }), // parcours 261 -> 252
       if (demoContent) gTap(301, 744, 53, 25, () { reviewOrderDialog(context, ref); }), // audit 01/11 : « Noter » n'avait aucun effet
-      if (!demoContent) gP(24, 125, 342, 620, const CompanySummary(width: 342, height: 440)),
+      if (!demoContent) gP(24, 125, 342, 450, ListView(padding: EdgeInsets.only(bottom: 12), children: [const ClientSummary(width: 342), const SizedBox(height: 18), const CompanySummary(width: 342, height: 440)])),
       if (!demoContent) gP(24, 580, 342, 170, const ShortcutsPanel(width: 342)),
     ]);
   }

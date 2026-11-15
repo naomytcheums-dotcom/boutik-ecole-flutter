@@ -54,3 +54,10 @@ Migration `supabase/migrations/20261114004200_correctifs_visiteur_suite.sql` (ap
 messages exacts de `create_post*`/`create_story`/`create_live`, rappels de date limite envoyés par `send_due_reminders()` (pg_cron toutes les 15 min ; vérifier que pg_cron existe, sinon les rappels ne partent pas) et non plus par `opps_list`/`anns_list`,
 `public_sellers`, `seller_public(p_name, p_id)` (homonymes signalés), `public_projects` (catalogue public sans contacts), `opp_alert_set` désactivable sans filière, titres des collections synchronisés.
 Test SQL : `correctifs_visiteur_suite.mjs` (attendu 26/26) ; `concours.mjs` (28) et `opportunites.mjs` (36) adaptés aux rappels planifiés.
+
+## Correctifs du profil Client (15 novembre 2026) — PRÊTS EN LOCAL, PAS ENCORE APPLIQUÉS EN PRODUCTION
+
+Migrations (ordre = ordre des noms) : `20261115000100_securite_client` (blocages, `public_profile`, `seller_public`, droits `profiles`, RLS `projects`, clé de `dispatch-notifications`), `000200_commandes_paiements_client` (`marketplace_checkout`, `cancel_order`, `expire_unpaid_orders` + cron, `payment_start`), `110000_l1` … `210000_l11` (un fichier par lot de fonctionnalités ; L10 en compte cinq), `220000_planification_cron` (`expire_subscriptions`, `send_event_reminders`), `220100_auth_recovery_durcissement` (`auth_throttle_*`, `auth_revoke_sessions`).
+Test SQL : `node replay.mjs all ./<scénario>.mjs` avec TOUTES les migrations (`securite_client.mjs` 50/50, `l6_*` 39, `l11_*` 31, tous les scénarios existants verts).
+ORDRE DE DÉPLOIEMENT : sauvegarde, `db push` (les migrations posent la clé interne et l'en-tête du cron), PUIS `dispatch-notifications` (`--no-verify-jwt`), puis `pay`, `notchpay-webhook`, `tara-pay`, `tara-webhook`, `auth-recovery`, puis le build web. Déployer `dispatch-notifications` avant les migrations arrête les envois (401).
+Réglages externes : ajouter `cm.iutdouala.boutik_ecole://reset-callback/**` aux « Redirect URLs » de Supabase Auth ; renseigner `payments.manual_number` si le paiement manuel est proposé ; redéployer `integrations-oauth` (redirection 271) ; secrets IA / LiveKit / Twilio non fournis (Kéla, lives natifs, SMS) : non touchés.

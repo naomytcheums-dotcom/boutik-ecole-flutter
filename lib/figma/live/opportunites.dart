@@ -3,49 +3,17 @@ import '../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'auth.dart';
-import 'console.dart';
 import 'entreprise.dart';
-import 'store.dart' show fcfa;
+import 'lots.dart' show compareProposalsDialog;
 
-/// Opportunités (écrans 152 Kéla te recommande, 157 Résumé de Kéla, 203 Mes compétences, 204 Coup de pouce startup) :
-/// uniquement des données réelles. Aucun pourcentage d'adéquation n'est affiché : le classement par Kéla n'existe pas encore côté serveur.
+/// Opportunités (écrans 157 Résumé de mes besoins, 203 Mes compétences, 204 Coup de pouce startup) :
+/// uniquement des données réelles. Les offres recommandées (152) sont dans l8_opportunites.dart, classées par le score de correspondance du serveur.
 
 const _ink = Color(0xFF111015);
 const _grey = Color(0xFF57545F);
 TextStyle _st(double size, {FontWeight w = FontWeight.w500, Color c = _ink}) => TextStyle(fontFamily: 'PlusJakartaSans', fontSize: size, fontWeight: w, color: c);
 
-final openMissionsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('missions', 'title,budget_min,budget_max,status,created_at,deadline', order: 'created_at'));
-
 Widget _intro(double w, String t) => SizedBox(width: w, child: Text(t, style: _st(12.5, c: _grey).copyWith(height: 1.5)));
-
-String _budget(Map<String, dynamic> r) {
-  int? v(Object? x) => (x as num?)?.toInt();
-  final a = v(r['budget_min']), b = v(r['budget_max']);
-  if (a == null && b == null) return 'Budget non précisé';
-  if (a == null || a == b) return fcfa((b ?? a)!);
-  return '${fcfa(a)} – ${fcfa(b!)}';
-}
-
-/// 152 : besoins réellement ouverts, du plus récent au plus ancien.
-class OpenOffers extends ConsumerWidget {
-  const OpenOffers({super.key, this.width = 342, this.height = 440});
-  final double width, height;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        _intro(width, 'Voici les besoins actuellement ouverts. Le classement personnalisé par Kéla arrive bientôt.'),
-        const SizedBox(height: 14),
-        MobileList(
-          provider: openMissionsProvider,
-          where: (r) => '${r['status']}' == 'published',
-          title: (r) => '${r['title']}',
-          subtitle: (r) => '${_budget(r)} · publié le ${dateCourte(r['created_at'])}',
-          emptyText: 'Aucune offre ouverte pour le moment.',
-          width: width,
-          height: height - 60,
-        ),
-      ]);
-}
 
 /// 157 : résumé calculé sur les propositions et besoins de l'entreprise.
 class CompanySummary extends ConsumerWidget {
@@ -83,7 +51,14 @@ class CompanySummary extends ConsumerWidget {
             Text('Aucune proposition reçue pour le moment.', style: _st(13, c: _grey))
           else
             for (final p in props.take(5))
-              Padding(padding: const EdgeInsets.symmetric(vertical: 7), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('${p['author']}', style: _st(13.5, w: FontWeight.w600)), Text('${p['mission']} · ${proposalStatus(p['status'])}', style: _st(11.5, c: _grey))])),
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => compareProposalsDialog(context, ref),
+                child: Padding(padding: const EdgeInsets.symmetric(vertical: 7), child: Row(children: [
+                  Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('${p['author']}', style: _st(13.5, w: FontWeight.w600)), Text('${p['mission']} · ${proposalStatus(p['status'])}', style: _st(11.5, c: _grey))])),
+                  const Icon(Icons.chevron_right, size: 20, color: _grey),
+                ])),
+              ),
         ]),
       ),
     );

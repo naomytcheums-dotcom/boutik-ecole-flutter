@@ -165,7 +165,8 @@ export async function run(db) {
   const qr = (await q(`select status, quote_amount, quote_delay_days from quote_requests where id='${dq}'`))[0];
   check('devis : etat final accepte avec prix et delai', qr.status === 'accepted' && qr.quote_amount === 22000 && qr.quote_delay_days === 7);
   const reco = (await q(`select recommended_offers(10) r`))[0].r;
-  check('recommandes : offres de ma filiere en premier, jamais les miennes', ['Lampe en bois', 'Table basse'].every(t => reco.some(x => x.title === t)) && !reco.some(x => ['Sac direct', 'Creation de logo'].includes(x.title)), JSON.stringify(reco.map(x => x.title)));
+  const miennes = (await q(`select title from listings where seller_id = auth.uid()`)).map(x => x.title);
+  check('recommandes : offres de ma filiere en premier, jamais les miennes', ['Lampe en bois', 'Table basse'].every(t => reco.slice(0, 2).some(x => x.title === t)) && !reco.some(x => miennes.includes(x.title)), JSON.stringify(reco.map(x => x.title)));
   // --- appel à entreprises et projets de l'IUT
   let calls = (await q(`select open_calls() r`))[0].r;
   check('appel : le besoin publie est visible, pas le brouillon', calls.length === 1 && calls[0].title === 'Gestion des stocks pour ma boutique' && calls[0].own === true && calls[0].company === 'Paul Buyer');

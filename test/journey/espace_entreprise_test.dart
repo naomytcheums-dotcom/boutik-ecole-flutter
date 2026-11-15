@@ -162,15 +162,28 @@ void main() {
     expect(find.text('Aucune innovation validée pour le moment.'), findsOneWidget);
   });
 
-  testWidgets('85 connecté sans campagne : état vide, aucun montant de maquette', (t) async {
-    await monter(t, const G_85(), connecte: true, overrides: [campaignsProvider.overrideWith(() => _Rows('table:campaigns', const []))]);
-    expect(find.textContaining('Aucune campagne pour le moment'), findsOneWidget);
+  testWidgets('85 connecté : jalons de MES campagnes, aucun montant de maquette', (t) async {
+    await monter(t, const G_85(), connecte: true);
+    expect(find.text('Objectifs et jalons'), findsWidgets);
     expect(find.text('Objectif : 2 000 000 FCFA'), findsNothing);
+    expect(find.textContaining('Aucune campagne pour le moment'), findsNothing);
   });
 
-  testWidgets('86 connecté : message honnête, aucun chiffre de maquette', (t) async {
+  testWidgets('85 connecté en Client : message de réservation clair, aucune action proposée', (t) async {
+    Backend.ready = true;
+    t.view.physicalSize = const Size(393, 852);
+    t.view.devicePixelRatio = 1;
+    addTearDown(t.view.reset);
+    await t.pumpWidget(const ProviderScope(child: MaterialApp(home: G_85())));
+    ProviderScope.containerOf(t.element(find.byType(G_85))).read(authProvider.notifier).login(demoAccount.copyWith(role: 0));
+    await t.pumpAndSettle();
+    expect(find.text('Réservé aux étudiants'), findsWidgets);
+    expect(find.text('Ajouter un jalon'), findsNothing);
+  });
+
+  testWidgets('86 connecté : résultats de MES campagnes, aucun chiffre de maquette', (t) async {
     await monter(t, const G_86(), connecte: true);
-    expect(find.textContaining('pas encore collectées en ligne'), findsOneWidget);
+    expect(find.text('Résultats de campagne'), findsWidgets);
     expect(find.text('4,2 %'), findsNothing);
   });
 

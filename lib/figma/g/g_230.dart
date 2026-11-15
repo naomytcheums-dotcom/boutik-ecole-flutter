@@ -47,9 +47,10 @@ class G_230 extends ConsumerWidget {
       gP(43.546, 83.546, 11.454, 16.908, gImg('assets/figma/v/eadfa38ab5fb32.svg')),
       gP(43.546, 89, 16.908, 6, gImg('assets/figma/v/876f9e4ca5bd5d.svg')),
       gP(104.5, 72, 181, 21, gText('Assistante vocale Kéla', 17, Color(0xFF111015), weight: 500, align: TextAlign.center)),
-      gP(161, 98, 68, 16, gText('À l’écoute…', 12.5, Color(0xFF57545F), align: TextAlign.center)),
+      gP(121, 98, 148, 16, kelaStatusText()),
       gP(316, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
       gP(328.767, 83, 18.467, 18.233, gImg('assets/figma/v/menu3.svg')), gTap(316, 70, 44, 44, () => gOpen(context, '231')),
+      gP(95, 132, 200, 28, Align(alignment: Alignment.center, child: gText('Ou écrire à Kéla', 13, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center)), tap: () => gOpen(context, '232')),
       gP(95, 240, 200, 200, gBox(color: Color(0x59FFB36B), layerBlur: 90, oval: true), fx: 'halo'),
       gP(70, 205, 250, 250, kelaOrb(image: 'assets/figma/img/2b51b5d6469cca917952ac344a2ddf9cc1440830.png', fit: BoxFit.contain, shadows: [BoxShadow(color: Color(0x47FF731A), offset: Offset(0, 18), blurRadius: 28, spreadRadius: 0)])),
       gP(34, 484, 329, 150, Consumer(builder: (context, ref, _) => gText(ref.watch(kelaTextProvider).isEmpty ? 'Touche le micro et parle…' : ref.watch(kelaTextProvider), 26, Color(0xFF111015), weight: 500, lh: 34, wrap: true, maxLines: 4))),
@@ -63,7 +64,7 @@ class G_230 extends ConsumerWidget {
       gP(228, 655, 4, 10, gBox(color: Color(0xFF8E7BFF), radii: [2, 2, 2, 2]), fx: 'wave'),
       
       
-      gP(153, 704, 84, 84, GMic(onResult: (on) => kelaToggle(ref, on, context), child: gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x4D000000), offset: Offset(0, 12), blurRadius: 26, spreadRadius: 0)], oval: true))),
+      gP(153, 704, 84, 84, kelaMic(context, child: gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x4D000000), offset: Offset(0, 12), blurRadius: 26, spreadRadius: 0)], oval: true))),
       gP(188.25, 730.5, 13.5, 21, gImg('assets/figma/v/2d0fe55c8faa41.svg')),
       gP(183.25, 740.5, 23.5, 16, gImg('assets/figma/v/e0998b9bdd25ce.svg')),
       gP(192, 750.5, 6, 11, gImg('assets/figma/v/170c9f72b8a8fd.svg')),

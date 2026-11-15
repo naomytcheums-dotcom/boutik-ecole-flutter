@@ -8,6 +8,7 @@ import 'package:boutik_ecole/figma/gsound.dart';
 import 'package:boutik_ecole/figma/live/auth.dart';
 import 'package:boutik_ecole/figma/live/backend.dart';
 import 'package:boutik_ecole/figma/live/device_prefs.dart';
+import 'package:boutik_ecole/figma/live/l10_cv.dart' show cvPreviewProvider;
 import 'package:boutik_ecole/figma/live/profile_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -83,15 +84,20 @@ void main() {
     expect(find.textContaining('Aucun CV envoyé'), findsOneWidget);
   });
 
-  testWidgets('229 connecté : profil réel', (t) async {
-    await monter(t, const G_229(), connecte: true, overrides: [myDocsProvider.overrideWith(_Docs.new)]);
-    expect(find.text('CV envoyé'), findsOneWidget);
+  testWidgets('229 connecté : mon CV vivant réel, aucune maquette', (t) async {
+    await monter(t, const G_229(), connecte: true, overrides: [
+      cvPreviewProvider.overrideWith((ref) async => {'nom': 'Awa Test', 'competences': 'Python, Flutter', 'realisations': [], 'missions': [], 'avis': {'nombre': 0}}),
+    ]);
+    expect(find.text('Python'), findsOneWidget);
     expect(find.text('Score 88 · Disponible · IUT de Douala'), findsNothing);
+    expect(find.text('Proposer un stage'), findsNothing);
   });
 
-  testWidgets('211 connecté : produit choisi', (t) async {
+  testWidgets('211 connecté : aucun produit choisi, aucune fiche de maquette', (t) async {
     await monter(t, const G_211(), connecte: true);
-    expect(find.textContaining('Vendeur :'), findsOneWidget);
+    expect(find.textContaining('Aucun produit n’est choisi'), findsOneWidget);
+    expect(find.text('Lampe en bois recyclé'), findsNothing);
+    expect(find.text('Origine'), findsNothing);
   });
 
   testWidgets('227 et 229 hors connexion : la démonstration reste affichée', (t) async {

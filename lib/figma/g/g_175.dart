@@ -76,7 +76,7 @@ class G_175 extends ConsumerWidget {
       gP(0, 744, 390, 100, gBox(color: Color(0x00FFFFFF))),
       gP(24, 760, 163, 54, gBox(color: Color(0x00FFFFFF), border: Color(0xFFD9D3E6), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gTab(context, '03')),
       gP(82, 778, 47, 18, gText('Passer', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
-      gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gVisiteNext(context, '175', '57')),
+      gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gVisiteNext(context, '175', gDest(ref, '57'))),
       gP(249.5, 778, 70, 18, gText('Continuer', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       if (!demoContent) gP(0, 100, 390, 700, const CmsPageOverlay(title: 'Bienvenue, étudiant', height: 700)),

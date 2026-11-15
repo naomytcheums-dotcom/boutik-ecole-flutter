@@ -24,6 +24,7 @@ import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/inert_actions.dart';
 import '../live/pay.dart';
+import '../live/l10_ateliers.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_223 extends ConsumerWidget {
@@ -50,7 +51,7 @@ class G_223 extends ConsumerWidget {
       gP(24, 120, 342, 170, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x000B2340), Color(0xE00B2340)], stops: [0, 1]), radii: [26, 26, 26, 26]), show: demoContent),
       gP(42, 228, 309, 23, gText('En direct maintenant · Atelier bois', 18, Color(0xFFFFFFFF), weight: 800, wrap: true), show: demoContent),
       gP(42, 258, 309, 15, gText(gm('Génie civil · 124 spectateurs', ''), 12, Color(0xD9FFFFFF), weight: 500, wrap: true), show: demoContent),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 304, 107.4, 34, 'Aujourd’hui', 12.5, 600), GChip(139.4, 304, 122.2, 34, 'Cette semaine', 12.5, 500), GChip(269.6, 304, 107.4, 34, 'Mes rappels', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 304, 107.4, 34, 'Aujourd’hui', 12.5, 600), GChip(139.4, 304, 122.2, 34, 'Cette semaine', 12.5, 500), GChip(269.6, 304, 107.4, 34, 'Mes rappels', 12.5, 500)], selected: demoContent ? 0 : 1, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17, onChanged: (i) { ref.read(livesScopeProvider.notifier).set(i); })),
       gP(24, 352, 50, 19, gText('À venir', 15, Color(0xFF111015), weight: 700), show: demoContent),
       gP(36, 398, 50, 50, gBox(image: 'assets/figma/img/4ca68f79023605aecb4f83724629d508e921e885.png', fit: BoxFit.cover, radii: [12, 12, 12, 12]), show: demoContent),
       gP(98, 402, 179, 17, gText(gm('Fabrication du jus de bissap', ''), 13.5, Color(0xFF111015), weight: 600), show: demoContent),
@@ -88,7 +89,8 @@ class G_223 extends ConsumerWidget {
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       if (demoContent) gTap(34, 220, 325, 39, () { gOpen(context, '222'); }), // parcours 223 -> 222
       if (demoContent) gTap(92, 527, 160, 32, () { gOpen(context, '222'); }), // audit 01/11 : « Créer un logo en direct » n'avait aucun effet
-      if (!demoContent) gP(24, 125, 342, 620, livesAgenda()),
+      if (!demoContent) gP(24, 352, 342, 392, const LivesAgendaPanel(width: 342, height: 392)),
+      if (!demoContent) gP(24, 130, 342, 54, gText('Touchez un atelier pour l’ouvrir. La cloche active un rappel : vous êtes prévenu une demi-heure avant le début.', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
     ]);
   }
 }

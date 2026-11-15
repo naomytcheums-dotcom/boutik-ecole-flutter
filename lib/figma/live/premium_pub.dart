@@ -48,7 +48,20 @@ const featureLabels = {
   'gestion_communaute': 'Gestion de communauté',
 };
 
-final plansProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('plans', 'code,name,audience,price_xaf,period_days,features,active', order: 'code', ascending: true));
+final plansProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('plans', 'code,name,audience,price_xaf,period_days,features,active,audience_roles,sellable', order: 'code', ascending: true));
+
+/// Droits réellement livrés : les autres fonctions des offres sont annoncées comme « bientôt » et ne sont jamais présentées comme acquises.
+const deliveredFeatures = {'boost_campagnes'};
+
+/// Offres présentées à un compte : celles qui se vendent et qui concernent son type de compte (« Tous les comptes » ou son audience).
+/// L'administrateur voit tout le catalogue pour fixer les prix.
+List<Map<String, dynamic>> plansFor(List<Map<String, dynamic>> plans, String role) {
+  if (role == 'admin') return plans;
+  return [
+    for (final p in plans)
+      if (p['sellable'] != false && (((p['audience_roles'] as List?) ?? const []).isEmpty || ((p['audience_roles'] as List).contains(role)))) p,
+  ];
+}
 final entitlementsProvider = NotifierProvider<EntitlementsNotifier, Map<String, dynamic>?>(EntitlementsNotifier.new);
 
 class EntitlementsNotifier extends Notifier<Map<String, dynamic>?> {
@@ -77,6 +90,7 @@ class PlansScreen extends ConsumerWidget {
     final plans = ref.watch(plansProvider);
     final ent = ref.watch(entitlementsProvider);
     final admin = _isAdmin(ref);
+    final role = ref.watch(authProvider.select((a) => roleKey(a.current)));
     final mine = [for (final s in (ent?['subscriptions'] as List? ?? const [])) Map<String, dynamic>.from(s as Map)];
     Widget body;
     if (_out(ref)) {
@@ -87,7 +101,7 @@ class PlansScreen extends ConsumerWidget {
       body = ListView(padding: const EdgeInsets.all(18), children: [
         Text('Le badge vérifié reste attribué par le département : il ne s’achète pas.', style: _st(12, c: _grey)),
         const SizedBox(height: 16),
-        for (final p in plans)
+        for (final p in plansFor(plans, role))
           Container(
             margin: const EdgeInsets.only(bottom: 14),
             padding: const EdgeInsets.all(16),
@@ -95,27 +109,21 @@ class PlansScreen extends ConsumerWidget {
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(children: [Expanded(child: Text('${p['name']}', style: _st(16, w: FontWeight.w800))), Text(p['price_xaf'] == null ? 'Tarif non défini' : (p['price_xaf'] == 0 ? 'Gratuit' : '${fcfa((p['price_xaf'] as num).toInt())} / ${p['period_days']} j'), style: _st(13, w: FontWeight.w700, c: const Color(0xFF5A3FE0)))]),
               if ('${p['audience']}'.isNotEmpty) Text('${p['audience']}', style: _st(12, c: _grey)),
+              if (admin && p['sellable'] == false) Text('Non vendue : ses fonctions ne sont pas encore livrées.', style: _st(12, c: const Color(0xFFC0392B))),
               const SizedBox(height: 10),
-              for (final f in (p['features'] as List? ?? const [])) Padding(padding: const EdgeInsets.symmetric(vertical: 2), child: Row(children: [const Icon(Icons.check, size: 16, color: Color(0xFF1F9D6B)), const SizedBox(width: 8), Text(featureLabels['$f'] ?? '$f', style: _st(12.5))])),
+              for (final f in (p['features'] as List? ?? const []))
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  child: Row(children: [
+                    deliveredFeatures.contains('$f') ? const Icon(Icons.check, size: 16, color: Color(0xFF1F9D6B)) : const Icon(Icons.schedule, size: 16, color: _grey),
+                    const SizedBox(width: 8),
+                    Expanded(child: Text('${featureLabels['$f'] ?? '$f'}${deliveredFeatures.contains('$f') ? '' : ' · bientôt disponible'}', style: _st(12.5, c: deliveredFeatures.contains('$f') ? _ink : _grey))),
+                  ]),
+                ),
               if ((p['features'] as List? ?? const []).isEmpty) Text('Fonctions de base.', style: _st(12.5, c: _grey)),
               const SizedBox(height: 12),
               Row(children: [
-                if (p['code'] != 'gratuit')
-                  _btn(p['price_xaf'] == null ? 'Tarif non défini' : (mine.any((s) => s['plan'] == p['code'] && '${s['status']}' != 'expired') ? 'Déjà souscrit ou en attente' : 'Souscrire'), () async {
-                    if (p['price_xaf'] == null) {
-                      gToast(context, 'Le tarif de cette offre n’est pas encore fixé par l’administration : souscription impossible pour le moment.');
-                      return;
-                    }
-                    final r = await Backend.rpc('subscription_start', {'p_plan': '${p['code']}'});
-                    if (!context.mounted) return;
-                    if (r.error != null) {
-                      gToast(context, Backend.userMessage(r.error!));
-                      return;
-                    }
-                    ref.read(selectedPaymentProvider.notifier).select('${r.data}');
-                    ref.invalidate(entitlementsProvider);
-                    GoRouter.of(context).push('/paiement');
-                  }),
+                if (p['code'] != 'gratuit') _planButton(context, ref, p, mine.where((s) => s['plan'] == p['code']).toList()),
                 if (admin) ...[const SizedBox(width: 8), _btn('Fixer le prix', () => _priceDialog(context, ref, p), dark: false)],
               ]),
             ]),
@@ -123,9 +131,10 @@ class PlansScreen extends ConsumerWidget {
         if (mine.isNotEmpty) ...[
           Text('Mes abonnements', style: _st(15, w: FontWeight.w800)),
           const SizedBox(height: 8),
-          for (final s in mine) Text('${s['name']} · ${_status('${s['status']}')}${s['period_end'] == null ? '' : ' · jusqu’au ${dateCourte(s['period_end'])}'}', style: _st(13)),
+          for (final s in mine) Text('${s['name']} · ${'${s['status']}' == 'pending' && const {'failed', 'cancelled'}.contains('${s['payment_status']}') ? 'paiement non abouti, à recommencer' : _status('${s['status']}')}${s['period_end'] == null ? '' : ' · jusqu’au ${dateCourte(s['period_end'])}'}', style: _st(13)),
           const SizedBox(height: 10),
-          if (mine.any((s) => '${s['status']}' == 'active')) _btn('Annuler à la fin de la période', () async { if (await _run(context, 'subscription_cancel', const {}, 'Annulation programmée.')) ref.invalidate(entitlementsProvider); }, dark: false),
+          for (final s in mine.where((s) => '${s['status']}' == 'active'))
+            Padding(padding: const EdgeInsets.only(bottom: 8), child: _btn('Annuler « ${s['name']} » à la fin de la période', () async { if (await _run(context, 'subscription_cancel', {'p_plan': '${s['plan']}'}, 'Annulation programmée.')) ref.invalidate(entitlementsProvider); }, dark: false)),
         ],
       ]);
     }
@@ -133,6 +142,35 @@ class PlansScreen extends ConsumerWidget {
   }
 
   static String _status(String s) => switch (s) { 'pending' => 'paiement en attente', 'active' => 'actif', 'cancel_at_period_end' => 'se termine à l’échéance', _ => 'expiré' };
+
+  /// Bouton d'une offre : souscrire, reprendre un paiement en attente, ou « Déjà souscrit ». Une demande dont le paiement a échoué
+  /// ou été annulé peut être recommencée.
+  Widget _planButton(BuildContext context, WidgetRef ref, Map<String, dynamic> p, List<Map<String, dynamic>> subs) {
+    final running = subs.where((s) => const {'active', 'cancel_at_period_end'}.contains('${s['status']}')).isNotEmpty;
+    final waiting = subs.where((s) => '${s['status']}' == 'pending' && !const {'failed', 'cancelled'}.contains('${s['payment_status']}') && s['payment_id'] != null).firstOrNull;
+    if (running) return _btn('Déjà souscrit', () => gToast(context, 'Vous avez déjà cette offre : elle reste active jusqu’à son échéance.'), dark: false);
+    if (waiting != null) {
+      return _btn('Reprendre le paiement', () {
+        ref.read(selectedPaymentProvider.notifier).select('${waiting['payment_id']}');
+        GoRouter.of(context).push('/paiement');
+      }, dark: false);
+    }
+    return _btn(p['price_xaf'] == null ? 'Tarif non défini' : 'Souscrire', () async {
+      if (p['price_xaf'] == null) {
+        gToast(context, 'Le tarif de cette offre n’est pas encore fixé par l’administration : souscription impossible pour le moment.');
+        return;
+      }
+      final r = await Backend.rpc('subscription_start', {'p_plan': '${p['code']}'});
+      if (!context.mounted) return;
+      if (r.error != null) {
+        gToast(context, Backend.userMessage(r.error!));
+        return;
+      }
+      ref.read(selectedPaymentProvider.notifier).select('${r.data}');
+      ref.invalidate(entitlementsProvider);
+      GoRouter.of(context).push('/paiement');
+    });
+  }
 
   Future<void> _priceDialog(BuildContext context, WidgetRef ref, Map<String, dynamic> p) async {
     final c = TextEditingController(text: p['price_xaf'] == null ? '' : '${p['price_xaf']}');
@@ -189,7 +227,7 @@ class AdsScreen extends ConsumerWidget {
               Text('${r['impressions']} impressions · ${r['clicks']} clics${r['ctr'] == null ? '' : ' · ${r['ctr']} % de clics'}', style: _st(12, c: _grey)),
               if ('${r['review_note'] ?? ''}'.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 4), child: Text('Motif : ${r['review_note']}', style: _st(12, c: const Color(0xFFC0392B)))),
               const SizedBox(height: 10),
-              Row(children: [
+              Wrap(spacing: 8, runSpacing: 8, children: [
                 if ('${r['status']}' == 'draft' || '${r['status']}' == 'rejected')
                   _btn('Payer le budget', () async {
                     final x = await Backend.rpc('ad_campaign_submit', {'p_id': '${r['id']}'});
@@ -206,6 +244,12 @@ class AdsScreen extends ConsumerWidget {
                   _btn('Ouvrir le paiement', () {
                     ref.read(selectedPaymentProvider.notifier).select('${r['payment_id']}');
                     GoRouter.of(context).push('/paiement');
+                  }, dark: false),
+                if (const {'draft', 'rejected', 'awaiting_payment'}.contains('${r['status']}'))
+                  _btn('Annuler', () async {
+                    final go = await showDialog<bool>(context: context, builder: (d) => AlertDialog(title: const Text('Annuler cette campagne ?'), content: const Text('Elle sera supprimée et son paiement en attente annulé. Rien n’a été débité.'), actions: [TextButton(onPressed: () => Navigator.pop(d, false), child: const Text('Garder')), TextButton(onPressed: () => Navigator.pop(d, true), child: const Text('Annuler la campagne'))]));
+                    if (go != true || !context.mounted) return;
+                    if (await _run(context, 'ad_campaign_cancel', {'p_id': '${r['id']}'}, 'Campagne annulée.')) await ref.read(myAdsProvider.notifier).refresh();
                   }, dark: false),
                 if ('${r['status']}' == 'active' || '${r['status']}' == 'paused') _btn('${r['status']}' == 'active' ? 'Mettre en pause' : 'Reprendre', () async { if (await _run(context, 'ad_campaign_toggle', {'p_id': '${r['id']}'}, 'Campagne mise à jour.')) await ref.read(myAdsProvider.notifier).refresh(); }, dark: false),
               ]),

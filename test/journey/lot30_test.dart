@@ -34,12 +34,14 @@ import 'package:boutik_ecole/figma/live/auth.dart';
 import 'package:boutik_ecole/figma/live/backend.dart';
 import 'package:boutik_ecole/figma/live/console.dart';
 import 'package:boutik_ecole/figma/live/impact.dart' show RpcMap;
+import 'package:boutik_ecole/figma/live/l10_ateliers.dart' show liveNowListProvider;
 import 'package:boutik_ecole/figma/live/modules.dart';
 import 'package:boutik_ecole/figma/live/referral.dart' show ReferralCode, referralCodeProvider;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 import '../helpers/render.dart';
 
@@ -108,7 +110,7 @@ void main() {
   testWidgets('221 connecté : duel terminé avec vainqueur', (t) async {
     await monter(t, const G_221(), connecte: true, overrides: [
       duelsProvider.overrideWith(() => _Rows('duels_list', [
-            {'id': 'd2', 'need': 'Affiche Fermée', 'prize': '', 'ends_at': '2026-10-01T10:00:00Z', 'open': false, 'entries': [{'id': 'e1', 'title': 'Idée B', 'author': 'Bob Test', 'votes': 5}]}
+            {'id': 'd2', 'need': 'Affiche Fermée', 'prize': '', 'ends_at': '2026-10-01T10:00:00Z', 'open': false, 'winner_entry': 'e1', 'winner_id': 'u-bob', 'entries': [{'id': 'e1', 'title': 'Idée B', 'author': 'Bob Test', 'votes': 5}]}
           ]))
     ]);
     expect(find.text('Affiche Fermée'), findsOneWidget);
@@ -116,19 +118,25 @@ void main() {
     expect(find.text('Voter'), findsNothing);
   });
 
-  testWidgets('222 connecté : live en cours et commentaires réels', (t) async {
+  testWidgets('221 connecté : duel terminé sans gagnant enregistré, aucun trophée inventé', (t) async {
+    await monter(t, const G_221(), connecte: true, overrides: [
+      duelsProvider.overrideWith(() => _Rows('duels_list', [
+            {'id': 'd3', 'need': 'Logo Fermé', 'prize': '', 'ends_at': '2026-10-01T10:00:00Z', 'open': false, 'entries': [{'id': 'e9', 'title': 'Idée C', 'author': 'Cléo Test', 'votes': 0}]}
+          ]))
+    ]);
+    expect(find.text('Logo Fermé'), findsOneWidget);
+    expect(find.textContaining('🏆'), findsNothing);
+    expect(find.textContaining('Aucun gagnant'), findsOneWidget);
+  });
+
+  testWidgets('222 connecté : lives réellement en cours (table lives)', (t) async {
     await monter(t, const G_222(), connecte: true, overrides: [
-      livesAllProvider.overrideWith(() => _Rows('table:scheduled_lives', [
-            {'id': 'l1', 'host_id': 'x', 'title': 'Atelier Test', 'starts_at': '', 'product_title': '', 'status': 'live'},
-            {'id': 'l2', 'host_id': 'x', 'title': 'Pas encore', 'starts_at': '', 'product_title': '', 'status': 'scheduled'},
-          ])),
-      liveCommentsProvider.overrideWith(() => _Rows('table:live_comments', [
-            {'live_id': 'l1', 'body': 'Bravo', 'created_at': '2026-11-01T10:00:00Z'}
-          ])),
+      liveNowListProvider.overrideWith((ref) async => [
+            {'id': 'l1', 'title': 'Atelier Test', 'status': 'live', 'host': 'Awa E.', 'viewer_count': 3, 'remind': false, 'mine': false},
+          ]),
     ]);
     expect(find.text('Atelier Test'), findsOneWidget);
-    expect(find.text('Pas encore'), findsNothing);
-    expect(find.text('Bravo'), findsOneWidget);
+    expect(find.text('EN DIRECT'), findsWidgets);
   });
 
   testWidgets('146_2 connecté : casiers réels avec bouton de remise', (t) async {
@@ -185,19 +193,39 @@ void main() {
     expect(find.text('Réglage modifié'), findsOneWidget);
   });
 
-  testWidgets('242 connecté : code de parrainage', (t) async {
+  testWidgets('242 connecté : lien d’invitation et messages portent le code', (t) async {
     await monter(t, const G_242(), connecte: true, overrides: [referralCodeProvider.overrideWith(() => _Ref('ABCD2345'))]);
-    expect(find.text('ABCD2345'), findsOneWidget);
+    expect(find.textContaining('?ref=ABCD2345'), findsWidgets);
+    expect(find.textContaining('mon code : ABCD2345'), findsOneWidget);
+    expect(find.text('Partager'), findsWidgets);
   });
 
-  testWidgets('233 connecté : messages réels de la mission', (t) async {
-    await monter(t, const G_233(), connecte: true, overrides: [
-      threadsProvider.overrideWith(() => _Rows('table:mission_messages', [
-            {'mission_id': 'm', 'body': 'Bonjour, voici la maquette', 'created_at': '2026-11-01T10:00:00Z', 'missions': {'title': 'Mission Test'}}
-          ]))
+  Future<void> redirige(WidgetTester t, Widget ecran, String cible) async {
+    Backend.ready = true;
+    GAnim.enabled = false;
+    t.view.physicalSize = const Size(393, 852);
+    t.view.devicePixelRatio = 1;
+    addTearDown(t.view.reset);
+    final router = GoRouter(initialLocation: '/depart', routes: [
+      GoRoute(path: '/depart', builder: (_, _) => ecran),
+      GoRoute(path: cible, builder: (_, _) => const Scaffold(body: Text('ARRIVEE'))),
     ]);
-    expect(find.text('Mission Test'), findsOneWidget);
-  });
+    await t.pumpWidget(ProviderScope(child: MaterialApp.router(routerConfig: router)));
+    await t.pump();
+    await t.pumpAndSettle();
+    expect(find.text('ARRIVEE'), findsOneWidget);
+  }
+
+  testWidgets('233 connecté : le faux WhatsApp renvoie vers la discussion réelle de la mission', (t) => redirige(t, const G_233(), '/s/201'));
+  testWidgets('234 connecté : le faux WhatsApp renvoie vers la validation de jalon réelle', (t) => redirige(t, const G_234(), '/s/197'));
+  testWidgets('235 connecté : le faux WhatsApp renvoie vers Mes paiements', (t) => redirige(t, const G_235(), '/paiements'));
+
+  for (final c in <(String, Widget, String)>[('233', const G_233(), 'Aujourd’hui'), ('234', const G_234(), 'Jalon 2 · 72 000 FCFA'), ('235', const G_235(), 'Paiement sécurisé')]) {
+    testWidgets('${c.$1} hors connexion : la démonstration reste affichée', (t) async {
+      await monter(t, c.$2, connecte: false);
+      expect(find.text(c.$3), findsWidgets);
+    });
+  }
 
   for (final c in <(String, Widget, String, bool)>[
     ('219', const G_219(), 'Besoin', false),
@@ -218,9 +246,6 @@ void main() {
     ('125', const G_125(), 'Rapport mensuel global', true),
     ('269', const G_269(), 'Compétences les plus demandées', true),
     ('242', const G_242(), 'Story en 30 s', false),
-    ('233', const G_233(), 'Aujourd’hui', false),
-    ('234', const G_234(), 'Jalon 2 · 72 000 FCFA', false),
-    ('235', const G_235(), 'Paiement sécurisé', false),
     ('195', const G_195(), 'Propositions de logo', false),
     ('197', const G_197(), 'Propositions de logo', false),
     ('82', const G_82(), '03 sept. 2026 · Équipe complète', false),

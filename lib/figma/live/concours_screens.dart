@@ -176,6 +176,9 @@ class ContestAnnouncementsScreen extends ConsumerStatefulWidget {
   ConsumerState<ContestAnnouncementsScreen> createState() => _AnnsState();
 }
 
+/// Les étudiants et les clients ne publient pas d'annonce (le serveur les refuse) ; visiteurs et autres rôles voient le bouton.
+bool _canPost(String role) => role != 'student' && role != 'client';
+
 class _AnnsState extends ConsumerState<ContestAnnouncementsScreen> {
   final _q = TextEditingController(), _country = TextEditingController();
   AnnQuery _query = const AnnQuery();
@@ -196,6 +199,7 @@ class _AnnsState extends ConsumerState<ContestAnnouncementsScreen> {
 
   Future<void> _won() async {
     if (!await requireLogin(context, ref, 'partager une victoire') || !mounted) return;
+    if (roleKey(ref.read(authProvider).current) != 'student') return gAlert(context, 'Victoire', 'Seuls les étudiants peuvent déclarer une victoire à un concours.');
     final title = TextEditingController(), prize = TextEditingController(), year = TextEditingController(text: '${DateTime.now().year}'), proof = TextEditingController();
     InputDecoration deco(String l, {String? hint}) => InputDecoration(labelText: l, hintText: hint, border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)));
     final ok = await showModalBottomSheet<bool>(
@@ -233,6 +237,7 @@ class _AnnsState extends ConsumerState<ContestAnnouncementsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final role = roleKey(ref.watch(authProvider).current);
     final async = ref.watch(annsProvider(_query));
     return MarchePage(
       title: 'Concours et bourses',
@@ -268,8 +273,10 @@ class _AnnsState extends ConsumerState<ContestAnnouncementsScreen> {
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
           child: Row(children: [
             Expanded(child: mButton(_query.saved ? 'Toutes les annonces' : 'Mes enregistrés', () => _set(_query.copy(saved: !_query.saved)), dark: false, icon: Icons.bookmark_border)),
-            const SizedBox(width: 10),
-            Expanded(child: mButton('Publier', () => context.push('/concours/publier'), dark: false, icon: Icons.add)),
+            if (_canPost(role)) ...[
+              const SizedBox(width: 10),
+              Expanded(child: mButton('Publier', () => context.push('/concours/publier'), dark: false, icon: Icons.add)),
+            ],
           ]),
         ),
         mSectionTitle(_query.saved ? 'Mes enregistrés' : 'À venir'),
@@ -279,11 +286,11 @@ class _AnnsState extends ConsumerState<ContestAnnouncementsScreen> {
               ? mNote(_query.saved ? 'Aucune annonce enregistrée.' : 'Aucune annonce ne correspond pour le moment.\nBourses, hackathons et appels à projets apparaîtront ici dès leur publication.')
               : Column(children: [for (final a in l) AnnouncementCard(a: a, onTap: () => context.push('/concours/${a['id']}'), onSave: () => _save(a))]),
         ),
-        mSectionTitle('Ils ont gagné', trailing: GestureDetector(onTap: _won, child: Text('J’ai gagné', style: mst(12.5, w: FontWeight.w700, c: kViolet)))),
+        mSectionTitle('Ils ont gagné', trailing: role == 'student' || role == 'visitor' ? GestureDetector(onTap: _won, child: Text('J’ai gagné', style: mst(12.5, w: FontWeight.w700, c: kViolet))) : null),
         mAsync<List<Map<String, dynamic>>>(
           ref.watch(annWinsProvider),
           (l) => l.isEmpty
-              ? Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: Text('Les étudiants de l’IUT qui ont gagné un concours apparaîtront ici, avec leur preuve.', style: mst(13, c: kGrey)))
+              ? Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: Text('Les étudiants qui ont gagné un concours apparaîtront ici, avec leur preuve.', style: mst(13, c: kGrey)))
               : Column(children: [
                   for (final w in l)
                     _box(Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -303,6 +310,20 @@ class _AnnsState extends ConsumerState<ContestAnnouncementsScreen> {
 class AnnouncementDetailScreen extends ConsumerWidget {
   const AnnouncementDetailScreen({super.key, required this.id});
   final String id;
+
+  /// Avertit avant d'ouvrir un site externe : l'adresse vient de l'organisateur et n'est pas vérifiée par la plateforme.
+  Future<void> _leave(BuildContext context, String url) async {
+    final host = Uri.tryParse(url)?.host ?? '';
+    final go = await showDialog<bool>(
+      context: context,
+      builder: (c) => AlertDialog(
+        title: const Text('Vous quittez Boutik-École'),
+        content: Text('Ce lien ouvre un site externe${host.isEmpty ? '' : ' ($host)'}, renseigné par l’organisateur : Boutik-École ne l’a pas vérifié. Ne payez rien et ne communiquez aucun mot de passe sans avoir vérifié l’organisateur.'),
+        actions: [TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('Rester')), TextButton(onPressed: () => Navigator.pop(c, true), child: const Text('Continuer'))],
+      ),
+    );
+    if (go == true && context.mounted) await openUrl(context, url);
+  }
 
   String _date(Object? v) {
     final d = DateTime.tryParse('$v');
@@ -339,7 +360,7 @@ class AnnouncementDetailScreen extends ConsumerWidget {
           _list('Comment postuler', a['steps'] as List? ?? const [], numbered: true),
           _list('Critères de sélection', a['criteria'] as List? ?? const []),
           if (dates.isNotEmpty) _box(Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('Dates clés', style: mst(14, w: FontWeight.w800)), for (final d in dates) Padding(padding: const EdgeInsets.only(top: 4), child: Text(d, style: mst(13)))])),
-          Padding(padding: const EdgeInsets.fromLTRB(16, 0, 16, 8), child: mButton('Postuler sur le site officiel', () => openUrl(context, '${a['official_url']}'), width: double.infinity, icon: Icons.open_in_new)),
+          Padding(padding: const EdgeInsets.fromLTRB(16, 0, 16, 8), child: mButton('Postuler sur le site officiel', () => _leave(context, '${a['official_url']}'), width: double.infinity, icon: Icons.open_in_new)),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
             child: Row(children: [
@@ -488,8 +509,10 @@ class MyAnnouncementsScreen extends ConsumerWidget {
                     ]),
                 ]),
         ),
-        mSectionTitle('Victoires à valider'),
-        const _WinsToValidate(),
+        if (staff) ...[
+          mSectionTitle('Victoires à valider'),
+          const _WinsToValidate(),
+        ],
       ]),
     );
   }
@@ -569,7 +592,23 @@ class _AnnEditState extends ConsumerState<AnnouncementEditScreen> {
   List<String> _lines(String s) => [for (final x in s.split('\n')) if (x.trim().isNotEmpty) x.trim()];
   String? _iso(DateTime? d) => d?.toIso8601String().substring(0, 10);
 
+  String? _problem() {
+    if (_c['title']!.text.trim().length < 3) return 'Indiquez le titre du concours (3 caractères au moins).';
+    if (_c['organizer']!.text.trim().length < 2) return 'Indiquez l’organisateur.';
+    if (!RegExp(r'^https?://[^\s]+\.[^\s]+').hasMatch(_c['url']!.text.trim())) return 'Indiquez le lien officiel complet, commençant par https://.';
+    final today = DateTime.now();
+    if (_deadline != null && DateTime(_deadline!.year, _deadline!.month, _deadline!.day).isBefore(DateTime(today.year, today.month, today.day))) return 'La date limite doit être dans le futur.';
+    final prize = int.tryParse(_c['prize']!.text.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+    if (prize > 100000000) return 'La récompense en argent ne peut pas dépasser 100 000 000 FCFA.';
+    final cost = _c['cost']!.text.replaceAll(RegExp(r'[^0-9]'), '');
+    if (!_free && cost.length > 9) return 'Le coût de participation est trop élevé.';
+    return null;
+  }
+
   Future<void> _send() async {
+    if (!await requireLogin(context, ref, 'publier une annonce') || !mounted) return;
+    final problem = _problem();
+    if (problem != null) return gToast(context, problem);
     setState(() => _busy = true);
     final r = await marcheCall('ann_save', {
       'p': {
@@ -609,7 +648,9 @@ class _AnnEditState extends ConsumerState<AnnouncementEditScreen> {
       final ps = await marcheCall('ann_prize_set', {'p_ann': '${r.data}', 'p_amount': prize});
       if (!mounted) return;
       setState(() => _busy = false);
+      var prizeSaved = true;
       if (ps.error != null) {
+        prizeSaved = false;
         await gAlert(context, 'Récompense non enregistrée', Backend.userMessage('${ps.error}'));
       } else {
         ref.invalidate(annPostedProvider);
@@ -624,7 +665,8 @@ class _AnnEditState extends ConsumerState<AnnouncementEditScreen> {
         if (pay == true && mounted) await payPrize(context, ref, '${r.data}', title: _c['title']!.text);
       }
       if (!mounted) return;
-      gToast(context, 'Annonce envoyée : elle sera visible après le paiement de la récompense et la validation par l’équipe.');
+      ref.invalidate(annPostedProvider);
+      gToast(context, prizeSaved ? 'Annonce envoyée : elle sera visible après le paiement de la récompense et la validation par l’équipe.' : 'Annonce envoyée sans récompense : ouvrez « Mes annonces » pour la définir, puis elle sera relue par l’équipe.');
       context.pop();
       return;
     }
@@ -650,6 +692,10 @@ class _AnnEditState extends ConsumerState<AnnouncementEditScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final role = roleKey(ref.watch(authProvider).current);
+    if (!_canPost(role)) {
+      return MarchePage(title: 'Publier une annonce', child: mNote('La publication d’annonces est réservée à l’équipe, aux départements, aux entreprises et aux ONG.\nVotre compte ne peut pas publier.'));
+    }
     return MarchePage(
       title: 'Publier une annonce',
       child: ListView(padding: const EdgeInsets.fromLTRB(16, 4, 16, 90), children: [

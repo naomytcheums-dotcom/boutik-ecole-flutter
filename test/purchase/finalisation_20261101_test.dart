@@ -151,7 +151,8 @@ void main() {
     testWidgets('jalon de mission : aucun paiement « bloqué en séquestre » sans paiement réel', (tester) async {
       Backend.ready = true;
       final c = await pumpAction(tester, (ref, context) => payNextMilestone(ref, context));
-      expect(find.text('Paiement du jalon indisponible'), findsOneWidget);
+      expect(find.text('Paiement du jalon non géré ici'), findsOneWidget);
+      expect(find.textContaining('ne bloque ni ne verse'), findsOneWidget);
       expect(find.textContaining('bloqué en séquestre'), findsNothing);
       // connecté : jamais la mission d'exemple (lot 3) ; aucun jalon n'est « financé » par l'action
       expect(c.read(missionProvider).real, isFalse);

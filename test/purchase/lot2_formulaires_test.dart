@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:boutik_ecole/figma/g/g_40.dart';
+import 'package:boutik_ecole/figma/g/g_95b.dart';
 import 'package:boutik_ecole/figma/gsound.dart';
 import 'package:boutik_ecole/figma/live/admin.dart';
 import 'package:boutik_ecole/figma/live/audit.dart';
@@ -89,15 +90,32 @@ void main() {
       expect(find.textContaining('Demande envoyée'), findsNothing);
     });
 
-    testWidgets('connecté : aucune valeur d’exemple pré-remplie ; la saisie est enregistrée dans le formulaire', (tester) async {
+    testWidgets('connecté : aucune valeur d’exemple ni champ de maquette ; le devis passe par le choix explicite d’un service', (tester) async {
       Backend.ready = true;
       final c = ProviderContainer();
       addTearDown(c.dispose);
       await pump(tester, c);
       expect(find.text('Site vitrine pour mon association'), findsNothing);
       expect(find.text('50 000 – 80 000 FCFA'), findsNothing);
+      expect(find.byType(EditableText), findsNothing);
+      expect(find.textContaining('Choisissez le service qui vous intéresse'), findsOneWidget);
+      expect(find.text('Choisir un service'), findsOneWidget);
+    });
+
+    testWidgets('95b connecté : aucune valeur d’exemple pré-remplie ; la saisie est enregistrée dans le formulaire', (tester) async {
+      Backend.ready = true;
+      final c = ProviderContainer();
+      GAnim.enabled = false;
+      tester.view.physicalSize = const Size(390, 900);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(UncontrolledProviderScope(container: c, child: const MaterialApp(home: Scaffold(body: G_95b()))));
+      await tester.pump();
+      expect(find.text('Site vitrine pour mon association'), findsNothing);
       await tester.enterText(find.byType(EditableText).at(1), 'Refonte du site de notre association étudiante');
-      expect(c.read(formProvider)['q_desc'], 'Refonte du site de notre association étudiante');
+      expect(c.read(formProvider)['q95_desc'], 'Refonte du site de notre association étudiante');
+      await tester.pumpWidget(const SizedBox());
+      c.dispose();
     });
   });
 }

@@ -23,6 +23,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/messages.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_09 extends ConsumerWidget {
@@ -43,14 +44,14 @@ class G_09 extends ConsumerWidget {
       gP(339.755, 19.604, 28, 17, gImg('assets/figma/v/6a818f3296df50.svg')),
       gP(341.755, 21.604, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(363.255, 23.104, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
-      gP(25.953, 63.721, 22.446, 22.446, const SizedBox.expand(), tap: () => gOpen(context, '08')),
+      gP(25.953, 63.721, 22.446, 22.446, const SizedBox.expand(), tap: () => gBack(context)),
       gP(27.629, 65.397, 12.547, 19.094, gImg('assets/figma/v/7e2937543469d6.svg')),
       gP(27.629, 71.944, 19.094, 6, gImg('assets/figma/v/388ccbb9b59042.svg')),
       gP(69.442, 60.775, 157, 27, gText('Ma commande', 21.745, Color(0xFF111015), weight: 700)),
       gP(31.565, 125.336, 142, 21, Consumer(builder: (context, ref, _) => gText(ref.watch(viewedOrderProvider).id, 16.835, Color(0xFF111015), weight: 700))),
       gP(31.565, 151.087, 112, 15, Consumer(builder: (context, ref, _) => gText(ref.watch(viewedOrderProvider).date + '  •  ' + ref.watch(viewedOrderProvider).method, 11.924, Color(0xFF57545F)))),
-      gP(274.263, 122.454, 86.277, 26.766, gBox(color: Color(0xFF111015), radii: [14.029, 14.029, 14.029, 14.029])),
-      gP(292.55, 128.336, 49, 15, Consumer(builder: (context, ref, _) => gText(ref.watch(viewedOrderProvider).badge, 11.924, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center))),
+      gP(150, 122.454, 210.54, 26.766, const OrderBadge()),
+      gP(31.565, 171, 330, 15, Consumer(builder: (context, ref, _) { final o = ref.watch(viewedOrderProvider); return gText(orderAmountLine(o), 11.5, Color(0xFF111015), weight: 600, wrap: true, maxLines: 1); })),
       gP(72.95, 221.487, 60.324, 2.677, gBox(color: Color(0xFF111015), radii: [1.403, 1.403, 1.403, 1.403]), show: (false)),
       gP(176.763, 221.487, 56.115, 2.677, gBox(color: Color(0xFFE6E1EE), radii: [1.403, 1.403, 1.403, 1.403]), show: (false)),
       gP(267.95, 221.487, 53.309, 2.677, gBox(color: Color(0xFFE6E1EE), radii: [1.403, 1.403, 1.403, 1.403]), show: (false)),
@@ -79,25 +80,14 @@ class G_09 extends ConsumerWidget {
       gP(320.191, 256.643, 33, 14, gText('Livrée', 11.223, Color(0xFF57545F), weight: 500, align: TextAlign.center), show: (false)),
       ...liveTimeline(ref),
       gP(45.594, 319.55, 163, 18, gText('Détails de la commande', 14.029, Color(0xFF111015), weight: 700)),
-      gP(45.594, 357.993, 68.741, 68.253, gBox(image: (ref.watch(viewedOrderProvider).lines.length > 0 ? lineImage(ref.watch(viewedOrderProvider).lines[0], 'assets/figma/img/34e8344812f71c763e7e4b52e1acffce9319e372.png') : 'assets/figma/img/34e8344812f71c763e7e4b52e1acffce9319e372.png'), fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x26122640), offset: Offset(0, 2), blurRadius: 6, spreadRadius: 0)], radii: [11.223, 11.223, 11.223, 11.223]), show: (ref.watch(viewedOrderProvider).lines.length > 0)),
-      gP(128.363, 362.037, 137, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(viewedOrderProvider).lines.length > 0 ? ref.watch(viewedOrderProvider).lines[0].title : '', 12.626, Color(0xFF111015), weight: 700)), show: (ref.watch(viewedOrderProvider).lines.length > 0)),
-      gP(128.363, 384.619, 75, 15, Consumer(builder: (context, ref, _) => gText(ref.watch(viewedOrderProvider).lines.length > 0 ? fcfa(ref.watch(viewedOrderProvider).lines[0].price * ref.watch(viewedOrderProvider).lines[0].qty) : '', 11.924, Color(0xFF111015), weight: 600))),
-      gP(338.317, 391.141, 11, 14, Consumer(builder: (context, ref, _) => gText('×${ref.watch(viewedOrderProvider).lines.length > 0 ? ref.watch(viewedOrderProvider).lines[0].qty : 0}', 11.223, Color(0xFF57545F), align: TextAlign.right)), show: (ref.watch(viewedOrderProvider).lines.length > 0)),
-      gP(45.594, 443.643, 68.741, 71.599, gBox(image: (ref.watch(viewedOrderProvider).lines.length > 1 ? lineImage(ref.watch(viewedOrderProvider).lines[1], 'assets/figma/img/9e2ce90f4496911ea5fab01d09cc48a0c7a22b47.png') : 'assets/figma/img/9e2ce90f4496911ea5fab01d09cc48a0c7a22b47.png'), fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x26122640), offset: Offset(0, 2), blurRadius: 6, spreadRadius: 0)], radii: [11.223, 11.223, 11.223, 11.223]), show: (ref.watch(viewedOrderProvider).lines.length > 1)),
-      gP(128.363, 451.703, 189, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(viewedOrderProvider).lines.length > 1 ? ref.watch(viewedOrderProvider).lines[1].title : '', 12.626, Color(0xFF111015), weight: 700)), show: (ref.watch(viewedOrderProvider).lines.length > 1)),
-      gP(128.363, 474.954, 84, 15, Consumer(builder: (context, ref, _) => gText(ref.watch(viewedOrderProvider).lines.length > 1 ? fcfa(ref.watch(viewedOrderProvider).lines[1].price * ref.watch(viewedOrderProvider).lines[1].qty) : '', 11.924, Color(0xFF111015), weight: 600))),
-      gP(338.317, 475.454, 11, 14, Consumer(builder: (context, ref, _) => gText('×${ref.watch(viewedOrderProvider).lines.length > 1 ? ref.watch(viewedOrderProvider).lines[1].qty : 0}', 11.223, Color(0xFF57545F), align: TextAlign.right)), show: (ref.watch(viewedOrderProvider).lines.length > 1)),
-      gP(45.594, 533.309, 68.741, 70.929, gBox(image: (ref.watch(viewedOrderProvider).lines.length > 2 ? lineImage(ref.watch(viewedOrderProvider).lines[2], 'assets/figma/img/55fe764cd9b0e1fc03c630662e027fb0f9f7ade4.png') : 'assets/figma/img/55fe764cd9b0e1fc03c630662e027fb0f9f7ade4.png'), fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x26122640), offset: Offset(0, 2), blurRadius: 6, spreadRadius: 0)], radii: [11.223, 11.223, 11.223, 11.223]), show: (ref.watch(viewedOrderProvider).lines.length > 2)),
-      gP(128.363, 539.361, 146, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(viewedOrderProvider).lines.length > 2 ? ref.watch(viewedOrderProvider).lines[2].title : '', 12.626, Color(0xFF111015), weight: 700)), show: (ref.watch(viewedOrderProvider).lines.length > 2)),
-      gP(128.363, 561.273, 77, 15, Consumer(builder: (context, ref, _) => gText(ref.watch(viewedOrderProvider).lines.length > 2 ? fcfa(ref.watch(viewedOrderProvider).lines[2].price * ref.watch(viewedOrderProvider).lines[2].qty) : '', 11.924, Color(0xFF111015), weight: 600))),
-      gP(338.317, 561.773, 11, 14, Consumer(builder: (context, ref, _) => gText('×${ref.watch(viewedOrderProvider).lines.length > 2 ? ref.watch(viewedOrderProvider).lines[2].qty : 0}', 11.223, Color(0xFF57545F), align: TextAlign.right)), show: (ref.watch(viewedOrderProvider).lines.length > 2)),
+      gP(32, 350, 326, 262, const OrderLinesList(viewedOrder: true, width: 326, height: 262)),
       gP(45.594, 620.967, 301.619, 0.669, gBox(color: Color(0xFFECE8F2))),
       gP(45.594, 634.379, 120, 16, gText('Adresse de livraison', 12.626, Color(0xFF111015), weight: 500)),
       gP(45.165, 661.976, 19.094, 22.367, gImg('assets/figma/v/078e259bcef21a.svg')),
       gP(49.257, 666.068, 10.91, 10.91, gImg('assets/figma/v/d86ba9de275781.svg')),
-      gP(80.665, 658.513, 180, 40, Consumer(builder: (context, ref, _) => gText(ref.watch(viewedOrderProvider).fee > 0 ? 'Douala, Cameroun\nLivraison à domicile' : 'IUT de Douala – Bâtiment principal\nService de retrait', 11.223, Color(0xFF57545F), lh: 19.64))),
+      gP(80.665, 658.513, 280, 62, Consumer(builder: (context, ref, _) => gText(orderDeliveryText(ref.watch(viewedOrderProvider)), 11.223, Color(0xFF57545F), lh: 17, wrap: true, maxLines: 4))),
       gP(32.266, 739.405, 326.169, 48.178, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.403, radii: [25.252, 25.252, 25.252, 25.252])),
-      gP(129.766, 755.077, 16.835, 16.835, const SizedBox.expand(), tap: () => gTab(context, '53')),
+      gP(129.766, 755.077, 16.835, 16.835, const SizedBox.expand(), tap: () => contactOrderSeller(ref, context)),
       gP(128.169, 754.176, 19.333, 19.333, gImg('assets/figma/v/75d0468dc3438b.svg')),
       gP(155.018, 756.494, 114, 14, gText('Contacter le vendeur', 11.223, Color(0xFF111015), weight: 600)),
       gP(136.079, 881.933, 119.946, 2.677, gBox(color: Color(0xFF111015), radii: [2.104, 2.104, 2.104, 2.104])),
@@ -117,8 +107,8 @@ class G_09 extends ConsumerWidget {
       gP(169, 818, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gTab(context, '03')),
       gP(184, 833, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 831.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
-      gTap(26, 64, 22, 22, () => gOpen(context, '08')),
-      gTap(274, 122, 86, 27, () { final o = ref.read(viewedOrderProvider); ref.read(ordersProvider.notifier).advance(o.id); gToast(context, 'Statut de la commande mis à jour'); }),
+      gTap(26, 64, 22, 22, () => gBack(context)),
+      gTap(32, 739, 326, 48, () { contactOrderSeller(ref, context); }),
     ]);
   }
 }

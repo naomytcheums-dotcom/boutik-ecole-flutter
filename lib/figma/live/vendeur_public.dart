@@ -2,10 +2,14 @@ import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../nav.dart' show gOpen, gOpenProfile;
 import 'backend.dart';
-import 'marche/marche_widgets.dart' show MarcheLink;
-import 'produits_liste.dart';
-import 'store.dart' show selectedProductProvider;
+import 'marche/marche_catalogue.dart' show PagedCatalog;
+import 'marche/marche_widgets.dart' show MarcheLink, mButton;
+import 'produit_fiche.dart' show providerCardProvider;
+import 'qr.dart' show scanQrCamera;
+import 'seller.dart' show platformSeller;
+import 'store.dart' show selectedProductProvider, sellerFocusProvider;
 
 /// Profil public (écran 24), réputation (38) et confiance (172) du vendeur du produit choisi : chiffres calculés par le serveur
 /// (migration 20261105000900) sur ses annonces, ses ventes payées et les avis de ses annonces. Aucun badge inventé.
@@ -17,10 +21,13 @@ TextStyle _st(double size, {FontWeight w = FontWeight.w500, Color c = _ink}) => 
 class SellerPublic extends Notifier<Map<String, dynamic>?> {
   @override
   Map<String, dynamic>? build() {
+    final focus = ref.watch(sellerFocusProvider);
     final (name, id) = ref.watch(selectedProductProvider.select((p) => (p.seller, p.sellerId)));
     if (!Backend.ready) return null;
+    final sid = focus.isNotEmpty ? focus : (id ?? '');
+    if (sid.isEmpty && (name.isEmpty || name.startsWith(platformSeller))) return {'found': false, 'none': true};
     Future.microtask(() async {
-      final r = await Backend.rpc('seller_public', (id ?? '').isNotEmpty ? {'p_id': id} : {'p_name': name});
+      final r = await Backend.rpc('seller_public', sid.isNotEmpty ? {'p_id': sid} : {'p_name': name});
       if (!ref.mounted) return;
       state = r.error != null || r.data is! Map ? {'found': false, 'error': true} : Map<String, dynamic>.from(r.data as Map);
     });
@@ -30,6 +37,19 @@ class SellerPublic extends Notifier<Map<String, dynamic>?> {
 
 final sellerPublicProvider = NotifierProvider<SellerPublic, Map<String, dynamic>?>(SellerPublic.new);
 
+/// Ouvre le profil public (24) du vendeur d'une offre du catalogue serveur.
+void openSellerProfile(BuildContext context, WidgetRef ref, String sellerId) {
+  ref.read(sellerFocusProvider.notifier).set(sellerId);
+  gOpen(context, '24');
+}
+
+/// Photo du vendeur affiché par 172 (jamais celle de l'utilisateur connecté) ; vide si le vendeur n'en a pas.
+String sellerAvatarUrl(WidgetRef ref) {
+  final id = '${ref.watch(sellerPublicProvider)?['id'] ?? ''}';
+  if (id.isEmpty) return '';
+  return '${ref.watch(providerCardProvider('seller:$id')).value?['avatar_url'] ?? ''}';
+}
+
 int _i(Object? v) => ((v as num?) ?? 0).toInt();
 
 Widget _note(double w, String t) => Container(width: w, height: 140, alignment: Alignment.center, padding: const EdgeInsets.symmetric(horizontal: 24), child: Text(t, textAlign: TextAlign.center, style: _st(13, c: _grey).copyWith(height: 1.5)));
@@ -37,6 +57,7 @@ Widget _note(double w, String t) => Container(width: w, height: 140, alignment: 
 Widget? _gate(Map<String, dynamic>? d, double w, String seller) {
   if (d == null) return _note(w, 'Chargement…');
   if (d['found'] != true) {
+    if (d['none'] == true) return _note(w, 'Ouvrez la fiche d’un produit puis touchez son vendeur pour consulter son profil.');
     if (d['ambiguous'] == true) return _note(w, 'Plusieurs vendeurs portent ce nom. Ouvrez la boutique depuis un de ses produits.');
     return _note(w, d['error'] == true ? 'Ce profil ne peut pas être chargé pour le moment.' : 'Aucun profil public trouvé pour « $seller ».');
   }
@@ -61,22 +82,28 @@ class SellerProfileBlock extends ConsumerWidget {
     final d = ref.watch(sellerPublicProvider);
     final g = _gate(d, width, seller);
     if (g != null) return SizedBox(width: width, child: g);
-    final fallbackId = '${d!['id'] ?? ''}';
-    final sellerId = ref.watch(selectedProductProvider.select((p) => p.sellerId)) ?? fallbackId;
+    final sellerId = '${d!['id'] ?? ''}';
     return SizedBox(
       width: width,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text('${d['name']}', style: _st(20, w: FontWeight.w800)),
-        const SizedBox(height: 4),
-        Text([if ('${d['department']}'.isNotEmpty) '${d['department']}', if ('${d['institution']}'.isNotEmpty) '${d['institution']}', _since(d['since'])].where((e) => e.isNotEmpty).join(' · '), style: _st(12.5, c: _grey)),
-        const SizedBox(height: 16),
-        Row(children: [_tile('Produits', '${_i(d['products'])}'), const SizedBox(width: 10), _tile('Services', '${_i(d['services'])}'), const SizedBox(width: 10), _tile('Ventes', '${_i(d['sales'])}')]),
-        if ('${d['shop_slug'] ?? ''}'.isNotEmpty) ...[const SizedBox(height: 14), SizedBox(width: width, height: 48, child: MarcheLink('Voir sa boutique : ${d['shop_name']}', '/marche/boutique/${d['shop_slug']}'))],
-        const SizedBox(height: 22),
-        Text('Ses produits', style: _st(16, w: FontWeight.w700)),
-        const SizedBox(height: 10),
-        ProductCards(width: width, rows: 2, filter: (p) => sellerId.isNotEmpty && (p.sellerId ?? '').isNotEmpty ? p.sellerId == sellerId : p.seller == '${d['name']}', emptyText: 'Aucun produit publié par ce vendeur pour le moment.'),
-      ]),
+      child: SingleChildScrollView(
+        padding: EdgeInsets.zero,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text('${d['name']}', style: _st(20, w: FontWeight.w800)),
+          const SizedBox(height: 4),
+          Text([if ('${d['department']}'.isNotEmpty) '${d['department']}', if ('${d['institution']}'.isNotEmpty) '${d['institution']}', _since(d['since'])].where((e) => e.isNotEmpty).join(' · '), style: _st(12.5, c: _grey)),
+          const SizedBox(height: 16),
+          Row(children: [_tile('Produits', '${_i(d['products'])}'), const SizedBox(width: 10), _tile('Services', '${_i(d['services'])}'), const SizedBox(width: 10), _tile('Ventes', '${_i(d['sales'])}')]),
+          if ('${d['shop_slug'] ?? ''}'.isNotEmpty) ...[const SizedBox(height: 14), SizedBox(width: width, height: 48, child: MarcheLink('Voir sa boutique : ${d['shop_name']}', '/marche/boutique/${d['shop_slug']}'))],
+          if (sellerId.isNotEmpty) ...[const SizedBox(height: 10), SizedBox(width: width, child: mButton('Voir son profil et le contacter', () => gOpenProfile(context, sellerId), dark: false))],
+          const SizedBox(height: 22),
+          Text('Ses offres', style: _st(16, w: FontWeight.w700)),
+          const SizedBox(height: 10),
+          if (sellerId.isEmpty)
+            Text('Aucune offre à afficher.', style: _st(13, c: _grey))
+          else
+            PagedCatalog(fn: 'marketplace_search', params: {'p_seller': sellerId, 'p_sort': 'recent'}, emptyText: 'Aucune offre publiée par ce vendeur pour le moment.', padding: EdgeInsets.zero),
+        ]),
+      ),
     );
   }
 }
@@ -119,6 +146,10 @@ class SellerReputationBlock extends ConsumerWidget {
         ],
         const SizedBox(height: 22),
         Text(d['verified'] == true ? 'Identité du vendeur vérifiée.' : 'Identité du vendeur non encore vérifiée.', style: _st(12.5, w: FontWeight.w600, c: d['verified'] == true ? const Color(0xFF0F7A52) : _grey)),
+        const SizedBox(height: 16),
+        SizedBox(width: width, child: mButton('Voir ce qui établit sa confiance', () => gOpen(context, '172'), dark: false)),
+        const SizedBox(height: 8),
+        SizedBox(width: width, child: mButton('Voir son profil public', () => gOpen(context, '24'), dark: false)),
       ]),
     );
   }
@@ -147,6 +178,10 @@ class SellerTrustBlock extends ConsumerWidget {
         row(Icons.star_rounded, 'Avis clients', n == 0 ? 'Aucun avis pour le moment' : '${d['rating_avg']} / 5 · $n avis', n > 0),
         const SizedBox(height: 10),
         Text('Ces éléments sont calculés sur l’activité réelle du vendeur.', style: _st(11.5, c: _grey)),
+        const SizedBox(height: 16),
+        SizedBox(width: width, child: mButton('Voir sa réputation et ses avis', () => gOpen(context, '38'), dark: false)),
+        const SizedBox(height: 8),
+        SizedBox(width: width, child: mButton('Voir son profil public', () => gOpen(context, '24'), dark: false)),
       ]),
     );
   }
@@ -166,10 +201,18 @@ class _CertificateCheckerState extends ConsumerState<CertificateChecker> {
   Map<String, dynamic>? _res;
   bool _busy = false;
 
+  @override
+  void dispose() {
+    _code.dispose();
+    super.dispose();
+  }
+
   Future<void> _check() async {
-    if (_code.text.trim().isEmpty) return;
+    final code = _code.text.trim().toUpperCase();
+    if (code.isEmpty) return setState(() => _res = {'empty': true});
+    if (!RegExp(r'^BE-CERT-[0-9A-F]{8}$').hasMatch(code)) return setState(() => _res = {'format': true});
     setState(() => _busy = true);
-    final r = await Backend.rpc('verify_certificate', {'p_code': _code.text.trim()});
+    final r = await Backend.rpc('verify_certificate', {'p_code': code});
     if (!mounted) return;
     setState(() {
       _busy = false;
@@ -177,28 +220,49 @@ class _CertificateCheckerState extends ConsumerState<CertificateChecker> {
     });
   }
 
+  /// Lit un QR de certificat avec la caméra, y trouve le code et le vérifie.
+  Future<void> _scan() async {
+    final raw = await scanQrCamera(context);
+    if (raw == null || !mounted) return;
+    final m = RegExp(r'BE-CERT-[0-9A-F]{8}', caseSensitive: false).firstMatch(raw);
+    if (m == null) return setState(() => _res = {'badqr': true});
+    _code.text = m.group(0)!.toUpperCase();
+    await _check();
+  }
+
   @override
   Widget build(BuildContext context) {
     final r = _res;
+    const red = Color(0xFFC0392B);
     return SizedBox(
       width: widget.width,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text('Entrez le code du certificat', style: _st(15, w: FontWeight.w700)),
         const SizedBox(height: 10),
-        TextField(controller: _code, textCapitalization: TextCapitalization.characters, decoration: const InputDecoration(hintText: 'Ex. BE-CERT-0021', border: OutlineInputBorder()), onSubmitted: (_) => _check()),
+        TextField(controller: _code, textCapitalization: TextCapitalization.characters, maxLength: 16, decoration: const InputDecoration(hintText: 'Ex. BE-CERT-1A2B3C4D', counterText: '', border: OutlineInputBorder()), onSubmitted: (_) => _check()),
         const SizedBox(height: 12),
         GestureDetector(
           onTap: _busy ? null : _check,
           child: Container(width: widget.width, height: 48, alignment: Alignment.center, decoration: BoxDecoration(color: _ink, borderRadius: BorderRadius.circular(24)), child: Text(_busy ? 'Vérification…' : 'Vérifier', style: _st(14, w: FontWeight.w700, c: Colors.white))),
         ),
+        const SizedBox(height: 10),
+        SizedBox(width: widget.width, child: mButton('Scanner un QR avec la caméra', _busy ? null : _scan, dark: false, icon: Icons.qr_code_scanner)),
         const SizedBox(height: 18),
         if (r != null)
-          if (r['error'] == true)
+          if (r['empty'] == true)
+            Text('Saisissez le code du certificat, ou scannez son QR.', style: _st(13.5, w: FontWeight.w700, c: red))
+          else if (r['format'] == true)
+            Text('Ce code n’est pas valide : un code de certificat ressemble à BE-CERT-1A2B3C4D.', style: _st(13.5, w: FontWeight.w700, c: red))
+          else if (r['badqr'] == true)
+            Text('Ce QR ne contient pas de code de certificat Boutik-École.', style: _st(13.5, w: FontWeight.w700, c: red))
+          else if (r['limite'] == true)
+            Text('Trop de tentatives sans résultat. Réessayez dans quelques minutes.', style: _st(13.5, w: FontWeight.w700, c: red))
+          else if (r['error'] == true)
             Text('Vérification impossible pour le moment.', style: _st(13, c: _grey))
           else if (r['introuvable'] == true)
-            Text('Aucun certificat ne porte ce code.', style: _st(13.5, w: FontWeight.w700, c: const Color(0xFFC0392B)))
+            Text('Aucun certificat ne porte ce code.', style: _st(13.5, w: FontWeight.w700, c: red))
           else ...[
-            Text(r['valide'] == true ? 'Authentique' : 'Révoqué', style: _st(15, w: FontWeight.w800, c: r['valide'] == true ? const Color(0xFF0F7A52) : const Color(0xFFC0392B))),
+            Text(r['valide'] == true ? 'Authentique' : 'Révoqué', style: _st(15, w: FontWeight.w800, c: r['valide'] == true ? const Color(0xFF0F7A52) : red)),
             const SizedBox(height: 6),
             Text('${r['objet']}', style: _st(14, w: FontWeight.w700)),
             Text('Titulaire : ${r['titulaire']}', style: _st(12.5, c: _grey)),

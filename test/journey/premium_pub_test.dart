@@ -65,7 +65,7 @@ void main() {
       entitlementsProvider.overrideWith(() => _Ent(const {'subscriptions': [{'plan': 'entreprise', 'status': 'active', 'period_end': '2026-12-01T10:00:00Z', 'name': 'Entreprise'}], 'features': ['stats_avancees']})),
     ]);
     expect(find.textContaining('Entreprise · actif'), findsOneWidget);
-    expect(find.text('Annuler à la fin de la période'), findsOneWidget);
+    expect(find.text('Annuler « Entreprise » à la fin de la période'), findsOneWidget);
   });
 
   testWidgets('campagnes : liste avec statistiques réelles et bouton de paiement du budget', (t) async {

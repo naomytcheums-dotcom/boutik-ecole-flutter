@@ -10,16 +10,35 @@ import '../nav.dart';
 import 'auth.dart';
 import 'access.dart' show canOpen;
 import 'backend.dart';
+import 'produit_fiche.dart' show openForProduct, providerCardProvider;
+import 'marche/marche_widgets.dart' show MarchePage, mButton, mNote;
 import 'seller.dart';
 import 'store.dart';
 
 const _st = TextStyle(fontFamily: 'Inter', fontSize: 13, color: Color(0xFF111015));
 
 /// Services publiés par les étudiants : annonces validées de catégorie « Services ».
-final servicesProvider = Provider<List<Listing>>((ref) => [
-      for (final l in ref.watch(publicListingsProvider))
-        if (l.category == 'Services' && l.published) l,
-    ]);
+class ServiceListings extends Notifier<List<Listing>> {
+  @override
+  List<Listing> build() {
+    if (!Backend.ready) return const [];
+    Future.microtask(() async {
+      final l = await Backend.serviceListings();
+      if (ref.mounted) state = l;
+    });
+    return const [];
+  }
+}
+
+final serviceListingsProvider = NotifierProvider<ServiceListings, List<Listing>>(ServiceListings.new);
+
+final servicesProvider = Provider<List<Listing>>((ref) {
+  final seen = <String>{};
+  return [
+    for (final l in [...ref.watch(serviceListingsProvider), ...ref.watch(publicListingsProvider)])
+      if (l.category == 'Services' && l.published && seen.add(l.id.isNotEmpty ? l.id : l.title)) l,
+  ];
+});
 
 final selectedServiceProvider = NotifierProvider<StrV, String>(StrV.new);
 
@@ -137,6 +156,57 @@ String _fcfa(int v) {
   return '$b FCFA';
 }
 
+/// Prestataire d'un service : nom abrégé, photo, filière, note du service (fonction publique provider_card).
+AsyncValue<Map<String, dynamic>?> providerOf(WidgetRef ref, Listing? l) =>
+    l == null || l.id.isEmpty ? const AsyncData(null) : ref.watch(providerCardProvider('listing:${l.id}'));
+
+/// « Prestataire : Yannick M. · Génie civil » ; vide pendant le chargement, honnête quand le prestataire n'est pas identifiable.
+String providerLine(WidgetRef ref, Listing? l) {
+  if (l == null) return '';
+  return providerOf(ref, l).when(
+    data: (c) => c == null ? (l.platform ? 'Service proposé par Boutik-École' : 'Prestataire non identifié') : 'Prestataire : ${c['name']}${'${c['department'] ?? ''}'.isEmpty ? '' : ' · ${c['department']}'}',
+    loading: () => '',
+    error: (_, _) => 'Prestataire non identifié',
+  );
+}
+
+/// Photo du prestataire (vide : aucune photo, jamais celle de l'utilisateur connecté).
+String providerAvatar(WidgetRef ref, Listing? l) => '${providerOf(ref, l).value?['avatar_url'] ?? ''}';
+
+/// Le service vu comme un produit de la sélection (écrans 31, 38 et 172 lisent la sélection).
+LiveProduct serviceAsProduct(Listing l, String sellerName) =>
+    LiveProduct(l.title, l.department, l.price, sellerName, l.description, _photo(l), sellerId: (l.sellerId ?? '').isEmpty ? null : l.sellerId, id: l.id.isEmpty ? null : l.id);
+
+/// Écran 36 : note du service, avis, réputation du prestataire.
+class ServiceTrustBlock extends ConsumerWidget {
+  const ServiceTrustBlock({super.key, this.width = 342});
+  final double width;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = currentService(ref);
+    if (l == null) return const SizedBox.shrink();
+    final c = providerOf(ref, l).value;
+    final n = ((c?['rating_count'] as num?) ?? 0).toInt();
+    final name = '${c?['name'] ?? ''}';
+    Widget link(String label, VoidCallback onTap) => Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: SizedBox(width: width, child: OutlinedButton(onPressed: onTap, style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(48), shape: const StadiumBorder(), side: const BorderSide(color: Color(0xFFD9D3E6))), child: Text(label, style: _st.copyWith(fontWeight: FontWeight.w600)))),
+        );
+    return SizedBox(
+      width: width,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(n == 0 ? 'Aucun avis sur ce service pour le moment.' : '★ ${c?['rating_avg']} · $n avis sur ce service', style: _st.copyWith(fontFamily: 'PlusJakartaSans', fontWeight: FontWeight.w700)),
+        link('Voir les avis du service', () => openServiceScreen(context, ref, l, name, '31')),
+        if ((l.sellerId ?? '').isNotEmpty) link('Réputation du prestataire', () => openServiceScreen(context, ref, l, name, '38', seller: true)),
+      ]),
+    );
+  }
+}
+
+void openServiceScreen(BuildContext context, WidgetRef ref, Listing l, String sellerName, String screen, {bool seller = false}) =>
+    openForProduct(context, ref, serviceAsProduct(l, sellerName), screen, seller: seller);
+
 void openService(BuildContext context, WidgetRef ref, Listing l) {
   ref.read(selectedServiceProvider.notifier).set(l.title);
   gOpen(context, '36');
@@ -147,6 +217,7 @@ void openService(BuildContext context, WidgetRef ref, Listing l) {
 Future<void> orderService(BuildContext context, WidgetRef ref) async {
   final l = currentService(ref);
   if (l == null) return gToast(context, 'Choisissez un service dans la liste.');
+  if (l.stock <= 0) return gToast(context, 'Ce service n’est plus disponible pour le moment. Demandez un devis au prestataire.');
   if (!await requireLogin(context, ref, 'commander ce service') || !context.mounted) return;
   ref.read(cartProvider.notifier).add(CartLine(l.title, 'Prestation étudiante', l.price, _photo(l)));
   gToast(context, 'Ajouté au panier au tarif affiché');
@@ -168,10 +239,36 @@ Future<void> askQuote(BuildContext context, WidgetRef ref) async {
   if (_quoteAllowed(context, ref)) gOpen(context, '95b');
 }
 
-int? _digits(String s) {
-  final d = s.replaceAll(RegExp(r'[^0-9]'), '');
-  return d.isEmpty ? null : int.tryParse(d);
+/// Budget maximal d'une demande de devis (FCFA) : au-delà, le serveur refuse ; le message est donné avant l'envoi.
+const kMaxQuoteBudget = 100000000;
+
+/// Montant en FCFA saisi à la main : « 2500 », « 2 500 », « 2.500 », « 2 500,50 » (arrondi au franc) ; null si illisible.
+int? parseFcfa(String input) {
+  var s = input.toUpperCase().replaceAll(RegExp(r'[\s\u00A0\u202F]'), '').replaceAll(RegExp(r'(FCFA|XAF|CFA|F)$'), '');
+  if (!RegExp(r'^\d+([.,]\d+)*$').hasMatch(s)) return null;
+  if (s.contains('.') && s.contains(',')) {
+    final decimal = s[s.lastIndexOf(RegExp(r'[.,]'))];
+    s = s.replaceAll(decimal == '.' ? ',' : '.', '');
+  }
+  final parts = s.split(RegExp(r'[.,]'));
+  if (parts.length == 1) return int.tryParse(s);
+  final seps = RegExp(r'[.,]').allMatches(s).map((m) => m.group(0)).toSet();
+  final grouped = parts.first.length <= 3 && parts.skip(1).every((p) => p.length == 3) && seps.length == 1;
+  if (grouped) return int.tryParse(parts.join());
+  if (parts.length != 2) return null;
+  return double.tryParse('${parts[0]}.${parts[1]}')?.round();
 }
+
+/// Message d'erreur d'un montant de devis : null si la valeur est acceptable (entre 1 et [kMaxQuoteBudget] FCFA).
+String? quoteAmountError(String raw) {
+  final v = parseFcfa(raw);
+  if (v == null) return 'Montant illisible : saisissez un nombre de FCFA, par exemple 25 000.';
+  if (v < 1 || v > kMaxQuoteBudget) return 'Le montant doit être compris entre 1 et ${_fcfa(kMaxQuoteBudget)}.';
+  return null;
+}
+
+/// Champs de l'écran 95b et clé de remise à zéro : les champs se vident après un envoi réussi.
+final quoteFormResetProvider = NotifierProvider<IntV, int>(IntV.new);
 
 /// Écran 95b : envoi de la demande de devis (objet, besoin, quantité, budget, date).
 Future<void> submitQuoteRequest(BuildContext context, WidgetRef ref) async {
@@ -179,28 +276,33 @@ Future<void> submitQuoteRequest(BuildContext context, WidgetRef ref) async {
   if (l == null) return gAlert(context, 'Service manquant', 'Ouvrez d’abord la fiche d’un service.');
   if (Backend.ready && !_quoteAllowed(context, ref)) return;
   final f = ref.read(formProvider);
-  final obj = (f['q_obj'] ?? '').trim(), desc = (f['q_desc'] ?? '').trim(), qty = (f['q_qty'] ?? '').trim();
-  final brief = [if (obj.isNotEmpty) 'Objet : $obj', if (desc.isNotEmpty) desc, if (qty.isNotEmpty) 'Quantité : $qty'].join('\n');
-  if ((obj + desc + qty).length < 10) return gAlert(context, 'Besoin manquant', 'Décrivez votre besoin en 10 caractères minimum.');
-  final err = await Backend.requestQuote(l.title, brief, _digits(f['q_budget'] ?? ''), (f['q_date'] ?? '').trim());
+  final obj = (f['q95_obj'] ?? '').trim(), desc = (f['q95_desc'] ?? '').trim(), qty = (f['q95_qty'] ?? '').trim();
+  final budgetRaw = (f['q95_budget'] ?? '').trim();
+  if (obj.length < 3) return gAlert(context, 'Objet manquant', 'Indiquez l’objet de votre demande (3 caractères minimum).');
+  if (desc.length < 10) return gAlert(context, 'Besoin manquant', 'Décrivez votre besoin en 10 caractères minimum.');
+  if (qty.isNotEmpty && ((int.tryParse(qty) ?? 0) < 1 || qty.length > 6)) return gAlert(context, 'Quantité invalide', 'La quantité doit être un nombre entre 1 et 999 999.');
+  int? budget;
+  if (budgetRaw.isNotEmpty) {
+    final e = quoteAmountError(budgetRaw);
+    if (e != null) return gAlert(context, 'Budget invalide', e);
+    budget = parseFcfa(budgetRaw);
+  }
+  final brief = ['Objet : $obj', desc, if (qty.isNotEmpty) 'Quantité : $qty'].join('\n');
+  final err = await Backend.requestQuote(l.title, brief, budget, (f['q95_date'] ?? '').trim());
   if (!context.mounted) return;
   if (err != null) return gAlert(context, 'Demande non envoyée', err);
-  ref.read(formProvider.notifier).clear(const ['q_obj', 'q_desc', 'q_qty', 'q_budget', 'q_date']);
+  ref.read(formProvider.notifier).clear(const ['q95_obj', 'q95_desc', 'q95_qty', 'q95_budget', 'q95_date']);
+  ref.read(quoteFormResetProvider.notifier).set(ref.read(quoteFormResetProvider) + 1);
   gToast(context, 'Demande envoyée. Le prestataire vous répondra avec un devis.');
   gBack(context);
 }
 
-/// Écran 40 (ouvert depuis le profil, sans service désigné) : la demande n'est envoyée que pour le service consulté ;
-/// sinon, rien n'est envoyé et l'utilisateur sait comment désigner le prestataire.
+/// Écran 40 (ouvert depuis le profil, sans service désigné) : le devis s'adresse toujours à un service choisi explicitement
+/// dans la liste, jamais à un service resté en mémoire d'une consultation précédente.
 Future<void> submitGeneralQuote(BuildContext context, WidgetRef ref) async {
   // Maquette (aucun serveur) : lien du prototype Figma 40 → 06, sans aucun message de succès.
   if (!Backend.ready) return gOpen(context, '06');
-  if (currentService(ref) == null) {
-    return gAlert(context, 'Choisissez un service',
-        'Une demande de devis est adressée au prestataire d’un service. Ouvrez la fiche du service qui vous intéresse, puis « Demander un devis ». Rien n’a été envoyé.');
-  }
-  if (!await requireLogin(context, ref, 'demander un devis')) return;
-  if (context.mounted) await submitQuoteRequest(context, ref);
+  await askGeneralQuoteFromList(context, ref);
 }
 
 String quoteStatusLabel(String s) => switch (s) {
@@ -217,6 +319,7 @@ Future<void> quotesDialog(BuildContext context, WidgetRef ref) async {
   if (!await requireLogin(context, ref, 'consulter vos devis')) return;
   final me = ref.read(profileAccountProvider).serverId;
   final rows = await Backend.myQuotes();
+  final orders = {for (final o in await Backend.myOrders() ?? const <Map<String, dynamic>>[]) '${o['number']}': o};
   if (!context.mounted) return;
   if (rows.isEmpty) return gAlert(context, 'Mes devis', 'Aucune demande de devis pour le moment.');
   await gDialog<void>(
@@ -231,6 +334,7 @@ Future<void> quotesDialog(BuildContext context, WidgetRef ref) async {
             _QuoteTile(
               r: r,
               mine: r['requester_id'] == me,
+              order: orders['${r['order_number']}'],
               close: () => Navigator.pop(ctx),
               parent: context,
             ),
@@ -242,9 +346,12 @@ Future<void> quotesDialog(BuildContext context, WidgetRef ref) async {
 }
 
 class _QuoteTile extends StatelessWidget {
-  const _QuoteTile({required this.r, required this.mine, required this.close, required this.parent});
+  const _QuoteTile({required this.r, required this.mine, required this.order, required this.close, required this.parent});
   final Map<String, dynamic> r;
   final bool mine;
+
+  /// Commande créée au prix du devis (null : aucune, ou non lisible).
+  final Map<String, dynamic>? order;
   final VoidCallback close;
   final BuildContext parent;
 
@@ -259,6 +366,9 @@ class _QuoteTile extends StatelessWidget {
       if (amount != null) 'Devis : ${_fcfa(amount)} en ${r['quote_delay_days']} jour(s)${(r['quote_message'] ?? '').toString().isEmpty ? '' : ' — ${r['quote_message']}'}',
     ].join('\n');
     final open = s == 'requested' || s == 'quoted';
+    final cancelledOrder = order != null && (order!['cancelled'] == true || order!['cancelled_at'] != null);
+    final hasOrder = r['order_number'] != null;
+    final orderState = cancelledOrder ? 'annulée' : (order?['paid'] == true ? 'payée' : (order == null ? 'créée' : 'en attente de paiement'));
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -266,11 +376,11 @@ class _QuoteTile extends StatelessWidget {
         Text(lines, style: _st.copyWith(fontSize: 12, color: const Color(0xFF57545F))),
         Wrap(spacing: 6, children: [
           if (!mine && open) TextButton(onPressed: () { close(); _answer(parent, r['id'] as String, amount); }, child: Text(s == 'quoted' ? 'Modifier mon devis' : 'Répondre avec un devis')),
-          if (mine && s == 'quoted') TextButton(onPressed: () { close(); _decide(parent, r['id'] as String, true); }, child: const Text('Accepter')),
+          if (mine && s == 'quoted') TextButton(onPressed: () { close(); _decide(parent, r['id'] as String, true, amount: amount, days: r['quote_delay_days'] as int?); }, child: const Text('Accepter')),
           if (mine && s == 'quoted') TextButton(onPressed: () { close(); _decide(parent, r['id'] as String, false); }, child: const Text('Refuser')),
           if (mine && open) TextButton(onPressed: () { close(); _cancel(parent, r['id'] as String); }, child: const Text('Annuler la demande')),
-          if (mine && s == 'accepted' && r['order_number'] == null) TextButton(onPressed: () { close(); _checkout(parent, r['id'] as String); }, child: const Text('Commander au prix du devis')),
-          if (mine && s == 'accepted' && r['order_number'] != null) Text('Commande ${r['order_number']}', style: _st.copyWith(fontSize: 12, fontWeight: FontWeight.w700, color: const Color(0xFF0F7A52))),
+          if (mine && s == 'accepted' && (!hasOrder || cancelledOrder)) TextButton(onPressed: () { close(); _checkout(parent, r['id'] as String); }, child: Text(cancelledOrder ? 'Commander de nouveau au prix du devis' : 'Commander au prix du devis')),
+          if (mine && s == 'accepted' && hasOrder) Text('Commande ${r['order_number']} · $orderState', style: _st.copyWith(fontSize: 12, fontWeight: FontWeight.w700, color: cancelledOrder ? const Color(0xFFE5484D) : const Color(0xFF0F7A52))),
         ]),
         const Divider(height: 14),
       ]),
@@ -278,8 +388,23 @@ class _QuoteTile extends StatelessWidget {
   }
 }
 
-Future<void> _decide(BuildContext context, String id, bool accept) async {
-  final err = await Backend.decideQuote(id, accept);
+Future<void> _decide(BuildContext context, String id, bool accept, {int? amount, int? days}) async {
+  if (accept) {
+    final ok = await gDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Colors.white,
+        title: Text('Accepter ce devis ?', style: _st.copyWith(fontSize: 16, fontWeight: FontWeight.w700)),
+        content: Text('Montant du devis : ${amount == null ? 'non indiqué' : _fcfa(amount)}${days == null ? '' : ' · délai $days jour(s)'}.\nLe prestataire sera prévenu. Vous pourrez ensuite commander au prix du devis ; rien n’est payé maintenant.', style: _st),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Revoir')),
+          FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Accepter ce montant')),
+        ],
+      ),
+    );
+    if (ok != true || !context.mounted) return;
+  }
+  final err = await Backend.decideQuote(id, accept, amount: amount);
   if (!context.mounted) return;
   if (err != null) return gAlert(context, 'Action impossible', err);
   gToast(context, accept ? 'Devis accepté. Le prestataire est prévenu.' : 'Devis refusé.');
@@ -289,8 +414,9 @@ Future<void> _checkout(BuildContext context, String id) async {
   final r = await Backend.rpc('quote_checkout', {'p_quote': id});
   if (!context.mounted) return;
   if (r.error != null) return gAlert(context, 'Commande impossible', Backend.userMessage(r.error!));
-  final n = r.data is Map ? '${(r.data as Map)['number']}' : '';
-  gToast(context, 'Commande $n créée au prix du devis. Payez-la depuis « Mes commandes ».');
+  final d = r.data is Map ? Map<String, dynamic>.from(r.data as Map) : const <String, dynamic>{};
+  final n = '${d['number'] ?? ''}';
+  gToast(context, d['existing'] == true ? 'La commande $n existe déjà : payez-la depuis « Mes commandes ».' : 'Commande $n créée au prix du devis. Payez-la depuis « Mes commandes ».');
 }
 
 Future<void> _cancel(BuildContext context, String id) async {
@@ -321,13 +447,13 @@ Future<void> _answer(BuildContext context, String id, int? current) async {
         TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Annuler')),
         FilledButton(
           onPressed: () async {
-            final a = _digits(amount.text), d = _digits(days.text);
+            final a = parseFcfa(amount.text), d = int.tryParse(days.text.trim());
             if (a == null || d == null) {
-              await gAlert(ctx, 'Devis incomplet', 'Indiquez un montant et un délai en jours.');
+              await gAlert(ctx, 'Devis incomplet', 'Indiquez un montant lisible (par exemple 25 000 ou 2 500,50) et un délai en jours.');
               return;
             }
-            if (a > 100000000 || d > 365 || d < 1 || a < 1) {
-              await gAlert(ctx, 'Devis invalide', 'Le montant doit être compris entre 1 et 100 000 000 FCFA et le délai entre 1 et 365 jours.');
+            if (a > kMaxQuoteBudget || d > 365 || d < 1 || a < 1) {
+              await gAlert(ctx, 'Devis invalide', 'Le montant doit être compris entre 1 et ${_fcfa(kMaxQuoteBudget)} et le délai entre 1 et 365 jours.');
               return;
             }
             final err = await Backend.answerQuote(id, a, d, msg.text);
@@ -350,6 +476,20 @@ Future<void> _answer(BuildContext context, String id, int? current) async {
   msg.dispose();
 }
 
+
+/// Écran 40 en mode connecté : le devis s'adresse toujours à un service choisi explicitement (jamais à un service resté en mémoire).
+class QuoteServicePicker extends ConsumerWidget {
+  const QuoteServicePicker({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => MarchePage(
+        title: 'Demande de devis',
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          mNote('Une demande de devis est adressée au prestataire d’un service. Choisissez le service qui vous intéresse : le formulaire s’ouvre avec le prestataire clairement indiqué.'),
+          mButton('Choisir un service', () => askGeneralQuoteFromList(context, ref)),
+        ]),
+      );
+}
 
 /// Bandeau « Un service sur mesure ? » : choisit un service de la liste puis ouvre la demande de devis ; sans service publié, le dit.
 Future<void> askGeneralQuoteFromList(BuildContext context, WidgetRef ref) async {

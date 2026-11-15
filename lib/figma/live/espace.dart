@@ -52,10 +52,15 @@ const rubriques = <Rubrique>[
 /// Écrans dont l'identifiant ne commence pas par un numéro (studio créateur, assistants, variantes).
 const _autres = Rubrique('S+', 'Studio créateur et assistants', -1, -1);
 
+/// Écrans rangés dans la rubrique de leur sujet plutôt que dans celle que leur numéro désigne (211-213 : confiance ; 214-215 : département ; 237 : impact territorial).
+const _rubriqueParNumero = {211: 'U', 212: 'U', 213: 'U', 214: 'L', 215: 'L', 237: 'K'};
+
 Rubrique rubriqueDe(String id) {
   final m = RegExp(r'^\d+').firstMatch(id);
   if (m == null) return _autres;
   final n = int.parse(m.group(0)!);
+  final code = _rubriqueParNumero[n];
+  if (code != null) return rubriques.firstWhere((r) => r.code == code);
   for (final r in rubriques) {
     if (n >= r.debut && n <= r.fin) return r;
   }
@@ -72,7 +77,7 @@ Map<Rubrique, List<(String, String)>> rubriquesPour(Account? a, {String filtre =
   final q = filtre.trim().toLowerCase();
   final out = <Rubrique, List<(String, String)>>{};
   for (final s in allScreens) {
-    if (!canOpen(a, s.id)) continue;
+    if (!listedInEspace(a, s.id)) continue;
     if (q.isNotEmpty && !s.title.toLowerCase().contains(q) && !s.id.toLowerCase().contains(q)) continue;
     out.putIfAbsent(rubriqueDe(s.id), () => []).add((s.id, s.title));
   }

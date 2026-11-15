@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/social_profile.dart' show SocialProfilePanel;
 import '../live/store.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
@@ -29,6 +30,12 @@ class G_P2 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Connecté, la maquette de référence cède la place au vrai profil public (?user=<id>, sinon le sien) : abonnement et message réels.
+    if (!demoContent) {
+      return GScreen(w: 390, h: 844, radius: 46, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
+        gP(0, 0, 390, 844, SocialProfilePanel(userId: gProfileUserId(context))),
+      ]);
+    }
     return GScreen(w: 390, h: 844, radius: 46, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFFFE9BD), Color(0xFFFFF7E6), Color(0xFFFFFFFF)], stops: [0, 0.34, 0.55]), children: [
       gP(30, 14, 28, 18, gText('9:41', 14, Color(0xFF111015), weight: 600)),
       gP(281, 27, 9, 11, gImg('assets/figma/v/b121442ee3614d.svg')),

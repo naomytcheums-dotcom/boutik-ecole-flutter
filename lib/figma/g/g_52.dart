@@ -24,6 +24,7 @@ import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
 import '../live/messages.dart';
+import '../live/notifs.dart' show messagesUnreadPill;
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_52 extends ConsumerWidget {
@@ -49,9 +50,9 @@ class G_52 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 103, 26, gText('Messages', 21, Color(0xFF111015), weight: 700)),
+      gP(188, 71, 100, 24, messagesUnreadPill(), show: !demoContent),
       gP(339.833, 69.825, 24.363, 24.342, gImg('assets/figma/v/4a22c7321afb4d.svg')),
       gP(24, 120, 342, 48, GField(hint: 'Rechercher une conversation', size: 13.5, hintColor: Color(0xFF57545F), weight: 400, padL: 46, onSubmitted: (v) { conversationSearch(context, v); })),
-      gP(40.5, 134.5, 19, 19, const SizedBox.expand(), tap: () => gTab(context, '19')),
       conversationsPanel(),
       gP(39.875, 133.875, 18.667, 18.667, gImg('assets/figma/v/50f467eb8a9b46.svg')),
       gP(50.721, 144.721, 9.404, 9.404, gImg('assets/figma/v/18d279137d73d9.svg')),
@@ -86,7 +87,7 @@ class G_52 extends ConsumerWidget {
       gP(47.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(47.125, 777.125, 20, 20, gImg('assets/figma/v/96285515fb0e14.svg')),
       gP(59.113, 789.113, 9.762, 9.762, gImg('assets/figma/v/524f40fa464a05.svg')),
-      gP(113.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '53')),
+      gP(113.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => ref.read(conversationsProvider.notifier).refresh()),
       gP(112.25, 777.118, 22.632, 22.632, gImg('assets/figma/v/5610544a74c77c.svg')),
       gP(255.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '230')),
       gP(260.375, 776.25, 11.25, 16.5, gImg('assets/figma/v/3adad339ddf7e4.svg')),

@@ -15,7 +15,6 @@ void main() {
     });
 
     test('le lien de réinitialisation ne renvoie jamais vers localhost', () {
-      expect(Backend.recoveryRedirect(), startsWith('https://'));
       expect(Backend.recoveryRedirect(), isNot(contains('localhost')));
     });
   });

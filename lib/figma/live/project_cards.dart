@@ -4,16 +4,19 @@ import 'dart:async';
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 
+import '../gen.dart' show gToast;
+import '../nav.dart';
 import 'auth.dart';
 import 'backend.dart';
 import 'console.dart';
 import 'entreprise.dart' show dateCourte, projectStatus;
-import 'project_pages.dart' show projectProgress;
+import 'l9_campagnes.dart' show CampaignDetailPage;
+import 'project_pages.dart' show projectLicenses, projectProgress;
 import 'store.dart' show StrV, fcfa, normText;
 import 'talents.dart' show projectTabProvider;
+import 'tp_ui.dart';
 
 /// Catalogue des projets et innovations (écran 78) : une carte par projet réel, avec ses visuels (photos qui défilent, vidéo lue
 /// automatiquement et sans son), son domaine, son état et une fiche détaillée. Rien n'est inventé : sans projet validé, un état vide.
@@ -23,10 +26,10 @@ const _grey = Color(0xFF57545F);
 TextStyle _st(double size, {FontWeight w = FontWeight.w500, Color c = _ink, double? h}) =>
     TextStyle(inherit: false, fontFamily: 'PlusJakartaSans', fontSize: size, fontWeight: w, color: c, height: h, textBaseline: TextBaseline.alphabetic);
 
-/// Catalogue de projets validés : lecture de la table pour un compte connecté ; pour un visiteur (ou si la table est refusée),
-/// fonction publique `public_projects` (projets validés et publics, sans e-mail ni téléphone de contact).
+/// Catalogue de projets validés : pour TOUS les comptes (visiteur compris), la fonction publique `public_projects` renvoie les projets
+/// validés et publics sans e-mail ni téléphone de contact. La table `projects` n'est lue que pour « Mes projets » (filtre propriétaire).
 class PublicProjectRows extends RpcRows {
-  PublicProjectRows({this.kind}) : super('public_projects', {if (kind != null) 'p_kind': kind, 'p_limit': 100}, true);
+  PublicProjectRows({this.kind}) : super('public_projects', {'p_kind': ?kind, 'p_limit': 100}, true);
   final String? kind;
 
   @override
@@ -36,21 +39,6 @@ class PublicProjectRows extends RpcRows {
     Future.microtask(refresh);
     return null;
   }
-
-  @override
-  Future<void> refresh() async {
-    if (Backend.userId != null) {
-      final r = await Backend.rows('projects', 'id,kind,title,summary,department,details,media,status,created_at',
-          eq: {'status': 'approved', if (kind != null) 'kind': kind!}, order: 'created_at');
-      if (!ref.mounted) return;
-      if (r.error == null) {
-        error = false;
-        state = r.rows;
-        return;
-      }
-    }
-    await super.refresh();
-  }
 }
 
 /// Seuls les projets validés sont listés (le propriétaire et le département verraient sinon aussi les brouillons).
@@ -59,6 +47,21 @@ final projectsFeedProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>
 Map<String, dynamic> _detailsOf(Map<String, dynamic> p) => p['details'] is Map ? Map<String, dynamic>.from(p['details'] as Map) : <String, dynamic>{};
 
 int _fundingOf(Map<String, dynamic> p) => int.tryParse('${_detailsOf(p)['funding_xaf'] ?? ''}'.replaceAll(RegExp(r'\s'), '')) ?? 0;
+
+/// Propriété intellectuelle déclarée par le porteur (details.ip) : champs non vides uniquement.
+Map<String, String> _ipOf(Map<String, dynamic> p) {
+  final raw = _detailsOf(p)['ip'];
+  if (raw is! Map) return const {};
+  return {for (final e in raw.entries) if ('${e.value}'.trim().isNotEmpty) '${e.key}': '${e.value}'.trim()};
+}
+
+String _ipSummary(Map<String, dynamic> p) {
+  final ip = _ipOf(p);
+  return [
+    if (ip['license'] != null) 'Licence : ${projectLicenses[ip['license']] ?? ip['license']}',
+    if (ip['filing_number'] != null) 'Dépôt déclaré n° ${ip['filing_number']}',
+  ].join(' · ');
+}
 
 /// Pastilles du catalogue : 0 Tous, 1 Prototypes, 2 Recherche, 3 Financement.
 bool _inTab(Map<String, dynamic> p, int tab) {
@@ -103,6 +106,8 @@ class ProjectCards extends ConsumerStatefulWidget {
 }
 
 class _ProjectCardsState extends ConsumerState<ProjectCards> {
+  String _q = '';
+
   @override
   void initState() {
     super.initState();
@@ -125,21 +130,49 @@ class _ProjectCardsState extends ConsumerState<ProjectCards> {
     if (all == null) return note('Chargement…');
     if (ref.read(projectsFeedProvider.notifier).error) return note('Les projets ne peuvent pas être chargés pour le moment.');
     if (all.isEmpty) return note('Aucun projet validé pour le moment.\nLes projets des étudiants apparaissent ici après validation.');
-    final rows = [for (final p in all) if (_inTab(p, tab)) p];
-    if (rows.isEmpty) return note('Aucun projet validé dans cette catégorie pour le moment.');
+    final q = normText(_q.trim());
+    final rows = [
+      for (final p in all)
+        if (_inTab(p, tab) && (q.isEmpty || normText('${p['title'] ?? ''} ${p['summary'] ?? ''} ${p['department'] ?? ''} ${_detailsOf(p)['domain'] ?? ''}').contains(q))) p,
+    ];
     return SizedBox(
       width: width,
       height: height,
-      child: RefreshIndicator(
-        onRefresh: () => ref.read(projectsFeedProvider.notifier).refresh(),
-        child: ListView.separated(
-          padding: EdgeInsets.zero,
-          physics: const AlwaysScrollableScrollPhysics(),
-          itemCount: rows.length,
-          separatorBuilder: (_, _) => const SizedBox(height: 18),
-          itemBuilder: (_, i) => _Card(p: rows[i], width: width),
+      child: Column(children: [
+        SizedBox(
+          height: 42,
+          child: TextField(
+            onChanged: (v) => setState(() => _q = v),
+            style: _st(13.5),
+            decoration: InputDecoration(
+              hintText: 'Rechercher un projet',
+              hintStyle: _st(13.5, c: _grey),
+              prefixIcon: const Icon(Icons.search_rounded, size: 20, color: _grey),
+              isDense: true,
+              filled: true,
+              fillColor: const Color(0xCCFFFFFF),
+              contentPadding: const EdgeInsets.symmetric(vertical: 10),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(21), borderSide: const BorderSide(color: Color(0xFFE4E0EC))),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(21), borderSide: const BorderSide(color: Color(0xFFE4E0EC))),
+            ),
+          ),
         ),
-      ),
+        const SizedBox(height: 12),
+        Expanded(
+          child: rows.isEmpty
+              ? Align(alignment: Alignment.topCenter, child: note(q.isEmpty ? 'Aucun projet validé dans cette catégorie pour le moment.' : 'Aucun projet ne correspond à votre recherche.'))
+              : RefreshIndicator(
+                  onRefresh: () => ref.read(projectsFeedProvider.notifier).refresh(),
+                  child: ListView.separated(
+                    padding: EdgeInsets.zero,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: rows.length,
+                    separatorBuilder: (_, _) => const SizedBox(height: 18),
+                    itemBuilder: (_, i) => _Card(p: rows[i], width: width),
+                  ),
+                ),
+        ),
+      ]),
     );
   }
 }
@@ -169,7 +202,7 @@ class _Card extends StatelessWidget {
           Row(children: [
             Expanded(child: Text('${p['title']}', maxLines: 2, overflow: TextOverflow.ellipsis, style: _st(15, w: FontWeight.w700))),
             const SizedBox(width: 8),
-            _Chip(projectStatus(p['status'])),
+            _Chip(projectProgress['${_detailsOf(p)['progress'] ?? ''}'] ?? projectStatus(p['status'])),
           ]),
           const SizedBox(height: 3),
           Text([kind, if (dept.isNotEmpty) dept].join(' · '), style: _st(11.5, c: _grey)),
@@ -340,7 +373,7 @@ class _InnovationRegistryState extends ConsumerState<InnovationRegistry> {
     if (all == null) return note('Chargement…');
     if (ref.read(innovationsRegistryProvider.notifier).error) return note('Le registre ne peut pas être chargé pour le moment.');
     if (all.isEmpty) return note('Aucune innovation validée pour le moment.');
-    final rows = [for (final r in all) if (q.isEmpty || normText('${r['title'] ?? ''} ${r['summary'] ?? ''}').contains(q)) r];
+    final rows = [for (final r in all) if (q.isEmpty || normText('${r['title'] ?? ''} ${r['summary'] ?? ''} ${_ipOf(r)['authors'] ?? ''} ${_ipOf(r)['filing_number'] ?? ''}').contains(q)) r];
     if (rows.isEmpty) return note('Aucune innovation ne correspond à votre recherche.');
     return SizedBox(
       width: widget.width,
@@ -367,6 +400,7 @@ class _InnovationRegistryState extends ConsumerState<InnovationRegistry> {
                       Text('${r['title']}', maxLines: 2, overflow: TextOverflow.ellipsis, style: _st(13.5, w: FontWeight.w600)),
                       const SizedBox(height: 3),
                       Text([if (dept.isNotEmpty) dept, dateCourte(r['created_at'])].join(' · '), maxLines: 2, overflow: TextOverflow.ellipsis, style: _st(11.5, c: _grey)),
+                      if (_ipSummary(r).isNotEmpty) Padding(padding: const EdgeInsets.only(top: 2), child: Text(_ipSummary(r), maxLines: 2, overflow: TextOverflow.ellipsis, style: _st(11, c: const Color(0xFF5A3FE0)))),
                     ]),
                   ),
                   const SizedBox(width: 10),
@@ -381,74 +415,168 @@ class _InnovationRegistryState extends ConsumerState<InnovationRegistry> {
   }
 }
 
-/// Fiche d'un projet : visuels, description, problème et solution, avancement, équipe et liens.
-Future<void> showProjectSheet(BuildContext context, Map<String, dynamic> p) {
-  final media = _mediaOf(p);
-  final d = p['details'] is Map ? Map<String, dynamic>.from(p['details'] as Map) : <String, dynamic>{};
-  String s(String k) => '${d[k] ?? ''}'.trim();
-  Widget block(String title, String text) => text.isEmpty
-      ? const SizedBox.shrink()
-      : Padding(
-          padding: const EdgeInsets.only(top: 16),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(title, style: _st(13, w: FontWeight.w700)),
-            const SizedBox(height: 4),
-            Text(text, style: _st(13, c: const Color(0xFF3B3944), h: 1.5)),
-          ]),
-        );
-  Widget link(String label, String url) => url.isEmpty
-      ? const SizedBox.shrink()
-      : Padding(
-          padding: const EdgeInsets.only(top: 8),
-          child: GestureDetector(
-            onTap: () => launchUrl(Uri.parse(url.startsWith('http') ? url : 'https://$url'), mode: LaunchMode.externalApplication),
-            child: Text(label, style: _st(13, w: FontWeight.w600, c: const Color(0xFF5A3FE0))),
+/// Projet ouvert depuis le catalogue (écran 79 : le dernier choix).
+final selectedProjectIdProvider = NotifierProvider<StrV, String>(StrV.new);
+
+/// Ouvre la fiche d'un projet : affichée tout de suite avec la ligne déjà connue, puis relue sur le serveur.
+Future<void> showProjectSheet(BuildContext context, Map<String, dynamic> p) => Navigator.of(context).push<void>(MaterialPageRoute(builder: (_) => ProjectDetailPage(initial: p)));
+
+/// Fiche d'un projet réel (écran 79) : visuels, description, problème et solution, avancement, équipe, financement,
+/// propriété intellectuelle déclarée, liens, et soutien. Les contacts n'y figurent jamais.
+class ProjectDetailPage extends ConsumerStatefulWidget {
+  const ProjectDetailPage({super.key, this.projectId, this.initial});
+  final String? projectId;
+  final Map<String, dynamic>? initial;
+
+  @override
+  ConsumerState<ProjectDetailPage> createState() => _ProjectDetailState();
+}
+
+class _ProjectDetailState extends ConsumerState<ProjectDetailPage> {
+  Map<String, dynamic>? p;
+  bool loading = true, gone = false, busy = false;
+
+  String? get _id {
+    final i = (widget.projectId ?? '${widget.initial?['id'] ?? ''}').trim();
+    return i.isEmpty || i == 'null' ? null : i;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    p = widget.initial;
+    if (_id == null) {
+      loading = false;
+    } else {
+      _load();
+    }
+  }
+
+  Future<void> _load() async {
+    final r = await Backend.rpc('public_project_get', {'p_id': _id});
+    if (!mounted) return;
+    setState(() {
+      loading = false;
+      if (r.error != null) return;
+      if (r.data is Map) {
+        p = Map<String, dynamic>.from(r.data as Map);
+        gone = false;
+      } else {
+        gone = true;
+      }
+    });
+  }
+
+  Future<void> _support() async {
+    final cur = p;
+    if (cur == null) return;
+    if (!await requireLogin(context, ref, 'soutenir un projet') || !mounted) return;
+    setState(() => busy = true);
+    final r = await Backend.rpc('project_upvote_toggle', {'p_project': cur['id']});
+    if (!mounted) return;
+    setState(() => busy = false);
+    if (r.error != null) return gToast(context, Backend.userMessage(r.error!));
+    final on = r.data == true;
+    setState(() => p = {...cur, 'voted': on, 'votes': ((cur['votes'] as num?)?.toInt() ?? 0) + (on ? 1 : -1)});
+    gToast(context, on ? 'Merci ! Votre soutien à « ${cur['title']} » est enregistré.' : 'Votre soutien à « ${cur['title']} » est retiré.');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cur = p;
+    if (cur == null || gone) {
+      return TpPage(title: 'Projet', children: [
+        if (loading)
+          const Padding(padding: EdgeInsets.all(40), child: Center(child: CircularProgressIndicator()))
+        else ...[
+          TpEmpty(
+            title: _id == null ? 'Aucun projet sélectionné' : 'Projet indisponible',
+            text: _id == null ? 'Ouvrez un projet depuis le catalogue pour voir sa fiche.' : 'Ce projet n’est plus publié ou n’existe pas.',
+            icon: Icons.lightbulb_outline_rounded,
           ),
-        );
-  final team = d['team'] is List ? [for (final m in d['team'] as List) if (m is Map) '${m['name']}${'${m['role']}'.isEmpty ? '' : ' · ${m['role']}'}'] : <String>[];
-  return showModalBottomSheet<void>(
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.transparent,
-    builder: (ctx) => DraggableScrollableSheet(
-      initialChildSize: .86,
-      maxChildSize: .95,
-      minChildSize: .5,
-      expand: false,
-      builder: (_, scroll) => Container(
-        decoration: const BoxDecoration(color: Color(0xFFF7F2EA), borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
-        child: ListView(controller: scroll, padding: const EdgeInsets.fromLTRB(20, 14, 20, 32), children: [
-          Center(child: Container(width: 42, height: 4, decoration: BoxDecoration(color: const Color(0xFFD9D4E0), borderRadius: BorderRadius.circular(2)))),
-          const SizedBox(height: 14),
-          if (media.isNotEmpty) ClipRRect(borderRadius: BorderRadius.circular(18), child: AspectRatio(aspectRatio: 16 / 10, child: ProjectMediaView(media: media))),
-          const SizedBox(height: 14),
-          Text('${p['title']}', style: _st(20, w: FontWeight.w800)),
-          const SizedBox(height: 6),
-          Wrap(spacing: 8, runSpacing: 6, children: [
-            _Chip(projectStatus(p['status'])),
-            if ('${p['department'] ?? ''}'.isNotEmpty) _Chip('${p['department']}'),
-            if (s('domain').isNotEmpty) _Chip(s('domain')),
-            if (projectProgress[s('progress')] != null) _Chip(projectProgress[s('progress')]!),
-          ]),
-          block('Description', '${p['summary'] ?? ''}'.trim()),
-          block('Problème résolu', s('problem')),
-          block('Solution', s('solution')),
-          block('Étapes réalisées', s('done_steps')),
-          block('Objectifs', s('objectives')),
-          if (team.isNotEmpty) block('Équipe', team.join('\n')),
-          if (_fundingOf(p) > 0) block('Besoin de financement', fcfa(_fundingOf(p))),
-          block('Besoins de soutien', s('support_needs')),
-          Padding(
-            padding: const EdgeInsets.only(top: 12),
+          TpButton('Voir les projets validés', () => gOpen(context, '78'), icon: Icons.lightbulb_outline_rounded),
+        ],
+      ]);
+    }
+    final d = _detailsOf(cur);
+    String s(String k) => '${d[k] ?? ''}'.trim();
+    final media = _mediaOf(cur);
+    final ip = _ipOf(cur);
+    final team = cur['team'] is List ? [for (final m in cur['team'] as List) if (m is Map) '${m['name']}${'${m['role']}'.isEmpty ? '' : ' · ${m['role']}'}'] : <String>[];
+    final free = d['team'] is List ? [for (final m in d['team'] as List) if (m is Map) '${m['name']}${'${m['role']}'.isEmpty ? '' : ' · ${m['role']}'}'] : <String>[];
+    final ipLines = [
+      if (ip['authors'] != null) 'Auteurs : ${ip['authors']}',
+      if (ip['supervisor'] != null) 'Encadrant : ${ip['supervisor']}',
+      if (ip['license'] != null) 'Licence : ${projectLicenses[ip['license']] ?? ip['license']}',
+      if (ip['rights_holder'] != null) 'Titulaire des droits : ${ip['rights_holder']}',
+      if (ip['restrictions'] != null) 'Restrictions d’usage : ${ip['restrictions']}',
+      if (ip['filing_number'] != null) 'N° de dépôt déclaré : ${ip['filing_number']}',
+    ];
+    Widget block(String title, String text) => text.isEmpty
+        ? const SizedBox.shrink()
+        : Padding(
+            padding: const EdgeInsets.only(top: 16),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              link('Voir le prototype', s('prototype_url')),
-              link('Voir la démonstration', s('demo_url')),
-              link('Lire la documentation', s('doc_url')),
-              link('Voir la vidéo', s('video_url')),
+              Text(title, style: _st(13, w: FontWeight.w700)),
+              const SizedBox(height: 4),
+              Text(text, style: _st(13, c: const Color(0xFF3B3944), h: 1.5)),
             ]),
-          ),
+          );
+    Widget link(String label, String url) => url.isEmpty
+        ? const SizedBox.shrink()
+        : Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: GestureDetector(onTap: () => tpOpenUrl(context, url), child: Text(label, style: _st(13, w: FontWeight.w600, c: const Color(0xFF5A3FE0)))),
+          );
+    final votes = (cur['votes'] as num?)?.toInt();
+    final campaign = cur['campaign_id'] == null ? null : '${cur['campaign_id']}';
+    final mine = cur['mine'] == true;
+    final canSupport = '${cur['status']}' == 'approved';
+    return TpPage(
+      title: '${cur['kind']}' == 'innovation' ? 'Innovation' : 'Projet',
+      subtitle: '${cur['department'] ?? ''}'.isEmpty ? null : '${cur['department']}',
+      bottom: !canSupport
+          ? null
+          : mine
+              ? Text('C’est votre projet : il ne peut pas être soutenu par vous.', textAlign: TextAlign.center, style: _st(12.5, c: _grey))
+              : TpButton(cur['voted'] == true ? 'Retirer mon soutien' : 'Soutenir le projet', busy ? null : _support, dark: cur['voted'] != true, busy: busy, icon: cur['voted'] == true ? Icons.favorite_rounded : Icons.favorite_border_rounded),
+      children: [
+        if (media.isNotEmpty) ClipRRect(borderRadius: BorderRadius.circular(18), child: AspectRatio(aspectRatio: 16 / 10, child: ProjectMediaView(media: media))),
+        const SizedBox(height: 14),
+        Text('${cur['title']}', style: _st(20, w: FontWeight.w800)),
+        const SizedBox(height: 6),
+        Wrap(spacing: 8, runSpacing: 6, children: [
+          _Chip(projectStatus(cur['status'])),
+          if (s('domain').isNotEmpty) _Chip(s('domain')),
+          if (projectProgress[s('progress')] != null) _Chip(projectProgress[s('progress')]!),
         ]),
-      ),
-    ),
-  );
+        if ('${cur['owner'] ?? ''}'.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 8), child: Text('Porté par ${cur['owner']}', style: _st(12.5, c: _grey))),
+        if (votes != null) Padding(padding: const EdgeInsets.only(top: 4), child: Text('$votes soutien${votes > 1 ? 's' : ''}', style: _st(12.5, w: FontWeight.w600, c: const Color(0xFF5A3FE0)))),
+        block('Description', '${cur['summary'] ?? ''}'.trim()),
+        block('Problème résolu', s('problem')),
+        block('Solution', s('solution')),
+        block('Étapes réalisées', s('done_steps')),
+        block('Objectifs', s('objectives')),
+        if (team.isNotEmpty) block('Équipe', team.join('\n')),
+        if (free.isNotEmpty) block(team.isEmpty ? 'Équipe' : 'Autres contributeurs', free.join('\n')),
+        if (_fundingOf(cur) > 0) block('Besoin de financement', fcfa(_fundingOf(cur))),
+        if (campaign != null)
+          Padding(padding: const EdgeInsets.only(top: 10), child: TpButton('Voir la campagne de financement', () => Navigator.of(context).push<void>(MaterialPageRoute(builder: (_) => CampaignDetailPage(campaignId: campaign))), dark: false, compact: true, icon: Icons.volunteer_activism_outlined)),
+        block('Besoins de soutien', s('support_needs')),
+        if (ipLines.isNotEmpty) ...[
+          block('Propriété intellectuelle', ipLines.join('\n')),
+          Padding(padding: const EdgeInsets.only(top: 4), child: Text('Informations déclarées par le porteur du projet ; elles ne remplacent pas un certificat de dépôt.', style: _st(11.5, c: _grey, h: 1.4))),
+        ],
+        Padding(
+          padding: const EdgeInsets.only(top: 12),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            link('Voir le prototype', s('prototype_url')),
+            link('Voir la démonstration', s('demo_url')),
+            link('Lire la documentation', s('doc_url')),
+            link('Voir la vidéo', s('video_url')),
+          ]),
+        ),
+      ],
+    );
+  }
 }

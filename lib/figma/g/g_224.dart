@@ -24,6 +24,7 @@ import '../live/share.dart';
 import '../live/pay.dart';
 import '../live/engage.dart';
 import '../live/lots.dart';
+import '../live/l10_ateliers.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_224 extends ConsumerWidget {
@@ -52,7 +53,8 @@ class G_224 extends ConsumerWidget {
       gP(24, 140, 342, 48, GField(onChanged: (v) => ref.read(formProvider.notifier).put('l_title', v), hint: 'Ex. Fabrication d’une lampe en bois recyclé', initial: demoContent ? 'Fabrication de la lampe en bois re…' : '', size: 13.5, hintColor: Color(0xFF57545F), weight: 500, padL: 48)),
       gP(37.5, 153.5, 21.004, 21.004, gImg('assets/figma/v/463d6a4c8e1061.svg')),
       gP(24, 202, 81, 16, gText('Date et heure', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 222, 342, 48, GField(onChanged: (v) => ref.read(formProvider.notifier).put('l_date', v), hint: 'Ex. Jeudi 29 oct. · 16 h', initial: demoContent ? 'Jeudi 29 oct. · 16 h' : '', size: 13.5, hintColor: Color(0xFF57545F), weight: 500, padL: 48)),
+      gP(24, 222, 342, 48, GField(onChanged: (v) => ref.read(formProvider.notifier).put('l_date', v), hint: 'Ex. Jeudi 29 oct. · 16 h', initial: demoContent ? 'Jeudi 29 oct. · 16 h' : '', size: 13.5, hintColor: Color(0xFF57545F), weight: 500, padL: 48), show: demoContent),
+      if (!demoContent) gP(24, 222, 342, 48, const LiveDatePicker()),
       gP(38.25, 237, 19.5, 19.5, gImg('assets/figma/v/99b18d1a251e8c.svg')),
       gP(48, 235.5, 6, 9, gImg('assets/figma/v/4d0c4aa2d5e373.svg')),
       gP(42, 235.5, 6, 9, gImg('assets/figma/v/4d0c4aa2d5e373.svg')),
@@ -70,10 +72,10 @@ class G_224 extends ConsumerWidget {
       gP(36, 547, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(43.333, 552.943, 17.333, 20.173, gImg('assets/figma/v/b35e336eb0a1dc.svg')),
       gP(46.875, 558.583, 10.25, 8.833, gImg('assets/figma/v/2bdcafa88f7a43.svg')),
-      gP(76, 546, 277, 34, gText('Un référent du département valide le live et peut le rejoindre en modération.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
+      gP(76, 546, 277, 34, gText(gm('Un référent du département valide le live et peut le rejoindre en modération.', 'Votre live apparaît dans l’agenda des ateliers et dans « Prochains lives ». Ceux qui activent un rappel sont prévenus avant l’heure.'), 12, Color(0xFF4A4854), lh: 17, wrap: true)),
       gP(0, 744, 390, 100, gBox(color: Color(0x00FFFFFF))),
       gP(24, 760, 163, 54, gBox(color: Color(0x00FFFFFF), border: Color(0xFFD9D3E6), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => saveLive(context, ref, schedule: false)),
-      gP(74.5, 778, 62, 18, gText('Brouillon', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
+      gP(74.5, 778, 62, 18, gText(gm('Brouillon', 'Annuler'), 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
       gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => saveLive(context, ref, schedule: true)),
       gP(256, 778, 57, 18, gText('Planifier', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),

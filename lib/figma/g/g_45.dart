@@ -22,6 +22,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/orders_list.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_45 extends ConsumerWidget {
@@ -47,8 +48,8 @@ class G_45 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 174, 26, gText('Mes commandes', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 342, 48, GField(hint: 'Rechercher une commande', size: 13.5, hintColor: Color(0xFF57545F), weight: 400, padL: 46)),
-      gP(40.5, 134.5, 19, 19, const SizedBox.expand(), tap: () => gTab(context, '19')),
+      gP(24, 120, 342, 48, GField(hint: 'Rechercher une commande', size: 13.5, hintColor: Color(0xFF57545F), weight: 400, padL: 46, onChanged: (v) { ref.read(ordersQueryProvider.notifier).set(v); })),
+      gP(40.5, 134.5, 19, 19, const SizedBox.expand(), tap: demoContent ? () => gTab(context, '19') : null),
       gP(39.875, 133.875, 18.667, 18.667, gImg('assets/figma/v/50f467eb8a9b46.svg')),
       gP(50.721, 144.721, 9.404, 9.404, gImg('assets/figma/v/18d279137d73d9.svg')),
       gP(338.583, 134.667, 11.542, 6, gImg('assets/figma/v/e35f2f0eee5049.svg')),
@@ -60,11 +61,12 @@ class G_45 extends ConsumerWidget {
       gP(338.583, 133.083, 6, 9.167, gImg('assets/figma/v/3221f2f163c9f7.svg')),
       gP(333.833, 139.417, 6, 9.167, gImg('assets/figma/v/3221f2f163c9f7.svg')),
       gP(340.167, 145.75, 6, 9.167, gImg('assets/figma/v/3221f2f163c9f7.svg')),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 182, 70.4, 34, 'Toutes', 12.5, 600), GChip(102.4, 182, 85.2, 34, 'En cours', 12.5, 500), GChip(195.6, 182, 77.8, 34, 'Livrées', 12.5, 500), GChip(281.4, 182, 85.2, 34, 'Annulées', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
+      Positioned.fill(child: GChoiceGroup(key: ValueKey('f45${ref.watch(ordersFilterProvider)}'), onChanged: (v) { ref.read(ordersFilterProvider.notifier).set(v); }, chips: [GChip(24, 182, 70.4, 34, 'Toutes', 12.5, 600), GChip(102.4, 182, 85.2, 34, 'En cours', 12.5, 500), GChip(195.6, 182, 77.8, 34, 'Livrées', 12.5, 500), GChip(281.4, 182, 85.2, 34, 'Annulées', 12.5, 500)], selected: ref.watch(ordersFilterProvider), selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
       gP(24, 230, 109, 19, Consumer(builder: (context, ref, _) => gText('${ref.watch(ordersAllProvider).length + (demoContent ? 8 : 0)} commande${(ref.watch(ordersAllProvider).length + (demoContent ? 8 : 0)) > 1 ? 's' : ''}', 15, Color(0xFF111015), weight: 700))),
-      gP(325, 232, 25, 15, gText('Trier', 12, Color(0xFF5A3FE0), weight: 500, align: TextAlign.right)),
+      gP(260, 232, 90, 15, Consumer(builder: (context, ref, _) => gText(demoContent ? 'Trier' : 'Trier : ${ordersSortLabel(ref.watch(ordersSortProvider))}', 12, Color(0xFF5A3FE0), weight: 500, align: TextAlign.right, wrap: true))),
       gP(352.5, 237, 13, 6, gImg('assets/figma/v/4159f10924eea0.svg')),
       gP(356, 233.5, 9.5, 13, gImg('assets/figma/v/a365eb17b7a19f.svg')),
+      if (demoContent) ...[
       gP(24, 276, 78, 78, gBox(image: (demoContent ? 'assets/figma/img/abbe1a61d7955c52cdd31224bc1569ab44582797.png' : (ref.watch(ordersAllProvider).length > 0 && ref.watch(ordersAllProvider)[0].lines.isNotEmpty ? ref.watch(ordersAllProvider)[0].lines.first.image : 'placeholder')), fit: BoxFit.cover, radii: [12, 12, 12, 12]), show: (demoContent || ref.watch(ordersAllProvider).length > 0)),
       gP(114, 281.818, 112, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(ordersAllProvider).length > 0 ? ref.watch(ordersAllProvider)[0].id : '', 13.5, Color(0xFF111015), weight: 600))),
       gP(114, 313.818, 148, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(ordersAllProvider).length > 0 ? '${ref.watch(ordersAllProvider)[0].date}  •  ${fcfa(ref.watch(ordersAllProvider)[0].total)}' : '', 11.5, Color(0xFF57545F)))),
@@ -88,7 +90,8 @@ class G_45 extends ConsumerWidget {
       gP(114, 601.818, 151, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(ordersAllProvider).length > 3 ? '${ref.watch(ordersAllProvider)[3].date}  •  ${fcfa(ref.watch(ordersAllProvider)[3].total)}' : '', 11.5, Color(0xFF57545F)))),
       gP(287.2, 584.364, 64.8, 22, gBox(color: (badgeFill((ref.watch(ordersAllProvider).length > 3 ? ref.watch(ordersAllProvider)[3].badge : 'En cours'))), radii: [11, 11, 11, 11]), show: ref.watch(ordersAllProvider).length > 3),
       gP(297.6, 590.182, 44, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(ordersAllProvider).length > 3 ? ref.watch(ordersAllProvider)[3].badge : '', 11, (badgeInk((ref.watch(ordersAllProvider).length > 3 ? ref.watch(ordersAllProvider)[3].badge : 'En cours'))), weight: 600, align: TextAlign.center))),
-      gP(24, 290, 342, 60, gText('Vous n’avez pas encore de commande. Vos achats apparaîtront ici, avec leur suivi.', 13.5, Color(0xFF57545F), lh: 20, wrap: true), show: (!demoContent && ref.watch(ordersAllProvider).isEmpty)),
+      ],
+      if (!demoContent) gP(24, 272, 342, 470, const OrdersListView(width: 342, height: 470)),
       gP(125, 832, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
       gP(47.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '19')),
@@ -106,10 +109,11 @@ class G_45 extends ConsumerWidget {
       gP(169, 762, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gTab(context, '03')),
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
-      gTap(24, 272, 342, 60, () { final l = ref.read(ordersAllProvider); if (l.length > 0) { ref.read(selectedOrderIdProvider.notifier).set(l[0].id); gOpen(context, '09'); } }),
-      gTap(24, 338, 342, 60, () { final l = ref.read(ordersAllProvider); if (l.length > 1) { ref.read(selectedOrderIdProvider.notifier).set(l[1].id); gOpen(context, '09'); } }),
-      gTap(24, 404, 342, 60, () { final l = ref.read(ordersAllProvider); if (l.length > 2) { ref.read(selectedOrderIdProvider.notifier).set(l[2].id); gOpen(context, '09'); } }),
-      gTap(24, 470, 342, 60, () { final l = ref.read(ordersAllProvider); if (l.length > 3) { ref.read(selectedOrderIdProvider.notifier).set(l[3].id); gOpen(context, '09'); } }),
+      if (demoContent) gTap(24, 272, 342, 60, () { final l = ref.read(ordersAllProvider); if (l.length > 0) { ref.read(selectedOrderIdProvider.notifier).set(l[0].id); gOpen(context, '09'); } }),
+      if (demoContent) gTap(24, 338, 342, 60, () { final l = ref.read(ordersAllProvider); if (l.length > 1) { ref.read(selectedOrderIdProvider.notifier).set(l[1].id); gOpen(context, '09'); } }),
+      if (demoContent) gTap(24, 404, 342, 60, () { final l = ref.read(ordersAllProvider); if (l.length > 2) { ref.read(selectedOrderIdProvider.notifier).set(l[2].id); gOpen(context, '09'); } }),
+      if (demoContent) gTap(24, 470, 342, 60, () { final l = ref.read(ordersAllProvider); if (l.length > 3) { ref.read(selectedOrderIdProvider.notifier).set(l[3].id); gOpen(context, '09'); } }),
+      if (!demoContent) gTap(250, 226, 116, 28, () { final s = ref.read(ordersSortProvider); ref.read(ordersSortProvider.notifier).set((s + 1) % ordersSortLabels.length); }),
     ]);
   }
 }

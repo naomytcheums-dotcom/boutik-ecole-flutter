@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../gen.dart';
 import 'share.dart' show siteUrl, openUrl, shareText;
 import 'auth.dart';
 import 'backend.dart';
-import 'lots.dart' show copyText;
+import 'lots.dart' show copyText, formDialog;
 import 'store.dart' show fcfa;
 import 'talents.dart' show askText;
 
@@ -18,14 +19,14 @@ typedef Referee = ({String name, String status, int earned});
 typedef ReferralRule = ({String tier, int minActive, int bonus, double sharePct});
 
 class ReferralSummary {
-  const ReferralSummary({this.tier = 'Aucun', this.active = 0, this.pending = 0, this.available = 0, this.waiting = 0, this.month = 0, this.referees = const [], this.rules = const [], this.history = const [], this.unavailable = false});
+  const ReferralSummary({this.tier = 'Aucun', this.active = 0, this.pending = 0, this.available = 0, this.waiting = 0, this.month = 0, this.referees = const [], this.rules = const [], this.history = const [], this.unavailable = false, this.payoutRequested = 0, this.payoutPaid = 0, this.payouts = const [], this.minPayout = 1000});
   final String tier;
-  final int active, pending, available, waiting, month;
+  final int active, pending, available, waiting, month, payoutRequested, payoutPaid, minPayout;
   final List<Referee> referees;
 
   /// Barème défini par l'administrateur (table referral_rules) ; vide = barème pas encore publié.
   final List<ReferralRule> rules;
-  final List<Map<String, dynamic>> history;
+  final List<Map<String, dynamic>> history, payouts;
 
   /// Vrai quand la lecture de la synthèse a échoué : les compteurs ne sont alors pas ceux du compte.
   final bool unavailable;
@@ -40,6 +41,10 @@ class ReferralSummary {
         available: (j['available'] as num?)?.toInt() ?? 0,
         waiting: (j['waiting'] as num?)?.toInt() ?? 0,
         month: (j['this_month'] as num?)?.toInt() ?? 0,
+        payoutRequested: (j['payout_requested'] as num?)?.toInt() ?? 0,
+        payoutPaid: (j['payout_paid'] as num?)?.toInt() ?? 0,
+        minPayout: (j['min_payout'] as num?)?.toInt() ?? 1000,
+        payouts: [for (final h in (j['payouts'] as List? ?? const [])) Map<String, dynamic>.from(h as Map)],
         referees: [
           for (final r in (j['referees'] as List? ?? const []))
             (name: '${(r as Map)['name']}', status: '${r['status']}', earned: (r['earned'] as num?)?.toInt() ?? 0),
@@ -205,14 +210,44 @@ class ReferralCode extends Notifier<String?> {
 
 final referralCodeProvider = NotifierProvider<ReferralCode, String?>(ReferralCode.new);
 
-/// Texte du lien d'invitation : le code à saisir après l'inscription (Mon compte → « J'ai un code de parrainage »).
-String invitationText(String? code, {bool signedOut = true}) =>
-    code == null ? 'Chargement du code…' : (code.isEmpty ? (signedOut ? 'Connectez-vous pour obtenir votre code' : 'Code indisponible pour le moment') : 'Code de parrainage : $code');
+/// Lien d'invitation : ouvert dans l'application, il applique le code du parrain après l'inscription (paramètre `ref`).
+String invitationLink(String code) => '$siteUrl/?ref=$code';
 
-/// Message d'invitation commun à tous les boutons de partage. Le formulaire d'inscription n'a pas de champ de parrainage :
-/// le filleul saisit le code dans son compte.
+/// Lien d'invitation affiché dans l'écran 240 : le lien, sans le schéma, ou l'état du code.
+String invitationText(String? code, {bool signedOut = true}) =>
+    code == null ? 'Chargement du code…' : (code.isEmpty ? (signedOut ? 'Connectez-vous pour obtenir votre code' : 'Code indisponible pour le moment') : invitationLink(code).replaceFirst('https://', ''));
+
+/// Message d'invitation commun à tous les boutons de partage : le lien applique le code à l'inscription ; le code reste saisissable à la main.
 String invitationMessage(String code) =>
-    'Rejoins Boutik-École : $siteUrl — après ton inscription, saisis mon code de parrainage $code dans Mon compte › J’ai un code de parrainage.';
+    'Rejoins Boutik-École, la marketplace des étudiants de l’IUT de Douala : ${invitationLink(code)} — le lien applique mon code de parrainage. Si le code n’est pas pris en compte, saisis $code dans Mon compte › J’ai un code de parrainage, avant ta première commande payée. Ma prime est due à ta 1ʳᵉ commande payée d’au moins 10 000 FCFA.';
+
+const _pendingRefKey = 'pending_referral_code';
+
+/// Au démarrage de l'application : mémorise le code d'un lien d'invitation (`?ref=CODE`) pour l'appliquer à la création du compte.
+Future<void> capturePendingReferral([Uri? uri]) async {
+  try {
+    final code = normalizeReferralCode((uri ?? Uri.base).queryParameters['ref'] ?? '');
+    if (code == null) return;
+    await (await SharedPreferences.getInstance()).setString(_pendingRefKey, code);
+  } catch (_) {}
+}
+
+/// Après une connexion ou une inscription : applique le code mémorisé (claim_referral). Un refus du serveur (déjà un parrain, délai dépassé,
+/// même téléphone…) ou un succès efface le code ; une panne réseau le garde pour la prochaine connexion.
+Future<String?> applyPendingReferral() async {
+  if (!Backend.ready) return null;
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    final code = prefs.getString(_pendingRefKey);
+    if (code == null) return null;
+    final r = await Backend.rpc('claim_referral', {'p_code': code});
+    if (r.error != null && Backend.isServiceMessage(Backend.userMessage(r.error!))) return null;
+    await prefs.remove(_pendingRefKey);
+    return r.error == null ? 'Parrain enregistré : la prime lui sera due à votre première commande payée.' : null;
+  } catch (_) {
+    return null;
+  }
+}
 
 /// Code à partager, ou null après avoir expliqué pourquoi il n'est pas disponible (visiteur : invitation à se connecter).
 Future<String?> _shareableCode(BuildContext context, WidgetRef ref) async {
@@ -255,7 +290,7 @@ Future<void> shareInvitation(BuildContext context, WidgetRef ref, String via) as
 
 /// 240 « Copier » : copie réellement le message d'invitation ; le message dit si la copie a réussi.
 Future<void> copyInvitation(BuildContext context, WidgetRef ref) async {
-  if (!Backend.ready) return gToast(context, 'Lien copié');
+  if (!Backend.ready) return gToast(context, 'Copie disponible une fois connecté au serveur.');
   final code = await _shareableCode(context, ref);
   if (code == null || !context.mounted) return;
   final ok = await copyText(invitationMessage(code));
@@ -275,7 +310,7 @@ String? normalizeReferralCode(String raw) {
 Future<void> claimReferralDialog(BuildContext context, WidgetRef ref) async {
   if (!Backend.ready) return gAlert(context, 'Hors connexion', 'Cette action nécessite la connexion au serveur.');
   if (!await requireLogin(context, ref, 'saisir un code de parrainage') || !context.mounted) return;
-  final raw = await askText(context, title: 'Code de parrainage', body: 'Saisissez le code reçu (8 caractères : lettres et chiffres), dans les 30 jours suivant votre inscription.', hint: 'ABCD2345', ok: 'Valider', min: 8);
+  final raw = await askText(context, title: 'Code de parrainage', body: 'Saisissez le code reçu (8 caractères : lettres et chiffres), dans les 30 jours suivant votre inscription et avant votre première commande payée.', hint: 'ABCD2345', ok: 'Valider', min: 8);
   if (raw == null || !context.mounted) return;
   final code = normalizeReferralCode(raw);
   if (code == null) return gAlert(context, 'Code invalide', 'Un code de parrainage compte exactement 8 caractères (lettres A à Z et chiffres 2 à 9), sans espace ni préfixe.');
@@ -285,24 +320,158 @@ Future<void> claimReferralDialog(BuildContext context, WidgetRef ref) async {
   gToast(context, 'Parrain enregistré : la prime lui sera due à votre première commande payée.');
 }
 
-/// Liste des filleuls réels (243), à la place des exemples de la maquette.
-Widget refereeList(ReferralSummary? s, {bool signedOut = false}) => signedOut
-    ? const Text(referralSignInHint, style: TextStyle(fontSize: 12.5, color: Color(0xFF57545F), height: 1.4))
-    : s == null
-        ? const Text('Chargement…', style: TextStyle(fontSize: 12.5, color: Color(0xFF57545F), height: 1.4))
-        : s.unavailable
-        ? const Text('Parrainage indisponible pour le moment. Réessayez dans un instant.', style: TextStyle(fontSize: 12.5, color: Color(0xFF57545F), height: 1.4))
-        : s.referees.isEmpty
-            ? const Text('Aucun filleul pour le moment. Partagez votre code depuis « Parrainer et gagner ».', style: TextStyle(fontSize: 12.5, color: Color(0xFF57545F), height: 1.4))
-            : Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        for (final r in s.referees.take(5))
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Row(children: [
-              Expanded(child: Text(r.name, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF111015)))),
-              Text(refereeStatus(r.status), style: const TextStyle(fontSize: 11, color: Color(0xFF5A3FE0))),
-              const SizedBox(width: 16),
-              Text(r.earned > 0 ? '+ ${fcfa(r.earned)}' : '—', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF111015))),
-            ]),
-          ),
-      ]);
+/// 240 : « Mes gains · X FCFA » sans afficher 0 tant que la synthèse n'est pas lue.
+String referralGainsText(WidgetRef ref) {
+  if (referralSignedOut(ref)) return 'Mes gains';
+  final s = ref.watch(referralProvider);
+  if (s == null) return 'Mes gains · …';
+  return s.unavailable ? 'Mes gains · indisponibles' : 'Mes gains · ${fcfa(s.total)}';
+}
+
+/// 243 : solde disponible, jamais « 0 » tant que la synthèse n'est pas lue.
+String referralBalanceText(WidgetRef ref) {
+  final s = ref.watch(referralProvider);
+  return s == null ? '…' : (s.unavailable ? '—' : fcfa(s.available));
+}
+
+/// 243 : ligne sous le solde — gains en attente de disponibilité et retrait déjà demandé.
+String referralBalanceNote(WidgetRef ref) {
+  final s = ref.watch(referralProvider);
+  if (s == null || s.unavailable) return '';
+  return [
+    if (s.waiting > 0) '${fcfa(s.waiting)} disponibles 14 jours après la commande',
+    if (s.payoutRequested > 0) 'retrait demandé : ${fcfa(s.payoutRequested)}',
+  ].join(' · ');
+}
+
+/// 243 : demande de retrait. Le versement est fait sur demande par l'équipe finance (Mobile Money) : rien n'est automatique.
+Future<void> requestPayoutDialog(BuildContext context, WidgetRef ref) async {
+  if (!Backend.ready) return gAlert(context, 'Hors connexion', 'Cette action nécessite la connexion au serveur.');
+  if (!await requireLogin(context, ref, 'demander un retrait') || !context.mounted) return;
+  await ref.read(referralProvider.notifier).refresh();
+  final s = ref.read(referralProvider);
+  if (!context.mounted || s == null) return;
+  if (s.unavailable) return gAlert(context, 'Retrait', 'Vos gains ne peuvent pas être lus pour le moment. Réessayez dans un instant.');
+  if (s.payoutRequested > 0) {
+    return gAlert(context, 'Retrait en cours', 'Votre demande de ${fcfa(s.payoutRequested)} est en cours de traitement par l’équipe finance. Vous serez prévenu dès qu’elle sera payée.');
+  }
+  if (s.available < s.minPayout) {
+    return gAlert(context, 'Retrait indisponible', 'Le paiement des gains se fait sur demande à l’équipe, à partir de ${fcfa(s.minPayout)} disponibles. Solde disponible : ${fcfa(s.available)}.${s.waiting > 0 ? ' ${fcfa(s.waiting)} sont encore en attente (14 jours après la commande).' : ''}');
+  }
+  final v = await formDialog(
+    context,
+    'Demander un retrait',
+    [('Montant (FCFA, ${fcfa(s.minPayout)} minimum)', '${s.available}'), ('Numéro Orange Money ou MTN MoMo (9 chiffres)', '')],
+    submit: 'Envoyer la demande',
+    intro: 'Le paiement de vos gains se fait sur demande : l’équipe finance verse le montant sur ce numéro Mobile Money et vous prévient. Solde disponible : ${fcfa(s.available)}.',
+    numeric: true,
+  );
+  if (v == null || !context.mounted) return;
+  final amount = int.tryParse(v[0].replaceAll(RegExp(r'\s'), ''));
+  final phone = normPhone(v[1]);
+  if (amount == null) return gAlert(context, 'Montant invalide', 'Saisissez un montant en chiffres.');
+  final provider = RegExp(r'^69|^65[5-9]').hasMatch(phone) ? 'orange_money' : 'mtn_momo';
+  final r = await Backend.rpc('request_referral_payout', {'p_amount': amount, 'p_phone': phone, 'p_provider': provider});
+  if (!context.mounted) return;
+  if (r.error != null) return gAlert(context, 'Demande non envoyée', Backend.userMessage(r.error!));
+  await ref.read(referralProvider.notifier).refresh();
+  if (context.mounted) gToast(context, 'Demande de retrait envoyée : l’équipe finance vous répond.');
+}
+
+/// Liste des filleuls réels (243), à la place des exemples de la maquette : tous les filleuls, la légende des statuts et l'historique des gains.
+Widget refereeList(ReferralSummary? s, {bool signedOut = false}) {
+  const grey = TextStyle(fontSize: 12.5, color: Color(0xFF57545F), height: 1.4);
+  if (signedOut) return const Text(referralSignInHint, style: grey);
+  if (s == null) return const Text('Chargement…', style: grey);
+  if (s.unavailable) return const Text('Parrainage indisponible pour le moment. Réessayez dans un instant.', style: grey);
+  if (s.referees.isEmpty && s.history.isEmpty) return const Text('Aucun filleul pour le moment. Partagez votre code depuis « Parrainer et gagner ».', style: grey);
+  String day(Object? iso) {
+    final d = DateTime.tryParse('$iso')?.toLocal();
+    return d == null ? '' : '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}';
+  }
+
+  return ListView(padding: EdgeInsets.zero, children: [
+    if (s.referees.isEmpty) const Text('Aucun filleul pour le moment.', style: grey),
+    for (final r in s.referees)
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Row(children: [
+          Expanded(child: Text(r.name, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF111015)))),
+          Text(refereeStatus(r.status), style: const TextStyle(fontSize: 11, color: Color(0xFF5A3FE0))),
+          const SizedBox(width: 16),
+          Text(r.earned > 0 ? '+ ${fcfa(r.earned)}' : '—', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF111015))),
+        ]),
+      ),
+    const Padding(
+      padding: EdgeInsets.only(top: 4, bottom: 6),
+      child: Text('Actif : 1ʳᵉ commande payée d’au moins 10 000 FCFA · En attente : pas encore de commande payée · Expiré : aucune commande sous 90 jours.', style: TextStyle(fontSize: 10.5, color: Color(0xFF57545F), height: 1.4)),
+    ),
+    if (s.history.isNotEmpty) ...[
+      const Padding(padding: EdgeInsets.only(top: 12, bottom: 4), child: Text('Historique des gains', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF111015)))),
+      for (final h in s.history)
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5),
+          child: Row(children: [
+            Expanded(child: Text('${day(h['at'])} · ${h['source'] == 'referral_share' ? 'part des ventes' : 'prime de parrainage'}${h['status'] == 'void' ? ' · annulé (commande annulée)' : ''}', style: grey.copyWith(fontSize: 11.5))),
+            Text('+ ${fcfa((h['amount'] as num?)?.toInt() ?? 0)}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: h['status'] == 'void' ? const Color(0xFF8A8794) : const Color(0xFF111015), decoration: h['status'] == 'void' ? TextDecoration.lineThrough : null)),
+          ]),
+        ),
+    ],
+  ]);
+}
+
+/// Kit à partager (242) : textes prêts à envoyer ou à publier, chacun avec le lien d'invitation et le code.
+class ReferralShareKit extends ConsumerWidget {
+  const ReferralShareKit({super.key, this.width = 342});
+  final double width;
+
+  static List<(String, String)> messages(String code) {
+    final link = invitationLink(code);
+    return [
+      ('Message court (WhatsApp, SMS)', 'Salut ! Je te recommande Boutik-École, la marketplace des étudiants de l’IUT de Douala (produits, services, talents). Inscris-toi avec mon lien : $link — mon code : $code.'),
+      ('Légende de publication ou de story', 'Je soutiens les talents de l’IUT de Douala sur Boutik-École. Rejoins-moi : $link (code $code) #BoutikEcole #IUTDouala'),
+      ('Message pour un ami qui cherche un service', 'Tu cherches un logo, une vidéo ou un produit local ? Des étudiants de l’IUT de Douala le font sur Boutik-École : $link (code de parrainage : $code).'),
+    ];
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    const ink = Color(0xFF111015), grey = Color(0xFF57545F);
+    Widget note(String t) => Container(width: width, height: 120, alignment: Alignment.center, padding: const EdgeInsets.symmetric(horizontal: 24), child: Text(t, textAlign: TextAlign.center, style: const TextStyle(fontSize: 13, height: 1.5, color: grey)));
+    if (referralSignedOut(ref)) return note('Connectez-vous pour obtenir votre code et vos messages à partager.');
+    final c = ref.watch(referralCodeProvider);
+    if (c == null) return note('Chargement…');
+    if (c.isEmpty) return note('Code indisponible pour le moment.');
+    return SizedBox(
+      width: width,
+      child: ListView(padding: EdgeInsets.zero, children: [
+        const Text('Votre lien d’invitation', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: ink)),
+        const SizedBox(height: 8),
+        Container(width: width, padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: const Color(0xFFEEE9FF), borderRadius: BorderRadius.circular(16)), child: SelectableText(invitationLink(c), style: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w700, color: Color(0xFF5A3FE0)))),
+        const SizedBox(height: 6),
+        const Text('Le filleul qui ouvre ce lien et crée son compte vous est rattaché automatiquement.', style: TextStyle(fontSize: 11.5, color: grey, height: 1.4)),
+        for (final (title, text) in messages(c)) ...[
+          const SizedBox(height: 16),
+          Text(title, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: ink)),
+          const SizedBox(height: 6),
+          Container(width: width, padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0xFFE6E1EE))), child: Text(text, style: const TextStyle(fontSize: 12.5, height: 1.45, color: ink))),
+          const SizedBox(height: 8),
+          Row(children: [
+            Expanded(child: OutlinedButton(onPressed: () => shareText(context, text, subject: 'Invitation Boutik-École'), child: const Text('Partager'))),
+            const SizedBox(width: 10),
+            Expanded(
+              child: OutlinedButton(
+                onPressed: () async {
+                  final ok = await copyText(text);
+                  if (context.mounted) gToast(context, ok ? 'Message copié' : 'Copie impossible : autorisez l’accès au presse-papiers.');
+                },
+                child: const Text('Copier'),
+              ),
+            ),
+          ]),
+        ],
+        const SizedBox(height: 24),
+      ]),
+    );
+  }
+}

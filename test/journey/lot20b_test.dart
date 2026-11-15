@@ -91,13 +91,11 @@ void main() {
     expect(find.text('Besoin Test'), findsOneWidget);
   });
 
-  testWidgets('278 connecté : projets réels', (t) async {
-    await monter(t, const G_278(), connecte: true, overrides: [
-      projectsCatalogProvider.overrideWith(() => _Rows('table:projects', [
-            {'title': 'Projet Test', 'summary': 'Résumé', 'department': 'GI', 'status': 'approved'}
-          ]))
-    ]);
-    expect(find.text('Projet Test'), findsOneWidget);
+  testWidgets('278 connecté : liens et PI de MES projets, pas ceux des autres', (t) async {
+    await monter(t, const G_278(), connecte: true);
+    expect(find.text('Projet Test'), findsNothing);
+    expect(find.text('Liens et propriété intellectuelle'), findsWidgets);
+    expect(find.text('Aucun projet'), findsOneWidget);
   });
 
   testWidgets('25b connecté : aucun favori de maquette', (t) async {

@@ -15,6 +15,9 @@ import '../live/audit.dart';
 import '../live/admin.dart';
 import '../live/talents.dart';
 import '../live/hackathons.dart';
+import '../live/contests.dart';
+import '../live/l10_hackathons.dart';
+import '../live/l10_ui.dart' show l10Query;
 import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
@@ -29,6 +32,11 @@ class G_161 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (!demoContent) {
+      ref.watch(myContestTeamsProvider);
+      final wanted = l10Query(context, 'event');
+      if (wanted.isNotEmpty && ref.read(selectedEventProvider) != wanted) Future.microtask(() => ref.read(selectedEventProvider.notifier).set(wanted));
+    }
     return GScreen(w: 390, h: 881, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 140.73, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 607.66, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
@@ -59,26 +67,27 @@ class G_161 extends ConsumerWidget {
       gP(291.5, 328, 35, 25, Consumer(builder: (context, ref, _) => gText(placesKnown() ? '${placesLeft(ref.watch(currentEventProvider), ref.watch(registrationsProvider))}' : '—', 20, Color(0xFF111015), weight: 800, align: TextAlign.center))),
       gP(290.5, 358, 37, 14, gText('Places', 11.5, Color(0xFF57545F), align: TextAlign.center)),
       gP(252, 328, 1, 48, gBox(color: Color(0xFFF2EFF6))),
-      gP(24, 440, 342, 1, gBox(color: Color(0xFFECE8F2))),
-      gP(41.25, 414, 51, 14, gText('À propos', 11.5, Color(0xFF111015), weight: 700, align: TextAlign.center)),
-      gP(36.825, 438, 59.85, 3, gBox(color: Color(0xFF6A4DFF), radii: [2, 2, 2, 2])),
-      gP(119.25, 414, 66, 14, gText('Programme', 11.5, Color(0xFF57545F), weight: 500, align: TextAlign.center)),
-      gP(227.25, 414, 21, 14, gText('Prix', 11.5, Color(0xFF57545F), weight: 500, align: TextAlign.center)),
-      gP(292.75, 414, 61, 14, gText('Règlement', 11.5, Color(0xFF57545F), weight: 500, align: TextAlign.center)),
-      gP(24, 458, 345, 61, Consumer(builder: (context, ref, _) => gText(ref.watch(currentEventProvider).desc, 13, Color(0xFF4A4854), lh: 20.15, wrap: true))),
-      gP(24, 533, 77, 19, gText('Calendrier', 15, Color(0xFF111015), weight: 700)),
-      gP(33, 593, 2, 40, gBox(color: Color(0xFFBFE8D6), radii: [1, 1, 1, 1])),
-      gP(24, 572, 20, 20, gBox(color: Color(0xFF1F9D6B), oval: true)),
-      gP(27.333, 576.25, 13.333, 11.042, gImg('assets/figma/v/23149818a3337a.svg')),
-      gP(56, 571, 305, 17, gText('Clôture des inscriptions', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
-      gP(56, 591, 305, 14, gText(gm('05 nov. 2026', ''), 11.5, Color(0xFF57545F), wrap: true)),
-      gP(33, 655, 2, 40, gBox(color: Color(0xFFE4E8EE), radii: [1, 1, 1, 1])),
-      gP(24, 634, 20, 20, gBox(color: Color(0xFF111015), oval: true)),
-      gP(56, 633, 305, 17, gText('Lancement et mentorat', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
-      gP(56, 653, 305, 14, gText(gm('14 nov. · 09 h', ''), 11.5, Color(0xFF57545F), wrap: true)),
-      gP(24, 696, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true)),
-      gP(56, 695, 305, 17, gText('Pitch final et jury', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
-      gP(56, 715, 305, 14, gText(gm('16 nov. · 15 h', ''), 11.5, Color(0xFF57545F), wrap: true)),
+      gP(24, 440, 342, 1, gBox(color: Color(0xFFECE8F2)), show: demoContent),
+      gP(41.25, 414, 51, 14, gText('À propos', 11.5, Color(0xFF111015), weight: 700, align: TextAlign.center), show: demoContent),
+      gP(36.825, 438, 59.85, 3, gBox(color: Color(0xFF6A4DFF), radii: [2, 2, 2, 2]), show: demoContent),
+      gP(119.25, 414, 66, 14, gText('Programme', 11.5, Color(0xFF57545F), weight: 500, align: TextAlign.center), show: demoContent),
+      gP(227.25, 414, 21, 14, gText('Prix', 11.5, Color(0xFF57545F), weight: 500, align: TextAlign.center), show: demoContent),
+      gP(292.75, 414, 61, 14, gText('Règlement', 11.5, Color(0xFF57545F), weight: 500, align: TextAlign.center), show: demoContent),
+      gP(24, 458, 345, 61, Consumer(builder: (context, ref, _) => gText(ref.watch(currentEventProvider).desc, 13, Color(0xFF4A4854), lh: 20.15, wrap: true)), show: demoContent),
+      gP(24, 533, 77, 19, gText('Calendrier', 15, Color(0xFF111015), weight: 700), show: demoContent),
+      gP(33, 593, 2, 40, gBox(color: Color(0xFFBFE8D6), radii: [1, 1, 1, 1]), show: demoContent),
+      gP(24, 572, 20, 20, gBox(color: Color(0xFF1F9D6B), oval: true), show: demoContent),
+      gP(27.333, 576.25, 13.333, 11.042, gImg('assets/figma/v/23149818a3337a.svg'), show: demoContent),
+      gP(56, 571, 305, 17, gText('Clôture des inscriptions', 13.5, Color(0xFF111015), weight: 600, wrap: true), show: demoContent),
+      gP(56, 591, 305, 14, gText(gm('05 nov. 2026', ''), 11.5, Color(0xFF57545F), wrap: true), show: demoContent),
+      gP(33, 655, 2, 40, gBox(color: Color(0xFFE4E8EE), radii: [1, 1, 1, 1]), show: demoContent),
+      gP(24, 634, 20, 20, gBox(color: Color(0xFF111015), oval: true), show: demoContent),
+      gP(56, 633, 305, 17, gText('Lancement et mentorat', 13.5, Color(0xFF111015), weight: 600, wrap: true), show: demoContent),
+      gP(56, 653, 305, 14, gText(gm('14 nov. · 09 h', ''), 11.5, Color(0xFF57545F), wrap: true), show: demoContent),
+      gP(24, 696, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true), show: demoContent),
+      gP(56, 695, 305, 17, gText('Pitch final et jury', 13.5, Color(0xFF111015), weight: 600, wrap: true), show: demoContent),
+      gP(56, 715, 305, 14, gText(gm('16 nov. · 15 h', ''), 11.5, Color(0xFF57545F), wrap: true), show: demoContent),
+      if (!demoContent) gP(24, 400, 342, 381, const ContestInfoPanel(width: 342)),
       gP(0, 781, 390, 100, gBox(color: Color(0x00FFFFFF))),
       gP(24, 797, 163, 54, gBox(color: Color(0x00FFFFFF), border: Color(0xFFD9D3E6), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => shareText(context, 'Découvrez Boutik-École, la marketplace de l’IUT de Douala : ' + siteUrl)),
       gP(75, 815, 61, 18, gText('Partager', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
@@ -88,9 +97,9 @@ class G_161 extends ConsumerWidget {
       gP(341.667, 79, 20.667, 15.167, gImg('assets/figma/v/38cc299702e092.svg')),
       gP(345.333, 69.833, 13.333, 9.667, gImg('assets/figma/v/d83f01d420bc41.svg')),
       gP(349, 69.833, 6, 17.917, gImg('assets/figma/v/7c9d8fa2b191bd.svg')),
-      gTap(203, 797, 163, 54, () { if (ref.read(registrationsProvider).containsKey(ref.read(currentEventProvider).id)) { gToast(context, 'Votre équipe est déjà inscrite.'); gOpen(context, '164'); } else { gOpen(context, '162'); } }),
+      gTap(203, 797, 163, 54, () { final id = ref.read(currentEventProvider).id; if (ref.read(registrationsProvider).containsKey(id) || ref.read(myContestTeamsProvider).containsKey(id)) { gToast(context, 'Votre équipe est déjà inscrite.'); gOpen(context, '164'); } else { gOpen(context, '162'); } }),
       gTap(24, 797, 163, 54, () { shareEventLink(ref, context); }),
-      gTap(284.8, 406, 77, 32, () { gOpen(context, '166'); }), // parcours 161 -> 166
+      if (demoContent) gTap(284.8, 406, 77, 32, () { gOpen(context, '166'); }), // parcours 161 -> 166
     ]);
   }
 }

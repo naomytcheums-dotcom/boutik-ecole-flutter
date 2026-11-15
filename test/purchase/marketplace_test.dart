@@ -193,7 +193,7 @@ void main() {
     await tester.pump(const Duration(seconds: 4));
   });
 
-  testWidgets('panier par boutique : une commande par boutique et sous-totaux', (tester) async {
+  testWidgets('panier par boutique : regroupement par boutique, sous-totaux, quantité et suppression', (tester) async {
     late ProviderContainer c;
     await pump(tester, Consumer(builder: (ctx, ref, _) {
       c = ProviderScope.containerOf(ctx);
@@ -206,10 +206,16 @@ void main() {
     c.read(cartProvider.notifier).add(const CartLine('Sac', 'Boutique : Atelier B', 5000, ''));
     c.read(cartProvider.notifier).add(const CartLine('Table', 'Boutique : Atelier A', 20000, ''));
     await tester.pump();
-    expect(find.text('Commande Atelier A'), findsOneWidget);
-    expect(find.text('Commande Atelier B'), findsOneWidget);
+    expect(find.text('Atelier A'), findsOneWidget);
+    expect(find.text('Atelier B'), findsOneWidget);
     expect(find.text(mFcfa(30000)), findsWidgets, reason: 'sous-total de la boutique A');
     expect(find.text(mFcfa(35000)), findsOneWidget, reason: 'total des articles');
+    await tester.tap(find.byTooltip('Plus').first);
+    await tester.pump();
+    expect(c.read(cartProvider).first.qty, 2);
+    await tester.tap(find.byTooltip('Retirer').at(1));
+    await tester.pump();
+    expect(c.read(cartProvider).map((l) => l.title), ['Lampe', 'Sac'], reason: 'la 2e ligne affichée (Table, boutique A) est retirée');
   });
 
   testWidgets('mon espace vendeur : tableau de bord avec chiffres, graphique et meilleurs produits', (tester) async {

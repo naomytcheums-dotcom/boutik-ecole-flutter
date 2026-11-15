@@ -295,9 +295,12 @@ const _mois = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août
 String eventWhen(DateTime d) => '${d.day} ${_mois[d.month - 1]} · ${d.hour.toString().padLeft(2, '0')} h ${d.minute.toString().padLeft(2, '0')}';
 
 class CommunityEventsTab extends ConsumerStatefulWidget {
-  const CommunityEventsTab({super.key, required this.communityId, required this.isMember});
+  const CommunityEventsTab({super.key, required this.communityId, required this.isMember, this.canModerate = false});
   final String communityId;
   final bool isMember;
+
+  /// Responsables de la communauté : le serveur les autorise aussi à supprimer l'événement d'un autre membre.
+  final bool canModerate;
 
   @override
   ConsumerState<CommunityEventsTab> createState() => _EventsState();
@@ -409,7 +412,7 @@ class _EventsState extends ConsumerState<CommunityEventsTab> {
             const SizedBox(height: 10),
             Row(children: [
               Expanded(child: _btn(e['i_go'] == true ? 'Je participe ✓' : 'Je participe', () => _call('community_event_rsvp', {'p_event': e['id'], 'p_going': e['i_go'] != true}), dark: e['i_go'] != true)),
-              if (e['mine'] == true) ...[const SizedBox(width: 8), SizedBox(width: 110, child: _btn('Supprimer', () => _call('community_event_delete', {'p_event': e['id']}), dark: false))],
+              if (e['mine'] == true || widget.canModerate) ...[const SizedBox(width: 8), SizedBox(width: 110, child: _btn('Supprimer', () => _call('community_event_delete', {'p_event': e['id']}), dark: false))],
             ]),
           ],
         ])),

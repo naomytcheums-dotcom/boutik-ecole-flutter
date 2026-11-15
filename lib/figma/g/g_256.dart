@@ -98,7 +98,7 @@ class G_256 extends ConsumerWidget {
       gP(38, 708, 20, 20, gBox(color: Color(0xFFE4E1EA), oval: true), show: demoContent),
       gP(68, 710, 233, 15, gText('Visa du référent réglementaire', 12, Color(0xFF57545F), weight: 500, wrap: true), show: demoContent),
       gP(296, 711, 52, 13, gText('En attente', 10.5, Color(0xFFB26A00), weight: 500), show: demoContent),
-      gP(24, 782, 345, 28, gText('Aucune publication n’est possible tant que l’étape 5 n’est pas validée.', 11, Color(0xFF57545F), wrap: true)),
+      gP(24, 782, 345, 28, gText('Aucune publication n’est possible tant que l’étape 5 n’est pas validée.', 11, Color(0xFF57545F), wrap: true), show: demoContent),
       gP(24, 820, 342, 48, gBox(color: Color(0xBFFFFFFF), border: Color(0xFFFFFFFF), bw: 1, radii: [24, 24, 24, 24])),
       gP(150, 836, 90, 16, gText('Retour au suivi', 13, Color(0xFF111015), weight: 600)),
       gP(24, 820, 342, 48, const SizedBox.expand(), tap: () => gOpen(context, '255')),

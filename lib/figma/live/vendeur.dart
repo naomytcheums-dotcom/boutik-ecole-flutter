@@ -1,4 +1,5 @@
 import 'talent_pages.dart';
+import 'certificates_page.dart' show CertificatesPage;
 import 'tp_ui.dart' show TpButton;
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
@@ -20,7 +21,7 @@ final sellerRevenueProvider = NotifierProvider<RpcMap, Map<String, dynamic>?>(()
 
 int _i(Object? v) => ((v as num?) ?? 0).toInt();
 
-Widget _note(double w, String t) => Container(width: w, height: 140, alignment: Alignment.center, padding: const EdgeInsets.symmetric(horizontal: 24), child: Text(t, textAlign: TextAlign.center, style: _st(13, c: _grey).copyWith(height: 1.5)));
+Widget _note(double w, String t, {double h = 140}) => Container(width: w, height: h, alignment: Alignment.center, padding: const EdgeInsets.symmetric(horizontal: 24), child: Text(t, textAlign: TextAlign.center, style: _st(13, c: _grey).copyWith(height: 1.5)));
 
 Widget _tile(String l, String v, String? sub) => Expanded(
       child: Container(
@@ -123,6 +124,10 @@ class ValidationsPanel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (ref.watch(authProvider.select((a) => a.current == null))) return SizedBox(width: width, child: _note(width, 'Connectez-vous pour voir vos validations.'));
+    // La conformité (carte d'étudiant, certificat, matricule) ne concerne que les étudiants-vendeurs.
+    if (ref.watch(authProvider.select((a) => a.current?.role != 1 || (a.current?.staff ?? '').isNotEmpty))) {
+      return SizedBox(width: width, child: _note(width, 'Votre compte est actif : aucune validation de pièces n’est demandée. La vérification (carte d’étudiant, certificat de scolarité, matricule) ne concerne que les étudiants-vendeurs.', h: 160));
+    }
     final docs = ref.watch(myDocsProvider);
     final a = ref.watch(profileAccountProvider);
     if (docs == null) return SizedBox(width: width, child: _note(width, 'Chargement…'));
@@ -200,6 +205,8 @@ class MyProfileCard extends ConsumerWidget {
         Text(a.name, style: _st(22, w: FontWeight.w800)),
         const SizedBox(height: 4),
         Text([if (a.department.isNotEmpty) a.department, if (a.institution.isNotEmpty) a.institution].join(' · '), style: _st(12.5, c: _grey)),
+        const SizedBox(height: 6),
+        Text(a.certified ? '✓ Profil certifié par l’établissement' : 'Profil non certifié', style: _st(12.5, w: FontWeight.w600, c: a.certified ? const Color(0xFF0F7A52) : _grey)),
         const SizedBox(height: 16),
         Text(a.bio.isEmpty ? 'Aucune présentation renseignée. Ajoutez-la depuis votre profil.' : a.bio, style: _st(13.5, c: a.bio.isEmpty ? _grey : _ink).copyWith(height: 1.55)),
         const SizedBox(height: 18),
@@ -215,7 +222,10 @@ class MyProfileCard extends ConsumerWidget {
           TpButton('Mes compétences', () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SkillsPage())), dark: false, compact: true),
           TpButton(cv == null ? 'Ajouter un CV' : 'Gérer mes documents', () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const DocumentsPage())), dark: false, compact: true),
           TpButton('Mon portfolio', () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PortfolioPage())), dark: false, compact: true),
+          TpButton('Mes certificats', () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const CertificatesPage())), dark: false, compact: true),
         ]),
+        const SizedBox(height: 10),
+        Text('Le niveau et les badges ne sont pas encore calculés : ce passport présente vos compétences, vos documents et vos certificats réels.', style: _st(11.5, c: _grey).copyWith(height: 1.45)),
       ]),
     );
   }

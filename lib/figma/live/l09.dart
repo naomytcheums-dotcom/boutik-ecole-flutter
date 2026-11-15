@@ -35,7 +35,9 @@ const _labelW = [58.0, 81.0, 69.0, 33.0];
 List<Widget> liveTimeline(WidgetRef ref) => [
       Positioned.fill(
         child: Consumer(builder: (context, ref, _) {
-          final s = ref.watch(viewedOrderProvider).status.clamp(0, 3);
+          final o = ref.watch(viewedOrderProvider);
+          final s = o.step;
+          final labels = [s >= 0 ? _labels[0] : (o.cancelled ? 'Annulée' : 'En attente'), ..._labels.sublist(1)];
           double r(int i) => i == s ? 24 : 17.5;
           return Stack(clipBehavior: Clip.none, children: [
             for (var k = 0; k < 3; k++)
@@ -48,7 +50,7 @@ List<Widget> liveTimeline(WidgetRef ref) => [
                 gP(ic.$1, ic.$2, ic.$3, ic.$4,
                     ColorFiltered(colorFilter: ColorFilter.mode(i <= s ? Colors.white : const Color(0xFF57545F), BlendMode.srcIn), child: gImg('$_v/${ic.$5}.svg'))),
               gP(_labelX[i], 256.643, _labelW[i], 14,
-                  gText(_labels[i], 11.223, i < s ? const Color(0xFF5A3FE0) : (i == s ? const Color(0xFF111015) : const Color(0xFF57545F)),
+                  gText(labels[i], 11.223, i < s ? const Color(0xFF5A3FE0) : (i == s ? const Color(0xFF111015) : const Color(0xFF57545F)),
                       weight: i == s ? 700 : 500, align: TextAlign.center, wrap: true)),
             ],
           ]);

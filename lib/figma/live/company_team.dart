@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../gen.dart' show gToast;
 import '../i18n.dart' show Text;
+import 'access.dart' show LoginGuard, roleKey;
 import 'auth.dart';
 import 'backend.dart';
 import 'company_home.dart';
@@ -19,18 +20,70 @@ final companyMembersProvider = FutureProvider.autoDispose<Map<String, dynamic>>(
   final r = await marcheCall('company_members_list', {if (ctx != null) 'p_owner': ctx});
   if (r.error != null) throw MarcheException(r.error);
   return Map<String, dynamic>.from(r.data as Map);
-});
+}, retry: (_, _) => null);
 
 final myCompaniesProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
   ref.watch(authProvider.select((a) => a.current?.serverId));
   final r = await marcheCall('my_company_memberships', const {});
   if (r.error != null) throw MarcheException(r.error);
   return [for (final x in (r.data as List? ?? const [])) Map<String, dynamic>.from(x as Map)];
-});
+}, retry: (_, _) => null);
 
 /// Droits d'un rôle : modifier la fiche, gérer l'équipe, payer le forfait.
 bool roleCanManage(String role) => role == 'owner' || role == 'admin';
 bool roleCanPay(String role) => role == 'owner' || role == 'admin' || role == 'finance';
+
+/// Garde des routes de l'espace entreprise : comptes Entreprise, Autre rôle et administrateur, ou membre actif d'une entreprise
+/// (espace partagé). Un autre compte, un Client sans entreprise par exemple, voit « Réservé aux entreprises » avec le chemin
+/// pour rejoindre une équipe. Visiteur : « Connexion requise ». Hors connexion au serveur (aperçu, tests), l'écran reste ouvert.
+/// [owner] : entreprise visée (route d'espace partagé) ; [useContext] : l'entreprise consultée est celle du contexte courant.
+class CompanyGuard extends ConsumerWidget {
+  const CompanyGuard({super.key, required this.child, this.owner, this.useContext = false});
+  final Widget child;
+  final String? owner;
+  final bool useContext;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => LoginGuard(child: _build(context, ref));
+
+  Widget _build(BuildContext context, WidgetRef ref) {
+    final account = ref.watch(authProvider.select((a) => a.current));
+    if (!Backend.ready || account == null || const {'company', 'other', 'admin'}.contains(roleKey(account))) return child;
+    final target = owner ?? (useContext ? ref.watch(companyContextProvider) : null);
+    if (target == null) return const _CompanyReserved();
+    final memberships = ref.watch(myCompaniesProvider);
+    return memberships.when(
+      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+      error: (_, _) => const _CompanyReserved(),
+      data: (l) => l.any((c) => '${c['owner_id']}' == target && c['status'] == 'active') ? child : const _CompanyReserved(),
+    );
+  }
+}
+
+class _CompanyReserved extends StatelessWidget {
+  const _CompanyReserved();
+
+  @override
+  Widget build(BuildContext context) => MarchePage(
+        title: 'Espace entreprise',
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(28),
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              const Icon(Icons.business_center_outlined, size: 46, color: kViolet),
+              const SizedBox(height: 14),
+              Text('Réservé aux entreprises', style: mst(20, w: FontWeight.w800), textAlign: TextAlign.center),
+              const SizedBox(height: 8),
+              Text('Cet espace est réservé aux comptes Entreprise et aux personnes invitées dans leur équipe. Si un collègue vous a invité, l’invitation vous attend dans « Mes entreprises ».', style: mst(13.5, c: kGrey).copyWith(height: 1.5), textAlign: TextAlign.center),
+              const SizedBox(height: 22),
+              mButton('Mes entreprises', () => context.push('/mes-entreprises'), icon: Icons.groups_2_outlined),
+              const SizedBox(height: 10),
+              mButton('Retour à l’accueil', () => context.go('/s/03'), dark: false),
+            ]),
+          ),
+        ),
+      );
+}
 
 /// Explication courte de ce que peut faire chaque rôle.
 const companyRoleHelp = {
@@ -70,7 +123,7 @@ class _MembersState extends ConsumerState<CompanyMembersScreen> {
   Future<void> _invite() async {
     if (_email.text.trim().isEmpty) return gToast(context, 'Saisissez l’e-mail de la personne.');
     setState(() => _busy = true);
-    await _call('company_invite', {'p_email': _email.text, 'p_role': _role}, 'Invitation envoyée.');
+    await _call('company_invite', {'p_email': _email.text, 'p_role': _role}, 'Si un compte existe avec cet e-mail, la personne reçoit l’invitation.');
     if (mounted) {
       setState(() => _busy = false);
       _email.clear();

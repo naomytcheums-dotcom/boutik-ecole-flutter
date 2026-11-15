@@ -56,7 +56,7 @@ class G_276 extends ConsumerWidget {
       gP(44, 522, 103, 18, gText('Besoin d’aide ?', 14, Color(0xFF111015), weight: 600), show: demoContent),
       gP(44, 546, 206, 15, gText('Adressez-vous à l’accueil · poste 214', 12, Color(0xFF57545F)), show: demoContent),
       gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => gOpen(context, '207')),
-      gP(80, 788, 230, 19, gText('Parcourir le catalogue hors ligne', 15, Color(0xFFFFFFFF), weight: 600)),
+      gP(80, 788, 230, 19, gText(demoContent ? 'Parcourir le catalogue hors ligne' : 'Parcourir le catalogue', 15, Color(0xFFFFFFFF), weight: 600)),
       gP(114, 736, 162, 15, gText('Reconnexion automatique…', 12, Color(0xFF5A3FE0), weight: 600), show: demoContent),
       if (!demoContent) gP(24, 125, 342, 620, kiosksListing(width: 342, height: 620)),
     ]);

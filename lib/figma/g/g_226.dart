@@ -23,11 +23,19 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/inert_actions.dart';
+import '../live/l10_ui.dart';
 import '../live/pay.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_226 extends ConsumerWidget {
   const G_226({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => demoContent ? const G226Mock() : const L10Screen(title: 'Réalité augmentée', child: ProductNoModel(width: 342));
+}
+
+class G226Mock extends ConsumerWidget {
+  const G226Mock({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -43,8 +51,8 @@ gP(7, 37, 376, 181, gImg('assets/figma/v/c901e6036f3570.svg'))
       gP(30, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
       gP(44.325, 84.325, 15.35, 15.35, gImg('assets/figma/v/9dd0d5ae029e1f.svg')),
       gP(44.325, 84.325, 15.35, 15.35, gImg('assets/figma/v/4fa204624ffbf6.svg')),
-      gP(140, 76, 93, 30, gBox(color: Color(0xE51F9D6B), radii: [100, 100, 100, 100])),
-      gP(154, 84, 65, 14, gText('Sol détecté', 11.5, Color(0xFFFFFFFF), weight: 600)),
+      gP(140, 76, 93, 30, gBox(color: Color(0xE51F9D6B), radii: [100, 100, 100, 100]), show: demoContent),
+      gP(154, 84, 65, 14, gText('Sol détecté', 11.5, Color(0xFFFFFFFF), weight: 600), show: demoContent),
       gP(316, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
       gP(327.987, 81.208, 20.025, 21.583, gImg('assets/figma/v/dc71fdaa4dee30.svg')),
       gP(110, 612, 170, 30, gBox(color: Color(0x59000000), layerBlur: 10, oval: true), show: demoContent),
@@ -67,11 +75,11 @@ gP(7, 37, 376, 181, gImg('assets/figma/v/c901e6036f3570.svg'))
       gP(299, 682, 48, 48, gBox(color: Color(0xFFFFFFFF), oval: true), show: demoContent),
       gP(305, 688, 36, 36, gBox(color: Color(0xFF111015), oval: true), show: demoContent),
       gP(310, 693, 26, 26, gBox(color: Color(0xFFFFFFFF), oval: true), show: demoContent),
-      gP(30, 772, 224, 44, gBox(color: Color(0xFF111015), radii: [100, 100, 100, 100])),
-      gP(91, 786, 102, 16, gText('Ajouter au panier', 12.5, Color(0xFFFFFFFF), weight: 600)),
-      gP(262, 772, 96, 44, gBox(color: Color(0xFFF1EEFB), radii: [100, 100, 100, 100])),
-      gP(279.5, 787, 61, 14, gText('Réinitialiser', 11, Color(0xFF5A3FE0), weight: 600)),
-      gTap(30, 772, 224, 44, () { gOpen(context, '05'); }), // audit 01/11 : « Ajouter au panier » n'avait aucun effet
+      gP(30, 772, 224, 44, gBox(color: Color(0xFF111015), radii: [100, 100, 100, 100]), show: demoContent),
+      gP(91, 786, 102, 16, gText('Ajouter au panier', 12.5, Color(0xFFFFFFFF), weight: 600), show: demoContent),
+      gP(262, 772, 96, 44, gBox(color: Color(0xFFF1EEFB), radii: [100, 100, 100, 100]), show: demoContent),
+      gP(279.5, 787, 61, 14, gText('Réinitialiser', 11, Color(0xFF5A3FE0), weight: 600), show: demoContent),
+      if (demoContent) gTap(30, 772, 224, 44, () { gOpen(context, '05'); }), // audit 01/11 : « Ajouter au panier » n'avait aucun effet
       if (!demoContent) gP(24, 125, 342, 620, const ProductNoModel(width: 342)),
     ]);
   }

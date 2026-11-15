@@ -23,6 +23,7 @@ import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/inert_actions.dart';
 import '../live/pay.dart';
+import '../live/l8_opportunites.dart';
 import '../live/engage.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -31,6 +32,21 @@ class G_153 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (!demoContent) {
+      return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
+        gP(31, 71, 22, 22, const SizedBox.expand(), tap: () => gBack(context)),
+        gP(21.98, 61.98, 40, 40, const GGlassCircle()),
+        gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
+        gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
+        gP(76, 70, 223, 26, gText('Pourquoi cette offre ?', 21, Color(0xFF111015), weight: 700)),
+        gP(24, 120, 342, 620, const WhyOffer(width: 342, height: 620)),
+        gP(24, 760, 163, 54, gBox(color: Color(0x00FFFFFF), border: Color(0xFFD9D3E6), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gOpen(context, '152'), show: !demoContent),
+        gP(24, 778, 163, 18, gText('Autres offres', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
+        gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => openWhyOffer(context, ref)),
+        gP(203, 778, 163, 18, gText('Voir l’offre', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
+        gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      ]);
+    }
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),

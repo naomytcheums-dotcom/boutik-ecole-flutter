@@ -68,25 +68,27 @@ void main() {
   testWidgets('préférences d’alertes 156 : les interrupteurs alimentent l’état enregistré', (tester) async {
     final c = await pump(tester, const G_156());
     expect(c.read(alertPrefsProvider), alertPrefsDefaults);
-    await tester.tap(find.byType(GToggle).at(1)); // SMS
+    await tester.tap(find.byType(GToggle).at(1)); // SMS (aucun canal n’est activé par défaut)
     await tester.pump();
-    expect(c.read(alertPrefsProvider)['sms'], isFalse);
-    await tester.tap(find.byType(GToggle).at(2)); // WhatsApp (éteint dans la maquette)
+    expect(c.read(alertPrefsProvider)['sms'], isTrue);
+    expect(c.read(alertPrefsProvider.notifier).touched, {'sms'});
+    await tester.tap(find.byType(GToggle).at(2)); // WhatsApp
     await tester.pump();
     expect(c.read(alertPrefsProvider)['whatsapp'], isTrue);
   });
 
-  testWidgets('canaux 236 : chaque canal s’active ou se désactive, l’enregistrement hors connexion ne simule rien', (tester) async {
+  testWidgets('canaux 236 : aucun canal n’est activé par défaut, chacun s’active ou se désactive, l’enregistrement hors connexion ne simule rien', (tester) async {
     final c = await pump(tester, const G_236());
-    expect(find.text('Activé'), findsNWidgets(3));
-    expect(find.text('Désactivé'), findsOneWidget);
-    await tester.tap(find.text('Désactivé'), warnIfMissed: false);
+    expect(find.text('Activé'), findsNothing);
+    expect(find.text('Désactivé'), findsNWidgets(4));
+    await tester.tap(find.text('Désactivé').at(3), warnIfMissed: false);
     await tester.pumpAndSettle();
     expect(c.read(channelPrefsProvider)['email'], isTrue);
-    expect(find.text('Activé'), findsNWidgets(4));
+    expect(c.read(channelPrefsProvider.notifier).touched, {'email'});
+    expect(find.text('Activé'), findsOneWidget);
     await tester.tap(find.text('Activé').first, warnIfMissed: false);
     await tester.pumpAndSettle();
-    expect(c.read(channelPrefsProvider)['whatsapp'], isFalse);
+    expect(c.read(channelPrefsProvider)['email'], isFalse);
     await tester.tap(find.text('Enregistrer'), warnIfMissed: false);
     await tester.pumpAndSettle();
     expect(find.text('Hors connexion'), findsOneWidget);

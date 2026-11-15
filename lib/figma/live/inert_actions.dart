@@ -104,15 +104,22 @@ Future<void> uiCopy(BuildContext context, String text, String what) async {
   if (context.mounted) gToast(context, ok ? '$what copié' : 'Copie impossible : autorisez l’accès au presse-papiers.');
 }
 
-/// Partage de son profil : message prêt à envoyer (WhatsApp, SMS…) avec le vrai lien public ; copie du lien si le partage est indisponible.
+/// Lien public d'un profil : ouvre la page de CETTE personne (route /etudiant/:id), jamais le profil de celui qui l'ouvre.
+String profileLink(String id) => id.trim().isEmpty ? siteUrl : '$siteUrl/#/etudiant/${Uri.encodeComponent(id.trim())}';
+
+/// Partage d'un profil : message prêt à envoyer (WhatsApp, SMS…) avec le vrai lien public ; copie du lien si le partage est indisponible.
+Future<void> shareProfile(BuildContext context, {required String id, String name = '', String department = '', String institution = '', bool mine = false}) async {
+  final who = name.trim();
+  final spec = [if (department.isNotEmpty) department, if (institution.isNotEmpty) institution].join(' · ');
+  final intro = who.isEmpty ? (mine ? 'Découvre mon profil' : 'Découvre ce profil') : 'Découvre le profil de $who';
+  final msg = '$intro sur Boutik-École${spec.isEmpty ? '' : ' ($spec)'} : ${profileLink(id)}';
+  await shareText(context, msg, subject: mine ? 'Mon profil Boutik-École' : 'Profil Boutik-École');
+}
+
+/// Partage de son profil.
 Future<void> shareMyProfile(BuildContext context, WidgetRef ref) async {
   final me = ref.read(authProvider).current;
-  final id = me?.serverId ?? '';
-  final link = id.isEmpty ? siteUrl : '$siteUrl/#/s/10?user=${Uri.encodeQueryComponent(id)}';
-  final who = (me?.name ?? '').trim();
-  final spec = [if (me != null && me.department.isNotEmpty) me.department, if (me != null && me.institution.isNotEmpty) me.institution].join(' · ');
-  final msg = '${who.isEmpty ? 'Découvre mon profil' : 'Découvre le profil de $who'} sur Boutik-École${spec.isEmpty ? '' : ' ($spec)'} : $link';
-  await shareText(context, msg, subject: 'Mon profil Boutik-École');
+  await shareProfile(context, id: me?.serverId ?? '', name: me?.name ?? '', department: me?.department ?? '', institution: me?.institution ?? '', mine: true);
 }
 
 /// Lien public d'un écran de l'application ; [product] : titre du produit concerné, ajouté au lien.

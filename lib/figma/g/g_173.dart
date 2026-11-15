@@ -49,7 +49,7 @@ class G_173 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 89, 26, gText('Partager', 21, Color(0xFF111015), weight: 700)),
-      gP(36, 128, 50, 50, gBox(image: 'assets/figma/img/84a49a20614dc5f12ab62f18400caa2290c40ec0.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
+      gP(36, 128, 50, 50, gBox(image: 'assets/figma/img/84a49a20614dc5f12ab62f18400caa2290c40ec0.png', fit: BoxFit.cover, radii: [12, 12, 12, 12]), show: demoContent),
       gP(98, 132, 145, 17, gText(gm('Lampe en bois recyclé', ''), 13.5, Color(0xFF111015), weight: 600), show: demoContent),
       gP(98, 154, 257, 14, gText(gm('25 000 FCFA · boutik-ecole.cm/p/lampe-0142', ''), 11.5, Color(0xFF57545F)), show: demoContent),
       gP(24, 200, 87, 19, gText('Partager via', 15, Color(0xFF111015), weight: 700)),
@@ -67,7 +67,7 @@ class G_173 extends ConsumerWidget {
       gP(336.75, 329.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
       gP(88, 370, 266, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(36, 383, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
-      gP(46, 393, 20, 20, const SizedBox.expand(), tap: () => gTab(context, '53')),
+      gP(46, 393, 20, 20, const SizedBox.expand()),
       gP(44.667, 392.493, 21.84, 21.84, gImg('assets/figma/v/c011934b9b1395.svg')),
       gP(88, 394, 30, 17, gText('SMS', 13.5, Color(0xFF111015), weight: 600)),
       gP(336.75, 395.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
@@ -86,7 +86,9 @@ class G_173 extends ConsumerWidget {
       gP(24, 592, 342, 50, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 1.5, radii: [25, 25, 25, 25]), tap: () => gBack(context)),
       gP(170, 608, 50, 18, gText('Fermer', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
-      gTap(16, 192, 103, 35, () { gOpen(context, '228'); }), // parcours 173 -> 228
+      gTap(24, 240, 342, 60, () { shareLinkVia(context, 'whatsapp', ref.read(selectedProductProvider).title, uiLink('05', product: ref.read(selectedProductProvider).title)); }),
+      gTap(24, 306, 342, 60, () { shareLinkVia(context, 'email', ref.read(selectedProductProvider).title, uiLink('05', product: ref.read(selectedProductProvider).title)); }),
+      gTap(24, 372, 342, 60, () { shareLinkVia(context, 'sms', ref.read(selectedProductProvider).title, uiLink('05', product: ref.read(selectedProductProvider).title)); }),
       gTap(82, 453, 96, 32, () { uiCopy(context, uiLink('05', product: ref.read(selectedProductProvider).title), 'Lien'); }), // audit 01/11 : « Copier le lien » n'avait aucun effet
       gTap(293.6, 458, 58.4, 22, () { uiCopy(context, uiLink('05', product: ref.read(selectedProductProvider).title), 'Lien'); }), // audit 01/11 : « Copier » n'avait aucun effet
       if (!demoContent) gP(98, 130, 270, 50, const ProductLine(width: 270)),

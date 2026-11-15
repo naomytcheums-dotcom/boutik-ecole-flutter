@@ -973,6 +973,26 @@ Future<void> gAlert(BuildContext context, String title, String message, {String 
   );
 }
 
+/// Fenêtre de confirmation à deux boutons ; vrai si l'utilisateur confirme.
+Future<bool> gConfirm(BuildContext context, String title, String message, {String yes = 'Continuer', String no = 'Annuler'}) async {
+  GAccess.speak('${I18n.tr(title)}. ${I18n.tr(message)}');
+  const st = TextStyle(inherit: false, fontFamily: 'PlusJakartaSans', fontSize: 14, height: 1.45, color: Color(0xFF4A4854), textBaseline: TextBaseline.alphabetic);
+  final r = await gDialog<bool>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+      title: Text(title, style: st.copyWith(fontSize: 17, fontWeight: FontWeight.w700, color: const Color(0xFF111015))),
+      content: Text(message, style: st),
+      actions: [
+        TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(no, style: st.copyWith(fontWeight: FontWeight.w600))),
+        TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(yes, style: st.copyWith(fontWeight: FontWeight.w700, color: const Color(0xFF111015)))),
+      ],
+    ),
+  );
+  return r == true;
+}
+
 /// Interrupteur animé (cliquable).
 class GToggle extends StatefulWidget {
   const GToggle({super.key, required this.on, required this.onColor, required this.offColor, required this.knob, this.knobColor = Colors.white, this.onChanged, this.padX = 0, this.padY = 0});

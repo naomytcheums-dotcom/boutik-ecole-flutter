@@ -38,6 +38,27 @@ void gBack(BuildContext context) {
 /// Ouvre « Mes rubriques » : toutes les sections de l'application ouvertes au rôle connecté.
 void gEspace(BuildContext context) => GoRouter.of(context).push('/espace');
 
+/// Écran de maquette qui simulait un canal inexistant : en service réel, il remplace sa propre entrée de l'historique par l'écran réel équivalent.
+class GRedirect extends StatefulWidget {
+  const GRedirect(this.location, {super.key});
+  final String location;
+  @override
+  State<GRedirect> createState() => _GRedirectState();
+}
+
+class _GRedirectState extends State<GRedirect> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) GoRouter.of(context).replace(widget.location);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => const Scaffold(body: Center(child: CircularProgressIndicator()));
+}
+
 /// Visite de présentation lancée par « Commencer » (02) : acheteur 176 → étudiant 175 → entreprise 177 → accueil 03.
 /// Hors visite, « Continuer » garde la destination propre à chaque rôle.
 const kVisite = ['176', '175', '177'];

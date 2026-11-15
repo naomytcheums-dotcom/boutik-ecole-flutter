@@ -22,7 +22,8 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
-import '../live/lots.dart' show missionDossierDialog;
+import '../live/lots.dart' show missionDossierDialog, myNeedsDialog;
+import '../live/backend.dart' show Backend;
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_192 extends ConsumerWidget {
@@ -63,31 +64,34 @@ class G_192 extends ConsumerWidget {
       gP(33, 322, 2, 40, gBox(color: Color(0xFFBFE8D6), radii: [1, 1, 1, 1])),
       gP(24, 301, 20, 20, gBox(color: Color(0xFF1F9D6B), oval: true)),
       gP(27.333, 305.25, 13.333, 11.042, gImg('assets/figma/v/23149818a3337a.svg')),
-      gP(56, 300, 175, 34, gText('Analysé par l’administrateur', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
-      gP(56, 320, 175, 14, gText(demoContent ? '12 oct. · 11:40' : (ref.watch(missionProvider).status == 'published' ? 'En attente' : 'Fait'), 11.5, Color(0xFF57545F), wrap: true)),
+      gP(56, 300, 175, 34, gText(demoContent ? 'Analysé par l’administrateur' : 'Département prévenu', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
+      gP(56, 320, 175, 14, gText(demoContent ? '12 oct. · 11:40' : 'Fait', 11.5, Color(0xFF57545F), wrap: true)),
       gP(33, 384, 2, 40, gBox(color: Color(0xFFBFE8D6), radii: [1, 1, 1, 1])),
-      gP(24, 363, 20, 20, gBox(color: Color(0xFF1F9D6B), oval: true)),
-      gP(27.333, 367.25, 13.333, 11.042, gImg('assets/figma/v/23149818a3337a.svg')),
-      gP(56, 362, 175, 34, gText('Équipe qualifiée sélectionnée', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
+      if (demoContent || ref.watch(missionProvider).accepted || ref.watch(missionProvider).team.isNotEmpty) ...[
+        gP(24, 363, 20, 20, gBox(color: Color(0xFF1F9D6B), oval: true)),
+        gP(27.333, 367.25, 13.333, 11.042, gImg('assets/figma/v/23149818a3337a.svg')),
+      ] else
+        gP(24, 363, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true)),
+      gP(56, 362, 175, 34, gText(demoContent ? 'Équipe qualifiée sélectionnée' : 'Équipe retenue', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
       gP(56, 382, 175, 14, gText(demoContent ? '13 oct. · MMI + TCO' : (ref.watch(missionProvider).team.isEmpty ? 'En attente' : ref.watch(missionProvider).team), 11.5, Color(0xFF57545F), wrap: true)),
       gP(24, 425, 20, 20, gBox(color: Color(0xFF111015), oval: true)),
       gP(56, 424, 175, 17, gText('Devis envoyé', 13.5, Color(0xFF111015), weight: 600, wrap: true)),
       gP(56, 444, 175, 14, gText(demoContent ? '14 oct. · à valider' : (ref.watch(missionProvider).accepted ? 'Proposition acceptée · ${fcfa(ref.watch(missionProvider).total)}' : 'En attente des propositions'), 11.5, Color(0xFF57545F), wrap: true)),
       gP(40, 514, 38, 18, gText('Devis', 14, Color(0xFF111015), weight: 700)),
       gP(40, 548, 53, 16, gText('Livrables', 12.5, Color(0xFF57545F))),
-      gP(191, 548, 159, 16, gText('Logo, charte, déclinaisons', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
+      gP(191, 548, 159, 16, Consumer(builder: (context, ref, _) => gText(demoContent ? 'Logo, charte, déclinaisons' : ref.watch(missionProvider).kind, 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right))),
       gP(40, 573, 310, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(40, 582, 30, 16, gText('Délai', 12.5, Color(0xFF57545F))),
-      gP(283, 582, 67, 16, gText(gm('6 semaines', ''), 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
+      gP(40, 582, 30, 16, gText(demoContent ? 'Délai' : 'Date souhaitée', 12.5, Color(0xFF57545F))),
+      gP(240, 582, 110, 16, Consumer(builder: (context, ref, _) => gText(demoContent ? '6 semaines' : (ref.watch(missionProvider).deadline.isEmpty ? 'Non précisée' : ref.watch(missionProvider).deadline), 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right))),
       gP(40, 607, 310, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 616, 43, 16, gText('Équipe', 12.5, Color(0xFF57545F))),
-      gP(201, 616, 149, 16, gText(gm('3 étudiants + 1 encadreur', ''), 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
+      gP(160, 616, 190, 16, Consumer(builder: (context, ref, _) => gText(demoContent ? '3 étudiants + 1 encadreur' : (ref.watch(missionProvider).team.isEmpty ? 'À retenir' : ref.watch(missionProvider).team), 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right))),
       gP(40, 641, 310, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 650, 29, 16, gText('Total', 12.5, Color(0xFF57545F))),
       gP(124, 650, 226, 16, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(missionProvider).total), 12.5, Color(0xFF111015), weight: 700, wrap: true, align: TextAlign.right))),
-      gP(24, 702, 108.667, 76, gBox(image: 'assets/figma/img/4b7b6cea2f4622846841cd8342842e81fa1ed891.png', fit: BoxFit.cover, radii: [16, 16, 16, 16])),
-      gP(140.667, 702, 108.667, 76, gBox(image: 'assets/figma/img/1574e42a325d3a4ac509841e7a5eb5a285a3d991.png', fit: BoxFit.cover, radii: [16, 16, 16, 16])),
-      gP(257.333, 702, 108.667, 76, gBox(image: 'assets/figma/img/768cf16e6d8103ad4296d6cc0fdf1af309f03817.png', fit: BoxFit.cover, radii: [16, 16, 16, 16])),
+      gP(24, 702, 108.667, 76, gBox(image: 'assets/figma/img/4b7b6cea2f4622846841cd8342842e81fa1ed891.png', fit: BoxFit.cover, radii: [16, 16, 16, 16]), show: demoContent),
+      gP(140.667, 702, 108.667, 76, gBox(image: 'assets/figma/img/1574e42a325d3a4ac509841e7a5eb5a285a3d991.png', fit: BoxFit.cover, radii: [16, 16, 16, 16]), show: demoContent),
+      gP(257.333, 702, 108.667, 76, gBox(image: 'assets/figma/img/768cf16e6d8103ad4296d6cc0fdf1af309f03817.png', fit: BoxFit.cover, radii: [16, 16, 16, 16]), show: demoContent),
       gP(0, 802, 390, 100, gBox(color: Color(0x00FFFFFF))),
       gP(24, 818, 163, 54, gBox(color: Color(0x00FFFFFF), border: Color(0xFFD9D3E6), bw: 1.5, radii: [27, 27, 27, 27])),
       gP(38.5, 836, 134, 18, gText('Poser une question', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
@@ -96,7 +100,7 @@ class G_192 extends ConsumerWidget {
       gP(125, 888, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gTap(203, 818, 163, 54, () { acceptQuote(ref, context); }),
       gTap(24, 818, 163, 54, () { missionDossierDialog(context, ref); }),
-      gTap(32, 506, 54, 34, () { gOpen(context, '190'); }), // parcours 192 -> 190
+      gTap(32, 506, 54, 34, () { if (Backend.ready) { myNeedsDialog(context, ref); } else { gOpen(context, '190'); } }), // parcours 192 -> 190 (démonstration) ; connecté : propositions réelles
     ]);
   }
 }

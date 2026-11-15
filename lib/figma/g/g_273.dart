@@ -51,14 +51,19 @@ class G_273 extends ConsumerWidget {
       gP(81.5, 250, 227, 25, gText('Vous gardez le contrôle', 20, Color(0xFF111015), weight: 700)),
       gP(26.5, 280, 337, 16, gText('Téléchargez ou supprimez vos données à tout moment.', 13, Color(0xFF57545F))),
       gP(44, 338, 163, 19, gText('Exporter mes données', 15, Color(0xFF111015), weight: 600)),
-      gP(44, 362, 286, 15, gText(gm('Profil, projets, commandes, messages · ZIP + JSON', 'Profil, annonces, commandes, notifications · fichier JSON'), 12, Color(0xFF57545F))),
+      gP(44, 362, 286, 15, gText(gm('Profil, projets, commandes, messages · ZIP + JSON', 'Profil, annonces, commandes, messages, favoris… · fichier JSON'), 12, Color(0xFF57545F))),
       gP(44, 382, 209, 15, gText(gm('Prêt sous 24 h · lien envoyé par e-mail', 'Téléchargé aussitôt sur votre appareil'), 12, Color(0xFF57545F))),
       gP(44, 412, 160, 40, gBox(color: Color(0xFF111015), radii: [20, 20, 20, 20]), tap: () => Backend.ready ? exportMyData(context, ref) : engageAction(context, ref, 'data_export_request', 'me', success: 'Demande d’export envoyée. Vous recevrez vos données par e-mail.', need: 'demander l’export de vos données', already: 'Une demande d’export est déjà en cours.')),
       gP(60, 424, 118, 16, gText(gm('Demander l’export', 'Télécharger'), 13, Color(0xFFFFFFFF), weight: 600)),
       gP(44, 508, 172, 19, gText('Supprimer mon compte', 15, Color(0xFFC2410C), weight: 600)),
-      gP(44, 532, 302, 48, gText(gm('Délai de rétractation de 30 jours. Les certificats émis et les factures sont conservés (obligation légale).', 'Votre compte et vos données personnelles sont supprimés après un délai de rétractation de 30 jours. Les certificats émis et les factures sont conservés (obligation légale).'), 12, Color(0xFF57545F), lh: 16, wrap: true)),
+      gP(44, 532, 302, 48, gText(gm('Délai de rétractation de 30 jours. Les certificats émis et les factures sont conservés (obligation légale).', 'Délai de rétractation de 30 jours : vous pouvez annuler la demande depuis cet écran. Les certificats émis et les factures sont conservés (obligation légale).'), 12, Color(0xFF57545F), lh: 16, wrap: true)),
+      if (!demoContent) gP(44, 596, 302, 70, Consumer(builder: (context, ref, _) {
+        final d = ref.watch(myDeletionProvider).value;
+        if (d == null) return const SizedBox.shrink();
+        return gText('Demande enregistrée : suppression à partir du ${deletionDate(d['scheduled_for'])}. Touchez « Annuler la demande » pour garder votre compte.', 12.5, Color(0xFFC2410C), weight: 600, lh: 17, wrap: true);
+      })),
       gP(44, 676, 170, 40, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFC2410C), bw: 1.5, radii: [20, 20, 20, 20]), tap: () => requestAccountDeletion(context, ref)),
-      gP(58, 688, 132, 16, gText('Supprimer le compte', 13, Color(0xFFC2410C), weight: 600)),
+      gP(58, 688, 132, 16, Consumer(builder: (context, ref, _) => gText(!demoContent && ref.watch(myDeletionProvider).value != null ? 'Annuler la demande' : 'Supprimer le compte', 13, Color(0xFFC2410C), weight: 600))),
       gP(24, 690, 212, 15, gText(gm('Dernier export : 12 mars 2026 · 4,2 Mo', ''), 12, Color(0xFF57545F), weight: 500)),
       if (!demoContent) gP(0, 100, 390, 700, const CmsPageOverlay(title: 'Mes données', height: 700)),
     ]);

@@ -7,6 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart' show gToast;
 import 'auth.dart';
 import 'backend.dart';
+import 'l9_common.dart';
+import 'l9_projets.dart' show ProjectTeamPage;
 import 'talent_pages.dart' show SkillCatalog;
 import 'tp_ui.dart';
 
@@ -17,6 +19,54 @@ const projectKinds = {'innovation': 'Innovation', 'projet': 'Projet'};
 const projectProgress = {'idee': 'Idée', 'conception': 'Conception', 'prototype': 'Prototype', 'tests': 'Tests sur le terrain', 'lance': 'Lancé'};
 const projectVisibility = {'public': 'Public', 'private': 'Privé (moi seul)'};
 const projectStatusLabels = {'draft': 'Brouillon', 'submitted': 'En cours d’examen', 'approved': 'Publié', 'rejected': 'Refusé'};
+const projectLicenses = {
+  'all_rights': 'Tous droits réservés',
+  'cc_by': 'Creative Commons BY',
+  'cc_by_nc': 'Creative Commons BY-NC',
+  'open_source': 'Logiciel libre (MIT, GPL…)',
+  'other': 'Autre',
+};
+
+/// Propriété intellectuelle déclarée par le porteur (stockée dans `details.ip`) : informations libres, aucun dépôt n'est certifié.
+class IpDeclaration {
+  IpDeclaration([Object? raw]) {
+    final m = raw is Map ? raw : const {};
+    authors.text = '${m['authors'] ?? ''}';
+    supervisor.text = '${m['supervisor'] ?? ''}';
+    holder.text = '${m['rights_holder'] ?? ''}';
+    restrictions.text = '${m['restrictions'] ?? ''}';
+    filing.text = '${m['filing_number'] ?? ''}';
+    license = '${m['license'] ?? ''}';
+  }
+  final authors = TextEditingController(), supervisor = TextEditingController(), holder = TextEditingController(), restrictions = TextEditingController(), filing = TextEditingController();
+  String license = '';
+
+  Map<String, String> toMap() => {
+        if (authors.text.trim().isNotEmpty) 'authors': authors.text.trim(),
+        if (supervisor.text.trim().isNotEmpty) 'supervisor': supervisor.text.trim(),
+        if (license.isNotEmpty) 'license': license,
+        if (holder.text.trim().isNotEmpty) 'rights_holder': holder.text.trim(),
+        if (restrictions.text.trim().isNotEmpty) 'restrictions': restrictions.text.trim(),
+        if (filing.text.trim().isNotEmpty) 'filing_number': filing.text.trim(),
+      };
+
+  void dispose() {
+    for (final c in [authors, supervisor, holder, restrictions, filing]) {
+      c.dispose();
+    }
+  }
+}
+
+/// Champs de la déclaration de propriété intellectuelle.
+List<Widget> ipFormFields(IpDeclaration ip, void Function(String license) onLicense) => [
+      TpField('Auteurs (noms)', ip.authors, maxLength: 300),
+      TpField('Encadrant', ip.supervisor, maxLength: 120),
+      TpChoice('Licence', projectLicenses, ip.license, onLicense),
+      TpField('Titulaire des droits', ip.holder, maxLength: 200),
+      TpField('Restrictions d’usage', ip.restrictions, lines: 2, maxLength: 500),
+      TpField('N° de dépôt (si vous en avez un)', ip.filing, maxLength: 60),
+      tpNote('Ces informations sont déclaratives : la plateforme ne certifie aucun dépôt de propriété intellectuelle.'),
+    ];
 
 class _Member {
   _Member([String n = '', String r = '']) : name = TextEditingController(text: n), role = TextEditingController(text: r);
@@ -42,6 +92,7 @@ class _ProjectFormPageState extends ConsumerState<ProjectFormPage> {
       doneSteps = TextEditingController(), objectives = TextEditingController(), prototype = TextEditingController(), demo = TextEditingController(), docs = TextEditingController(),
       videoUrl = TextEditingController(), funding = TextEditingController(), support = TextEditingController(), email = TextEditingController(), phone = TextEditingController();
   final team = <_Member>[];
+  final ip = IpDeclaration();
   final media = <Map<String, String>>[]; // {type: image|video, path}
   final newPaths = <String>[];
   final removedPaths = <String>[];
@@ -78,6 +129,15 @@ class _ProjectFormPageState extends ConsumerState<ProjectFormPage> {
       support.text = g('support_needs');
       email.text = g('contact_email');
       phone.text = g('contact_phone');
+      final raw = IpDeclaration(d['ip']);
+      ip
+        ..authors.text = raw.authors.text
+        ..supervisor.text = raw.supervisor.text
+        ..holder.text = raw.holder.text
+        ..restrictions.text = raw.restrictions.text
+        ..filing.text = raw.filing.text
+        ..license = raw.license;
+      raw.dispose();
       for (final m in (d['team'] as List? ?? const [])) {
         if (m is Map) team.add(_Member('${m['name'] ?? ''}', '${m['role'] ?? ''}'));
       }
@@ -98,6 +158,7 @@ class _ProjectFormPageState extends ConsumerState<ProjectFormPage> {
     for (final m in team) {
       m.dispose();
     }
+    ip.dispose();
     super.dispose();
   }
 
@@ -117,6 +178,7 @@ class _ProjectFormPageState extends ConsumerState<ProjectFormPage> {
         'contact_email': email.text.trim(),
         'contact_phone': phone.text.trim(),
         'team': [for (final m in team) if (m.name.text.trim().isNotEmpty) {'name': m.name.text.trim(), 'role': m.role.text.trim()}],
+        if (ip.toMap().isNotEmpty) 'ip': ip.toMap(),
       };
 
   /// Champs obligatoires pour publier (mêmes règles que le serveur) : liste des champs manquants.
@@ -236,6 +298,11 @@ class _ProjectFormPageState extends ConsumerState<ProjectFormPage> {
         TpEmpty(title: 'Connexion requise', text: 'Connectez-vous avec votre compte étudiant pour soumettre un projet.', action: 'Se connecter', onAction: () => requireLogin(context, ref, 'soumettre un projet')),
       ]);
     }
+    if (!canOwnProjects(ref.watch(authProvider.select((a) => a.current)))) {
+      return TpPage(title: kind == 'innovation' ? 'Déclarer une innovation' : 'Soumettre un projet', children: [
+        ProjectRoleNotice(action: kind == 'innovation' ? 'déclarer une innovation' : 'soumettre un projet'),
+      ]);
+    }
     final form = <Widget>[
       TpChoice('Type', projectKinds, kind, (v) => setState(() => kind = v), required: true),
       TpField('Titre', title, required: true, maxLength: 120),
@@ -247,7 +314,11 @@ class _ProjectFormPageState extends ConsumerState<ProjectFormPage> {
       TpChoice('État d’avancement', projectProgress, progress, (v) => setState(() => progress = v), required: true),
       TpField('Étapes réalisées (une par ligne)', doneSteps, lines: 4, maxLength: 3000),
       TpField('Objectifs', objectives, lines: 3, maxLength: 2000),
-      tpSection('Équipe', hint: 'Les membres que vous citez ne sont pas notifiés automatiquement.'),
+      tpSection('Équipe', hint: 'Les étudiants invités depuis l’écran « Équipe » reçoivent une notification et apparaissent sur la fiche une fois qu’ils ont accepté. La liste ci-dessous est du texte libre : ces personnes ne sont ni notifiées ni liées à un compte.'),
+      TpButton(id == null ? 'Inviter des étudiants (après le premier enregistrement)' : 'Inviter des étudiants', id == null ? null : () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProjectTeamPage(projectId: id))), dark: false, compact: true, icon: Icons.group_add_outlined),
+      const SizedBox(height: 12),
+      Text('Autres contributeurs (texte libre)', style: tpSt(12.5, w: FontWeight.w600)),
+      const SizedBox(height: 8),
       for (var i = 0; i < team.length; i++)
         Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Expanded(flex: 5, child: TpField('Nom du membre', team[i].name, maxLength: 80)),
@@ -286,10 +357,12 @@ class _ProjectFormPageState extends ConsumerState<ProjectFormPage> {
       tpSection('Besoins'),
       TpField('Besoin de financement (FCFA)', funding, keyboard: TextInputType.number, maxLength: 12, formatters: [FilteringTextInputFormatter.digitsOnly]),
       TpField('Accompagnement recherché (mentor, matériel, compétences…)', support, lines: 3, maxLength: 2000),
+      tpSection('Propriété intellectuelle (facultatif)', hint: 'Auteurs, encadrant, licence et droits : ils apparaissent sur la fiche publique du projet.'),
+      ...ipFormFields(ip, (v) => setState(() => ip.license = v == ip.license ? '' : v)),
       tpSection('Contacts', hint: 'Au moins un moyen de contact est nécessaire pour publier.'),
       TpField('E-mail de contact', email, keyboard: TextInputType.emailAddress, maxLength: 120),
       TpField('Téléphone de contact', phone, keyboard: TextInputType.phone, maxLength: 30),
-      tpNote('Ces coordonnées sont visibles des comptes connectés qui consultent la fiche publiée.'),
+      tpNote('Ces coordonnées ne sont pas affichées sur la fiche publique : seuls le département et l’administration les voient.'),
       tpSection('Visibilité et statut'),
       TpChoice('Visibilité une fois publié', projectVisibility, visibility, (v) => setState(() => visibility = v)),
       Text('Statut : ${projectStatusLabels[status] ?? status}', style: tpSt(13, w: FontWeight.w700, c: status == 'rejected' ? tpRed : tpViolet)),
@@ -373,6 +446,9 @@ class _MyProjectsPageState extends ConsumerState<MyProjectsPage> {
       ]);
     }
     final l = items;
+    if (!canOwnProjects(ref.watch(authProvider.select((a) => a.current)))) {
+      return TpPage(title: 'Mes projets', children: const [ProjectRoleNotice(action: 'soumettre ou suivre des projets')]);
+    }
     return TpPage(
       title: 'Mes projets',
       bottom: Row(children: [
@@ -382,7 +458,7 @@ class _MyProjectsPageState extends ConsumerState<MyProjectsPage> {
       ]),
       children: [
         if (l == null) const Padding(padding: EdgeInsets.all(40), child: Center(child: CircularProgressIndicator()))
-        else if (error != null) TpEmpty(title: 'Lecture impossible', text: error!, icon: Icons.cloud_off_rounded)
+        else if (error != null) TpEmpty(title: 'Lecture impossible', text: Backend.userMessage(error!), icon: Icons.cloud_off_rounded)
         else if (l.isEmpty)
           TpEmpty(title: 'Aucun projet', text: 'Décrivez votre projet ou votre innovation : vous pouvez enregistrer un brouillon et le publier quand il est prêt.', icon: Icons.lightbulb_outline_rounded)
         else

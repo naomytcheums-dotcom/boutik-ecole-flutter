@@ -34,8 +34,11 @@ class G_236 extends ConsumerWidget {
     final prefs = ref.watch(channelPrefsProvider);
     // « Activé » seulement si le canal est réellement disponible sur le serveur (sinon « Indisponible ») : jamais d'affichage trompeur.
     final live = ref.watch(serverChannelsProvider).value;
+    final settings = ref.watch(notifSettingsProvider).value;
+    final hasDevice = demoContent || (settings?.hasDevice ?? false);
     final ch = {for (final e in prefs.entries) e.key: e.value && (demoContent || live == null || e.key == 'app' || live[e.key] != false)};
-    String off(String k) => prefs[k] == true ? 'Indisponible' : 'Désactivé';
+    String off(String k) => prefs[k] == true ? (k == 'app' ? 'À activer' : 'Indisponible') : 'Désactivé';
+    final appOn = ch['app']! && hasDevice;
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
@@ -53,12 +56,11 @@ class G_236 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 235, 26, gText('Canaux et notifications', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 120, 268, 19, gText('Où voulez-vous suivre vos missions ?', 15, Color(0xFF111015), weight: 700)),
+      gP(24, 120, 268, 19, gText('Où voulez-vous suivre vos commandes ?', 15, Color(0xFF111015), weight: 700)),
       gP(36, 171, 40, 40, gBox(color: Color(0xFFDDF5EC), radii: [13, 13, 13, 13])),
-      gP(46, 181, 20, 20, const SizedBox.expand(), tap: () => gTab(context, '53')),
       gP(44.667, 180.493, 21.84, 21.84, gImg('assets/figma/v/c011934b9b1395.svg')),
       gP(88, 170, 70, 17, gText('WhatsApp', 13.5, Color(0xFF111015), weight: 600)),
-      gP(88, 192, 186, 14, gText('Suivi, validation de jalon, paiement', 11.5, Color(0xFF57545F))),
+      gP(88, 192, 186, 14, gText('Suivi de commande, paiement', 11.5, Color(0xFF57545F))),
       if (ch['whatsapp']!) ...[
         gP(293.6, 180, 58.4, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
         gP(305.8, 184, 34, 14, gText('Activé', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
@@ -84,8 +86,8 @@ class G_236 extends ConsumerWidget {
       gP(45.5, 311.667, 21, 18.5, gImg('assets/figma/v/e2c8fe85d4329b.svg')),
       gP(51.583, 327.5, 8.833, 6.838, gImg('assets/figma/v/165eb123ea9a50.svg')),
       gP(88, 302, 187, 17, gText('Notifications dans l’applica…', 13.5, Color(0xFF111015), weight: 600)),
-      gP(88, 324, 87, 14, gText('Toujours actives', 11.5, Color(0xFF57545F))),
-      if (ch['app']!) ...[
+      gP(88, 324, 87, 14, gText('Sur cet appareil', 11.5, Color(0xFF57545F))),
+      if (appOn) ...[
         gP(293.6, 312, 58.4, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
         gP(305.8, 316, 34, 14, gText('Activé', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
       ] else ...[
@@ -98,7 +100,7 @@ class G_236 extends ConsumerWidget {
       gP(46.333, 377.667, 19.333, 22.667, gImg('assets/figma/v/8a418070bfb100.svg')),
       gP(54.667, 377.667, 11, 11, gImg('assets/figma/v/2e28e879cb0de7.svg')),
       gP(88, 368, 43, 17, gText('E-mail', 13.5, Color(0xFF111015), weight: 600)),
-      gP(88, 390, 96, 14, gText('Reçus et résumés', 11.5, Color(0xFF57545F))),
+      gP(88, 390, 160, 14, gText('Commandes et paiements', 11.5, Color(0xFF57545F))),
       if (ch['email']!) ...[
         gP(293.6, 378, 58.4, 22, gBox(color: Color(0xFFDDF5EC), radii: [11, 11, 11, 11])),
         gP(305.8, 382, 34, 14, gText('Activé', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center)),
@@ -108,15 +110,16 @@ class G_236 extends ConsumerWidget {
       ],
       gTap(270, 372, 90, 34, () => ref.read(channelPrefsProvider.notifier).set('email', !prefs['email']!)),
       gP(24, 436, 115, 16, gText('Numéro WhatsApp', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 456, 342, 48, GField(hint: '+237 6XX XX XX XX', size: 13.5, hintColor: Color(0xFF8A8794), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('ch_wa', v); })),
-      gP(39, 471, 18, 18, const SizedBox.expand(), tap: () => gTab(context, '53')),
+      gP(24, 456, 342, 48, GField(key: ValueKey('wa-${settings?.whatsappNumber ?? ''}'), initial: settings?.whatsappNumber ?? '', hint: '+237 6XX XX XX XX', size: 13.5, hintColor: Color(0xFF8A8794), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('ch_wa', v); })),
       gP(37.5, 470.244, 20.256, 20.256, gImg('assets/figma/v/8b8b341bbe1515.svg')),
       gP(36, 541.5, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(43.333, 547.443, 17.333, 20.173, gImg('assets/figma/v/b35e336eb0a1dc.svg')),
       gP(46.875, 553.083, 10.25, 8.833, gImg('assets/figma/v/2bdcafa88f7a43.svg')),
       gP(76, 532, 277, 51, gText('Aucune donnée bancaire n’est demandée dans WhatsApp : le paiement passe par votre application Mobile Money.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
+      gP(24, 598, 342, 44, EnablePushButton(onDone: () { ref.invalidate(notifSettingsProvider); ref.invalidate(channelPrefsProvider); }), show: !demoContent),
+      gP(24, 648, 342, 18, gText(hasDevice ? 'Cet appareil reçoit les notifications.' : 'Cet appareil n’est pas encore abonné aux notifications.', 11.5, Color(0xFF57545F), align: TextAlign.center), show: !demoContent),
       gP(0, 744, 390, 100, gBox(color: Color(0x00FFFFFF))),
-      gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => savePrefs(context, ref, channelPrefsProvider, extra: {'whatsapp_number': ref.read(formProvider)['ch_wa'] ?? ''})),
+      gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => saveChannelPrefs(context, ref, ref.read(formProvider)['ch_wa'] ?? settings?.whatsappNumber ?? '')),
       gP(156, 778, 78, 18, gText('Enregistrer', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(44.667, 245.667, 22.667, 22.667, gImg('assets/figma/v/37684f95055729.svg')),

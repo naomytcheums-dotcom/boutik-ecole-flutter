@@ -19,6 +19,13 @@ class _Events extends EventsNotifier {
   List<AppEvent>? build() => v;
 }
 
+class _Upcoming extends UpcomingEventsNotifier {
+  _Upcoming(this.v);
+  final List<AppEvent>? v;
+  @override
+  List<AppEvent>? build() => v;
+}
+
 class _Admin extends AdminEventsNotifier {
   _Admin(this.v);
   final List<AdminEvent>? v;
@@ -95,7 +102,7 @@ void main() {
     final futur = AppEvent(id: '1', title: 'Atelier à venir', kind: 'atelier', startsAt: DateTime(2026, 11, 6, 15), place: '', price: 0, capacity: null, registered: 0, mine: false);
     final passe = AppEvent(id: '2', title: 'Expo terminée', kind: 'exposition', startsAt: DateTime(2026, 11, 3, 10), place: '', price: 0, capacity: null, registered: 0, mine: false);
     await t.pumpWidget(ProviderScope(
-      overrides: [nowProvider.overrideWithValue(now), eventsProvider.overrideWith(() => _Events([futur, passe]))],
+      overrides: [nowProvider.overrideWithValue(now), eventsProvider.overrideWith(() => _Events([futur, passe])), upcomingEventsProvider.overrideWith(() => _Upcoming([futur, passe]))],
       child: const MaterialApp(home: G_101()),
     ));
     await t.pumpAndSettle();
@@ -107,6 +114,22 @@ void main() {
     await t.pumpAndSettle();
     expect(find.text('Terminé'), findsOneWidget);
     expect(find.text('Inscription'), findsNothing);
+  });
+
+  testWidgets('101 connecté : aucune inscription fictive à « Exposition des innovations », aucun bouton d’engagement', (t) async {
+    Backend.ready = true;
+    GAnim.enabled = false;
+    t.view.physicalSize = const Size(393, 852);
+    t.view.devicePixelRatio = 1;
+    addTearDown(t.view.reset);
+    await t.pumpWidget(ProviderScope(
+      overrides: [nowProvider.overrideWithValue(now), upcomingEventsProvider.overrideWith(() => _Upcoming(const []))],
+      child: const MaterialApp(home: G_101()),
+    ));
+    await t.pumpAndSettle();
+    expect(find.text('S’inscrire'), findsNothing);
+    expect(find.textContaining('Gérer mon inscription'), findsNothing);
+    expect(find.textContaining('Aucun événement à venir'), findsOneWidget);
   });
 
   testWidgets('hors connexion : la démonstration de la maquette reste affichée', (t) async {    await monter(t, connecte: false);

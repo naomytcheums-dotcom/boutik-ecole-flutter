@@ -3,11 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
-import 'package:go_router/go_router.dart' show GoRouterState;
+import 'package:go_router/go_router.dart' show GoRouter, GoRouterState;
+import '../../core/router/paths.dart' show screenPath;
 import '../nav.dart';
 import '../live/notifs.dart' show NotifBadge;
 import '../live/store.dart';
 import '../live/home_live.dart';
+import '../live/marche/marche_data.dart' show MarcheFilters, marcheFiltersProvider;
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -44,8 +46,9 @@ class G_03 extends ConsumerWidget {
     } catch (_) {}
     if (!demoContent && me != null && me.role == 2 && me.staff.isEmpty && vue != 'standard') return const CompanyHomeScreen();
     // connecté : la page s'allonge pour recevoir la liste réelle des talents ; le menu reste au bas de la page
-    final dy = demoContent ? 0.0 : 191.0;
-    return GScreen(w: 390, h: demoContent ? 939 : 1130, radius: 43.333, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
+    final dr = demoContent ? 0.0 : 285.0; // bloc « Recommandé pour vous » inséré entre les produits et les talents
+    final dy = demoContent ? 0.0 : 191.0 + dr;
+    return GScreen(w: 390, h: demoContent ? 939 : 1130 + dr, radius: 43.333, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 139.08, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 666.36, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
       gP(37.014, 20.792, 29, 18, gText('9:41', 14.444, Color(0xFF1B2430), weight: 600)),
@@ -108,12 +111,15 @@ class G_03 extends ConsumerWidget {
       gP(347.503, 263.771, 10.965, 6, gImg('assets/figma/v/c94e1e4a8135f4.svg')),
       gP(348.331, 267.081, 9.31, 6, gImg('assets/figma/v/188f8a4ee0e095.svg')),
       gP(334.986, 287.806, 36, 13, gText('Projets', 10.382, Color(0xFF111015), weight: 500, align: TextAlign.center)),
-      gTap(336, 182, 44, 38, () => gOpen(context, '23')), // icône filtre : écran 23 « Filtres »
+      gTap(336, 182, 44, 38, () async {
+        final applied = await GoRouter.of(context).push<bool>(screenPath('23'));
+        if (applied == true && context.mounted) gOpen(context, '20');
+      }), // icône filtre : écran 23 « Filtres », puis les résultats filtrés (20)
       gTap(298, 60, 36, 38, () async {
         if (await requireLogin(context, ref, 'voir vos notifications') && context.mounted) gOpen(context, '50');
       }), // cloche
       gTap(344, 60, 40, 40, () => gOpen(context, '10')), // avatar
-      gTap(18.056, 238.333, 57.778, 62.0, () => gOpen(context, '04')), gTap(94.792, 238.333, 57.778, 62.0, () => gOpen(context, '22')), gTap(171.528, 238.333, 57.778, 62.0, () => gOpen(context, '22b')), gTap(248.264, 238.333, 57.778, 62.0, () => gOpen(context, '70')), gTap(324.097, 238.333, 57.778, 62.0, () => gOpen(context, '78')),
+      gTap(18.056, 238.333, 57.778, 62.0, () => gOpen(context, '04')), gTap(94.792, 238.333, 57.778, 62.0, () { if (!demoContent) ref.read(marcheFiltersProvider.notifier).set(const MarcheFilters()); gOpen(context, '22'); }), gTap(171.528, 238.333, 57.778, 62.0, () => gOpen(context, '22b')), gTap(248.264, 238.333, 57.778, 62.0, () => gOpen(context, '70')), gTap(324.097, 238.333, 57.778, 62.0, () => gOpen(context, '78')),
       gP(14.444, 322.292, 372.847, 185.069, heroSlot((s, _) => gBox(image: s.image, fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 6), blurRadius: 16, spreadRadius: 0)], radii: [18.056, 18.056, 18.056, 18.056]))),
       gP(37.917, 346.667, 54.167, 18.056, gBox(color: Color(0xFF111015), radii: [9.028, 9.028, 9.028, 9.028])),
       gP(47.5, 349.694, 35, 12, gText('À la une', 9.479, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
@@ -144,10 +150,10 @@ class G_03 extends ConsumerWidget {
       gP(212.153, 731.278, 83, 14, gText(gm('Drone éducatif', ''), 11.285, Color(0xFF111015), weight: 700), show: demoContent),
       gP(212.153, 749.833, 71, 13, gText(demoContent ? '150 000 FCFA' : '', 10.382, Color(0xFF111015), weight: 600), show: demoContent),
       gP(212.153, 768.389, 136, 12, gText(gm('Team Innov’ – Génie électrique', ''), 9.479, Color(0xFF57545F)), show: demoContent),
-      gP(17.153, 803.306, 128, 18, gText('Talents à découvrir', 13.993, Color(0xFF111015), weight: 700)),
-      gP(308.986, 806.208, 44, 14, gText('Voir tout', 10.833, Color(0xFF57545F), weight: 500, align: TextAlign.right)),
-      gP(369.133, 810.208, 12.846, 6, gImg('assets/figma/v/92b236aeae97cb.svg')),
-      gP(372.556, 806.785, 9.423, 12.846, gImg('assets/figma/v/337e7bc848e314.svg')),
+      gP(17.153, 803.306 + dr, 128, 18, gText('Talents à découvrir', 13.993, Color(0xFF111015), weight: 700)),
+      gP(308.986, 806.208 + dr, 44, 14, gText('Voir tout', 10.833, Color(0xFF57545F), weight: 500, align: TextAlign.right)),
+      gP(369.133, 810.208 + dr, 12.846, 6, gImg('assets/figma/v/92b236aeae97cb.svg')),
+      gP(372.556, 806.785 + dr, 9.423, 12.846, gImg('assets/figma/v/337e7bc848e314.svg')),
       gP(14.444, 896.972 + dy, 368.333, 27.083, gBox(image: 'assets/figma/img/e48f8827338ec470670d1109125a15b7d0f21476.png', fit: BoxFit.cover), show: demoContent),
       gP(133.611, 988.153 + dy, 130.903, 4.514, gBox(color: Color(0xFF111015), radii: [2.708, 2.708, 2.708, 2.708])),
       gP(22, 851 + dy, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
@@ -171,11 +177,15 @@ class G_03 extends ConsumerWidget {
       
       gTap(24, 180, 308, 48, () => gOpen(context, '19')),
       if (demoContent) gTap(198, 559, 178, 229, () { ref.read(selectedProductProvider.notifier).select('Drone éducatif'); gOpen(context, '05'); }),
-      gTap(10.1, 107.1, 133, 44, () { gOpen(context, '177'); }), // parcours 03 -> 177
+      if (demoContent || me == null || me.role == 2) gTap(10.1, 107.1, 133, 44, () { gOpen(context, '177'); }), // parcours 03 -> 177 : la bienvenue est celle des entreprises (et de la visite de présentation)
       gTap(303, 523, 56, 32, () { gOpen(context, '22'); }), // audit 01/11 : « Voir tout » n'avait aucun effet
-      gTap(303, 797, 56, 32, () { gOpen(context, '70'); }), // audit 01/11 : « Voir tout » n'avait aucun effet
+      gTap(303, 797 + dr, 56, 32, () { gOpen(context, '70'); }), // audit 01/11 : « Voir tout » n'avait aucun effet
       if (!demoContent) gP(14.444, 558.819, 368.333, 229, const HomeProducts(width: 368.333, height: 229)),
-      if (!demoContent) gP(14.444, 836, 368.333, 270, const HomeTalents(width: 368.333, height: 270)),
+      if (!demoContent) gP(17.153, 803.306, 200, 18, Consumer(builder: (context, ref, _) => gText(ref.watch(authProvider.select((a) => a.current != null)) ? 'Recommandé pour vous' : 'Offres populaires', 13.993, Color(0xFF111015), weight: 700))),
+      if (!demoContent) gP(308.986, 806.208, 44, 14, gText('Voir tout', 10.833, Color(0xFF5A3FE0), weight: 500, align: TextAlign.right)),
+      if (!demoContent) gP(14.444, 836, 368.333, 229, const HomeRecommendations(width: 368.333, height: 229)),
+      if (!demoContent) gTap(303, 797, 56, 32, () { gOpen(context, ref.read(authProvider).current != null ? '22d' : '22'); }),
+      if (!demoContent) gP(14.444, 836 + dr, 368.333, 270, const HomeTalents(width: 368.333, height: 270)),
     ]);
   }
 }

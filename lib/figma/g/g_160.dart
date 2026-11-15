@@ -115,9 +115,9 @@ class G_160 extends ConsumerWidget {
       gTap(24, 396, 342, 62, () { final l = ref.read(visibleHackathonsProvider); if (l.length > 0) { ref.read(selectedEventProvider.notifier).set(l[0].id); gOpen(context, '161'); } }),
       gTap(24, 462, 342, 62, () { final l = ref.read(visibleHackathonsProvider); if (l.length > 1) { ref.read(selectedEventProvider.notifier).set(l[1].id); gOpen(context, '161'); } }),
       gTap(24, 528, 342, 62, () { final l = ref.read(visibleHackathonsProvider); if (l.length > 2) { ref.read(selectedEventProvider.notifier).set(l[2].id); gOpen(context, '161'); } }),
-      gTap(24, 168, 342, 170, () { ref.read(selectedEventProvider.notifier).set('orange'); gOpen(context, '161'); }),
+      gTap(24, 168, 342, 170, () { final l = ref.read(visibleHackathonsProvider); if (demoContent) { ref.read(selectedEventProvider.notifier).set('orange'); gOpen(context, '161'); } else if (l.isNotEmpty) { ref.read(selectedEventProvider.notifier).set(l[0].id); gOpen(context, '161'); } }),
       gTap(24, 694, 160, 28, () { gOpen(context, '163'); }),
-      gTap(16, 344, 160, 35, () { gOpen(context, '168'); }), // parcours 160 -> 168
+      if (demoContent) gTap(16, 344, 160, 35, () { gOpen(context, '168'); }), // parcours 160 -> 168 (maquette seulement : écran réservé au département)
       gTap(295.5, 346, 61, 32, () { uiAllShown(context); }), // audit 01/11 : « Voir tout » n'avait aucun effet
       if (!demoContent) gTap(256, 350, 112, 26, () { GoRouter.of(context).push('/concours'); }), // « Voir tout » : concours, bourses et appels à projets
     ]);

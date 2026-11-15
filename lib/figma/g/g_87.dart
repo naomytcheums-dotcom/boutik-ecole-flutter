@@ -19,6 +19,7 @@ import '../live/admin.dart';
 import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
+import '../live/l9_common.dart' show requireProjectOwner;
 import '../live/missions.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
@@ -100,7 +101,7 @@ class G_87 extends ConsumerWidget {
       gP(46.875, 486.583, 10.25, 8.833, gImg('assets/figma/v/2bdcafa88f7a43.svg'), show: demoContent),
       gP(76, 474, 277, 34, gText('La propriété intellectuelle reste à l’étudiant ; l’IUT conserve un droit d’usage pédagogique.', 12, Color(0xFF4A4854), lh: 17, wrap: true), show: demoContent),
       gP(0, 744, 390, 100, gBox(color: Color(0x00FFFFFF))),
-      gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => demoContent ? gOpen(context, '278') : Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ProjectFormPage(kind: 'innovation')))),
+      gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () async { if (demoContent) return gOpen(context, '278'); if (!await requireProjectOwner(context, ref, 'déclarer une innovation') || !context.mounted) return; Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ProjectFormPage(kind: 'innovation'))); }),
       gP(113, 778, 164, 18, gText('Déclarer une innovation', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       if (!demoContent) gP(24, 180, 342, 552, innovationRegistryList()),

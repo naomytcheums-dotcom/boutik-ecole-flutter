@@ -26,3 +26,15 @@ Future<String?> subscribeWebPush(String publicKey) async {
     return null;
   }
 }
+
+/// Abonnement actuel du navigateur (même format que [subscribeWebPush]), ou null s'il n'y en a pas.
+Future<String?> currentWebPushSubscription() async {
+  try {
+    if (!webPushSupported) return null;
+    final reg = await web.window.navigator.serviceWorker.getRegistration().toDart;
+    final sub = await reg?.pushManager.getSubscription().toDart;
+    return sub == null ? null : jsonEncode(sub.toJSON().dartify());
+  } catch (_) {
+    return null;
+  }
+}

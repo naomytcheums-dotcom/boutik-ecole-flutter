@@ -24,3 +24,15 @@ Future<void> openUrl(BuildContext context, String url) async {
 }
 
 const siteUrl = 'https://boutik-ecole.vercel.app';
+
+/// Partage d'un lien par WhatsApp, e-mail ou SMS : ouvre l'application correspondante avec le message prêt à envoyer.
+Future<void> shareLinkVia(BuildContext context, String channel, String title, String link) {
+  final subject = title.trim().isEmpty ? 'Boutik-École' : title.trim();
+  final text = title.trim().isEmpty ? 'Découvrez ceci sur Boutik-École : $link' : 'Découvrez « $subject » sur Boutik-École : $link';
+  final url = switch (channel) {
+    'whatsapp' => 'https://wa.me/?text=${Uri.encodeComponent(text)}',
+    'email' => 'mailto:?subject=${Uri.encodeComponent(subject)}&body=${Uri.encodeComponent(text)}',
+    _ => 'sms:?body=${Uri.encodeComponent(text)}',
+  };
+  return openUrl(context, url);
+}

@@ -23,6 +23,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/l10_voeux.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_216 extends ConsumerWidget {
@@ -50,7 +51,7 @@ class G_216 extends ConsumerWidget {
       gP(36, 143.5, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11]), show: demoContent),
       gP(42.979, 149.417, 18.042, 17.688, gImg('assets/figma/v/e9085cf2b599c2.svg'), show: demoContent),
       gP(76, 134, 277, 51, gText('Voici les produits que les étudiants veulent fabriquer. Précommandez : la production démarre quand le seuil est atteint.', 12, Color(0xFF4A4854), lh: 17, wrap: true), show: demoContent),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 213, 55.6, 34, 'Tous', 12.5, 600), GChip(87.6, 213, 144.4, 34, 'Presque atteints', 12.5, 500), GChip(240, 213, 85.2, 34, 'Nouveaux', 12.5, 500), GChip(333.2, 213, 144.4, 34, 'Mes précommandes', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 213, 55.6, 34, 'Tous', 12.5, 600), GChip(87.6, 213, 144.4, 34, 'Presque atteints', 12.5, 500), GChip(240, 213, 85.2, 34, 'Nouveaux', 12.5, 500), GChip(333.2, 213, 144.4, 34, 'Mes précommandes', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17, onChanged: (i) { ref.read(wishFilterProvider.notifier).set(i); })),
       gP(34, 271, 112, 120, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [20, 20, 20, 20]), show: demoContent),
       gP(158, 275, 199, 18, gText(gm('Lampe en bois recyclé', ''), 14, Color(0xFF111015), weight: 800, wrap: true), show: demoContent),
       gP(158, 295, 112, 14, gText(gm('par Mouanga Yannick', ''), 11, Color(0xFF57545F), weight: 500), show: demoContent),
@@ -97,7 +98,7 @@ class G_216 extends ConsumerWidget {
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       if (demoContent) gTap(150, 267, 215, 34, () { gOpen(context, '217'); }), // parcours 216 -> 217
       if (demoContent) gTap(150, 419, 215, 34, () { gOpen(context, '217'); }), // parcours 216 -> 217
-      if (!demoContent) gP(24, 125, 342, 620, wishesMarket()),
+      if (!demoContent) gP(24, 262, 342, 484, const WishesMarket(width: 342, height: 484)),
     ]);
   }
 }

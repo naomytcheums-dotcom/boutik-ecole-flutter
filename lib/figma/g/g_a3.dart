@@ -49,6 +49,7 @@ class G_A3 extends ConsumerWidget {
       gP(143.5, 82, 103, 21, gText('Voix en texte', 17, Color(0xFF111015), weight: 500, align: TextAlign.center)),
       gP(316, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
       gP(328.767, 83, 18.467, 18.233, gImg('assets/figma/v/menu3.svg')), gTap(316, 70, 44, 44, () => gOpen(context, '231')),
+      if (demoContent) ...[
       gP(150, 140, 216, 56, gBox(color: Color(0xFF111015), radii: [28, 28, 28, 28])),
       gP(162, 150, 36, 36, gBox(color: Color(0xFFFFFFFF), oval: true)),
       gP(175, 159, 15.333, 18, gImg('assets/figma/v/000d96af5ca0a3.svg')),
@@ -87,6 +88,8 @@ class G_A3 extends ConsumerWidget {
       gP(330.75, 708.5, 10.5, 15, gImg('assets/figma/v/47bc9d3a14157f.svg')),
       gP(327.75, 714.5, 16.5, 12, gImg('assets/figma/v/0e220d66ee2ccc.svg')),
       gP(333, 720.5, 6, 9, gImg('assets/figma/v/ef0937d1ce4f60.svg')),
+      ],
+      if (!demoContent) gP(0, 126, 390, 622, const KelaThreadPanel()),
       gP(22, 762, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
       gP(47.5, 783.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(47.125, 783.125, 20, 20, gImg('assets/figma/v/96285515fb0e14.svg')),
@@ -104,7 +107,6 @@ class G_A3 extends ConsumerWidget {
       gP(184, 783, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 781.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       gP(22, 38, 34, 32, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
-      if (!demoContent) gTap(214, 514, 152, 46, () { kelaCreateDraft(context, ref); }),
     ]);
   }
 }

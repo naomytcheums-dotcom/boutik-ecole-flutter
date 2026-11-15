@@ -43,7 +43,8 @@ class G_210 extends ConsumerWidget {
       gP(84, 762, 52, 52, gBox(color: Color(0xFFF0EBF2), oval: true)),
       gP(584, 762, 52, 52, gBox(color: Color(0xFFF0EBF2), oval: true)),
       gP(147, 785, 426, 6, gImg('assets/figma/v/25156d5fff55a1.svg')),
-      gP(146, 546, 108, 108, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [30, 30, 30, 30])),
+      gP(146, 546, 108, 108, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [30, 30, 30, 30]), show: demoContent),
+      if (!demoContent) gP(146, 546, 108, 108, Consumer(builder: (context, ref, _) => gBox(image: kioskView(ref).image, fit: BoxFit.cover, radii: [30, 30, 30, 30]))),
       gP(274, 556, 313, 35, Consumer(builder: (context, ref, _) => gText(kioskView(ref).title, 28, Color(0xFF111015), weight: 600, wrap: true))),
       gP(274, 612, 313, 23, Consumer(builder: (context, ref, _) => gText('${kioskView(ref).department}${demoContent ? " · IUT de Douala" : ""}', 18, Color(0xFF57545F), wrap: true))),
       gP(274, 646, 164, 33, Consumer(builder: (context, ref, _) => gText(fcfa(kioskView(ref).price), 26, Color(0xFF5A3FE0), weight: 700))),
@@ -54,7 +55,7 @@ class G_210 extends ConsumerWidget {
       gP(450, 696, 48, 19, gText('Retrait', 15, Color(0xFF57545F))),
       gP(450, 720, 94, 24, gText(gm('Atelier GC', ''), 19, Color(0xFF111015), weight: 600)),
       gP(308.5, 826, 103, 20, gText('Code de suivi', 16, Color(0xFF57545F))),
-      gP(235.5, 854, 249, 43, Consumer(builder: (context, ref, _) => gText(ref.watch(kioskSessionProvider)?.tracking ?? 'BE-2210-7F3A', 34, Color(0xFF111015), weight: 700))),
+      gP(235.5, 854, 249, 43, Consumer(builder: (context, ref, _) => gText(ref.watch(kioskSessionProvider)?.tracking ?? (demoContent ? 'BE-2210-7F3A' : ''), 34, Color(0xFF111015), weight: 700))),
       gP(173, 927, 8, 76, gImg('assets/figma/v/bc15be253fcc8c.svg')),
       gP(181, 927, 10, 76, gImg('assets/figma/v/833619e80c5a5a.svg')),
       gP(189, 927, 12, 76, gImg('assets/figma/v/1b82a3c6ea8156.svg')),
@@ -101,17 +102,25 @@ class G_210 extends ConsumerWidget {
       gP(517, 927, 9, 76, gImg('assets/figma/v/b58ca8be7b9aaf.svg')),
       gP(525, 927, 11, 76, gImg('assets/figma/v/e8f9fb3df9076b.svg')),
       gP(533, 927, 8, 76, gImg('assets/figma/v/bc15be253fcc8c.svg')),
+      if (!demoContent) gP(150, 915, 420, 100, gBox(color: Color(0xFFFFFFFF))),
       gP(130, 1100, 300, 92, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x14403366), offset: Offset(0, 6), blurRadius: 16, spreadRadius: 0)], radii: [46, 46, 46, 46])),
       gP(174.5, 1130.5, 31, 26, gImg('assets/figma/v/d22735c1ec7639.svg')),
       gP(179.5, 1145.5, 21, 16, gImg('assets/figma/v/dd0bf2dbcaada1.svg')),
       gP(230, 1131, 105, 30, gText('Imprimer', 24, Color(0xFF111015), weight: 600)),
       gP(446, 1100, 144, 92, gBox(color: Color(0xFF111015), radii: [46, 46, 46, 46])),
       gP(472, 1131, 92, 28, gText('Terminer', 22, Color(0xFFFFFFFF), weight: 600)),
-      gP(255, 1214, 210, 21, gText('Retour à l’accueil dans 15 s', 17, Color(0xFF57545F))),
+      gP(255, 1214, 210, 21, gText('Retour à l’accueil dans 15 s', 17, Color(0xFF57545F)), show: demoContent),
       gP(288.75, 190.75, 142.5, 142.5, gImg('assets/figma/r/178_50.png')),
       gP(326.25, 237.625, 67.5, 55, gImg('assets/figma/r/178_51.png')),
-      gTap(446, 1100, 144, 92, () => gOpen(context, '237')),
+      gTap(446, 1100, 144, 92, () { if (demoContent) { gOpen(context, '237'); } else { ref.read(kioskSessionProvider.notifier).clear(); gOpen(context, '206'); } }),
       gTap(130, 1100, 300, 92, () { unavailableAction(context, 'Impression indisponible', 'Cette borne n’est pas reliée à une imprimante : aucun ticket n’a été imprimé. Le lien du produit est déjà sur votre téléphone.'); }),
+      if (!demoContent) gP(0, 0, 720, 1280, Consumer(builder: (context, ref, _) {
+        if (ref.watch(kioskSessionProvider)?.used ?? false) return SizedBox.shrink();
+        return GestureDetector(
+          onTap: () => gOpen(context, '206'),
+          child: Container(color: Color(0xFFF4EFE6), alignment: Alignment.center, padding: EdgeInsets.all(60), child: gText('Aucun transfert en cours. Choisissez un produit à la borne, puis scannez son code avec votre téléphone.', 30, Color(0xFF111015), weight: 600, align: TextAlign.center, wrap: true)),
+        );
+      })),
     ]);
   }
 }

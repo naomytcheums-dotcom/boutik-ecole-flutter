@@ -2,6 +2,7 @@
 // ignore_for_file: camel_case_types, prefer_is_empty, prefer_interpolation_to_compose_strings, unnecessary_string_interpolations, unused_import, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart' show GoRouter;
 import '../gen.dart';
 import '../i18n.dart' show I18n;
 import '../nav.dart';
@@ -57,7 +58,6 @@ class G_148_1 extends ConsumerWidget {
       gP(22.5, 216, 345, 21, gText(gSelf(ref, 'Mariam Essono'), 17, Color(0xFF111015), weight: 700, align: TextAlign.center, wrap: true), show: demoContent),
       gP(22.5, 240, 345, 15, gText(gm('mariam@iut-douala.cm', ''), 12, Color(0xFF57545F), align: TextAlign.center, wrap: true), show: demoContent),
       gP(36, 290, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
-      gP(46, 300, 20, 20, const SizedBox.expand(), tap: () => gTab(context, '10')),
       gP(48.833, 299.5, 14.333, 14.333, gImg('assets/figma/v/89c36cb8c670bc.svg')),
       gP(46.333, 307.833, 19.333, 12.667, gImg('assets/figma/v/4e3ce9c030e64b.svg')),
       gP(88, 301, 170, 17, gText('Informations personnelles', 13.5, Color(0xFF111015), weight: 600)),
@@ -94,18 +94,22 @@ class G_148_1 extends ConsumerWidget {
       gP(53, 571.167, 6.008, 6, gImg('assets/figma/v/7a0aba9eeb97a7.svg')),
       gP(88, 561, 101, 17, gText('Aide et support', 13.5, Color(0xFF111015), weight: 600)),
       gP(336.75, 562.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
-      gP(24, 610, 342, 50, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE5484D), bw: 1.5, radii: [25, 25, 25, 25]), tap: () {
-        // Compte connecté : vraie déconnexion (remise à zéro de l'application) ; visiteur : rien à fermer, on propose de se connecter.
+      gP(24, 668, 342, 50, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE5484D), bw: 1.5, radii: [25, 25, 25, 25]), tap: () {
+        // Compte connecté : confirmation puis vraie déconnexion (remise à zéro de l'application) ; visiteur : rien à fermer, on propose de se connecter.
         if (ref.read(authProvider).current != null) {
-          ref.read(authProvider.notifier).logout();
+          confirmLogout(ref, context);
         } else {
           gOpen(context, '11');
         }
       }),
-      gP(151, 626, 113, 18, gText('Se déconnecter', 14.5, Color(0xFFE5484D), weight: 600, align: TextAlign.center)),
-      gP(125.125, 625.625, 10.25, 18.75, gImg('assets/figma/v/9fe923cd01fc4e.svg')),
-      gP(134.333, 628.458, 9.542, 13.083, gImg('assets/figma/v/ec3a284b9561d3.svg')),
-      gP(129.375, 632, 14.5, 6, gImg('assets/figma/v/c9c5916be820f1.svg')),
+      gP(151, 684, 113, 18, gText('Se déconnecter', 14.5, Color(0xFFE5484D), weight: 600, align: TextAlign.center)),
+      gP(125.125, 683.625, 10.25, 18.75, gImg('assets/figma/v/9fe923cd01fc4e.svg')),
+      gP(134.333, 686.458, 9.542, 13.083, gImg('assets/figma/v/ec3a284b9561d3.svg')),
+      gP(129.375, 690, 14.5, 6, gImg('assets/figma/v/c9c5916be820f1.svg')),
+      for (final (i, l) in const [(0, 'Sécurité'), (1, 'Synchronisation'), (2, 'Économie de données')]) ...[
+        gP(24.0 + i * 117, 604, 108, 48, gBox(color: Color(0xB2FFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, radii: [24, 24, 24, 24])),
+        gP(32.0 + i * 117, 612, 92, 32, gText(l, 11.5, Color(0xFF111015), weight: 600, align: TextAlign.center, wrap: true)),
+      ],
       gP(125, 832, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
       gP(47.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '19')),
@@ -124,11 +128,14 @@ class G_148_1 extends ConsumerWidget {
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       gTap(80, 441, 274, 48, () { gOpen(context, '56'); }), // parcours 148_1 -> 56
-      gTap(80, 285, 274, 48, () { gOpen(context, '273'); }), // parcours 148_1 -> 273
+      gTap(80, 285, 274, 48, () { GoRouter.of(context).push('/parametres/informations'); }), // informations personnelles : formulaire réel
       gTap(80, 337, 274, 48, () { gOpen(context, '27'); }), // parcours 148_1 -> 27
       gTap(80, 493, 274, 48, () { gOpen(context, '149'); }), // parcours 148_1 -> 149
       gTap(80, 545, 274, 48, () { gOpen(context, '49'); }), // parcours 148_1 -> 49
-      gTap(80, 389, 274, 48, () { Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const PaymentMethodsPage())); }), // moyens de paiement
+      gTap(80, 389, 274, 48, () { GoRouter.of(context).push('/parametres/paiement'); }), // moyens de paiement
+      gTap(24, 604, 108, 48, () { gOpen(context, '148-2'); }),
+      gTap(141, 604, 108, 48, () { gOpen(context, '150-1'); }),
+      gTap(258, 604, 108, 48, () { gOpen(context, '184'); }),
       if (!demoContent) gP(22, 212, 300, 50, const AccountHeader(width: 300)),
     ]);
   }

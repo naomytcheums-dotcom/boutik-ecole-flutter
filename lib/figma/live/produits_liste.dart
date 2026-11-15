@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../nav.dart';
 import 'product_card.dart';
+import 'backend.dart';
 import 'seller.dart' show allProductsProvider;
 import 'store.dart';
 
@@ -15,11 +16,25 @@ const _ink = Color(0xFF111015);
 const _grey = Color(0xFF57545F);
 TextStyle _st(double size, {FontWeight w = FontWeight.w500, Color c = _ink}) => TextStyle(fontFamily: 'PlusJakartaSans', fontSize: size, fontWeight: w, color: c);
 
-/// Produits dont le titre ou la description évoque la récupération ou le recyclage (aucun indicateur dédié n'existe sur le serveur).
+/// Produits dont l'annonce est marquée « matériaux récupérés » (colonne listings.recycled) ou dont le titre ou la description évoque la récupération.
 bool isRecycled(LiveProduct p) => RegExp(r'recycl|récup|recup|upcycl|seconde vie|réemploi|reemploi', caseSensitive: false).hasMatch('${p.title} ${p.description}');
 
+/// Annonces à l'honneur (les mieux notées puis les plus consultées), dans l'ordre du serveur.
+final showcaseIdsProvider = FutureProvider.autoDispose<List<String>?>((ref) async {
+  if (!Backend.ready) return null;
+  final r = await Backend.rpc('showcase_listings', {'p_limit': 8});
+  return r.error == null && r.data is List ? [for (final x in r.data as List) '$x'] : null;
+}, retry: (_, _) => null);
+
+/// Annonces publiées déclarées en matériaux récupérés par leur vendeur.
+final recycledIdsProvider = FutureProvider.autoDispose<Set<String>?>((ref) async {
+  if (!Backend.ready) return null;
+  final r = await Backend.rows('listings', 'id', eq: const {'status': 'approved', 'recycled': true}, limit: 200);
+  return r.error == null ? {for (final x in r.rows) '${x['id']}'} : null;
+}, retry: (_, _) => null);
+
 class ProductCards extends ConsumerWidget {
-  const ProductCards({super.key, this.width = 342, this.rows = 2, this.filter, this.height, this.emptyText = 'Aucun produit publié pour le moment.'});
+  const ProductCards({super.key, this.width = 342, this.rows = 2, this.filter, this.height, this.emptyText = 'Aucun produit publié pour le moment.', this.featured = false, this.recycled = false});
   final double width;
 
   /// Hauteur du cadre défilant (défaut : 390, ou 590 pour 3 rangées). Les cartes sont plus grandes : le cadre défile au besoin.
@@ -28,10 +43,21 @@ class ProductCards extends ConsumerWidget {
   final bool Function(LiveProduct)? filter;
   final String emptyText;
 
+  /// Seulement les annonces à l'honneur du serveur.
+  final bool featured;
+
+  /// Seulement les annonces déclarées en matériaux récupérés (colonne du serveur) ou dont le texte l'évoque.
+  final bool recycled;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final all = ref.watch(allProductsProvider);
-    final list = [for (final p in all) if (filter == null || filter!(p)) p].take(rows * 2).toList();
+    var all = ref.watch(allProductsProvider);
+    if (featured) {
+      final ids = ref.watch(showcaseIdsProvider).value ?? const <String>[];
+      all = [for (final id in ids) ...all.where((p) => p.id == id)];
+    }
+    final recycledIds = recycled ? (ref.watch(recycledIdsProvider).value ?? const <String>{}) : const <String>{};
+    final list = [for (final p in all) if ((filter == null || filter!(p)) && (!recycled || recycledIds.contains(p.id) || isRecycled(p))) p].take(rows * 2).toList();
     if (list.isEmpty) {
       return Container(
         width: width,

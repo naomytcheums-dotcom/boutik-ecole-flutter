@@ -137,18 +137,28 @@ Color reportInk(String s) => switch (s) {
     };
 
 final reportReasonProvider = NotifierProvider<IntV, int>(IntV.new);
-const reportReasons = [('Fraude', 'Annonce frauduleuse ou arnaque'), ('Propriété', 'Photos ou description copiées'), ('Prix', 'Prix anormal ou demande suspecte'), ('Contenu', 'Contenu inapproprié')];
+const reportReasons = [('Fraude', 'Annonce frauduleuse ou trompeuse'), ('Propriété', 'Photos ou description non conformes'), ('Prix', 'Prix anormal ou demande de paiement hors plateforme'), ('Contenu', 'Contenu inapproprié')];
+
+/// Incrémenté après un signalement envoyé : le champ « Précisions » de l'écran 170 repart vide.
+final reportResetProvider = NotifierProvider<IntV, int>(IntV.new);
 
 Future<void> submitReport(WidgetRef ref, BuildContext context) async {
   final p = ref.read(selectedProductProvider);
   final i = ref.read(reportReasonProvider).clamp(0, 3);
   final reason = reportReasons[i];
   if (Backend.ready) {
+    if (!ref.read(selectedProductProvider.notifier).chosen) {
+      return gAlert(context, 'Aucune annonce à signaler', 'Ouvrez la fiche d’un produit puis touchez le drapeau « Signaler » pour signaler cette annonce.');
+    }
     if (!await requireLogin(context, ref, 'signaler une annonce')) return;
     final err = await Backend.reportListing(p.title, reportReasonCodes[i], ref.read(formProvider)['report_details'] ?? '');
     if (!context.mounted) return;
     if (err != null) return gAlert(context, 'Signalement non envoyé', err);
     ref.read(formProvider.notifier).clear(const ['report_details']);
+    ref.read(reportReasonProvider.notifier).set(0);
+    ref.read(reportResetProvider.notifier).set(ref.read(reportResetProvider) + 1);
+    gToast(context, 'Signalement envoyé. Vous serez prévenu(e) de la décision de la modération.');
+    return gBack(context);
   }
   final me = ref.read(profileAccountProvider).name;
   ref.read(reportsProvider.notifier).add(Report('Annonce « ${p.title} »', reason.$1, 'À l’instant', 'Non assigné', 'Ouvert', listing: p.title));

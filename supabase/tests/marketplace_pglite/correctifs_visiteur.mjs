@@ -91,10 +91,7 @@ export async function run(db) {
   await db.exec('reset role');
   check('paiement : la confirmation marque la commande payée', (await q(`select paid, status from orders where number = '#BE-2026-9001'`))[0].paid === true);
   await as(U(13));
-  const tx2 = (await q(`select payment_start('order', 'Commande #BE-2026-9001', 100, 'manual') id`))[0].id;
-  await q(`select payment_declare('${tx2}', 'MP260101.9999')`);
-  await as(U(14));
-  await fails('paiement : un montant insuffisant ne confirme pas la commande', `select payment_set_status('${tx2}', 'confirmed')`, /Montant inférieur|déjà/);
+  await fails('paiement : un montant différent du total est refusé dès la demande', `select payment_start('order', 'Commande #BE-2026-9001', 100, 'manual')`, /total de la commande|déjà réglée/);
 
   // 8. forfaits entreprise : nouvelle signature (plan, entreprise visée)
   await as(U(17));

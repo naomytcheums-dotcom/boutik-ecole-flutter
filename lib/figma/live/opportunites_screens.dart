@@ -7,9 +7,11 @@ import 'package:go_router/go_router.dart';
 
 import '../gen.dart' show gToast;
 import '../i18n.dart' show Text;
+import '../nav.dart' show gOpen;
 import 'access.dart' show roleKey;
 import 'auth.dart';
 import 'backend.dart';
+import 'l8_common.dart' show l8Confirm;
 import 'talents.dart' show askText;
 import 'marche/marche_data.dart';
 import 'marche/marche_appels.dart' show marcheLoginRequired;
@@ -86,7 +88,37 @@ final oppsProvider = FutureProvider.autoDispose.family<List<Map<String, dynamic>
   return _list('opps_list', q.params);
 });
 final oppHiredProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) => _list('opp_hired_list', const {'p_limit': 10}));
-final oppMyApplicationsProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) => _list('opp_my_applications', const {}));
+final oppMyApplicationsProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) {
+  ref.watch(authProvider.select((a) => a.current?.serverId));
+  return _list('opp_my_applications', const {});
+}, retry: (_, _) => null);
+
+/// Dernière candidature envoyée avec succès (offre, organisation, date, score de correspondance) : lue par l'écran « Candidature envoyée » (159).
+class LastApplication extends Notifier<Map<String, dynamic>?> {
+  @override
+  Map<String, dynamic>? build() => null;
+  void set(Map<String, dynamic>? v) => state = v;
+}
+
+final lastApplicationProvider = NotifierProvider<LastApplication, Map<String, dynamic>?>(LastApplication.new);
+
+const oppApplicationStatus = {'sent': 'Envoyée', 'viewed': 'Consultée', 'shortlisted': 'Retenue', 'rejected': 'Non retenue', 'hired': 'Recrutement confirmé'};
+
+/// Retire une candidature (confirmation, puis `opp_withdraw_application` : l'auteur de l'offre est prévenu). Renvoie vrai si elle est retirée.
+Future<bool> withdrawApplication(BuildContext context, WidgetRef ref, Map<String, dynamic> a) async {
+  if (!await l8Confirm(context, 'Retirer ma candidature ?', 'Votre candidature à « ${a['title']} » ne sera plus visible par ${'${a['org']}'.isEmpty ? 'l’organisation' : a['org']} ; vous pourrez postuler de nouveau tant que l’offre est ouverte.', keep: 'Garder', go: 'Retirer') || !context.mounted) return false;
+  final r = await marcheCall('opp_withdraw_application', {'p_id': a['id']});
+  if (!context.mounted) return false;
+  if (r.error != null) {
+    gToast(context, Backend.userMessage('${r.error}'));
+    return false;
+  }
+  gToast(context, 'Candidature retirée.');
+  ref.invalidate(oppMyApplicationsProvider);
+  ref.invalidate(oppsProvider);
+  ref.invalidate(oppDetailProvider);
+  return true;
+}
 final oppMyPostedProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) => _list('opp_my_posted', const {}));
 /// Statistiques de mes offres (vues, favoris, candidatures, taux de réponse), indexées par l'identifiant de l'offre.
 final oppStatsProvider = FutureProvider.autoDispose<Map<String, Map<String, dynamic>>>((ref) async {
@@ -228,9 +260,15 @@ class _OppsState extends ConsumerState<OpportunitiesScreen> {
     if (await _call(context, 'opp_save_toggle', {'p_id': o['id']})) ref.invalidate(oppsProvider);
   }
 
+  Future<void> _askDepartment() async {
+    if (!await l8Confirm(context, 'Indiquez votre filière', 'L’alerte et la section « Pour vous » reposent sur la filière de votre profil. Renseignez-la pour être prévenu des offres qui vous correspondent.', keep: 'Plus tard', go: 'Renseigner ma filière') || !mounted) return;
+    gOpen(context, '18b');
+  }
+
   Future<void> _alert(bool on) async {
     if (!await requireLogin(context, ref, 'activer l’alerte filière') || !mounted) return;
     final dept = ref.read(authProvider).current?.department ?? '';
+    if (on && dept.trim().length < 2) return _askDepartment();
     // désactivation : filière vide = toutes les alertes du compte, même si la filière du profil a changé
     if (!await _call(context, 'opp_alert_set', {'p_department': on ? dept : '', 'p_on': on}, ok: on ? 'Alerte activée : vous serez prévenu des nouvelles offres de votre filière.' : null)) return;
     ref.invalidate(oppAlertProvider);
@@ -264,7 +302,14 @@ class _OppsState extends ConsumerState<OpportunitiesScreen> {
     final nClosing = ref.watch(oppsProvider(const OppQuery(section: 'closing'))).value?.length ?? 0;
     final nMine = ref.watch(oppsProvider(const OppQuery(section: 'foryou'))).value?.length ?? 0;
     final browsing = !_query.filtered && _query.section.isEmpty;
-    Widget check(String t) => Padding(padding: const EdgeInsets.only(top: 6), child: Row(children: [const Icon(Icons.check_circle_outline, size: 18, color: Colors.white), const SizedBox(width: 8), Expanded(child: Text(t, style: mst(12, w: FontWeight.w500, c: Colors.white)))]));
+    final account = ref.watch(authProvider).current;
+    final noDepartment = Backend.ready && account != null && account.department.trim().length < 2;
+    final canPublish = !const {'student', 'client'}.contains(roleKey(account));
+    Widget check(String t, {VoidCallback? onTap}) => GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: onTap,
+          child: Padding(padding: const EdgeInsets.only(top: 6), child: Row(children: [Icon(onTap == null ? Icons.check_circle_outline : Icons.edit_outlined, size: 18, color: Colors.white), const SizedBox(width: 8), Expanded(child: Text(t, style: mst(12, w: FontWeight.w500, c: Colors.white)))])),
+        );
     return MarchePage(
       title: 'Opportunités',
       actions: [
@@ -284,7 +329,7 @@ class _OppsState extends ConsumerState<OpportunitiesScreen> {
             ]),
             const SizedBox(height: 6),
             Text('Il repère les offres de votre filière et vous alerte avant les dates limites.', style: mst(12, c: const Color(0xFFE9E4F5)).copyWith(height: 1.4)),
-            check(nMine == 0 ? 'Aucune offre dans votre filière pour le moment' : '$nMine offre${nMine > 1 ? 's' : ''} dans votre filière'),
+            check(noDepartment ? 'Renseignez votre filière pour voir les offres qui vous correspondent' : (nMine == 0 ? 'Aucune offre dans votre filière pour le moment' : '$nMine offre${nMine > 1 ? 's' : ''} dans votre filière'), onTap: noDepartment ? _askDepartment : null),
             check(nClosing == 0 ? 'Aucune date limite dans les 3 jours' : '$nClosing offre${nClosing > 1 ? 's' : ''} se termine${nClosing > 1 ? 'nt' : ''} dans 3 jours'),
             check(nNew == 0 ? 'Aucune nouvelle offre cette semaine' : '$nNew nouvelle${nNew > 1 ? 's' : ''} offre${nNew > 1 ? 's' : ''} cette semaine'),
           ]),
@@ -317,8 +362,8 @@ class _OppsState extends ConsumerState<OpportunitiesScreen> {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
           child: Row(children: [
-            Expanded(child: mButton('Publier une offre', () => context.push('/opportunites/publier'), dark: false, icon: Icons.add)),
-            if (!browsing) ...[const SizedBox(width: 10), SizedBox(width: 130, child: mButton('Tout afficher', () { _q.clear(); _set(const OppQuery()); }, dark: false))],
+            if (canPublish) Expanded(child: mButton('Publier une offre', () => context.push('/opportunites/publier'), dark: false, icon: Icons.add)),
+            if (!browsing) ...[if (canPublish) const SizedBox(width: 10), SizedBox(width: 130, child: mButton('Tout afficher', () { _q.clear(); _set(const OppQuery()); }, dark: false))],
           ]),
         ),
         if (browsing) ...[
@@ -362,35 +407,69 @@ class OpportunityDetailScreen extends ConsumerWidget {
   Future<void> _apply(BuildContext context, WidgetRef ref, Map<String, dynamic> o) async {
     if (!await requireLogin(context, ref, 'postuler') || !context.mounted) return;
     final msg = TextEditingController(), cv = TextEditingController();
-    final ok = await showModalBottomSheet<bool>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(8))),
-      builder: (c) => Padding(
-        padding: EdgeInsets.fromLTRB(20, 20, 20, 20 + MediaQuery.of(c).viewInsets.bottom),
-        child: SingleChildScrollView(
-          child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('Postuler : ${o['title']}', style: mst(17, w: FontWeight.w800)),
-            Text('${o['org']}', style: mst(12.5, c: kGrey)),
-            const SizedBox(height: 12),
-            TextField(controller: msg, maxLines: 6, maxLength: 3000, decoration: InputDecoration(labelText: 'Lettre de motivation', hintText: 'Présentez-vous et expliquez pourquoi cette offre vous intéresse', border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)))),
-            const SizedBox(height: 10),
-            TextField(controller: cv, keyboardType: TextInputType.url, decoration: InputDecoration(labelText: 'Lien vers votre CV (facultatif)', hintText: 'https://…', border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)))),
-            const SizedBox(height: 12),
-            Row(children: [
-              Expanded(child: mButton('Annuler', () => Navigator.pop(c, false), dark: false)),
-              const SizedBox(width: 10),
-              Expanded(child: mButton('Envoyer', () => Navigator.pop(c, true))),
-            ]),
-          ]),
-        ),
-      ),
-    );
-    if (ok != true || !context.mounted) return;
-    if (await _call(context, 'opp_apply', {'p_id': id, 'p_message': msg.text, 'p_cv_link': cv.text}, ok: 'Candidature envoyée.')) {
-      ref.invalidate(oppDetailProvider(id));
-      ref.invalidate(oppsProvider);
+    try {
+      String? error;
+      while (true) {
+        final ok = await showModalBottomSheet<bool>(
+          context: context,
+          isScrollControlled: true,
+          backgroundColor: Colors.white,
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(8))),
+          builder: (c) => StatefulBuilder(
+            builder: (c, set) => Padding(
+              padding: EdgeInsets.fromLTRB(20, 20, 20, 20 + MediaQuery.of(c).viewInsets.bottom),
+              child: SingleChildScrollView(
+                child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text('Postuler : ${o['title']}', style: mst(17, w: FontWeight.w800)),
+                  Text('${o['org']}', style: mst(12.5, c: kGrey)),
+                  const SizedBox(height: 12),
+                  TextField(controller: msg, maxLines: 6, maxLength: 3000, decoration: InputDecoration(labelText: 'Lettre de motivation', hintText: 'Présentez-vous et expliquez pourquoi cette offre vous intéresse', border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)))),
+                  const SizedBox(height: 10),
+                  TextField(controller: cv, keyboardType: TextInputType.url, decoration: InputDecoration(labelText: 'Lien vers votre CV (facultatif)', hintText: 'https://…', border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)))),
+                  if (error != null) Padding(padding: const EdgeInsets.only(top: 10), child: Text(error!, style: mst(12.5, w: FontWeight.w600, c: kRed))),
+                  const SizedBox(height: 12),
+                  Row(children: [
+                    Expanded(child: mButton('Annuler', () => Navigator.pop(c, false), dark: false)),
+                    const SizedBox(width: 10),
+                    Expanded(child: mButton('Envoyer', () {
+                      final link = cv.text.trim();
+                      if (msg.text.trim().length < 20) return set(() => error = 'Écrivez votre lettre de motivation (20 caractères minimum).');
+                      if (link.isNotEmpty && !RegExp(r'^https?://', caseSensitive: false).hasMatch(link)) return set(() => error = 'Le lien du CV doit commencer par http.');
+                      Navigator.pop(c, true);
+                    })),
+                  ]),
+                ]),
+              ),
+            ),
+          ),
+        );
+        if (ok != true || !context.mounted) return;
+        final r = await marcheCall('opp_apply', {'p_id': id, 'p_message': msg.text, 'p_cv_link': cv.text});
+        if (!context.mounted) return;
+        if (r.error == null) {
+          ref.invalidate(oppDetailProvider(id));
+          ref.invalidate(oppsProvider);
+          ref.invalidate(oppMyApplicationsProvider);
+          final m = await marcheCall('opp_my_match', {'p_id': id});
+          if (!context.mounted) return;
+          ref.read(lastApplicationProvider.notifier).set({
+            'id': id,
+            'title': o['title'],
+            'org': o['org'],
+            'sent_at': DateTime.now().toIso8601String(),
+            'score': m.error == null && m.data is Map ? (m.data as Map)['score'] : null,
+          });
+          gOpen(context, '159');
+          return;
+        }
+        final message = Backend.userMessage('${r.error}');
+        // lettre ou lien refusés : la saisie est conservée et la feuille se rouvre ; les autres refus (offre close, déjà postulé…) sont définitifs
+        if (!message.contains('lettre de motivation') && !message.contains('lien du CV')) return gToast(context, message);
+        error = message;
+      }
+    } finally {
+      msg.dispose();
+      cv.dispose();
     }
   }
 
@@ -427,6 +506,9 @@ class OpportunityDetailScreen extends ConsumerWidget {
         final wa = '${o['apply_whatsapp']}';
         final deadline = DateTime.tryParse('${o['deadline']}');
         final closed = o['status'] != 'published' || (deadline != null && oppDeadlineLabel(deadline, DateTime.now()) == 'Clôturée');
+        final me = ref.watch(authProvider).current;
+        final myInstitution = (me?.institution ?? '').trim();
+        final iutBlocked = o['iut_only'] == true && me != null && !myInstitution.toLowerCase().contains('iut');
         return ListView(padding: const EdgeInsets.only(bottom: 90), children: [
           OpportunityCard(o: o),
           Builder(builder: (context) {
@@ -465,7 +547,20 @@ class OpportunityDetailScreen extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
               child: Column(children: [
-                if (o['apply_in_app'] == true) mButton('Postuler dans l’application', () => _apply(context, ref, o), width: double.infinity),
+                if (o['apply_in_app'] == true && iutBlocked)
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(color: const Color(0xFFFFF4E5), borderRadius: BorderRadius.circular(4)),
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text('Offre réservée aux étudiants de l’IUT', style: mst(13.5, w: FontWeight.w800, c: const Color(0xFFB45309))),
+                      const SizedBox(height: 4),
+                      Text(myInstitution.isEmpty ? 'Votre profil n’indique pas d’établissement : renseignez-le si vous étudiez à l’IUT.' : 'L’établissement de votre profil (« $myInstitution ») n’est pas l’IUT : vous ne pouvez pas postuler dans l’application.', style: mst(12.5, c: kGrey).copyWith(height: 1.4)),
+                      if (myInstitution.isEmpty) Padding(padding: const EdgeInsets.only(top: 8), child: mButton('Renseigner mon établissement', () => gOpen(context, '18b'), dark: false)),
+                    ]),
+                  )
+                else if (o['apply_in_app'] == true)
+                  mButton('Postuler dans l’application', () => _apply(context, ref, o), width: double.infinity),
                 if (wa.isNotEmpty) ...[const SizedBox(height: 8), mButton('Postuler sur WhatsApp', () => _whatsapp(context, o), dark: o['apply_in_app'] != true, icon: Icons.chat_outlined, width: double.infinity)],
               ]),
             )
@@ -539,6 +634,7 @@ class MyOpportunitiesScreen extends ConsumerWidget {
                         if (a['status'] == 'hired' && a['published'] != true) Padding(padding: const EdgeInsets.only(top: 8), child: mButton('Partager mon recrutement', () async {
                           if (await _call(context, 'opp_hire_publish', {'p_application': a['id']}, ok: 'Merci : votre réussite apparaît dans « Ils ont été recrutés ».')) ref.invalidate(oppMyApplicationsProvider);
                         }, dark: false)),
+                        if (const {'sent', 'viewed', 'shortlisted'}.contains('${a['status']}')) Padding(padding: const EdgeInsets.only(top: 8), child: mButton('Retirer ma candidature', () => withdrawApplication(context, ref, a), dark: false)),
                       ])),
                     ),
                 ]),
@@ -652,6 +748,7 @@ Widget matchBadge(Object? raw) {
 class _AppsState extends ConsumerState<OpportunityApplicationsScreen> {
   List<Map<String, dynamic>>? _apps;
   List<Map<String, dynamic>> _suggested = const [];
+  bool _failed = false;
 
   @override
   void initState() {
@@ -662,6 +759,7 @@ class _AppsState extends ConsumerState<OpportunityApplicationsScreen> {
   Future<void> _load() async {
     final r = await marcheCall('opp_applications_for', {'p_id': widget.id});
     if (!mounted) return;
+    _failed = r.error != null;
     final list = r.error != null ? <Map<String, dynamic>>[] : [for (final x in (r.data as List? ?? const [])) Map<String, dynamic>.from(x as Map)];
     // les candidats qui correspondent le mieux d'abord (à égalité : les plus récents)
     list.sort((a, b) => mInt((b['match'] as Map?)?['score']).compareTo(mInt((a['match'] as Map?)?['score'])));
@@ -698,7 +796,9 @@ class _AppsState extends ConsumerState<OpportunityApplicationsScreen> {
       title: 'Candidatures',
       child: apps == null
           ? const Center(child: CircularProgressIndicator())
-          : (apps.isEmpty && _suggested.isEmpty)
+          : _failed
+              ? mNote('Ces candidatures ne sont pas accessibles : seule la personne qui a publié l’offre peut les consulter.')
+              : (apps.isEmpty && _suggested.isEmpty)
               ? mNote('Aucune candidature pour le moment.')
               : ListView(padding: const EdgeInsets.only(bottom: 90), children: [
                   if (apps.isEmpty) mNote('Aucune candidature pour le moment.'),
@@ -711,6 +811,7 @@ class _AppsState extends ConsumerState<OpportunityApplicationsScreen> {
                       Text('${a['message']}', style: mst(13).copyWith(height: 1.45)),
                       if ('${a['cv_link']}'.isNotEmpty) GestureDetector(onTap: () => openUrl(context, '${a['cv_link']}'), child: Padding(padding: const EdgeInsets.only(top: 6), child: Text('Voir le CV', style: mst(12.5, w: FontWeight.w700, c: kViolet)))),
                       const SizedBox(height: 8),
+                      if (a['status'] == 'sent') Padding(padding: const EdgeInsets.only(bottom: 8), child: mButton('Marquer comme consultée', () => _decide(a, 'viewed'), dark: false, width: double.infinity)),
                       Row(children: [
                         Expanded(child: mButton('Refuser', () => _decide(a, 'rejected'), dark: false)),
                         const SizedBox(width: 8),

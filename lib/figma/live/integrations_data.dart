@@ -144,9 +144,10 @@ class IntNotifier extends Notifier<IntegrationsState> {
 
   // ------------------------------------------------------------ connexions
 
-  /// Adresse d'autorisation du fournisseur ; l'application l'ouvre dans le même onglet puis le fournisseur revient sur `/s/P5?connexion=ok`.
+  /// Adresse d'autorisation du fournisseur ; l'application l'ouvre dans le même onglet puis le fournisseur revient sur `/#/s/P5?connexion=ok`
+  /// (le `#` est obligatoire : l'application utilise le routage par hash).
   Future<String?> connect(String provider) async {
-    final r = await callFunction('integrations-oauth', {'action': 'start', 'provider': provider, 'return_to': 'https://boutik-ecole.vercel.app/s/P5'});
+    final r = await callFunction('integrations-oauth', {'action': 'start', 'provider': provider, 'return_to': 'https://boutik-ecole.vercel.app/#/s/P5'});
     if (r.error != null) return r.error;
     final url = r.data['url'];
     if (url is! String || !url.startsWith('https://')) return 'Adresse d’autorisation invalide.';

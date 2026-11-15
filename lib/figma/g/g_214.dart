@@ -23,6 +23,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/department_pages.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_214 extends ConsumerWidget {
@@ -51,7 +52,7 @@ class G_214 extends ConsumerWidget {
       gP(331.5, 61.5, 40, 40, const GGlassCircle()),
       gP(340.75, 70.75, 20.667, 20.667, gImg('assets/figma/v/eeff0eb6fd6e24.svg')),
       gP(353.308, 83.308, 9.942, 9.942, gImg('assets/figma/v/34172806399cca.svg')),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 55.6, 34, 'Tous', 12.5, 600), GChip(87.6, 120, 92.6, 34, 'Tertiaire', 12.5, 500), GChip(188.2, 120, 92.6, 34, 'Industrie', 12.5, 500), GChip(288.8, 120, 92.6, 34, 'Numérique', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
+      if (demoContent) Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 55.6, 34, 'Tous', 12.5, 600), GChip(87.6, 120, 92.6, 34, 'Tertiaire', 12.5, 500), GChip(188.2, 120, 92.6, 34, 'Industrie', 12.5, 500), GChip(288.8, 120, 92.6, 34, 'Numérique', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
       gP(24, 168, 222, 19, gText('Technologies du Tertiaire · MTT', 15, Color(0xFF111015), weight: 700), show: demoContent),
       gP(36, 214, 50, 50, gBox(image: 'assets/figma/img/da09067eb69ddc3887afe8e05918616892a12b70.png', fit: BoxFit.cover, radii: [12, 12, 12, 12]), show: demoContent),
       gP(98, 218, 184, 17, gText('GLT · Logistique et transport', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
@@ -92,6 +93,7 @@ class G_214 extends ConsumerWidget {
       gP(98, 732, 174, 17, gText('GTE · Thermique et énergie', 13.5, Color(0xFF111015), weight: 600), show: demoContent),
       gP(98, 754, 111, 14, gText('Audits énergétiques', 11.5, Color(0xFF57545F)), show: demoContent),
       gP(336.75, 745.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg'), show: demoContent),
+      if (demoContent) ...[
       gP(98, 786, 256, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(36, 794, 50, 50, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [12, 12, 12, 12])),
       gP(98, 798, 98, 17, gText('GC · Génie civil', 13.5, Color(0xFF111015), weight: 600)),
@@ -122,6 +124,7 @@ class G_214 extends ConsumerWidget {
       gP(98, 1180, 157, 17, gText('GBM · Génie biomédical', 13.5, Color(0xFF111015), weight: 600)),
       gP(98, 1202, 138, 14, gText('Maintenance, prototypes', 11.5, Color(0xFF57545F))),
       gP(336.75, 1193.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
+      ],
       gP(125, 1346, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(22, 1270, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
       gP(47.5, 1291.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '19')),
@@ -139,7 +142,7 @@ class G_214 extends ConsumerWidget {
       gP(169, 1276, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gTab(context, '03')),
       gP(184, 1291, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 1289.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
-      if (!demoContent) gP(24, 125, 342, 620, departmentsList()),
+      if (!demoContent) gP(24, 125, 342, 620, departmentsPanel()),
     ]);
   }
 }

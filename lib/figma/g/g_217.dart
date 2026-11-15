@@ -23,11 +23,19 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/l10_voeux.dart';
 import '../live/engage.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_217 extends ConsumerWidget {
   const G_217({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => demoContent ? const G217Mock() : const WishDetailScreen();
+}
+
+class G217Mock extends ConsumerWidget {
+  const G217Mock({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -169,7 +177,6 @@ class G_217 extends ConsumerWidget {
       gP(341.667, 79, 20.667, 15.167, gImg('assets/figma/v/38cc299702e092.svg')),
       gP(345.333, 69.833, 13.333, 9.667, gImg('assets/figma/v/d83f01d420bc41.svg')),
       gP(349, 69.833, 6, 17.917, gImg('assets/figma/v/7c9d8fa2b191bd.svg')),
-      if (!demoContent) gP(24, 125, 342, 620, wishesMarket()),
     ]);
   }
 }

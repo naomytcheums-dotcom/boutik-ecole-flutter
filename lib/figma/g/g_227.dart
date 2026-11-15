@@ -6,6 +6,7 @@ import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/vendeur.dart';
+import '../live/l10_cv.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -115,7 +116,7 @@ class G_227 extends ConsumerWidget {
       gP(349, 69.833, 6, 17.917, gImg('assets/figma/v/7c9d8fa2b191bd.svg')),
       if (demoContent) gTap(16, 520, 193, 35, () { gOpen(context, '203'); }), // parcours 227 -> 203
       if (demoContent) gTap(90, 124, 114, 33, () { gOpen(context, '229'); }), // parcours 227 -> 229
-      if (!demoContent) gP(24, 125, 342, 620, const MyProfileCard(width: 342)),
+      if (!demoContent) gP(24, 125, 342, 700, const CvLivePanel(width: 342)),
     ]);
   }
 }

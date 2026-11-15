@@ -83,7 +83,9 @@ Deno.serve(async (req) => {
           .gt("expires_at", new Date().toISOString()).order("created_at", { ascending: false }).limit(1);
         const row = rows?.[0];
         if (!row || row.attempts >= MAX_ATTEMPTS) return jsonResponse(req, bad, 400);
-        await db.from("auth_recovery_codes").update({ attempts: row.attempts + 1 }).eq("id", row.id);
+        // Incrément conditionnel : des essais simultanés ne peuvent pas dépasser le plafond (un seul gagne chaque valeur de `attempts`).
+        const claim = await db.from("auth_recovery_codes").update({ attempts: row.attempts + 1 }).eq("id", row.id).eq("attempts", row.attempts).select("id");
+        if (!claim.data?.length) return jsonResponse(req, bad, 400);
         if (!sameString(row.code_hash as string, await hashCode(row.user_id as string, code))) return jsonResponse(req, bad, 400);
         const { error } = await db.auth.admin.updateUserById(row.user_id as string, { password });
         if (error) {
@@ -91,6 +93,9 @@ Deno.serve(async (req) => {
           return jsonResponse(req, { error: same ? "same_password" : "update_failed", message: same ? "Choisissez un mot de passe différent de l’ancien." : "Mot de passe non modifié. Réessayez." }, 400);
         }
         await db.from("auth_recovery_codes").update({ used_at: new Date().toISOString() }).eq("user_id", row.user_id).is("used_at", null);
+        // Le mot de passe a changé : les sessions ouvertes (éventuellement par un tiers) sont fermées.
+        const rev = await db.rpc("auth_revoke_sessions", { p_user: row.user_id });
+        if (rev.error) console.error("auth-recovery revoke", rev.error.message);
         return jsonResponse(req, { ok: true });
       }
 
@@ -99,14 +104,24 @@ Deno.serve(async (req) => {
         const password = String(b.password ?? "");
         const bad = { error: "invalid_credentials", message: "Identifiant ou mot de passe incorrect." };
         if (!phone || !password) return jsonResponse(req, bad, 401);
-        const user = await userByPhone(db, phone);
-        if (!user) return jsonResponse(req, bad, 401);
-        const { data: u } = await db.auth.admin.getUserById(user.id);
-        const email = u?.user?.email;
-        if (!email) return jsonResponse(req, bad, 401);
+        const ip = (req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim().slice(0, 64) || "inconnue";
+        const kPhone = `login:${phone}`, kIp = `loginip:${ip}`;
+        const [okPhone, okIp] = await Promise.all([
+          db.rpc("auth_throttle_check", { p_key: kPhone, p_window_minutes: 15, p_max: 10 }),
+          db.rpc("auth_throttle_check", { p_key: kIp, p_window_minutes: 15, p_max: 40 }),
+        ]);
+        if (okPhone.data === false || okIp.data === false) {
+          return jsonResponse(req, { error: "too_many_attempts", message: "Trop de tentatives. Réessayez dans quelques minutes." }, 429);
+        }
+        const fail = async () => { await Promise.all([db.rpc("auth_throttle_hit", { p_key: kPhone }), db.rpc("auth_throttle_hit", { p_key: kIp })]); return jsonResponse(req, bad, 401); };
         const anon = createClient(env("SUPABASE_URL"), env("SUPABASE_ANON_KEY"), { auth: { persistSession: false, autoRefreshToken: false } });
-        const { data, error } = await anon.auth.signInWithPassword({ email, password });
-        if (error || !data.session) return jsonResponse(req, bad, 401);
+        const user = await userByPhone(db, phone);
+        let email: string | undefined;
+        if (user) { const { data: u } = await db.auth.admin.getUserById(user.id); email = u?.user?.email ?? undefined; }
+        // Un numéro inconnu passe aussi par une vraie tentative de connexion : la durée de réponse ne révèle pas l'existence du compte.
+        const { data, error } = await anon.auth.signInWithPassword({ email: email ?? "inconnu@boutik-ecole.invalid", password });
+        if (!email || error || !data.session) return await fail();
+        await db.rpc("auth_throttle_clear", { p_key: kPhone });
         return jsonResponse(req, { refresh_token: data.session.refresh_token });
       }
     }

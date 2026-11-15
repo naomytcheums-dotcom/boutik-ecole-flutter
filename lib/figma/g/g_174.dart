@@ -104,6 +104,9 @@ class G_174 extends ConsumerWidget {
       gTap(24, 396, 342, 48, () { showTrustGuide(context, 'annonce'); }),
       gTap(24, 448, 342, 48, () { showTrustGuide(context, 'compte'); }),
       gTap(24, 500, 342, 48, () { showTrustGuide(context, 'signaler'); }),
+      gTap(40, 198, 320, 26, () { showTrustGuide(context, 'paiement'); }),
+      gTap(40, 224, 320, 26, () { showTrustGuide(context, 'annonce'); }),
+      gTap(40, 248, 320, 26, () { showTrustGuide(context, 'signaler'); }),
       if (!demoContent) gP(0, 100, 390, 700, const CmsPageOverlay(title: 'Centre de confiance', height: 700)),
     ]);
   }

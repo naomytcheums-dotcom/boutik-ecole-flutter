@@ -5,18 +5,21 @@ import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform, Tar
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' show FactorStatus;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gen.dart';
+import 'access.dart' show canOpen;
+import 'geo_stub.dart' if (dart.library.js_interop) 'geo_web.dart' as geo;
 import 'audit.dart';
 import 'backend.dart';
 import 'profile_data.dart' show saveAcademic;
 import 'lots.dart' show formDialog;
+import 'referral.dart' show applyPendingReferral;
 import 'drafts.dart';
 import 'native_push_stub.dart'
     if (dart.library.io) 'native_push.dart'
     as native_push;
+import 'notif_client.dart' show unregisterThisDevice;
 import '../nav.dart';
 
 /// Comptes, connexion, inscription, vérification et profil (écrans 10 à 18c).
@@ -77,6 +80,7 @@ class Account {
 
   Account copyWith({
     String? name,
+    String? phone,
     String? password,
     int? role,
     bool? verified,
@@ -96,7 +100,7 @@ class Account {
     String? studyLevel,
   }) => Account(
     name: name ?? this.name,
-    phone: phone,
+    phone: phone ?? this.phone,
     email: email,
     password: password ?? this.password,
     role: role ?? this.role,
@@ -128,7 +132,6 @@ const demoAccount = Account(
   skills: 'Python, React, Mobile',
   certification: 'approved',
 );
-const demoCode = '482917';
 
 /// Comptes internes de démonstration (écran 128).
 const seedAccounts = <Account>[
@@ -228,15 +231,17 @@ class AuthNotifier extends Notifier<AuthState> {
   }
 
   void login(Account a) {
+    Backend.sessionWasLost = false;
     gSelfAvatarUrl = a.avatarUrl;
     state = state.copy(current: a);
     unawaited(native_push.syncNativePushForCurrentUser());
+    unawaited(applyPendingReferral());
   }
 
   void logout() {
     saveRemembered(null);
     Drafts.clearAll(); // brouillons de cet appareil : jamais visibles par l'utilisateur suivant
-    Backend.signOut();
+    Backend.signOut(before: unregisterThisDevice); // l'appareil ne reçoit plus les notifications de ce compte
     gSelfAvatarUrl = '';
     state = state.copy(clearCurrent: true);
     appReset?.call(); // aucun état du compte précédent ne survit (formulaires, annonces, panier, commandes…)
@@ -319,18 +324,66 @@ class FlagOff extends Flag {
 
 final termsProvider = NotifierProvider<FlagOff, bool>(FlagOff.new);
 
+/// Version des conditions d'utilisation enregistrée à l'acceptation (la même à l'inscription et aux écrans 17 et 274).
+const kTermsVersion = 'cgu-2026-10';
+const _termsPendingKey = 'boutik_terms_pending';
+
+/// Acceptation donnée à l'inscription mais pas encore enregistrée (aucune session ouverte : confirmation d'e-mail demandée).
+Future<void> rememberTermsPending(String email) async {
+  try {
+    await (await SharedPreferences.getInstance()).setString(_termsPendingKey, '$kTermsVersion|${email.toLowerCase()}');
+  } catch (_) {}
+}
+
+/// Enregistre sur le serveur l'acceptation en attente, une fois la session du même compte ouverte ; elle n'est effacée qu'après confirmation.
+Future<void> syncPendingTerms() async {
+  try {
+    final p = await SharedPreferences.getInstance();
+    final v = p.getString(_termsPendingKey);
+    final session = Backend.sessionEmail?.toLowerCase();
+    if (v == null || !Backend.ready || session == null) return;
+    final parts = v.split('|');
+    if (parts.length != 2 || parts[1] != session) return;
+    if (await Backend.acceptTerms(parts[0]) == null) await p.remove(_termsPendingKey);
+  } catch (_) {}
+}
+
 /// Vrai quand l'écran de connexion a été ouvert depuis une action réservée : après connexion on revient où l'on était.
 final returnAfterAuthProvider = NotifierProvider<FlagOff, bool>(FlagOff.new);
+
+/// Écran d'accueil propre au rôle : un étudiant-vendeur arrive sur son profil, tous les autres comptes (client, entreprise, équipe) sur l'accueil.
+String homeScreenFor(Account? a) => a != null && a.role == 1 && a.staff.isEmpty ? '10' : '03';
+
+/// Destination « hors visite » d'un écran d'accueil : [preferred] si le rôle connecté peut l'ouvrir, sinon l'accueil de son rôle.
+String gDest(WidgetRef ref, String preferred) {
+  final a = ref.read(authProvider).current;
+  return a != null && canOpen(a, preferred) ? preferred : homeScreenFor(a);
+}
+
+const _introKey = 'boutik_intro_seen';
+
+/// La présentation (S1, 01, 02) n'est montrée qu'au tout premier démarrage de l'application sur cet appareil.
+Future<bool> introSeen() async {
+  try {
+    return (await SharedPreferences.getInstance()).getBool(_introKey) ?? false;
+  } catch (_) {
+    return false;
+  }
+}
+
+Future<void> markIntroSeen() async {
+  try {
+    await (await SharedPreferences.getInstance()).setBool(_introKey, true);
+  } catch (_) {}
+}
 
 void _afterLogin(WidgetRef ref, BuildContext context) {
   if (ref.read(returnAfterAuthProvider)) {
     ref.read(returnAfterAuthProvider.notifier).set(false);
     gBack(context);
   } else {
-    // Un étudiant arrive directement sur son profil ; les autres comptes sur l'accueil.
-    final a = ref.read(authProvider).current;
-    // Un étudiant arrive directement sur son profil ; une entreprise sur son accueil (forfait, vérification, chiffres clés) ; les autres comptes sur l'accueil.
-    gOpen(context, a != null && a.role == 1 && a.staff.isEmpty ? '10' : '03');
+    // La pile est remplacée : « retour » depuis l'accueil ne ramène pas au formulaire de connexion.
+    gTab(context, homeScreenFor(ref.read(authProvider).current));
   }
 }
 
@@ -409,7 +462,17 @@ class IntState extends Notifier<int> {
   void set(int v) => state = v;
 }
 
-final signupRoleProvider = NotifierProvider<IntState, int>(IntState.new);
+final signupRoleProvider = NotifierProvider<SignupRole, int>(SignupRole.new);
+
+/// Profil choisi à l'écran 13 : avec le serveur, aucun choix n'est imposé au départ (-1) ; la démonstration garde l'exemple d'origine.
+class SignupRole extends IntState {
+  @override
+  int build() => Backend.ready ? -1 : 1;
+}
+
+/// Profils que le serveur accepte à l'inscription : client, étudiant-vendeur, entreprise et autre rôle. Les privilèges sensibles
+/// (boutique, entreprise, certification) restent soumis à une vérification par l'administration.
+const selfServiceRoles = 4;
 final loginModeProvider = NotifierProvider<IntState, int>(IntState.new);
 
 // ------------------------------------------------------------------ validations
@@ -638,7 +701,20 @@ void submitLogin(WidgetRef ref, BuildContext context) {
   _afterLogin(ref, context);
 }
 
-Future<void> _serverLogin(
+bool _authBusy = false;
+
+/// Un seul envoi à la fois : un double appui sur « Se connecter » ou « Créer mon compte » ne lance pas deux requêtes.
+Future<void> _serverLogin(WidgetRef ref, BuildContext context, String id, String pw, bool isMail) async {
+  if (_authBusy) return;
+  _authBusy = true;
+  try {
+    await _serverLoginRun(ref, context, id, pw, isMail);
+  } finally {
+    _authBusy = false;
+  }
+}
+
+Future<void> _serverLoginRun(
   WidgetRef ref,
   BuildContext context,
   String id,
@@ -668,8 +744,9 @@ Future<void> _serverLogin(
     return;
   }
   // Vérification en 2 étapes : si elle est activée sur ce compte, le code de l'application d'authentification est exigé avant l'ouverture.
-  if (context.mounted && !await _askSecondFactor(context)) {
+  if (context.mounted && !await askSecondFactor(context)) {
     await Backend.signOut();
+    await saveRemembered(null);
     if (context.mounted) await gAlert(context, 'Connexion refusée', 'Le code de vérification en 2 étapes est requis pour ouvrir ce compte.');
     return;
   }
@@ -677,6 +754,7 @@ Future<void> _serverLogin(
   ref.read(errorsProvider.notifier).clear();
   ref.read(authProvider.notifier).login(a);
   applyRememberChoice(a.email, ref.read(rememberProvider));
+  unawaited(syncPendingTerms());
   ref
       .read(auditProvider.notifier)
       .log(a.name, 'Connexion réussie', 'Application', 'Connexions');
@@ -688,14 +766,14 @@ Future<void> _serverLogin(
   _afterLogin(ref, context);
 }
 
-/// Second facteur : demande le code à 6 chiffres de l'application d'authentification (3 essais) quand la protection est active.
-Future<bool> _askSecondFactor(BuildContext context) async {
-  final factors = (await Backend.totpFactors()).where((f) => f.status == FactorStatus.verified).toList();
-  if (factors.isEmpty || !context.mounted) return true;
+/// Second facteur : demande le code à 6 chiffres de l'application d'authentification (3 essais) tant que la session n'a pas atteint le niveau aal2.
+Future<bool> askSecondFactor(BuildContext context) async {
+  final factor = await Backend.pendingSecondFactor();
+  if (factor == null || !context.mounted) return true;
   for (var essai = 0; essai < 3; essai++) {
-    final f = await formDialog(context, 'Vérification en 2 étapes', [('Code à 6 chiffres', '')], intro: 'Saisissez le code affiché par votre application d’authentification.', submit: 'Vérifier');
+    final f = await formDialog(context, 'Vérification en 2 étapes', [('Code à 6 chiffres', '')], intro: 'Saisissez le code affiché par votre application d’authentification.', submit: 'Vérifier', numeric: true);
     if (f == null || !context.mounted) return false;
-    final err = await Backend.verifyTotp(factors.first.id, f.first.replaceAll(' ', ''));
+    final err = await Backend.verifyTotp(factor, f.first.replaceAll(' ', ''));
     if (err == null) return true;
     if (!context.mounted) return false;
     gToast(context, err);
@@ -703,7 +781,17 @@ Future<bool> _askSecondFactor(BuildContext context) async {
   return false;
 }
 
-Future<void> _serverSignup(
+Future<void> _serverSignup(WidgetRef ref, BuildContext context, Account created) async {
+  if (_authBusy) return;
+  _authBusy = true;
+  try {
+    await _serverSignupRun(ref, context, created);
+  } finally {
+    _authBusy = false;
+  }
+}
+
+Future<void> _serverSignupRun(
   WidgetRef ref,
   BuildContext context,
   Account created,
@@ -724,9 +812,11 @@ Future<void> _serverSignup(
     return;
   }
   ref.read(errorsProvider.notifier).clear();
+  ref.read(returnAfterAuthProvider.notifier).set(false);
   ref
       .read(auditProvider.notifier)
       .log(created.name, 'Compte créé', created.email, 'Comptes');
+  await rememberTermsPending(created.email);
   if (r.needsConfirm) {
     await gAlert(
       context,
@@ -741,7 +831,8 @@ Future<void> _serverSignup(
       await Backend.restore() ??
       created.copyWith(serverId: Backend.currentUserId ?? '');
   ref.read(authProvider.notifier).login(a);
-  if (context.mounted) gOpen(context, '13');
+  unawaited(syncPendingTerms());
+  if (context.mounted) gTab(context, '13');
 }
 
 void submitSignup(WidgetRef ref, BuildContext context) {
@@ -767,6 +858,7 @@ void submitSignup(WidgetRef ref, BuildContext context) {
     phone: normPhone(f['su_phone']!),
     email: f['su_email']!.trim(),
     password: f['su_pw']!,
+    role: 0,
     verified: false,
     // aucune valeur imposée : établissement, département et ville sont choisis par la personne
     institution: '',
@@ -799,7 +891,7 @@ void submitSignup(WidgetRef ref, BuildContext context) {
         f['su_email']!.trim(),
         'Comptes',
       );
-  gToast(context, 'Code envoyé par SMS (démonstration : $demoCode)');
+  gToast(context, 'Code envoyé par SMS (démonstration : saisissez 6 chiffres)');
   gOpen(context, '14');
 }
 
@@ -807,7 +899,7 @@ void submitSignup(WidgetRef ref, BuildContext context) {
 /// on renvoie ce lien, et rien n'est annoncé comme envoyé sans réponse du serveur.
 Future<void> resendSignupCode(WidgetRef ref, BuildContext context) async {
   if (!Backend.ready) {
-    gToast(context, 'Nouveau code envoyé (démonstration : $demoCode)');
+    gToast(context, 'Nouveau code envoyé (démonstration : saisissez 6 chiffres)');
     return;
   }
   final email =
@@ -832,12 +924,8 @@ Future<void> resendSignupCode(WidgetRef ref, BuildContext context) async {
 
 void submitOtp(WidgetRef ref, BuildContext context) {
   final code = ref.read(formProvider)['otp'] ?? '';
-  if (code.length < 6) {
+  if (!RegExp(r'^\d{6}$').hasMatch(code)) {
     gToast(context, 'Entrez les 6 chiffres du code.');
-    return;
-  }
-  if (code != demoCode) {
-    gToast(context, 'Code incorrect. Réessayez.');
     return;
   }
   final p = ref.read(authProvider).pending;
@@ -852,19 +940,62 @@ void submitOtp(WidgetRef ref, BuildContext context) {
 
 /// Choix du rôle : c'est à cet instant que le profil serveur est créé, avec ce rôle. Ensuite seul l'administrateur peut le modifier.
 Future<void> submitRole(WidgetRef ref, BuildContext context) async {
+  final choix = ref.read(signupRoleProvider);
+  if (choix < 0) {
+    gToast(context, 'Choisissez un profil pour continuer.');
+    return;
+  }
   final a = ref.read(authProvider).current;
   if (a != null) {
-    final choisi = a.copyWith(role: ref.read(signupRoleProvider));
+    var choisi = a.copyWith(role: choix);
     if (Backend.ready) {
-      final err = await Backend.createProfile(choisi);
-      if (err != null) {
-        if (context.mounted) await gAlert(context, 'Profil non créé', err);
+      final r = await Backend.createProfileChecked(choisi);
+      if (r.error != null) {
+        if (context.mounted) await gAlert(context, 'Profil non créé', r.error!);
         return;
+      }
+      // le serveur fait foi : le rôle affiché est celui du profil (existant ou tout juste créé)
+      choisi = await Backend.restore() ?? choisi.copyWith(role: choix < selfServiceRoles ? choix : 0);
+      if (!r.created && context.mounted) {
+        await gAlert(
+          context,
+          'Votre profil existe déjà',
+          'Ce compte est déjà enregistré comme « ${choisi.roleLabel} ». Le choix fait ici n’a rien changé : le rôle est fixé à la création du profil et seule l’administration peut le modifier (contactez le support).',
+        );
       }
     }
     ref.read(authProvider.notifier).update(choisi);
   }
   if (context.mounted) gOpen(context, '18b');
+}
+
+/// Nombre de détections de ville réussies : fait recréer le champ « Ville » avec la valeur détectée.
+final cityDetectProvider = NotifierProvider<IntState, int>(IntState.new);
+
+/// « Détecter ma ville » (écran 18b) : uniquement sur geste explicite, après avoir dit à la personne ce qui est demandé et envoyé.
+Future<void> detectMyCity(BuildContext context, WidgetRef ref) async {
+  final ok = await gDialog<bool>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      backgroundColor: Colors.white,
+      title: const Text('Détecter ma ville ?'),
+      content: const Text('Votre appareil va demander l’autorisation de connaître votre position. Les coordonnées sont envoyées une seule fois au service OpenStreetMap (Nominatim) pour retrouver le nom de la ville ; Boutik-École ne les enregistre pas. Vous pouvez aussi saisir votre ville à la main.'),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Saisir à la main')),
+        FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Détecter')),
+      ],
+    ),
+  );
+  if (ok != true || !context.mounted) return;
+  gToast(context, 'Détection en cours…');
+  final city = await geo.detectCity();
+  if (!context.mounted) return;
+  if (city == null) {
+    await gAlert(context, 'Ville non détectée', 'L’autorisation a été refusée, la position est introuvable ou la détection n’existe pas sur cet appareil. Saisissez votre ville dans le champ.');
+    return;
+  }
+  ref.read(formProvider.notifier).put('pf_city', city);
+  ref.read(cityDetectProvider.notifier).set(ref.read(cityDetectProvider) + 1);
 }
 
 Future<void> submitProfile(WidgetRef ref, BuildContext context) async {
@@ -932,7 +1063,12 @@ Future<void> submitProfile(WidgetRef ref, BuildContext context) async {
   ref.read(authProvider.notifier).update(maj);
   if (!context.mounted) return;
   gToast(context, 'Profil enregistré');
-  gOpen(context, '18c');
+  // La vérification étudiant (matricule, pièces) ne concerne que les étudiants-vendeurs ; un client arrive directement sur son accueil.
+  if (maj.role == 1 && maj.staff.isEmpty) {
+    gOpen(context, '18c');
+  } else {
+    gTab(context, homeScreenFor(maj));
+  }
 }
 
 /// Canal choisi sur l'écran 15 : « email », « sms » ou « whatsapp » (par défaut l'e-mail).
@@ -988,7 +1124,7 @@ void submitForgot(WidgetRef ref, BuildContext context) {
   gToast(
     context,
     exists
-        ? 'Code de réinitialisation envoyé (démonstration : $demoCode)'
+        ? 'Code de réinitialisation envoyé (démonstration : saisissez 6 chiffres)'
         : 'Si un compte existe, un code a été envoyé.',
   );
   gOpen(context, '16');
@@ -1318,7 +1454,7 @@ Widget profileNameBadge(double y) => gP(
 );
 
 /// Ligne sous le profil : compétences, sinon état de certification (avec la possibilité d'en faire la demande).
-Widget profileSkillsOrCert(double y) => gP(
+Widget profileSkillsOrCert(double y, {bool allowAsk = true}) => gP(
   0,
   y,
   390,
@@ -1347,8 +1483,8 @@ Widget profileSkillsOrCert(double y) => gP(
         'none': 'Demander la certification',
       };
       final label = labels[a.certification];
-      if (label == null) return const SizedBox.shrink();
-      final canAsk = a.certification == 'none' || a.certification == 'rejected';
+      if (label == null || (!allowAsk && a.certification == 'none')) return const SizedBox.shrink();
+      final canAsk = allowAsk && (a.certification == 'none' || a.certification == 'rejected');
       return GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: canAsk ? () => requestCertificationFlow(ref, context) : null,
@@ -1383,7 +1519,7 @@ Future<bool> requireCertified(BuildContext context, WidgetRef ref, String action
     'revoked' => 'Le badge de certification de votre compte a été retiré.',
     _ => 'Votre compte n’est pas encore certifié.',
   };
-  final ask = a.certification == 'none' || a.certification == 'rejected';
+  final ask = (a.certification == 'none' || a.certification == 'rejected') && a.role != 0;
   final go = await gDialog<bool>(
     context: context,
     builder: (ctx) => AlertDialog(
@@ -1414,6 +1550,11 @@ Future<void> requestCertificationFlow(
   // Visiteur : on propose la connexion au lieu d'envoyer une demande que le serveur refuserait (D-024).
   if (!await requireLogin(context, ref, 'demander la certification')) return;
   if (!context.mounted) return;
+  final me = ref.read(authProvider).current;
+  if (me != null && me.role == 0 && me.staff.isEmpty) {
+    await gAlert(context, 'Certification', 'La certification est réservée aux étudiants-vendeurs et aux comptes validés par l’établissement. Un compte Client peut acheter, commander et suivre ses commandes sans certification.');
+    return;
+  }
   final v = await formDialog(
     context,
     'Demande de certification',
@@ -1632,6 +1773,28 @@ Future<void> editProfileDialog(BuildContext context, WidgetRef ref) async {
   }
   ref.read(authProvider.notifier).update(updated);
   if (context.mounted) gToast(context, 'Profil enregistré');
+}
+
+/// « Se déconnecter » (Paramètres) : demande confirmation, puis ferme la session de cet appareil uniquement.
+Future<void> confirmLogout(WidgetRef ref, BuildContext context) async {
+  const st = TextStyle(inherit: false, fontFamily: 'PlusJakartaSans', fontSize: 14, height: 1.45, color: Color(0xFF4A4854), textBaseline: TextBaseline.alphabetic);
+  final ok = await gDialog<bool>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+      title: Text('Se déconnecter ?', style: st.copyWith(fontSize: 17, fontWeight: FontWeight.w700, color: const Color(0xFF111015))),
+      content: Text('Vous serez déconnecté sur cet appareil, qui ne recevra plus les notifications de ce compte. Vos autres appareils restent connectés.', style: st),
+      actions: [
+        TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text('Annuler', style: st)),
+        TextButton(
+          onPressed: () => Navigator.of(ctx).pop(true),
+          child: Text('Se déconnecter', style: st.copyWith(fontWeight: FontWeight.w700, color: const Color(0xFFE5484D))),
+        ),
+      ],
+    ),
+  );
+  if (ok == true) ref.read(authProvider.notifier).logout();
 }
 
 /// « Se déconnecter de tous les appareils » : confirmation, retrait des appareils enregistrés (notifications), puis révocation

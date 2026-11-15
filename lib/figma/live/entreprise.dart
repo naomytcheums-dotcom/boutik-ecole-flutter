@@ -71,7 +71,7 @@ final companyMissionsProvider = NotifierProvider<RpcRows, List<Map<String, dynam
 final contestsListProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('contests', 'title,prize,reg_close_at,places,status,city', order: 'reg_close_at', ascending: true, publicRead: true));
 final quotesListProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('quote_requests', 'brief,budget,status,quote_amount,quote_delay_days,created_at', order: 'created_at'));
 
-final projectsCatalogProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('projects', 'title,summary,department,status,created_at', order: 'created_at', eq: const {'status': 'approved'}));
+final projectsCatalogProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => RpcRows('public_projects', const {'p_limit': 100}, true));
 final certificatesProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('certificates', 'subject_title,code,subject_kind,issued_at,revoked,holder_name', order: 'issued_at'));
 final campaignsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('campaigns', 'project,goal,status,kind,duration_days,created_at', order: 'created_at', publicRead: true));
 

@@ -24,6 +24,7 @@ import 'package:boutik_ecole/figma/live/auth.dart';
 import 'package:boutik_ecole/figma/live/backend.dart';
 import 'package:boutik_ecole/figma/live/console.dart';
 import 'package:boutik_ecole/figma/live/lot20.dart';
+import 'package:boutik_ecole/figma/live/notifs.dart' show NotificationItem, Notifs, notifsProvider;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -36,6 +37,13 @@ class _Rows extends RpcRows {
   final List<Map<String, dynamic>>? v;
   @override
   List<Map<String, dynamic>>? build() => v;
+}
+
+class _Notifs extends Notifs {
+  _Notifs(this.v);
+  final List<NotificationItem> v;
+  @override
+  List<NotificationItem> build() => v;
 }
 
 void main() {
@@ -92,13 +100,22 @@ void main() {
     expect(find.text('Incidents ouverts'), findsOneWidget);
   });
 
-  testWidgets('155 connecté : notifications réelles', (t) async {
+  testWidgets('155 connecté : alertes réelles filtrées par type', (t) async {
     await monter(t, const G_155(), connecte: true, overrides: [
-      notificationsListProvider.overrideWith(() => _Rows('notifications', [
-            {'title': 'Alerte Test', 'body': 'Texte', 'created_at': '2026-11-01T10:00:00Z'}
+      notifsProvider.overrideWith(() => _Notifs([
+            NotificationItem(id: '1', kind: 'opportunity_alert', title: 'Alerte Test', body: 'Texte', createdAt: DateTime(2026, 11, 1), read: false),
+            NotificationItem(id: '2', kind: 'order', title: 'Commande Test', body: 'Texte', createdAt: DateTime(2026, 11, 1), read: true),
           ]))
     ]);
     expect(find.text('Alerte Test'), findsOneWidget);
+    expect(find.text('Commande Test'), findsOneWidget);
+    await t.tap(find.text('Offres'));
+    await t.pumpAndSettle();
+    expect(find.text('Alerte Test'), findsOneWidget);
+    expect(find.text('Commande Test'), findsNothing);
+    await t.tap(find.text('Dates limites'));
+    await t.pumpAndSettle();
+    expect(find.text('Aucun rappel de date limite pour le moment.'), findsOneWidget);
   });
 
   testWidgets('183 connecté : aucune commande de maquette, état vide', (t) async {

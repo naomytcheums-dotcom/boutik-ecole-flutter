@@ -12,8 +12,6 @@ import 'store.dart' show fcfa;
 
 final institutionsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('institutions', 'name,short_name,kind,city,status', order: 'created_at'));
 final departmentsListProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('departments', 'name,status,institutions(name)', order: 'name', ascending: true, eq: {'status': 'verified'}, limit: 500, publicRead: true));
-final wishesListProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('wishes', 'title,description,price,threshold,duration_days,status', order: 'created_at', anyOf: ('status', ['approved', 'scheduled']), publicRead: true));
-final livesListProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('scheduled_lives', 'title,starts_at,product_title,status', order: 'created_at', eq: {'status': 'scheduled'}, publicRead: true));
 final claimsListProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('claims', 'reason,details,status,created_at', order: 'created_at'));
 
 String institutionStatus(Object? s) => switch ('$s') { 'verified' => 'Vérifié', 'rejected' => 'Refusé', _ => 'Proposé' };
@@ -40,26 +38,6 @@ Widget departmentsList({double width = 342, double height = 600}) => MobileList(
       title: (r) => '${r['name']}',
       subtitle: (r) => '${(r['institutions'] as Map?)?['name'] ?? ''}',
       emptyText: 'Aucun département publié pour le moment.',
-      width: width,
-      height: height,
-    );
-
-Widget wishesMarket({double width = 342, double height = 600}) => MobileList(
-      provider: wishesListProvider,
-      where: (r) => '${r['status']}' == 'approved' || '${r['status']}' == 'scheduled',
-      title: (r) => '${r['title']}',
-      subtitle: (r) => [if (r['price'] != null) fcfa((r['price'] as num).toInt()), if (r['threshold'] != null) 'seuil : ${r['threshold']} personnes'].join(' · '),
-      emptyText: 'Aucun vœu ouvert pour le moment.\nLes vœux validés par l’administration apparaissent ici.',
-      width: width,
-      height: height,
-    );
-
-Widget livesAgenda({double width = 342, double height = 600}) => MobileList(
-      provider: livesListProvider,
-      where: (r) => '${r['status']}' == 'scheduled',
-      title: (r) => '${r['title']}',
-      subtitle: (r) => [if ('${r['starts_at'] ?? ''}'.isNotEmpty) '${r['starts_at']}', if ('${r['product_title'] ?? ''}'.isNotEmpty) '${r['product_title']}'].join(' · '),
-      emptyText: 'Aucun live programmé pour le moment.',
       width: width,
       height: height,
     );

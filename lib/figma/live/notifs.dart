@@ -3,19 +3,33 @@ import 'dart:async';
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show ProviderListenable;
+import 'package:go_router/go_router.dart';
+
+import '../../core/router/paths.dart' show screenPath;
 
 import '../gen.dart';
 import '../nav.dart';
+import 'access.dart' show canOpen;
 import 'auth.dart';
 import '../gdata.dart' show GData;
 import 'backend.dart';
+import 'messages.dart' show selectedConversationProvider, conversationsProvider, contactOrderSeller;
+import 'paiement_messagerie.dart' show selectedPaymentProvider;
+import 'seller.dart' show selectedSellerOrderProvider;
+import 'store.dart' show StrV, ordersProvider, selectedOrderIdProvider;
 
 /// Notifications réelles (table `notifications`, isolée par utilisateur) et compteurs de non-lus.
 class NotificationItem {
-  const NotificationItem({required this.id, required this.kind, required this.title, required this.body, required this.createdAt, required this.read});
+  const NotificationItem({required this.id, required this.kind, required this.title, required this.body, required this.createdAt, required this.read, this.data = const {}});
   final String id, kind, title, body;
   final DateTime createdAt;
   final bool read;
+
+  /// Données jointes par le serveur (numéro de commande, conversation, paiement, opportunité…).
+  final Map<String, dynamic> data;
+
+  NotificationItem asRead() => NotificationItem(id: id, kind: kind, title: title, body: body, createdAt: createdAt, read: true, data: data);
 
   factory NotificationItem.fromRow(Map<String, dynamic> r) => NotificationItem(
         id: (r['id'] ?? '').toString(),
@@ -24,6 +38,7 @@ class NotificationItem {
         body: (r['body'] ?? '').toString(),
         createdAt: DateTime.tryParse((r['created_at'] ?? '').toString())?.toLocal() ?? DateTime.now(),
         read: r['read_at'] != null,
+        data: r['data'] is Map ? Map<String, dynamic>.from(r['data'] as Map) : const {},
       );
 }
 
@@ -48,11 +63,22 @@ class Notifs extends Notifier<List<NotificationItem>> {
   }
 
   Future<void> markAllRead() async {
-    state = [for (final n in state) NotificationItem(id: n.id, kind: n.kind, title: n.title, body: n.body, createdAt: n.createdAt, read: true)];
+    state = [for (final n in state) n.asRead()];
     await Backend.markNotificationsRead();
     if (ref.mounted) ref.invalidate(unreadProvider);
   }
+
+  /// Marque seulement cette notification comme lue.
+  Future<void> markRead(String id) async {
+    if (!state.any((n) => n.id == id && !n.read)) return;
+    state = [for (final n in state) n.id == id ? n.asRead() : n];
+    await Backend.markNotificationRead(id);
+    if (ref.mounted) ref.invalidate(unreadProvider);
+  }
 }
+
+/// Notification affichée sur l'écran de détail (identifiant serveur).
+final selectedNotificationProvider = NotifierProvider<StrV, String>(StrV.new);
 
 final notifsProvider = NotifierProvider<Notifs, List<NotificationItem>>(Notifs.new);
 
@@ -90,7 +116,7 @@ class NotifBadge extends ConsumerWidget {
   }
 }
 
-/// Filtre de l'écran : 0 toutes · 1 commandes · 2 messages · 3 autres.
+/// Filtre de l'écran : 0 toutes · 1 commandes et paiements · 2 messages · 3 autres.
 class NotifFilter extends Notifier<int> {
   @override
   int build() => 0;
@@ -98,6 +124,148 @@ class NotifFilter extends Notifier<int> {
 }
 
 final notifFilterProvider = NotifierProvider<NotifFilter, int>(NotifFilter.new);
+
+/// Groupe d'une notification : 1 commandes (commande, paiement, réclamation, litige, devis, argent), 2 messages, 3 autres.
+int notifGroup(String kind) => switch (kind) {
+      'order' || 'payment' || 'claim' || 'dispute' || 'money' || 'quote' => 1,
+      'message' || 'teammate_message' => 2,
+      _ => 3,
+    };
+
+bool _inGroup(NotificationItem n, int f) => f == 0 || notifGroup(n.kind) == f;
+
+typedef ReadFn = T Function<T>(ProviderListenable<T> provider);
+
+/// Destination d'une notification d'après son type et ses données. Renvoie vrai si un écran a été ouvert ;
+/// faux si ce type n'a pas d'écran propre (le détail de la notification est alors la bonne destination).
+/// [router] et [reader] permettent de l'appeler après que l'écran appelant a été retiré (ouverture depuis un clic sur une notification du navigateur).
+bool openNotification(BuildContext context, WidgetRef? ref, NotificationItem n, {GoRouter? router, ReadFn? reader}) {
+  final r = router ?? GoRouter.of(context);
+  final read = reader ?? ref!.read;
+  void gOpen(BuildContext _, String id) => r.push(screenPath(id));
+  void gOpenProfile(BuildContext _, String user) => r.push('${screenPath('247')}?user=${Uri.encodeQueryComponent(user)}');
+  final d = n.data;
+  String s(String k) => '${d[k] ?? ''}'.trim();
+  String first(List<String> ks) => ks.map(s).firstWhere((v) => v.isNotEmpty, orElse: () => '');
+  final account = read(authProvider).current;
+  String clean(String v) => v.replaceAll('#', '').trim();
+  switch (n.kind) {
+    case 'order':
+      final num = clean(first(['order_number', 'order']));
+      if (num.isEmpty) {
+        gOpen(context, '28');
+        return true;
+      }
+      final orders = read(ordersProvider);
+      final mine = orders.where((o) => clean(o.id) == num);
+      if (mine.isNotEmpty) {
+        read(selectedOrderIdProvider.notifier).set(mine.first.id);
+        gOpen(context, '09');
+      } else if (canOpen(account, '64')) {
+        read(selectedSellerOrderProvider.notifier).set(num);
+        gOpen(context, '64');
+      } else {
+        gOpen(context, '28');
+      }
+      return true;
+    case 'message' || 'teammate_message':
+      final cid = s('conversation_id');
+      if (n.kind == 'teammate_message' || cid.isEmpty) {
+        gOpen(context, '52');
+        return true;
+      }
+      read(selectedConversationProvider.notifier).set(cid);
+      read(conversationsProvider.notifier).refresh();
+      gOpen(context, '53');
+      return true;
+    case 'listing':
+      if (!canOpen(account, '61')) return false;
+      gOpen(context, '61');
+      return true;
+    case 'payment':
+      final pid = first(['payment_id', 'payment']);
+      if (pid.isEmpty) {
+        r.push('/paiements');
+      } else {
+        read(selectedPaymentProvider.notifier).select(pid);
+        r.push('/paiement');
+      }
+      return true;
+    case 'claim' || 'dispute':
+      r.push('/litiges');
+      return true;
+    case 'mission':
+      gOpen(context, '194');
+      return true;
+    case 'opportunity_reminder' || 'opportunity_alert' || 'opportunity_review' || 'opportunity_application' || 'opportunity_invite':
+      final id = first(['opportunity', 'opportunity_id']);
+      r.push(id.isEmpty ? '/opportunites' : '/opportunites/$id');
+      return true;
+    case 'contest_reminder' || 'contest_review' || 'contest_prize' || 'contest':
+      final id = first(['announcement', 'announcement_id']);
+      r.push(id.isEmpty ? '/concours' : '/concours/$id');
+      return true;
+    case 'review' || 'question' || 'alert':
+      final id = first(['listing_id', 'listing']);
+      if (!RegExp(r'^[0-9a-fA-F-]{36}$').hasMatch(id)) return false;
+      r.push('/marche/produit/$id');
+      return true;
+    case 'follow':
+      final uid = first(['user', 'follower']);
+      if (uid.isEmpty) return false;
+      gOpenProfile(context, uid);
+      return true;
+    case 'post' || 'comment':
+      gOpen(context, '244');
+      return true;
+    case 'live':
+      gOpen(context, 'L1');
+      return true;
+    case 'event':
+      gOpen(context, '101');
+      return true;
+    case 'support':
+      r.push('/aide/demandes');
+      return true;
+    case 'support_ticket' || 'message_report':
+      r.push('/support/boite');
+      return true;
+    case String k when k.startsWith('community'):
+      r.push('/communautes');
+      return true;
+  }
+  return false;
+}
+
+/// Libellé du bouton d'action du détail ; null quand le type n'a pas d'écran propre.
+String? notificationActionLabel(NotificationItem n) => switch (n.kind) {
+      'order' => 'Voir la commande',
+      'message' || 'teammate_message' => 'Ouvrir la conversation',
+      'listing' => 'Mon catalogue',
+      'payment' => 'Voir le paiement',
+      'claim' || 'dispute' => 'Voir mon litige',
+      'mission' => 'Voir la mission',
+      'opportunity_reminder' || 'opportunity_alert' || 'opportunity_review' || 'opportunity_application' || 'opportunity_invite' => 'Voir l’opportunité',
+      'contest_reminder' || 'contest_review' || 'contest_prize' || 'contest' => 'Voir le concours',
+      'review' || 'question' || 'alert' => 'Voir le produit',
+      'follow' => 'Voir le profil',
+      'post' || 'comment' => 'Voir la publication',
+      'live' => 'Voir les lives',
+      'event' => 'Voir l’événement',
+      'support' => 'Mes demandes d’aide',
+      'support_ticket' => 'Ouvrir la boîte du support',
+      'message_report' => 'Voir les signalements',
+      String k when k.startsWith('community') => 'Voir les communautés',
+      _ => null,
+    };
+
+/// Ouvre l'écran pertinent pour une notification touchée dans une liste, ou son détail à défaut ; marque seulement celle-ci comme lue.
+void tapNotification(BuildContext context, WidgetRef ref, NotificationItem n) {
+  ref.read(notifsProvider.notifier).markRead(n.id);
+  if (notificationActionLabel(n) != null && openNotification(context, ref, n)) return;
+  ref.read(selectedNotificationProvider.notifier).set(n.id);
+  gOpen(context, '51');
+}
 
 String _ago(DateTime d) {
   final m = DateTime.now().difference(d).inMinutes;
@@ -109,7 +277,41 @@ String _ago(DateTime d) {
 
 TextStyle _t(double size, FontWeight w, Color c) => TextStyle(inherit: false, fontFamily: 'PlusJakartaSans', fontSize: size, fontWeight: w, color: c, textBaseline: TextBaseline.alphabetic);
 
-String _glyph(String kind) => switch (kind) { 'order' => '€', 'message' => '✉', 'listing' => '★', _ => '•' };
+String _glyph(String kind) => switch (notifGroup(kind)) { 1 => '€', 2 => '✉', _ => kind == 'listing' ? '★' : '•' };
+
+Widget _row(BuildContext context, WidgetRef ref, NotificationItem n) => InkWell(
+      borderRadius: BorderRadius.circular(14),
+      onTap: () => tapNotification(context, ref, n),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(color: const Color(0xFFF1EEFB), borderRadius: BorderRadius.circular(13)),
+            alignment: Alignment.center,
+            child: Text(_glyph(n.kind), style: _t(16, FontWeight.w600, const Color(0xFF5A3FE0))),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(n.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: _t(13.5, n.read ? FontWeight.w500 : FontWeight.w700, const Color(0xFF111015))),
+              const SizedBox(height: 3),
+              Text(n.body, maxLines: 2, overflow: TextOverflow.ellipsis, style: _t(11.5, FontWeight.w400, const Color(0xFF57545F))),
+              const SizedBox(height: 3),
+              Text(_ago(n.createdAt), style: _t(10.5, FontWeight.w400, const Color(0xFF57545F))),
+            ]),
+          ),
+          if (!n.read)
+            Container(
+              margin: const EdgeInsets.only(top: 4, left: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+              decoration: BoxDecoration(color: const Color(0xFFEFEBFA), borderRadius: BorderRadius.circular(11)),
+              child: Text('Nouveau', style: _t(11, FontWeight.w600, const Color(0xFF5A3FE0))),
+            ),
+        ]),
+      ),
+    );
 
 /// Liste réelle des notifications, dessinée dans le style de l'écran 50.
 Widget notificationsPanel() => gP(
@@ -117,63 +319,149 @@ Widget notificationsPanel() => gP(
       Consumer(builder: (context, ref, _) {
         final f = ref.watch(notifFilterProvider);
         final all = ref.watch(notifsProvider);
-        final items = [
-          for (final n in all)
-            if (f == 0 || (f == 1 && n.kind == 'order') || (f == 2 && n.kind == 'message') || (f == 3 && n.kind != 'order' && n.kind != 'message')) n,
-        ];
+        final items = [for (final n in all) if (_inGroup(n, f)) n];
         if (items.isEmpty) {
           return Padding(
             padding: const EdgeInsets.only(top: 80),
-            child: Align(alignment: Alignment.topCenter, child: Text('Aucune notification pour le moment.', style: _t(13.5, FontWeight.w500, const Color(0xFF57545F)))),
+            child: Align(alignment: Alignment.topCenter, child: Text(f == 0 ? 'Aucune notification pour le moment.' : 'Aucune notification dans cette catégorie.', style: _t(13.5, FontWeight.w500, const Color(0xFF57545F)))),
           );
         }
         return ListView.separated(
           padding: EdgeInsets.zero,
           itemCount: items.length,
           separatorBuilder: (_, _) => const Divider(height: 1, indent: 64, color: Color(0xFFF2EFF6)),
-          itemBuilder: (context, i) {
-            final n = items[i];
-            return InkWell(
-              borderRadius: BorderRadius.circular(14),
-              onTap: () {
-                ref.read(notifsProvider.notifier).markAllRead();
-                gOpen(context, switch (n.kind) { 'message' => '52', 'order' => '28', 'listing' => '61', _ => '51' });
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-                child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(color: const Color(0xFFF1EEFB), borderRadius: BorderRadius.circular(13)),
-                    alignment: Alignment.center,
-                    child: Text(_glyph(n.kind), style: _t(16, FontWeight.w600, const Color(0xFF5A3FE0))),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text(n.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: _t(13.5, FontWeight.w600, const Color(0xFF111015))),
-                      const SizedBox(height: 3),
-                      Text(n.body, maxLines: 2, overflow: TextOverflow.ellipsis, style: _t(11.5, FontWeight.w400, const Color(0xFF57545F))),
-                      const SizedBox(height: 3),
-                      Text(_ago(n.createdAt), style: _t(10.5, FontWeight.w400, const Color(0xFF57545F))),
-                    ]),
-                  ),
-                  if (!n.read)
-                    Container(
-                      margin: const EdgeInsets.only(top: 4, left: 8),
-                      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
-                      decoration: BoxDecoration(color: const Color(0xFFEFEBFA), borderRadius: BorderRadius.circular(11)),
-                      child: Text('Nouveau', style: _t(11, FontWeight.w600, const Color(0xFF5A3FE0))),
-                    ),
-                ]),
-              ),
-            );
-          },
+          itemBuilder: (context, i) => _row(context, ref, items[i]),
         );
       }),
       show: !demoContent, // hors connexion (aperçu, tests) : les lignes d'exemple de la maquette restent affichées
     );
+
+/// « Tout lire » : visible seulement quand il reste des notifications non lues.
+Widget markAllReadLink() => gP(
+      296, 164, 70, 28,
+      Consumer(builder: (context, ref, _) {
+        final unread = ref.watch(notifsProvider.select((l) => l.any((n) => !n.read)));
+        if (!unread) return const SizedBox.shrink();
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => ref.read(notifsProvider.notifier).markAllRead(),
+          child: Align(alignment: Alignment.centerRight, child: Text('Tout lire', style: _t(12, FontWeight.w600, const Color(0xFF5A3FE0)))),
+        );
+      }),
+      show: !demoContent,
+    );
+
+/// Toutes les notifications du compte (écrans 51, 155 et 254) : rafraîchies automatiquement, cliquables, avec le marquage lu.
+Widget notificationsFeed({double width = 342, double height = 600}) => SizedBox(
+      width: width,
+      height: height,
+      child: Consumer(builder: (context, ref, _) {
+        if (ref.watch(authProvider.select((a) => a.current == null))) {
+          return Center(child: Text('Connectez-vous pour voir vos notifications.', textAlign: TextAlign.center, style: _t(13, FontWeight.w500, const Color(0xFF57545F))));
+        }
+        final items = ref.watch(notifsProvider);
+        if (items.isEmpty) return Center(child: Text('Aucune notification pour le moment.', textAlign: TextAlign.center, style: _t(13, FontWeight.w500, const Color(0xFF57545F))));
+        return ListView.separated(
+          padding: EdgeInsets.zero,
+          itemCount: items.length,
+          separatorBuilder: (_, _) => const Divider(height: 1, indent: 64, color: Color(0xFFF2EFF6)),
+          itemBuilder: (context, i) => _row(context, ref, items[i]),
+        );
+      }),
+    );
+
+/// Détail de la notification touchée (écran 51) : texte complet, date, et l'action adaptée à son type.
+/// Sans notification choisie, la liste complète est proposée.
+Widget notificationDetail({double width = 342, double height = 620}) => SizedBox(width: width, height: height, child: const _NotificationDetail());
+
+class _NotificationDetail extends ConsumerStatefulWidget {
+  const _NotificationDetail();
+  @override
+  ConsumerState<_NotificationDetail> createState() => _NotificationDetailState();
+}
+
+class _NotificationDetailState extends ConsumerState<_NotificationDetail> {
+  String _marked = '';
+
+  String _when(DateTime d) {
+    const mois = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+    String two(int v) => v.toString().padLeft(2, '0');
+    return '${d.day} ${mois[d.month - 1]} ${d.year} · ${two(d.hour)}:${two(d.minute)}';
+  }
+
+  Widget _button(String label, VoidCallback onTap, {bool dark = true}) => GestureDetector(
+        onTap: onTap,
+        child: Container(
+          height: 50,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(color: dark ? const Color(0xFF111015) : Colors.transparent, border: dark ? null : Border.all(color: const Color(0xFFD9D3E6), width: 1.5), borderRadius: BorderRadius.circular(25)),
+          child: Text(label, style: _t(14, FontWeight.w600, dark ? Colors.white : const Color(0xFF111015))),
+        ),
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    final id = ref.watch(selectedNotificationProvider);
+    final all = ref.watch(notifsProvider);
+    NotificationItem? n;
+    for (final x in all) {
+      if (x.id == id) n = x;
+    }
+    if (n == null) {
+      return id.isEmpty ? notificationsFeed(height: 620) : Center(child: Text(all.isEmpty ? 'Chargement…' : 'Cette notification n’existe plus.', style: _t(13, FontWeight.w500, const Color(0xFF57545F))));
+    }
+    if (_marked != n.id) {
+      _marked = n.id;
+      Future.microtask(() => ref.read(notifsProvider.notifier).markRead(n!.id));
+    }
+    final action = notificationActionLabel(n);
+    final orderNum = n.kind == 'order' ? '${n.data['order_number'] ?? n.data['order'] ?? ''}'.replaceAll('#', '').trim() : '';
+    final myOrder = orderNum.isEmpty ? null : ref.watch(ordersProvider).where((o) => o.id.replaceAll('#', '') == orderNum).firstOrNull;
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      const SizedBox(height: 8),
+      Row(children: [
+        Container(width: 44, height: 44, alignment: Alignment.center, decoration: BoxDecoration(color: const Color(0xFFF1EEFB), borderRadius: BorderRadius.circular(14)), child: Text(_glyph(n.kind), style: _t(18, FontWeight.w600, const Color(0xFF5A3FE0)))),
+        const SizedBox(width: 12),
+        Expanded(child: Text(n.title, maxLines: 3, overflow: TextOverflow.ellipsis, style: _t(16, FontWeight.w700, const Color(0xFF111015)))),
+      ]),
+      const SizedBox(height: 10),
+      Text(_when(n.createdAt), style: _t(11.5, FontWeight.w400, const Color(0xFF57545F))),
+      const SizedBox(height: 16),
+      Expanded(child: SingleChildScrollView(child: Text(n.body.isEmpty ? 'Cette notification n’a pas de détail supplémentaire.' : n.body, style: _t(13.5, FontWeight.w400, const Color(0xFF4A4854)).copyWith(height: 1.5)))),
+      if (myOrder != null) ...[
+        _button('Suivre ma commande', () {
+          ref.read(selectedOrderIdProvider.notifier).set(myOrder.id);
+          gOpen(context, '46');
+        }),
+        const SizedBox(height: 10),
+        _button('Contacter le vendeur', () {
+          ref.read(selectedOrderIdProvider.notifier).set(myOrder.id);
+          contactOrderSeller(ref, context);
+        }, dark: false),
+      ] else if (action != null)
+        _button(action, () {
+          if (!openNotification(context, ref, n!)) gToast(context, 'Cette page n’est pas disponible pour votre compte.');
+        }),
+      const SizedBox(height: 10),
+      _button('Réglages des notifications', () => gOpen(context, '56'), dark: false),
+      const SizedBox(height: 18),
+    ]);
+  }
+}
+
+/// Compteur de messages non lus, à poser près du titre de la messagerie.
+Widget messagesUnreadPill() => Consumer(builder: (context, ref, _) {
+      final n = ref.watch(unreadProvider).asData?.value.messages ?? 0;
+      if (n <= 0) return const SizedBox.shrink();
+      return Align(
+        alignment: Alignment.centerLeft,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          decoration: BoxDecoration(color: const Color(0xFF5A3FE0), borderRadius: BorderRadius.circular(12)),
+          child: Text(n > 99 ? '99+ non lus' : '$n non lu${n > 1 ? 's' : ''}', style: _t(11, FontWeight.w700, Colors.white)),
+        ),
+      );
+    });
 
 /// Compteur rouge de non-lus à poser sur une icône (affiche rien quand tout est lu ou hors connexion).
 Widget unreadBadge(double x, double y, {bool messages = false}) => gP(
@@ -189,3 +477,55 @@ Widget unreadBadge(double x, double y, {bool messages = false}) => gP(
         );
       }),
     );
+
+/// Ouverture depuis un clic sur une notification du navigateur (adresse `#/notif?n=<identifiant>`) : attend la liste des notifications
+/// du compte, affiche la liste puis ouvre l'écran pertinent ; sans compte ou sans réponse, la liste des notifications s'ouvre seule.
+class NotificationLauncher extends ConsumerStatefulWidget {
+  const NotificationLauncher({super.key, required this.id});
+  final String id;
+  @override
+  ConsumerState<NotificationLauncher> createState() => _NotificationLauncherState();
+}
+
+class _NotificationLauncherState extends ConsumerState<NotificationLauncher> {
+  Timer? _timeout;
+  bool _done = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _timeout = Timer(const Duration(seconds: 8), () => _finish(null));
+  }
+
+  @override
+  void dispose() {
+    _timeout?.cancel();
+    super.dispose();
+  }
+
+  void _finish(NotificationItem? n) {
+    if (_done || !mounted) return;
+    _done = true;
+    final router = GoRouter.of(context);
+    final container = ProviderScope.containerOf(context);
+    router.go(screenPath('50'));
+    if (n == null) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      container.read(notifsProvider.notifier).markRead(n.id);
+      if (notificationActionLabel(n) != null && openNotification(context, null, n, router: router, reader: container.read)) return;
+      container.read(selectedNotificationProvider.notifier).set(n.id);
+      router.push(screenPath('51'));
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    for (final n in ref.watch(notifsProvider)) {
+      if (n.id == widget.id) {
+        WidgetsBinding.instance.addPostFrameCallback((_) => _finish(n));
+        break;
+      }
+    }
+    return const Scaffold(backgroundColor: Color(0xFFF4EFE6), body: Center(child: CircularProgressIndicator()));
+  }
+}

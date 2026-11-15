@@ -97,8 +97,12 @@ export async function run(db) {
   await q(`select create_ephemeral_community('Eph 2', '', 3)`);
   await q(`select create_ephemeral_community('Eph 3', '', 3)`);
   await fails('ephemere : trois actives au plus', `select create_ephemeral_community('Eph 4', '', 3)`, /Trois communautés éphémères/);
+  check('ephemere : en attente de validation avec sa date de fin', (await q(`select status, expires_at from communities where id = '${e1}'`)).every((c) => c.status === 'pending' && c.expires_at !== null));
+  await db.exec('reset role');
+  await db.exec(`update communities set status = 'active' where id = '${e1}'`);
+  await as(B);
   let cl = await q(`select * from communities_list('Revision Examen')`);
-  check('ephemere : publiee tout de suite avec sa date de fin', cl.length === 1 && cl[0].status === 'active' && cl[0].expires_at !== null);
+  check('ephemere : visible une fois validee', cl.length === 1 && cl[0].status === 'active' && cl[0].expires_at !== null);
   const vc = (await q(`select victory_post('grade', 'J ai eu 18/20 en reseaux', '${e1}') id`))[0].id;
   await as(C);
   await fails('mur de communaute : reserve aux membres', `select victory_post('grade', 'Intrus dans le mur', '${e1}')`, /Réservé aux membres/);

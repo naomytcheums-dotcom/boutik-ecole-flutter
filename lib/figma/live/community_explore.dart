@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart' hide Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -19,14 +21,37 @@ class CommunityExploreScreen extends ConsumerStatefulWidget {
 
 class _CommunityExploreScreenState extends ConsumerState<CommunityExploreScreen> {
   final _q = TextEditingController();
+  Timer? _debounce;
   String _kind = '';
 
   static const kinds = {'': 'Toutes', 'filiere': 'Filières', 'promo': 'Promos', 'interest': 'Centres d’intérêt', 'alumni': 'Alumni', 'project': 'Projets'};
 
   @override
+  void initState() {
+    super.initState();
+    final n = ref.read(communitiesProvider.notifier);
+    _q.text = n.query;
+    _kind = n.kind;
+    // l'annuaire est partagé avec l'écran 103 : on repart d'une liste sans recherche ni filtre à l'ouverture
+    if (n.query.isNotEmpty || n.kind.isNotEmpty) {
+      _q.clear();
+      _kind = '';
+      Future.microtask(() => n.refresh('', ''));
+    }
+  }
+
+  @override
   void dispose() {
+    _debounce?.cancel();
     _q.dispose();
     super.dispose();
+  }
+
+  /// Recherche et type sont envoyés au serveur : ils portent sur tout l'annuaire, pas seulement sur la première page.
+  void _search({String? q, String? kind, bool now = false}) {
+    _debounce?.cancel();
+    void run() => ref.read(communitiesProvider.notifier).refresh(q ?? _q.text, kind ?? _kind);
+    now ? run() : _debounce = Timer(const Duration(milliseconds: 400), run);
   }
 
   Widget _card(Community c) => Container(
@@ -37,7 +62,7 @@ class _CommunityExploreScreenState extends ConsumerState<CommunityExploreScreen>
           c: c,
           onOpen: () {
             ref.read(selectedCommunityProvider.notifier).select(c);
-            context.push('/communaute');
+            context.push('/communaute/${c.id}');
           },
           onJoin: () => joinCommunity(context, ref, c),
         ),
@@ -58,8 +83,12 @@ class _CommunityExploreScreenState extends ConsumerState<CommunityExploreScreen>
           child: TextField(
             controller: _q,
             textInputAction: TextInputAction.search,
-            onSubmitted: (v) => ref.read(communitiesProvider.notifier).refresh(v),
-            decoration: InputDecoration(hintText: 'Un groupe, une compétence, une filière, une promo', prefixIcon: const Icon(Icons.search), filled: true, fillColor: Colors.white, border: OutlineInputBorder(borderRadius: BorderRadius.circular(4), borderSide: BorderSide.none), contentPadding: const EdgeInsets.symmetric(vertical: 14)),
+            onChanged: (_) {
+              setState(() {});
+              _search();
+            },
+            onSubmitted: (v) => _search(q: v, now: true),
+            decoration: InputDecoration(hintText: 'Un groupe, une compétence, une filière, une promo', prefixIcon: const Icon(Icons.search), suffixIcon: _q.text.isEmpty ? null : IconButton(tooltip: 'Effacer la recherche', icon: const Icon(Icons.close), onPressed: () { _q.clear(); setState(() {}); _search(q: '', now: true); }), filled: true, fillColor: Colors.white, border: OutlineInputBorder(borderRadius: BorderRadius.circular(4), borderSide: BorderSide.none), contentPadding: const EdgeInsets.symmetric(vertical: 14)),
           ),
         ),
         SizedBox(
@@ -67,7 +96,10 @@ class _CommunityExploreScreenState extends ConsumerState<CommunityExploreScreen>
           child: ListView(scrollDirection: Axis.horizontal, padding: const EdgeInsets.symmetric(horizontal: 16), children: [
             for (final e in kinds.entries)
               GestureDetector(
-                onTap: () => setState(() => _kind = e.key),
+                onTap: () {
+                  setState(() => _kind = e.key);
+                  _search(kind: e.key, now: true);
+                },
                 child: Center(child: Container(margin: const EdgeInsets.only(right: 8), padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9), decoration: BoxDecoration(color: _kind == e.key ? kInk : Colors.white, borderRadius: BorderRadius.circular(4), border: Border.all(color: _kind == e.key ? kInk : kLine)), child: Text(e.value, style: mst(12.5, w: FontWeight.w600, c: _kind == e.key ? Colors.white : kInk)))),
               ),
           ]),
@@ -77,7 +109,7 @@ class _CommunityExploreScreenState extends ConsumerState<CommunityExploreScreen>
           const Padding(padding: EdgeInsets.all(40), child: Center(child: CircularProgressIndicator()))
         else if (list.isEmpty)
           Column(children: [
-            mNote('Sois le premier à créer ta communauté !\nFilière, promo, centre d’intérêt, anciens ou projet : en quelques secondes.'),
+            mNote(_q.text.trim().isNotEmpty || _kind.isNotEmpty ? 'Aucune communauté ne correspond à votre recherche.\nEssayez un autre mot, ou créez-la vous-même.' : 'Sois le premier à créer ta communauté !\nFilière, promo, centre d’intérêt, anciens ou projet : en quelques secondes.'),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32),
               child: GestureDetector(onTap: () => createCommunityFlow(context, ref), child: Container(height: 48, alignment: Alignment.center, decoration: BoxDecoration(color: kInk, borderRadius: BorderRadius.circular(4)), child: Text('Créer une communauté', style: mst(14, w: FontWeight.w700, c: Colors.white)))),
@@ -88,6 +120,11 @@ class _CommunityExploreScreenState extends ConsumerState<CommunityExploreScreen>
           if (popular.isNotEmpty) ...[mSectionTitle('Populaires cette semaine'), for (final c in popular) _card(c)],
           mSectionTitle('Toutes les communautés'),
           for (final c in list) _card(c),
+          if (ref.read(communitiesProvider.notifier).hasMore)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+              child: GestureDetector(onTap: () => ref.read(communitiesProvider.notifier).loadMore(), child: Container(height: 44, alignment: Alignment.center, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(4), border: Border.all(color: kLine)), child: Text('Voir plus de communautés', style: mst(12.5, w: FontWeight.w700)))),
+            ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
             child: GestureDetector(onTap: () => createCommunityFlow(context, ref), child: Container(height: 48, alignment: Alignment.center, decoration: BoxDecoration(color: kInk, borderRadius: BorderRadius.circular(4)), child: Text('Créer une communauté', style: mst(14, w: FontWeight.w700, c: Colors.white)))),

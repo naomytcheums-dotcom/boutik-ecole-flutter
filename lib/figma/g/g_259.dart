@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
+import '../live/order_summary.dart' show orderAmountLine;
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -41,23 +42,24 @@ class G_259 extends ConsumerWidget {
       gP(43.458, 89, 17.083, 6, gImg('assets/figma/v/e130a05f3cf779.svg')),
       gP(174, 76, 42, 21, gText('Reçu', 17, Color(0xFF111015), weight: 500)),
       gP(111.5, 100, 167, 15, gText(gm('Commande #BE-2026-0142', ''), 12, Color(0xFF57545F)), show: demoContent),
-      gP(132.5, 218, 125, 23, gText('Paiement reçu', 18, Color(0xFF111015), weight: 600)),
-      gP(103.5, 246, 183, 33, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(lastOrderProvider).total), 26, Color(0xFF111015), weight: 700))),
-      gP(44, 316, 44, 15, gText('Reçu n°', 12, Color(0xFF57545F)), show: demoContent),
-      gP(240, 316, 106, 16, gText(gm('RC-2026-00842', ''), 12.5, Color(0xFF111015), weight: 600)),
+      gP(94, 218, 202, 23, Consumer(builder: (context, ref, _) { final o = ref.watch(viewedOrderProvider); return gText(o.paid ? 'Paiement reçu' : (o.cod ? 'Commande confirmée' : (o.cancelled ? 'Commande annulée' : 'Paiement non reçu')), 18, Color(0xFF111015), weight: 600, align: TextAlign.center); })),
+      gP(103.5, 246, 183, 33, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(viewedOrderProvider).total), 26, Color(0xFF111015), weight: 700))),
+      gP(44, 280, 302, 28, Consumer(builder: (context, ref, _) { final o = ref.watch(viewedOrderProvider); return gText(o.paid ? orderAmountLine(o) : orderPaymentStatus(o) + (o.cod ? ' : aucun paiement n’a encore eu lieu.' : ''), 11.5, Color(0xFF57545F), wrap: true, align: TextAlign.center, maxLines: 2); })),
+      gP(44, 316, 44, 15, gText('Reçu n°', 12, Color(0xFF57545F))),
+      gP(150, 316, 196, 16, Consumer(builder: (context, ref, _) => gText(documentNumber(ref.watch(viewedOrderProvider), invoice: false), 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(44, 352, 28, 15, gText('Date', 12, Color(0xFF57545F))),
-      gP(89, 352, 257, 16, Consumer(builder: (context, ref, _) => gText('${ref.watch(lastOrderProvider).date}${demoContent ? ' · 14:32' : ''}', 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
+      gP(89, 352, 257, 16, Consumer(builder: (context, ref, _) => gText('${ref.watch(viewedOrderProvider).date}${demoContent ? ' · 14:32' : ''}', 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(44, 388, 39, 15, gText('Moyen', 12, Color(0xFF57545F))),
-      gP(116, 388, 230, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(lastOrderProvider).method, 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
+      gP(116, 388, 230, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(viewedOrderProvider).method, 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
       gP(44, 424, 60, 15, gText('Référence', 12, Color(0xFF57545F))),
-      gP(110, 424, 236, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(lastOrderProvider).reference, 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
+      gP(110, 424, 236, 16, Consumer(builder: (context, ref, _) { final r = ref.watch(viewedOrderProvider).reference; return gText(r.isEmpty || r == '—' ? 'Aucune (paiement à la livraison)' : r, 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right); })),
       gP(44, 460, 48, 15, gText('Vendeur', 12, Color(0xFF57545F)), show: demoContent),
       gP(212, 460, 134, 16, gText(gm('Yannick Mouanga · GC', ''), 12.5, Color(0xFF111015), weight: 600), show: demoContent),
-      gP(44, 496, 38, 15, gText('Retrait', 12, Color(0xFF57545F))),
-      gP(88, 496, 258, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(homeDeliveryProvider) ? (demoContent ? 'Domicile · Douala' : 'Livraison à domicile') : (demoContent ? 'Kiosque IUT · Bloc A' : 'Point de retrait sur le campus'), 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
+      gP(44, 496, 40, 15, gText('Mode', 12, Color(0xFF57545F))),
+      gP(88, 496, 258, 16, Consumer(builder: (context, ref, _) { final o = ref.watch(viewedOrderProvider); return gText(o.home ? 'Livraison à domicile' : (demoContent ? 'Kiosque IUT · Bloc A' : 'Retrait sur le campus'), 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right); })),
       gP(44, 540, 302, 1, gBox(color: Color(0xFFEEECF1))),
-      gP(44, 556, 65, 16, gText('Total payé', 13, Color(0xFF111015), weight: 600)),
-      gP(107, 555, 239, 18, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(lastOrderProvider).total), 14, Color(0xFF111015), weight: 700, wrap: true, align: TextAlign.right))),
+      gP(44, 556, 120, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(viewedOrderProvider).paid ? 'Total payé' : 'Total à payer', 13, Color(0xFF111015), weight: 600))),
+      gP(160, 555, 186, 18, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(viewedOrderProvider).total), 14, Color(0xFF111015), weight: 700, wrap: true, align: TextAlign.right))),
       gP(24, 650, 342, 52, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x38403366), offset: Offset(0, 8), blurRadius: 18, spreadRadius: 0)], radii: [26, 26, 26, 26]), tap: () => downloadDocument(context, ref, invoice: false)),
       gP(136, 668, 118, 16, gText('Télécharger le reçu', 13, Color(0xFFFFFFFF), weight: 600)),
       gP(24, 714, 342, 48, gBox(color: Color(0xBFFFFFFF), border: Color(0xFFFFFFFF), bw: 1, radii: [24, 24, 24, 24])),

@@ -23,6 +23,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/l8_opportunites.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_152 extends ConsumerWidget {
@@ -47,19 +48,19 @@ class G_152 extends ConsumerWidget {
       gP(21.98, 61.98, 40, 40, const GGlassCircle()),
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
-      gP(76, 70, 201, 25, gText('Kéla te recommande', 20, Color(0xFF111015), weight: 700)),
-      gP(350.833, 71.667, 12.417, 6, gImg('assets/figma/v/03a765f5fab6c0.svg')),
-      gP(340.75, 71.667, 12.417, 6, gImg('assets/figma/v/03a765f5fab6c0.svg')),
-      gP(349, 79, 14.25, 6, gImg('assets/figma/v/658b7de571167d.svg')),
-      gP(340.75, 79, 10.583, 6, gImg('assets/figma/v/fc9bd872b877c1.svg')),
-      gP(352.667, 86.333, 10.583, 6, gImg('assets/figma/v/fc9bd872b877c1.svg')),
-      gP(340.75, 86.333, 14.25, 6, gImg('assets/figma/v/658b7de571167d.svg')),
-      gP(350.833, 69.833, 6, 9.667, gImg('assets/figma/v/c267f7a32a398f.svg')),
-      gP(345.333, 77.167, 6, 9.667, gImg('assets/figma/v/c267f7a32a398f.svg')),
-      gP(352.667, 84.5, 6, 9.667, gImg('assets/figma/v/c267f7a32a398f.svg')),
-      gP(24, 120, 342, 92, gBox(gradient: LinearGradient(begin: Alignment(-1.24, -0.68), end: Alignment(0.36, 0.52), colors: [Color(0xFFE3EEFC), Color(0xFFEDE6FB)], stops: [0, 1]), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x14403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28])),
+      gP(76, 70, 201, 25, gText(demoContent ? 'Kéla te recommande' : 'Offres pour vous', 20, Color(0xFF111015), weight: 700)),
+      gP(350.833, 71.667, 12.417, 6, gImg('assets/figma/v/03a765f5fab6c0.svg'), show: demoContent),
+      gP(340.75, 71.667, 12.417, 6, gImg('assets/figma/v/03a765f5fab6c0.svg'), show: demoContent),
+      gP(349, 79, 14.25, 6, gImg('assets/figma/v/658b7de571167d.svg'), show: demoContent),
+      gP(340.75, 79, 10.583, 6, gImg('assets/figma/v/fc9bd872b877c1.svg'), show: demoContent),
+      gP(352.667, 86.333, 10.583, 6, gImg('assets/figma/v/fc9bd872b877c1.svg'), show: demoContent),
+      gP(340.75, 86.333, 14.25, 6, gImg('assets/figma/v/658b7de571167d.svg'), show: demoContent),
+      gP(350.833, 69.833, 6, 9.667, gImg('assets/figma/v/c267f7a32a398f.svg'), show: demoContent),
+      gP(345.333, 77.167, 6, 9.667, gImg('assets/figma/v/c267f7a32a398f.svg'), show: demoContent),
+      gP(352.667, 84.5, 6, 9.667, gImg('assets/figma/v/c267f7a32a398f.svg'), show: demoContent),
+      gP(24, 120, 342, 92, gBox(gradient: LinearGradient(begin: Alignment(-1.24, -0.68), end: Alignment(0.36, 0.52), colors: [Color(0xFFE3EEFC), Color(0xFFEDE6FB)], stops: [0, 1]), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x14403366), offset: Offset(0, 6), blurRadius: 18, spreadRadius: 0)], radii: [28, 28, 28, 28]), show: demoContent),
       gP(102, 160, 249, 51, gText('Kéla a choisi ces offres selon vos compétences, votre filière et votre activité. Vous gardez la main.', 11, Color(0xFF4A4854), lh: 17, wrap: true), show: demoContent),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 226, 55.6, 34, 'Tout', 12.5, 600), GChip(87.6, 226, 70.4, 34, 'Stages', 12.5, 500), GChip(166, 226, 77.8, 34, 'Projets', 12.5, 500), GChip(251.8, 226, 63, 34, 'Défis', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
+      if (demoContent) Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 226, 55.6, 34, 'Tout', 12.5, 600), GChip(87.6, 226, 70.4, 34, 'Stages', 12.5, 500), GChip(166, 226, 77.8, 34, 'Projets', 12.5, 500), GChip(251.8, 226, 63, 34, 'Défis', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
       gP(36, 287, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13]), show: demoContent),
       gP(44.667, 299.833, 22.667, 17.667, gImg('assets/figma/v/0b1915710c6b88.svg'), show: demoContent),
       gP(49.667, 296.5, 12.667, 21, gImg('assets/figma/v/baf18a4f525e16.svg'), show: demoContent),
@@ -120,10 +121,10 @@ class G_152 extends ConsumerWidget {
       gP(169, 775, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gTab(context, '03')),
       gP(184, 790, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 788.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
-      gP(38, 140, 52, 52, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, border: Color(0xFFFFFFFF), bw: 2, oval: true)),
-      gP(102, 138, 139, 16, gText('Kéla · ton assistante IA', 13, Color(0xFF111015), weight: 600)),
+      gP(38, 140, 52, 52, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, border: Color(0xFFFFFFFF), bw: 2, oval: true), show: demoContent),
+      gP(102, 138, 139, 16, gText('Kéla · ton assistante IA', 13, Color(0xFF111015), weight: 600), show: demoContent),
       gP(82, 182, 9, 9, gBox(color: Color(0xFF3DDC84), border: Color(0xFFFFFFFF), bw: 2, oval: true), show: demoContent),
-      if (!demoContent) gP(24, 160, 342, 560, const OpenOffers(width: 342, height: 560)),
+      if (!demoContent) gP(24, 112, 342, 640, const RecommendedOpportunities(width: 342, height: 640)),
     ]);
   }
 }

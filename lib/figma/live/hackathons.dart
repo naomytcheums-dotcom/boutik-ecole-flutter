@@ -17,16 +17,18 @@ import 'store.dart';
 /// aucune équipe ni aucun concours d'exemple n'est affiché.
 
 class Hackathon {
-  const Hackathon(this.id, this.title, this.dates, this.city, this.prize, this.places, this.status, {this.free = false, this.hours = 48, this.desc = '', this.taken = 0, this.serverStatus = ''});
-  final String id, title, dates, city, status, desc;
+  const Hackathon(this.id, this.title, this.dates, this.city, this.prize, this.places, this.status,
+      {this.free = false, this.hours = 48, this.desc = '', this.taken = 0, this.serverStatus = '', this.theme = '', this.rules = '', this.regClose, this.submitClose, this.fee = 0});
+  final String id, title, dates, city, status, desc, theme, rules;
 
   /// Équipes déjà inscrites et statut serveur (concours lus sur le serveur).
   final int taken;
   final String serverStatus;
-  final int prize, places, hours;
+  final int prize, places, hours, fee;
   final bool free;
+  final DateTime? regClose, submitClose;
 
-  String get listSub => '$dates · $city${city == 'En ligne' ? ' · Prix de ${fcfa(prize)}' : ' · ${prizeShort(prize)}'}';
+  String get listSub => '$dates · $city${prize <= 0 ? '' : city == 'En ligne' ? ' · Prix de ${fcfa(prize)}' : ' · ${prizeShort(prize)}'}';
 }
 
 /// « 5 M FCFA », « 1,5 M FCFA » (virgule française) ; en dessous du million, le montant complet.
@@ -63,6 +65,10 @@ final registrationsProvider = NotifierProvider<Registrations, Map<String, Regist
 final selectedEventProvider = NotifierProvider<StrV, String>(StrV.new);
 final hackTabProvider = NotifierProvider<IntV, int>(IntV.new);
 final rulesProvider = NotifierProvider<Flag, bool>(Flag.new);
+
+/// Inscription réelle (162) : règlement jamais accepté d'office, et choix individuel / en équipe.
+final contestRulesOkProvider = NotifierProvider<FlagOff, bool>(FlagOff.new);
+final contestSoloProvider = NotifierProvider<FlagOff, bool>(FlagOff.new);
 
 /// Aucun concours publié (serveur) : rien d'exemple n'est présenté comme réel.
 const noContest = Hackathon('', 'Aucun concours publié pour le moment', '', '', 0, 0, '');
@@ -177,6 +183,36 @@ void toggleInvite(WidgetRef ref, BuildContext context, Mate m) {
 void submitRegistration(WidgetRef ref, BuildContext context) {
   final f = ref.read(formProvider);
   final ev = ref.read(currentEventProvider);
+  if (Backend.ready) {
+    final solo = ref.read(contestSoloProvider);
+    final name = (f['hk_team'] ?? '').trim();
+    final theme = (f['hk_theme'] ?? '').trim();
+    final errs = <String, String>{
+      if (!solo && name.length < 3) 'hk_team': 'Donnez un nom d’équipe (3 caractères minimum).',
+      if (name.length > 60) 'hk_team': 'Le nom d’équipe fait 60 caractères au plus.',
+      if (theme.length > 120) 'hk_theme': 'La thématique fait 120 caractères au plus.',
+    };
+    if (errs.isNotEmpty) {
+      ref.read(errorsProvider.notifier).setAll(errs);
+      return;
+    }
+    if (!ref.read(contestRulesOkProvider)) {
+      gToast(context, 'Lisez puis acceptez le règlement pour valider l’inscription.');
+      return;
+    }
+    if (ref.read(myContestTeamsProvider).containsKey(ev.id)) {
+      gToast(context, 'Vous êtes déjà inscrit à ce concours.');
+      gOpen(context, '164');
+      return;
+    }
+    if (placesKnown() && placesLeft(ev, const {}) <= 0) {
+      gToast(context, 'Plus de places disponibles.');
+      return;
+    }
+    ref.read(errorsProvider.notifier).clear();
+    _serverRegistration(ref, context, ev, name, theme, solo);
+    return;
+  }
   final name = (f['hk_team'] ?? 'Team Innov’').trim();
   final theme = (f['hk_theme'] ?? 'Inclusion financière').trim();
   final errs = <String, String>{
@@ -201,10 +237,6 @@ void submitRegistration(WidgetRef ref, BuildContext context) {
     return;
   }
   ref.read(errorsProvider.notifier).clear();
-  if (Backend.ready) {
-    _serverRegistration(ref, context, ev, name, theme);
-    return;
-  }
   ref.read(registrationsProvider.notifier).add(Registration(ev.id, name, theme));
   ref.read(auditProvider.notifier).log(ref.read(profileAccountProvider).name, 'Équipe inscrite', '$name · ${ev.title}', 'Validations');
   gToast(context, 'Inscription validée : ${ev.title}');
@@ -222,11 +254,12 @@ Future<void> shareEventLink(WidgetRef ref, BuildContext context) async {
 }
 
 /// Inscription enregistrée côté serveur (engagement « event_registration ») ; l'état local ne suit qu'après confirmation.
-Future<void> _serverRegistration(WidgetRef ref, BuildContext context, Hackathon ev, String name, String theme) async {
+Future<void> _serverRegistration(WidgetRef ref, BuildContext context, Hackathon ev, String name, String theme, bool solo) async {
   if (ev.id.isEmpty) return gAlert(context, 'Inscription', 'Aucun concours publié pour le moment.');
-  final ok = await registerContestTeam(context, ref, ev, name, theme);
+  final ok = await registerContestTeam(context, ref, ev, name, theme, solo: solo);
   if (!ok || !context.mounted) return;
   ref.read(registrationsProvider.notifier).add(Registration(ev.id, name, theme));
+  ref.read(contestRulesOkProvider.notifier).set(false);
   gOpen(context, '164');
 }
 
@@ -250,7 +283,7 @@ final submissionProvider = NotifierProvider<Submissions, Submission?>(Submission
 
 void submitDeposit(WidgetRef ref, BuildContext context) {
   final f = ref.read(formProvider);
-  final title = (f['dp_title'] ?? 'Paiement mobile hors connexion').trim();
+  final title = (f['dp_title'] ?? (Backend.ready ? '' : 'Paiement mobile hors connexion')).trim();
   final link = (f['dp_link'] ?? '').trim();
   final desc = (f['dp_desc'] ?? '').trim();
   final errs = <String, String>{

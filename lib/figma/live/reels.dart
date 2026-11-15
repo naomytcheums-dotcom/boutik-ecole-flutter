@@ -1,5 +1,8 @@
+import 'dart:async' show unawaited;
+
 import '../gdata.dart' show gNetImage;
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -186,8 +189,6 @@ class ReelsNotifier extends Notifier<List<Reel>?> {
   /// Relit le fil. Renvoie faux si la lecture a échoué ; sans publication déjà affichée, l'échec est signalé par `reelsLoadErrorProvider`.
   Future<bool> refresh() async {
     const wait = Duration(seconds: 20);
-    // publie d'abord les publications programmées arrivées à échéance (sans attendre la minute suivante du planificateur)
-    if (ref.read(authProvider).current != null) await Backend.rpc('publish_due_posts', const {}, timeout: wait);
     var r = await Backend.rpc('circle_feed', {'p_limit': _limit}, timeout: wait);
     // serveur pas encore migré (migration 20261110000000) : repli sur l'ancien fil de médias
     if (r.error != null || r.data is! List) r = await Backend.rpc('reels_feed', {'p_limit': 20}, timeout: wait);
@@ -309,6 +310,27 @@ Future<void> toggleFollowReelAuthor(BuildContext context, WidgetRef ref) async {
     return e2 == null ? gToast(context, 'Vous ne suivez plus ${r.author}') : gAlert(context, 'Action impossible', Backend.userMessage(e2));
   }
   gAlert(context, 'Action impossible', Backend.userMessage(err));
+}
+
+/// Libellé du bouton d'abonnement du reel affiché : « Suivi » quand l'auteur est déjà suivi, sinon « S'abonner ».
+String followLabelFor(WidgetRef ref) {
+  final r = ref.watch(currentReelProvider);
+  final following = ref.watch(followingIdsProvider) ?? const <String>{};
+  return r != null && following.contains(r.authorId) ? 'Suivi' : 'S’abonner';
+}
+
+/// « Boutique » d'une publication : l'annonce liée (approuvée) ou, à défaut, la boutique active de son auteur ; sinon un message honnête.
+Future<void> openPostShop(BuildContext context, String postId) async {
+  if (!Backend.ready) return gToast(context, 'La boutique est disponible une fois connecté au serveur.');
+  final r = await Backend.rpc('post_shop_target', {'p_post': postId});
+  if (!context.mounted) return;
+  final d = r.data is Map ? Map<String, dynamic>.from(r.data as Map) : null;
+  final listing = '${d?['listing_id'] ?? ''}';
+  final slug = '${d?['shop_slug'] ?? ''}';
+  if (r.error != null) return gToast(context, 'La boutique ne peut pas être ouverte pour le moment.');
+  if (listing.isNotEmpty) return unawaited(GoRouter.of(context).push('/marche/produit/$listing'));
+  if (slug.isNotEmpty) return unawaited(GoRouter.of(context).push('/marche/boutique/${Uri.encodeComponent(slug)}'));
+  gToast(context, 'Cette publication n’est liée à aucune boutique ouverte.');
 }
 
 /// Enregistrer ou retirer la publication affichée.
@@ -434,9 +456,25 @@ Future<void> toggleLike(BuildContext context, WidgetRef ref, Reel r) async {
 // ------------------------------------------------------------------ défis (253)
 
 class Challenges {
-  const Challenges({this.streak = 0, this.nextIn = 6, this.streakClaimable = false, this.weekEndDays = 0, this.postsWeek = 0, this.postsClaimable = false, this.points = 0});
-  final int streak, nextIn, weekEndDays, postsWeek, points;
-  final bool streakClaimable, postsClaimable;
+  const Challenges({
+    this.streak = 0,
+    this.nextIn = 6,
+    this.streakClaimable = false,
+    this.weekEndDays = 0,
+    this.postsWeek = 0,
+    this.postsClaimable = false,
+    this.points = 0,
+    this.checkedToday = false,
+    this.streakClaimed = false,
+    this.postsClaimed = false,
+    this.weekMarks = const [],
+    this.todayIndex = 0,
+    this.badges = const {},
+  });
+  final int streak, nextIn, weekEndDays, postsWeek, points, todayIndex;
+  final bool streakClaimable, postsClaimable, checkedToday, streakClaimed, postsClaimed;
+  final List<bool> weekMarks;
+  final Map<String, bool> badges;
 
   factory Challenges.fromJson(Map<String, dynamic> j) => Challenges(
         streak: (j['streak'] as num?)?.toInt() ?? 0,
@@ -446,6 +484,12 @@ class Challenges {
         postsWeek: (j['posts_week'] as num?)?.toInt() ?? 0,
         postsClaimable: j['posts_claimable'] == true,
         points: (j['points'] as num?)?.toInt() ?? 0,
+        checkedToday: j['checked_today'] == true,
+        streakClaimed: j['streak_claimed_today'] == true,
+        postsClaimed: j['posts_claimed'] == true,
+        weekMarks: j['week_marks'] is List ? [for (final m in j['week_marks'] as List) m == true] : const [],
+        todayIndex: (j['today_index'] as num?)?.toInt() ?? 0,
+        badges: j['badges'] is Map ? {for (final e in (j['badges'] as Map).entries) '${e.key}': e.value == true} : const {},
       );
 
   String get streakLabel => 'Série de $streak jour${streak > 1 ? 's' : ''}';
@@ -485,17 +529,18 @@ Future<void> dailyCheckIn(BuildContext context, WidgetRef ref) async {
   gToast(context, days == null ? 'Présence enregistrée.' : 'Présence enregistrée : série de $days jour${days > 1 ? 's' : ''}.');
 }
 
-/// 253 « Récupérer » : boost de série (6 jours) ou, à défaut, défi « 3 publications » ; le serveur décide.
-Future<void> claimReward(BuildContext context, WidgetRef ref) async {
+/// 253 « Récupérer » : le boost de série (6 jours) ou, à défaut, le défi « 3 publications » ; le serveur décide et le message annoncé vient de sa réponse.
+Future<void> claimReward(BuildContext context, WidgetRef ref, {bool? streak}) async {
   if (!Backend.ready) return;
   if (!await requireLogin(context, ref, 'récupérer une récompense') || !context.mounted) return;
   final c = ref.read(challengesProvider);
-  final fn = (c?.streakClaimable ?? false) ? 'claim_streak_boost' : 'claim_challenge';
+  final fn = (streak ?? (c?.streakClaimable ?? false)) ? 'claim_streak_boost' : 'claim_challenge';
   final res = await Backend.rpc(fn, fn == 'claim_challenge' ? {'p_code': 'posts3'} : const {});
   if (!context.mounted) return;
-  if (res.error != null) return gAlert(context, 'Récompense indisponible', res.error!);
+  if (res.error != null) return gAlert(context, 'Récompense indisponible', Backend.userMessage(res.error!));
   await ref.read(challengesProvider.notifier).refresh();
-  if (context.mounted) gToast(context, fn == 'claim_streak_boost' ? 'Boost de 24 h activé sur votre dernière publication' : '+200 points ajoutés');
+  final pts = res.data is num ? (res.data as num).toInt() : 200;
+  if (context.mounted) gToast(context, fn == 'claim_streak_boost' ? 'Boost de 24 h activé sur votre dernière publication' : '+$pts points ajoutés');
 }
 
 /// Fond du reel affiché (écran 245) : le média de la publication quand c'est une image qui se charge, sinon un fond neutre.

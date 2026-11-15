@@ -6,8 +6,9 @@ import '../../data/demo/section_a_demo.dart';
 import 'dart:async' show Timer;
 import 'auth.dart' show authProvider, demoContent;
 import 'backend.dart';
-import 'delivery.dart' show deliveryFee, deliveryQuoteProvider, deliverySettingsProvider;
+import 'delivery.dart' show deliveryFee, deliveryQuoteProvider, deliverySettingsProvider, selectedAddressProvider;
 import '../../data/repositories/repositories.dart' show cartProvider;
+import 'marche/marche_data.dart' show marcheFiltersProvider;
 import 'promo_state.dart' show promoDiscountProvider;
 
 /// État partagé du parcours d'achat : fiche produit → panier → livraison → paiement → commande → suivi.
@@ -23,12 +24,18 @@ String fcfa(num v) {
 }
 
 class LiveProduct {
-  const LiveProduct(this.title, this.department, this.price, this.seller, this.description, this.image, {this.category = 'Maison', this.showcase = false, this.sellerId});
+  const LiveProduct(this.title, this.department, this.price, this.seller, this.description, this.image, {this.category = 'Maison', this.showcase = false, this.sellerId, this.stock, this.id});
   final String title, department, seller, description, image, category;
+
+  /// Identifiant de l'annonce sur le serveur quand il est connu (ouvre la fiche /marche/produit/:id).
+  final String? id;
 
   /// Identifiant du vendeur quand il est connu : distingue deux vendeurs qui portent le même nom.
   final String? sellerId;
   final int price;
+
+  /// Stock disponible quand il est connu (null : inconnu, le serveur contrôle à la commande).
+  final int? stock;
 
   /// Produit d'exemple (fictif) : visible pour montrer le rendu, jamais vendu (refus côté serveur, 20261101000800).
   final bool showcase;
@@ -83,12 +90,32 @@ String productPriceAndSeller(LiveProduct p) {
 }
 
 class SelectedProduct extends Notifier<LiveProduct> {
+  /// Vrai dès qu'un produit a été réellement choisi (carte, favori, lien) : une ouverture directe d'un écran produit n'en montre aucun.
+  bool chosen = false;
+
   @override
-  LiveProduct build() => Backend.ready ? (platformProducts.isNotEmpty ? platformProducts.first : const LiveProduct('Aucun produit choisi', '', 0, '', 'Choisissez un produit dans le catalogue.', neutralProductImage)) : liveCatalog.first;
-  void select(String title) => state = productByTitle(title);
+  LiveProduct build() => Backend.ready
+      ? (platformProducts.isNotEmpty && !identical(platformProducts, liveCatalog) ? platformProducts.first : const LiveProduct('Aucun produit choisi', '', 0, '', 'Choisissez un produit dans le catalogue.', neutralProductImage))
+      : liveCatalog.first;
+  void select(String title) {
+    ref.read(sellerFocusProvider.notifier).set('');
+    chosen = true;
+    state = productByTitle(title);
+  }
+
+  /// Choisit un produit déjà connu en détail (fiche marketplace) : identifiant de l'annonce et du vendeur conservés.
+  void choose(LiveProduct p) {
+    ref.read(sellerFocusProvider.notifier).set('');
+    chosen = true;
+    state = p;
+  }
 }
 
 final selectedProductProvider = NotifierProvider<SelectedProduct, LiveProduct>(SelectedProduct.new);
+
+/// Vendeur dont le profil public (24) est consulté, quand il est ouvert depuis une fiche du catalogue serveur ; vide : le vendeur du produit choisi.
+/// Choisir un produit remet ce champ à vide.
+final sellerFocusProvider = NotifierProvider<StrV, String>(StrV.new);
 
 /// Mode de livraison (07) : true = à domicile (frais 5 000 FCFA), false = retrait sur campus (gratuit).
 class HomeDelivery extends Notifier<bool> {
@@ -101,18 +128,35 @@ final homeDeliveryProvider = NotifierProvider<HomeDelivery, bool>(HomeDelivery.n
 
 /// Moyen de paiement (08) : 0 = Orange Money, 1 = Mobile Money (autre).
 class PayMethod extends Notifier<int> {
+  /// Vrai dès que l'utilisateur a choisi lui-même : le moyen par défaut du compte (lu en retard) ne l'écrase plus.
+  bool touched = false;
+
   @override
   int build() => 0;
   void set(int v) => state = v;
+  void choose(int v) {
+    touched = true;
+    state = v;
+  }
+
+  void setDefault(int v) {
+    if (!touched) state = v;
+  }
 }
 
 final payMethodProvider = NotifierProvider<PayMethod, int>(PayMethod.new);
 
 class Totals {
-  const Totals(this.count, this.subtotal, this.fee, {this.discount = 0});
+  const Totals(this.count, this.subtotal, this.fee, {this.discount = 0, this.feePending = false, this.feeProblem});
 
   /// [subtotal] est déjà diminué de la [discount] (promotion appliquée par le serveur).
   final int count, subtotal, fee, discount;
+
+  /// Livraison à domicile dont les frais ne sont pas encore connus (adresse à choisir ou calcul en cours) : [fee] vaut alors 0 sans être un tarif.
+  final bool feePending;
+
+  /// Raison pour laquelle la livraison à domicile ne peut pas être commandée (ville non desservie, adresse manquante…) ; null si tout va bien.
+  final String? feeProblem;
   int get total => subtotal + fee;
 }
 
@@ -122,30 +166,62 @@ final totalsProvider = Provider<Totals>((ref) {
   final raw = lines.fold<int>(0, (a, l) => a + l.price * l.qty);
   final n = lines.fold<int>(0, (a, l) => a + l.qty);
   final d = (ref.watch(promoDiscountProvider).value ?? 0).clamp(0, raw);
-  final quoted = ref.watch(deliveryQuoteProvider).value;
-  final fee = lines.isEmpty ? 0 : (home && quoted != null ? quoted : deliveryFee(home, ref.watch(deliverySettingsProvider)));
-  return Totals(n, raw - d, fee, discount: d);
+  if (lines.isEmpty || !home) return Totals(n, raw - d, 0, discount: d);
+  if (!Backend.ready) return Totals(n, raw - d, deliveryFee(home, ref.watch(deliverySettingsProvider)), discount: d);
+  if (ref.watch(selectedAddressProvider).isEmpty) return Totals(n, raw - d, 0, discount: d, feePending: true, feeProblem: 'Choisissez une adresse de livraison.');
+  final q = ref.watch(deliveryQuoteProvider);
+  final v = q.value;
+  if (v?.fee != null) return Totals(n, raw - d, v!.fee!, discount: d, feePending: q.isLoading);
+  if (v == null) return Totals(n, raw - d, 0, discount: d, feePending: true);
+  final problem = v.unserved.isNotEmpty
+      ? 'Livraison non proposée par ${v.unserved.join(', ')} vers cette ville : choisissez le retrait sur campus ou une autre adresse.'
+      : 'Frais de livraison indisponibles pour le moment : réessayez ou choisissez le retrait sur campus.';
+  return Totals(n, raw - d, 0, discount: d, feeProblem: problem);
 });
 
 class Order {
-  const Order({required this.id, required this.date, required this.lines, required this.subtotal, required this.fee, required this.method, required this.reference, this.status = 0, this.paid = false, this.cancelled = false});
+  const Order({
+    required this.id, required this.date, required this.lines, required this.subtotal, required this.fee, required this.method, required this.reference,
+    this.status = 0, this.paid = false, this.cancelled = false, this.discount = 0, this.promoCode = '', this.home = false, this.address = '', this.cod = false,
+  });
   final String id, date, method, reference;
   final List<CartLine> lines;
   final int subtotal, fee;
   final int status; // 0 confirmée · 1 en préparation · 2 expédiée · 3 livrée
   final bool paid, cancelled;
+
+  /// Remise accordée par le serveur (déjà déduite de [subtotal]) et code promo utilisé.
+  final int discount;
+  final String promoCode;
+
+  /// Livraison à domicile ([home]) et adresse figée sur la commande (une ligne lisible) ; vide pour un retrait.
+  final bool home;
+  final String address;
+
+  /// Commande à payer à la livraison : confirmée, mais pas encore encaissée.
+  final bool cod;
   int get total => subtotal + fee;
-  String get badge => cancelled ? 'Annulée' : (status >= 3 ? 'Livrée' : 'En cours');
+
+  /// Commande enregistrée dont le paiement n'a pas (encore) abouti : ni payée, ni à payer à la livraison, ni annulée (connecté au serveur seulement : la démonstration n'encaisse rien).
+  bool get awaitingPayment => Backend.ready && !paid && !cancelled && !cod;
+
+  /// Étape de la frise de suivi (0 à 3) ; -1 tant que la commande est en attente de paiement ou annulée.
+  int get step => cancelled || awaitingPayment ? -1 : status.clamp(0, 3);
+  String get badge => cancelled ? 'Annulée' : (awaitingPayment ? 'En attente de paiement' : (status >= 3 ? 'Livrée' : 'En cours'));
+
+  /// Total, remise comprise, des lignes au prix plein.
+  int get linesTotal => lines.fold<int>(0, (a, l) => a + l.price * l.qty);
 
   /// Identité et montants imposés par le serveur.
-  Order withServer(String id, int subtotal, int fee) => Order(
+  Order withServer(String id, int subtotal, int fee, {int discount = 0}) => Order(
         id: id, date: date, lines: lines, subtotal: subtotal, fee: fee, method: method, reference: reference,
-        status: status, paid: paid, cancelled: cancelled,
+        status: status, paid: paid, cancelled: cancelled, discount: discount, promoCode: promoCode, home: home, address: address, cod: cod,
       );
 
-  Order copyWith({int? status, bool? paid, bool? cancelled}) => Order(
-        id: id, date: date, lines: lines, subtotal: subtotal, fee: fee, method: method, reference: reference,
+  Order copyWith({int? status, bool? paid, bool? cancelled, String? reference, bool? cod, String? method}) => Order(
+        id: id, date: date, lines: lines, subtotal: subtotal, fee: fee, method: method ?? this.method, reference: reference ?? this.reference,
         status: status ?? this.status, paid: paid ?? this.paid, cancelled: cancelled ?? this.cancelled,
+        discount: discount, promoCode: promoCode, home: home, address: address, cod: cod ?? this.cod,
       );
 }
 
@@ -177,6 +253,14 @@ class Orders extends Notifier<List<Order>> {
     ref.read(lastSyncProvider.notifier).set(DateTime.now());
   }
 
+  static String _addressLine(Object? a) {
+    if (a is! Map) return '';
+    final parts = [for (final k in const ['line', 'district', 'city']) '${a[k] ?? ''}'.trim()].where((s) => s.isNotEmpty);
+    final landmark = '${a['landmark'] ?? ''}'.trim();
+    final who = [for (final k in const ['recipient', 'phone']) '${a[k] ?? ''}'.trim()].where((s) => s.isNotEmpty).join(' · ');
+    return [if (who.isNotEmpty) who, parts.join(', '), if (landmark.isNotEmpty && !landmark.startsWith('GPS')) 'Repère : $landmark'].where((s) => s.isNotEmpty).join('\n');
+  }
+
   static Order _fromServer(Map<String, dynamic> r) {
     final lines = [
       for (final l in (r['order_lines'] as List? ?? const []))
@@ -189,6 +273,7 @@ class Orders extends Notifier<List<Order>> {
     final f = [for (final l in (r['order_lines'] as List? ?? const [])) ((l as Map)['fulfillment'] as num?)?.toInt() ?? 0];
     final step = f.isEmpty ? 0 : f.reduce((a, b) => a < b ? a : b);
     final d = DateTime.tryParse(r['created_at'] as String? ?? '')?.toLocal() ?? DateTime.now();
+    final home = r['home_delivery'] == true;
     return Order(
       id: r['number'] as String,
       date: '${d.day} ${_mois[d.month - 1]} ${d.year}',
@@ -202,6 +287,11 @@ class Orders extends Notifier<List<Order>> {
       paid: r['paid'] == true,
       // l'annulation serveur (cancel_order) renseigne cancelled_at ; le booléen n'est synchronisé qu'à partir de 20261031a
       cancelled: r['cancelled'] == true || r['cancelled_at'] != null,
+      discount: (r['discount'] as num?)?.toInt() ?? 0,
+      promoCode: (r['promo_code'] as String?) ?? '',
+      home: home,
+      address: home ? _addressLine(r['delivery_address']) : '',
+      cod: r['cod'] == true,
     );
   }
 
@@ -218,16 +308,24 @@ class Orders extends Notifier<List<Order>> {
       subtotal: t.subtotal,
       fee: t.fee,
       method: method,
-      reference: 'OM-${(now.millisecondsSinceEpoch % 0xFFFF).toRadixString(16).toUpperCase()}-${now.second.toString().padLeft(2, '0')}10',
+      // connecté, la référence de paiement est celle du serveur (renseignée au lancement du paiement) ; jamais une valeur inventée
+      reference: Backend.ready ? '' : 'OM-${(now.millisecondsSinceEpoch % 0xFFFF).toRadixString(16).toUpperCase()}-${now.second.toString().padLeft(2, '0')}10',
+      discount: t.discount,
+      home: ref.read(homeDeliveryProvider),
+      cod: m == 2,
     );
     state = [o, ...state];
     return o;
   }
 
-  void adopt(String oldId, String id, int subtotal, int fee) => state = [for (final o in state) o.id == oldId ? o.withServer(id, subtotal, fee) : o];
+  void adopt(String oldId, String id, int subtotal, int fee, {int discount = 0}) => state = [for (final o in state) o.id == oldId ? o.withServer(id, subtotal, fee, discount: discount) : o];
   void discard(String id) => state = [for (final o in state) if (o.id != id) o];
   void cancel(String id) => state = [for (final o in state) o.id == id ? o.copyWith(cancelled: true) : o];
   void markPaid(String id) => state = [for (final o in state) o.id == id ? o.copyWith(paid: true) : o];
+  void markCod(String id) => state = [for (final o in state) o.id == id ? o.copyWith(cod: true, method: 'Paiement à la livraison') : o];
+  void setReference(String id, String ref) => state = [for (final o in state) o.id == id ? o.copyWith(reference: ref) : o];
+
+  /// Avance l'étape de préparation d'une commande de démonstration (hors connexion) ; connecté, l'étape vient du serveur et aucun écran ne l'appelle.
   void advance(String id) => state = [for (final o in state) o.id == id ? o.copyWith(status: (o.status + 1).clamp(0, 3)) : o];
 }
 
@@ -280,7 +378,7 @@ String statusLabel(int s) => const ['Confirmée', 'En préparation', 'Expédiée
 /// Première commande à payer : ni payée ni annulée (les commandes sont rangées de la plus récente à la plus ancienne) ; null s'il n'y en a pas.
 Order? payableOrder(List<Order> orders) {
   for (final o in orders) {
-    if (!o.paid && !o.cancelled) return o;
+    if (!o.paid && !o.cancelled && !o.cod) return o;
   }
   return null;
 }
@@ -306,7 +404,11 @@ final ordersAllProvider = Provider<List<Order>>((ref) => demoContent ? [...ref.w
 /// Commande ouverte depuis l'historique (sinon : la dernière).
 class SelectedOrderId extends Notifier<String?> {
   @override
-  String? build() => null;
+  String? build() {
+    ref.watch(authProvider.select((a) => a.current?.serverId ?? '')); // un autre compte ne reprend jamais la commande choisie par le précédent
+    return null;
+  }
+
   void set(String? v) => state = v;
 }
 
@@ -326,12 +428,14 @@ final viewedOrderProvider = Provider<Order>((ref) {
 Color badgeFill(String b) => switch (b) {
       'Livrée' => const Color(0xFFDDF5EC),
       'Annulée' => const Color(0xFFFDE6E7),
+      'En attente de paiement' => const Color(0xFFFFF1D6),
       _ => const Color(0xFFEFEBFA),
     };
 
 Color badgeInk(String b) => switch (b) {
       'Livrée' => const Color(0xFF0F7A52),
       'Annulée' => const Color(0xFFE5484D),
+      'En attente de paiement' => const Color(0xFF9A5B00),
       _ => const Color(0xFF5A3FE0),
     };
 
@@ -342,7 +446,13 @@ const liveCategories = ['Tous', 'Maison', 'Mode', 'Tech', 'Art', 'Alimentation']
 class SearchQuery extends Notifier<String> {
   @override
   String build() => '';
-  void set(String v) => state = v;
+
+  /// La saisie alimente aussi la recherche serveur partagée (champ, résultats et marketplace voient le même mot-clé).
+  void set(String v) {
+    state = v;
+    final f = ref.read(marcheFiltersProvider);
+    if (f.q != v) ref.read(marcheFiltersProvider.notifier).set(f.copy(q: v, need: ''));
+  }
 }
 
 final searchQueryProvider = NotifierProvider<SearchQuery, String>(SearchQuery.new);
@@ -382,14 +492,15 @@ class Favorites extends Notifier<List<String>> {
 
   bool has(String title) => state.contains(title);
 
-  void toggle(String title) {
+  /// Ajoute ou retire un favori. L'interface bouge tout de suite ; si l'écriture échoue elle revient en arrière et la valeur renvoyée est fausse.
+  Future<bool> toggle(String title) async {
     final on = !state.contains(title);
     final before = state;
     state = on ? [title, ...state] : [for (final f in state) if (f != title) f];
-    if (!Backend.ready) return;
-    Backend.setFavorite(title, on).then((ok) {
-      if (!ok && ref.mounted) state = before; // l'écriture a échoué : l'interface ne ment pas
-    });
+    if (!Backend.ready) return true;
+    final ok = await Backend.setFavorite(title, on);
+    if (!ok && ref.mounted) state = before; // l'écriture a échoué : l'interface ne ment pas
+    return ok;
   }
 }
 

@@ -23,6 +23,7 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/l8_opportunites.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_155 extends ConsumerWidget {
@@ -46,7 +47,7 @@ class G_155 extends ConsumerWidget {
       gP(24, 70, 74, 26, gText('Alertes', 21, Color(0xFF111015), weight: 700)),
       gP(346.25, 76.25, 11.5, 11.5, gImg('assets/figma/v/dd7f4ecaa9b199.svg')),
       gP(339.833, 69.833, 24.333, 24.333, gImg('assets/figma/v/e60784a24bd7e3.svg')),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 70.4, 34, 'Toutes', 12.5, 600), GChip(102.4, 120, 77.8, 34, 'Dossier', 12.5, 500), GChip(188.2, 120, 70.4, 34, 'Offres', 12.5, 500), GChip(266.6, 120, 122.2, 34, 'Dates limites', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 70.4, 34, 'Toutes', 12.5, 600), GChip(102.4, 120, 77.8, 34, 'Dossier', 12.5, 500), GChip(188.2, 120, 70.4, 34, 'Offres', 12.5, 500), GChip(266.6, 120, 122.2, 34, 'Dates limites', 12.5, 500)], selected: ref.read(alertsFilterProvider), selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17, onChanged: (i) { ref.read(alertsFilterProvider.notifier).set(i); })),
       gP(24, 168, 85, 19, gText('Aujourd’hui', 15, Color(0xFF111015), weight: 700), show: demoContent),
       gP(36, 219, 40, 40, gBox(color: Color(0xFFFDE6E7), radii: [13, 13, 13, 13]), show: demoContent),
       gP(44.652, 228.488, 22.68, 21.012, gImg('assets/figma/v/b4a6b4937f8754.svg'), show: demoContent),
@@ -110,7 +111,7 @@ class G_155 extends ConsumerWidget {
       if (demoContent) gTap(80, 210, 135, 33, () { gOpen(context, '154'); }), // parcours 155 -> 154
       if (demoContent) gTap(80, 276, 186, 33, () { gOpen(context, '151'); }), // parcours 155 -> 151
       if (demoContent) gTap(80, 460, 169, 33, () { gOpen(context, '159'); }), // parcours 155 -> 159
-      if (!demoContent) gP(24, 170, 342, 590, notificationsListing(height: 590)),
+      if (!demoContent) gP(24, 170, 342, 590, const AlertsFeed(width: 342, height: 590)),
     ]);
   }
 }

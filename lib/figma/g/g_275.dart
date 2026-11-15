@@ -64,6 +64,11 @@ class G_275 extends ConsumerWidget {
       gP(72, 576, 274, 20, gText(real ? newProductErrorsSummary(errs) : '3 champs à corriger avant de continuer. Votre brouillon est enregistré.', 12, Color(0xFFB42318), weight: 500)),
       gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => real ? gBack(context) : gOpen(context, '58')),
       gP(158.5, 788, 73, 19, gText('Continuer', 15, Color(0xFFFFFFFF), weight: 600)),
+      if (!demoContent && !real)
+        gP(0, 0, 390, 844, GestureDetector(
+          onTap: () => gBack(context),
+          child: Container(color: Color(0xFFF4EFE6), alignment: Alignment.center, padding: EdgeInsets.all(40), child: gText('Aucune erreur à corriger. Cet écran apparaît lorsqu’un formulaire de produit contient des erreurs. Touchez pour revenir.', 15, Color(0xFF111015), weight: 600, align: TextAlign.center, wrap: true)),
+        )),
     ]);
   }
 }

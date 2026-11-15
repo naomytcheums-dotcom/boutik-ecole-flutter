@@ -2,7 +2,7 @@ import 'package:flutter/material.dart' hide Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../g/g_10.dart';
-import '../gen.dart' show gAlert;
+import '../gen.dart' show gAlert, gToast;
 import '../i18n.dart' show Text;
 import '../nav.dart' show gOpen;
 import 'auth.dart';
@@ -12,6 +12,17 @@ import 'messages.dart';
 import 'social_profile.dart' show SocialProfile, publicProfileProvider;
 import 'talents.dart' show askText;
 
+/// Conversations directes ouvertes depuis un profil pendant cette session (profil → conversation ; vide = envoi en cours).
+/// « Écrire » ne renvoie jamais un premier message à la même personne : il rouvre la conversation déjà créée.
+class DirectChats extends Notifier<Map<String, String>> {
+  @override
+  Map<String, String> build() => const {};
+  void put(String userId, String conversationId) => state = {...state, userId: conversationId};
+  void clear(String userId) => state = {...state}..remove(userId);
+}
+
+final directChatsProvider = NotifierProvider<DirectChats, Map<String, String>>(DirectChats.new);
+
 /// Profil d'une autre personne (par exemple un étudiant ouvert depuis « Rechercher des talents ») : c'est l'écran 10 du Figma, le même
 /// dessin que le profil de chacun, avec le contenu de cette personne. Aucune page supplémentaire.
 class StudentProfileScreen extends ConsumerWidget {
@@ -20,18 +31,36 @@ class StudentProfileScreen extends ConsumerWidget {
 
   Future<void> _message(BuildContext context, WidgetRef ref, SocialProfile p) async {
     if (!await requireLogin(context, ref, 'écrire à une personne') || !context.mounted) return;
+    final chats = ref.read(directChatsProvider);
+    final known = chats[p.id];
+    if (known != null) {
+      if (known.isEmpty) return;
+      ref.read(selectedConversationProvider.notifier).set(known);
+      gToast(context, 'Vous avez déjà écrit à ${p.name} : la conversation est ouverte.');
+      return gOpen(context, '53');
+    }
     final text = await askText(context, title: 'Écrire à ${p.name}', body: 'Votre message ouvre une conversation directe.', hint: 'Bonjour…', ok: 'Envoyer', min: 1);
     if (text == null || !context.mounted) return;
+    final chatsN = ref.read(directChatsProvider.notifier);
+    final selectedN = ref.read(selectedConversationProvider.notifier);
+    final convsN = ref.read(conversationsProvider.notifier);
+    chatsN.put(p.id, '');
     final r = await Backend.startDirectConversation(p.id, text.trim());
-    if (!context.mounted) return;
-    if (r.error != null) return gAlert(context, 'Message non envoyé', r.error!);
-    ref.read(selectedConversationProvider.notifier).set(r.id!);
-    await ref.read(conversationsProvider.notifier).refresh();
+    if (r.error != null || r.id == null) {
+      chatsN.clear(p.id);
+      if (context.mounted) await gAlert(context, 'Message non envoyé', r.error ?? 'Réessayez dans un instant.');
+      return;
+    }
+    chatsN.put(p.id, r.id!);
+    selectedN.set(r.id!);
+    await convsN.refresh();
     if (context.mounted) gOpen(context, '53');
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final me = ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
+    if (me.isNotEmpty && me == userId) return const G_10();
     final async = ref.watch(publicProfileProvider(userId));
     return async.when(
       loading: () => const Scaffold(backgroundColor: Color(0xFFF7F4FA), body: Center(child: CircularProgressIndicator())),

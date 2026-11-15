@@ -4,6 +4,7 @@ import '../i18n.dart' show Text;
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show FactorStatus;
 
 import '../gen.dart';
@@ -12,7 +13,10 @@ import 'access.dart' show roleKey;
 import 'auth.dart';
 import 'backend.dart';
 import 'download_stub.dart' if (dart.library.js_interop) 'download_web.dart';
+import 'l10_voeux.dart' show openWish, openWishEditor;
+import 'missions.dart' show missionProvider;
 import 'project_pages.dart' show projectProgress;
+import 'profile_links.dart' show profileLinkError, savedProfileLinksProvider;
 import 'seller.dart';
 import 'share.dart';
 import 'store.dart' show ordersProvider, viewedOrderProvider;
@@ -75,7 +79,7 @@ Future<bool> copyText(String text) async {
 // ---------------------------------------------------------------- dialogues génériques
 
 /// Formulaire en fenêtre : renvoie les valeurs saisies (dans l'ordre des champs) ou null si annulé.
-Future<List<String>?> formDialog(BuildContext context, String title, List<(String label, String initial)> fields, {String submit = 'Enregistrer', String? intro}) {
+Future<List<String>?> formDialog(BuildContext context, String title, List<(String label, String initial)> fields, {String submit = 'Enregistrer', String? intro, bool numeric = false}) {
   final ctrls = [for (final f in fields) TextEditingController(text: f.$2)];
   return gDialog<List<String>>(
     context: context,
@@ -88,7 +92,7 @@ Future<List<String>?> formDialog(BuildContext context, String title, List<(Strin
           for (var i = 0; i < fields.length; i++)
             Padding(
               padding: const EdgeInsets.only(bottom: 10),
-              child: TextField(controller: ctrls[i], decoration: InputDecoration(labelText: fields[i].$1, border: const OutlineInputBorder(), isDense: true), style: _st),
+              child: TextField(controller: ctrls[i], keyboardType: numeric ? TextInputType.number : null, decoration: InputDecoration(labelText: fields[i].$1, border: const OutlineInputBorder(), isDense: true), style: _st),
             ),
         ]),
       ),
@@ -197,73 +201,137 @@ Future<void> saveNeed(BuildContext context, WidgetRef ref, {required bool publis
   if (publish) gBack(context);
 }
 
-/// Écran 191 (mission sur mesure) : le besoin décrit est publié côté serveur ; le département qualifie les équipes.
+/// Écran 191 (mission sur mesure) : le besoin décrit est publié côté serveur ; le département est prévenu et qualifie les équipes.
 /// Retourne vrai uniquement si le serveur a enregistré la demande.
-Future<bool> publishMissionBrief(BuildContext context, WidgetRef ref, String kind, String desc) async {
+Future<bool> publishMissionBrief(BuildContext context, WidgetRef ref, String kind, String desc, {int? budgetMin, int? budgetMax, String deadline = ''}) async {
   if (!await _ready(context, ref, 'envoyer votre besoin')) return false;
   if (!context.mounted) return false;
   final r = await _run(context, 'save_mission', {
     'p_id': null, 'p_title': 'Mission sur mesure · $kind', 'p_description': desc,
-    'p_budget_min': null, 'p_budget_max': null, 'p_deadline': '', 'p_publish': true, 'p_kind': 'mission',
+    'p_budget_min': budgetMin, 'p_budget_max': budgetMax, 'p_deadline': deadline, 'p_publish': true, 'p_kind': 'mission',
   }, title: 'Besoin non envoyé');
   return r.ok;
 }
 
-/// Écran 202 : « Commander le pack » crée une demande de mission sur mesure ; « Personnaliser » ouvre le formulaire de besoin.
+Future<bool> _confirm(BuildContext context, String title, String text, String yes) async {
+  final v = await gDialog<bool>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      backgroundColor: Colors.white,
+      title: Text(title, style: _st.copyWith(fontSize: 16, fontWeight: FontWeight.w700)),
+      content: Text(text, style: _muted),
+      actions: [TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuler')), FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(yes))],
+    ),
+  );
+  return v == true;
+}
+
+/// Écran 202 : « Commander le pack » crée une demande de mission sur mesure, après confirmation et une seule fois tant qu'elle est ouverte.
 Future<void> orderPack(BuildContext context, WidgetRef ref) async {
   if (!await _ready(context, ref, 'commander le pack')) return;
   if (!context.mounted) return;
+  const title = 'Pack Lancement de marque';
+  final mine = await Backend.rows('missions', 'id,title,status', eq: {'client_id': Backend.currentUserId ?? ''}, order: 'updated_at', limit: 100);
+  if (!context.mounted) return;
+  if (mine.error == null && mine.rows.any((m) => m['title'] == title && const {'published', 'assigned', 'in_progress'}.contains(m['status']))) {
+    return gAlert(context, 'Demande déjà envoyée', 'Votre demande de pack est déjà ouverte : retrouvez-la, avec les propositions reçues, dans « Mes besoins ».');
+  }
+  if (!await _confirm(context, 'Commander le pack ?', 'Une demande « Pack Lancement de marque » est envoyée au département, qui qualifie les équipes. Le prix n’est pas fixé d’avance : il découle des propositions que vous recevrez, et vous choisissez ou refusez.', 'Envoyer la demande') || !context.mounted) return;
   final r = await _run(context, 'save_mission', {
-    'p_id': null, 'p_title': 'Pack Lancement de marque',
+    'p_id': null, 'p_title': title,
     'p_description': 'Identité visuelle (MMI), fabrication du produit (BTA), photo et vidéo (TCO), emballage (GMP) : un seul interlocuteur.',
     'p_budget_min': null, 'p_budget_max': null, 'p_deadline': '', 'p_publish': true, 'p_kind': 'mission',
-  });
-  if (r.ok && context.mounted) gToast(context, 'Demande envoyée : le département qualifie les équipes et vous répond.');
+  }, title: 'Demande non envoyée');
+  if (r.ok && context.mounted) {
+    ref.read(missionProvider.notifier).refresh();
+    gToast(context, 'Demande envoyée : le département est prévenu et qualifie les équipes.');
+  }
 }
 
-/// Mes besoins : propositions reçues (accepter, refuser) et jalons livrés (valider, demander une correction).
+/// Mes besoins : propositions reçues (auteur, accepter, refuser), jalons livrés (valider, demander une correction) et retrait d'un besoin non attribué.
 Future<void> myNeedsDialog(BuildContext context, WidgetRef ref) async {
   if (!await _ready(context, ref, 'consulter vos besoins')) return;
-  final me = Backend.currentUserId;
   if (!context.mounted) return;
-  final missions = await _load(context, 'missions', 'id,number,title,status,budget_min,budget_max,client_id', order: 'updated_at');
-  if (missions == null || !context.mounted) return;
-  final mine = missions.where((m) => m['client_id'] == me).toList();
+  final res = await Backend.rpc('my_needs', const {});
+  if (res.error != null) {
+    if (context.mounted) await gAlert(context, 'Lecture impossible', res.error!);
+    return;
+  }
+  final mine = [for (final x in (res.data as List? ?? const [])) Map<String, dynamic>.from(x as Map)].where((m) => m['status'] != 'cancelled').toList();
+  if (!context.mounted) return;
   if (mine.isEmpty) return gAlert(context, 'Mes besoins', 'Vous n’avez encore publié aucun besoin.');
-  final ids = {for (final m in mine) m['id']};
-  final props = (await _load(context, 'mission_proposals', 'id,mission_id,amount,delay_days,message,status')) ?? const [];
-  final miles = (await _load(context, 'mission_milestones', 'mission_id,position,title,amount,status', order: 'position')) ?? const [];
-  if (!context.mounted) return;
-  final rows = <Map<String, dynamic>>[
-    for (final p in props)
-      if (ids.contains(p['mission_id'])) {...p, '_t': 'p', '_m': mine.firstWhere((m) => m['id'] == p['mission_id'])},
-    for (final j in miles)
-      if (ids.contains(j['mission_id'])) {...j, '_t': 'j', '_m': mine.firstWhere((m) => m['id'] == j['mission_id'])},
-  ];
-  if (rows.isEmpty) {
-    return gAlert(context, 'Mes besoins', [for (final m in mine) '${m['title'] ?? m['number']} · ${_status('${m['status']}')}'].join('\n'));
+  final rows = <Map<String, dynamic>>[];
+  for (final m in mine) {
+    rows.add({...m, '_t': 'n'});
+    for (final p in (m['proposals'] as List? ?? const [])) {
+      rows.add({...Map<String, dynamic>.from(p as Map), '_t': 'p', 'mission_id': m['id'], '_m': m});
+    }
+    for (final j in (m['milestones'] as List? ?? const [])) {
+      rows.add({...Map<String, dynamic>.from(j as Map), '_t': 'j', 'mission_id': m['id'], '_m': m});
+    }
   }
   await _listDialog(
     context,
     'Mes besoins',
     rows,
-    (r) => r['_t'] == 'p' ? 'Proposition · ${_money(r['amount'])} en ${r['delay_days']} j' : 'Jalon ${r['position']} · ${r['title']} (${_money(r['amount'])})',
-    sub: (r) => '${(r['_m'] as Map)['title'] ?? (r['_m'] as Map)['number']} · ${_status('${r['status']}')}${r['message'] == null ? '' : ' · ${r['message']}'}',
-    actions: (r) => r['_t'] == 'p'
-        ? [
-            if (r['status'] == 'submitted') ('Accepter', (x) => _decideProposal(context, x, true)),
-            if (r['status'] == 'submitted') ('Refuser', (x) => _decideProposal(context, x, false)),
-          ]
-        : [
-            if (r['status'] == 'submitted') ('Valider', (x) => _decideMilestone(context, x, true)),
-            if (r['status'] == 'submitted') ('Demander une correction', (x) => _decideMilestone(context, x, false)),
-          ],
+    (r) => switch (r['_t']) {
+      'n' => '${r['title']}',
+      'p' => 'Proposition de ${r['author_name']} · ${_money(r['amount'])} en ${r['delay_days']} j',
+      _ => 'Jalon ${r['position']} · ${r['title']} (${_money(r['amount'])})',
+    },
+    sub: (r) => switch (r['_t']) {
+      'n' => [_status('${r['status']}'), if (r['budget_max'] != null) 'budget ${_money(r['budget_min'])} – ${_money(r['budget_max'])}', if ('${r['deadline'] ?? ''}'.isNotEmpty) 'pour le ${r['deadline']}'].join(' · '),
+      _ => '${(r['_m'] as Map)['title']} · ${_status('${r['status']}')}${'${r['message'] ?? ''}'.isEmpty || r['_t'] != 'p' ? '' : ' · ${r['message']}'}',
+    },
+    actions: (r) => switch (r['_t']) {
+      'n' => [if (r['status'] == 'published' || r['status'] == 'draft') ('Annuler ce besoin', (x) => _cancelNeed(context, ref, x))],
+      'p' => [
+          ('Voir le profil', (x) async {
+            GoRouter.of(context).push('/etudiant/${x['author_id']}');
+            return true;
+          }),
+          ('Poser une question', (x) => _askAuthor(context, x)),
+          if (r['status'] == 'submitted') ('Accepter', (x) => _decideProposal(context, ref, x, true)),
+          if (r['status'] == 'submitted') ('Refuser', (x) => _decideProposal(context, ref, x, false)),
+        ],
+      _ => [
+          if (r['status'] == 'submitted') ('Valider', (x) => _decideMilestone(context, x, true)),
+          if (r['status'] == 'submitted') ('Demander une correction', (x) => _decideMilestone(context, x, false)),
+        ],
+    },
   );
 }
 
-Future<bool> _decideProposal(BuildContext context, Map<String, dynamic> p, bool accept) async {
+/// Question à l'auteur d'une proposition, avant de l'accepter : message direct (la réponse arrive dans la messagerie).
+Future<bool> _askAuthor(BuildContext context, Map<String, dynamic> p) async {
+  final v = await formDialog(context, 'Question à ${p['author_name']}', [('Votre question', '')], submit: 'Envoyer');
+  if (v == null || v.first.isEmpty || !context.mounted) return false;
+  final r = await Backend.startDirectConversation('${p['author_id']}', 'À propos de ma proposition de mission :\n\n${v.first}');
+  if (!context.mounted) return false;
+  if (r.error != null) {
+    await gAlert(context, 'Message non envoyé', r.error!);
+    return false;
+  }
+  gToast(context, 'Question envoyée : la réponse arrive dans vos messages.');
+  return false;
+}
+
+Future<bool> _cancelNeed(BuildContext context, WidgetRef ref, Map<String, dynamic> m) async {
+  if (!await _confirm(context, 'Annuler ce besoin ?', 'Il n’est plus visible des talents et les propositions en attente sont déclinées : leurs auteurs sont prévenus.', 'Annuler le besoin') || !context.mounted) return false;
+  final r = await _run(context, 'mission_cancel', {'p_id': m['id']});
+  if (r.ok && context.mounted) {
+    ref.read(missionProvider.notifier).refresh();
+    gToast(context, 'Besoin annulé.');
+  }
+  return r.ok;
+}
+
+Future<bool> _decideProposal(BuildContext context, WidgetRef ref, Map<String, dynamic> p, bool accept) async {
   final r = await _run(context, 'decide_proposal', {'p_id': p['id'], 'p_accept': accept});
-  if (r.ok && context.mounted) gToast(context, accept ? 'Proposition acceptée : la mission est attribuée.' : 'Proposition refusée.');
+  if (r.ok && context.mounted) {
+    ref.read(missionProvider.notifier).refresh();
+    gToast(context, accept ? 'Proposition acceptée : la mission est attribuée.' : 'Proposition refusée.');
+  }
   return r.ok;
 }
 
@@ -277,7 +345,7 @@ Future<bool> _decideMilestone(BuildContext context, Map<String, dynamic> j, bool
   if (!context.mounted) return false;
   final r = await _run(context, 'decide_milestone', {'p_mission': j['mission_id'], 'p_position': j['position'], 'p_validate': validate, 'p_note': note});
   if (r.ok && context.mounted) {
-    gToast(context, validate ? 'Jalon validé. Le versement suivra l’activation des paiements Mobile Money.' : 'Correction demandée au prestataire.');
+    gToast(context, validate ? 'Jalon validé : la livraison est acceptée. Le paiement se règle directement avec le prestataire.' : 'Correction demandée au prestataire.');
   }
   return r.ok;
 }
@@ -357,22 +425,9 @@ Future<void> assignNeedDialog(BuildContext context, WidgetRef ref, {String team 
 }
 
 // ---------------------------------------------------------------- vœux (218, validation par le département)
+// saveWish (publication et brouillon) : voir l10_voeux.dart.
 
-Future<void> saveWish(BuildContext context, WidgetRef ref, {required bool submit}) async {
-  if (!await _ready(context, ref, 'publier un vœu')) return;
-  final title = field(ref, 'w_title', 'Lampe en bois recyclé');
-  if (!context.mounted) return;
-  final r = await _run(context, 'save_wish', {
-    'p_id': null, 'p_title': title, 'p_description': field(ref, 'w_desc'), 'p_price': firstInt(field(ref, 'w_price', '25 000 FCFA')),
-    'p_threshold': firstInt(field(ref, 'w_threshold', '200')), 'p_duration_days': firstInt(field(ref, 'w_duration', '30 jours')), 'p_submit': submit,
-  }, title: submit ? 'Vœu non envoyé' : 'Brouillon non enregistré');
-  if (!r.ok || !context.mounted) return;
-  ref.read(formProvider.notifier).clear(const ['w_title', 'w_desc', 'w_price', 'w_threshold', 'w_duration']);
-  gToast(context, submit ? 'Vœu envoyé : votre département le valide avant sa mise en ligne.' : 'Brouillon enregistré.');
-  if (submit) gBack(context);
-}
-
-/// Mes vœux : état de validation, suppression d'un brouillon ou d'un vœu refusé.
+/// Mes vœux : état de validation, modification d'un brouillon ou d'un vœu refusé, suppression.
 Future<void> myWishesDialog(BuildContext context, WidgetRef ref) async {
   if (!await _ready(context, ref, 'consulter vos vœux')) return;
   final me = Backend.currentUserId;
@@ -381,6 +436,16 @@ Future<void> myWishesDialog(BuildContext context, WidgetRef ref) async {
   if (rows == null || !context.mounted) return;
   if (rows.isEmpty) return gAlert(context, 'Mes vœux', 'Vous n’avez encore proposé aucun vœu.');
   await _listDialog(context, 'Mes vœux', rows, (w) => '${w['title']}', sub: (w) => '${_status('${w['status']}')}${w['review_note'] == null ? '' : ' · ${w['review_note']}'}', actions: (w) => [
+        if (w['status'] == 'draft' || w['status'] == 'rejected')
+          ('Modifier', (x) async {
+            openWishEditor(context, '${x['id']}');
+            return true;
+          }),
+        if (w['status'] == 'approved' || w['status'] == 'scheduled')
+          ('Voir la fiche', (x) async {
+            openWish(context, '${x['id']}');
+            return true;
+          }),
         if (w['status'] == 'draft' || w['status'] == 'rejected')
           ('Supprimer', (x) async {
             final r = await _run(context, 'delete_wish', {'p_id': x['id']});
@@ -400,7 +465,7 @@ Future<void> reviewWishesDialog(BuildContext context, WidgetRef ref) async {
   Future<bool> decide(Map<String, dynamic> w, String d) async {
     var note = '', when = '';
     if (d != 'approved') {
-      final v = await formDialog(context, d == 'rejected' ? 'Motif du refus' : 'Planifier la mise en ligne', [(d == 'rejected' ? 'Motif' : 'Date de mise en ligne', '')], submit: 'Confirmer');
+      final v = await formDialog(context, d == 'rejected' ? 'Motif du refus' : 'Planifier la mise en ligne', [(d == 'rejected' ? 'Motif' : 'Date de mise en ligne (AAAA-MM-JJ HH:MM)', '')], submit: 'Confirmer');
       if (v == null) return false;
       d == 'rejected' ? note = v.first : when = v.first;
     }
@@ -564,15 +629,7 @@ Future<void> saveService(BuildContext context, WidgetRef ref, {required bool sub
   if (submit) gBack(context);
 }
 
-Future<void> saveLive(BuildContext context, WidgetRef ref, {required bool schedule}) async {
-  if (!await _ready(context, ref, 'programmer un live')) return;
-  if (!context.mounted) return;
-  final title = field(ref, 'l_title'), when = field(ref, 'l_date');
-  if (title.length < 3 || title.length > 120) return gAlert(context, 'Live incomplet', 'Indiquez le titre du live (3 à 120 caractères).');
-  if (schedule && when.length < 3) return gAlert(context, 'Live incomplet', 'Indiquez la date et l’heure du live pour le programmer.');
-  final r = await _run(context, 'save_live', {'p_title': title, 'p_starts_at': when, 'p_product': field(ref, 'l_product'), 'p_schedule': schedule});
-  if (r.ok && context.mounted) gToast(context, schedule ? 'Live programmé : il apparaît dans « Prochains lives ».' : 'Brouillon enregistré.');
-}
+/// 224 « Programmer un live » : voir saveLive dans l10_ateliers.dart (create_live avec une vraie date).
 
 /// Liens ajoutés pendant la session (271, P5), enregistrés ensemble.
 class PendingLinks extends Notifier<List<Map<String, String>>> {
@@ -588,8 +645,8 @@ Future<void> addProfileLink(BuildContext context, WidgetRef ref) async {
   final v = await formDialog(context, 'Ajouter un lien', [('Nom (portfolio, site, Drive…)', ''), ('Adresse https://', 'https://')], submit: 'Ajouter');
   if (v == null || !context.mounted) return;
   final url = v[1].trim(), label = v[0].trim();
-  if (!RegExp(r'^https://[^\s<>"]+$').hasMatch(url) || url.length < 12 || url.length > 300) return gAlert(context, 'Lien invalide', 'Une adresse commençant par https:// est attendue (12 à 300 caractères, sans espace).');
-  if (label.length > 60) return gAlert(context, 'Nom trop long', 'Le nom du lien ne doit pas dépasser 60 caractères.');
+  final err = profileLinkError(label, url);
+  if (err != null) return gAlert(context, 'Lien invalide', err);
   ref.read(pendingLinksProvider.notifier).add(label.isEmpty ? 'Lien' : label, url);
   gToast(context, 'Lien ajouté : pensez à enregistrer.');
 }
@@ -616,6 +673,7 @@ Future<void> saveProfileLinks(BuildContext context, WidgetRef ref) async {
   final r = await _run(context, 'save_profile_links', {'p_links': merged});
   if (r.ok && context.mounted) {
     ref.read(pendingLinksProvider.notifier).clear();
+    ref.invalidate(savedProfileLinksProvider);
     gToast(context, 'Liens enregistrés sur votre profil.');
   }
 }
@@ -706,11 +764,13 @@ Future<void> verifyCertificateDialog(BuildContext context, WidgetRef ref, {Strin
   if (!r.ok || !context.mounted) return;
   final d = Map<String, dynamic>.from((r.data as Map?) ?? const {});
   if (d['introuvable'] == true) return gAlert(context, 'Certificat introuvable', 'Aucun certificat ne porte le code ${d['code']}.');
+  if (d['limite'] == true) return gAlert(context, 'Trop de tentatives', 'Trop de codes inconnus ont été essayés. Réessayez dans quelques minutes.');
+  final fp = '${d['empreinte'] ?? ''}';
   await gAlert(
       context,
       d['valide'] == true ? 'Certificat authentique' : 'Certificat révoqué',
       '${d['code']}\n${d['objet']}\nTitulaire : ${d['titulaire']}${d['departement'] == null ? '' : ' · ${d['departement']}'}\nDélivré le ${d['delivre_le']}'
-          '${d['valide'] == true ? '' : '\nMotif : ${d['motif_revocation']}'}\nEmpreinte : ${'${d['empreinte']}'.substring(0, 16)}…');
+          '${d['valide'] == true ? '' : '\nMotif : ${d['motif_revocation']}'}${fp.isEmpty ? '' : '\nEmpreinte : ${fp.length > 16 ? '${fp.substring(0, 16)}…' : fp}'}');
 }
 
 /// Mes certificats (titulaire) ; sans certificat, propose la vérification d'un code.
@@ -765,14 +825,20 @@ Future<void> exportCatalog(BuildContext context, WidgetRef ref) =>
 
 // ---------------------------------------------------------------- bornes (206, 276, 277, 282)
 
-/// Écran 206 : état réel de la connexion au serveur.
+/// Écran 206 : état réel des bornes (statut et dernière mise à jour lus sur le serveur).
 Future<void> kioskNetworkCheck(BuildContext context) async {
-  if (!Backend.ready) return gAlert(context, 'Borne hors ligne', 'Le catalogue reste consultable hors ligne ; les commandes reprendront au retour du réseau.');
-  final r = await Backend.rows('kiosks', 'id', limit: 1);
+  if (!Backend.ready) return gAlert(context, 'Hors connexion', 'Sans connexion au serveur, l’état de la borne est inconnu : seul le catalogue de démonstration est affiché.');
+  final r = await Backend.rows('kiosks', 'id,name,location,status,updated_at', order: 'id', ascending: true);
   if (!context.mounted) return;
-  r.error == null || r.error!.contains('pas encore activée')
-      ? gToast(context, 'Borne prête · réseau OK')
-      : await gAlert(context, 'Réseau indisponible', 'Le serveur ne répond pas. Le catalogue reste consultable hors ligne.');
+  if (r.error != null && !r.error!.contains('pas encore activée')) return gAlert(context, 'État de la borne inconnu', 'Le serveur ne répond pas. Réessayez dans un instant.');
+  if (r.rows.isEmpty) return gAlert(context, 'Aucune borne enregistrée', 'Aucune borne n’est enregistrée sur le serveur pour le moment.');
+  const label = {'online': 'En ligne', 'offline': 'Hors ligne', 'fallback': 'Mode secours', 'maintenance': 'Maintenance'};
+  await gAlert(context, 'État des bornes', [for (final k in r.rows) '${k['name']} (${k['location']}) : ${label['${k['status']}'] ?? k['status']} · mise à jour ${_dateTime(k['updated_at'])}'].join('\n'));
+}
+
+String _dateTime(Object? iso) {
+  final d = DateTime.tryParse('${iso ?? ''}')?.toLocal();
+  return d == null ? 'inconnue' : '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year} ${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}';
 }
 
 /// Écran 277 (support, administration) : journal des incidents et signalement d'un nouvel incident.
@@ -968,7 +1034,7 @@ Future<void> uploadProjectFileFor(BuildContext context, WidgetRef ref) async {
 // ---------------------------------------------------------------- dossier de mission (196)
 
 Future<Map<String, dynamic>?> _pickMission(BuildContext context) async {
-  final rows = await _load(context, 'missions', 'id,number,title,status', order: 'updated_at');
+  final rows = await _load(context, 'missions', 'id,number,title,status,client_id', order: 'updated_at');
   final open = rows?.where((m) => const ['assigned', 'in_progress', 'delivered'].contains(m['status'])).toList() ?? const [];
   if (rows == null || !context.mounted) return null;
   final me = Backend.currentUserId;
@@ -979,7 +1045,7 @@ Future<Map<String, dynamic>?> _pickMission(BuildContext context) async {
   final mine = open.where((m) => mineIds.contains(m['id']) || asClient.contains(m['id'])).toList();
   if (!context.mounted) return null;
   if (mine.isEmpty) {
-    await gAlert(context, 'Aucun dossier', 'Le dossier s’ouvre lorsqu’une mission vous est attribuée (ou lorsque vous attribuez votre besoin).');
+    await gAlert(context, 'Aucun dossier', 'Le dossier s’ouvre lorsqu’une proposition est acceptée. Avant cela, posez vos questions aux auteurs des propositions depuis « Mes besoins ».');
     return null;
   }
   if (mine.length == 1) return mine.first;
@@ -1003,6 +1069,17 @@ Future<void> missionDossierDialog(BuildContext context, WidgetRef ref) async {
   final files = await _load(context, 'files', 'name,path,created_at', eq: {'ref': m['id']}) ?? const [];
   if (!context.mounted) return;
   final me = Backend.currentUserId;
+  var other = 'Le client';
+  if (m['client_id'] == me) {
+    final needs = await Backend.rpc('my_needs', const {});
+    for (final n in (needs.data as List? ?? const [])) {
+      if ((n as Map)['id'] != m['id']) continue;
+      for (final p in (n['proposals'] as List? ?? const [])) {
+        if ((p as Map)['status'] == 'accepted') other = '${p['author_name']}';
+      }
+    }
+  }
+  if (!context.mounted) return;
   final ctrl = TextEditingController();
   await gDialog<void>(
     context: context,
@@ -1017,7 +1094,7 @@ Future<void> missionDossierDialog(BuildContext context, WidgetRef ref) async {
             for (final x in msgs.reversed)
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
-                child: Text('${x['sender_id'] == me ? 'Moi' : 'Autre partie'} · ${x['body']}', style: _st),
+                child: Text('${x['sender_id'] == me ? 'Moi' : other} · ${x['body']}', style: _st),
               ),
             for (final f in files)
               TextButton(

@@ -184,16 +184,48 @@ class CommunitiesNotifier extends Notifier<List<Community>?> {
     return null;
   }
 
-  Future<void> refresh([String query = '']) async {
-    final r = await Backend.rpc('communities_list', {'p_query': query, 'p_limit': 30});
+  /// Recherche et type en cours : conservés quand une action (adhésion, départ…) relit l'annuaire.
+  String _query = '';
+  String _kind = '';
+
+  /// Vrai quand une page complète vient d'être reçue : d'autres communautés peuvent être chargées.
+  bool hasMore = false;
+  static const pageSize = 30;
+
+  String get query => _query;
+  String get kind => _kind;
+
+  Future<({List<Community>? rows, bool failed})> _fetch(int offset) async {
+    final r = await Backend.rpc('communities_list', {'p_query': _query, 'p_limit': pageSize, if (offset > 0) 'p_offset': offset, if (_kind.isNotEmpty) 'p_kind': _kind});
+    if (r.error != null || r.data is! List) return (rows: null, failed: true);
+    return (rows: [for (final x in r.data as List) Community.fromRow(x as Map)], failed: false);
+  }
+
+  /// Recherche et filtre par type côté serveur ; sans argument, relit la liste avec la recherche en cours.
+  Future<void> refresh([String? query, String? kind]) async {
+    if (query != null) _query = query.trim();
+    if (kind != null) _kind = kind;
+    final r = await _fetch(0);
     if (!ref.mounted) return;
-    if (r.error != null || r.data is! List) {
+    if (r.failed) {
       ref.read(communitiesErrorProvider.notifier).set('Les communautés ne peuvent pas être chargées pour le moment.');
+      hasMore = false;
       state = const [];
       return;
     }
     ref.read(communitiesErrorProvider.notifier).set('');
-    state = [for (final x in r.data as List) Community.fromRow(x as Map)];
+    hasMore = r.rows!.length >= pageSize;
+    state = r.rows;
+  }
+
+  /// Page suivante de l'annuaire (les 30 suivantes, selon la recherche et le type en cours).
+  Future<void> loadMore() async {
+    final cur = state;
+    if (cur == null || !hasMore) return;
+    final r = await _fetch(cur.length);
+    if (!ref.mounted || r.failed) return;
+    hasMore = r.rows!.length >= pageSize;
+    state = [...cur, ...r.rows!];
   }
 }
 
@@ -285,7 +317,7 @@ class CommunitiesList extends ConsumerWidget {
             c: c,
             onOpen: () {
               ref.read(selectedCommunityProvider.notifier).select(c);
-              GoRouter.of(context).push('/communaute');
+              GoRouter.of(context).push('/communaute/${c.id}');
             },
             onJoin: () => joinCommunity(context, ref, c),
           );

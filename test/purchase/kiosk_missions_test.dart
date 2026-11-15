@@ -1,4 +1,5 @@
 import 'package:boutik_ecole/data/repositories/repositories.dart' show cartProvider;
+import 'package:boutik_ecole/figma/live/impact.dart' show showroomCities;
 import 'package:boutik_ecole/figma/live/missions.dart';
 import 'package:boutik_ecole/figma/live/store.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -35,6 +36,27 @@ void main() {
 
     c.read(kioskQueryProvider.notifier).set('drone');
     expect(c.read(kioskProductsProvider).first.title, 'Drone éducatif');
+  });
+
+  test('borne : le code transféré garde son jeton serveur et l’annulation locale ne révoque rien hors connexion', () {
+    final p = liveCatalog.first;
+    const token = 'Abcd1234Efgh5678Ijkl9012Mnop3456';
+    final c = ProviderContainer();
+    addTearDown(c.dispose);
+    c.read(kioskSessionProvider.notifier).confirm(p, token);
+    final s = c.read(kioskSessionProvider)!;
+    expect((s.used, s.server, s.token), (true, true, token));
+    expect(s.tracking, 'BE-Abcd-1234');
+    c.read(kioskSessionProvider.notifier).cancel();
+    expect(c.read(kioskSessionProvider), isNull);
+    c.read(kioskSessionProvider.notifier).start(p);
+    expect(c.read(kioskSessionProvider)!.server, isFalse);
+  });
+
+  test('showroom : les villes filtrent par établissement', () {
+    expect(showroomCities.length, 4);
+    expect(showroomCities.first, isEmpty);
+    expect(showroomCities.skip(1).every((v) => v.length > 3), isTrue);
   });
 
   test('missions : jalons, séquestre, libération et revenus', () {

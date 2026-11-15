@@ -45,11 +45,11 @@ void main() {
     expect(r.state.uri.path, '/s/03');
   });
 
-  testWidgets('hors visite, « Continuer » garde la destination du rôle (175 → 57)', (tester) async {
+  testWidgets('hors visite et sans compte, « Continuer » mène à l’accueil (jamais à une page réservée)', (tester) async {
     final r = await open(tester, '/s/175', G_175);
     await tester.tap(find.text('Continuer'));
     await tester.pumpAndSettle();
-    expect(r.state.uri.path, '/s/57');
+    expect(r.state.uri.path, '/s/03');
   });
 
   testWidgets('maquette d’ordinateur sur téléphone : agrandissable, et ses liens restent actifs', (tester) async {

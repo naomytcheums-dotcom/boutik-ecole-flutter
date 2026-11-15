@@ -40,7 +40,7 @@ class G_254 extends ConsumerWidget {
       gP(330, 36, 40, 40, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
       gP(340.625, 45.917, 18.75, 16.625, gImg('assets/figma/v/b2ae09d0fd46bb.svg')),
       gP(345.796, 59.375, 8.408, 6.712, gImg('assets/figma/v/f59da0513c0b4c.svg')),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 106, 60, 32, 'Tout', 11.5, 500), GChip(92, 106, 84, 32, 'Abonnés', 11.5, 400), GChip(184, 106, 100, 32, 'Commandes', 11.5, 400), GChip(292, 106, 68, 32, 'Lives', 11.5, 400)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFFFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 16)),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 106, 60, 32, 'Tout', 11.5, 500), GChip(92, 106, 84, 32, 'Abonnés', 11.5, 400), GChip(184, 106, 100, 32, 'Commandes', 11.5, 400), GChip(292, 106, 68, 32, 'Lives', 11.5, 400)], selected: demoContent ? 0 : ref.watch(activityFilterProvider), selFill: Color(0xFF111015), unselFill: Color(0xFFFFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 16, onChanged: (i) { ref.read(activityFilterProvider.notifier).set(i); })),
       gP(24, 152, 342, 84, gBox(gradient: LinearGradient(begin: Alignment(-1.24, -0.68), end: Alignment(0.36, 0.52), colors: [Color(0xFFE3EEFC), Color(0xFFEDE6FB)], stops: [0, 1]), border: Color(0xFFDCE6F5), bw: 1, radii: [28, 28, 28, 28]), show: demoContent),
       gP(38, 166, 40, 40, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, radii: [20, 20, 20, 20]), show: demoContent),
       gP(90, 168, 137, 16, gText('Kéla · rappel intelligent', 12.5, Color(0xFF111015), weight: 600), show: demoContent),
@@ -116,7 +116,7 @@ class G_254 extends ConsumerWidget {
       if (demoContent) gTap(283, 521, 69, 24, () => gOpen(context, '250')),
       if (demoContent) gTap(280, 629, 72, 24, () => gOpen(context, '253')),
       if (demoContent) gTap(310, 703, 42, 24, () => gOpen(context, '252')),
-      if (!demoContent) gP(24, 125, 342, 620, notificationsListing(height: 620)),
+      if (!demoContent) gP(24, 148, 342, 600, notificationsListing(height: 600)),
     ]);
   }
 }

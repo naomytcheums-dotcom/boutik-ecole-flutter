@@ -60,11 +60,11 @@ class G_231 extends ConsumerWidget {
       gP(216, 146, 56, 56, gBox(image: 'assets/figma/img/75d62324f07569a15dcd7cd5ce6357a2177c94cd.png', fit: BoxFit.contain)),
       gP(218, 214, 87, 20, gText('Parle à Kéla', 16, Color(0xFF111015), weight: 600)),
       gP(218, 238, 117, 14, gText('Essaie dès maintenant', 11, Color(0xFF57545F))),
-      gP(218, 288, 134, 40, gBox(color: Color(0xFF111015), radii: [20, 20, 20, 20]), tap: () => gOpen(context, 'A1')),
+      gP(218, 288, 134, 40, gBox(color: Color(0xFF111015), radii: [20, 20, 20, 20]), tap: () => gOpen(context, '230')),
       gP(247, 299, 76, 16, gText('Commencer', 12.5, Color(0xFFFFFFFF), weight: 500, align: TextAlign.center)),
       gP(24, 362, 57, 19, gText('Thèmes', 15, Color(0xFF111015), weight: 600)),
       gP(318, 364, 48, 15, gText('Tout voir', 12, Color(0xFF57545F), align: TextAlign.right)),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 394, 94, 36, 'Missions', 12.5, 500), GChip(126, 394, 78, 36, 'Design', 12.5, 400), GChip(212, 394, 70, 36, 'Vidéo', 12.5, 400), GChip(290, 394, 94, 36, 'Commerce', 12.5, 400), GChip(392, 394, 62, 36, 'Tech', 12.5, 400)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFFFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 18)),
+      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 394, 94, 36, 'Missions', 12.5, 500), GChip(126, 394, 78, 36, 'Design', 12.5, 400), GChip(212, 394, 70, 36, 'Vidéo', 12.5, 400), GChip(290, 394, 94, 36, 'Commerce', 12.5, 400), GChip(392, 394, 62, 36, 'Tech', 12.5, 400)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFFFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 18, onChanged: (i) { gOpen(context, const ['201', '70', '70', '22', '70'][i]); })),
       gP(38, 458, 50, 50, gBox(image: 'assets/figma/img/73da21b1c6a4823a1f04e17582334a3c3bc639ed.png', fit: BoxFit.contain)),
       gP(38, 520, 143, 20, gText('Déposer un besoin', 15, Color(0xFF111015), weight: 600, lh: 20, wrap: true)),
       gP(38, 566, 143, 45, gText('Logo, affiche, vidéo : Kéla t’oriente vers les bons talents.', 10.5, Color(0xFF57545F), lh: 15, wrap: true)),
@@ -80,7 +80,7 @@ class G_231 extends ConsumerWidget {
       gP(297.5, 609, 13, 6, gImg('assets/figma/v/4159f10924eea0.svg')),
       gP(301.5, 606, 9, 12, gImg('assets/figma/v/8fa5d9e08de732.svg')),
       gP(36, 666, 42, 42, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, radii: [21, 21, 21, 21])),
-      gP(90, 664, 239, 34, gText(gm('2 talents de MMI correspondent à ton brief parfum.', ''), 12, Color(0xFF111015), weight: 500, lh: 17, wrap: true)),
+      gP(90, 664, 239, 34, gText(gm('2 talents de MMI correspondent à ton brief parfum.', 'Trouve les talents étudiants qui peuvent réaliser ton besoin.'), 12, Color(0xFF111015), weight: 500, lh: 17, wrap: true)),
       gP(90, 700, 70, 13, gText('Voir les profils', 10.5, Color(0xFF5A3FE0), weight: 600)),
       gP(164, 154, 24, 24, gBox(color: Color(0xFFF2F0EE), oval: true)),
       gP(169.208, 163, 13.583, 6, gImg('assets/figma/v/3b10dd3179a10e.svg')),
@@ -104,7 +104,11 @@ class G_231 extends ConsumerWidget {
       gP(169, 762, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gTab(context, '03')),
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
-      gTap(74, 258, 97, 32, () { gOpen(context, 'a3'); }), // parcours 231 -> a3
+      gTap(24, 240, 170, 104, () { gOpen(context, '232'); }), // 231 -> écrire ou dicter à Kéla (fil de discussion réel)
+      gTap(24, 130, 170, 106, () { gOpen(context, '230'); }), // Brief express : décrire son besoin à voix haute
+      gTap(24, 440, 170, 190, () { gOpen(context, '191'); }), // Déposer un besoin : formulaire réel
+      gTap(200, 440, 170, 190, () { gOpen(context, '201'); }), // Suivre ma mission : missions réelles et jalons
+      gTap(82, 656, 200, 70, () { gOpen(context, '70'); }), // Voir les profils : talents étudiants réels
       gTap(312, 356, 60, 32, () { uiAllShown(context); }), // audit 01/11 : « Tout voir » n'avait aucun effet
     ]);
   }

@@ -6,6 +6,7 @@ import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/lot20.dart';
+import '../live/notifs.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -84,13 +85,13 @@ class G_51 extends ConsumerWidget {
       gP(40, 617, 50, 16, gText('Montant', 12.5, Color(0xFF57545F)), show: demoContent),
       gP(262, 617, 88, 16, gText(demoContent ? '330 000 FCFA' : '', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right), show: demoContent),
       gP(0, 744, 390, 100, gBox(color: Color(0x00FFFFFF)), show: demoContent),
-      gP(24, 760, 163, 54, gBox(color: Color(0x00FFFFFF), border: Color(0xFFD9D3E6), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => contactOrderSeller(ref, context)),
-      gP(31.5, 778, 148, 18, gText('Contacter le vendeur', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
-      gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gOpen(context, '46')),
-      gP(209, 778, 151, 18, gText('Suivre ma commande', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
+      gP(24, 760, 163, 54, gBox(color: Color(0x00FFFFFF), border: Color(0xFFD9D3E6), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => contactOrderSeller(ref, context), show: demoContent),
+      gP(31.5, 778, 148, 18, gText('Contacter le vendeur', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center), show: demoContent),
+      gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gOpen(context, '46'), show: demoContent),
+      gP(209, 778, 151, 18, gText('Suivre ma commande', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center), show: demoContent),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       if (demoContent) gTap(239, 541, 119, 32, () { gOpen(context, '65'); }), // parcours 51 -> 65
-      if (!demoContent) gP(24, 125, 342, 620, notificationsListing(height: 620)),
+      if (!demoContent) gP(24, 125, 342, 690, notificationDetail(height: 690)),
     ]);
   }
 }

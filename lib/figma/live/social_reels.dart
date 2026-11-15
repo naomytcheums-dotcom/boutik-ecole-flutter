@@ -180,7 +180,7 @@ class ReelActions extends ConsumerWidget {
       const SizedBox(height: 6),
       col(const Icon(Icons.more_horiz_rounded, color: Colors.white, size: 32, shadows: _shadow), 'Plus', r == null ? null : () => showPostMenu(context, ref, r)),
       const SizedBox(height: 6),
-      col(const Icon(Icons.storefront_outlined, color: Colors.white, size: 30, shadows: _shadow), 'Boutique', () => gOpen(context, '248')),
+      col(const Icon(Icons.storefront_outlined, color: Colors.white, size: 30, shadows: _shadow), 'Boutique', r == null ? null : () => openPostShop(context, r.id)),
     ]);
   }
 }

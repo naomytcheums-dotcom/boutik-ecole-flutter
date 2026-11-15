@@ -28,6 +28,8 @@ import '../live/pay.dart';
 import '../live/account_menu.dart';
 import '../live/access.dart';
 import 'package:go_router/go_router.dart' show GoRouter;
+import '../live/profile_links.dart' show ProfileLinkIcons;
+import '../live/reels.dart' show followingIdsProvider;
 import '../live/company_profile_layers.dart';
 import '../live/social_profile.dart' show SocialProfile;
 import '../live/lot20b.dart' show myProjectsProvider;
@@ -48,9 +50,16 @@ class G_10 extends ConsumerWidget {
     // Une entreprise a le même écran 10 (design du Figma) avec son propre contenu : nom, secteur, présentation, chiffres, vérification.
     final isView = viewProfile != null;
     final isCo = !isView && !demoContent && me != null && me.role == 2 && me.staff.isEmpty;
-    final hideLinks = isCo || isView;
+    final hideLinks = isCo || isView || !demoContent; // connecté : seuls les liens réellement enregistrés s'affichent (ProfileLinkIcons)
+    final isClient = !isView && !isCo && !demoContent && me != null && me.role == 0 && me.staff.isEmpty;
+    // Un Client n'a ni boutique ni talent à certifier : le Talent Passport et la demande de certification ne lui sont proposés que si son compte est déjà certifié ou en cours d'examen.
+    final hidePassport = isClient && me.certification == 'none';
     final co = isCo ? companyProfileInfo(ref) : null;
     void goTo(String path) => GoRouter.of(context).push(path);
+    // « Partager » partage le profil affiché : celui de la personne consultée, sinon le mien.
+    void shareThis() => isView
+        ? shareProfile(context, id: viewProfile!.id, name: viewProfile!.name, department: viewProfile!.department, institution: viewProfile!.institution)
+        : shareMyProfile(context, ref);
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 140, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 580, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
@@ -80,14 +89,14 @@ class G_10 extends ConsumerWidget {
       // badge bleu : voir profileNameBadge (certification approuvée uniquement)
 
       if (co != null) companyLineLayer([co.sector, co.city].where((e) => e.isNotEmpty).join(' · '), 426) else profileSubline(426),
-      if (co != null) companyLineLayer(co.tags.join(' '), 446, color: const Color(0xFF5A3FE0), h: 16) else profileSkillsOrCert(446),
+      if (co != null) companyLineLayer(co.tags.join(' '), 446, color: const Color(0xFF5A3FE0), h: 16) else profileSkillsOrCert(446, allowAsk: !isClient),
       if (co != null) companyBioLayer(co, 470) else profileBio(470),
       gP(34, 512, 104, 30, gBox(color: Color(0xFFF4F3F6), radii: [15, 15, 15, 15])),
-      if (isView) companyStatLayer(34, 'Publications', viewProfile!.postsCount) else if (co != null) companyStatLayer(34, 'Offres', co.offers) else profileStat(34, 'Produits', (ref) => ref.watch(listingsProvider).where((l) => l.published).length),
+      if (isView) companyStatLayer(34, 'Publications', viewProfile!.postsCount) else if (co != null) companyStatLayer(34, 'Offres', co.offers) else if (isClient) profileStat(34, 'Commandes', (ref) => ref.watch(ordersProvider).length) else profileStat(34, 'Produits', (ref) => ref.watch(listingsProvider).where((l) => l.published).length),
       gP(143, 512, 104, 30, gBox(color: Color(0xFFF4F3F6), radii: [15, 15, 15, 15])),
-      if (isView) companyStatLayer(143, 'Abonnés', viewProfile!.followersCount) else if (co != null) companyStatLayer(143, 'Concours', co.contests) else profileStat(143, 'Services', (ref) => ref.watch(listingsProvider).where((l) => l.published && l.category == 'Services').length),
+      if (isView) companyStatLayer(143, 'Abonnés', viewProfile!.followersCount) else if (co != null) companyStatLayer(143, 'Concours', co.contests) else if (isClient) profileStat(143, 'Favoris', (ref) => ref.watch(favoritesProvider).length) else profileStat(143, 'Services', (ref) => ref.watch(listingsProvider).where((l) => l.published && l.category == 'Services').length),
       gP(252, 512, 104, 30, gBox(color: Color(0xFFF4F3F6), radii: [15, 15, 15, 15])),
-      if (isView) companyStatLayer(252, 'Suivis', viewProfile!.followingCount) else if (co != null) companyStatLayer(252, 'Besoins', co.needs) else profileStat(252, 'Projets', (ref) => ref.watch(myProjectsProvider)?.length ?? 0),
+      if (isView) companyStatLayer(252, 'Suivis', viewProfile!.followingCount) else if (co != null) companyStatLayer(252, 'Besoins', co.needs) else if (isClient) profileStat(252, 'Abonnements', (ref) => ref.watch(followingIdsProvider)?.length ?? 0) else profileStat(252, 'Projets', (ref) => ref.watch(myProjectsProvider)?.length ?? 0),
       gP(24, 562, 29, 14, gText('Liens', 11.5, Color(0xFF57545F), weight: 500)),
       gP(89, 553, 32, 32, gImg('assets/figma/v/cdc43165645969.svg'), show: !hideLinks),
       gP(94.417, 563.292, 9.033, 15.75, gImg('assets/figma/v/ae94c8691f4b0c.svg'), show: !hideLinks),
@@ -100,8 +109,8 @@ class G_10 extends ConsumerWidget {
       gP(24, 624, 110, 70, gBox(image: 'assets/figma/img/768cf16e6d8103ad4296d6cc0fdf1af309f03817.png', fit: BoxFit.cover, radii: [22, 22, 22, 22]), show: demoContent),
       gP(140, 624, 110, 70, gBox(image: 'assets/figma/img/d5a96228e65dc2920e40cfac9b1205c2faee3caf.png', fit: BoxFit.cover, radii: [22, 22, 22, 22]), show: demoContent),
       gP(256, 624, 110, 70, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [22, 22, 22, 22]), show: demoContent),
-      Positioned.fill(child: GChoiceGroup(onChanged: (i) { if (i == 0) { isView ? onPrimary?.call() : (isCo ? goTo('/entreprise/profil') : editProfileDialog(context, ref)); } if (i == 1) { isView ? gToast(context, 'Lien du profil : ${Uri.base.origin}/#/s/10?user=${viewProfile!.id}') : shareMyProfile(context, ref); } }, chips: [GChip(24, 700, 200, 44, isView ? 'Écrire' : (isCo ? 'Modifier la fiche' : 'Modifier mon profil'), 12.5, 600), GChip(199, 700, 200, 44, 'Partager', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 22)),
-      gP(232, 700, 134, 44, gBox(color: Color(0xB2FFFFFF), border: Color(0xFFFFFFFF), bw: 1, radii: [22, 22, 22, 22]), tap: () => shareMyProfile(context, ref)),
+      Positioned.fill(child: GChoiceGroup(onChanged: (i) { if (i == 0) { isView ? onPrimary?.call() : (isCo ? goTo('/entreprise/profil') : editProfileDialog(context, ref)); } if (i == 1) { shareThis(); } }, chips: [GChip(24, 700, 200, 44, isView ? 'Écrire' : (isCo ? 'Modifier la fiche' : 'Modifier mon profil'), 12.5, 600), GChip(232, 700, 134, 44, 'Partager', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 22)),
+      gP(232, 700, 134, 44, gBox(color: Color(0xB2FFFFFF), border: Color(0xFFFFFFFF), bw: 1, radii: [22, 22, 22, 22]), tap: shareThis),
       gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
       gP(47.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(47.125, 777.125, 20, 20, gImg('assets/figma/v/96285515fb0e14.svg')),
@@ -124,19 +133,20 @@ class G_10 extends ConsumerWidget {
       gP(197.333, 568.667, 10.667, 7.707, gImg('assets/figma/v/4b0531a4484979.svg'), show: !hideLinks),
       gP(232, 556, 82, 26, gBox(color: Color(0xCCFFFFFF), border: Color(0xFFFFFFFF), bw: 1, radii: [100, 100, 100, 100])),
       gP(245, 562, 56, 14, gText(isCo ? 'Site web ↗' : 'Portfolio ↗', 11, Color(0xFF120F14), weight: 600)),
-      gP(326, 556, 26, 26, gBox(color: Color(0xFF111015), oval: true)),
-      gP(326, 556, 26, 26, const Icon(Icons.add_rounded, size: 18, color: Color(0xFFFFFFFF))),
-      gP(24, 592, 342, 30, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [15, 15, 15, 15])),
-      gP(37, 600, 10, 10, gImg('assets/figma/r/213_260.png')),
-      gP(37.667, 607.334, 8.666, 7.333, gImg('assets/figma/r/213_261.png')),
-      if (co != null) gP(60, 600, 270, 15, Text(companyPassportLabel(co), style: const TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF111015)))) else profilePassport(60, 600),
-      gP(344, 598, 6, 19, gText('›', 15, Color(0xFF5A3FE0), weight: 700)),
-      gTap(326, 556, 26, 26, () => isView ? null : isCo ? goTo('/entreprise/profil') : gOpen(context, '271')), if (!hideLinks) gTap(89, 553, 32, 32, () => openUrl(context, 'https://www.instagram.com/')), if (!hideLinks) gTap(123, 553, 32, 32, () => openUrl(context, 'https://www.linkedin.com/')), if (!hideLinks) gTap(160, 556, 26, 26, () => openUrl(context, 'https://www.tiktok.com/')), if (!hideLinks) gTap(194, 556, 26, 26, () => openUrl(context, 'https://github.com/')), gTap(232, 556, 82, 26, () => isCo ? ((co?.website ?? '').isEmpty ? goTo('/entreprise/profil') : openUrl(context, co!.website)) : openUrl(context, 'https://boutik-ecole.vercel.app/#/s/10')),
-      gTap(24, 596, 342, 92, () => isView ? null : isCo ? goTo('/entreprise/profil') : gOpen(context, '40')),
-      gTap(35, 513, 100, 28, () { if (isView) return; isCo ? goTo('/opportunites/mes') : gOpen(context, canOpen(ref.read(authProvider).current, '58') ? '58' : '22'); }),
-      gTap(143, 513, 100, 28, () { if (isView) return; isCo ? goTo('/concours/mes') : gOpen(context, '22b'); }),
-      gTap(252, 513, 104, 28, () { if (isView) return; isCo ? goTo('/s/99') : gOpen(context, '78'); }),
-      gTap(24, 592, 342, 30, () => isView ? null : isCo ? goTo('/entreprise/profil') : gOpen(context, '74')),
+      gP(326, 556, 26, 26, gBox(color: Color(0xFF111015), oval: true), show: !isView),
+      gP(326, 556, 26, 26, const Icon(Icons.add_rounded, size: 18, color: Color(0xFFFFFFFF)), show: !isView),
+      if (!demoContent && !isCo && !isView) gP(89, 553, 140, 32, const ProfileLinkIcons()),
+      gP(24, 592, 342, 30, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [15, 15, 15, 15]), show: !hidePassport),
+      gP(37, 600, 10, 10, gImg('assets/figma/r/213_260.png'), show: !hidePassport),
+      gP(37.667, 607.334, 8.666, 7.333, gImg('assets/figma/r/213_261.png'), show: !hidePassport),
+      if (co != null) gP(60, 600, 270, 15, Text(companyPassportLabel(co), style: const TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF111015)))) else if (!hidePassport) profilePassport(60, 600),
+      gP(344, 598, 6, 19, gText('›', 15, Color(0xFF5A3FE0), weight: 700), show: !hidePassport),
+      if (!isView) gTap(326, 556, 26, 26, () => isCo ? goTo('/entreprise/profil') : gOpen(context, '271')), if (!hideLinks) gTap(89, 553, 32, 32, () => openUrl(context, 'https://www.instagram.com/')), if (!hideLinks) gTap(123, 553, 32, 32, () => openUrl(context, 'https://www.linkedin.com/')), if (!hideLinks) gTap(160, 556, 26, 26, () => openUrl(context, 'https://www.tiktok.com/')), if (!hideLinks) gTap(194, 556, 26, 26, () => openUrl(context, 'https://github.com/')), gTap(232, 556, 82, 26, () => isCo ? ((co?.website ?? '').isEmpty ? goTo('/entreprise/profil') : openUrl(context, co!.website)) : openUrl(context, 'https://boutik-ecole.vercel.app/#/s/10')),
+      if (demoContent) gTap(24, 596, 342, 92, () => gOpen(context, '40')),
+      gTap(35, 513, 100, 28, () { if (isView) return; isCo ? goTo('/opportunites/mes') : (isClient ? gOpen(context, '45') : gOpen(context, canOpen(ref.read(authProvider).current, '58') ? '58' : '22')); }),
+      gTap(143, 513, 100, 28, () { if (isView) return; isCo ? goTo('/concours/mes') : (isClient ? gOpen(context, '25') : gOpen(context, '22b')); }),
+      if (!isClient) gTap(252, 513, 104, 28, () { if (isView) return; isCo ? goTo('/s/99') : gOpen(context, '78'); }),
+      if (!hidePassport && !isView) gTap(24, 592, 342, 30, () => isCo ? goTo('/entreprise/profil') : gOpen(context, '74')),
       if (!demoContent && !isCo) gTap(232, 552, 82, 34, () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => isView ? PortfolioPage(userId: viewProfile!.id, ownerName: viewProfile!.name) : const PortfolioPage()))),
     ]);
   }

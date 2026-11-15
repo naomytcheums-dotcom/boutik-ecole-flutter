@@ -22,6 +22,9 @@ import '../live/kela.dart';
 import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
+import '../live/lives.dart' show canBroadcastLive, liveBroadcastRule;
+import '../live/access.dart' show roleKey;
+import 'package:go_router/go_router.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 /// Pastille d'icône de l'écran Créer (les photos de la maquette ne servent qu'à la démonstration).
@@ -74,10 +77,10 @@ class G_249 extends ConsumerWidget {
       gP(337.375, 575.75, 9.25, 12.5, gImg('assets/figma/v/7fc706b238185f.svg')),
       gP(51, 687.5, 12.75, 6, gImg('assets/figma/v/077154502d192d.svg')),
       gP(44.25, 674.659, 18.841, 18.841, gImg('assets/figma/v/80acba5fb06071.svg')),
-      gP(82, 676, 63, 16, gText('Brouillons', 13, Color(0xFF111015), weight: 600)),
-      gP(82, 696, 143, 13, gText(gm('2 publications non terminées', ''), 10.5, Color(0xFF57545F))),
+      gP(82, 676, 120, 16, gText(demoContent ? 'Brouillons' : 'Mes publications', 13, Color(0xFF111015), weight: 600)),
+      gP(82, 696, 190, 13, gText(demoContent ? '2 publications non terminées' : 'Suivre l’état de mes publications', 10.5, Color(0xFF57545F))),
       gP(272, 682, 78, 25, gBox(color: Color(0xFFEEE9FF), radii: [100, 100, 100, 100])),
-      gP(284, 688, 54, 13, gText('Reprendre', 10.5, Color(0xFF5A3FE0), weight: 600)),
+      gP(284, 688, 54, 13, gText(demoContent ? 'Reprendre' : 'Ouvrir', 10.5, Color(0xFF5A3FE0), weight: 600)),
       gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
       gP(47.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gOpen(context, '251')),
       gP(47.125, 777.125, 20, 20, gImg('assets/figma/v/96285515fb0e14.svg')),
@@ -95,9 +98,19 @@ class G_249 extends ConsumerWidget {
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '244')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       gTap(24, 140, 342, 116, () => gOpen(context, '250')),
-      gTap(24, 268, 342, 116, () => gOpen(context, '245')),
-      gTap(24, 396, 342, 116, () => gOpen(context, 'L1')),
-      gTap(24, 524, 342, 116, () => gOpen(context, '248')),
+      gTap(24, 268, 342, 116, () => gOpen(context, demoContent ? '245' : '250')),
+      gTap(24, 396, 342, 116, () async {
+        if (demoContent) return gOpen(context, 'L1');
+        if (!await requireLogin(context, ref, 'passer en direct') || !context.mounted) return;
+        if (!canBroadcastLive(ref.read(authProvider).current)) return gAlert(context, 'Diffusion réservée', liveBroadcastRule);
+        gOpen(context, 'L1');
+      }),
+      gTap(24, 524, 342, 116, () async {
+        if (demoContent) return gOpen(context, '248');
+        if (!await requireLogin(context, ref, 'publier un article de boutique') || !context.mounted) return;
+        if (!const {'student', 'dept', 'admin'}.contains(roleKey(ref.read(authProvider).current))) return gAlert(context, 'Boutique réservée', 'Les articles de boutique sont publiés par les étudiants-vendeurs. Vous pouvez acheter, commenter et publier des photos ou vidéos depuis « Publication ».');
+        GoRouter.of(context).push('/marche/ma-boutique');
+      }),
       gTap(74, 688, 159, 32, () { gOpen(context, '255'); }), // lien métier 249 -> 255
     ]);
   }

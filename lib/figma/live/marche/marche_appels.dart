@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../gen.dart' show gToast;
 import '../../i18n.dart' show Text;
 import '../../nav.dart' show gOpenProfile;
+import '../access.dart' show roleKey;
 import '../auth.dart';
 import '../backend.dart';
 import 'marche_data.dart';
@@ -46,14 +47,18 @@ final marcheCallsProvider = FutureProvider.autoDispose<List<Map<String, dynamic>
   final r = await marcheCall('open_calls', ref.watch(callsQueryProvider).params);
   if (r.error != null) throw MarcheException(r.error);
   return [for (final x in (r.data as List? ?? const [])) Map<String, dynamic>.from(x as Map)];
-});
+}, retry: (_, _) => null);
 
 final marcheIutProjectsProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
   ref.watch(authProvider.select((a) => a.current?.serverId));
   final r = await marcheCall('iut_projects', {'p_limit': 60, 'p_sort': ref.watch(projectsSortProvider)});
   if (r.error != null) throw MarcheException(r.error);
   return [for (final x in (r.data as List? ?? const [])) Map<String, dynamic>.from(x as Map)];
-});
+}, retry: (_, _) => null);
+
+/// Rôles qui peuvent répondre à un besoin : la règle de `propose_on_mission` (étudiants, responsables de département, administrateurs).
+/// Un visiteur voit le bouton : il est invité à se connecter au toucher.
+bool canProposeOnMission(Account? a) => a == null || const {'student', 'dept', 'admin'}.contains(roleKey(a));
 
 String _budget(Map<String, dynamic> c) {
   final a = c['budget_min'], b = c['budget_max'];
@@ -84,6 +89,7 @@ class AppelsScreen extends ConsumerWidget {
 
   Future<void> _propose(BuildContext context, WidgetRef ref, Map<String, dynamic> call) async {
     if (!await requireLogin(context, ref, 'répondre à un appel') || !context.mounted) return;
+    if (!canProposeOnMission(ref.read(authProvider).current)) return gToast(context, 'Seuls les étudiants peuvent répondre à un besoin.');
     final amount = TextEditingController(), days = TextEditingController(), msg = TextEditingController();
     InputDecoration deco(String label, {String? hint}) => InputDecoration(labelText: label, hintText: hint, border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)));
     final ok = await showModalBottomSheet<bool>(
@@ -132,7 +138,7 @@ class AppelsScreen extends ConsumerWidget {
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
           child: Text('Une entreprise publie « Je cherche une solution pour… » ; les étudiants répondent avec un prix, un délai et leur solution.', style: mst(13, c: kGrey).copyWith(height: 1.5)),
         ),
-        Padding(padding: const EdgeInsets.fromLTRB(16, 4, 16, 8), child: mButton('Publier mon besoin', () => context.push('/s/90'), icon: Icons.add)),
+        Padding(padding: const EdgeInsets.fromLTRB(16, 4, 16, 8), child: mButton('Publier mon besoin', () => context.push('/s/191'), icon: Icons.add)),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
           child: TextField(
@@ -171,8 +177,10 @@ class AppelsScreen extends ConsumerWidget {
                           Text('Votre besoin', style: mst(12.5, w: FontWeight.w700, c: kGreen))
                         else if (c['proposed'] == true)
                           Text('Proposition envoyée', style: mst(12.5, w: FontWeight.w700, c: kGreen))
+                        else if (canProposeOnMission(ref.watch(authProvider).current))
+                          mButton('Proposer une solution', () => _propose(context, ref, c), width: double.infinity)
                         else
-                          mButton('Proposer une solution', () => _propose(context, ref, c), width: double.infinity),
+                          Text('Seuls les étudiants peuvent répondre à un besoin. Vous pouvez publier le vôtre avec « Publier mon besoin ».', style: mst(12.5, c: kGrey).copyWith(height: 1.4)),
                       ]),
                     ),
                 ]),

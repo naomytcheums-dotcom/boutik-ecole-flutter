@@ -50,9 +50,10 @@ class G_50 extends ConsumerWidget {
       gP(76, 70, 132, 26, gText('Notifications', 21, Color(0xFF111015), weight: 700)),
       gP(346.25, 76.25, 11.5, 11.5, gImg('assets/figma/v/dd7f4ecaa9b199.svg')),
       gP(339.833, 69.833, 24.333, 24.333, gImg('assets/figma/v/e60784a24bd7e3.svg')),
-      Positioned.fill(child: GChoiceGroup(onChanged: (i) => ref.read(notifFilterProvider.notifier).set(i), chips: [GChip(24, 120, 70.4, 34, 'Toutes', 12.5, 600), GChip(102.4, 120, 92.6, 34, 'Commandes', 12.5, 500), GChip(203, 120, 85.2, 34, 'Messages', 12.5, 500), GChip(296.2, 120, 100, 34, 'Promotions', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
+      Positioned.fill(child: GChoiceGroup(onChanged: (i) => ref.read(notifFilterProvider.notifier).set(i), chips: [GChip(24, 120, 70.4, 34, 'Toutes', 12.5, 600), GChip(102.4, 120, 92.6, 34, 'Commandes', 12.5, 500), GChip(203, 120, 85.2, 34, 'Messages', 12.5, 500), GChip(296.2, 120, 70, 34, 'Autres', 12.5, 500)], selected: ref.watch(notifFilterProvider), selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
       notificationsPanel(),
-      gTap(296, 164, 70, 28, () => ref.read(notifsProvider.notifier).markAllRead()),
+      markAllReadLink(),
+      gTap(332, 62, 36, 36, () => gOpen(context, '56')),
       gP(24, 168, 85, 19, gText('Aujourd’hui', 15, Color(0xFF111015), weight: 700), show: demoContent),
       gP(305, 170, 45, 15, gText('Tout lire', 12, Color(0xFF5A3FE0), weight: 500, align: TextAlign.right), show: demoContent),
       gP(352.5, 175, 13, 6, gImg('assets/figma/v/4159f10924eea0.svg'), show: demoContent),
@@ -110,6 +111,7 @@ class G_50 extends ConsumerWidget {
       gP(59.113, 789.113, 9.762, 9.762, gImg('assets/figma/v/524f40fa464a05.svg')),
       gP(113.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '52')),
       gP(112.25, 777.118, 22.632, 22.632, gImg('assets/figma/v/5610544a74c77c.svg')),
+      unreadBadge(125, 766, messages: true),
       gP(255.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '230')),
       gP(260.375, 776.25, 11.25, 16.5, gImg('assets/figma/v/3adad339ddf7e4.svg')),
       gP(256.875, 783.25, 18.25, 13, gImg('assets/figma/v/9c6e9349b8c3b4.svg')),
@@ -120,12 +122,14 @@ class G_50 extends ConsumerWidget {
       gP(169, 762, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gTab(context, '03')),
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
-      gTap(80, 210, 157, 33, () { gOpen(context, '51'); }), // parcours 50 -> 51
-      gTap(80, 276, 209, 33, () { gOpen(context, '54'); }), // parcours 50 -> 54
-      gTap(80, 460, 109, 33, () { gOpen(context, '30'); }), // parcours 50 -> 30
-      gTap(80, 342, 194, 33, () { gOpen(context, '25'); }), // parcours 50 -> 25
-      gTap(80, 526, 169, 33, () { gOpen(context, '101'); }), // parcours 50 -> 101
-      gTap(80, 592, 113, 33, () { gOpen(context, '18'); }), // parcours 50 -> 18
+      if (demoContent) ...[
+        gTap(80, 210, 157, 33, () { gOpen(context, '51'); }), // parcours 50 -> 51
+        gTap(80, 276, 209, 33, () { gOpen(context, '54'); }), // parcours 50 -> 54
+        gTap(80, 460, 109, 33, () { gOpen(context, '30'); }), // parcours 50 -> 30
+        gTap(80, 342, 194, 33, () { gOpen(context, '25'); }), // parcours 50 -> 25
+        gTap(80, 526, 169, 33, () { gOpen(context, '101'); }), // parcours 50 -> 101
+        gTap(80, 592, 113, 33, () { gOpen(context, '18'); }), // parcours 50 -> 18
+      ],
     ]);
   }
 }

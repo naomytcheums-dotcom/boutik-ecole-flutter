@@ -57,9 +57,10 @@ class Backend {
 
   /// Adresse de retour du lien de réinitialisation : le site en production, jamais un localhost (le lien serait inutilisable
   /// pour le destinataire). Elle doit figurer dans les « Redirect URLs » de Supabase Auth (https://boutik-ecole.vercel.app/**).
+  /// Sur mobile natif : le lien profond de l'application (filtre d'intention Android), à ajouter aussi aux « Redirect URLs ».
   static String recoveryRedirect() {
     const prod = 'https://boutik-ecole.vercel.app/';
-    if (!kIsWeb) return prod;
+    if (!kIsWeb) return defaultTargetPlatform == TargetPlatform.android ? 'cm.iutdouala.boutik_ecole://reset-callback/' : prod;
     final o = Uri.base;
     final local = o.host == 'localhost' || o.host == '127.0.0.1' || o.host == '::1' || o.host.endsWith('.localhost');
     return local || o.scheme != 'https' ? prod : '${o.origin}/';
@@ -271,7 +272,7 @@ class Backend {
     final c = _c;
     if (c == null) return (exists: false, needsConfirm: false, error: 'Connexion au serveur impossible.');
     try {
-      final r = await c.auth.signUp(email: loginOf(a), password: password, data: {'name': a.name, 'phone': a.phone});
+      final r = await c.auth.signUp(email: loginOf(a), password: password, data: {'name': a.name, 'phone': a.phone, 'terms_version': kTermsVersion, 'terms_accepted_at': DateTime.now().toUtc().toIso8601String()});
       final user = r.user;
       if (user == null) return (exists: false, needsConfirm: false, error: 'Inscription impossible. Réessayez.');
       if (user.identities != null && user.identities!.isEmpty) return (exists: true, needsConfirm: false, error: null);
@@ -288,17 +289,22 @@ class Backend {
   }
 
   /// Crée le profil du compte connecté avec le rôle choisi (une seule fois : s'il existe déjà, rien n'est modifié).
-  static Future<String?> createProfile(Account a) async {
+  static Future<String?> createProfile(Account a) async => (await createProfileChecked(a)).error;
+
+  /// Comme [createProfile], en indiquant si le profil vient d'être créé ([created]) ou existait déjà (rôle alors inchangé).
+  /// Le serveur accepte à l'inscription les quatre profils (client, étudiant-vendeur, entreprise, autre rôle).
+  static Future<({bool created, String? error})> createProfileChecked(Account a) async {
     final c = _c;
     final uid = c?.auth.currentUser?.id;
-    if (c == null || uid == null) return 'Connexion requise.';
+    if (c == null || uid == null) return (created: false, error: 'Connexion requise.');
     try {
       final exist = await c.from('profiles').select('id').eq('id', uid).maybeSingle();
-      if (exist != null) return null;
-      await _insertProfile(c, uid, a.name.isEmpty ? (a.email.split('@').first) : a.name, a.phone, a.email, _roles[a.role.clamp(0, 3)]);
-      return null;
+      if (exist != null) return (created: false, error: null);
+      final role = a.role >= 0 && a.role < selfServiceRoles ? a.role : 0;
+      await _insertProfile(c, uid, a.name.isEmpty ? (a.email.split('@').first) : a.name, a.phone, a.email, _roles[role]);
+      return (created: true, error: null);
     } catch (e) {
-      return _msg(e);
+      return (created: false, error: _msg(e));
     }
   }
 
@@ -320,6 +326,33 @@ class Backend {
     } catch (_) {
       return false;
     }
+  }
+
+  /// « Informations personnelles » : nom, téléphone (renseigné une seule fois, le serveur refuse de remplacer un numéro existant) et
+  /// date de naissance. Renvoie le compte relu depuis la réponse du serveur, ou le message d'erreur.
+  static Future<({Account? account, String? error})> updatePersonal(Account a, {String name = '', String phone = '', DateTime? birth, bool clearBirth = false}) async {
+    final c = _c;
+    final uid = c?.auth.currentUser?.id;
+    if (c == null || uid == null) return (account: null, error: 'Connexion requise');
+    final birthIso = birth?.toIso8601String().substring(0, 10);
+    try {
+      final rows = await c.from('profiles').update({
+        'name': name,
+        if (birthIso != null) 'birth': birthIso else if (clearBirth) 'birth': null,
+      }).eq('id', uid).select('id');
+      if (rows.isEmpty) return (account: null, error: 'Profil introuvable ou modification refusée.');
+    } catch (e) {
+      return (account: null, error: _msg(e));
+    }
+    var savedPhone = a.phone;
+    if (phone.isNotEmpty) {
+      final r = await rpc('profile_set_phone', {'p_phone': phone});
+      if (r.error != null) {
+        return (account: a.copyWith(name: name, birth: birthIso ?? (clearBirth ? '' : a.birth)), error: 'Nom et date enregistrés, mais pas le téléphone : ${userMessage(r.error!)}');
+      }
+      savedPhone = phone;
+    }
+    return (account: a.copyWith(name: name, phone: savedPhone, birth: birthIso ?? (clearBirth ? '' : a.birth)), error: null);
   }
 
   /// Favoris de l'utilisateur connecté : titres des annonces (la politique RLS ne renvoie que ses propres lignes).
@@ -396,6 +429,18 @@ class Backend {
     if (c == null) return const [];
     try {
       final rows = await c.from('listings').select().eq('status', 'approved').not('seller_id', 'is', null).order('created_at', ascending: false).limit(200);
+      return [for (final r in rows) Listing.fromRow(r)];
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  /// Services approuvés des vendeurs : lus séparément pour ne pas dépendre des 200 dernières annonces tous types confondus.
+  static Future<List<Listing>> serviceListings() async {
+    final c = _c;
+    if (c == null) return const [];
+    try {
+      final rows = await c.from('listings').select().eq('status', 'approved').eq('category', 'Services').not('seller_id', 'is', null).order('created_at', ascending: false).limit(200);
       return [for (final r in rows) Listing.fromRow(r)];
     } catch (_) {
       return const [];
@@ -536,7 +581,7 @@ class Backend {
   static Future<String?> answerQuote(String id, int amount, int days, String message) =>
       _call('answer_quote', {'p_id': id, 'p_amount': amount, 'p_delay_days': days, 'p_message': message});
 
-  static Future<String?> decideQuote(String id, bool accept) => _call('decide_quote', {'p_id': id, 'p_accept': accept});
+  static Future<String?> decideQuote(String id, bool accept, {int? amount}) => _call('decide_quote', {'p_id': id, 'p_accept': accept, if (accept && amount != null) 'p_amount': amount});
 
   static Future<String?> cancelQuote(String id) => _call('cancel_quote', {'p_id': id});
 
@@ -550,6 +595,20 @@ class Backend {
     } catch (_) {
       return const [];
     }
+  }
+
+  /// Enregistre l'acceptation des conditions (fonction serveur accept_terms, sans profil requis). Renvoie null seulement si le serveur a confirmé.
+  static Future<String?> acceptTerms(String version) async {
+    final r = await rpc('accept_terms', {'p_version': version});
+    if (r.error != null) return r.error;
+    return r.data == 'recorded' || r.data == 'already' ? null : 'Le serveur n’a pas confirmé l’enregistrement. Réessayez.';
+  }
+
+  /// Version des conditions acceptée par le compte connecté, ou null (aucune acceptation enregistrée, ou lecture impossible).
+  static Future<String?> acceptedTermsVersion() async {
+    final r = await rpc('my_terms', const {});
+    final d = r.data;
+    return r.error == null && d is String && d.isNotEmpty ? d : null;
   }
 
   /// Enregistre une action de l'utilisateur sur le serveur (inscription, candidature, vote, alerte, suivi, demande…).
@@ -592,7 +651,7 @@ class Backend {
     if (c == null || uid == null) return null;
     try {
       // Filtre explicite : la RLS laisse aux rôles de gestion (admin, finance, support) la lecture de TOUTES les commandes.
-      final rows = await c.from('orders').select('number,subtotal,fee,method,reference,status,paid,cancelled,cancelled_at,created_at,order_lines(title,qty,unit_price,fulfillment)').eq('buyer_id', uid).order('created_at', ascending: false);
+      final rows = await c.from('orders').select('number,subtotal,fee,method,reference,status,paid,cancelled,cancelled_at,created_at,discount,promo_code,home_delivery,delivery_address,cod,order_lines(title,qty,unit_price,fulfillment)').eq('buyer_id', uid).order('created_at', ascending: false);
       return [for (final r in rows) Map<String, dynamic>.from(r as Map)];
     } catch (_) {
       return null;
@@ -651,6 +710,19 @@ class Backend {
     try {
       await _c?.rpc('mark_notifications_read');
     } catch (_) {}
+  }
+
+  /// Marque une seule notification comme lue (les autres gardent leur badge).
+  static Future<void> markNotificationRead(String id) async {
+    final c = _c;
+    if (c == null || id.isEmpty) return;
+    try {
+      await c.rpc('mark_notification_read', params: {'p_id': id});
+    } catch (_) {
+      try {
+        await c.from('notifications').update({'read_at': DateTime.now().toUtc().toIso8601String()}).eq('id', id);
+      } catch (_) {}
+    }
   }
 
   /// Lecture de contrôle (écran 150-1) : vrai si la source répond pour le compte connecté, faux si la lecture échoue.
@@ -725,15 +797,24 @@ class Backend {
     }
   }
 
-  static Future<List<Map<String, dynamic>>> messages(String conversationId) async {
+  /// Les [limit] messages les plus récents de la conversation, rangés du plus ancien au plus récent.
+  static Future<List<Map<String, dynamic>>> messages(String conversationId, {int limit = 100}) async {
     final c = _c;
     if (c == null || c.auth.currentUser == null || conversationId.isEmpty) return const [];
     try {
-      final rows = await c.from('messages').select('id,sender_id,body,created_at,kind,attachment_path,attachment_name,attachment_size').eq('conversation_id', conversationId).order('id').limit(500);
-      return [for (final r in rows) Map<String, dynamic>.from(r)];
+      final rows = await c.from('messages').select('id,sender_id,body,created_at,kind,attachment_path,attachment_name,attachment_size').eq('conversation_id', conversationId).order('id', ascending: false).limit(limit);
+      return [for (final r in rows.reversed) Map<String, dynamic>.from(r)];
     } catch (_) {
       return const [];
     }
+  }
+
+  /// Message d'un envoi refusé : l'autre personne vous a bloqué (refus du serveur), ou le texte dépasse la limite.
+  static String _sendError(Object e) {
+    final m = e is PostgrestException ? e.message : e.toString();
+    if (m.contains('row-level security')) return 'Cette personne ne peut pas recevoir vos messages.';
+    if (m.contains('messages_body_check')) return 'Message trop long (4 000 caractères maximum).';
+    return _msg(e);
   }
 
   static Future<String?> sendMessage(String conversationId, String body) async {
@@ -744,7 +825,7 @@ class Backend {
       await c.from('messages').insert({'conversation_id': conversationId, 'sender_id': uid, 'body': body});
       return null;
     } catch (e) {
-      return _msg(e);
+      return _sendError(e);
     }
   }
 
@@ -778,7 +859,7 @@ class Backend {
       try {
         await c.storage.from('chat-files').remove([path]);
       } catch (_) {}
-      return _msg(e);
+      return _sendError(e);
     }
   }
 
@@ -1000,13 +1081,14 @@ class Backend {
     }
   }
 
-  /// Double authentification (TOTP) : facteurs du compte connecté.
-  static Future<List<Factor>> totpFactors() async {
+  /// Double authentification (TOTP) : facteurs du compte connecté. [strict] : une erreur de lecture est propagée au lieu de devenir « aucun facteur ».
+  static Future<List<Factor>> totpFactors({bool strict = false}) async {
     final c = _c;
     if (c == null || c.auth.currentUser == null) return const [];
     try {
       return (await c.auth.mfa.listFactors()).totp;
     } catch (_) {
+      if (strict) rethrow;
       return const [];
     }
   }
@@ -1033,6 +1115,30 @@ class Backend {
       return null;
     } on AuthException catch (e) {
       return e.message.toLowerCase().contains('invalid') ? 'Code incorrect ou expiré.' : e.message;
+    } catch (_) {
+      return 'Vérification impossible pour le moment. Réessayez.';
+    }
+  }
+
+  /// Facteur TOTP vérifié dont le code reste à saisir pour cette session (niveau d'assurance aal1 alors que le compte exige aal2), sinon null.
+  /// Le niveau se lit dans le jeton de la session : sans réseau, la porte reste fermée plutôt que de laisser passer.
+  static Future<String?> pendingSecondFactor() async {
+    final c = _c;
+    final session = c?.auth.currentSession;
+    if (c == null || session == null) return null;
+    try {
+      final aal = c.auth.mfa.getAuthenticatorAssuranceLevel();
+      if (aal.currentLevel == AuthenticatorAssuranceLevels.aal2) return null;
+      final local = session.user.factors;
+      var verified = [for (final f in local ?? const <Factor>[]) if (f.status == FactorStatus.verified && f.factorType == FactorType.totp) f];
+      if (verified.isEmpty && local == null) {
+        try {
+          verified = (await c.auth.mfa.listFactors().timeout(const Duration(seconds: 8))).totp.where((f) => f.status == FactorStatus.verified).toList();
+        } catch (_) {}
+      }
+      return verified.isEmpty ? null : verified.first.id;
+    } catch (_) {
+      return null;
     }
   }
 
@@ -1097,6 +1203,7 @@ class Backend {
     if (low.contains('publication réservée aux étudiants et au département') || low.contains('histoires réservées aux étudiants et au département')) {
       return 'Votre compte est suspendu : publication impossible. Contactez l’administration.';
     }
+    if (low.contains('out of range') || low.contains('integer out of')) return 'Ce montant est trop élevé : saisissez une valeur plus petite.';
     if (technique.any(low.contains)) return 'Cette action n’est pas disponible pour votre compte pour le moment. Si le problème continue, contactez le support.';
     return raw;
   }
@@ -1132,6 +1239,9 @@ class Backend {
       return null;
     }
   }
+
+  /// Vrai quand la session a été perdue sans déconnexion demandée (écran 150-2) ; remis à faux à la connexion suivante.
+  static bool sessionWasLost = false;
 
   /// Vrai pendant une déconnexion demandée par l'utilisateur (sinon, une perte de session est une expiration : écran 150-2).
   static bool signingOut = false;
@@ -1205,8 +1315,15 @@ class Backend {
     }
   }
 
-  static Future<void> signOut() async {
+  /// [before] s'exécute tant que la session est encore valide (désinscription de l'appareil des notifications) ; une panne ou une attente
+  /// trop longue ne bloque jamais la déconnexion.
+  static Future<void> signOut({Future<void> Function()? before}) async {
     signingOut = true;
+    if (before != null && _c?.auth.currentUser != null) {
+      try {
+        await before().timeout(const Duration(seconds: 5));
+      } catch (_) {}
+    }
     try {
       await _c?.auth.signOut();
     } catch (_) {}
@@ -1243,10 +1360,6 @@ class Backend {
     }
   }
 
-  /// Création de commande côté serveur : le serveur recalcule les prix (prix figé à la commande, vente flash, code promo), décrémente le
-  /// stock sans survente et sépare les lignes par boutique. Le client n'envoie que des titres, des quantités et un code.
-  /// Une clé d'idempotence (même panier, même quart d'heure) évite deux commandes si la réponse se perd et que l'on réessaie.
-  /// Retourne {number, subtotal, fee, discount} ou {error: message}.
   /// Confirme une commande à payer à la livraison (après sa création) : le vendeur la voit et la prépare, l'argent est encaissé à la remise.
   static Future<String?> confirmCodOrder(String number) async {
     final c = _c;
@@ -1255,55 +1368,50 @@ class Backend {
       await c.rpc('confirm_cod_order', params: {'p_number': number});
       return null;
     } on PostgrestException catch (e) {
-      return e.message;
+      return userMessage(e.message);
     } catch (_) {
       return serviceDownMessage();
     }
   }
 
+  /// Lignes envoyées au serveur : une ligne « Pack » porte la clé pack (le serveur la décompose), les autres leur titre.
+  static List<Map<String, dynamic>> orderItems(List<CartLine> lines) => [
+        for (final l in lines)
+          (l.packId ?? packLines[l.title]) != null ? {'pack': l.packId ?? packLines[l.title], 'qty': l.qty} : {'title': l.title, 'qty': l.qty, if ((l.variant ?? '').isNotEmpty) 'variant': l.variant}
+      ];
+
+  /// Création de commande côté serveur : le serveur recalcule les prix (prix figé à la commande, vente flash, code promo), décrémente le
+  /// stock sans survente et sépare les lignes par boutique. Le client n'envoie que des titres, des quantités et un code.
+  /// Une clé d'idempotence (même panier, même mode, même adresse, même quart d'heure) évite deux commandes si la réponse se perd et que l'on réessaie.
+  /// Retourne {number, subtotal, fee, discount} ou {error: message lisible}.
   static Future<Map<String, dynamic>> createOrder(List<CartLine> lines, bool home, String method, {String? address}) async {
     final c = _c;
     if (c == null || c.auth.currentUser == null) return {'error': 'Connexion requise pour passer commande.'};
-    final items = [
-      for (final l in lines)
-        packLines.containsKey(l.title) ? {'pack': packLines[l.title], 'qty': l.qty} : {'title': l.title, 'qty': l.qty}
-    ];
+    final items = orderItems(lines);
     var code = promoCode;
     if (code.isEmpty) {
-      // promotion automatique créée par l'administrateur : elle s'applique à chaque commande
+      // promotion automatique créée par l'administrateur : elle s'applique à chaque commande (le serveur l'ignore si elle ne s'applique pas au panier)
       try {
         final a = await c.rpc('active_auto_promo');
         if (a is Map && a['code'] != null) code = '${a['code']}';
       } catch (_) {}
     }
-    final sig = '${c.auth.currentUser!.id}|${items.map((e) => '${e['pack'] ?? e['title']}x${e['qty']}').join(',')}|$home|$code|${DateTime.now().millisecondsSinceEpoch ~/ 900000}';
+    final addr = home && address != null && address.isNotEmpty ? address : '';
+    final sig = '${c.auth.currentUser!.id}|${items.map((e) => '${e['pack'] ?? e['title']}x${e['qty']}').join(',')}|$home|$method|$addr|$code|${DateTime.now().millisecondsSinceEpoch ~/ 900000}';
     final key = sig.hashCode.toRadixString(16).padLeft(8, '0') + sig.length.toRadixString(16).padLeft(2, '0');
     try {
       final r = await c.rpc('marketplace_checkout', params: {
         'p_items': items,
         'p_home': home,
         'p_method': method,
-        if (home && address != null && address.isNotEmpty) 'p_address': address,
+        if (addr.isNotEmpty) 'p_address': addr,
         if (code.isNotEmpty) 'p_code': code,
         'p_key': 'k$key',
       });
       return Map<String, dynamic>.from(r as Map);
     } on PostgrestException catch (e) {
-      if (e.code != 'PGRST202' && e.code != '42883') return {'error': e.message};
-    } catch (_) {
-      return {'error': serviceDownMessage()};
-    }
-    // Serveur sans marketplace (migration non appliquée) : ancienne fonction, mêmes règles de stock et de prix.
-    try {
-      final r = await c.rpc('create_order', params: {
-        'p_items': [for (final l in lines) {'title': l.title, 'qty': l.qty}],
-        'p_home': home,
-        'p_method': method,
-        if (home && address != null && address.isNotEmpty) 'p_address': address,
-      });
-      return Map<String, dynamic>.from(r as Map);
-    } on PostgrestException catch (e) {
-      return {'error': e.message};
+      if (e.code != 'PGRST202' && e.code != '42883') return {'error': userMessage(e.message)};
+      return {'error': 'La commande n’est pas disponible pour le moment. Réessayez plus tard ou contactez le support.'};
     } catch (_) {
       return {'error': serviceDownMessage()};
     }

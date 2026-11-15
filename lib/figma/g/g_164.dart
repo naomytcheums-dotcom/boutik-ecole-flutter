@@ -15,6 +15,7 @@ import '../live/audit.dart';
 import '../live/admin.dart';
 import '../live/talents.dart';
 import '../live/hackathons.dart';
+import '../live/l10_hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
@@ -30,6 +31,7 @@ class G_164 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (!demoContent) return const TeamSpaceScreen();
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
@@ -48,7 +50,7 @@ class G_164 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 122, 26, Consumer(builder: (context, ref, _) => gText(ref.watch(registrationsProvider).isEmpty ? (demoContent ? 'Team Innov’' : '') : ref.watch(registrationsProvider).values.first.teamName, 21, Color(0xFF111015), weight: 700))),
-      gP(76, 96, 168, 15, Consumer(builder: (context, ref, _) => gText(ref.watch(registrationsProvider).isEmpty ? (demoContent ? 'Orange Digital Challenge' : '') : hackathons.firstWhere((h) => h.id == ref.watch(registrationsProvider).keys.first).title, 12, Color(0xFF57545F)))),
+      gP(76, 96, 168, 15, Consumer(builder: (context, ref, _) => gText(ref.watch(registrationsProvider).isEmpty ? (demoContent ? 'Orange Digital Challenge' : '') : hackathons.firstWhere((h) => h.id == ref.watch(registrationsProvider).keys.first, orElse: () => ref.watch(currentEventProvider)).title, 12, Color(0xFF57545F)))),
       gP(60, 134, 68.667, 2, gBox(color: Color(0xFF111015), radii: [1, 1, 1, 1])),
       gP(29, 120, 30, 30, gBox(color: Color(0xFF111015), oval: true)),
       gP(36, 128.25, 16, 12.875, gImg('assets/figma/v/515240907c423e.svg')),

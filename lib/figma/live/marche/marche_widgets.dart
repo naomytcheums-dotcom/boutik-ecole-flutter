@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../gsound.dart' show GAnim, GSound;
+import '../lfav.dart' show FavoriteHeart;
 import '../offer_types.dart' show offerTypeBadges;
 import '../product_card.dart';
 import 'marche_data.dart';
@@ -142,6 +143,7 @@ class MarcheProductTile extends ConsumerWidget {
         if (offerTypeBadges['${card['offer_type']}'] != null)
           Positioned(left: 8, bottom: soldOut ? 36 : 8, child: Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(3)), child: Text(offerTypeBadges['${card['offer_type']}']!, style: mst(11, w: FontWeight.w700)))),
         if (soldOut) Positioned(left: 8, bottom: 8, child: Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)), child: Text('Épuisé', style: mst(11, w: FontWeight.w700)))),
+        Positioned(right: 2, top: 46, child: FavoriteHeart(title: '${card['title']}')),
         Positioned(
           right: 2,
           top: 2,
@@ -170,9 +172,12 @@ class MarcheProductTile extends ConsumerWidget {
 
 /// Grille de produits (2 colonnes sur téléphone, davantage sur grand écran).
 class MarcheGrid extends StatelessWidget {
-  const MarcheGrid({super.key, required this.cards, this.shrink = true});
+  const MarcheGrid({super.key, required this.cards, this.shrink = true, this.tileBuilder});
   final List<Map<String, dynamic>> cards;
   final bool shrink;
+
+  /// Remplace la tuile produit (annonce indisponible dans les favoris).
+  final Widget Function(Map<String, dynamic> card)? tileBuilder;
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(builder: (context, c) {
@@ -183,7 +188,7 @@ class MarcheGrid extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12),
           itemCount: cards.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: cols, crossAxisSpacing: 10, mainAxisSpacing: 20, childAspectRatio: productCardAspect((c.maxWidth - 24 - 10 * (cols - 1)) / cols)),
-          itemBuilder: (_, i) => MarcheProductTile(card: cards[i]),
+          itemBuilder: (_, i) => tileBuilder?.call(cards[i]) ?? MarcheProductTile(card: cards[i]),
         );
       });
 }

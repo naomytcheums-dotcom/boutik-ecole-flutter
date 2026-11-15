@@ -8,6 +8,7 @@ import 'package:printing/printing.dart';
 import '../gen.dart';
 import 'auth.dart';
 import 'backend.dart';
+import 'order_summary.dart' show orderDeliveryText;
 import 'store.dart';
 
 /// Documents téléchargeables : reçu de paiement et facture (PDF réel, avec le logo de la plateforme).
@@ -18,13 +19,32 @@ const _muted = PdfColor.fromInt(0xFF57545F);
 const _violet = PdfColor.fromInt(0xFF5A3FE0);
 const _line = PdfColor.fromInt(0xFFE4E0EC);
 
+/// Numéro du document : dérivé du numéro de commande, donc identique à l'écran et dans le PDF (« FA-2026-0142 », « RC-2026-0142 »).
+String documentNumber(Order o, {required bool invoice}) {
+  final tail = o.id.replaceFirst(RegExp(r'^#(BE-)?'), '');
+  return '${invoice ? 'FA' : 'RC'}-$tail';
+}
+
+/// Intitulé du document : un reçu de paiement n'est émis que pour une commande réellement payée.
+String documentTitle(Order o, {required bool invoice}) {
+  if (invoice) return 'FACTURE';
+  if (o.paid) return 'REÇU DE PAIEMENT';
+  return o.cod ? 'CONFIRMATION DE COMMANDE' : 'RÉCAPITULATIF DE COMMANDE';
+}
+
+/// État de paiement affiché sur les documents et l'écran 259.
+String orderPaymentStatus(Order o) {
+  if (o.paid) return 'Payé';
+  if (o.cancelled) return 'Annulée';
+  return o.cod ? 'À payer à la livraison' : 'En attente de paiement';
+}
+
 Future<pw.Document> _build(Order o, Account who, {required bool invoice}) async {
   final reg = pw.Font.ttf(await rootBundle.load('assets/fonts/PlusJakartaSans-400.ttf'));
   final bold = pw.Font.ttf(await rootBundle.load('assets/fonts/PlusJakartaSans-700.ttf'));
   final logo = pw.MemoryImage((await rootBundle.load(_logo)).buffer.asUint8List());
-  final num = o.id.replaceAll(RegExp(r'[^0-9]'), '');
-  final docNo = invoice ? 'FA-2026-$num' : 'RC-2026-${num.padLeft(5, '0')}';
-  final title = invoice ? 'FACTURE' : 'REÇU DE PAIEMENT';
+  final docNo = documentNumber(o, invoice: invoice);
+  final title = documentTitle(o, invoice: invoice);
 
   pw.TextStyle st(double s, {bool b = false, PdfColor c = _ink}) => pw.TextStyle(font: b ? bold : reg, fontSize: s, color: c);
   pw.Widget kv(String k, String v) => pw.Padding(
@@ -101,14 +121,15 @@ Future<pw.Document> _build(Order o, Account who, {required bool invoice}) async 
         child: pw.SizedBox(
           width: 230,
           child: pw.Column(children: [
-            kv('Sous-total', fcfa(o.subtotal)),
-            kv('Frais de service', o.fee == 0 ? 'Gratuit' : fcfa(o.fee)),
+            kv('Articles', fcfa(o.subtotal + o.discount)),
+            if (o.discount > 0) kv(o.promoCode.isEmpty ? 'Remise' : 'Remise (${o.promoCode})', '−${fcfa(o.discount)}'),
+            kv('Livraison', o.fee == 0 ? 'Gratuite' : fcfa(o.fee)),
             pw.SizedBox(height: 4),
             pw.Container(
               padding: const pw.EdgeInsets.symmetric(horizontal: 10, vertical: 9),
               decoration: pw.BoxDecoration(color: _ink, borderRadius: pw.BorderRadius.circular(8)),
               child: pw.Row(mainAxisAlignment: pw.MainAxisAlignment.spaceBetween, children: [
-                pw.Text(invoice ? 'Total' : 'Total payé', style: st(11, b: true, c: PdfColors.white)),
+                pw.Text(invoice ? 'Total' : (o.paid ? 'Total payé' : 'Total à payer'), style: st(11, b: true, c: PdfColors.white)),
                 pw.Text(fcfa(o.total), style: st(12, b: true, c: PdfColors.white)),
               ]),
             ),
@@ -119,8 +140,12 @@ Future<pw.Document> _build(Order o, Account who, {required bool invoice}) async 
       pw.Text('PAIEMENT', style: st(8.5, b: true, c: _muted)),
       pw.SizedBox(height: 4),
       kv('Moyen de paiement', o.method),
-      kv('Référence de transaction', o.reference),
-      kv('Statut', o.paid ? 'Payé' : 'En attente de paiement'),
+      if (o.reference.isNotEmpty && o.reference != '—') kv('Référence de transaction', o.reference),
+      kv('Statut', orderPaymentStatus(o)),
+      pw.SizedBox(height: 10),
+      pw.Text('LIVRAISON', style: st(8.5, b: true, c: _muted)),
+      pw.SizedBox(height: 4),
+      pw.Text(orderDeliveryText(o), style: st(10)),
       pw.Spacer(),
       pw.Container(height: 1, color: _line),
       pw.SizedBox(height: 8),
@@ -130,9 +155,58 @@ Future<pw.Document> _build(Order o, Account who, {required bool invoice}) async 
   return doc;
 }
 
+/// Lignes de la facture : toutes les lignes de la commande affichée, dans une zone défilante.
+class InvoiceLines extends ConsumerWidget {
+  const InvoiceLines({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final lines = ref.watch(viewedOrderProvider).lines;
+    if (lines.isEmpty) return gText('Aucune commande à facturer.', 12, const Color(0xFF57545F), wrap: true);
+    return ListView.separated(
+      padding: EdgeInsets.zero,
+      itemCount: lines.length,
+      separatorBuilder: (_, _) => const Divider(height: 14, thickness: 1, color: Color(0xFFEEECF1)),
+      itemBuilder: (_, i) {
+        final l = lines[i];
+        return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Padding(padding: const EdgeInsets.only(left: 10), child: SizedBox(width: 160, child: gText(l.title, 12, const Color(0xFF111015), weight: 500, wrap: true, maxLines: 2))),
+          SizedBox(width: 34, child: gText('${l.qty}', 12, const Color(0xFF111015), wrap: true, align: TextAlign.center)),
+          Expanded(child: gText(fcfa(l.price * l.qty).replaceAll(' FCFA', ''), 12, const Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right)),
+        ]);
+      },
+    );
+  }
+}
+
+/// Détail du montant de la commande affichée : articles, remise, livraison. Aucune répartition interne de la plateforme.
+class InvoiceTotals extends ConsumerWidget {
+  const InvoiceTotals({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final o = ref.watch(viewedOrderProvider);
+    Widget row(String k, String v) => Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: Row(children: [
+            Expanded(child: gText(k, 11.5, const Color(0xFF57545F), wrap: true)),
+            gText(v, 11.5, const Color(0xFF111015), weight: 600, wrap: true),
+          ]),
+        );
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      gText('Détail du montant', 12, const Color(0xFF111015), weight: 600, wrap: true),
+      const SizedBox(height: 12),
+      row('Articles', fcfa(o.subtotal + o.discount)),
+      if (o.discount > 0) row(o.promoCode.isEmpty ? 'Remise' : 'Remise (${o.promoCode})', '−${fcfa(o.discount)}'),
+      row('Livraison', o.fee == 0 ? 'Gratuite' : fcfa(o.fee)),
+      row('Paiement', orderPaymentStatus(o)),
+    ]);
+  }
+}
+
 /// Télécharge (web) ou partage (mobile) le PDF.
 Future<void> downloadDocument(BuildContext context, WidgetRef ref, {required bool invoice}) async {
-  final o = ref.read(lastOrderProvider);
+  final o = ref.read(viewedOrderProvider);
   if (Backend.ready && (o.id == '#----' || o.lines.isEmpty)) return gToast(context, 'Aucune commande à télécharger.');
   final who = ref.read(profileAccountProvider);
   gToast(context, invoice ? 'Préparation de la facture…' : 'Préparation du reçu…');

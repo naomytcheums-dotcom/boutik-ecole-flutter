@@ -4,6 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/demo/section_a_demo.dart' show CartLine;
 import '../../data/repositories/repositories.dart' show cartProvider;
 import '../gen.dart';
+import '../nav.dart';
+import 'auth.dart' show kTermsVersion, requireLogin;
+import 'backend.dart';
 import 'store.dart';
 
 /// Récapitulatif de commande (écrans 42 et 43) : une seule source de vérité, celle du panier, du mode de livraison
@@ -30,6 +33,70 @@ String orderReferenceLabel(List<Order> orders) {
 
 /// Montant à payer : celui de la commande impayée la plus récente, sinon le total du panier courant.
 int amountToPay(List<Order> orders, Totals totals) => payableOrder(orders)?.total ?? totals.total;
+
+/// Numéro marchand du paiement manuel, défini par l'administrateur (fonction payment_instructions) ; null tant qu'il n'est pas communiqué.
+final paymentInstructionsProvider = FutureProvider.autoDispose<({String? number, String? operator})>((ref) async {
+  if (!Backend.ready) return (number: null, operator: null);
+  final r = await Backend.rpc('payment_instructions', const {});
+  final d = r.data;
+  if (r.error != null || d is! Map) return (number: null, operator: null);
+  String? s(Object? v) => v is String && v.trim().isNotEmpty ? v.trim() : null;
+  return (number: s(d['merchant_number']), operator: s(d['operator']));
+}, retry: (_, _) => null);
+
+/// Case « J'accepte les conditions de vente » du récapitulatif (42) : cochée par le client, jamais par défaut.
+class _OrderTerms extends Notifier<bool> {
+  @override
+  bool build() => false;
+  void set(bool v) => state = v;
+}
+
+final orderTermsProvider = NotifierProvider<_OrderTerms, bool>(_OrderTerms.new);
+
+/// Case à cocher des conditions de vente.
+class OrderTermsCheck extends ConsumerWidget {
+  const OrderTermsCheck({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final on = ref.watch(orderTermsProvider);
+    return Semantics(
+      checked: on,
+      label: 'J’accepte les conditions de vente et la politique de retour',
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => ref.read(orderTermsProvider.notifier).set(!on),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Container(
+            width: 20,
+            height: 20,
+            decoration: BoxDecoration(color: on ? const Color(0xFF111015) : Colors.white, border: on ? null : Border.all(color: const Color(0xFFB8B3C4), width: 1.5), borderRadius: BorderRadius.circular(6)),
+            child: on ? const Icon(Icons.check, size: 14, color: Colors.white) : null,
+          ),
+          const SizedBox(width: 10),
+          Expanded(child: gText('J’accepte les conditions de vente et la politique de retour.', 12.5, const Color(0xFF4A4854), lh: 18, wrap: true, maxLines: 2)),
+        ]),
+      ),
+    );
+  }
+}
+
+/// « Confirmer la commande » (42) : exige la case des conditions, enregistre l'acceptation sur le compte connecté, puis ouvre le paiement (08).
+Future<void> confirmOrderSummary(WidgetRef ref, BuildContext context) async {
+  if (!ref.read(orderTermsProvider)) {
+    gToast(context, 'Cochez l’acceptation des conditions de vente pour continuer.');
+    return;
+  }
+  if (Backend.ready && GAnim.enabled) {
+    if (!await requireLogin(context, ref, 'confirmer votre commande') || !context.mounted) return;
+    final err = await Backend.acceptTerms(kTermsVersion);
+    if (err != null) {
+      if (context.mounted) gToast(context, err);
+      return;
+    }
+  }
+  if (context.mounted) gOpen(context, '08');
+}
 
 /// Lignes du panier dans une zone défilante : toutes les lignes sont affichées, quel que soit leur nombre.
 class OrderLinesList extends ConsumerWidget {
@@ -80,8 +147,42 @@ class _Row extends StatelessWidget {
         ]),
       ),
       const SizedBox(width: 8),
-      SizedBox(width: 70, child: gText(fcfa(line.price * line.qty).replaceAll(' FCFA', ''), 13.5, const Color(0xFF111015), weight: 700, wrap: true, align: TextAlign.right)),
+      SizedBox(width: 96, child: gText(fcfa(line.price * line.qty), 13, const Color(0xFF111015), weight: 700, wrap: true, align: TextAlign.right)),
     ]);
+  }
+}
+
+/// Mode de livraison et adresse réels de la commande : l'adresse figée à la commande (livraison à domicile), sinon le point de retrait.
+String orderDeliveryText(Order o) {
+  if (o.home) return 'Livraison à domicile\n${o.address.isEmpty ? 'Adresse non disponible' : o.address}';
+  return 'Retrait sur campus\nIUT de Douala – Bâtiment principal';
+}
+
+/// « Total 25 000 FCFA · remise −2 000 FCFA (code) · livraison 3 000 FCFA » : montants de la commande.
+String orderAmountLine(Order o) {
+  final parts = [
+    'Total ${fcfa(o.total)}',
+    if (o.discount > 0) 'remise −${fcfa(o.discount)}${o.promoCode.isNotEmpty ? ' (${o.promoCode})' : ''}',
+    if (o.fee > 0) 'livraison ${fcfa(o.fee)}',
+  ];
+  return parts.join(' · ');
+}
+
+/// Pastille d'état de la commande affichée (En attente de paiement, En cours, Livrée, Annulée), à largeur du texte, alignée à droite.
+class OrderBadge extends ConsumerWidget {
+  const OrderBadge({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final b = ref.watch(viewedOrderProvider).badge;
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        decoration: BoxDecoration(color: badgeFill(b), borderRadius: BorderRadius.circular(14)),
+        child: gText(b, 11.924, badgeInk(b), weight: 600),
+      ),
+    );
   }
 }
 
@@ -89,7 +190,7 @@ class _Row extends StatelessWidget {
 final orderSteps = [for (var i = 0; i < 4; i++) statusLabel(i)];
 
 /// Libellé court du statut d'une commande, identique sur 09, 29, 46 et 47.
-String orderStatusLabel(Order o) => o.cancelled ? 'Annulée' : statusLabel(o.status);
+String orderStatusLabel(Order o) => o.cancelled ? 'Annulée' : (o.awaitingPayment ? 'En attente de paiement' : statusLabel(o.status));
 
 /// Chronologie de la commande affichée : étapes terminées, étape en cours, étapes à venir (D-083).
 class OrderTimeline extends ConsumerWidget {
@@ -98,7 +199,7 @@ class OrderTimeline extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final o = ref.watch(viewedOrderProvider);
-    final current = o.status.clamp(0, 3);
+    final current = o.step;
     return SizedBox(
       width: 340,
       height: 62.0 * orderSteps.length,
@@ -120,7 +221,7 @@ class OrderTimeline extends ConsumerWidget {
               child: i < current ? const Icon(Icons.check, size: 13, color: Colors.white) : null,
             ),
           ),
-          Positioned(left: 32, top: 62.0 * i - 1, width: 305, child: gText(orderSteps[i], 13.5, const Color(0xFF111015), weight: 600, wrap: true)),
+          Positioned(left: 32, top: 62.0 * i - 1, width: 305, child: gText((i == 0 && current < 0) ? (o.cancelled ? 'Commande annulée' : 'En attente de paiement') : orderSteps[i], 13.5, const Color(0xFF111015), weight: 600, wrap: true)),
           Positioned(
             left: 32,
             top: 62.0 * i + 19,

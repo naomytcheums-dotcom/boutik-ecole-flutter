@@ -9,6 +9,7 @@ import '../gdata.dart' show gNetImage;
 import '../gen.dart' show gToast;
 import '../i18n.dart' show Text;
 import 'auth.dart';
+import 'access.dart' show roleKey;
 import 'backend.dart';
 import 'package:go_router/go_router.dart';
 import 'form_options.dart';
@@ -159,6 +160,9 @@ class _CompanyState extends ConsumerState<CompanyProfileScreen> {
   }
 
   Future<void> _pickLogo() async {
+    final c = ref.read(companyProvider).asData?.value;
+    final allowed = c != null ? const {'owner', 'admin'}.contains('${c['my_role'] ?? 'owner'}') : const {'company', 'other', 'admin'}.contains(roleKey(ref.read(authProvider).current));
+    if (Backend.ready && !allowed) return gToast(context, 'La fiche entreprise est réservée aux comptes Entreprise et à leurs administrateurs.');
     final p = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: const ['jpg', 'jpeg', 'png', 'webp']);
     if (p.isEmpty || !mounted) return;
     final up = await uploadPostMedia(context, p.first);

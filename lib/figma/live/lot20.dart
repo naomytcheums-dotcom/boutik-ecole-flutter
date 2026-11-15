@@ -7,6 +7,7 @@ import 'backend.dart';
 import 'console.dart';
 import 'entreprise.dart';
 import 'finance.dart' show financeJournalProvider;
+import 'notifs.dart' show NotificationItem, notifGroup, notifsProvider, tapNotification;
 import 'store.dart';
 
 /// Bornes, annonces à modérer, notifications, commandes, rôles et registres (lot de 20 écrans) : tout est lu sur le serveur ou dans les
@@ -35,6 +36,16 @@ class NotificationsRows extends RpcRows {
 final notificationsListProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(NotificationsRows.new);
 
 String kioskStatus(Object? s) => switch ('$s') { 'online' => 'En ligne', 'offline' => 'Hors ligne', 'fallback' => 'Mode secours', 'maintenance' => 'Maintenance', _ => '$s' };
+
+/// État de la borne affiché sur son accueil (206) : lu sur le serveur (statut et dernière mise à jour), jamais « prête » par défaut.
+({String label, Color color}) kioskStateOf(List<Map<String, dynamic>>? rows) {
+  if (rows == null) return (label: 'Vérification de la borne…', color: _grey);
+  if (rows.isEmpty) return (label: 'Borne non enregistrée sur le serveur', color: _grey);
+  final online = rows.where((r) => '${r['status']}' == 'online').toList();
+  if (online.isNotEmpty) return (label: 'Borne en ligne · mise à jour ${dateCourte(online.first['updated_at'])}', color: const Color(0xFF126B49));
+  final r = rows.first;
+  return (label: '${kioskStatus(r['status'])} · mise à jour ${dateCourte(r['updated_at'])}', color: const Color(0xFFB45309));
+}
 String incidentKind(Object? s) => switch ('$s') { 'offline' => 'Hors ligne', 'restart' => 'Redémarrage', 'fallback' => 'Mode secours', 'hardware' => 'Matériel', 'payment' => 'Paiement', _ => 'Autre' };
 String listingStatus(Object? s) => switch ('$s') { 'approved' => 'Publiée', 'draft' => 'Brouillon', 'removed' => 'Retirée', _ => '$s' };
 
@@ -70,13 +81,67 @@ Widget listingsListing({double width = 984, double height = 600, bool onlyPendin
       height: height,
     );
 
-Widget notificationsListing({double width = 342, double height = 600}) => MobileList(
-      provider: notificationsListProvider,
-      title: (r) => '${r['title'] ?? ''}',
-      subtitle: (r) => '${r['body'] ?? ''} · ${dateCourte(r['created_at'])}',
-      emptyText: 'Aucune notification pour le moment.',
+class ActivityFilter extends Notifier<int> {
+  @override
+  int build() => 0;
+  void set(int v) => state = v;
+}
+
+/// Segment choisi sur l'écran 254 : 0 tout · 1 abonnés · 2 commandes · 3 lives.
+final activityFilterProvider = NotifierProvider<ActivityFilter, int>(ActivityFilter.new);
+
+bool activityMatches(NotificationItem n, int f) => switch (f) { 1 => n.kind == 'follow', 2 => notifGroup(n.kind) == 1, 3 => n.kind == 'live', _ => true };
+
+/// Écran 254 « Activité » : les notifications du compte filtrées par le segment choisi ; chaque ligne s'ouvre et se marque lue.
+Widget notificationsListing({double width = 342, double height = 600}) => SizedBox(
       width: width,
       height: height,
+      child: Consumer(builder: (context, ref, _) {
+        if (ref.watch(authProvider.select((a) => a.current == null))) return _note(width, 'Connectez-vous pour voir votre activité.');
+        final f = ref.watch(activityFilterProvider);
+        final items = [for (final n in ref.watch(notifsProvider)) if (activityMatches(n, f)) n];
+        final unread = ref.watch(notifsProvider.select((l) => l.any((n) => !n.read)));
+        if (items.isEmpty) return _note(width, f == 0 ? 'Aucune activité pour le moment.' : 'Aucune activité dans cette catégorie.');
+        return Column(children: [
+          if (unread)
+            Align(
+              alignment: Alignment.centerRight,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => ref.read(notifsProvider.notifier).markAllRead(),
+                child: Padding(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12), child: Text('Tout marquer comme lu', style: _st(12, w: FontWeight.w600, c: const Color(0xFF5A3FE0)))),
+              ),
+            ),
+          Expanded(
+            child: ListView.separated(
+              padding: EdgeInsets.zero,
+              itemCount: items.length,
+              separatorBuilder: (_, _) => const Divider(height: 1, color: Color(0xFFF2EFF6)),
+              itemBuilder: (context, i) {
+                final n = items[i];
+                return InkWell(
+                  onTap: () => tapNotification(context, ref, n),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                    child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Container(width: 8, height: 8, margin: const EdgeInsets.only(top: 6, right: 10), decoration: BoxDecoration(shape: BoxShape.circle, color: n.read ? Colors.transparent : const Color(0xFF6A4DFF))),
+                      Expanded(
+                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          Text(n.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(13.5, w: n.read ? FontWeight.w500 : FontWeight.w700)),
+                          const SizedBox(height: 3),
+                          Text(n.body, maxLines: 2, overflow: TextOverflow.ellipsis, style: _st(11.5, c: _grey)),
+                          const SizedBox(height: 3),
+                          Text(dateCourte(n.createdAt.toIso8601String()), style: _st(10.5, c: _grey)),
+                        ]),
+                      ),
+                    ]),
+                  ),
+                );
+              },
+            ),
+          ),
+        ]);
+      }),
     );
 
 Widget wideContests({double width = 984, double height = 600}) => MobileList(

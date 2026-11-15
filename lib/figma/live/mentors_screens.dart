@@ -6,6 +6,8 @@ import '../gen.dart' show gToast;
 import '../i18n.dart' show Text;
 import 'auth.dart';
 import 'backend.dart';
+import 'l8_actions.dart';
+import 'l8_common.dart' show l8Confirm;
 import 'marche/marche_data.dart';
 import 'marche/marche_widgets.dart';
 
@@ -182,35 +184,64 @@ class MentorDetailScreen extends ConsumerWidget {
   Future<void> _request(BuildContext context, WidgetRef ref, Map<String, dynamic> m) async {
     if (!await requireLogin(context, ref, 'demander un mentor') || !context.mounted) return;
     final topic = TextEditingController(), msg = TextEditingController();
-    final ok = await showModalBottomSheet<bool>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(8))),
-      builder: (c) => Padding(
-        padding: EdgeInsets.fromLTRB(20, 20, 20, 20 + MediaQuery.of(c).viewInsets.bottom),
-        child: SingleChildScrollView(
-          child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('Demander ${m['name']} comme mentor', style: mst(17, w: FontWeight.w800)),
-            const SizedBox(height: 12),
-            TextField(controller: topic, decoration: InputDecoration(labelText: 'Ce que je veux apprendre', hintText: 'Ex. Flutter, entretien d’embauche', border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)))),
-            const SizedBox(height: 10),
-            TextField(controller: msg, maxLines: 4, maxLength: 600, decoration: InputDecoration(labelText: 'Message (facultatif)', border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)))),
-            const SizedBox(height: 10),
-            Row(children: [
-              Expanded(child: mButton('Annuler', () => Navigator.pop(c, false), dark: false)),
-              const SizedBox(width: 10),
-              Expanded(child: mButton('Envoyer la demande', () => Navigator.pop(c, true))),
-            ]),
-          ]),
-        ),
-      ),
-    );
-    if (ok != true || !context.mounted) return;
-    final r = await marcheCall('mentor_request', {'p_mentor': id, 'p_topic': topic.text, 'p_message': msg.text});
+    try {
+      String? error;
+      while (true) {
+        final ok = await showModalBottomSheet<bool>(
+          context: context,
+          isScrollControlled: true,
+          backgroundColor: Colors.white,
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(8))),
+          builder: (c) => StatefulBuilder(
+            builder: (c, set) => Padding(
+              padding: EdgeInsets.fromLTRB(20, 20, 20, 20 + MediaQuery.of(c).viewInsets.bottom),
+              child: SingleChildScrollView(
+                child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text('Demander ${m['name']} comme mentor', style: mst(17, w: FontWeight.w800)),
+                  const SizedBox(height: 12),
+                  TextField(controller: topic, decoration: InputDecoration(labelText: 'Ce que je veux apprendre', hintText: 'Ex. Flutter, entretien d’embauche', border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)))),
+                  const SizedBox(height: 10),
+                  TextField(controller: msg, maxLines: 4, maxLength: 600, decoration: InputDecoration(labelText: 'Message (facultatif)', border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)))),
+                  if (error != null) Padding(padding: const EdgeInsets.only(bottom: 8), child: Text(error!, style: mst(12.5, w: FontWeight.w600, c: kRed))),
+                  const SizedBox(height: 10),
+                  Row(children: [
+                    Expanded(child: mButton('Annuler', () => Navigator.pop(c, false), dark: false)),
+                    const SizedBox(width: 10),
+                    Expanded(child: mButton('Envoyer la demande', () {
+                      if (topic.text.trim().length < 2) return set(() => error = 'Indiquez ce que vous voulez apprendre (2 caractères minimum).');
+                      Navigator.pop(c, true);
+                    })),
+                  ]),
+                ]),
+              ),
+            ),
+          ),
+        );
+        if (ok != true || !context.mounted) return;
+        final r = await marcheCall('mentor_request', {'p_mentor': id, 'p_topic': topic.text, 'p_message': msg.text});
+        if (!context.mounted) return;
+        if (r.error == null) {
+          gToast(context, 'Demande envoyée : ${m['name']} vous répondra.');
+          ref.invalidate(mentorDetailProvider(id));
+          ref.invalidate(mentorRequestsProvider('student'));
+          return;
+        }
+        // la saisie est conservée : la feuille se rouvre avec le motif du refus
+        error = Backend.userMessage('${r.error}');
+      }
+    } finally {
+      topic.dispose();
+      msg.dispose();
+    }
+  }
+
+  Future<void> _cancel(BuildContext context, WidgetRef ref, Map<String, dynamic> req, String name) async {
+    if (!await l8Confirm(context, 'Annuler la demande ?', 'Votre demande à $name sera retirée : vous pourrez en faire une autre.', keep: 'Garder', go: 'Annuler la demande') || !context.mounted) return;
+    final r = await marcheCall('mentor_request_cancel', {'p_id': req['id']});
     if (!context.mounted) return;
-    gToast(context, r.error != null ? Backend.userMessage('${r.error}') : 'Demande envoyée : ${m['name']} vous répondra.');
+    gToast(context, r.error != null ? Backend.userMessage('${r.error}') : 'Demande annulée.');
     ref.invalidate(mentorDetailProvider(id));
+    ref.invalidate(mentorRequestsProvider('student'));
   }
 
   @override
@@ -221,17 +252,28 @@ class MentorDetailScreen extends ConsumerWidget {
         final reviews = [for (final r in (m['review_list'] as List? ?? const [])) Map<String, dynamic>.from(r as Map)];
         final req = m['my_request'] is Map ? Map<String, dynamic>.from(m['my_request'] as Map) : null;
         final avail = '${m['availability']}';
+        final mine = Backend.ready && Backend.userId != null && Backend.userId == '${m['user_id']}';
         return ListView(padding: const EdgeInsets.only(bottom: 90, top: 4), children: [
           MentorCard(m: m),
           if ('${m['bio']}'.isNotEmpty) _box(Text('${m['bio']}', style: mst(13.5).copyWith(height: 1.5))),
           _box(Text('${mInt(m['helped'])} accompagnement${mInt(m['helped']) > 1 ? 's' : ''} accepté${mInt(m['helped']) > 1 ? 's' : ''}${m['evening'] == true ? ' · disponible le soir' : ''}', style: mst(12.5, c: kGrey))),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: req != null && req['status'] == 'requested'
-                ? Text('Votre demande est en attente de réponse.', style: mst(13, w: FontWeight.w700, c: kViolet))
-                : req != null && req['status'] == 'accepted'
-                    ? Text('Demande acceptée : écrivez à ${m['name']} pour convenir d’un moment.', style: mst(13, w: FontWeight.w700, c: kGreen))
-                    : mButton(avail == 'busy' ? 'Pas disponible pour le moment' : 'Demander un mentor', avail == 'busy' ? null : () => _request(context, ref, m), width: double.infinity),
+            child: mine
+                ? Text('C’est votre profil de mentor : modifiez-le depuis « Mon profil mentor ».', style: mst(13, w: FontWeight.w700, c: kViolet))
+                : req != null && req['status'] == 'requested'
+                    ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text('Votre demande est en attente de réponse.', style: mst(13, w: FontWeight.w700, c: kViolet)),
+                        const SizedBox(height: 8),
+                        mButton('Annuler ma demande', () => _cancel(context, ref, req, '${m['name']}'), dark: false, width: double.infinity),
+                      ])
+                    : req != null && req['status'] == 'accepted'
+                        ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            Text('Demande acceptée : écrivez à ${m['name']} pour convenir d’un moment.', style: mst(13, w: FontWeight.w700, c: kGreen)),
+                            const SizedBox(height: 8),
+                            mButton('Écrire à ${m['name']}', () => l8WriteTo(context, ref, '${m['user_id']}', '${m['name']}', need: 'écrire à un mentor'), width: double.infinity, icon: Icons.chat_outlined),
+                          ])
+                        : mButton(avail == 'busy' ? 'Pas disponible pour le moment' : 'Demander un mentor', avail == 'busy' ? null : () => _request(context, ref, m), width: double.infinity),
           ),
           mSectionTitle('Avis'),
           if (reviews.isEmpty) Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: Text('Pas encore d’avis : les étudiants aidés pourront noter ce mentor.', style: mst(13, c: kGrey))),
@@ -258,6 +300,14 @@ class MentorRequestsScreen extends ConsumerWidget {
     if (!context.mounted) return;
     gToast(context, r.error != null ? Backend.userMessage('${r.error}') : (accept ? 'Demande acceptée : l’étudiant est prévenu.' : 'Demande déclinée.'));
     ref.invalidate(mentorRequestsProvider('mentor'));
+  }
+
+  Future<void> _cancel(BuildContext context, WidgetRef ref, Map<String, dynamic> q) async {
+    if (!await l8Confirm(context, 'Annuler la demande ?', 'Votre demande à ${q['other']} sera retirée : vous pourrez en faire une autre.', keep: 'Garder', go: 'Annuler la demande') || !context.mounted) return;
+    final r = await marcheCall('mentor_request_cancel', {'p_id': q['id']});
+    if (!context.mounted) return;
+    gToast(context, r.error != null ? Backend.userMessage('${r.error}') : 'Demande annulée.');
+    ref.invalidate(mentorRequestsProvider('student'));
   }
 
   Future<void> _review(BuildContext context, WidgetRef ref, Map<String, dynamic> q) async {
@@ -306,8 +356,16 @@ class MentorRequestsScreen extends ConsumerWidget {
                       const SizedBox(height: 10),
                       Row(children: [Expanded(child: mButton('Décliner', () => _decide(context, ref, q, false), dark: false)), const SizedBox(width: 10), Expanded(child: mButton('Accepter', () => _decide(context, ref, q, true)))]),
                     ],
-                    if (role == 'student' && q['status'] == 'accepted') ...[
+                    if (role == 'student' && q['status'] == 'requested') ...[
                       const SizedBox(height: 10),
+                      mButton('Annuler ma demande', () => _cancel(context, ref, q), dark: false),
+                    ],
+                    if (q['status'] == 'accepted') ...[
+                      const SizedBox(height: 10),
+                      mButton('Écrire à ${q['other']}', () => l8WriteTo(context, ref, '${q['other_id']}', '${q['other']}', need: role == 'mentor' ? 'écrire à l’étudiant' : 'écrire à votre mentor'), icon: Icons.chat_outlined),
+                    ],
+                    if (role == 'student' && q['status'] == 'accepted') ...[
+                      const SizedBox(height: 8),
                       q['reviewed'] == true ? Text('Avis publié', style: mst(12.5, w: FontWeight.w700, c: kGreen)) : mButton('Noter ce mentor', () => _review(context, ref, q), dark: false),
                     ],
                   ])),

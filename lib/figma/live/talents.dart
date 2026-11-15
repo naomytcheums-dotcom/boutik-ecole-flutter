@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../gen.dart';
 import '../nav.dart';
 import 'audit.dart';
 import 'auth.dart';
 import 'backend.dart';
-import 'home_live.dart' show LiveTalent, liveTalentsProvider;
+import 'home_live.dart' show LiveTalent;
 import 'store.dart';
 
 /// Talents, projets innovants et opportunités (écrans 70, 75, 78 à 80, 151).
@@ -54,9 +55,9 @@ Future<String?> askText(BuildContext context, {required String title, required S
 // ------------------------------------------------------------------ talents (70)
 
 class Talent {
-  const Talent(this.name, this.dept, this.skills, this.category, {this.available = true, this.bio = '', this.showStatus = true, this.avatarUrl = '', this.userId = ''});
+  const Talent(this.name, this.dept, this.skills, this.category, {this.available = true, this.bio = '', this.showStatus = true, this.avatarUrl = '', this.userId = '', this.certified = false});
   final String name, dept, skills, category, bio, avatarUrl, userId;
-  final bool available;
+  final bool available, certified;
 
   /// Faux pour un vrai profil : aucune disponibilité n'est enregistrée, elle n'est donc jamais affichée.
   final bool showStatus;
@@ -88,19 +89,66 @@ final talentRequestsProvider = NotifierProvider<TalentRequests, Map<String, Stri
 
 const talentCats = ['Tous', 'Développement', 'Design', 'Audiovisuel', 'Électronique'];
 
+/// Radicaux cherchés par le serveur pour chaque catégorie (la recherche du serveur ne tient pas compte des accents : « lectron » couvre Électronique).
+const talentCatTerms = {
+  'Développement': ['velopp', 'python', 'flutter', 'web'],
+  'Design': ['design', 'graph', 'ux', 'conception'],
+  'Audiovisuel': ['vid', 'montage', 'photo', 'audio'],
+  'Électronique': ['lectron', 'iot', 'arduino', 'drone'],
+};
+
+bool talentInCategory(LiveTalent t, String cat) {
+  final terms = talentCatTerms[cat];
+  if (terms == null) return true;
+  final hay = normText('${t.skills} ${t.department}');
+  return terms.any((w) => hay.contains(normText(w)));
+}
+
+/// Nombre de talents demandés au serveur : 20, puis 40, puis 50 (plafond du serveur) avec « Voir plus ».
+class TalentLimit extends Notifier<int> {
+  @override
+  int build() => 20;
+  void more() => state = (state + 20).clamp(20, 50);
+  void reset() => state = 20;
+}
+
+final talentLimitProvider = NotifierProvider<TalentLimit, int>(TalentLimit.new);
+
+/// Lecture des talents par le serveur : la recherche (nom, compétence, filière) et la catégorie sont appliquées par `talents_list`,
+/// pas sur une liste déjà chargée. La frappe est attendue 350 ms avant l'appel.
+final talentSearchProvider = FutureProvider.autoDispose<List<LiveTalent>>((ref) async {
+  ref.watch(authProvider.select((a) => a.current?.serverId));
+  final q = ref.watch(talentQueryProvider).trim();
+  final cat = talentCats[ref.watch(talentTabProvider).clamp(0, talentCats.length - 1)];
+  final limit = ref.watch(talentLimitProvider);
+  await Future<void>.delayed(const Duration(milliseconds: 350));
+  if (!ref.mounted || !Backend.ready) return const [];
+  Future<List<LiveTalent>> fetch(String term) async {
+    final r = await Backend.rpc('talents_list', {'p_query': term, 'p_limit': limit});
+    if (r.error != null || r.data is! List) throw StateError(r.error ?? 'talents_list');
+    return [for (final x in r.data as List) LiveTalent.fromRow(x as Map)];
+  }
+
+  if (cat == 'Tous' || q.isNotEmpty) {
+    final all = await fetch(q);
+    return [for (final t in all) if (talentInCategory(t, cat)) t];
+  }
+  final seen = <String>{};
+  final out = <LiveTalent>[];
+  for (final l in await Future.wait([for (final w in talentCatTerms[cat]!) fetch(w)])) {
+    for (final t in l) {
+      if (seen.add(t.id) && talentInCategory(t, cat)) out.add(t);
+    }
+  }
+  return out;
+}, retry: (_, _) => null);
+
 final visibleTalentsProvider = Provider<List<Talent>>((ref) {
   final cat = talentCats[ref.watch(talentTabProvider).clamp(0, 4)];
   final q = normText(ref.watch(talentQueryProvider).trim());
   if (Backend.ready) {
-    // connecté : vrais profils étudiants ayant renseigné leurs compétences ; la catégorie filtre sur leurs compétences et leur département
-    final live = ref.watch(liveTalentsProvider) ?? const <LiveTalent>[];
-    if (live.isNotEmpty) return [
-      for (final t in live)
-        if ((cat == 'Tous' || normText('${t.skills} ${t.department}').contains(normText(cat))) && (q.isEmpty || normText('${t.name} ${t.department} ${t.skills}').contains(q)))
-          Talent(t.name, t.department, t.skills, cat, showStatus: false, avatarUrl: t.avatarUrl, userId: t.id),
-    ];
-    // aucun profil réel : liste vide (jamais d'exemples en mode connecté)
-    return const <Talent>[];
+    final live = ref.watch(talentSearchProvider).asData?.value ?? const <LiveTalent>[];
+    return [for (final t in live) Talent(t.name, t.department, t.skills, cat, showStatus: false, avatarUrl: t.avatarUrl, userId: t.id, certified: t.certified)];
   }
   return [
     for (final t in talents)
@@ -108,15 +156,53 @@ final visibleTalentsProvider = Provider<List<Talent>>((ref) {
   ];
 });
 
+const talentDailyQuota = 10;
+
+/// Quota des propositions de mission, mémorisé sur l'appareil par compte : dix par jour, une seule par talent et par jour.
+/// Renvoie le motif du refus, ou null si l'envoi est permis.
+Future<String?> talentProposalBlock(String userId, String talentId) async {
+  try {
+    final p = await SharedPreferences.getInstance();
+    final today = DateTime.now().toIso8601String().substring(0, 10);
+    final sent = p.getStringList('tp_${userId}_$today') ?? const <String>[];
+    if (sent.contains(talentId)) return 'Vous avez déjà proposé une mission à cette personne aujourd’hui : attendez sa réponse dans vos messages.';
+    if (sent.length >= talentDailyQuota) return 'Vous avez atteint les $talentDailyQuota propositions du jour. Réessayez demain.';
+  } catch (_) {}
+  return null;
+}
+
+Future<void> talentProposalRecord(String userId, String talentId) async {
+  try {
+    final p = await SharedPreferences.getInstance();
+    final today = DateTime.now().toIso8601String().substring(0, 10);
+    final key = 'tp_${userId}_$today';
+    await p.setStringList(key, [...(p.getStringList(key) ?? const <String>[]), talentId]);
+  } catch (_) {}
+}
+
 Color availFill(bool a) => a ? const Color(0xFFDDF5EC) : const Color(0xFFEEE9FF);
 Color availInk(bool a) => a ? const Color(0xFF0F7A52) : const Color(0xFF8F5400);
 
 Future<void> talentDialog(BuildContext context, WidgetRef ref, Talent t) async {
+  if (Backend.ready) {
+    // connexion et quota vérifiés avant la saisie : la personne ne rédige pas un message pour rien
+    if (t.userId.isEmpty) return gToast(context, 'Ce profil ne peut pas recevoir de proposition pour le moment.');
+    if (!await requireLogin(context, ref, 'proposer une mission') || !context.mounted) return;
+    final me = Backend.userId ?? '';
+    final blocked = await talentProposalBlock(me, t.userId);
+    if (blocked != null) {
+      if (context.mounted) await gAlert(context, 'Proposition impossible', blocked);
+      return;
+    }
+    if (!context.mounted) return;
+  }
   final already = ref.read(talentRequestsProvider).containsKey(t.name);
   final msg = await askText(
     context,
     title: t.name,
-    body: '${t.dept} · ${t.skills}\n${t.bio}\n${t.available ? 'Disponible pour de nouvelles missions.' : 'Actuellement occupé(e) : réponse sous quelques jours.'}${already ? '\nUne proposition est déjà envoyée.' : ''}',
+    body: Backend.ready
+        ? '${[t.dept, t.skills].where((e) => e.isNotEmpty).join(' · ')}\nVotre proposition part en message direct : la personne vous répond dans vos messages.'
+        : '${t.dept} · ${t.skills}\n${t.bio}\n${t.available ? 'Disponible pour de nouvelles missions.' : 'Actuellement occupé(e) : réponse sous quelques jours.'}${already ? '\nUne proposition est déjà envoyée.' : ''}',
     hint: 'Décrivez la mission à proposer',
     ok: 'Proposer une mission',
     min: 10,
@@ -124,12 +210,12 @@ Future<void> talentDialog(BuildContext context, WidgetRef ref, Talent t) async {
   if (msg == null || !context.mounted) return;
   if (Backend.ready) {
     // connecté : la proposition part réellement, en message direct à la personne (elle la lit dans ses Messages)
-    if (t.userId.isEmpty) return gToast(context, 'Ce profil ne peut pas recevoir de proposition pour le moment.');
-    if (!await requireLogin(context, ref, 'proposer une mission') || !context.mounted) return;
     final r = await Backend.startDirectConversation(t.userId, 'Proposition de mission de ${ref.read(profileAccountProvider).name} :\n\n$msg');
     if (!context.mounted) return;
     if (r.error != null) return gAlert(context, 'Proposition non envoyée', r.error!);
+    await talentProposalRecord(Backend.userId ?? '', t.userId);
     ref.read(talentRequestsProvider.notifier).send(t.name, msg);
+    if (!context.mounted) return;
     gToast(context, 'Proposition envoyée à ${t.name} : retrouvez la conversation dans vos messages');
     return;
   }
@@ -230,11 +316,12 @@ Future<void> supportDialog(BuildContext context, WidgetRef ref) async {
   if (Backend.ready) {
     // Connecté au serveur : le soutien est un vrai vote sur un projet publié (la fonction refuse son propre projet).
     if (!await requireLogin(context, ref, 'soutenir un projet') || !context.mounted) return;
-    final found = await Backend.rows('projects', 'id', eq: {'title': p.title, 'status': 'approved'}, limit: 1);
+    final found = await Backend.rpc('public_projects', const {'p_limit': 100});
     if (!context.mounted) return;
     if (found.error != null) return gToast(context, Backend.userMessage(found.error!));
-    if (found.rows.isEmpty) return gToast(context, 'Ce projet n’est pas publié : il ne peut pas être soutenu pour le moment.');
-    final r = await Backend.rpc('project_upvote_toggle', {'p_project': found.rows.first['id']});
+    final match = [for (final x in (found.data as List? ?? const [])) if (x is Map && x['title'] == p.title) x].firstOrNull;
+    if (match == null) return gToast(context, 'Ce projet n’est pas publié : il ne peut pas être soutenu pour le moment.');
+    final r = await Backend.rpc('project_upvote_toggle', {'p_project': match['id']});
     if (!context.mounted) return;
     if (r.error != null) return gToast(context, Backend.userMessage(r.error!));
     return gToast(context, r.data == true ? 'Merci ! Votre soutien à « ${p.title} » est enregistré.' : 'Votre soutien à « ${p.title} » est retiré.');

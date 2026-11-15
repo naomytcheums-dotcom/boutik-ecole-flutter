@@ -39,13 +39,29 @@ void main() {
     for (final e in accounts.entries) {
       final visible = ids(e.value);
       for (final s in allScreens) {
-        expect(visible.contains(s.id), canOpen(e.value, s.id), reason: '${e.key} · ${s.id}');
+        expect(visible.contains(s.id), listedInEspace(e.value, s.id), reason: '${e.key} · ${s.id}');
+        if (visible.contains(s.id)) expect(canOpen(e.value, s.id), isTrue, reason: '${e.key} · ${s.id}');
       }
     }
     // l'étudiant accède à son espace vendeur, pas à l'administration ; l'administrateur voit tout
     expect(ids(accounts['étudiant']).contains('57'), isTrue);
     expect(ids(accounts['étudiant']).contains('127'), isFalse);
     expect(ids(accounts['admin']).length, allScreens.length);
+  });
+
+  test('« Mes rubriques » ne propose pas au Client les outils de gestion, de jury, de borne ni les maquettes', () {
+    const client = Account(name: 'C', phone: '', email: 'c@x.cm', password: '', role: 0);
+    final c = ids(client);
+    for (final id in ['224', '227', '178', '164', '197', '206', '210', '276', '234', 'P1', 'P2', 'V1', 'L1', 'P5', '250b']) {
+      expect(c.contains(id), isFalse, reason: id);
+      expect(canOpen(client, id), isTrue, reason: 'l\'adresse directe reste ouverte : $id');
+    }
+    for (final id in ['03', '10', '45', '148-1', '271', '226']) {
+      expect(c.contains(id), isTrue, reason: id);
+    }
+    expect(rubriqueDe('211').code, 'U');
+    expect(rubriqueDe('214').code, 'L');
+    expect(rubriqueDe('237').code, 'K');
   });
 
   test('la recherche filtre par titre ou numéro', () {

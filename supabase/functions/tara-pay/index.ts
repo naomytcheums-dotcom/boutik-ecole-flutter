@@ -43,6 +43,11 @@ Deno.serve(async (req) => {
   // Le montant vient TOUJOURS de la base, jamais du client.
   const { data: tx } = await admin.from("payment_transactions").select("*").eq("reference", reference).eq("payer_id", u.user.id).maybeSingle();
   if (!tx) return json({ error: "not_found", message: "Paiement introuvable." }, 404);
+  // Seuls les paiements dont l'effet est géré à la confirmation (forfait entreprise, récompense de défi) passent par Tara.
+  // Une commande ou une contribution doit suivre son propre circuit : sinon la confirmation n'aurait aucun effet.
+  const subject = String(tx.subject ?? "");
+  const supported = (tx.kind === "subscription" && subject.startsWith("plan:")) || (tx.kind === "event" && subject.startsWith("prize:"));
+  if (!supported) return json({ error: "unsupported_kind", message: "Ce paiement ne peut pas être réglé par Tara Money." }, 400);
   if (tx.status === "confirmed") return json({ status: "confirmed", reference });
   if (!["created", "failed"].includes(tx.status)) return json({ status: tx.status, reference, message: "Paiement déjà en cours." }); // pas de double débit
 

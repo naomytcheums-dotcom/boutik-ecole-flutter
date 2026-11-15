@@ -99,7 +99,7 @@ void main() {
     await _pump(tester, const G_192(), _Real.new);
     expect(find.text('Équipe attribuée'), findsOneWidget);
     expect(find.text('30 oct. 2026'), findsOneWidget);
-    expect(find.text('MMI'), findsOneWidget);
+    expect(find.text('MMI'), findsNWidgets(2), reason: 'frise (« Équipe retenue ») et bloc Devis (« Équipe »)');
     expect(find.text('12 oct. · 09:14'), findsNothing);
   });
 }

@@ -248,7 +248,7 @@ LiveProduct platformProduct(Listing l) {
   final image = l.images.isNotEmpty ? _photoOf(l) : (orig.isEmpty ? 'placeholder' : orig.first.image);
   return LiveProduct(l.title, l.department.isEmpty ? 'IUT de Douala' : l.department, l.price, l.showcase ? '$platformSeller · exemple' : platformSeller,
       l.description.isEmpty ? (orig.isEmpty ? '' : orig.first.description) : l.description, image,
-      category: liveCategories.contains(l.category) ? l.category : 'Maison', showcase: l.showcase);
+      category: liveCategories.contains(l.category) ? l.category : 'Maison', showcase: l.showcase, stock: l.stock, id: l.id.isEmpty ? null : l.id);
 }
 
 /// Catalogue de la plateforme : hors connexion au serveur, le catalogue d'exemple ; sinon les produits publiés et en stock.
@@ -312,7 +312,7 @@ final allProductsProvider = Provider<List<LiveProduct>>((ref) {
           final sid = (l.sellerId ?? '').isNotEmpty ? l.sellerId : (isOwn ? Backend.userId : null);
           return LiveProduct(l.title, l.department.isEmpty ? 'IUT de Douala' : l.department, l.price, isOwn ? ref.watch(profileAccountProvider).name : (names[sid] ?? 'Vendeur'),
               l.description.isEmpty ? 'Annonce publiée par un étudiant de l’IUT de Douala.' : l.description, _photoOf(l),
-              category: liveCategories.contains(l.category) ? l.category : 'Maison', sellerId: sid);
+              category: liveCategories.contains(l.category) ? l.category : 'Maison', sellerId: sid, stock: l.stock, id: l.id.isEmpty ? null : l.id);
         }(),
   ];
   extraProducts = extra;

@@ -235,11 +235,29 @@ async function sendFcm(
   }
 }
 
-Deno.serve(async () => {
+// Numéros camerounais saisis en local (6XXXXXXXX) ou avec indicatif : Twilio exige le format international.
+function toE164(raw: string): string {
+  const digits = raw.replace(/[^\d+]/g, "");
+  if (digits.startsWith("+")) return digits;
+  const d = digits.replace(/^00/, "");
+  if (/^237\d{9}$/.test(d)) return "+" + d;
+  if (/^6\d{8}$/.test(d)) return "+237" + d;
+  return "+" + d;
+}
+
+Deno.serve(async (req) => {
   const admin = createClient(
     env("SUPABASE_URL"),
     env("SUPABASE_SERVICE_ROLE_KEY"),
   );
+
+  // Appelée seulement par la tâche planifiée, qui présente la clé interne enregistrée en base.
+  const { data: keyOk } = await admin.rpc("dispatch_key_check", {
+    p_key: req.headers.get("x-dispatch-key") ?? "",
+  });
+  if (keyOk !== true) {
+    return Response.json({ error: "non autorisé" }, { status: 401 });
+  }
 
   const webPushReady =
     !!env("VAPID_PUBLIC_KEY") &&
@@ -283,13 +301,11 @@ Deno.serve(async () => {
       new Date(Date.now() - 86400_000).toISOString(),
     );
 
-  const { data: rows, error: selectError } = await admin
-    .from("notification_outbox")
-    .select("*")
-    .eq("status", "queued")
-    .in("channel", channels)
-    .order("created_at")
-    .limit(MAX);
+  // Prise en charge atomique : deux exécutions simultanées ne traitent jamais le même message.
+  const { data: rows, error: selectError } = await admin.rpc("dispatch_claim", {
+    p_limit: MAX,
+    p_channels: channels,
+  });
 
   if (selectError) {
     return Response.json(
@@ -356,9 +372,7 @@ Deno.serve(async () => {
         }
 
         const whatsapp = r.channel === "whatsapp";
-        const to =
-          (whatsapp ? "whatsapp:" : "") +
-          profile.phone.replace(/\s/g, "");
+        const to = (whatsapp ? "whatsapp:" : "") + toE164(profile.phone);
 
         const response = await fetch(
           `https://api.twilio.com/2010-04-01/Accounts/${env("TWILIO_ACCOUNT_SID")}/Messages.json`,
@@ -500,7 +514,6 @@ Deno.serve(async () => {
       .update({
         status: error ? "failed" : "sent",
         last_error: error,
-        attempts: (r.attempts ?? 0) + 1,
         sent_at: error ? null : new Date().toISOString(),
       })
       .eq("id", r.id);

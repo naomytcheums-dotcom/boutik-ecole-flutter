@@ -9,6 +9,7 @@ import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
 import '../live/auth.dart';
+import '../live/backend.dart' show Backend;
 import '../live/seller.dart';
 import '../live/review.dart';
 import '../live/audit.dart';
@@ -41,8 +42,8 @@ class G_150_2 extends ConsumerWidget {
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
       gP(24, 70, 161, 26, gText('Session expirée', 21, Color(0xFF111015), weight: 700)),
-      gP(22.5, 314, 345, 24, gText('Votre session a expiré', 19, Color(0xFF111015), weight: 800, align: TextAlign.center, wrap: true)),
-      gP(42.5, 346, 305, 38, gText('Pour votre sécurité, veuillez vous reconnecter pour continuer.', 13, Color(0xFF57545F), lh: 19, align: TextAlign.center, wrap: true)),
+      gP(22.5, 314, 345, 24, gText(demoContent || Backend.sessionWasLost ? 'Votre session a expiré' : 'Vous n’êtes pas connecté', 19, Color(0xFF111015), weight: 800, align: TextAlign.center, wrap: true)),
+      gP(42.5, 346, 305, 38, gText(demoContent || Backend.sessionWasLost ? 'Pour votre sécurité, veuillez vous reconnecter pour continuer.' : 'Connectez-vous pour accéder à votre compte.', 13, Color(0xFF57545F), lh: 19, align: TextAlign.center, wrap: true)),
       gP(54, 414, 282, 50, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [25, 25, 25, 25]), tap: () => gTab(context, '11')),
       gP(141, 430, 108, 18, gText('Se reconnecter', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       // « Autres états système » : liens décoratifs de la maquette (aucun ne mène à un vrai écran 404 ou 403) ; masqués avec le serveur.

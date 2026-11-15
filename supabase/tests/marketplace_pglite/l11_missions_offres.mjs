@@ -66,12 +66,12 @@ export async function run(db) {
   await as(U(14));
   await q(`select plan_set('vendeur_pro', 'Vendeur professionnel', 5000, true)`);
   await q(`select plan_set('entreprise', 'Entreprise', 9000, true)`);
-  await q(`select plan_set('createur_pro', 'Créateur professionnel', 3000, true)`);
+  await q(`select plan_set('admin_communaute', 'Administrateur de communauté', 3000, true)`);
   await as(U(11));
   await fails('offre : un client ne souscrit pas une offre réservée aux vendeurs', `select subscription_start('vendeur_pro')`, /ne concerne pas votre type de compte/);
   await fails('offre : un client ne souscrit pas une offre entreprise', `select subscription_start('entreprise')`, /ne concerne pas votre type de compte/);
   await as(U(12));
-  await fails('offre : sans fonction livrée, non vendue', `select subscription_start('createur_pro')`, /pas encore disponible/);
+  await fails('offre : sans fonction livrée, non vendue', `select subscription_start('admin_communaute')`, /pas encore disponible/);
   await fails('offre : plan gratuit sans prix refusé', `select subscription_start('gratuit')`, /pas encore disponible/);
   const pay1 = (await q(`select subscription_start('vendeur_pro') p`))[0].p;
   await fails('offre : double souscription en attente refusée', `select subscription_start('vendeur_pro')`, /déjà ce plan/);
@@ -111,6 +111,7 @@ export async function run(db) {
 
   // 6. invitations d'équipe : réponse identique que le compte existe ou non
   await db.exec(`insert into company_profiles (owner_id, company_name, status, sector, city, phone, contact_name) values ('${U(15)}', 'Entreprise L11', 'approved', 'Telecoms', 'Douala', '699', 'Mme N')`);
+  await db.exec(`insert into subscriptions (user_id, plan_code, status, started_at, current_period_end) values ('${U(15)}', 'entreprise', 'active', now(), now() + interval '30 days')`);
   await as(U(15));
   const a = (await q(`select company_invite('inconnu@t.cm', 'viewer') r`))[0].r;
   const b = (await q(`select company_invite('u11@t.cm', 'viewer') r`))[0].r;

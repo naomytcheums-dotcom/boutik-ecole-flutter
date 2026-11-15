@@ -39,19 +39,16 @@ Future<bool> _run(BuildContext context, String fn, Map<String, dynamic> args, St
 }
 
 const featureLabels = {
-  'stats_avancees': 'Statistiques avancées',
-  'portfolio_enrichi': 'Portfolio enrichi',
-  'visiteurs_profil': 'Visiteurs de votre profil',
-  'outils_vendeur_pro': 'Outils vendeur professionnel',
+  'stats_avancees': 'Statistiques avancées par produit (espace vendeur)',
+  'portfolio_enrichi': 'Portfolio étendu : 300 éléments au lieu de 100',
   'boost_campagnes': 'Campagnes sponsorisées',
-  'gestion_equipe': 'Gestion d’équipe',
-  'gestion_communaute': 'Gestion de communauté',
+  'gestion_equipe': 'Équipe d’entreprise : invitation de collègues',
 };
 
 final plansProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('plans', 'code,name,audience,price_xaf,period_days,features,active,audience_roles,sellable', order: 'code', ascending: true));
 
-/// Droits réellement livrés : les autres fonctions des offres sont annoncées comme « bientôt » et ne sont jamais présentées comme acquises.
-const deliveredFeatures = {'boost_campagnes'};
+/// Droits dont l'effet est vérifié côté serveur (migration 20261116120000) : tout autre droit éventuel est annoncé comme « bientôt » et jamais présenté comme acquis.
+const deliveredFeatures = {'boost_campagnes', 'stats_avancees', 'portfolio_enrichi', 'gestion_equipe'};
 
 /// Offres présentées à un compte : celles qui se vendent et qui concernent son type de compte (« Tous les comptes » ou son audience).
 /// L'administrateur voit tout le catalogue pour fixer les prix.

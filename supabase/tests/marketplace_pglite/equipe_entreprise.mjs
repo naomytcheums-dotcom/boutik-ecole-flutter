@@ -10,6 +10,8 @@ export async function run(db) {
     await db.exec(`insert into auth.users(id,email) values ('${id}','${nm.split(' ')[0]}@t.cm'); insert into profiles(id,name,role,email) values ('${id}','${nm}','${role}','${nm.split(' ')[0]}@t.cm')`);
   }
   await db.exec(`insert into company_profiles (owner_id, company_name, status, sector, city, phone, contact_name) values ('${E}', 'Orange Cameroun', 'approved', 'Telecoms', 'Douala', '699', 'Mme N')`);
+  // 20261116120000 : inviter des collègues exige le droit gestion_equipe (offre Entreprise)
+  await db.exec(`insert into subscriptions (user_id, plan_code, status, started_at, current_period_end) values ('${E}', 'entreprise', 'active', now(), now() + interval '30 days')`);
   const countMembers = async () => { await db.exec('reset role'); const n = (await q(`select count(*)::int n from company_members where owner_id='${E}'`))[0].n; await as(E); return n; };
   await as(E);
   check('invitation : personne sans compte, même réponse sans invitation', (await q(`select company_invite('inconnu@t.cm', 'viewer') r`))[0].r === 'invited' && (await countMembers()) === 0);

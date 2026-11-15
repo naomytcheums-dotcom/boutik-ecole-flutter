@@ -4,6 +4,15 @@
     <!-- Messages vocaux (record) et dictée de l'assistante Kéla (speech_to_text). -->
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.CAMERA"/>
+    <!-- Notifications push (Android 13 et plus : permission demandée à l'exécution par firebase_messaging). -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <!-- Direct vidéo (livekit_client / WebRTC) : réseau, routage audio et casques Bluetooth. -->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
     <uses-feature android:name="android.hardware.camera" android:required="false"/>
     <application
         android:label="Boutik-École"
@@ -45,6 +54,10 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- Les liens cm.iutdouala.boutik_ecole:// sont traités par supabase_flutter (app_links) : sans ceci Flutter les envoie aussi au routeur, qui affiche « écran introuvable ». -->
+        <meta-data
+            android:name="flutter_deeplinking_enabled"
+            android:value="false" />
         <meta-data
             android:name="firebase_messaging_installation_id_enabled"
             android:value="true" />

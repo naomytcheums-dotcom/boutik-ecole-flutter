@@ -52,7 +52,7 @@ class G_208 extends ConsumerWidget {
       gP(161, 807, 26, 25, gImg('assets/figma/v/56eb5ae66b4825.svg'), show: demoContent),
       gP(189, 807, 26, 25, gImg('assets/figma/v/56eb5ae66b4825.svg'), show: demoContent),
       gP(240, 810, 103, 25, gText(gm('4,8 · 12 avis', ''), 20, Color(0xFF57545F))),
-      gP(286, 792, 354, 43, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(kioskCurrentProvider).price), 34, Color(0xFF5A3FE0), weight: 700, wrap: true, align: TextAlign.right))),
+      gP(286, 792, 354, 43, Consumer(builder: (context, ref, _) => gText(kioskPrice(ref.watch(kioskCurrentProvider)), 34, Color(0xFF5A3FE0), weight: 700, wrap: true, align: TextAlign.right))),
       gP(80, 866, 560, 90, gBox(color: Color(0xFFF6F3FA), radii: [34, 34, 34, 34])),
       gP(92, 876, 70, 70, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [35, 35, 35, 35])),
       gP(180, 884, 124, 30, Consumer(builder: (context, ref, _) => gText(ref.watch(kioskCurrentProvider).seller, 24, Color(0xFF111015), weight: 600))),
@@ -81,7 +81,7 @@ class G_208 extends ConsumerWidget {
       gP(586.65, 1149.612, 14.7, 20.888, gImg('assets/figma/v/ea16a39cf97c64.svg')),
       gP(575, 1190, 38, 21, gText('Aide', 17, Color(0xFF111015), weight: 500)),
       gTap(80, 980, 360, 82, () { startPhoneTransfer(ref, context); }),
-      gTap(452, 980, 188, 82, () { if (ref.read(kioskCurrentProvider).showcase) { gToast(context, 'Produit d’exemple : non disponible à la vente'); return; } ref.read(cartProvider.notifier).add(ref.read(kioskCurrentProvider).toLine()); gToast(context, 'Ajouté au panier de cet appareil. Terminez la commande depuis le panier ou avec « Sur mon téléphone ».');  }),
+      gTap(452, 980, 188, 82, () { kioskOrder(ref, context); }),
     ]);
   }
 }

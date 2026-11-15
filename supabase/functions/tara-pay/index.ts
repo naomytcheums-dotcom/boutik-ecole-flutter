@@ -43,11 +43,18 @@ Deno.serve(async (req) => {
   // Le montant vient TOUJOURS de la base, jamais du client.
   const { data: tx } = await admin.from("payment_transactions").select("*").eq("reference", reference).eq("payer_id", u.user.id).maybeSingle();
   if (!tx) return json({ error: "not_found", message: "Paiement introuvable." }, 404);
-  // Seuls les paiements dont l'effet est géré à la confirmation (forfait entreprise, récompense de défi) passent par Tara.
+  // Seuls les paiements dont l'effet est géré à la confirmation (forfait entreprise, récompense de défi, inscription à un événement payant) passent par Tara.
   // Une commande ou une contribution doit suivre son propre circuit : sinon la confirmation n'aurait aucun effet.
   const subject = String(tx.subject ?? "");
-  const supported = (tx.kind === "subscription" && subject.startsWith("plan:")) || (tx.kind === "event" && subject.startsWith("prize:"));
+  const eventId = /^evt:([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i.exec(subject)?.[1];
+  const supported = (tx.kind === "subscription" && subject.startsWith("plan:")) || (tx.kind === "event" && (subject.startsWith("prize:") || !!eventId));
   if (!supported) return json({ error: "unsupported_kind", message: "Ce paiement ne peut pas être réglé par Tara Money." }, 400);
+  if (eventId && tx.status !== "confirmed" && tx.status !== "pending") {
+    // Le débit n'est lancé que pour une réservation de place encore active (30 minutes), liée à cette transaction.
+    const { data: hold } = await admin.from("event_registrations").select("event_id").eq("event_id", eventId).eq("user_id", u.user.id)
+      .eq("payment_id", tx.id).eq("status", "pending_payment").gt("hold_expires_at", new Date().toISOString()).maybeSingle();
+    if (!hold) return json({ error: "hold_expired", message: "Votre réservation a expiré. Relancez l'inscription à l'événement." }, 409);
+  }
   if (tx.status === "confirmed") return json({ status: "confirmed", reference });
   if (!["created", "failed"].includes(tx.status)) return json({ status: tx.status, reference, message: "Paiement déjà en cours." }); // pas de double débit
 

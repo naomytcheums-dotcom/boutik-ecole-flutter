@@ -1,7 +1,8 @@
 // Edge Function « live-token » : émet le jeton d'accès à la salle LiveKit d'un live.
 //   POST {live_id}  -> { url, token, role: "host" | "viewer", room }
 // Sécurité : l'appelant doit être connecté (jeton Supabase). L'hôte reçoit le droit de publier (caméra, micro) ; les spectateurs
-// ne peuvent que regarder, et seulement tant que le live est « en direct » et qu'ils n'en sont pas bannis. Le jeton dure 2 h.
+// ne peuvent que regarder, et seulement tant que le live est « en direct » et qu'ils n'en sont pas bannis. Les comptes suspendus sont refusés.
+// Le jeton de l'hôte dure 2 h, celui des spectateurs et invités 1 h (un bannissement est de toute façon appliqué par « live-moderate »).
 // Secrets à fournir (Supabase > Edge Functions > Secrets) : LIVEKIT_URL (wss://…), LIVEKIT_API_KEY, LIVEKIT_API_SECRET.
 // Sans ces secrets : réponse 503 « not_configured » (aucun jeton inventé).
 import { adminClient, callerOf, cors, jsonResponse } from "../_shared/core.ts";
@@ -21,6 +22,16 @@ export async function livekitToken(apiKey: string, apiSecret: string, identity: 
     iss: apiKey, sub: identity, name, nbf: now - 5, iat: now, exp: now + ttlSec,
     video: { room, roomJoin: true, canPublish, canSubscribe: true, canPublishData: canPublish },
   }));
+  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(apiSecret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const sig = new Uint8Array(await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(`${header}.${payload}`)));
+  return `${header}.${payload}.${b64url(sig)}`;
+}
+
+/** JWT d'administration de salle (appels serveur à serveur vers l'API LiveKit : retirer un participant, couper une piste). Valable 60 s. */
+export async function livekitAdminToken(apiKey: string, apiSecret: string, room: string, ttlSec = 60): Promise<string> {
+  const now = Math.floor(Date.now() / 1000);
+  const header = b64url(JSON.stringify({ alg: "HS256", typ: "JWT" }));
+  const payload = b64url(JSON.stringify({ iss: apiKey, sub: "boutik-moderation", nbf: now - 5, iat: now, exp: now + ttlSec, video: { roomAdmin: true, room } }));
   const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(apiSecret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
   const sig = new Uint8Array(await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(`${header}.${payload}`)));
   return `${header}.${payload}.${b64url(sig)}`;
@@ -51,14 +62,15 @@ if (import.meta.main) {
     } else if (live.status === "ended") {
       return jsonResponse(req, { error: "ended", message: "Ce live est terminé." }, 409);
     }
-    const { data: prof } = await admin.from("profiles").select("name").eq("id", uid).maybeSingle();
+    const { data: prof } = await admin.from("profiles").select("name,suspended").eq("id", uid).maybeSingle();
+    if (prof?.suspended) return jsonResponse(req, { error: "suspended", message: "Votre compte est suspendu : le direct est inaccessible." }, 403);
     // Invité accepté par l'hôte (co-diffusion) : il peut publier sa caméra et son micro.
     let isCo = false;
     if (!isHost) {
       const { data: co } = await admin.from("live_cohosts").select("status").eq("live_id", liveId).eq("user_id", uid).maybeSingle();
       isCo = co?.status === "approved";
     }
-    const token = await livekitToken(key, secret, uid, String(prof?.name ?? "Membre"), live.room_name, isHost || isCo);
+    const token = await livekitToken(key, secret, uid, String(prof?.name ?? "Membre"), live.room_name, isHost || isCo, isHost ? 7200 : 3600);
     return jsonResponse(req, { url, token, role: isHost ? "host" : (isCo ? "cohost" : "viewer"), room: live.room_name });
   });
 }

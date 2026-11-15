@@ -315,8 +315,77 @@ class _DashboardTab extends ConsumerWidget {
         for (final t in top) Padding(padding: const EdgeInsets.symmetric(vertical: 6), child: Row(children: [Expanded(child: Text('${t['title']}', style: mst(13.5, w: FontWeight.w600))), Text('${mInt(t['qty'])} vendu(s) · ${mFcfa(t['revenue'])}', style: mst(12.5, c: kGrey))])),
         const SizedBox(height: 10),
         Text('La conversion rapporte les commandes payées aux vues des fiches produit.', style: mst(11.5, c: kGrey)),
+        const _AdvancedStats(),
       ]);
     });
+  }
+}
+
+/// Statistiques avancées (droit « stats_avancees ») : le serveur refuse sans le droit ; le verrou affiché reprend son message.
+final advancedStatsProvider = FutureProvider.autoDispose.family<Map<String, dynamic>, int>((ref, days) async {
+  final r = await marcheCall('seller_advanced_stats', {'p_days': days});
+  if (r.error != null) throw MarcheException(r.error);
+  return r.data is Map ? Map<String, dynamic>.from(r.data as Map) : <String, dynamic>{};
+});
+
+final _advancedPeriodProvider = NotifierProvider<_Period, int>(_Period.new);
+
+class _AdvancedStats extends ConsumerWidget {
+  const _AdvancedStats();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final days = ref.watch(_advancedPeriodProvider);
+    Widget stat(String l, String v) => Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(v, style: mst(15, w: FontWeight.w800)), Text(l, style: mst(11, c: kGrey))]));
+    Widget body = ref.watch(advancedStatsProvider(days)).when(
+          loading: () => const Padding(padding: EdgeInsets.all(20), child: Center(child: CircularProgressIndicator())),
+          error: (e, _) {
+            final msg = e is MarcheException ? marcheErrorText(e.code) : 'Statistiques indisponibles pour le moment.';
+            if (!msg.startsWith('Réservé au forfait')) return Text(msg, style: mst(13, c: kGrey));
+            return Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), border: Border.all(color: kLine)),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Row(children: [const Icon(Icons.lock_outline, size: 18, color: kGrey), const SizedBox(width: 8), Expanded(child: Text(msg, style: mst(14, w: FontWeight.w800)))]),
+                const SizedBox(height: 6),
+                Text('Vues, favoris, ventes et conversion de chaque produit, sur 30 ou 90 jours.', style: mst(12.5, c: kGrey)),
+                const SizedBox(height: 10),
+                mButton('Voir les offres', () => context.push('/offres'), dark: false),
+              ]),
+            );
+          },
+          data: (d) {
+            final products = [for (final x in (d['products'] as List? ?? const [])) Map<String, dynamic>.from(x as Map)];
+            if (products.isEmpty) return Text('Vous n’avez encore aucun produit.', style: mst(13, c: kGrey));
+            return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              for (final p in products)
+                Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), border: Border.all(color: kLine)),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text('${p['title']}', style: mst(13.5, w: FontWeight.w700)),
+                    const SizedBox(height: 8),
+                    Row(children: [
+                      stat('Vues', '${mInt(p['views'])}'),
+                      stat('Favoris', '${mInt(p['favorites'])}'),
+                      stat('Vendus', '${mInt(p['units'])}'),
+                      stat('Conversion', p['conversion'] == null ? '—' : '${p['conversion']} %'),
+                    ]),
+                    const SizedBox(height: 6),
+                    Text('Chiffre d’affaires : ${mFcfa(p['revenue'])}', style: mst(12, c: kGrey)),
+                  ]),
+                ),
+              Text('Favoris : ajoutés pendant la période. Conversion : commandes payées rapportées aux vues.', style: mst(11.5, c: kGrey)),
+            ]);
+          },
+        );
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      mSectionTitle('Statistiques avancées par produit'),
+      Row(children: [for (final p in const [30, 90]) ...[MChip('$p jours', selected: days == p, onTap: () => ref.read(_advancedPeriodProvider.notifier).set(p)), const SizedBox(width: 8)]]),
+      const SizedBox(height: 10),
+      body,
+    ]);
   }
 }
 

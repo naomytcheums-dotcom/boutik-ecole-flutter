@@ -36,7 +36,7 @@ Future<String> _status(String reference) async {
 }
 
 /// Demande le réseau et le numéro, lance le débit puis attend la confirmation du fournisseur. Renvoie vrai si le paiement est confirmé.
-Future<bool> payWithTara(BuildContext context, WidgetRef ref, {required String reference, required int amount, required String label}) async {
+Future<bool> payWithTara(BuildContext context, WidgetRef ref, {required String reference, required int amount, required String label, String pendingMessage = 'Le forfait s’activera dès la confirmation du paiement.'}) async {
   final phoneCtl = TextEditingController(text: ref.read(authProvider).current?.phone ?? '');
   var network = guessNetwork(taraPhone(phoneCtl.text) ?? '');
   final go = await showDialog<bool>(
@@ -105,6 +105,6 @@ Future<bool> payWithTara(BuildContext context, WidgetRef ref, {required String r
   if (context.mounted && !cancelled) Navigator.of(context, rootNavigator: true).pop();
   await waiting;
   if (!context.mounted) return result == 'confirmed';
-  await gAlert(context, result == 'confirmed' ? 'Paiement confirmé' : (result == 'failed' || result == 'cancelled') ? 'Paiement non abouti' : 'Paiement en attente', result == 'confirmed' ? 'Merci ! Votre paiement est enregistré.' : (result == 'failed' || result == 'cancelled') ? 'Le paiement n’a pas abouti. Vous pouvez réessayer.' : 'Le forfait s’activera dès la confirmation du paiement.');
+  await gAlert(context, result == 'confirmed' ? 'Paiement confirmé' : (result == 'failed' || result == 'cancelled') ? 'Paiement non abouti' : 'Paiement en attente', result == 'confirmed' ? 'Merci ! Votre paiement est enregistré.' : (result == 'failed' || result == 'cancelled') ? 'Le paiement n’a pas abouti. Vous pouvez réessayer.' : pendingMessage);
   return result == 'confirmed';
 }

@@ -59,6 +59,15 @@ void main() {
     expect(find.text('Campagnes sponsorisées'), findsOneWidget);
   });
 
+  testWidgets('offres : un droit livré n\'est pas annoncé « bientôt disponible »', (t) async {
+    final delivered = [
+      {'code': 'vendeur_pro', 'name': 'Vendeur professionnel', 'audience': 'Vendeurs', 'price_xaf': 5000, 'period_days': 30, 'features': ['stats_avancees', 'boost_campagnes'], 'active': true},
+    ];
+    await monter(t, const PlansScreen(), overrides: [plansProvider.overrideWith(() => _Rows('table:plans', delivered)), entitlementsProvider.overrideWith(() => _Ent(const {'subscriptions': [], 'features': []}))]);
+    expect(find.text('Statistiques avancées par produit (espace vendeur)'), findsOneWidget);
+    expect(find.textContaining('bientôt disponible'), findsNothing);
+  });
+
   testWidgets('offres : un abonnement en vigueur est listé avec son état', (t) async {
     await monter(t, const PlansScreen(), overrides: [
       plansProvider.overrideWith(() => _Rows('table:plans', plans)),

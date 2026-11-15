@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../gen.dart';
 import '../nav.dart';
@@ -11,6 +12,8 @@ import 'backend.dart';
 import 'drafts.dart';
 import 'engage.dart' show unavailableAction;
 import 'lots.dart' show firstInt, formDialog, lastInt, publishMissionBrief, myNeedsDialog, myMissionsDialog;
+import 'marche/marche_catalogue.dart' show marcheFetcherProvider;
+import 'marche/marche_data.dart' show mImageUrl, mInt;
 import 'qr.dart';
 import 'seller.dart';
 import 'store.dart';
@@ -97,15 +100,50 @@ final kioskKindProvider = NotifierProvider<KioskKind, int>(KioskKind.new);
 final kioskPageProvider = NotifierProvider<IntV, int>(IntV.new);
 const kioskPageSize = 4;
 
+bool kioskIsService(LiveProduct p) => p.category == 'Services';
+
+/// Carte de la fonction publique `marketplace_search` vue comme un article de la borne (un service : prix « à partir de », stock sans objet).
+LiveProduct kioskServiceFromCard(Map<String, dynamic> c) {
+  final shop = '${c['shop_name'] ?? ''}'.trim();
+  final img = mImageUrl(c['image']);
+  final id = '${c['id'] ?? ''}';
+  return LiveProduct('${c['title']}', 'Service étudiant', mInt(c['price']), shop.isEmpty ? 'Prestataire étudiant' : shop, '', img.isEmpty ? 'placeholder' : img,
+      category: 'Services', stock: mInt(c['stock']), id: id.isEmpty ? null : id);
+}
+
+/// Services approuvés, lus comme le catalogue Découverte (RPC `marketplace_search` avec `p_offer_type` = service). Hors connexion : aucun.
+/// Un échec de lecture reste une erreur (affichée honnêtement), jamais une liste vide.
+final kioskServicesProvider = FutureProvider<List<LiveProduct>>((ref) async {
+  if (!Backend.ready) return const <LiveProduct>[];
+  final rows = await ref.read(marcheFetcherProvider)('marketplace_search', const {'p_offer_type': 'service', 'p_sort': 'recent', 'p_limit': 100});
+  return [for (final c in rows) if ('${c['title'] ?? ''}'.isNotEmpty) kioskServiceFromCard(c)];
+}, retry: (_, _) => null);
+
+/// Prix affiché à la borne : un service sans tarif est « sur devis », sinon « à partir de ».
+String kioskPrice(LiveProduct p) => !kioskIsService(p) ? fcfa(p.price) : (p.price <= 0 ? 'Sur devis' : 'Dès ${fcfa(p.price)}');
+
 /// Tous les résultats de la recherche (filtre et texte), avant découpage en pages.
 final kioskMatchesProvider = Provider<List<LiveProduct>>((ref) {
   final q = normText(ref.watch(kioskQueryProvider).trim());
   final k = ref.watch(kioskKindProvider);
+  final services = Backend.ready && k != 1 ? (ref.watch(kioskServicesProvider).value ?? const <LiveProduct>[]) : const <LiveProduct>[];
+  final seen = <String>{};
   return [
-    for (final p in ref.watch(allProductsProvider))
-      if ((q.isEmpty || normText('${p.title} ${p.department}').contains(q)) && (k == 0 || (k == 2) == (p.category == 'Services'))) p,
+    for (final p in [...ref.watch(allProductsProvider), ...services])
+      if ((q.isEmpty || normText('${p.title} ${p.department}').contains(q)) && (k == 0 || (k == 2) == kioskIsService(p)) && seen.add(p.title)) p,
   ];
 });
+
+/// Message de la grille vide : distingue chargement, échec de lecture, aucun service approuvé et recherche sans résultat.
+String kioskEmptyText(WidgetRef ref) {
+  if (ref.watch(kioskKindProvider) != 2) return 'Aucun article ne correspond à votre recherche.';
+  if (ref.watch(kioskQueryProvider).trim().isNotEmpty && (ref.watch(kioskServicesProvider).value ?? const []).isNotEmpty) return 'Aucun service ne correspond à votre recherche.';
+  return ref.watch(kioskServicesProvider).when(
+        loading: () => 'Chargement des services…',
+        error: (_, _) => 'Les services ne peuvent pas être chargés pour le moment. Touchez « Services » pour réessayer.',
+        data: (l) => l.isEmpty ? 'Aucun service approuvé pour le moment. Les étudiants peuvent en proposer depuis leur espace vendeur.' : 'Aucun service ne correspond à votre recherche.',
+      );
+}
 
 int kioskPageCount(int total) => total == 0 ? 1 : (total + kioskPageSize - 1) ~/ kioskPageSize;
 
@@ -119,9 +157,16 @@ final kioskProductsProvider = Provider<List<LiveProduct>>((ref) {
 final kioskCurrentProvider = Provider<LiveProduct>((ref) {
   final all = ref.watch(allProductsProvider);
   final t = ref.watch(kioskProductProvider);
+  final hit = all.where((p) => p.title == t);
+  if (hit.isNotEmpty) return hit.first;
+  // un service choisi dans la grille n'est pas dans le catalogue des produits
+  if (Backend.ready && t.isNotEmpty) {
+    final s = (ref.watch(kioskServicesProvider).value ?? const <LiveProduct>[]).where((p) => p.title == t);
+    if (s.isNotEmpty) return s.first;
+  }
   // catalogue vide (serveur sans annonce publiée) : fiche neutre, non vendable, plutôt qu'une erreur d'affichage
   if (all.isEmpty) return const LiveProduct('Aucun article disponible', '', 0, '', '', 'placeholder', showcase: true);
-  return all.firstWhere((p) => p.title == t, orElse: () => all.first);
+  return all.first;
 });
 
 /// Compte à rebours en direct (désactivé dans les tests pour des rendus stables).
@@ -149,6 +194,7 @@ Future<void> startPhoneTransfer(WidgetRef ref, BuildContext context) async {
     gToast(context, 'Produit d’exemple : aucun code possible pour le moment.');
     return;
   }
+  if (Backend.ready && kioskIsService(p)) return kioskAskQuote(context, p);
   if (Backend.ready) {
     final err = await ref.read(kioskSessionProvider.notifier).issue(p);
     if (!context.mounted) return;
@@ -161,6 +207,49 @@ Future<void> startPhoneTransfer(WidgetRef ref, BuildContext context) async {
   }
   ref.read(auditProvider.notifier).log('Borne n°2', 'Code de transfert créé', p.title, 'Connexions');
   gOpen(context, '209');
+}
+
+/// Un service ne se commande pas au panier : il passe par la demande de devis de sa fiche (connexion demandée à l'envoi).
+void kioskAskQuote(BuildContext context, LiveProduct p) {
+  final id = p.id ?? '';
+  if (id.isEmpty) {
+    gToast(context, 'Ce service se demande sur devis depuis l’application.');
+    return;
+  }
+  gToast(context, 'Les services se demandent sur devis : ouverture de la fiche.');
+  GoRouter.maybeOf(context)?.push('/marche/produit/$id');
+}
+
+/// 208 « Commander » : crée une vraie commande par le chemin du panier de la marketplace. L'article rejoint le panier enregistré du
+/// compte connecté, puis le panier existant mène à la livraison et au paiement, où `marketplace_checkout` vérifie prix, quantité et stock
+/// côté serveur (erreurs affichées telles quelles). Aucune commande anonyme : un visiteur est invité à se connecter.
+Future<void> kioskOrder(WidgetRef ref, BuildContext context) async {
+  final p = ref.read(kioskCurrentProvider);
+  if (p.showcase) {
+    gToast(context, 'Produit d’exemple : non disponible à la vente');
+    return;
+  }
+  if (!Backend.ready) {
+    // démonstration (hors connexion au serveur) : panier local, aucune commande réelle
+    ref.read(cartProvider.notifier).add(p.toLine());
+    gToast(context, 'Ajouté au panier de cet appareil. Terminez la commande depuis le panier ou avec « Sur mon téléphone ».');
+    return;
+  }
+  if (kioskIsService(p)) return kioskAskQuote(context, p);
+  if (!await requireLogin(context, ref, 'commander cet article') || !context.mounted) return;
+  final stock = p.stock;
+  if (stock != null && stock <= 0) {
+    gToast(context, 'Cet article n’est plus disponible.');
+    return;
+  }
+  final inCart = ref.read(cartProvider).where((l) => l.title == p.title).fold<int>(0, (a, l) => a + l.qty);
+  if (stock != null && inCart >= stock) {
+    gToast(context, 'Stock insuffisant : $stock exemplaire(s) disponible(s), déjà dans votre panier.');
+  } else {
+    ref.read(cartProvider.notifier).add(p.toLine());
+    gToast(context, 'Ajouté à votre panier : vérifiez la quantité puis validez pour créer votre commande.');
+  }
+  gOpen(context, '06');
 }
 
 /// Surveille le code affiché à la borne : dès que le téléphone l'a scanné (le serveur le déclare « utilisé »), la confirmation s'ouvre.

@@ -97,6 +97,22 @@ Future<({String? url, String? token, String? error, String role})> fetchLiveToke
   }
 }
 
+/// Modération réelle de la salle vidéo (Edge Function « live-moderate »). `absent` : le participant avait déjà quitté la salle.
+/// `ok` n'est vrai que si le serveur a confirmé l'action (ou si la personne était déjà partie).
+Future<({bool ok, bool absent, String? error})> moderateLiveParticipant(String liveId, String userId, String action) async {
+  try {
+    await Supabase.instance.client.functions.invoke('live-moderate', body: {'live_id': liveId, 'user_id': userId, 'action': action});
+    return (ok: true, absent: false, error: null);
+  } on FunctionException catch (e) {
+    final d = e.details;
+    if (e.status == 404 && d is Map && d['error'] == 'not_in_room') return (ok: true, absent: true, error: null);
+    if (e.status == 503) return (ok: false, absent: false, error: 'La diffusion en direct n’est pas encore activée sur ce serveur.');
+    return (ok: false, absent: false, error: d is Map && d['message'] != null ? '${d['message']}' : 'La modération du direct a échoué (code ${e.status}).');
+  } catch (_) {
+    return (ok: false, absent: false, error: Backend.serviceDownMessage());
+  }
+}
+
 // ------------------------------------------------------------------ liste (246)
 
 class LivesHome extends ConsumerStatefulWidget {
@@ -539,7 +555,14 @@ class _LiveHostConsoleState extends ConsumerState<LiveHostConsole> {
   }
 
   Future<void> _removeGuest(String uid) async {
-    await Backend.rpc('remove_cohost', {'p_live': _id, 'p_user': uid});
+    final r = await Backend.rpc('remove_cohost', {'p_live': _id, 'p_user': uid});
+    if (r.error != null) {
+      if (mounted) gToast(context, Backend.userMessage(r.error!));
+      return _refreshGuests();
+    }
+    // son jeton l'autorise encore à publier : on l'expulse de la salle (il pourra revenir en simple spectateur)
+    final k = _id == null ? null : await moderateLiveParticipant(_id!, uid, 'kick');
+    if (mounted && k != null && !k.ok) gToast(context, 'Invité retiré, mais encore connecté à la vidéo : ${k.error}');
     await _refreshGuests();
   }
 
@@ -732,7 +755,13 @@ class _LiveHostConsoleState extends ConsumerState<LiveHostConsole> {
     );
     if (act == null || _id == null) return;
     final r = await Backend.rpc('moderate_live_viewer', {'p_live': _id, 'p_user': act == 'ban' ? m.userId : null, 'p_message': m.id});
-    if (mounted) gToast(context, r.error != null ? Backend.userMessage(r.error!) : (act == 'ban' ? 'Spectateur banni' : 'Message masqué'));
+    if (!mounted) return;
+    if (r.error != null) return gToast(context, Backend.userMessage(r.error!));
+    if (act != 'ban') return gToast(context, 'Message masqué');
+    // le bannissement en base empêche le retour ; la salle vidéo doit en plus expulser la personne déjà connectée
+    final k = await moderateLiveParticipant(_id!, m.userId, 'ban');
+    if (!mounted) return;
+    gToast(context, !k.ok ? 'Spectateur banni, mais pas encore retiré de la vidéo : ${k.error}' : 'Spectateur banni et retiré du direct');
   }
 
   @override
@@ -756,7 +785,7 @@ class _LiveHostConsoleState extends ConsumerState<LiveHostConsole> {
               const SizedBox(height: 14),
               Text(title, textAlign: TextAlign.center, style: sty(18, w: FontWeight.w700, c: Colors.white)),
               const SizedBox(height: 10),
-              Text('Au démarrage, votre navigateur demande l’accès à la caméra et au micro. Vos abonnés sont prévenus dès que le direct commence.', textAlign: TextAlign.center, style: sty(13, c: const Color(0xCCFFFFFF), h: 1.5)),
+              Text('Au démarrage, votre appareil demande l’accès à la caméra et au micro. Vos abonnés sont prévenus dès que le direct commence.', textAlign: TextAlign.center, style: sty(13, c: const Color(0xCCFFFFFF), h: 1.5)),
               const SizedBox(height: 22),
               FilledButton(onPressed: _starting ? null : _start, style: FilledButton.styleFrom(backgroundColor: const Color(0xFFFF2D55), padding: const EdgeInsets.symmetric(horizontal: 34, vertical: 15), shape: const StadiumBorder()), child: _starting ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)) : Text('Démarrer le direct', style: sty(15, w: FontWeight.w800, c: Colors.white))),
               TextButton(onPressed: () async {

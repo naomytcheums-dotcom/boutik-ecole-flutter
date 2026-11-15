@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart' show GoRouter;
 
 import '../gen.dart';
 import 'auth.dart';
 import 'backend.dart';
+import 'paiement_messagerie.dart' show myPaymentsProvider, selectedPaymentProvider;
 import 'store.dart' show fcfa, nowProvider;
+import 'tara_payment.dart' show payWithTara;
 
 /// Événements (écran 100) : agenda de la semaine lu sur le serveur (migration 20261105000000), filtre par type et par jour,
 /// inscription et désinscription. Hors connexion au serveur, la maquette reste affichée comme démonstration.
@@ -20,12 +23,15 @@ const _mois = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août
 const _types = [null, 'exposition', 'atelier', 'conference'];
 
 class AppEvent {
-  const AppEvent({required this.id, required this.title, required this.kind, required this.startsAt, required this.place, required this.price, required this.capacity, required this.registered, required this.mine});
+  const AppEvent({required this.id, required this.title, required this.kind, required this.startsAt, required this.place, required this.price, required this.capacity, required this.registered, required this.mine, this.held = 0, this.myStatus, this.paymentStatus});
   final String id, title, kind, place;
   final DateTime startsAt;
-  final int price, registered;
+  final int price, registered, held;
   final int? capacity;
   final bool mine;
+
+  /// `pending_payment` : place réservée 30 minutes en attendant le paiement ; `paymentStatus` : état de la transaction (created, pending, failed).
+  final String? myStatus, paymentStatus;
 
   static AppEvent fromRow(Map x) => AppEvent(
         id: '${x['id']}',
@@ -36,11 +42,19 @@ class AppEvent {
         price: (x['price'] as num?)?.toInt() ?? 0,
         capacity: (x['capacity'] as num?)?.toInt(),
         registered: (x['registered'] as num?)?.toInt() ?? 0,
+        held: (x['held'] as num?)?.toInt() ?? 0,
         mine: x['mine'] == true,
+        myStatus: x['my_status'] as String?,
+        paymentStatus: x['payment_status'] as String?,
       );
 
-  int? get left => capacity == null ? null : (capacity! - registered).clamp(0, capacity!);
+  bool get paid => price > 0;
+  bool get pending => !mine && myStatus == 'pending_payment';
+
+  /// Places restantes : les inscrits et les places retenues pendant un paiement sont déduits (la mienne comprise, tant qu'elle est en attente).
+  int? get left => capacity == null ? null : (capacity! - registered - held).clamp(0, capacity!);
   bool get full => left != null && left == 0;
+
 
   /// Événement déjà commencé : le serveur refuse l'inscription (« Événement terminé »).
   bool endedAt(DateTime now) => startsAt.isBefore(now);
@@ -154,11 +168,46 @@ final upcomingEventsProvider = NotifierProvider<UpcomingEventsNotifier, List<App
 
 Future<void> toggleRegistration(BuildContext context, WidgetRef ref, AppEvent e) async {
   if (!await requireLogin(context, ref, 'vous inscrire à un événement') || !context.mounted) return;
+  if (e.paid && !e.mine) return payAndRegister(context, ref, e);
+  if (e.paid && e.mine) {
+    return gAlert(context, 'Inscription payée', 'Votre inscription est réglée. Pour l’annuler et demander un remboursement, contactez la finance depuis la messagerie de paiement.');
+  }
   final r = e.mine ? await Backend.rpc('event_unregister', {'p_event': e.id}) : await Backend.rpc('event_register', {'p_event': e.id});
   if (!context.mounted) return;
   if (r.error != null) return gAlert(context, 'Inscription impossible', Backend.userMessage(r.error!));
   await Future.wait([ref.read(eventsProvider.notifier).refresh(), ref.read(upcomingEventsProvider.notifier).refresh()]);
   if (context.mounted) gToast(context, e.mine ? 'Inscription annulée' : 'Vous êtes inscrit(e) : ${e.title}');
+}
+
+Future<void> _refreshEvents(WidgetRef ref) => Future.wait([ref.read(eventsProvider.notifier).refresh(), ref.read(upcomingEventsProvider.notifier).refresh()]);
+
+/// Événement payant : le serveur réserve la place 30 minutes et crée la transaction (le prix vient de la base), puis le paiement se fait
+/// par Mobile Money (Tara) ou par messagerie. L'inscription n'est validée que par la confirmation du paiement, jamais par l'application.
+Future<void> payAndRegister(BuildContext context, WidgetRef ref, AppEvent e, {bool manual = false}) async {
+  if (!await requireLogin(context, ref, 'vous inscrire à un événement') || !context.mounted) return;
+  final r = await Backend.rpc('event_checkout', {'p_event': e.id, 'p_provider': manual ? 'manual' : 'tara'});
+  if (!context.mounted) return;
+  if (r.error != null) return gAlert(context, 'Inscription impossible', Backend.userMessage(r.error!));
+  if (r.data is! Map) return gAlert(context, 'Inscription impossible', 'Le serveur n’a pas renvoyé la réservation. Réessayez dans un instant.');
+  final tx = Map<String, dynamic>.from(r.data as Map);
+  await _refreshEvents(ref);
+  if (!context.mounted) return;
+  if ('${tx['provider']}' == 'manual') {
+    ref.read(selectedPaymentProvider.notifier).select('${tx['id']}');
+    ref.invalidate(myPaymentsProvider);
+    GoRouter.of(context).push('/paiement');
+    return;
+  }
+  final ok = await payWithTara(
+    context,
+    ref,
+    reference: '${tx['reference']}',
+    amount: (tx['amount'] as num).toInt(),
+    label: 'l’inscription à « ${e.title} »',
+    pendingMessage: 'Votre place reste réservée pendant le paiement. L’inscription sera confirmée dès que le paiement sera reçu ; sans paiement, la place est libérée au bout de 30 minutes.',
+  );
+  await _refreshEvents(ref);
+  if (ok && context.mounted) gToast(context, 'Paiement confirmé : vous êtes inscrit(e) à ${e.title}');
 }
 
 /// Bandeau des 7 jours de la semaine : le jour touché filtre la liste ; un point signale les jours qui ont des événements.
@@ -327,7 +376,8 @@ class EventsList extends ConsumerWidget {
         itemBuilder: (_, i) {
           final e = list[i];
           final ended = e.endedAt(now);
-          final label = ended ? 'Terminé' : (e.mine ? 'Inscrit(e)' : (e.full ? 'Complet' : 'Inscription'));
+          final label = ended ? 'Terminé' : (e.mine ? 'Inscrit(e)' : (e.pending ? (e.paymentStatus == 'failed' ? 'Paiement à refaire' : 'Paiement en attente') : (e.full ? 'Complet' : (e.paid ? 'Payer et s’inscrire' : 'Inscription'))));
+          final soft = e.mine || e.pending;
           return Row(children: [
             Expanded(
               child: GestureDetector(
@@ -345,11 +395,11 @@ class EventsList extends ConsumerWidget {
             const SizedBox(width: 10),
             GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: ended || (e.full && !e.mine) ? null : () => toggleRegistration(context, ref, e),
+              onTap: ended || (e.full && !e.mine && !e.pending) ? null : () => toggleRegistration(context, ref, e),
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(color: ended ? const Color(0xFFF2EFF6) : (e.mine ? const Color(0xFFEEE9FF) : (e.full ? const Color(0xFFF2EFF6) : _ink)), borderRadius: BorderRadius.circular(16)),
-                child: Text(label, style: _st(11.5, w: FontWeight.w600, c: ended ? _grey : (e.mine ? const Color(0xFF5A3FE0) : (e.full ? _grey : Colors.white)))),
+                decoration: BoxDecoration(color: ended ? const Color(0xFFF2EFF6) : (soft ? const Color(0xFFEEE9FF) : (e.full ? const Color(0xFFF2EFF6) : _ink)), borderRadius: BorderRadius.circular(16)),
+                child: Text(label, style: _st(11.5, w: FontWeight.w600, c: ended ? _grey : (soft ? const Color(0xFF5A3FE0) : (e.full ? _grey : Colors.white)))),
               ),
             ),
           ]);
@@ -456,13 +506,31 @@ Future<void> eventDetail(BuildContext context, WidgetRef ref, AppEvent e) async 
         Text(e.when, style: _st(13.5)),
         const SizedBox(height: 6),
         Text(e.price == 0 ? 'Entrée gratuite' : 'Tarif : ${fcfa(e.price)}', style: _st(13)),
-        if (e.price > 0) Padding(padding: const EdgeInsets.only(top: 4), child: Text('Le règlement du tarif n’est pas encore pris en charge par l’application : l’inscription réserve votre place seulement.', style: _st(12, c: _grey))),
-        if (e.left != null) Text(e.full ? 'Complet' : '${e.left} place${e.left == 1 ? '' : 's'} restante${e.left == 1 ? '' : 's'}', style: _st(13)),
+        if (e.paid && !e.mine && !e.pending) Padding(padding: const EdgeInsets.only(top: 4), child: Text('Paiement par Mobile Money (MTN / Orange) ou par messagerie. Votre place est réservée 30 minutes pendant le paiement ; l’inscription est confirmée dès que le paiement est reçu.', style: _st(12, c: _grey))),
+        if (e.pending) Padding(padding: const EdgeInsets.only(top: 4), child: Text(e.paymentStatus == 'failed' ? 'Le dernier paiement n’a pas abouti. Vous pouvez réessayer tant que votre place est réservée.' : e.paymentStatus == 'pending' ? 'Paiement en attente de confirmation : l’inscription sera validée dès sa réception.' : 'Place réservée en attendant votre paiement (30 minutes).', style: _st(12, c: const Color(0xFF8F5400)))),
+        if (e.paid && e.mine) Padding(padding: const EdgeInsets.only(top: 4), child: Text('Inscription payée. Pour un remboursement, contactez la finance depuis la messagerie de paiement.', style: _st(12, c: const Color(0xFF0F7A52)))),
+        if (e.left != null && !e.pending) Text(e.full ? 'Complet' : '${e.left} place${e.left == 1 ? '' : 's'} restante${e.left == 1 ? '' : 's'}', style: _st(13)),
         if (soon) Padding(padding: const EdgeInsets.only(top: 8), child: Text('Bientôt : cet événement a lieu dans moins de 7 jours.', style: _st(12, c: const Color(0xFF8F5400)))),
       ]),
       actions: [
         TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text('Fermer', style: _st(14, w: FontWeight.w600, c: _grey))),
-        if (e.mine || !e.full)
+        if (e.paid && !e.mine && (!e.full || e.pending)) ...[
+          if (!(e.pending && e.paymentStatus == 'pending'))
+            TextButton(
+              onPressed: () {
+                Navigator.of(ctx).pop();
+                payAndRegister(context, ref, e, manual: true);
+              },
+              child: Text('Payer par messagerie', style: _st(14, w: FontWeight.w600, c: _grey)),
+            ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              payAndRegister(context, ref, e);
+            },
+            child: Text(e.pending ? 'Reprendre le paiement (${fcfa(e.price)})' : 'Payer et s’inscrire (${fcfa(e.price)})', style: _st(14, w: FontWeight.w700)),
+          ),
+        ] else if (!e.paid && (e.mine || !e.full))
           TextButton(
             onPressed: () {
               Navigator.of(ctx).pop();

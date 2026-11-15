@@ -92,6 +92,12 @@ const companyRoleHelp = {
   'viewer': 'Consulte l’accueil, la fiche et l’équipe.',
 };
 
+/// Droit d'inviter des collègues (« gestion_equipe » ou forfait d'entreprise payant) ; en cas d'erreur on ouvre le formulaire, le serveur reste juge.
+final _teamAccessProvider = FutureProvider.autoDispose.family<bool, String?>((ref, owner) async {
+  final r = await marcheCall('company_team_access', {if (owner != null) 'p_owner': owner});
+  return r.error != null ? true : r.data != false;
+});
+
 class CompanyMembersScreen extends ConsumerStatefulWidget {
   const CompanyMembersScreen({super.key});
 
@@ -139,6 +145,7 @@ class _MembersState extends ConsumerState<CompanyMembersScreen> {
       child: mAsync<Map<String, dynamic>>(async, (d) {
         final myRole = '${d['my_role']}';
         final canManage = roleCanManage(myRole);
+        final teamOpen = ref.watch(_teamAccessProvider(ref.watch(companyContextProvider))).maybeWhen(data: (v) => v, orElse: () => true);
         final members = [for (final x in (d['members'] as List? ?? const [])) Map<String, dynamic>.from(x as Map)];
         return ListView(padding: const EdgeInsets.only(bottom: 90), children: [
           Padding(
@@ -173,7 +180,20 @@ class _MembersState extends ConsumerState<CompanyMembersScreen> {
                   ),
               ]),
             ),
-          if (canManage) ...[
+          if (canManage && !teamOpen)
+            Container(
+              margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(6), border: Border.all(color: kLine)),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Row(children: [const Icon(Icons.lock_outline, size: 18, color: kGrey), const SizedBox(width: 8), Expanded(child: Text('Inviter des collègues : réservé à l’offre Entreprise', style: mst(14, w: FontWeight.w800)))]),
+                const SizedBox(height: 6),
+                Text('L’invitation de nouveaux membres demande l’abonnement Entreprise ou un forfait d’entreprise payant. Les membres déjà dans l’équipe gardent leur accès.', style: mst(12.5, c: kGrey).copyWith(height: 1.4)),
+                const SizedBox(height: 10),
+                mButton('Voir les offres', () => context.push('/offres'), dark: false),
+              ]),
+            ),
+          if (canManage && teamOpen) ...[
             mSectionTitle('Inviter un collègue'),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),

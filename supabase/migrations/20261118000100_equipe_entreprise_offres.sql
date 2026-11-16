@@ -71,7 +71,7 @@ begin
   select * into o from opportunities where id = p_id and _opp_can(poster_id, false);
   if not found then raise exception 'Offre introuvable'; end if;
   return coalesce((select jsonb_agg(jsonb_build_object('id', a.id, 'applicant_id', a.applicant_id, 'name', display_name(a.applicant_id), 'department', pr.department, 'message', a.message, 'cv_link', a.cv_link,
-      'status', a.status, 'created_at', a.created_at, 'match', _opp_match(o, a.applicant_id)) order by a.created_at desc)
+      'status', a.status, 'created_at', a.created_at, 'match', _opp_match(o, a.applicant_id), 'can_manage', _opp_can(o.poster_id, true)) order by a.created_at desc)
     from opportunity_applications a join profiles pr on pr.id = a.applicant_id where a.opportunity_id = p_id), '[]'::jsonb);
 end $$;
 
@@ -108,7 +108,7 @@ declare v_staff boolean := coalesce(current_role_name()::text, '') in ('admin', 
 begin
   if auth.uid() is null then raise exception 'Connexion requise'; end if;
   return coalesce((select jsonb_agg(_opp_card(o, auth.uid()) || jsonb_build_object('applications', (select count(*)::int from opportunity_applications a where a.opportunity_id = o.id),
-      'review_note', o.review_note, 'description', o.description, 'poster', display_name(o.poster_id)) order by (o.status = 'pending') desc, o.created_at desc)
+      'review_note', o.review_note, 'description', o.description, 'poster', display_name(o.poster_id), 'can_manage', _opp_can(o.poster_id, true)) order by (o.status = 'pending') desc, o.created_at desc)
     from opportunities o where _opp_can(o.poster_id, false) or (v_staff and o.status = 'pending')), '[]'::jsonb);
 end $$;
 
@@ -122,7 +122,7 @@ begin
   return coalesce((
     select jsonb_agg(z.j order by z.s desc, z.j->>'created_at' desc) from (
       select jsonb_build_object('id', a.id, 'opportunity_id', o.id, 'title', o.title, 'applicant_id', a.applicant_id, 'name', display_name(a.applicant_id), 'department', coalesce(pr.department, ''),
-               'status', a.status, 'created_at', a.created_at, 'match', _opp_match(o, a.applicant_id)) j,
+               'status', a.status, 'created_at', a.created_at, 'match', _opp_match(o, a.applicant_id), 'can_manage', _opp_can(o.poster_id, true)) j,
              coalesce((_opp_match(o, a.applicant_id)->>'score')::int, 0) s
       from opportunity_applications a join opportunities o on o.id = a.opportunity_id join profiles pr on pr.id = a.applicant_id
       where _opp_can(o.poster_id, false)

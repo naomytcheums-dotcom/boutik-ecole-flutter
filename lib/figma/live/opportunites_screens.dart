@@ -774,10 +774,12 @@ class _PostedCard extends ConsumerWidget {
           if (o['status'] == 'published') ...[
             const SizedBox(width: 8),
             Expanded(child: mButton('Candidatures', () => context.push('/opportunites/${o['id']}/candidatures'), dark: false)),
-            const SizedBox(width: 8),
-            Expanded(child: mButton('Clôturer', () async {
-              if (await _call(context, 'opp_close', {'p_id': o['id']}, ok: 'Offre clôturée.')) ref.invalidate(oppMyPostedProvider);
-            }, dark: false)),
+            if (o['can_manage'] != false) ...[
+              const SizedBox(width: 8),
+              Expanded(child: mButton('Clôturer', () async {
+                if (await _call(context, 'opp_close', {'p_id': o['id']}, ok: 'Offre clôturée.')) ref.invalidate(oppMyPostedProvider);
+              }, dark: false)),
+            ],
           ],
         ]),
     ]));
@@ -887,14 +889,16 @@ class _AppsState extends ConsumerState<OpportunityApplicationsScreen> {
                           child: Padding(padding: const EdgeInsets.only(top: 6), child: Text('Voir le CV', style: mst(12.5, w: FontWeight.w700, c: kViolet))),
                         ),
                       const SizedBox(height: 8),
-                      if (a['status'] == 'sent') Padding(padding: const EdgeInsets.only(bottom: 8), child: mButton('Marquer comme consultée', () => _decide(a, 'viewed'), dark: false, width: double.infinity)),
-                      Row(children: [
-                        Expanded(child: mButton('Refuser', () => _decide(a, 'rejected'), dark: false)),
-                        const SizedBox(width: 8),
-                        Expanded(child: mButton('Retenir', () => _decide(a, 'shortlisted'), dark: false)),
-                        const SizedBox(width: 8),
-                        Expanded(child: mButton('Recruter', () => _decide(a, 'hired'))),
-                      ]),
+                      if (a['can_manage'] != false) ...[
+                        if (a['status'] == 'sent') Padding(padding: const EdgeInsets.only(bottom: 8), child: mButton('Marquer comme consultée', () => _decide(a, 'viewed'), dark: false, width: double.infinity)),
+                        Row(children: [
+                          Expanded(child: mButton('Refuser', () => _decide(a, 'rejected'), dark: false)),
+                          const SizedBox(width: 8),
+                          Expanded(child: mButton('Retenir', () => _decide(a, 'shortlisted'), dark: false)),
+                          const SizedBox(width: 8),
+                          Expanded(child: mButton('Recruter', () => _decide(a, 'hired'))),
+                        ]),
+                      ] else Text('Lecture seule : seuls le propriétaire et les administrateurs de l’entreprise décident des candidatures.', style: mst(12, c: kGrey)),
                     ])),
                   if (_suggested.isNotEmpty) ...[
                     mSectionTitle('Étudiants qui correspondent'),

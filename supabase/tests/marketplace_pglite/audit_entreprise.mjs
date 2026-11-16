@@ -101,13 +101,17 @@ export async function run(db) {
   await as(T);
   await allowed('membre admin : candidatures de l offre', `select * from opp_applications_for('${O1}')`);
   await allowed('membre admin : statistiques', `select opp_stats('${O1}')`);
+  { const r = (await q(`select opp_applications_for('${O1}') r`))[0].r; r[0].can_manage === true ? good('membre admin : can_manage vrai sur les candidatures') : bad('membre admin : can_manage', JSON.stringify(r[0]).slice(0, 120)); }
   await allowed('membre admin : decider une candidature', `select opp_application_decide('${AP}', 'shortlisted')`);
+  await allowed('membre admin : recruter un candidat', `select opp_application_decide('${AP}', 'hired')`);
   await allowed('membre admin : fermer une offre', `select opp_close('${O1}')`);
   { const r = (await q(`select opp_my_posted() r`))[0].r; (Array.isArray(r) && r.length === 2) ? good('membre admin : voit les offres de l entreprise') : bad('membre admin : liste des offres', JSON.stringify(r).slice(0, 80)); }
   await denied('membre admin : pas de media avec un chemin au nom du proprietaire', `select opp_media_set('${O1}', '${E}/a.png', 'image')`);
   await as(FIN);
   await allowed('membre finance : lit les candidatures', `select * from opp_applications_for('${O1}')`);
   await allowed('membre finance : lit les statistiques', `select opp_stats('${O1}')`);
+  { const r = (await q(`select opp_applications_for('${O1}') r`))[0].r; r[0].can_manage === false ? good('membre finance : can_manage faux') : bad('membre finance : can_manage', JSON.stringify(r[0]).slice(0, 120)); }
+  { const r = (await q(`select opp_my_posted() r`))[0].r; (r.length === 2 && r.every(x => x.can_manage === false)) ? good('membre finance : offres listees en lecture seule') : bad('membre finance : liste', JSON.stringify(r).slice(0, 120)); }
   await denied('membre finance : ne decide pas une candidature', `select opp_application_decide('${AP}', 'rejected')`);
   await denied('membre finance : ne ferme pas une offre', `select opp_close('${O1}')`);
   await as(VIE);
@@ -118,6 +122,21 @@ export async function run(db) {
   await db.exec(`update company_members set status = 'invited' where user_id = '${T}'`);
   await as(T);
   await denied('membre non actif (invitation en attente) : aucun acces', `select opp_close('${O1}')`);
+  // ---- 6. Lectures directes : donnees privees d'une entreprise visibles par un etudiant, un client ou un visiteur ?
+  await db.exec('reset role');
+  await db.exec(`insert into company_documents (owner_id, kind, name, path, mime, size_bytes) values ('${E}', 'registration', 'rccm.pdf', '${E}/rccm.pdf', 'application/pdf', 100)`);
+  await db.exec(`insert into talent_lists (owner_id, name) values ('${E}', 'Favoris')`);
+  for (const [who, uid, role] of [['etudiant', S, 'authenticated'], ['client', C, 'authenticated'], ['visiteur', '', 'anon']]) {
+    await as(uid, role);
+    for (const tb of ['company_documents', 'company_members', 'company_subscriptions', 'talent_lists', 'opportunity_invites', 'opportunity_views']) {
+      const n = await count(`select * from ${tb}`);
+      n === 0 ? good(`${who} : ${tb} illisible`) : bad(`${who} : ${tb} lisible`, String(n));
+    }
+    const cp = await count(`select phone, contact_name from company_profiles where owner_id = '${E}'`);
+    cp === 0 ? good(`${who} : coordonnees privees de l entreprise illisibles`) : bad(`${who} : telephone et contact de l entreprise lisibles par lecture directe`, String(cp));
+    const ap = await count(`select * from opportunity_applications where opportunity_id = '${O1}' and applicant_id <> '${uid || S}'`);
+    ap === 0 ? good(`${who} : candidatures des autres illisibles`) : bad(`${who} : candidatures des autres lisibles`, String(ap));
+  }
   await db.exec('reset role');
   console.log(`\n${ok}/${ok + ko}`);
 }

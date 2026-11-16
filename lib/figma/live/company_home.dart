@@ -134,6 +134,8 @@ class CompanyHomeScreen extends ConsumerWidget {
     final d = ref.watch(companyDashboardProvider);
     final account = ref.watch(authProvider.select((a) => a.current));
     final org = const {'company', 'admin'}.contains(roleKey(account)) && !shared;
+    // Un membre d'équipe (vue partagée) consulte les offres de l'organisation depuis son espace : lecture ouverte par le serveur (20261118000100).
+    final viaTeam = shared;
     final open99 = canOpen(account, '99') && !shared;
     return Scaffold(
       backgroundColor: const Color(0xFFF7F4FA),
@@ -197,18 +199,18 @@ class CompanyHomeScreen extends ConsumerWidget {
                 ),
               ),
               if (!roleCanPayHome(myRole)) Padding(padding: const EdgeInsets.fromLTRB(8, 0, 8, 10), child: Text('Seuls le propriétaire, les administrateurs et la finance de l’organisation peuvent changer de forfait.', style: mst(12, c: kGrey))),
-              if (shared) Padding(padding: const EdgeInsets.fromLTRB(8, 0, 8, 10), child: Text('Les besoins, offres et concours se gèrent pour l’instant depuis le compte du propriétaire : les chiffres ci-dessous sont ceux de cette organisation.', style: mst(12, c: kGrey))),
+              if (shared) Padding(padding: const EdgeInsets.fromLTRB(8, 0, 8, 10), child: Text('Les candidatures et statistiques des offres se consultent depuis les cases Offres actives, Candidatures et Recrutés (décisions réservées aux administrateurs). Les besoins, la publication et les concours se gèrent depuis le compte du propriétaire.', style: mst(12, c: kGrey))),
               Row(children: [
                 _tile(context, Icons.assignment_outlined, '${n('needs_open')}', 'Besoins ouverts', open99 ? '/s/99' : null),
                 _tile(context, Icons.mark_email_unread_outlined, '${n('proposals_new')}', 'Propositions à traiter', open99 ? '/s/93' : null),
               ]),
               Row(children: [
-                _tile(context, Icons.work_outline, '${n('offers_active')}', 'Offres actives', org ? '/opportunites/mes' : null),
-                _tile(context, Icons.how_to_reg_outlined, '${n('applications_new')}', 'Candidatures reçues', org ? '/opportunites/mes' : null),
+                _tile(context, Icons.work_outline, '${n('offers_active')}', 'Offres actives', (org || viaTeam) ? '/opportunites/mes' : null),
+                _tile(context, Icons.how_to_reg_outlined, '${n('applications_new')}', 'Candidatures reçues', (org || viaTeam) ? '/opportunites/mes' : null),
               ]),
               Row(children: [
                 _tile(context, Icons.emoji_events_outlined, '${n('contests_active')}', 'Concours actifs', org ? '/concours/mes' : null),
-                _tile(context, Icons.celebration_outlined, '${n('recruits')}', 'Recrutés', org ? '/opportunites/mes' : null),
+                _tile(context, Icons.celebration_outlined, '${n('recruits')}', 'Recrutés', (org || viaTeam) ? '/opportunites/mes' : null),
               ]),
               Padding(padding: const EdgeInsets.fromLTRB(5, 6, 5, 0), child: mButton('Équipe de l’organisation · ${n('members')} personne${n('members') > 1 ? 's' : ''}', () => context.push('/entreprise/equipe'), dark: false, icon: Icons.groups_2_outlined)),
               Padding(

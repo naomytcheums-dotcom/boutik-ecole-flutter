@@ -93,6 +93,20 @@ final oppMyApplicationsProvider = FutureProvider.autoDispose<List<Map<String, dy
   return _list('opp_my_applications', const {});
 }, retry: (_, _) => null);
 
+/// Propositions reçues : invitations des recruteurs à postuler (l'étudiant concerné seulement).
+final oppMyInvitesProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) {
+  ref.watch(authProvider.select((a) => a.current?.serverId));
+  return _list('opp_my_invites', const {});
+}, retry: (_, _) => null);
+
+/// « Me proposer aux recruteurs » : vrai tant que l'étudiant n'a pas retiré sa visibilité.
+final talentVisibilityProvider = FutureProvider.autoDispose<bool>((ref) async {
+  ref.watch(authProvider.select((a) => a.current?.serverId));
+  if (!Backend.ready) return true;
+  final r = await marcheCall('talent_visibility_get', const {});
+  return r.error != null ? true : r.data != false;
+}, retry: (_, _) => null);
+
 /// Dernière candidature envoyée avec succès (offre, organisation, date, score de correspondance) : lue par l'écran « Candidature envoyée » (159).
 class LastApplication extends Notifier<Map<String, dynamic>?> {
   @override
@@ -106,7 +120,7 @@ const oppApplicationStatus = {'sent': 'Envoyée', 'viewed': 'Consultée', 'short
 
 /// Retire une candidature (confirmation, puis `opp_withdraw_application` : l'auteur de l'offre est prévenu). Renvoie vrai si elle est retirée.
 Future<bool> withdrawApplication(BuildContext context, WidgetRef ref, Map<String, dynamic> a) async {
-  if (!await l8Confirm(context, 'Retirer ma candidature ?', 'Votre candidature à « ${a['title']} » ne sera plus visible par ${'${a['org']}'.isEmpty ? 'l’organisation' : a['org']} ; vous pourrez postuler de nouveau tant que l’offre est ouverte.', keep: 'Garder', go: 'Retirer') || !context.mounted) return false;
+  if (!await l8Confirm(context, 'Retirer ma candidature ?', 'Votre candidature à « ${a['title']} » ne sera plus visible par ${'${a['org']}'.isEmpty ? 'l’organisation' : a['org']} ; vous pourrez postuler de nouveau après 24 h (trois retraits au plus par offre) tant que l’offre est ouverte.', keep: 'Garder', go: 'Retirer') || !context.mounted) return false;
   final r = await marcheCall('opp_withdraw_application', {'p_id': a['id']});
   if (!context.mounted) return false;
   if (r.error != null) {
@@ -341,6 +355,15 @@ class _OppsState extends ConsumerState<OpportunitiesScreen> {
             Switch(value: alert, onChanged: _alert),
           ]),
         ),
+        if (account != null)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: Wrap(spacing: 8, runSpacing: 4, children: [
+              ActionChip(label: Text('Offres classées pour vous', style: mst(12, w: FontWeight.w600)), onPressed: () => gOpen(context, '152')),
+              ActionChip(label: Text('Mon dossier', style: mst(12, w: FontWeight.w600)), onPressed: () => gOpen(context, '154')),
+              ActionChip(label: Text('Préférences d’alertes', style: mst(12, w: FontWeight.w600)), onPressed: () => gOpen(context, '156')),
+            ]),
+          ),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
           child: TextField(controller: _q, textInputAction: TextInputAction.search, onSubmitted: (v) => _set(_query.copy(q: v)), decoration: InputDecoration(hintText: 'Stage Flutter, assistant communication, Excel…', prefixIcon: const Icon(Icons.search), filled: true, fillColor: Colors.white, border: OutlineInputBorder(borderRadius: BorderRadius.circular(4), borderSide: BorderSide.none), contentPadding: const EdgeInsets.symmetric(vertical: 12))),
@@ -508,7 +531,7 @@ class OpportunityDetailScreen extends ConsumerWidget {
         final closed = o['status'] != 'published' || (deadline != null && oppDeadlineLabel(deadline, DateTime.now()) == 'Clôturée');
         final me = ref.watch(authProvider).current;
         final myInstitution = (me?.institution ?? '').trim();
-        final iutBlocked = o['iut_only'] == true && me != null && !myInstitution.toLowerCase().contains('iut');
+        final iutBlocked = o['iut_only'] == true && me != null && o['iut_eligible'] != true;
         return ListView(padding: const EdgeInsets.only(bottom: 90), children: [
           OpportunityCard(o: o),
           Builder(builder: (context) {
@@ -542,7 +565,11 @@ class OpportunityDetailScreen extends ConsumerWidget {
             ])),
           _list('Ce que vous gagnez', o['gains'] as List? ?? const []),
           if (app != null)
-            _box(Text('Votre candidature : ${const {'sent': 'envoyée', 'viewed': 'consultée', 'shortlisted': 'retenue', 'rejected': 'non retenue', 'hired': 'recrutement confirmé'}['${app['status']}'] ?? '${app['status']}'}', style: mst(13.5, w: FontWeight.w800, c: app['status'] == 'rejected' ? kRed : kGreen)))
+            _box(Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text('Votre candidature : ${const {'sent': 'envoyée', 'viewed': 'consultée', 'shortlisted': 'retenue', 'rejected': 'non retenue', 'hired': 'recrutement confirmé'}['${app['status']}'] ?? '${app['status']}'}', style: mst(13.5, w: FontWeight.w800, c: app['status'] == 'rejected' ? kRed : kGreen)),
+              if (const {'sent', 'viewed', 'shortlisted'}.contains('${app['status']}'))
+                Padding(padding: const EdgeInsets.only(top: 8), child: mButton('Retirer ma candidature', () => withdrawApplication(context, ref, {'id': app['id'], 'title': o['title'], 'org': o['org']}), dark: false)),
+            ]))
           else if (!closed && o['mine'] != true)
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
@@ -555,8 +582,8 @@ class OpportunityDetailScreen extends ConsumerWidget {
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text('Offre réservée aux étudiants de l’IUT', style: mst(13.5, w: FontWeight.w800, c: const Color(0xFFB45309))),
                       const SizedBox(height: 4),
-                      Text(myInstitution.isEmpty ? 'Votre profil n’indique pas d’établissement : renseignez-le si vous étudiez à l’IUT.' : 'L’établissement de votre profil (« $myInstitution ») n’est pas l’IUT : vous ne pouvez pas postuler dans l’application.', style: mst(12.5, c: kGrey).copyWith(height: 1.4)),
-                      if (myInstitution.isEmpty) Padding(padding: const EdgeInsets.only(top: 8), child: mButton('Renseigner mon établissement', () => gOpen(context, '18b'), dark: false)),
+                      Text(myInstitution.isEmpty ? 'Votre profil n’indique pas d’établissement : choisissez l’IUT dans la liste des établissements si vous y étudiez.' : 'L’établissement de votre profil (« $myInstitution ») n’est pas un IUT reconnu par l’équipe : vous ne pouvez pas postuler dans l’application. Choisissez votre IUT dans la liste des établissements vérifiés de votre profil.', style: mst(12.5, c: kGrey).copyWith(height: 1.4)),
+                      Padding(padding: const EdgeInsets.only(top: 8), child: mButton(myInstitution.isEmpty ? 'Renseigner mon établissement' : 'Modifier mon établissement', () => gOpen(context, '18b'), dark: false)),
                     ]),
                   )
                 else if (o['apply_in_app'] == true)
@@ -619,6 +646,7 @@ class MyOpportunitiesScreen extends ConsumerWidget {
     return MarchePage(
       title: 'Mes opportunités',
       child: ListView(padding: const EdgeInsets.only(bottom: 90), children: [
+        if (roleKey(ref.watch(authProvider).current) == 'student') const TalentVisibilityCard(),
         mSectionTitle('Mes candidatures'),
         mAsync<List<Map<String, dynamic>>>(
           ref.watch(oppMyApplicationsProvider),
@@ -632,7 +660,17 @@ class MyOpportunitiesScreen extends ConsumerWidget {
                         Text('${a['title']}', style: mst(14, w: FontWeight.w800)),
                         Text('${a['org']} · ${_status['${a['status']}'] ?? a['status']}', style: mst(12.5, c: a['status'] == 'rejected' ? kRed : (a['status'] == 'hired' ? kGreen : kGrey))),
                         if (a['status'] == 'hired' && a['published'] != true) Padding(padding: const EdgeInsets.only(top: 8), child: mButton('Partager mon recrutement', () async {
-                          if (await _call(context, 'opp_hire_publish', {'p_application': a['id']}, ok: 'Merci : votre réussite apparaît dans « Ils ont été recrutés ».')) ref.invalidate(oppMyApplicationsProvider);
+                          if (!await l8Confirm(context, 'Partager mon recrutement ?', 'Votre prénom, votre filière, l’organisation et le poste seront visibles par tout le monde, y compris les visiteurs non connectés, dans « Ils ont été recrutés ». Vous pourrez retirer ce partage à tout moment.', keep: 'Annuler', go: 'Partager') || !context.mounted) return;
+                          if (await _call(context, 'opp_hire_publish', {'p_application': a['id'], 'p_confirm': true}, ok: 'Merci : votre réussite apparaît dans « Ils ont été recrutés ».')) {
+                            ref.invalidate(oppMyApplicationsProvider);
+                            ref.invalidate(oppHiredProvider);
+                          }
+                        }, dark: false)),
+                        if (a['status'] == 'hired' && a['published'] == true) Padding(padding: const EdgeInsets.only(top: 8), child: mButton('Retirer le partage de mon recrutement', () async {
+                          if (await _call(context, 'opp_hire_unpublish', {'p_application': a['id']}, ok: 'Votre recrutement n’est plus affiché dans « Ils ont été recrutés ».')) {
+                            ref.invalidate(oppMyApplicationsProvider);
+                            ref.invalidate(oppHiredProvider);
+                          }
                         }, dark: false)),
                         if (const {'sent', 'viewed', 'shortlisted'}.contains('${a['status']}')) Padding(padding: const EdgeInsets.only(top: 8), child: mButton('Retirer ma candidature', () => withdrawApplication(context, ref, a), dark: false)),
                       ])),
@@ -650,6 +688,31 @@ class MyOpportunitiesScreen extends ConsumerWidget {
         ],
       ]),
     );
+  }
+}
+
+/// Réglage de confidentialité de l'étudiant : être proposé et invité par les recruteurs, ou non.
+class TalentVisibilityCard extends ConsumerWidget {
+  const TalentVisibilityCard({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final on = ref.watch(talentVisibilityProvider).value ?? true;
+    return _box(Row(children: [
+      Expanded(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text('Me proposer aux recruteurs', style: mst(13.5, w: FontWeight.w800)),
+          const SizedBox(height: 2),
+          Text(on ? 'Les organisations qui publient une offre peuvent vous suggérer et vous inviter à postuler (prénom, filière, photo et correspondance). Désactivez pour ne plus apparaître.' : 'Vous n’apparaissez plus dans les suggestions des recruteurs et ils ne peuvent plus vous inviter.', style: mst(12, c: kGrey).copyWith(height: 1.4)),
+        ]),
+      ),
+      Switch(
+        value: on,
+        onChanged: (v) async {
+          if (await _call(context, 'talent_visibility_set', {'p_visible': v}, ok: v ? 'Les recruteurs peuvent de nouveau vous proposer des offres.' : 'Vous n’êtes plus proposé aux recruteurs.')) ref.invalidate(talentVisibilityProvider);
+        },
+      ),
+    ]));
   }
 }
 
@@ -809,7 +872,14 @@ class _AppsState extends ConsumerState<OpportunityApplicationsScreen> {
                       matchBadge(a['match']),
                       const SizedBox(height: 6),
                       Text('${a['message']}', style: mst(13).copyWith(height: 1.45)),
-                      if ('${a['cv_link']}'.isNotEmpty) GestureDetector(onTap: () => openUrl(context, '${a['cv_link']}'), child: Padding(padding: const EdgeInsets.only(top: 6), child: Text('Voir le CV', style: mst(12.5, w: FontWeight.w700, c: kViolet)))),
+                      if ('${a['cv_link']}'.isNotEmpty)
+                        GestureDetector(
+                          onTap: () async {
+                            if (!await l8Confirm(context, 'Ouvrir ce lien ?', 'Ce lien a été saisi par la personne qui postule : ${a['cv_link']}\nN’ouvrez que des liens de confiance et ne saisissez jamais de mot de passe sur la page ouverte.', keep: 'Annuler', go: 'Ouvrir') || !context.mounted) return;
+                            await openUrl(context, '${a['cv_link']}');
+                          },
+                          child: Padding(padding: const EdgeInsets.only(top: 6), child: Text('Voir le CV', style: mst(12.5, w: FontWeight.w700, c: kViolet))),
+                        ),
                       const SizedBox(height: 8),
                       if (a['status'] == 'sent') Padding(padding: const EdgeInsets.only(bottom: 8), child: mButton('Marquer comme consultée', () => _decide(a, 'viewed'), dark: false, width: double.infinity)),
                       Row(children: [

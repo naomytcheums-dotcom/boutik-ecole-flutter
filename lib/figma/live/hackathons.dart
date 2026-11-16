@@ -9,6 +9,7 @@ import 'contests.dart';
 import 'auth.dart';
 import 'backend.dart';
 import 'drafts.dart';
+import 'l10_hackathons.dart' show teamSpaceProvider;
 import 'lots.dart' show copyText;
 import 'store.dart';
 
@@ -297,7 +298,14 @@ void submitDeposit(WidgetRef ref, BuildContext context) {
   }
   ref.read(errorsProvider.notifier).clear();
   if (Backend.ready) {
-    submitContestProject(context, ref, title, link, desc).then((_) => Drafts.clear('165', const ['dp_title', 'dp_link', 'dp_desc']));
+    submitContestProject(context, ref, title, link, desc).then((sent) {
+      if (!sent) return; // le brouillon n'est supprimé que si le dépôt a réellement été enregistré
+      Drafts.clear('165', const ['dp_title', 'dp_link', 'dp_desc']);
+      ref.read(formProvider.notifier).clear(const ['dp_title', 'dp_link', 'dp_desc']);
+      final id = contestOfMyTeam(ref.read(currentEventProvider), ref.read(myContestTeamsProvider), ref.read(contestsProvider)).id;
+      ref.invalidate(teamSpaceProvider(id));
+      if (context.mounted) gOpen(context, '164');
+    });
     return;
   }
   final reg = ref.read(registrationsProvider).values.isEmpty ? null : ref.read(registrationsProvider).values.first;

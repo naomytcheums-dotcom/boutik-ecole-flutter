@@ -177,6 +177,28 @@ class _ServerChatPanelState extends ConsumerState<ServerChatPanel> {
         if (scroll.hasClients) scroll.jumpTo(scroll.position.maxScrollExtent + 80);
       });
 
+  /// Envois récents (messages de cette session) : au-delà de 18 par minute, l'envoi est suspendu côté application avant même que le serveur refuse.
+  final List<DateTime> _sent = [];
+  DateTime? _coolUntil;
+
+  /// Vrai quand l'envoi doit attendre ; annonce alors le délai restant.
+  bool _throttled() {
+    final now = DateTime.now();
+    _sent.removeWhere((d) => now.difference(d).inSeconds >= 60);
+    final cool = _coolUntil;
+    if (cool != null && now.isBefore(cool)) {
+      gToast(context, 'Vous envoyez trop vite : patientez ${cool.difference(now).inSeconds + 1} s avant le prochain message.');
+      return true;
+    }
+    if (_sent.length >= 18) {
+      _coolUntil = _sent.first.add(const Duration(seconds: 60));
+      gToast(context, 'Vous envoyez trop vite : patientez quelques secondes avant le prochain message.');
+      return true;
+    }
+    _sent.add(now);
+    return false;
+  }
+
   /// Envoi avec état visible : « Envoi… », puis disparition si réussi, ou « Échec · réessayer ».
   Future<void> _run(SMsg draft, Future<String?> Function() send) async {
     setState(() => pending.add(draft));
@@ -189,6 +211,7 @@ class _ServerChatPanelState extends ConsumerState<ServerChatPanel> {
       await _load();
       return;
     }
+    if (err.contains('trop de messages')) _coolUntil = DateTime.now().add(const Duration(seconds: 20));
     final failed = SMsg(id: draft.id, mine: true, time: draft.time, kind: draft.kind, body: draft.body, name: draft.name, status: 'failed', retry: () {
       setState(() => pending.removeWhere((p) => p.id == draft.id));
       _run(draft, send);
@@ -203,6 +226,7 @@ class _ServerChatPanelState extends ConsumerState<ServerChatPanel> {
     final cid = ref.read(selectedConversationProvider);
     if (t.isEmpty || cid.isEmpty) return;
     if (t.length > 4000) return gToast(context, 'Message trop long : ${t.length} caractères saisis, 4 000 au maximum. Raccourcissez-le ou envoyez-le en deux messages.');
+    if (_throttled()) return;
     c.clear();
     setState(() {});
     _run(SMsg(id: 'p${DateTime.now().microsecondsSinceEpoch}', mine: true, time: '', kind: 'text', body: t, status: 'sending'), () => Backend.sendMessage(cid, t));
@@ -215,6 +239,7 @@ class _ServerChatPanelState extends ConsumerState<ServerChatPanel> {
       gToast(context, 'Fichier trop volumineux (10 Mo maximum).');
       return;
     }
+    if (_throttled()) return;
     final label = kind == 'image' ? 'Photo' : (kind == 'voice' ? 'Message vocal' : name);
     _run(SMsg(id: 'p${DateTime.now().microsecondsSinceEpoch}', mine: true, time: '', kind: kind, body: label, name: name, status: 'sending'),
         () => Backend.sendAttachment(cid, kind, bytes, name, mime, label));

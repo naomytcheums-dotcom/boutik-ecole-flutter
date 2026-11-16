@@ -5,10 +5,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart' show gToast;
 import '../gsound.dart';
 import 'auth.dart';
+import 'backend.dart' show Backend;
 import 'store.dart';
 
 /// Message affiché quand l'enregistrement d'un favori échoue (annonce retirée ou masquée, réseau).
 String favoriteFailure(bool adding) => adding ? 'Ce produit n’est plus disponible : impossible de l’ajouter aux favoris.' : 'Impossible de retirer ce favori pour le moment. Réessayez.';
+
+/// Vrai quand l'annonce de ce titre est celle de la personne connectée : on ne met pas ses propres annonces en favoris.
+bool isOwnProductTitle(String title) {
+  final me = Backend.userId;
+  return me != null && extraProducts.any((p) => p.title == title && p.sellerId == me);
+}
+
+const ownFavoriteMessage = 'C’est votre propre annonce : elle ne peut pas être ajoutée à vos favoris.';
 
 /// Cœur visible posé sur une tuile de produit : plein quand le produit est dans les favoris, avec la même liste partagée que [GHeartLive].
 class FavoriteHeart extends ConsumerWidget {
@@ -20,6 +29,7 @@ class FavoriteHeart extends ConsumerWidget {
     final on = title.isNotEmpty && ref.watch(favoritesProvider).contains(title);
     Future<void> toggle() async {
       if (title.isEmpty) return;
+      if (isOwnProductTitle(title)) return gToast(context, ownFavoriteMessage);
       if (!await requireLogin(context, ref, 'enregistrer vos favoris')) return;
       if (!context.mounted) return;
       GSound.play(on ? 'tick' : 'pop');
@@ -60,6 +70,7 @@ class GHeartLive extends ConsumerWidget {
     final on = title.isNotEmpty && ref.watch(favoritesProvider).contains(title);
     Future<void> toggle() async {
       if (title.isEmpty) return;
+      if (isOwnProductTitle(title)) return gToast(context, ownFavoriteMessage);
       if (!await requireLogin(context, ref, 'enregistrer vos favoris')) return;
       if (!context.mounted) return;
       GSound.play(on ? 'tick' : 'pop');

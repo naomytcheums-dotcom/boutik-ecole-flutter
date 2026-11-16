@@ -17,6 +17,7 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/kiosk_mode.dart' show KioskIdleGuard;
 import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
@@ -59,6 +60,7 @@ class G_206 extends ConsumerWidget {
         })),
       gP(110, 930, 500, 110, const SizedBox.expand(), tap: () => gOpen(context, '207')),
       gTap(110, 930, 500, 110, () => gOpen(context, '207')),
+      gP(0, 0, 1, 1, const KioskIdleGuard(screenLevel: true)),
     ]);
   }
 }

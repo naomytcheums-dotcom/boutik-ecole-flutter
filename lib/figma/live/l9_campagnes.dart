@@ -210,7 +210,7 @@ class _CampaignDetailState extends ConsumerState<CampaignDetailPage> {
       children: [
         Text('${cur['project']}', style: tpSt(20, w: FontWeight.w800)),
         const SizedBox(height: 4),
-        Text([_campaignStatus['${cur['status']}'] ?? '', _remaining(cur)].where((e) => e.isNotEmpty).join(' · '), style: tpSt(12.5, c: tpGrey)),
+        Text([_campaignStatus['${cur['status']}'] ?? '', if (cur['outcome'] == 'funded') 'Objectif atteint', if (cur['outcome'] == 'unfunded') 'Objectif non atteint', _remaining(cur)].where((e) => e.isNotEmpty).join(' · '), style: tpSt(12.5, c: tpGrey)),
         const SizedBox(height: 12),
         _Progress(cur),
         block('Présentation', cur['presentation']),
@@ -227,7 +227,7 @@ class _CampaignDetailState extends ConsumerState<CampaignDetailPage> {
               ]),
             ),
         ],
-        tpNote('Votre contribution ouvre une demande de paiement par messagerie (Mobile Money). Elle n’est comptée dans la somme collectée qu’une fois le paiement confirmé par la finance.'),
+        tpNote('Votre contribution ouvre une demande de paiement par messagerie (Mobile Money). Elle n’est comptée qu’une fois le paiement confirmé par la finance. Les contributions sont conservées par Boutik-École jusqu’à la clôture : si l’objectif est atteint, elles sont reversées au porteur (après la répartition en vigueur, 70 / 20 / 10 par défaut) ; sinon elles vous sont remboursées. Une demande de paiement jamais déclarée est supprimée au bout de 24 h.'),
       ],
     );
   }
@@ -439,19 +439,53 @@ class CampaignOwnerPage extends StatelessWidget {
 class _ResultCard extends StatelessWidget {
   const _ResultCard(this.c);
   final Map<String, dynamic> c;
+
+  Future<void> _backers(BuildContext context) async {
+    final r = await Backend.rpc('campaign_backers', {'p_campaign': c['id']});
+    if (!context.mounted) return;
+    if (r.error != null) return gToast(context, _err(r.error));
+    final rows = r.data is List ? [for (final x in r.data as List) Map<String, dynamic>.from(x as Map)] : <Map<String, dynamic>>[];
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.white,
+      isScrollControlled: true,
+      builder: (_) => SafeArea(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.75),
+          child: ListView(shrinkWrap: true, padding: const EdgeInsets.all(20), children: [
+            Text('Contributeurs · ${c['project']}', style: tpSt(17, w: FontWeight.w800)),
+            const SizedBox(height: 10),
+            if (rows.isEmpty) Text('Aucune contribution pour le moment.', style: tpSt(13, c: tpGrey)),
+            for (final b in rows)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: Row(children: [
+                  Expanded(child: Text('${b['name']}', style: tpSt(13.5, w: FontWeight.w700))),
+                  Text('${fcfa(_int(b['amount']))} · ${b['status'] == 'confirmed' ? (b['refund_status'] == 'to_refund' ? 'à rembourser' : (b['refund_status'] == 'refunded' ? 'remboursée' : 'confirmée')) : 'en vérification'}', style: tpSt(12, c: tpGrey)),
+                ]),
+              ),
+          ]),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) => TpCard(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
             Expanded(child: Text('${c['project']}', maxLines: 2, overflow: TextOverflow.ellipsis, style: tpSt(15, w: FontWeight.w700))),
-            Text(_campaignStatus['${c['status']}'] ?? '', style: tpSt(12, w: FontWeight.w700, c: c['status'] == 'rejected' ? tpRed : tpViolet)),
+            Text(c['status'] == 'closed' ? (c['outcome'] == 'funded' ? 'Financée' : 'Non financée') : (_campaignStatus['${c['status']}'] ?? ''), style: tpSt(12, w: FontWeight.w700, c: c['status'] == 'rejected' || c['outcome'] == 'unfunded' ? tpRed : tpViolet)),
           ]),
           const SizedBox(height: 3),
           Text(_remaining(c), style: tpSt(12, c: tpGrey)),
           const SizedBox(height: 10),
           _Progress(c),
           if (c['status'] == 'rejected' && '${c['review_note'] ?? ''}'.isNotEmpty) tpNote('Motif du refus : ${c['review_note']}', c: tpRed),
-          tpNote('Seules les contributions dont le paiement est confirmé sont comptées.'),
+          if (c['outcome'] == 'funded') tpNote('Objectif atteint : votre part est disponible sur votre solde (Revenus), après répartition ; la finance la verse.', c: tpGreen),
+          if (c['outcome'] == 'unfunded') tpNote('Objectif non atteint : les contributions confirmées sont remboursées aux contributeurs par la finance.', c: tpRed),
+          tpNote('Seules les contributions dont le paiement est confirmé sont comptées. Elles sont conservées par Boutik-École jusqu’à la clôture de la campagne.'),
+          if (c['status'] == 'approved' || c['status'] == 'closed') Padding(padding: const EdgeInsets.only(top: 8), child: TpButton('Voir les contributeurs', () => _backers(context), dark: false, compact: true, icon: Icons.groups_outlined)),
         ]),
       );
 }
@@ -471,9 +505,36 @@ class _MilestoneCard extends StatelessWidget {
   }
 
   Future<void> _toggle(BuildContext context, Map<String, dynamic> m) async {
-    final r = await Backend.rpc('campaign_milestone_done', {'p_id': m['id'], 'p_done': m['done'] != true});
+    if (m['done'] == true || m['declared'] == true) {
+      final r = await Backend.rpc('campaign_milestone_done', {'p_id': m['id'], 'p_done': false});
+      if (!context.mounted) return;
+      if (r.error != null) return gToast(context, _err(r.error));
+      return reload();
+    }
+    final proof = TextEditingController(), url = TextEditingController();
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (d) => AlertDialog(
+        backgroundColor: Colors.white,
+        title: Text('Jalon atteint : preuve', style: tpSt(17, w: FontWeight.w700)),
+        content: SingleChildScrollView(
+          child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('Le département vérifie votre preuve ; le jalon n’apparaît « atteint » au public qu’après sa validation.', style: tpSt(12.5, c: tpGrey, h: 1.4)),
+            TpField('Preuve de réalisation', proof, lines: 3, maxLength: 1000),
+            TpField('Lien vers la preuve (facultatif)', url, keyboard: TextInputType.url, maxLength: 300),
+          ]),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(d, false), child: Text('Annuler', style: tpSt(14, c: tpGrey))),
+          TextButton(onPressed: () => Navigator.pop(d, true), child: Text('Envoyer au département', style: tpSt(14, w: FontWeight.w700))),
+        ],
+      ),
+    );
+    if (ok != true || !context.mounted) return;
+    final r = await Backend.rpc('campaign_milestone_done', {'p_id': m['id'], 'p_done': true, 'p_proof': proof.text.trim(), 'p_proof_url': url.text.trim()});
     if (!context.mounted) return;
     if (r.error != null) return gToast(context, _err(r.error));
+    gToast(context, 'Jalon envoyé au département pour validation.');
     reload();
   }
 
@@ -498,15 +559,20 @@ class _MilestoneCard extends StatelessWidget {
         for (final m in ms)
           Row(children: [
             IconButton(
-              tooltip: m['done'] == true ? 'Marquer comme à faire' : 'Marquer comme atteint',
-              icon: Icon(m['done'] == true ? Icons.check_circle_rounded : Icons.radio_button_unchecked_rounded, color: m['done'] == true ? tpGreen : tpGrey),
+              tooltip: m['done'] == true ? 'Retirer la déclaration' : (m['declared'] == true ? 'En attente de validation : annuler la déclaration' : 'Déclarer atteint (preuve demandée)'),
+              icon: Icon(m['done'] == true ? Icons.check_circle_rounded : (m['declared'] == true ? Icons.hourglass_top_rounded : Icons.radio_button_unchecked_rounded), color: m['done'] == true ? tpGreen : (m['declared'] == true ? const Color(0xFF8F5400) : tpGrey)),
               onPressed: () => _toggle(context, m),
             ),
             Expanded(
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () => _edit(context, m),
-                child: Text('${m['title']}${m['target_xaf'] == null ? '' : ' · ${fcfa(_int(m['target_xaf']))}'}${m['due_on'] == null ? '' : ' · avant le ${tpDate(m['due_on'])}'}', style: tpSt(13, h: 1.4)),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text('${m['title']}${m['target_xaf'] == null ? '' : ' · ${fcfa(_int(m['target_xaf']))}'}${m['due_on'] == null ? '' : ' · avant le ${tpDate(m['due_on'])}'}', style: tpSt(13, h: 1.4)),
+                  if (m['done'] == true) Text('Validé par le département', style: tpSt(11.5, w: FontWeight.w600, c: tpGreen))
+                  else if (m['declared'] == true) Text('En attente de validation par le département', style: tpSt(11.5, w: FontWeight.w600, c: const Color(0xFF8F5400)))
+                  else if ('${m['review_note'] ?? ''}'.isNotEmpty) Text('Non validé : ${m['review_note']}', style: tpSt(11.5, w: FontWeight.w600, c: tpRed)),
+                ]),
               ),
             ),
             IconButton(tooltip: 'Supprimer', icon: const Icon(Icons.delete_outline_rounded, color: tpGrey, size: 20), onPressed: () => _delete(context, m)),

@@ -16,7 +16,7 @@ const _ink = Color(0xFF111015);
 const _grey = Color(0xFF57545F);
 TextStyle _st(double size, {FontWeight w = FontWeight.w500, Color c = _ink}) => TextStyle(fontFamily: 'PlusJakartaSans', fontSize: size, fontWeight: w, color: c);
 
-/// Produits dont l'annonce est marquée « matériaux récupérés » (colonne listings.recycled) ou dont le titre ou la description évoque la récupération.
+/// Reconnaissance par le texte (titre ou description), utilisée UNIQUEMENT pour la démonstration hors connexion : connecté, seule la déclaration du vendeur (listings.recycled) compte.
 bool isRecycled(LiveProduct p) => RegExp(r'recycl|récup|recup|upcycl|seconde vie|réemploi|reemploi', caseSensitive: false).hasMatch('${p.title} ${p.description}');
 
 /// Annonces à l'honneur (les mieux notées puis les plus consultées), dans l'ordre du serveur.
@@ -46,7 +46,7 @@ class ProductCards extends ConsumerWidget {
   /// Seulement les annonces à l'honneur du serveur.
   final bool featured;
 
-  /// Seulement les annonces déclarées en matériaux récupérés (colonne du serveur) ou dont le texte l'évoque.
+  /// Seulement les annonces déclarées en matériaux récupérés par leur vendeur (colonne du serveur) ; la démonstration hors connexion reconnaît aussi le texte.
   final bool recycled;
 
   @override
@@ -57,7 +57,7 @@ class ProductCards extends ConsumerWidget {
       all = [for (final id in ids) ...all.where((p) => p.id == id)];
     }
     final recycledIds = recycled ? (ref.watch(recycledIdsProvider).value ?? const <String>{}) : const <String>{};
-    final list = [for (final p in all) if ((filter == null || filter!(p)) && (!recycled || recycledIds.contains(p.id) || isRecycled(p))) p].take(rows * 2).toList();
+    final list = [for (final p in all) if ((filter == null || filter!(p)) && (!recycled || recycledIds.contains(p.id) || (!Backend.ready && isRecycled(p)))) p].take(rows * 2).toList();
     if (list.isEmpty) {
       return Container(
         width: width,

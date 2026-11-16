@@ -2,10 +2,13 @@ import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'marche/marche_widgets.dart' show MarcheLink;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../core/router/paths.dart' show screenPath;
 import 'auth.dart';
 import 'console.dart';
 import 'entreprise.dart';
+import 'seller_edit.dart' show selectedListingProvider;
 import 'store.dart';
 
 /// Deuxième lot de 20 écrans : paramètres, partage, boutique, projets, candidatures, favoris. Données du compte ou lecture serveur
@@ -16,12 +19,12 @@ const _grey = Color(0xFF57545F);
 TextStyle _st(double size, {FontWeight w = FontWeight.w500, Color c = _ink}) => TextStyle(fontFamily: 'PlusJakartaSans', fontSize: size, fontWeight: w, color: c);
 
 /// Annonces du compte : le serveur ne renvoie que celles dont le compte est le vendeur (filtre seller_id, reconstruit au changement de compte).
-final myListingsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('listings', 'title,status,category,price,created_at,seller_id', order: 'created_at', ownerColumn: 'seller_id', limit: 200));
+final myListingsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('listings', 'id,title,status,category,price,created_at,seller_id,review_note', order: 'created_at', ownerColumn: 'seller_id', neq: const {'status': 'removed'}, limit: 200));
 
 /// Projets dont le compte est le titulaire (nombre affiché sur son profil) ; null tant que la lecture n'a pas répondu, ou sans compte.
 final myProjectsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('projects', 'id', ownerColumn: 'owner_id', limit: 200));
 
-String _status(Object? s) => switch ('$s') { 'approved' => 'Publiée', 'draft' => 'Brouillon', 'removed' => 'Retirée', _ => '$s' };
+String _status(Object? s) => switch ('$s') { 'approved' => 'Publiée', 'draft' => 'Brouillon', 'pending' => 'En validation', 'rejected' => 'Refusée', 'removed' => 'Retirée', _ => '$s' };
 
 /// Nom et adresse e-mail du compte connecté (écran 148_1).
 class AccountHeader extends ConsumerWidget {
@@ -84,10 +87,23 @@ class MyListings extends ConsumerWidget {
               separatorBuilder: (_, _) => const Divider(height: 22, color: Color(0xFFF2EFF6)),
               itemBuilder: (_, i) {
                 final r = mine[i];
-                return Row(children: [
-                  Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('${r['title']}', style: _st(13.5, w: FontWeight.w700)), const SizedBox(height: 3), Text('${r['category'] ?? ''} · ${fcfa(((r['price'] as num?) ?? 0).toInt())}', style: _st(11.5, c: _grey))])),
-                  Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5), decoration: BoxDecoration(color: const Color(0xFFEEE9FF), borderRadius: BorderRadius.circular(11)), child: Text(_status(r['status']), style: _st(11, w: FontWeight.w600, c: const Color(0xFF5A3FE0)))),
-                ]);
+                final rejected = '${r['status']}' == 'rejected' && '${r['review_note'] ?? ''}'.isNotEmpty;
+                return GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    ref.read(selectedListingProvider.notifier).set('${r['id']}');
+                    GoRouter.of(context).push(screenPath('60'));
+                  },
+                  child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text('${r['title']}', style: _st(13.5, w: FontWeight.w700)),
+                      const SizedBox(height: 3),
+                      Text('${r['category'] ?? ''} · ${((r['price'] as num?) ?? 0) == 0 ? 'Sur devis' : fcfa(((r['price'] as num?) ?? 0).toInt())}', style: _st(11.5, c: _grey)),
+                      if (rejected) Padding(padding: const EdgeInsets.only(top: 3), child: Text('Motif du refus : ${r['review_note']}', style: _st(11.5, w: FontWeight.w600, c: const Color(0xFFD64545)).copyWith(height: 1.35))),
+                    ])),
+                    Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5), decoration: BoxDecoration(color: const Color(0xFFEEE9FF), borderRadius: BorderRadius.circular(11)), child: Text(_status(r['status']), style: _st(11, w: FontWeight.w600, c: const Color(0xFF5A3FE0)))),
+                  ]),
+                );
               },
             ),
           ),

@@ -33,10 +33,21 @@ Deno.serve(async (req) => {
 
   if (success) {
     const paid = b.amount ?? b.productPrice ?? b.price;
+    const providerId = String(b.transactionId ?? b.transaction_id ?? b.id ?? "");
     if (paid !== undefined && !(Number(paid) >= tx.amount)) {
       await admin.from("payment_transactions").update({ status: "failed", note: "Montant reçu insuffisant" }).eq("id", tx.id).neq("status", "confirmed");
       await admin.from("payment_messages").insert({ transaction_id: tx.id, sender: "system", body: "Montant reçu inférieur au montant attendu : paiement non validé." });
       return new Response("mismatch");
+    }
+    // Sans montant dans la notification, seule la référence de transaction enregistrée au lancement du paiement prouve qu'il s'agit du bon débit ;
+    // à défaut, rien n'est confirmé automatiquement : la finance vérifie.
+    if (paid === undefined && !(tx.provider_ref && providerId && providerId === tx.provider_ref)) {
+      await admin.from("payment_messages").insert({ transaction_id: tx.id, sender: "system", body: "Paiement signalé par le fournisseur sans montant vérifiable : la finance le contrôle avant validation." });
+      const { data: staff } = await admin.from("profiles").select("id").in("role", ["finance", "admin"]).eq("suspended", false);
+      for (const s of staff ?? []) {
+        await admin.rpc("notify_user", { p_user: s.id, p_kind: "payment_review", p_title: "Paiement Tara à vérifier", p_body: `Référence ${reference} : confirmation reçue sans montant vérifiable.`, p_data: { transaction: tx.id } });
+      }
+      return new Response("needs_review");
     }
     const up = await admin.from("payment_transactions").update({ status: "confirmed", decided_at: new Date().toISOString(), note: "Confirmé par Tara Money" })
       .eq("id", tx.id).in("status", ["pending", "failed"]).select("id");

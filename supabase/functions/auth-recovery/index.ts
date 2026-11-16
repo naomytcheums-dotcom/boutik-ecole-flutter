@@ -5,7 +5,7 @@
 //   POST {action:"login_phone", phone, password}          -> connexion par téléphone pour un compte dont l'identifiant Auth est un e-mail
 // Déployer avec --no-verify-jwt (appelée avant toute connexion). Secrets : TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_SMS_FROM, TWILIO_WHATSAPP_FROM.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { adminClient, cors, hmacHex, jsonResponse, sameString } from "../_shared/core.ts";
+import { adminClient, callerOf, cors, hmacHex, jsonResponse, sameString } from "../_shared/core.ts";
 import { CODE_TTL_MS, MAX_ATTEMPTS, MAX_CODES_PER_HOUR, newCode, normalizePhone, passwordError, phoneVariants, smsText } from "../_shared/recovery.ts";
 
 const env = (k: string) => Deno.env.get(k) ?? "";
@@ -29,7 +29,8 @@ async function sendTwilio(channel: "sms" | "whatsapp", phone: string, body: stri
 }
 
 async function userByPhone(db: ReturnType<typeof adminClient>, phone: string): Promise<{ id: string } | null> {
-  const { data } = await db.from("profiles").select("id").in("phone", phoneVariants(phone)).limit(2);
+  // Seuls les numéros vérifiés (code reçu par SMS) servent à retrouver un compte.
+  const { data } = await db.from("profiles").select("id").in("phone", phoneVariants(phone)).eq("phone_verified", true).limit(2);
   // numéro partagé par plusieurs comptes : on n'envoie rien (ambigu) plutôt que de viser le mauvais compte
   return data && data.length === 1 ? { id: data[0].id as string } : null;
 }
@@ -55,10 +56,10 @@ Deno.serve(async (req) => {
         const user = await userByPhone(db, phone);
         if (!user) return jsonResponse(req, same);
         const since = new Date(Date.now() - 3600_000).toISOString();
-        const { count } = await db.from("auth_recovery_codes").select("id", { count: "exact", head: true }).eq("phone", phone).gte("created_at", since);
+        const { count } = await db.from("auth_recovery_codes").select("id", { count: "exact", head: true }).eq("phone", phone).eq("purpose", "recovery").gte("created_at", since);
         if ((count ?? 0) >= MAX_CODES_PER_HOUR) return jsonResponse(req, same);
         const code = newCode();
-        await db.from("auth_recovery_codes").update({ used_at: new Date().toISOString() }).eq("user_id", user.id).is("used_at", null); // un seul code actif
+        await db.from("auth_recovery_codes").update({ used_at: new Date().toISOString() }).eq("user_id", user.id).eq("purpose", "recovery").is("used_at", null); // un seul code actif
         const { error } = await db.from("auth_recovery_codes").insert({
           user_id: user.id, phone, channel, code_hash: await hashCode(user.id, code), expires_at: new Date(Date.now() + CODE_TTL_MS).toISOString(),
         });
@@ -79,7 +80,7 @@ Deno.serve(async (req) => {
         if (!phone || !/^\d{6}$/.test(code)) return jsonResponse(req, bad, 400);
         const pwErr = passwordError(password);
         if (pwErr) return jsonResponse(req, { error: "weak_password", message: pwErr }, 400);
-        const { data: rows } = await db.from("auth_recovery_codes").select("*").eq("phone", phone).is("used_at", null)
+        const { data: rows } = await db.from("auth_recovery_codes").select("*").eq("phone", phone).eq("purpose", "recovery").is("used_at", null)
           .gt("expires_at", new Date().toISOString()).order("created_at", { ascending: false }).limit(1);
         const row = rows?.[0];
         if (!row || row.attempts >= MAX_ATTEMPTS) return jsonResponse(req, bad, 400);
@@ -92,10 +93,59 @@ Deno.serve(async (req) => {
           const same = /different from the old/i.test(error.message);
           return jsonResponse(req, { error: same ? "same_password" : "update_failed", message: same ? "Choisissez un mot de passe différent de l’ancien." : "Mot de passe non modifié. Réessayez." }, 400);
         }
-        await db.from("auth_recovery_codes").update({ used_at: new Date().toISOString() }).eq("user_id", row.user_id).is("used_at", null);
+        await db.from("auth_recovery_codes").update({ used_at: new Date().toISOString() }).eq("user_id", row.user_id).eq("purpose", "recovery").is("used_at", null);
         // Le mot de passe a changé : les sessions ouvertes (éventuellement par un tiers) sont fermées.
         const rev = await db.rpc("auth_revoke_sessions", { p_user: row.user_id });
         if (rev.error) console.error("auth-recovery revoke", rev.error.message);
+        return jsonResponse(req, { ok: true });
+      }
+
+      case "phone_verify_request": {
+        // Appelée connecté : envoie un code au numéro enregistré sur le compte de l'appelant (jamais un numéro fourni dans la requête).
+        const uid = await callerOf(req);
+        if (!uid) return jsonResponse(req, { error: "unauthorized", message: "Connexion requise." }, 401);
+        const channel = b.channel === "whatsapp" ? "whatsapp" : "sms";
+        if (!channels()[channel]) return jsonResponse(req, { error: "channel_unavailable", message: `L’envoi par ${channel === "sms" ? "SMS" : "WhatsApp"} n’est pas disponible pour le moment.` }, 503);
+        const { data: me } = await db.from("profiles").select("phone,phone_verified,suspended").eq("id", uid).maybeSingle();
+        const phone = normalizePhone(me?.phone);
+        if (!me || me.suspended) return jsonResponse(req, { error: "forbidden", message: "Action non autorisée." }, 403);
+        if (!phone) return jsonResponse(req, { error: "no_phone", message: "Aucun numéro valide n’est enregistré sur votre compte." }, 400);
+        if (me.phone_verified) return jsonResponse(req, { ok: true, already: true });
+        const since = new Date(Date.now() - 3600_000).toISOString();
+        const { count } = await db.from("auth_recovery_codes").select("id", { count: "exact", head: true }).eq("user_id", uid).eq("purpose", "phone_verify").gte("created_at", since);
+        if ((count ?? 0) >= MAX_CODES_PER_HOUR) return jsonResponse(req, { error: "rate_limited", message: "Trop de demandes : réessayez dans une heure." }, 429);
+        const code = newCode();
+        await db.from("auth_recovery_codes").update({ used_at: new Date().toISOString() }).eq("user_id", uid).eq("purpose", "phone_verify").is("used_at", null);
+        const { error } = await db.from("auth_recovery_codes").insert({
+          user_id: uid, phone, channel, purpose: "phone_verify", code_hash: await hashCode(uid, code), expires_at: new Date(Date.now() + CODE_TTL_MS).toISOString(),
+        });
+        if (error) throw error;
+        try { await sendTwilio(channel, phone, smsText(code)); } catch (e) {
+          console.error("envoi du code de vérification", String(e));
+          return jsonResponse(req, { error: "send_failed", message: "Le code n’a pas pu être envoyé. Réessayez." }, 502);
+        }
+        return jsonResponse(req, { ok: true, ttl_minutes: CODE_TTL_MS / 60000 });
+      }
+
+      case "phone_verify_confirm": {
+        const uid = await callerOf(req);
+        if (!uid) return jsonResponse(req, { error: "unauthorized", message: "Connexion requise." }, 401);
+        const code = String(b.code ?? "").trim();
+        const bad = { error: "invalid_code", message: "Code incorrect ou expiré. Demandez un nouveau code." };
+        if (!/^\d{6}$/.test(code)) return jsonResponse(req, bad, 400);
+        const { data: rows } = await db.from("auth_recovery_codes").select("*").eq("user_id", uid).eq("purpose", "phone_verify").is("used_at", null)
+          .gt("expires_at", new Date().toISOString()).order("created_at", { ascending: false }).limit(1);
+        const row = rows?.[0];
+        if (!row || row.attempts >= MAX_ATTEMPTS) return jsonResponse(req, bad, 400);
+        const claim = await db.from("auth_recovery_codes").update({ attempts: row.attempts + 1 }).eq("id", row.id).eq("attempts", row.attempts).select("id");
+        if (!claim.data?.length) return jsonResponse(req, bad, 400);
+        if (!sameString(row.code_hash as string, await hashCode(uid, code))) return jsonResponse(req, bad, 400);
+        const { data: me } = await db.from("profiles").select("phone").eq("id", uid).maybeSingle();
+        // Le code vaut pour le numéro auquel il a été envoyé : si le numéro du compte a changé entre-temps, il est refusé.
+        if (normalizePhone(me?.phone) !== row.phone) return jsonResponse(req, bad, 400);
+        const ap = await db.rpc("phone_verify_apply", { p_user: uid, p_phone: row.phone });
+        if (ap.error) return jsonResponse(req, { error: "phone_taken", message: "Ce numéro est déjà vérifié sur un autre compte." }, 409);
+        await db.from("auth_recovery_codes").update({ used_at: new Date().toISOString() }).eq("user_id", uid).eq("purpose", "phone_verify").is("used_at", null);
         return jsonResponse(req, { ok: true });
       }
 

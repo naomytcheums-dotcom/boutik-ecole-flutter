@@ -13,13 +13,16 @@ import 'access.dart' show roleKey;
 import 'auth.dart';
 import 'backend.dart';
 import 'download_stub.dart' if (dart.library.js_interop) 'download_web.dart';
+import 'docs_prestataire.dart' show downloadMissionInvoice;
 import 'l10_voeux.dart' show openWish, openWishEditor;
+import 'lot20.dart' show kioskLiveStatus, kioskStatus;
 import 'missions.dart' show missionProvider;
 import 'project_pages.dart' show projectProgress;
 import 'profile_links.dart' show profileLinkError, savedProfileLinksProvider;
 import 'seller.dart';
 import 'share.dart';
 import 'store.dart' show ordersProvider, viewedOrderProvider;
+import 'verification_equipe.dart' show certificationQueueDialog;
 
 /// Lots « missions, vœux, campagnes, certificats, bornes, projets » (migration 20261031a).
 /// Chaque action lit les champs réellement saisis, appelle une fonction serveur qui vérifie le rôle, l'état et les données,
@@ -163,6 +166,16 @@ Future<List<Map<String, dynamic>>?> _load(BuildContext context, String table, St
   return r.rows;
 }
 
+/// Lecture par fonction serveur (réservée à l'auteur ou au département) : la table n'est pas lue en direct.
+Future<List<Map<String, dynamic>>?> _loadRpc(BuildContext context, String fn) async {
+  final r = await Backend.rpc(fn, const {});
+  if (r.error != null) {
+    if (context.mounted) await gAlert(context, 'Lecture impossible', r.error!);
+    return null;
+  }
+  return [for (final x in (r.data is List ? r.data as List : const [])) if (x is Map) Map<String, dynamic>.from(x)];
+}
+
 String _status(String s) => const {
       'draft': 'Brouillon', 'published': 'Publié', 'submitted': 'En attente de validation', 'approved': 'Validé', 'rejected': 'Refusé',
       'scheduled': 'Planifié', 'assigned': 'Attribué', 'in_progress': 'En cours', 'delivered': 'Livré', 'closed': 'Clôturé', 'cancelled': 'Annulé',
@@ -281,10 +294,23 @@ Future<void> myNeedsDialog(BuildContext context, WidgetRef ref) async {
     },
     sub: (r) => switch (r['_t']) {
       'n' => [_status('${r['status']}'), if (r['budget_max'] != null) 'budget ${_money(r['budget_min'])} – ${_money(r['budget_max'])}', if ('${r['deadline'] ?? ''}'.isNotEmpty) 'pour le ${r['deadline']}'].join(' · '),
+      'j' => [
+          '${(r['_m'] as Map)['title']} · ${_status('${r['status']}')}',
+          if ('${r['proof_note'] ?? ''}'.isNotEmpty) 'Preuve : ${r['proof_note']}',
+          if ((r['proof_files'] as List? ?? const []).isNotEmpty) '${(r['proof_files'] as List).length} pièce(s) jointe(s)',
+          if (r['status'] == 'validated') payStatusLabel('${r['pay_status']}', '${r['pay_method'] ?? ''}'),
+        ].join('\n'),
       _ => '${(r['_m'] as Map)['title']} · ${_status('${r['status']}')}${'${r['message'] ?? ''}'.isEmpty || r['_t'] != 'p' ? '' : ' · ${r['message']}'}',
     },
     actions: (r) => switch (r['_t']) {
-      'n' => [if (r['status'] == 'published' || r['status'] == 'draft') ('Annuler ce besoin', (x) => _cancelNeed(context, ref, x))],
+      'n' => [
+          if (r['status'] == 'published' || r['status'] == 'draft') ('Annuler ce besoin', (x) => _cancelNeed(context, ref, x)),
+          if (r['status'] == 'delivered') ('Clôturer la mission', (x) => _closeMission(context, ref, x)),
+          if (const {'assigned', 'in_progress', 'delivered', 'closed'}.contains(r['status'])) ('Facture de mission', (x) async {
+            await downloadMissionInvoice(context, ref, '${x['id']}');
+            return false;
+          }),
+        ],
       'p' => [
           ('Voir le profil', (x) async {
             GoRouter.of(context).push('/etudiant/${x['author_id']}');
@@ -295,11 +321,44 @@ Future<void> myNeedsDialog(BuildContext context, WidgetRef ref) async {
           if (r['status'] == 'submitted') ('Refuser', (x) => _decideProposal(context, ref, x, false)),
         ],
       _ => [
+          for (final f in (r['proof_files'] as List? ?? const []))
+            ('Voir ${(f as Map)['name']}', (x) async {
+              final u = await Backend.projectFileUrl('${f['path']}');
+              if (u != null && context.mounted) await openUrl(context, u);
+              return false;
+            }),
           if (r['status'] == 'submitted') ('Valider', (x) => _decideMilestone(context, x, true)),
           if (r['status'] == 'submitted') ('Demander une correction', (x) => _decideMilestone(context, x, false)),
+          if (r['status'] == 'validated' && r['pay_status'] != 'confirmed') ('Déclarer le paiement', (x) => _declarePayment(context, x)),
         ],
     },
   );
+}
+
+/// Libellé du règlement d'un jalon validé entre le client et le prestataire (aucun séquestre).
+String payStatusLabel(String payStatus, String method) => switch (payStatus) {
+      'confirmed' => 'Réglé : réception confirmée par le prestataire${method.isEmpty ? '' : ' ($method)'}',
+      'declared' => 'Paiement déclaré${method.isEmpty ? '' : ' ($method)'} : en attente de confirmation du prestataire',
+      _ => 'À régler directement avec le prestataire',
+    };
+
+Future<bool> _declarePayment(BuildContext context, Map<String, dynamic> j) async {
+  final v = await formDialog(context, 'Déclarer le paiement', [('Moyen utilisé (Orange Money, MTN MoMo, espèces…)', ''), ('Référence de la transaction (facultatif)', '')],
+      intro: 'Boutik-École ne reçoit ni ne bloque cet argent : vous réglez le prestataire directement. Cette déclaration est tracée et le prestataire doit confirmer la réception.', submit: 'Déclarer');
+  if (v == null || !context.mounted) return false;
+  final r = await _run(context, 'milestone_pay_declare', {'p_mission': j['mission_id'], 'p_position': j['position'], 'p_method': v[0], 'p_reference': v[1]});
+  if (r.ok && context.mounted) gToast(context, 'Paiement déclaré : le prestataire est prévenu et doit confirmer.');
+  return r.ok;
+}
+
+Future<bool> _closeMission(BuildContext context, WidgetRef ref, Map<String, dynamic> m) async {
+  if (!await _confirm(context, 'Clôturer la mission ?', 'Tous les jalons sont validés. Le prestataire est prévenu.', 'Clôturer') || !context.mounted) return false;
+  final r = await _run(context, 'mission_close', {'p_mission': m['id']});
+  if (r.ok && context.mounted) {
+    ref.read(missionProvider.notifier).refresh();
+    gToast(context, 'Mission clôturée.');
+  }
+  return r.ok;
 }
 
 /// Question à l'auteur d'une proposition, avant de l'accepter : message direct (la réponse arrive dans la messagerie).
@@ -350,76 +409,77 @@ Future<bool> _decideMilestone(BuildContext context, Map<String, dynamic> j, bool
   return r.ok;
 }
 
-/// Talents : besoins publiés, avec proposition d'un montant et d'un délai.
+/// Talents : besoins publiés (description complète, budget, échéance), avec proposition d'un montant et d'un délai.
 Future<void> openNeedsDialog(BuildContext context, WidgetRef ref) async {
   if (!await _ready(context, ref, 'répondre à un besoin')) return;
   if (!context.mounted) return;
-  final rows = await _load(context, 'missions', 'id,number,title,description,budget_min,budget_max,deadline,status,client_id', eq: {'status': 'published'});
-  if (rows == null || !context.mounted) return;
-  final me = Backend.currentUserId;
-  final open = rows.where((m) => m['client_id'] != me).toList();
+  final open = await _loadRpc(context, 'open_needs');
+  if (open == null || !context.mounted) return;
   if (open.isEmpty) return gAlert(context, 'Besoins à pourvoir', 'Aucun besoin publié pour le moment.');
   await _listDialog(
     context,
     'Besoins à pourvoir',
     open,
     (m) => '${m['title'] ?? m['number']}',
-    sub: (m) => [if (m['budget_max'] != null) 'Budget ${_money(m['budget_min'])} – ${_money(m['budget_max'])}', if (m['deadline'] != null) 'avant le ${m['deadline']}'].join(' · '),
+    sub: (m) => [
+      if ('${m['description'] ?? ''}'.isNotEmpty) '${m['description']}',
+      [
+        if (m['budget_max'] != null) 'Budget ${_money(m['budget_min'])} – ${_money(m['budget_max'])}',
+        if ('${m['deadline'] ?? ''}'.isNotEmpty) 'avant le ${m['deadline']}',
+        '${m['proposals'] ?? 0} proposition(s) reçue(s)',
+        if (m['my_status'] != null) 'ma proposition : ${_status('${m['my_status']}')}',
+      ].join(' · '),
+    ].join('\n'),
     actions: (m) => [
-      ('Proposer', (x) async {
-        final v = await formDialog(context, 'Ma proposition', [('Montant (FCFA)', ''), ('Délai (jours)', ''), ('Message', '')], submit: 'Envoyer');
-        if (v == null || !context.mounted) return false;
-        final r = await _run(context, 'propose_on_mission', {'p_mission': x['id'], 'p_amount': firstInt(v[0]), 'p_delay_days': firstInt(v[1]), 'p_message': v[2]});
-        if (r.ok && context.mounted) gToast(context, 'Proposition envoyée.');
-        return r.ok;
-      }),
-    ],
-  );
-}
-
-/// Talents : missions obtenues, jalons à livrer.
-Future<void> myMissionsDialog(BuildContext context, WidgetRef ref) async {
-  if (!await _ready(context, ref, 'suivre vos missions')) return;
-  if (!context.mounted) return;
-  final props = await _load(context, 'mission_proposals', 'mission_id,status,amount');
-  if (props == null || !context.mounted) return;
-  final won = {for (final p in props) if (p['status'] == 'accepted') p['mission_id']};
-  final miles = ((await _load(context, 'mission_milestones', 'mission_id,position,title,amount,status,note', order: 'position')) ?? const [])
-      .where((j) => won.contains(j['mission_id']))
-      .toList();
-  if (!context.mounted) return;
-  if (miles.isEmpty) {
-    return gAlert(context, 'Mes missions', props.isEmpty ? 'Vous n’avez encore fait aucune proposition.' : [for (final p in props) 'Proposition ${_money(p['amount'])} · ${_status('${p['status']}')}'].join('\n'));
-  }
-  await _listDialog(
-    context,
-    'Mes missions',
-    miles,
-    (j) => 'Jalon ${j['position']} · ${j['title']}',
-    sub: (j) => '${_status('${j['status']}')} · ${_money(j['amount'])}${j['note'] == null ? '' : ' · ${j['note']}'}',
-    actions: (j) => [
-      if (j['status'] == 'pending' || j['status'] == 'correction')
-        ('Déclarer livré', (x) async {
-          final r = await _run(context, 'submit_milestone', {'p_mission': x['mission_id'], 'p_position': x['position']});
-          if (r.ok && context.mounted) gToast(context, 'Jalon déclaré livré : le client va le valider.');
+      if (m['my_status'] != 'submitted' && m['my_status'] != 'accepted')
+        ('Proposer', (x) async {
+          final ok = await _confirm(context, 'Avant de proposer', 'Boutik-École ne bloque ni ne verse l’argent d’une mission : le paiement de chaque jalon se règle directement avec le client. L’application trace la livraison, la validation et le règlement déclaré de chaque jalon (facture de mission). Continuer ?', 'Continuer');
+          if (!ok || !context.mounted) return false;
+          final v = await formDialog(context, 'Ma proposition', [('Montant (FCFA)', ''), ('Délai (jours)', ''), ('Message', '')], submit: 'Envoyer');
+          if (v == null || !context.mounted) return false;
+          final r = await _run(context, 'propose_on_mission', {'p_mission': x['id'], 'p_amount': firstInt(v[0]), 'p_delay_days': firstInt(v[1]), 'p_message': v[2]});
+          if (r.ok && context.mounted) gToast(context, 'Proposition envoyée. Suivez-la dans « Mes missions et jalons ».');
           return r.ok;
         }),
     ],
   );
 }
 
-/// Écran 199 (département) : attribue un besoin publié à l'équipe affichée.
-Future<void> assignNeedDialog(BuildContext context, WidgetRef ref, {String team = 'Aminata Bello · MMI'}) async {
+/// Talents : « Mes missions et jalons » = écran 201 (missions retenues, livraisons avec preuve, règlements, propositions envoyées).
+Future<void> myMissionsDialog(BuildContext context, WidgetRef ref) async {
+  if (!await _ready(context, ref, 'suivre vos missions')) return;
+  if (!context.mounted) return;
+  gOpen(context, '201');
+}
+
+/// Écran 199 (département) : choisit un besoin publié puis la proposition à retenir ; le talent retenu et le client sont prévenus.
+Future<void> assignNeedDialog(BuildContext context, WidgetRef ref) async {
   if (!await _ready(context, ref, 'attribuer un besoin')) return;
   if (!context.mounted) return;
   final rows = await _load(context, 'missions', 'id,number,title,status', eq: {'status': 'published'});
   if (rows == null || !context.mounted) return;
   if (rows.isEmpty) return gAlert(context, 'Attribuer', 'Aucun besoin publié en attente d’attribution.');
-  await _listDialog(context, 'Attribuer à : $team', rows, (m) => '${m['title'] ?? m['number']}', sub: (m) => '${m['number']}', actions: (m) => [
-        ('Attribuer', (x) async {
-          final r = await _run(context, 'assign_mission', {'p_mission': x['id'], 'p_team': team});
-          if (r.ok && context.mounted) gToast(context, 'Besoin attribué à $team.');
-          return r.ok;
+  await _listDialog(context, 'Attribuer un besoin', rows, (m) => '${m['title'] ?? m['number']}', sub: (m) => '${m['number']}', actions: (m) => [
+        ('Voir les propositions', (x) async {
+          final props = await Backend.rpc('staff_mission_proposals', {'p_mission': x['id']});
+          if (!context.mounted) return false;
+          if (props.error != null) {
+            await gAlert(context, 'Lecture impossible', props.error!);
+            return false;
+          }
+          final list = [for (final p in (props.data as List? ?? const [])) Map<String, dynamic>.from(p as Map)].where((p) => p['status'] == 'submitted').toList();
+          if (list.isEmpty) {
+            await gAlert(context, 'Aucune proposition', 'Ce besoin n’a pas de proposition en attente : un talent doit d’abord proposer.');
+            return false;
+          }
+          await _listDialog(context, 'Propositions', list, (p) => '${p['author']} · ${_money(p['amount'])} en ${p['delay_days']} j', sub: (p) => '${p['department'] ?? ''}', actions: (p) => [
+                ('Attribuer', (y) async {
+                  final r = await _run(context, 'assign_mission', {'p_mission': x['id'], 'p_proposal': y['id']});
+                  if (r.ok && context.mounted) gToast(context, 'Besoin attribué à ${y['author']}.');
+                  return r.ok;
+                }),
+              ]);
+          return false;
         }),
       ]);
 }
@@ -430,9 +490,8 @@ Future<void> assignNeedDialog(BuildContext context, WidgetRef ref, {String team 
 /// Mes vœux : état de validation, modification d'un brouillon ou d'un vœu refusé, suppression.
 Future<void> myWishesDialog(BuildContext context, WidgetRef ref) async {
   if (!await _ready(context, ref, 'consulter vos vœux')) return;
-  final me = Backend.currentUserId;
   if (!context.mounted) return;
-  final rows = (await _load(context, 'wishes', 'id,title,status,price,threshold,review_note,author_id'))?.where((w) => w['author_id'] == me).toList();
+  final rows = await _loadRpc(context, 'my_wishes');
   if (rows == null || !context.mounted) return;
   if (rows.isEmpty) return gAlert(context, 'Mes vœux', 'Vous n’avez encore proposé aucun vœu.');
   await _listDialog(context, 'Mes vœux', rows, (w) => '${w['title']}', sub: (w) => '${_status('${w['status']}')}${w['review_note'] == null ? '' : ' · ${w['review_note']}'}', actions: (w) => [
@@ -440,6 +499,12 @@ Future<void> myWishesDialog(BuildContext context, WidgetRef ref) async {
           ('Modifier', (x) async {
             openWishEditor(context, '${x['id']}');
             return true;
+          }),
+        if (w['status'] == 'submitted')
+          ('Retirer la demande', (x) async {
+            final r = await _run(context, 'withdraw_wish', {'p_id': x['id']});
+            if (r.ok && context.mounted) gToast(context, 'Demande retirée : le vœu est redevenu un brouillon.');
+            return r.ok;
           }),
         if (w['status'] == 'approved' || w['status'] == 'scheduled')
           ('Voir la fiche', (x) async {
@@ -459,7 +524,7 @@ Future<void> myWishesDialog(BuildContext context, WidgetRef ref) async {
 Future<void> reviewWishesDialog(BuildContext context, WidgetRef ref) async {
   if (!await _ready(context, ref, 'valider les vœux')) return;
   if (!context.mounted) return;
-  final rows = await _load(context, 'wishes', 'id,title,description,price,threshold,duration_days,status', eq: {'status': 'submitted'});
+  final rows = await _loadRpc(context, 'wishes_to_review');
   if (rows == null || !context.mounted) return;
   if (rows.isEmpty) return gAlert(context, 'Vœux à valider', 'Aucun vœu en attente.');
   Future<bool> decide(Map<String, dynamic> w, String d) async {
@@ -503,6 +568,31 @@ Future<void> reviewCampaignsDialog(BuildContext context, WidgetRef ref) =>
 
 Future<void> reviewProjectsDialog(BuildContext context, WidgetRef ref) =>
     _reviewQueue(context, ref, 'projects', 'id,title,summary,department,status,kind,details,media', 'review_project', 'Projets à examiner', (p) => '${p['title']}', _projectBrief);
+
+/// Département : jalons de campagne déclarés atteints par le porteur, à valider sur preuve (affichés « atteints » au public seulement après validation).
+Future<void> reviewMilestonesDialog(BuildContext context, WidgetRef ref) async {
+  if (!await _ready(context, ref, 'valider les jalons de campagne')) return;
+  if (!context.mounted) return;
+  final rows = await _loadRpc(context, 'campaign_milestones_to_review');
+  if (rows == null || !context.mounted) return;
+  if (rows.isEmpty) return gAlert(context, 'Jalons à valider', 'Aucun jalon en attente.');
+  Future<bool> decide(Map<String, dynamic> m, bool approve) async {
+    var note = '';
+    if (!approve) {
+      final v = await formDialog(context, 'Motif du refus', [('Motif', '')], submit: 'Confirmer');
+      if (v == null) return false;
+      note = v.first;
+    }
+    if (!context.mounted) return false;
+    final r = await _run(context, 'campaign_milestone_review', {'p_id': m['id'], 'p_approve': approve, 'p_note': note});
+    if (r.ok && context.mounted) gToast(context, 'Décision enregistrée ; le porteur est notifié.');
+    return r.ok;
+  }
+
+  await _listDialog(context, 'Jalons à valider', rows, (m) => '${m['campaign']} · ${m['title']}',
+      sub: (m) => 'Par ${m['owner']} · preuve : ${m['proof']}${'${m['proof_url'] ?? ''}'.isEmpty ? '' : ' (${m['proof_url']})'}',
+      actions: (m) => [('Valider', (x) => decide(x, true)), ('Refuser', (x) => decide(x, false))]);
+}
 
 /// Fiche de décision d'un projet soumis : tout ce que le relecteur doit lire avant de valider ou refuser (les contacts n'y figurent pas).
 String _projectBrief(Map<String, dynamic> p) {
@@ -705,55 +795,9 @@ Future<void> revokeCertificateDialog(BuildContext context, WidgetRef ref) async 
   if (r.ok && context.mounted) gToast(context, 'Certificat révoqué : la vérification publique le signale désormais.');
 }
 
-/// Demandes de badge « certifié » (administration, qui seule peut lire tous les profils) : examen, validation, refus ou retrait,
-/// transitions contrôlées par le serveur (decide_certification).
-Future<void> certificationRequestsDialog(BuildContext context, WidgetRef ref) async {
-  if (!await _ready(context, ref, 'traiter les demandes de certification')) return;
-  if (!context.mounted) return;
-  final rows = await _load(context, 'profiles', 'id,name,department,certification');
-  if (rows == null || !context.mounted) return;
-  final reqs = await _load(context, 'certification_requests', 'user_id,motive,links,documents,created_at', order: 'created_at');
-  if (!context.mounted) return;
-  // dernière demande de chaque personne : motif, liens et justificatifs fournis
-  final last = <String, Map<String, dynamic>>{};
-  for (final r in (reqs ?? const <Map<String, dynamic>>[])) {
-    last.putIfAbsent('${r['user_id']}', () => r);
-  }
-  const labels = {'pending': 'Demande reçue', 'review': 'En examen', 'approved': 'Certifié'};
-  const kinds = {'student_card': 'carte d’étudiant', 'enrollment_certificate': 'certificat de scolarité', 'diploma': 'diplôme', 'certificate': 'certificat', 'cv': 'CV', 'other': 'autre'};
-  final todo = [for (final p in rows) if (labels.containsKey(p['certification'])) p];
-  String detail(Map<String, dynamic> p) {
-    final q = last['${p['id']}'];
-    if (q == null) return '';
-    final docs = [for (final d in (q['documents'] as List? ?? const [])) '${kinds[(d as Map)['kind']] ?? d['kind']}'];
-    return ' · « ${q['motive']} »${'${q['links']}'.isEmpty ? '' : ' · ${q['links']}'} · justificatifs : ${docs.isEmpty ? 'aucun' : docs.join(', ')}';
-  }
-
-  await _listDialog(context, 'Demandes de certification', todo, (p) => '${p['name'] ?? ''}',
-      sub: (p) => [p['department'] ?? '', labels[p['certification']] ?? ''].where((x) => '$x'.isNotEmpty).join(' · ') + detail(p),
-      empty: 'Aucune demande en attente.',
-      actions: (p) => [
-            for (final (label, status) in switch (p['certification']) {
-              'pending' => const [('Examiner', 'review'), ('Valider', 'approved'), ('Refuser', 'rejected')],
-              'review' => const [('Valider', 'approved'), ('Refuser', 'rejected')],
-              _ => const [('Retirer le badge', 'revoked')],
-            })
-              (
-                label,
-                (x) async {
-                  String? note;
-                  if (status == 'rejected' || status == 'revoked') {
-                    final v = await formDialog(context, status == 'rejected' ? 'Motif du refus' : 'Motif du retrait', [('Motif (visible par la personne)', '')], submit: 'Confirmer');
-                    if (v == null || !context.mounted) return false;
-                    note = v.first;
-                  }
-                  final r = await _run(context, 'decide_certification', {'p_user': x['id'], 'p_status': status, 'p_note': note}, title: 'Décision non enregistrée');
-                  if (r.ok && context.mounted) gToast(context, 'Décision enregistrée ; la personne est notifiée.');
-                  return r.ok;
-                }
-              ),
-          ]);
-}
+/// Demandes de badge « certifié » : file lue sur le serveur dans le périmètre du responsable (administration : toutes ; département : les siennes),
+/// voir certificationQueueDialog (verification_equipe.dart) ; les décisions passent par decide_certification.
+Future<void> certificationRequestsDialog(BuildContext context, WidgetRef ref) => certificationQueueDialog(context, ref);
 
 /// Vérification publique d'un certificat par son code (aucune donnée personnelle au-delà du certificat).
 Future<void> verifyCertificateDialog(BuildContext context, WidgetRef ref, {String code = ''}) async {
@@ -828,12 +872,11 @@ Future<void> exportCatalog(BuildContext context, WidgetRef ref) =>
 /// Écran 206 : état réel des bornes (statut et dernière mise à jour lus sur le serveur).
 Future<void> kioskNetworkCheck(BuildContext context) async {
   if (!Backend.ready) return gAlert(context, 'Hors connexion', 'Sans connexion au serveur, l’état de la borne est inconnu : seul le catalogue de démonstration est affiché.');
-  final r = await Backend.rows('kiosks', 'id,name,location,status,updated_at', order: 'id', ascending: true);
+  final r = await Backend.rows('kiosks', 'id,name,location,status,updated_at,last_seen_at', order: 'id', ascending: true);
   if (!context.mounted) return;
   if (r.error != null && !r.error!.contains('pas encore activée')) return gAlert(context, 'État de la borne inconnu', 'Le serveur ne répond pas. Réessayez dans un instant.');
   if (r.rows.isEmpty) return gAlert(context, 'Aucune borne enregistrée', 'Aucune borne n’est enregistrée sur le serveur pour le moment.');
-  const label = {'online': 'En ligne', 'offline': 'Hors ligne', 'fallback': 'Mode secours', 'maintenance': 'Maintenance'};
-  await gAlert(context, 'État des bornes', [for (final k in r.rows) '${k['name']} (${k['location']}) : ${label['${k['status']}'] ?? k['status']} · mise à jour ${_dateTime(k['updated_at'])}'].join('\n'));
+  await gAlert(context, 'État des bornes', [for (final k in r.rows) '${k['name']} (${k['location']}) : ${kioskStatus(kioskLiveStatus(k))} · ${k['last_seen_at'] == null ? 'aucun signal reçu' : 'dernier signal ${_dateTime(k['last_seen_at'])}'}'].join('\n'));
 }
 
 String _dateTime(Object? iso) {
@@ -1033,7 +1076,7 @@ Future<void> uploadProjectFileFor(BuildContext context, WidgetRef ref) async {
 
 // ---------------------------------------------------------------- dossier de mission (196)
 
-Future<Map<String, dynamic>?> _pickMission(BuildContext context) async {
+Future<Map<String, dynamic>?> _pickMission(BuildContext context, [String preferId = '']) async {
   final rows = await _load(context, 'missions', 'id,number,title,status,client_id', order: 'updated_at');
   final open = rows?.where((m) => const ['assigned', 'in_progress', 'delivered'].contains(m['status'])).toList() ?? const [];
   if (rows == null || !context.mounted) return null;
@@ -1049,6 +1092,10 @@ Future<Map<String, dynamic>?> _pickMission(BuildContext context) async {
     return null;
   }
   if (mine.length == 1) return mine.first;
+  // La mission affichée par les écrans de suivi (192 à 197) est celle dont le dossier s'ouvre.
+  for (final m in mine) {
+    if (preferId.isNotEmpty && '${m['id']}' == preferId) return m;
+  }
   Map<String, dynamic>? chosen;
   await _listDialog(context, 'Choisir le dossier', mine, (m) => '${m['title'] ?? m['number']}', sub: (m) => '${m['number']}', actions: (m) => [
         ('Ouvrir', (x) async {
@@ -1063,7 +1110,7 @@ Future<Map<String, dynamic>?> _pickMission(BuildContext context) async {
 Future<void> missionDossierDialog(BuildContext context, WidgetRef ref) async {
   if (!await _ready(context, ref, 'ouvrir le dossier de mission')) return;
   if (!context.mounted) return;
-  final m = await _pickMission(context);
+  final m = await _pickMission(context, ref.read(missionProvider).uuid);
   if (m == null || !context.mounted) return;
   final msgs = await _load(context, 'mission_messages', 'body,sender_id,created_at', eq: {'mission_id': m['id']}, order: 'created_at') ?? const [];
   final files = await _load(context, 'files', 'name,path,created_at', eq: {'ref': m['id']}) ?? const [];
@@ -1140,7 +1187,7 @@ Future<void> missionDossierDialog(BuildContext context, WidgetRef ref) async {
 Future<void> missionFileUpload(BuildContext context, WidgetRef ref) async {
   if (!await _ready(context, ref, 'ajouter un fichier au dossier')) return;
   if (!context.mounted) return;
-  final m = await _pickMission(context);
+  final m = await _pickMission(context, ref.read(missionProvider).uuid);
   if (m == null || !context.mounted) return;
   final fid = await pickAndUpload(context, ref, 'mission', '${m['id']}');
   if (fid != null && context.mounted) await _run(context, 'send_mission_message', {'p_mission': m['id'], 'p_body': 'Fichier ajouté au dossier', 'p_file': fid});
@@ -1172,7 +1219,7 @@ Future<void> showPickupCode(BuildContext context, WidgetRef ref, [String? number
   final r = await _run(context, 'my_pickup_code', {'p_number': orderNumber}, title: 'Code indisponible');
   if (!r.ok || !context.mounted) return;
   final c = '${r.data}';
-  await gAlert(context, 'Code de retrait', '${c.substring(0, 3)} ${c.substring(3)}\n\nCommande $orderNumber — à présenter au kiosque. Ne le communiquez à personne d’autre.');
+  await gAlert(context, 'Code de retrait', '${c.substring(0, 3)} ${c.substring(3)}\n\nCommande $orderNumber — à présenter au kiosque, ou au vendeur lors d’une remise en main propre : un code saisi par le vendeur prouve la remise. Ne le donnez qu’à la personne qui vous remet l’article, et seulement quand vous l’avez en main.');
 }
 
 /// 146-2 (kiosque) : la remise n'est confirmée qu'avec le code présenté par l'acheteur.

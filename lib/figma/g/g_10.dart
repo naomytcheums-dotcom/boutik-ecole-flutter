@@ -29,6 +29,7 @@ import '../live/account_menu.dart';
 import '../live/access.dart';
 import 'package:go_router/go_router.dart' show GoRouter;
 import '../live/profile_links.dart' show ProfileLinkIcons;
+import '../live/talent_passport.dart' show TalentPassportPage;
 import '../live/reels.dart' show followingIdsProvider;
 import '../live/company_profile_layers.dart';
 import '../live/social_profile.dart' show SocialProfile;
@@ -53,7 +54,7 @@ class G_10 extends ConsumerWidget {
     final hideLinks = isCo || isView || !demoContent; // connecté : seuls les liens réellement enregistrés s'affichent (ProfileLinkIcons)
     final isClient = !isView && !isCo && !demoContent && me != null && me.role == 0 && me.staff.isEmpty;
     // Un Client n'a ni boutique ni talent à certifier : le Talent Passport et la demande de certification ne lui sont proposés que si son compte est déjà certifié ou en cours d'examen.
-    final hidePassport = isClient && me.certification == 'none';
+    final hidePassport = (isClient && me.certification == 'none') || (isView && viewProfile!.role != 'student');
     final co = isCo ? companyProfileInfo(ref) : null;
     void goTo(String path) => GoRouter.of(context).push(path);
     // « Partager » partage le profil affiché : celui de la personne consultée, sinon le mien.
@@ -135,11 +136,11 @@ class G_10 extends ConsumerWidget {
       gP(245, 562, 56, 14, gText(isCo ? 'Site web ↗' : 'Portfolio ↗', 11, Color(0xFF120F14), weight: 600)),
       gP(326, 556, 26, 26, gBox(color: Color(0xFF111015), oval: true), show: !isView),
       gP(326, 556, 26, 26, const Icon(Icons.add_rounded, size: 18, color: Color(0xFFFFFFFF)), show: !isView),
-      if (!demoContent && !isCo && !isView) gP(89, 553, 140, 32, const ProfileLinkIcons()),
+      if (!demoContent && !isCo) gP(89, 553, 140, 32, ProfileLinkIcons(userId: isView ? viewProfile!.id : null)),
       gP(24, 592, 342, 30, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [15, 15, 15, 15]), show: !hidePassport),
       gP(37, 600, 10, 10, gImg('assets/figma/r/213_260.png'), show: !hidePassport),
       gP(37.667, 607.334, 8.666, 7.333, gImg('assets/figma/r/213_261.png'), show: !hidePassport),
-      if (co != null) gP(60, 600, 270, 15, Text(companyPassportLabel(co), style: const TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF111015)))) else if (!hidePassport) profilePassport(60, 600),
+      if (co != null) gP(60, 600, 270, 15, Text(companyPassportLabel(co), style: const TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF111015)))) else if (!hidePassport) (isView ? gP(60, 600, 270, 15, gText(viewProfile!.certified ? 'Talent Passport · Certifié' : 'Talent Passport · Non certifié', 12, Color(0xFF111015), weight: 600)) : profilePassport(60, 600)),
       gP(344, 598, 6, 19, gText('›', 15, Color(0xFF5A3FE0), weight: 700), show: !hidePassport),
       if (!isView) gTap(326, 556, 26, 26, () => isCo ? goTo('/entreprise/profil') : gOpen(context, '271')), if (!hideLinks) gTap(89, 553, 32, 32, () => openUrl(context, 'https://www.instagram.com/')), if (!hideLinks) gTap(123, 553, 32, 32, () => openUrl(context, 'https://www.linkedin.com/')), if (!hideLinks) gTap(160, 556, 26, 26, () => openUrl(context, 'https://www.tiktok.com/')), if (!hideLinks) gTap(194, 556, 26, 26, () => openUrl(context, 'https://github.com/')), gTap(232, 556, 82, 26, () => isCo ? ((co?.website ?? '').isEmpty ? goTo('/entreprise/profil') : openUrl(context, co!.website)) : openUrl(context, 'https://boutik-ecole.vercel.app/#/s/10')),
       if (demoContent) gTap(24, 596, 342, 92, () => gOpen(context, '40')),
@@ -147,6 +148,7 @@ class G_10 extends ConsumerWidget {
       gTap(143, 513, 100, 28, () { if (isView) return; isCo ? goTo('/concours/mes') : (isClient ? gOpen(context, '25') : gOpen(context, '22b')); }),
       if (!isClient) gTap(252, 513, 104, 28, () { if (isView) return; isCo ? goTo('/s/99') : gOpen(context, '78'); }),
       if (!hidePassport && !isView) gTap(24, 592, 342, 30, () => isCo ? goTo('/entreprise/profil') : gOpen(context, '74')),
+      if (!hidePassport && isView) gTap(24, 592, 342, 30, () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => TalentPassportPage(userId: viewProfile!.id, ownerName: viewProfile!.name)))),
       if (!demoContent && !isCo) gTap(232, 552, 82, 34, () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => isView ? PortfolioPage(userId: viewProfile!.id, ownerName: viewProfile!.name) : const PortfolioPage()))),
     ]);
   }

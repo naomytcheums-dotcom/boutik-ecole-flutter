@@ -131,6 +131,16 @@ class _SecondFactorGateState extends State<SecondFactorGate> {
                   ),
                 ),
                 const SizedBox(height: 10),
+                Builder(
+                  builder: (ctx) => GestureDetector(
+                    onTap: _busy
+                        ? null
+                        : () async {
+                            if (await askBackupCode(ctx) && mounted) widget.onPassed();
+                          },
+                    child: Padding(padding: const EdgeInsets.all(12), child: Text('Utiliser un code de secours', textAlign: TextAlign.center, style: _st(13, w: FontWeight.w600, c: _ink))),
+                  ),
+                ),
                 GestureDetector(
                   onTap: _busy ? null : _refuse,
                   child: Padding(padding: const EdgeInsets.all(12), child: Text('Se déconnecter', textAlign: TextAlign.center, style: _st(13, w: FontWeight.w600, c: _grey))),

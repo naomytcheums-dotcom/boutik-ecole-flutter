@@ -131,6 +131,13 @@ class MyContestTeams extends Notifier<Map<String, ({String teamId, String name, 
 
 final myContestTeamsProvider = NotifierProvider<MyContestTeams, Map<String, ({String teamId, String name, bool captain})>>(MyContestTeams.new);
 
+/// Concours de travail d'un étudiant : le concours sélectionné s'il y a une équipe, sinon son unique équipe (arrivée par « Mes rubriques » sans avoir choisi un concours).
+Hackathon contestOfMyTeam(Hackathon selected, Map<String, ({String teamId, String name, bool captain})> mine, List<Hackathon> all) {
+  if (mine.containsKey(selected.id) || mine.length != 1) return selected;
+  final id = mine.keys.first;
+  return all.firstWhere((h) => h.id == id, orElse: () => selected);
+}
+
 /// Classement réel du concours affiché (vide tant que les résultats ne sont pas publiés, sauf jury et département).
 class ServerRanking extends Notifier<List<Ranked>> {
   @override
@@ -172,7 +179,8 @@ Future<bool> registerContestTeam(BuildContext context, WidgetRef ref, Hackathon 
 
 /// 163, 164 : invitation d'un coéquipier par son adresse e-mail (capitaine).
 Future<void> inviteContestMate(BuildContext context, WidgetRef ref) async {
-  final team = ref.read(myContestTeamsProvider)[ref.read(currentEventProvider).id];
+  final ev = contestOfMyTeam(ref.read(currentEventProvider), ref.read(myContestTeamsProvider), ref.read(contestsProvider));
+  final team = ref.read(myContestTeamsProvider)[ev.id];
   if (team == null && ref.read(myContestTeamsProvider.notifier).loadFailed) return gAlert(context, 'Invitation', 'Vos équipes de concours ne peuvent pas être lues pour le moment : réessayez dans un instant.');
   if (team == null || !team.captain) return gAlert(context, 'Invitation', 'Seul le capitaine d’une équipe inscrite à ce concours peut inviter.');
   final mail = await askText(context, title: 'Inviter un coéquipier', body: 'Adresse e-mail de son compte étudiant (5 membres au plus).', hint: 'prenom.nom@…', ok: 'Inviter', min: 5);
@@ -182,13 +190,22 @@ Future<void> inviteContestMate(BuildContext context, WidgetRef ref) async {
   }
 }
 
-/// 165 : dépôt réel par le capitaine, après certification d'originalité.
-Future<void> submitContestProject(BuildContext context, WidgetRef ref, String title, String link, String desc) async {
-  final ev = ref.read(currentEventProvider);
+/// 165 : dépôt réel par le capitaine, après certification d'originalité. Renvoie vrai seulement si le projet a été déposé.
+Future<bool> submitContestProject(BuildContext context, WidgetRef ref, String title, String link, String desc) async {
+  final ev = contestOfMyTeam(ref.read(currentEventProvider), ref.read(myContestTeamsProvider), ref.read(contestsProvider));
   final team = ref.read(myContestTeamsProvider)[ev.id];
-  if (team == null && ref.read(myContestTeamsProvider.notifier).loadFailed) return gAlert(context, 'Dépôt', 'Vos équipes de concours ne peuvent pas être lues pour le moment : réessayez dans un instant.');
-  if (team == null) return gAlert(context, 'Dépôt', 'Votre équipe n’est pas inscrite à ce concours.');
-  if (!team.captain) return gAlert(context, 'Dépôt', 'Seul le capitaine de l’équipe dépose le projet.');
+  if (team == null && ref.read(myContestTeamsProvider.notifier).loadFailed) {
+    await gAlert(context, 'Dépôt', 'Vos équipes de concours ne peuvent pas être lues pour le moment : réessayez dans un instant.');
+    return false;
+  }
+  if (team == null) {
+    await gAlert(context, 'Dépôt', 'Votre équipe n’est pas inscrite à ce concours.');
+    return false;
+  }
+  if (!team.captain) {
+    await gAlert(context, 'Dépôt', 'Seul le capitaine de l’équipe dépose le projet.');
+    return false;
+  }
   final ok = await gDialog<bool>(
     context: context,
     builder: (c) => AlertDialog(
@@ -197,48 +214,55 @@ Future<void> submitContestProject(BuildContext context, WidgetRef ref, String ti
       actions: [TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('Annuler')), FilledButton(onPressed: () => Navigator.pop(c, true), child: const Text('Je certifie et j’envoie'))],
     ),
   );
-  if (ok != true || !context.mounted) return;
+  if (ok != true || !context.mounted) return false;
   final err = await _call(context, 'submit_contest_project',
       {'p_team': team.teamId, 'p_title': title, 'p_description': desc, 'p_demo': link, 'p_video': null, 'p_deck': null, 'p_original': true, 'p_final': true}, 'Dépôt refusé');
-  if (err == null && context.mounted) gToast(context, 'Projet déposé : il sera transmis au jury après la clôture.');
+  if (err != null) return false;
+  if (context.mounted) gToast(context, 'Projet déposé : il sera transmis au jury après la clôture.');
+  return true;
 }
 
-/// 167 : le juré choisit un projet du concours affiché, puis la note (4 critères sur 10) est enregistrée par le serveur.
+/// 167 : le juré (tout compte désigné par le département) choisit un projet à noter parmi ceux de ses concours en délibération, puis la note
+/// (4 critères sur 10) est enregistrée par le serveur. Les projets de sa propre équipe ne sont jamais proposés.
 Future<bool> scoreContestProject(BuildContext context, WidgetRef ref, List<int> scores) async {
-  final ev = ref.read(currentEventProvider);
-  final r = await Backend.rows('contest_submissions', 'id,title,team_id,contest_teams(contest_id,name)', limit: 200);
+  final r = await Backend.rpc('my_judging_projects', const {});
   if (!context.mounted) return false;
   if (r.error != null) {
     await gAlert(context, 'Lecture impossible', r.error!);
     return false;
   }
-  final mine = [for (final s in r.rows) if (s['contest_teams'] is Map && '${(s['contest_teams'] as Map)['contest_id']}' == ev.id) s];
+  final mine = [for (final s in (r.data is List ? r.data as List : const [])) if (s is Map) Map<String, dynamic>.from(s)];
   if (mine.isEmpty) {
-    await gAlert(context, 'Aucun projet à noter', 'Vous n’êtes pas juré de ce concours, ou aucun projet n’a encore été soumis.');
+    await gAlert(context, 'Aucun projet à noter', 'Vous n’êtes pas juré d’un concours en délibération, ou aucun projet n’a encore été soumis.');
     return false;
   }
   final pick = await gDialog<Map<String, dynamic>>(
     context: context,
     builder: (c) => SimpleDialog(title: const Text('Projet à noter'), children: [
-      for (final s in mine) SimpleDialogOption(onPressed: () => Navigator.pop(c, s), child: Text('${s['title']} · ${(s['contest_teams'] as Map)['name']}')),
+      for (final s in mine)
+        SimpleDialogOption(
+          onPressed: () => Navigator.pop(c, s),
+          child: Text('${s['title']} · ${s['team']} (${s['contest']})${s['my_total'] == null ? '' : ' — déjà noté ${s['my_total']} / 40'}'),
+        ),
     ]),
   );
   if (pick == null || !context.mounted) return false;
   final err = await _call(context, 'score_contest_submission', {
-    'p_submission': pick['id'], 'p_innovation': scores[0], 'p_feasibility': scores[1], 'p_impact': scores[2], 'p_pitch': scores[3], 'p_comment': null,
+    'p_submission': pick['submission_id'], 'p_innovation': scores[0], 'p_feasibility': scores[1], 'p_impact': scores[2], 'p_pitch': scores[3], 'p_comment': null,
   }, 'Note refusée');
   if (err != null) return false;
   if (context.mounted) gToast(context, 'Note enregistrée : ${scores.fold(0, (a, b) => a + b)} / 40 pour « ${pick['title']} »');
   return true;
 }
 
-/// 168 : publication réelle par le département (les champs manquants à l'écran sont demandés ici).
+/// 168 : publication réelle par le département : titre, description, thématique, règlement, lieu, frais, dates de début/fin (facultatives), clôtures, places et dotation.
 Future<void> publishContestDialog(BuildContext context, WidgetRef ref) async {
   if (!Backend.ready) return gAlert(context, 'Hors connexion', 'La publication d’un concours nécessite la connexion au serveur.');
-  final ctl = {for (final k in ['titre', 'description', 'lieu', 'inscriptions', 'depots', 'places', 'dotation']) k: TextEditingController()};
+  final ctl = {for (final k in ['titre', 'description', 'theme', 'reglement', 'lieu', 'frais', 'debut', 'fin', 'inscriptions', 'depots', 'places', 'dotation']) k: TextEditingController()};
   ctl['lieu']!.text = 'Douala';
   ctl['places']!.text = '50';
   ctl['dotation']!.text = '0';
+  ctl['frais']!.text = '0';
   final go = await gDialog<bool>(
     context: context,
     builder: (c) => AlertDialog(
@@ -246,8 +270,13 @@ Future<void> publishContestDialog(BuildContext context, WidgetRef ref) async {
       content: SingleChildScrollView(
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           TextField(controller: ctl['titre'], decoration: const InputDecoration(labelText: 'Titre')),
-          TextField(controller: ctl['description'], maxLines: 3, decoration: const InputDecoration(labelText: 'Thématique, critères, conditions (30 caractères min.)')),
+          TextField(controller: ctl['description'], maxLines: 3, decoration: const InputDecoration(labelText: 'Présentation, critères, conditions (30 caractères min.)')),
+          TextField(controller: ctl['theme'], decoration: const InputDecoration(labelText: 'Thématique (facultatif, 200 caractères)')),
+          TextField(controller: ctl['reglement'], maxLines: 4, decoration: const InputDecoration(labelText: 'Règlement que les candidats acceptent (facultatif)')),
           TextField(controller: ctl['lieu'], decoration: const InputDecoration(labelText: 'Lieu ou « En ligne »')),
+          TextField(controller: ctl['frais'], keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'Frais d’inscription en FCFA (0 = gratuit ; réglés à l’organisateur)')),
+          TextField(controller: ctl['debut'], decoration: const InputDecoration(labelText: 'Début du concours (AAAA-MM-JJ, facultatif)')),
+          TextField(controller: ctl['fin'], decoration: const InputDecoration(labelText: 'Fin du concours (AAAA-MM-JJ, facultatif)')),
           TextField(controller: ctl['inscriptions'], decoration: const InputDecoration(labelText: 'Clôture des inscriptions (AAAA-MM-JJ)')),
           TextField(controller: ctl['depots'], decoration: const InputDecoration(labelText: 'Clôture des dépôts (AAAA-MM-JJ)')),
           TextField(controller: ctl['places'], keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'Places (équipes)')),
@@ -258,18 +287,40 @@ Future<void> publishContestDialog(BuildContext context, WidgetRef ref) async {
     ),
   );
   if (go != true || !context.mounted) return;
-  final reg = DateTime.tryParse(ctl['inscriptions']!.text.trim());
-  final dep = DateTime.tryParse(ctl['depots']!.text.trim());
-  if (reg == null || dep == null) return gAlert(context, 'Dates invalides', 'Saisissez les dates au format AAAA-MM-JJ.');
-  final err = await _call(context, 'save_contest', {
-    'p_id': null, 'p_title': ctl['titre']!.text.trim(), 'p_description': ctl['description']!.text.trim(), 'p_theme': '', 'p_rules': '',
-    'p_city': ctl['lieu']!.text.trim(), 'p_reg_close': DateTime(reg.year, reg.month, reg.day, 23, 59).toUtc().toIso8601String(),
-    'p_submit_close': DateTime(dep.year, dep.month, dep.day, 23, 59).toUtc().toIso8601String(), 'p_starts': null, 'p_ends': null,
-    'p_prize': int.tryParse(ctl['dotation']!.text.replaceAll(RegExp(r'\D'), '')) ?? 0, 'p_places': int.tryParse(ctl['places']!.text.trim()) ?? 0, 'p_publish': true,
-  }, 'Publication refusée');
+  final params = contestPublishParams({for (final e in ctl.entries) e.key: e.value.text});
+  if (params == null) return gAlert(context, 'Dates invalides', 'Saisissez les dates au format AAAA-MM-JJ (début et fin sont facultatives).');
+  final err = await _call(context, 'save_contest', params, 'Publication refusée');
   if (err != null || !context.mounted) return;
   await reloadContests(context, ref);
   if (context.mounted) gToast(context, 'Concours publié');
+}
+
+/// Paramètres de save_contest à partir des champs du dialogue de publication ; null si une date saisie est illisible.
+Map<String, dynamic>? contestPublishParams(Map<String, String> f) {
+  String g(String k) => (f[k] ?? '').trim();
+  final reg = DateTime.tryParse(g('inscriptions'));
+  final dep = DateTime.tryParse(g('depots'));
+  if (reg == null || dep == null) return null;
+  final start = g('debut').isEmpty ? null : DateTime.tryParse(g('debut'));
+  final end = g('fin').isEmpty ? null : DateTime.tryParse(g('fin'));
+  if ((g('debut').isNotEmpty && start == null) || (g('fin').isNotEmpty && end == null)) return null;
+  String day(DateTime d) => '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+  return {
+    'p_id': null,
+    'p_title': g('titre'),
+    'p_description': g('description'),
+    'p_theme': g('theme'),
+    'p_rules': g('reglement'),
+    'p_city': g('lieu'),
+    'p_reg_close': DateTime(reg.year, reg.month, reg.day, 23, 59).toUtc().toIso8601String(),
+    'p_submit_close': DateTime(dep.year, dep.month, dep.day, 23, 59).toUtc().toIso8601String(),
+    'p_starts': start == null ? null : day(start),
+    'p_ends': end == null ? null : day(end),
+    'p_prize': int.tryParse(g('dotation').replaceAll(RegExp(r'\D'), '')) ?? 0,
+    'p_places': int.tryParse(g('places')) ?? 0,
+    'p_publish': true,
+    'p_entry_fee': int.tryParse(g('frais').replaceAll(RegExp(r'\D'), '')) ?? 0,
+  };
 }
 
 /// 169 : modération du concours affiché (jury, résultats, jurés, équipes écartées) par le département.

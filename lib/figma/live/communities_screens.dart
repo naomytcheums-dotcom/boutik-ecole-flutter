@@ -1,4 +1,5 @@
 import 'community_exchanges.dart';
+import 'community_moderation.dart' show CommunityModerationTab, communityReportContent;
 import 'community_media.dart';
 import 'study_rooms.dart' show StudyRoomsTab;
 import 'innovations_screens.dart' show LevelBadge, communityLevelsProvider;
@@ -519,7 +520,9 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
   }
 
   Future<void> _hide(Map<String, dynamic> p) async {
-    final r = await Backend.rpc('moderate_community_post', {'p_post': p['id'], 'p_hide': true});
+    final why = await askText(context, title: 'Masquer cette publication', body: 'Le motif est envoyé à son auteur ; vous pourrez la rétablir depuis l’onglet Modération.', hint: 'Motif (3 caractères au moins)', ok: 'Masquer', min: 3);
+    if (why == null || !mounted) return;
+    final r = await Backend.rpc('moderate_community_post', {'p_post': p['id'], 'p_hide': true, 'p_note': why});
     if (!mounted) return;
     if (r.error != null) return gToast(context, Backend.userMessage(r.error!));
     await ref.read(communityFeedProvider.notifier).refresh();
@@ -561,8 +564,8 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
 
   Widget _card(Widget child) => Container(padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18), border: Border.all(color: _line)), child: child);
 
-  Widget _tabs() {
-    const names = ['Publications', 'Chat', 'Questions', 'Événements', 'Fichiers', 'Membres', 'Mentors', 'Salons vocaux'];
+  Widget _tabs(Community c) {
+    final names = ['Publications', 'Chat', 'Questions', 'Événements', 'Fichiers', 'Membres', 'Mentors', 'Salons vocaux', if (c.canManage && c.status == 'active') 'Modération'];
     return SizedBox(
       height: 48,
       child: ListView(scrollDirection: Axis.horizontal, padding: const EdgeInsets.symmetric(horizontal: 16), children: [
@@ -625,6 +628,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
             Expanded(child: Text('${p['author']}${pinned ? ' · annonce épinglée' : ''}', style: _st(13.5, w: FontWeight.w700))),
             if (c.canManage) GestureDetector(onTap: () => _pin(p), child: Padding(padding: const EdgeInsets.all(4), child: Text(pinned ? 'Retirer' : 'Épingler', style: _st(12, w: FontWeight.w600, c: _grey)))),
             if (c.canManage) GestureDetector(onTap: () => _hide(p), child: Padding(padding: const EdgeInsets.all(4), child: Text('Masquer', style: _st(12, w: FontWeight.w600, c: _grey)))),
+            if (c.isMember && p['mine'] != true && !c.canManage) GestureDetector(onTap: () => communityReportContent(context, ref, communityId: c.id, kind: 'post', id: '${p['id']}'), child: Padding(padding: const EdgeInsets.all(4), child: Text('Signaler', style: _st(12, w: FontWeight.w600, c: _grey)))),
           ]),
           const SizedBox(height: 6),
           if ('${p['kind']}' == 'poll' && p['poll'] is Map)
@@ -743,13 +747,14 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
       return DecoratedBox(decoration: tpBackground, child: TpFrame(child: Scaffold(backgroundColor: Colors.transparent, appBar: _bar(context, 'Communauté'), body: empty)));
     }
     final Widget body = switch (_tab) {
-      1 => CommunityChatTab(key: ValueKey('chat-${c.id}-${c.isMember}'), communityId: c.id, isMember: c.isMember),
-      2 => CommunityQaTab(key: ValueKey('qa-${c.id}'), communityId: c.id, isMember: c.isMember),
+      1 => CommunityChatTab(key: ValueKey('chat-${c.id}-${c.isMember}'), communityId: c.id, isMember: c.isMember, canModerate: c.canManage),
+      2 => CommunityQaTab(key: ValueKey('qa-${c.id}'), communityId: c.id, isMember: c.isMember, canModerate: c.canManage),
       3 => CommunityEventsTab(key: ValueKey('ev-${c.id}'), communityId: c.id, isMember: c.isMember, canModerate: c.canManage),
       4 => CommunityFilesTab(key: ValueKey('files-${c.id}-${c.isMember}'), communityId: c.id, isMember: c.isMember),
       5 => _members(c, mentorsOnly: false),
       6 => _members(c, mentorsOnly: true),
       7 => StudyRoomsTab(key: ValueKey('rooms-${c.id}-${c.isMember}'), communityId: c.id, isMember: c.isMember),
+      8 when c.canManage && c.status == 'active' => CommunityModerationTab(key: ValueKey('mod-${c.id}'), communityId: c.id),
       _ => _posts(c, feed),
     };
     return DecoratedBox(decoration: tpBackground, child: TpFrame(child: Scaffold(backgroundColor: Colors.transparent, 
@@ -757,7 +762,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
       body: SafeArea(
         child: Column(children: [
           ConstrainedBox(constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.4), child: SingleChildScrollView(child: _header(c))),
-          _tabs(),
+          _tabs(c),
           Expanded(child: body),
           if (_tab == 0 && c.status == 'active')
             c.isMember

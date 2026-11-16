@@ -23,14 +23,17 @@ Deno.serve(async (req) => {
   const key = Deno.env.get("ANTHROPIC_API_KEY");
   if (!key) return json({ error: "not_configured", message: "L'assistante n'est pas encore configurée (clé de l'IA manquante)." }, 503);
 
+  let body: Record<string, any>;
+  try { body = await req.json(); } catch { return json({ error: "bad_request" }, 400); }
+  // Sonde d'état (aucun quota, aucun appel au fournisseur) : l'application sait ainsi si Kéla est activée avant d'inviter à lui écrire.
+  if (body.status === true) return json({ enabled: true });
+
   const url = Deno.env.get("SUPABASE_URL")!;
   const asUser = createClient(url, Deno.env.get("SUPABASE_ANON_KEY")!, { global: { headers: { Authorization: req.headers.get("Authorization") ?? "" } } });
   const { data: u } = await asUser.auth.getUser();
   if (!u?.user) return json({ error: "unauthorized", message: "Connexion requise." }, 401);
   const admin = createClient(url, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
-  let body: Record<string, any>;
-  try { body = await req.json(); } catch { return json({ error: "bad_request" }, 400); }
   const message = String(body.message ?? "").trim().slice(0, 2000);
   if (message.length < 2) return json({ error: "empty", message: "Message vide." }, 400);
   const history = Array.isArray(body.history) ? body.history.slice(-8) : [];

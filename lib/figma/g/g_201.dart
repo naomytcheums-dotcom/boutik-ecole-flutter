@@ -17,6 +17,7 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/missions_prestataire.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
@@ -42,6 +43,7 @@ class G_201 extends ConsumerWidget {
       gP(331.5, 19.5, 28, 17, gImg('assets/figma/v/6a818f3296df50.svg')),
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(24, 70, 135, 26, gText('Mes missions', 21, Color(0xFF111015), weight: 700)),
+      if (demoContent) ...[
       gP(74.5, 134, 13, 25, gText(demoContent ? '3' : (ref.watch(missionProvider).real ? '1' : '0'), 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
       gP(57.5, 164, 47, 14, gText('En cours', 11.5, Color(0xFF57545F), align: TextAlign.center)),
       gP(168.5, 134, 53, 25, Consumer(builder: (context, ref, _) => gText((demoContent ? '${(245000 + ref.watch(missionProvider).studentEarned) ~/ 1000} k' : '${ref.watch(missionProvider).studentEarned ~/ 1000} k'), 20, Color(0xFF111015), weight: 800, align: TextAlign.center))),
@@ -74,6 +76,8 @@ class G_201 extends ConsumerWidget {
       gP(40, 543, 310, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 552, 139, 16, gText('En attente de validation', 12.5, Color(0xFF57545F))),
       gP(132, 552, 218, 16, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(missionProvider).pendingAmount), 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),
+      ],
+      if (!demoContent) gP(24, 108, 342, 640, const ProviderMissionsPanel()),
       gP(125, 832, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
       gP(47.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '19')),
@@ -91,7 +95,7 @@ class G_201 extends ConsumerWidget {
       gP(169, 762, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gTab(context, '03')),
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
-      gTap(24, 264, 342, 60, () { gOpen(context, '195'); }),
+      if (demoContent) gTap(24, 264, 342, 60, () { gOpen(context, '195'); }),
       if (demoContent) gTap(287.6, 408, 64, 32, () { gOpen(context, '219'); }), // parcours 201 -> 219 (exemple de la maquette)
     ]);
   }

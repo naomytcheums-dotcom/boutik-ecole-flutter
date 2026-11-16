@@ -103,7 +103,7 @@ class InnovationsScreen extends ConsumerWidget {
     }
     final r = await marcheCall('create_ephemeral_community', {'p_name': name.text, 'p_description': desc.text, 'p_days': _digits(days.text) ?? 7, 'p_privacy': 'public'});
     if (!context.mounted) return;
-    gToast(context, r.error != null ? Backend.userMessage('${r.error}') : 'Communauté créée : elle se supprimera après ${_digits(days.text) ?? 7} jours.');
+    gToast(context, r.error != null ? Backend.userMessage('${r.error}') : 'Communauté envoyée pour validation : elle sera publiée après accord de l’équipe, puis se supprimera  jours après sa publication.');
   }
 
   Widget _tile(BuildContext context, IconData icon, String title, String sub, VoidCallback onTap) => GestureDetector(
@@ -152,6 +152,8 @@ class PointsScreen extends ConsumerWidget {
     'challenge_entry': 'Participation à un défi',
     'challenge_win': 'Victoire à un défi',
     'victory': 'Réussite partagée',
+    'challenge:posts3': 'Défi réseau : 3 publications dans la semaine',
+    'streak6': 'Série de présence',
   };
 
   @override
@@ -179,6 +181,7 @@ class PointsScreen extends ConsumerWidget {
             Text('Niveau maximum atteint : bravo !', style: mst(12.5, w: FontWeight.w700, c: kGreen)),
           const SizedBox(height: 8),
           Text('Bronze 50 · Argent 150 · Or 400 · Légende IUT 1 000', style: mst(11.5, c: kGrey)),
+          if (mInt(pts?['bonus']) > 0) ...[const SizedBox(height: 6), Text('+${mInt(pts?['bonus'])} points de défis du réseau social : ils ne comptent pas pour le niveau « Aidant ».', style: mst(11.5, c: kGrey))],
         ])),
         mSectionTitle('Mes derniers points'),
         if (pts == null || (pts['events'] as List).isEmpty)
@@ -239,7 +242,8 @@ class SosScreen extends ConsumerWidget {
               : Column(children: [
                   for (final s in l)
                     _box(Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Row(children: [Expanded(child: Text('${s['subject']}', style: mst(14, w: FontWeight.w800))), Text(s['status'] == 'solved' ? 'Résolu' : 'Ouvert', style: mst(11.5, w: FontWeight.w700, c: s['status'] == 'solved' ? kGreen : kViolet))]),
+                      Row(children: [Expanded(child: Text('${s['subject']}', style: mst(14, w: FontWeight.w800))), Text(s['status'] == 'solved' ? 'Résolu' : (s['status'] == 'closed' ? 'Clos' : 'Ouvert'), style: mst(11.5, w: FontWeight.w700, c: s['status'] == 'solved' ? kGreen : kViolet))]),
+                      if (s['status'] == 'open') GestureDetector(onTap: () async { if (await _call(context, 'sos_close', {'p_sos': s['id']}, ok: 'SOS clos.')) ref.invalidate(sosProvider('mine')); }, child: Padding(padding: const EdgeInsets.only(top: 4), child: Text('Clore mon SOS (plus besoin d’aide)', style: mst(12, w: FontWeight.w700, c: kGrey)))),
                       for (final a in (s['answers'] as List? ?? const [])) ...[
                         const SizedBox(height: 8),
                         Container(
@@ -249,7 +253,7 @@ class SosScreen extends ConsumerWidget {
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                             Text('${a['author']}${a['accepted'] == true ? ' · réponse retenue' : ''}', style: mst(11.5, w: FontWeight.w700, c: a['accepted'] == true ? kGreen : kGrey)),
                             Text('${a['body']}', style: mst(13).copyWith(height: 1.4)),
-                            if (s['status'] != 'solved')
+                            if (s['status'] == 'open')
                               Align(
                                 alignment: Alignment.centerRight,
                                 child: GestureDetector(

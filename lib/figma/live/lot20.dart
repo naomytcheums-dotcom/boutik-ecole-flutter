@@ -7,6 +7,7 @@ import 'backend.dart';
 import 'console.dart';
 import 'entreprise.dart';
 import 'finance.dart' show financeJournalProvider;
+import 'kiosk_mode.dart' show KioskTerminal;
 import 'notifs.dart' show NotificationItem, notifGroup, notifsProvider, tapNotification;
 import 'store.dart';
 
@@ -17,7 +18,7 @@ const _ink = Color(0xFF111015);
 const _grey = Color(0xFF57545F);
 TextStyle _st(double size, {FontWeight w = FontWeight.w500, Color c = _ink}) => TextStyle(fontFamily: 'PlusJakartaSans', fontSize: size, fontWeight: w, color: c);
 
-final kiosksProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('kiosks', 'id,name,location,status,updated_at', order: 'id', ascending: true, publicRead: true));
+final kiosksProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('kiosks', 'id,name,location,status,updated_at,last_seen_at', order: 'id', ascending: true, publicRead: true));
 final kioskIncidentsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('kiosk_incidents', 'id,kiosk_id,kind,message,created_at,resolved_at', order: 'created_at'));
 final listingsAdminProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('listings', 'title,status,category,price,created_at', order: 'created_at'));
 
@@ -35,16 +36,30 @@ class NotificationsRows extends RpcRows {
 
 final notificationsListProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(NotificationsRows.new);
 
-String kioskStatus(Object? s) => switch ('$s') { 'online' => 'En ligne', 'offline' => 'Hors ligne', 'fallback' => 'Mode secours', 'maintenance' => 'Maintenance', _ => '$s' };
+String kioskStatus(Object? s) => switch ('$s') { 'online' => 'En ligne', 'offline' => 'Hors ligne', 'fallback' => 'Mode secours', 'maintenance' => 'Maintenance', 'unknown' => 'État inconnu', _ => '$s' };
 
-/// État de la borne affiché sur son accueil (206) : lu sur le serveur (statut et dernière mise à jour), jamais « prête » par défaut.
+/// État réel d'une borne (S9-38) : « en ligne » seulement si elle a donné signe de vie (battement de cœur) dans les 3 dernières minutes ;
+/// le statut enregistré par défaut ne suffit plus.
+String kioskLiveStatus(Map<String, dynamic> r, {DateTime? now}) {
+  final s = '${r['status']}';
+  if (s != 'online') return s;
+  final seen = DateTime.tryParse('${r['last_seen_at'] ?? ''}');
+  if (seen == null || (now ?? DateTime.now()).toUtc().difference(seen.toUtc()) > const Duration(minutes: 3)) return 'unknown';
+  return 'online';
+}
+
+String _lastSignal(Map<String, dynamic> r) => r['last_seen_at'] == null ? 'aucun signal reçu' : 'dernier signal ${dateCourte(r['last_seen_at'])}';
+
+/// État de la borne affiché sur son accueil (206) : lu sur le serveur (statut et battement de cœur), jamais « prête » par défaut.
 ({String label, Color color}) kioskStateOf(List<Map<String, dynamic>>? rows) {
   if (rows == null) return (label: 'Vérification de la borne…', color: _grey);
   if (rows.isEmpty) return (label: 'Borne non enregistrée sur le serveur', color: _grey);
-  final online = rows.where((r) => '${r['status']}' == 'online').toList();
-  if (online.isNotEmpty) return (label: 'Borne en ligne · mise à jour ${dateCourte(online.first['updated_at'])}', color: const Color(0xFF126B49));
-  final r = rows.first;
-  return (label: '${kioskStatus(r['status'])} · mise à jour ${dateCourte(r['updated_at'])}', color: const Color(0xFFB45309));
+  final own = KioskTerminal.active ? rows.where((r) => '${r['id']}' == KioskTerminal.id).toList() : const <Map<String, dynamic>>[];
+  final pool = own.isNotEmpty ? own : rows;
+  final online = pool.where((r) => kioskLiveStatus(r) == 'online').toList();
+  if (online.isNotEmpty) return (label: 'Borne en ligne · ${_lastSignal(online.first)}', color: const Color(0xFF126B49));
+  final r = pool.first;
+  return (label: '${kioskStatus(kioskLiveStatus(r))} · ${_lastSignal(r)}', color: const Color(0xFFB45309));
 }
 String incidentKind(Object? s) => switch ('$s') { 'offline' => 'Hors ligne', 'restart' => 'Redémarrage', 'fallback' => 'Mode secours', 'hardware' => 'Matériel', 'payment' => 'Paiement', _ => 'Autre' };
 String listingStatus(Object? s) => switch ('$s') { 'approved' => 'Publiée', 'draft' => 'Brouillon', 'removed' => 'Retirée', _ => '$s' };
@@ -52,8 +67,8 @@ String listingStatus(Object? s) => switch ('$s') { 'approved' => 'Publiée', 'dr
 Widget kiosksListing({double width = 984, double height = 600}) => MobileList(
       provider: kiosksProvider,
       title: (r) => '${r['name']}',
-      subtitle: (r) => '${r['location']} · mise à jour ${dateCourte(r['updated_at'])}',
-      trailing: (r) => kioskStatus(r['status']),
+      subtitle: (r) => '${r['location']} · ${_lastSignal(r)}',
+      trailing: (r) => kioskStatus(kioskLiveStatus(r)),
       emptyText: 'Aucune borne enregistrée pour le moment.',
       width: width,
       height: height,
@@ -179,9 +194,9 @@ class KioskKpis extends ConsumerWidget {
     final ks = ref.watch(kiosksProvider);
     final inc = ref.watch(kioskIncidentsProvider);
     if (ks == null || inc == null) return _note(width, 'Chargement…');
-    int n(String s) => ks.where((k) => '${k['status']}' == s).length;
+    int n(String s) => ks.where((k) => kioskLiveStatus(k) == s).length;
     final open = inc.where((r) => r['resolved_at'] == null).length;
-    final items = [('En ligne', '${n('online')}'), ('Hors ligne ou secours', '${n('offline') + n('fallback')}'), ('En maintenance', '${n('maintenance')}'), ('Incidents ouverts', '$open')];
+    final items = [('En ligne', '${n('online')}'), ('Hors ligne, secours ou sans signal', '${n('offline') + n('fallback') + n('unknown')}'), ('En maintenance', '${n('maintenance')}'), ('Incidents ouverts', '$open')];
     final w = (width - 3 * 12) / 4;
     if (compact) {
       return Wrap(spacing: 12, runSpacing: 12, children: [for (final i in items) _tile(i.$1, i.$2, (width - 12) / 2)]);

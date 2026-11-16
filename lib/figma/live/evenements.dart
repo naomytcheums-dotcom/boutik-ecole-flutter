@@ -172,6 +172,7 @@ Future<void> toggleRegistration(BuildContext context, WidgetRef ref, AppEvent e)
   if (e.paid && e.mine) {
     return gAlert(context, 'Inscription payée', 'Votre inscription est réglée. Pour l’annuler et demander un remboursement, contactez la finance depuis la messagerie de paiement.');
   }
+  if (e.mine && (!await gConfirm(context, 'Annuler mon inscription ?', 'Votre place sur « ${e.title} » sera libérée et pourra être prise par quelqu’un d’autre.', yes: 'Annuler mon inscription', no: 'Garder ma place') || !context.mounted)) return;
   final r = e.mine ? await Backend.rpc('event_unregister', {'p_event': e.id}) : await Backend.rpc('event_register', {'p_event': e.id});
   if (!context.mounted) return;
   if (r.error != null) return gAlert(context, 'Inscription impossible', Backend.userMessage(r.error!));
@@ -492,7 +493,7 @@ class AdminEventsTable extends ConsumerWidget {
 
 /// Détail d'un événement (touché dans la liste) : type, date, lieu, tarif, places restantes et inscription / désinscription.
 Future<void> eventDetail(BuildContext context, WidgetRef ref, AppEvent e) async {
-  const kinds = {'exposition': 'Exposition', 'atelier': 'Atelier', 'conference': 'Conférence'};
+  const kinds = {'exposition': 'Exposition', 'atelier': 'Atelier', 'conference': 'Conférence', 'salon': 'Salon', 'autre': 'Autre'};
   final soon = e.startsAt.isAfter(DateTime.now()) && e.startsAt.difference(DateTime.now()).inDays < 7;
   await gDialog<void>(
     context: context,

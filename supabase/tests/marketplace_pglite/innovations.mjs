@@ -24,7 +24,7 @@ export async function run(db) {
   const a1 = (await q(`select sos_answer('${sos}', 'Regarde la table de routage statique') id`))[0].id;
   check('SOS : le premier qui repond gagne 15 points', (await q(`select my_points() r`))[0].r.total === 15);
   await as(C);
-  await q(`select sos_answer('${sos}', 'Moi aussi je peux aider')`);
+  await fails('SOS : une autre filière ne répond pas', `select sos_answer('${sos}', 'Moi aussi je peux aider')`, /filière/);
   await as(B);
   check('SOS : seul le premier gagne les points de rapidite', (await q(`select my_points() r`))[0].r.total === 15);
   await as(A);
@@ -97,7 +97,7 @@ export async function run(db) {
   await q(`select create_ephemeral_community('Eph 2', '', 3)`);
   await q(`select create_ephemeral_community('Eph 3', '', 3)`);
   await fails('ephemere : trois actives au plus', `select create_ephemeral_community('Eph 4', '', 3)`, /Trois communautés éphémères/);
-  check('ephemere : en attente de validation avec sa date de fin', (await q(`select status, expires_at from communities where id = '${e1}'`)).every((c) => c.status === 'pending' && c.expires_at !== null));
+  check('ephemere : en attente de validation, la duree courra a la validation', (await q(`select status, expires_at, ephemeral_days from communities where id = '${e1}'`)).every((c) => c.status === 'pending' && c.expires_at === null && c.ephemeral_days === 7));
   await db.exec('reset role');
   await db.exec(`update communities set status = 'active' where id = '${e1}'`);
   await as(B);

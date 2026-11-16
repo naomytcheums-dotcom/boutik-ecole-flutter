@@ -16,6 +16,7 @@ import '../offer_types.dart' show offerTypeLabels;
 import '../produit_fiche.dart';
 import '../promo_state.dart';
 import '../services.dart' show kMaxQuoteBudget, parseFcfa;
+import '../seller_live.dart' show OwnerListingPanel;
 import '../share.dart' show shareText;
 import '../store.dart' show productByTitle;
 import '../vendeur_public.dart' show openSellerProfile;
@@ -332,7 +333,7 @@ class _ShopBodyState extends ConsumerState<_ShopBody> {
               const SizedBox(height: 6),
               Row(children: [Text(mFcfa(p['price']), style: mst(15, w: FontWeight.w800)), const SizedBox(width: 8), Text(mFcfa(p['normal_price']), style: mst(12, c: kGrey).copyWith(decoration: TextDecoration.lineThrough))]),
               const SizedBox(height: 8),
-              mButton('Ajouter le pack au panier', () => _addPack(p), dark: false),
+              mButton('Ajouter le pack au panier', isOwner ? null : () => _addPack(p), dark: false),
             ]),
           ),
       ],
@@ -604,6 +605,7 @@ class _ProductBodyState extends ConsumerState<_ProductBody> {
             ]),
         ]),
       ),
+      if (isOwner) OwnerListingPanel(listingId: widget.id),
       if (variants.isNotEmpty) ...[
         for (final v in variants)
           Padding(
@@ -630,7 +632,7 @@ class _ProductBodyState extends ConsumerState<_ProductBody> {
           const SizedBox(height: 8),
           Wrap(spacing: 8, children: [
             if (stock <= 0) MChip(alerts.contains('stock') ? 'Alerte retour en stock activée' : 'M’alerter au retour en stock', selected: alerts.contains('stock'), onTap: () => _alert('stock', !alerts.contains('stock'))),
-            MChip(alerts.contains('price') ? 'Alerte de prix activée' : 'M’alerter si le prix baisse', selected: alerts.contains('price'), onTap: () => _alert('price', !alerts.contains('price'))),
+            MChip(alerts.contains('price') ? 'Alerte de prix activée' : 'M’alerter si le prix baisse', selected: alerts.contains('price'), onTap: isOwner ? () => gToast(context, 'C’est votre annonce : les alertes de prix sont pour les acheteurs.') : () => _alert('price', !alerts.contains('price'))),
             MChip(ref.watch(marcheCompareProvider).contains(widget.id) ? 'Dans la comparaison' : 'Comparer', selected: ref.watch(marcheCompareProvider).contains(widget.id), onTap: () {
               if (!ref.read(marcheCompareProvider.notifier).toggle(widget.id)) gToast(context, 'Comparaison limitée à 2 offres : retirez-en une pour en choisir une autre.');
             }),

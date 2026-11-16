@@ -71,6 +71,7 @@ class _CompareScreenState extends ConsumerState<CompareScreen> {
       TextField(controller: c, keyboardType: number ? TextInputType.number : null, onChanged: (_) => _changed(), decoration: _deco(label, hint: hint));
 
   void _choose(Map<String, dynamic> card, int price) {
+    if (card['is_mine'] == true) return gToast(context, 'C’est votre propre annonce : vous ne pouvez pas l’acheter.');
     if ('${card['offer_type'] ?? 'product'}' == 'product') {
       if (mInt(card['stock']) <= 0) return gToast(context, 'Cette offre est épuisée.');
       ref.read(cartProvider.notifier).add(CartLine('${card['title']}', 'Boutique : ${card['shop_name'] ?? 'Boutik-École'}', price, mImageUrl(card['image'])));

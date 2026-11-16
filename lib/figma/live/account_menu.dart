@@ -8,11 +8,14 @@ import '../nav.dart';
 import 'access.dart';
 import 'auth.dart';
 import 'delivery.dart' show homeDeliverySettingsDialog;
+import 'docs_prestataire.dart' show downloadSellerStatement;
 import 'feedback.dart';
 import 'certificates_page.dart';
 import 'lots.dart';
 import 'qr.dart' show myQrDialog;
+import 'verification_equipe.dart';
 import 'referral.dart';
+import 'social_posts.dart' show blockedPeopleDialog;
 import 'services.dart';
 
 Future<void> _livraisonVendeur(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/marche/livraison');
@@ -30,6 +33,10 @@ Future<void> _sequestre(BuildContext context, WidgetRef ref) async => GoRouter.o
 Future<void> _mesEntreprises(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/mes-entreprises');
 Future<void> _comptesTest(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/comptes-test');
 Future<void> _promotions(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/marche/promotions');
+Future<void> _moderationReseau(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/moderation/reseau');
+Future<void> _accompagnement(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/accompagnement');
+Future<void> _mesEvenements(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/evenements/mes');
+Future<void> _gererEvenements(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/evenements/gerer');
 
 const _st = TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 14, color: Color(0xFF111015));
 
@@ -49,10 +56,12 @@ class _Group {
 }
 
 Future<void> _devis(BuildContext c, WidgetRef r) => quotesDialog(c, r);
+Future<void> _releveVendeur(BuildContext c, WidgetRef r) => downloadSellerStatement(c, r);
 Future<void> _certificats(BuildContext c, WidgetRef r) => Navigator.of(c).push(MaterialPageRoute<void>(builder: (_) => const CertificatesPage()));
 Future<void> _parrain(BuildContext c, WidgetRef r) => claimReferralDialog(c, r);
 Future<void> _reclamations(BuildContext c, WidgetRef r) => claimsDialog(c, r);
 Future<void> _assign(BuildContext c, WidgetRef r) => assignNeedDialog(c, r);
+Future<void> _suppressionsCompte(BuildContext c, WidgetRef r) => accountDeletionsDialog(c, r, canExecute: roleKey(r.read(authProvider).current) == 'admin');
 
 final _groups = <_Group>[
   const _Group('Pages de base', [
@@ -76,6 +85,7 @@ final _groups = <_Group>[
   ]),
   const _Group('Découvrir et participer', [
     _Entry('Événements', screen: '100'),
+    _Entry('Mes événements (inscriptions et reçus)', action: _mesEvenements),
     _Entry('Hackathons et concours', screen: '160'),
     _Entry('Opportunités pour moi', screen: '151'),
     _Entry('Communauté et vitrine', screen: '103'),
@@ -102,13 +112,17 @@ final _groups = <_Group>[
     _Entry('Mes annonces', screen: '58', roles: {'student'}),
     _Entry('Commandes reçues', screen: '63', roles: {'student'}),
     _Entry('Mes tarifs de livraison', action: _livraisonVendeur, roles: {'student'}),
+    _Entry('Devis reçus', action: _devis, roles: {'student'}),
+    _Entry('Relevé de ventes et de missions (PDF)', action: _releveVendeur, roles: {'student'}),
     _Entry('Stocks', screen: '62', roles: {'student'}),
     _Entry('Revenus', screen: '66', roles: {'student'}),
     _Entry('Statistiques', screen: '67', roles: {'student'}),
     _Entry('Mes documents', screen: '73', roles: {'student', 'dept', 'admin'}),
     _Entry('Publier un service', screen: '59', roles: {'student'}),
     _Entry('Conformité du compte', screen: '69', roles: {'student'}),
-    _Entry('Opportunités', screen: '75', roles: {'student', 'dept', 'admin'}),
+    _Entry('Offres classées pour vous', screen: '152', roles: {'student'}),
+    _Entry('Mon dossier', screen: '154', roles: {'student'}),
+    _Entry('Opportunités', screen: '75', roles: {'dept', 'admin'}),
     _Entry('Mon CV vivant', screen: '227', roles: {'student', 'dept', 'admin'}),
     _Entry('Tableau de bord du studio', screen: 'D1', roles: {'student', 'dept', 'admin'}),
     _Entry('Connecter mes outils', screen: 'P5', roles: {'student', 'dept', 'admin'}),
@@ -122,6 +136,7 @@ final _groups = <_Group>[
     _Entry('Mes missions et jalons', action: myMissionsDialog, roles: {'student', 'dept', 'admin'}),
     _Entry('Mes vœux', action: myWishesDialog, roles: {'client', 'student', 'dept', 'admin'}),
     _Entry('Soumettre mon projet', screen: '205', roles: {'student', 'dept', 'admin'}),
+    _Entry('Accompagnement de mes projets', action: _accompagnement, roles: {'student', 'dept', 'admin'}),
     _Entry('Journal du projet', screen: '82', roles: {'student', 'dept', 'admin'}),
   ]),
   const _Group('Espace entreprise', [
@@ -137,16 +152,22 @@ final _groups = <_Group>[
   ]),
   const _Group('Administration', [
     _Entry('Console du département', screen: '108', roles: {'dept', 'admin'}),
+    _Entry('Modération du réseau social', action: _moderationReseau, roles: {'dept', 'admin', 'support'}),
     _Entry('Registre des certificats', screen: '283', roles: {'dept', 'admin'}),
     _Entry('Catalogue du département', screen: '288', roles: {'dept', 'admin'}),
     _Entry('Espace jury', screen: '178', roles: {'dept', 'admin'}),
     _Entry('Vœux à valider', action: reviewWishesDialog, roles: {'dept', 'admin'}),
     _Entry('Campagnes à valider', action: reviewCampaignsDialog, roles: {'dept', 'admin'}),
+    _Entry('Jalons de campagne à valider', action: reviewMilestonesDialog, roles: {'dept', 'admin'}),
     _Entry('Projets à examiner', action: reviewProjectsDialog, roles: {'dept', 'admin'}),
     _Entry('Attribuer un besoin', action: _assign, roles: {'dept', 'admin'}),
     _Entry('Émettre un certificat', action: issueCertificateDialog, roles: {'dept', 'admin'}),
     _Entry('Révoquer un certificat', action: revokeCertificateDialog, roles: {'dept', 'admin'}),
-    _Entry('Demandes de certification (badge)', action: certificationRequestsDialog, roles: {'admin'}),
+    _Entry('Demandes de certification (badge)', action: certificationRequestsDialog, roles: {'admin', 'dept'}),
+    _Entry('Pièces justificatives à examiner', action: documentReviewDialog, roles: {'admin', 'support', 'dept'}),
+    _Entry('Établissements et départements proposés', action: referenceReviewDialog, roles: {'admin', 'support'}),
+    _Entry('Suppressions de compte', action: _suppressionsCompte, roles: {'admin', 'support'}),
+    _Entry('Réinitialiser une double authentification', action: mfaResetDialog, roles: {'admin', 'support'}),
     _Entry('Entreprises à vérifier', action: _entreprisesAVerifier, roles: {'admin'}),
     _Entry('Forfaits des entreprises', action: _forfaitsEntreprises, roles: {'admin'}),
     _Entry('Séquestre et règle 70/20/10', action: _sequestre, roles: {'admin', 'finance'}),
@@ -155,6 +176,7 @@ final _groups = <_Group>[
     _Entry('Établissement et identité visuelle', screen: '118', roles: {'direction', 'admin'}),
     _Entry('Modèles de notifications', screen: '265', roles: {'admin'}),
     _Entry('Inviter un membre du département', action: inviteMemberDialog, roles: {'dept', 'admin'}),
+    _Entry('Gérer les événements officiels', action: _gererEvenements, roles: {'dept', 'direction', 'finance', 'admin'}),
     _Entry('Rapport sponsors', screen: '239', roles: {'direction', 'dept', 'admin'}),
     _Entry('Administration institutionnelle', screen: '117', roles: {'direction', 'admin'}),
     _Entry('Administration globale', screen: '127', roles: {'admin'}),
@@ -183,6 +205,7 @@ final _groups = <_Group>[
     _Entry('Dossiers de mission', action: missionDossierDialog),
     _Entry('Mes certificats', action: _certificats),
     _Entry('Mon QR personnel', action: myQrDialog),
+    _Entry('Personnes bloquées', action: blockedPeopleDialog),
     _Entry('Mon espace client', screen: '261'),
     _Entry('Mes données et confidentialité', screen: '273'),
     _Entry('Vérification en 2 étapes', screen: '272'),

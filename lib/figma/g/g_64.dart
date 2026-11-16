@@ -23,6 +23,7 @@ import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
 import '../live/messages.dart' show contactOrderBuyer;
+import '../live/money_lot.dart' show enterHandoverCode;
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_64 extends ConsumerWidget {
@@ -76,10 +77,14 @@ class G_64 extends ConsumerWidget {
       gP(54, 415, 315, 18, gText('Étiquette de retrait imprimée', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),
       gP(40, 464, 50, 18, gText('Remise', 14, Color(0xFF111015), weight: 700)),
       gP(40, 498, 88, 16, gText('Remise prévue', 12.5, Color(0xFF57545F))),
-      gP(228, 498, 122, 16, gText(gm('Kiosque IUT – Bloc A', ''), 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
+      gP(228, 498, 122, 16, gText(gm('Kiosque IUT – Bloc A', ''), 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right), show: demoContent),
+      gP(160, 498, 190, 16, Consumer(builder: (context, ref, _) => gText(sellerOrderModeText(ref.watch(currentSellerOrderProvider)), 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)), show: !demoContent),
       gP(40, 523, 310, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(40, 532, 46, 16, gText('Avant le', 12.5, Color(0xFF57545F))),
-      gP(272, 532, 78, 16, gText(gm('Demain · 14 h', ''), 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
+      gP(40, 532, 46, 16, gText('Avant le', 12.5, Color(0xFF57545F)), show: demoContent),
+      gP(272, 532, 78, 16, gText(gm('Demain · 14 h', ''), 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right), show: demoContent),
+      gP(40, 532, 90, 16, gText('Argent', 12.5, Color(0xFF57545F)), show: !demoContent),
+      gP(130, 532, 220, 16, Consumer(builder: (context, ref, _) => gText(sellerOrderMoneyText(ref.watch(currentSellerOrderProvider)), 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)), show: !demoContent),
+      gP(40, 556, 310, 20, gText('Saisir le code de retrait du client', 12.5, Color(0xFF5A3FE0), weight: 700, align: TextAlign.center), tap: () { enterHandoverCode(ref, context); }, show: !demoContent),
       gP(24, 584, 342, 62, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
       gP(36, 599, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(42.625, 604.917, 18.75, 16.625, gImg('assets/figma/v/b2ae09d0fd46bb.svg')),

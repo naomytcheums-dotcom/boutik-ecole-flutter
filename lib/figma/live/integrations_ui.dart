@@ -15,7 +15,7 @@ import 'integrations_model.dart';
 import 'integrations_momo.dart';
 import 'integrations_widgets.dart';
 import 'lots.dart' show addProfileLink, copyText, pendingLinksProvider, saveProfileLinks;
-import 'profile_links.dart' show SavedLinksList;
+import 'profile_links.dart' show SavedLinksList, savedProfileLinksProvider;
 
 /// Les quatre écrans de la rubrique « Applications connectées » partagent le même hub (mêmes données, mêmes composants).
 enum IntMode {
@@ -77,6 +77,7 @@ class _HubState extends ConsumerState<IntegrationsHubScreen> {
       if (c == 'ok') {
         gToast(context, '$p est connecté.');
         ref.read(integrationsProvider.notifier).refresh();
+        ref.invalidate(savedProfileLinksProvider); // le lien du réseau rejoint les icônes du profil (déclencheur serveur)
       } else {
         gAlert(context, 'Connexion non établie', '$p : ${q['m'] ?? 'autorisation refusée'}');
       }
@@ -393,6 +394,7 @@ class _SheetState extends ConsumerState<ProviderSheet> {
     if (!mounted) return;
     setState(() => _busy = false);
     if (err != null) return gAlert(context, 'Déconnexion', err);
+    ref.invalidate(savedProfileLinksProvider);
     if (!widget.provider.linkOnly && !revoked) {
       await gAlert(context, 'Déconnecté', 'Nos copies du jeton sont supprimées. ${widget.provider.name} n’a pas confirmé la révocation : vous pouvez aussi retirer Boutik-École dans les paramètres de sécurité de ${widget.provider.name}.');
     } else {

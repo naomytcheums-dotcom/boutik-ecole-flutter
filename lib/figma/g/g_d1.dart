@@ -10,6 +10,7 @@ import '../live/l09.dart';
 import '../live/lfav.dart';
 import '../live/auth.dart';
 import '../live/seller.dart';
+import '../live/seller_live.dart';
 import '../live/review.dart';
 import '../live/audit.dart';
 import '../live/admin.dart';
@@ -48,7 +49,7 @@ class G_D1 extends ConsumerWidget {
       gP(1054, 362, 28, 28, gBox(image: 'assets/figma/img/ebf23a969ca7b1083d1dcab994c4899c0b4db38b.png', fit: BoxFit.cover, border: Color(0xFFFFFFFF), bw: 2, radii: [14, 14, 14, 14]), show: demoContent),
       gP(1074, 362, 28, 28, gBox(image: 'assets/figma/img/c15478a4e0a5cc1be462d8179ed1a24390853242.png', fit: BoxFit.cover, border: Color(0xFFFFFFFF), bw: 2, radii: [14, 14, 14, 14]), show: demoContent),
       gP(1132, 365, 24, 24, gBox(color: Color(0xFF111015), oval: true)),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(1020.5, 358, 170, 36, '+3', 11, 500), GChip(1188, 358, 170, 36, 'Exporter', 12, 600)], selected: 1, selFill: Color(0xFF0B0B0D), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 18, inter: true)),
+      if (demoContent) Positioned.fill(child: GChoiceGroup(chips: [GChip(1020.5, 358, 170, 36, '+3', 11, 500), GChip(1188, 358, 170, 36, 'Exporter', 12, 600)], selected: 1, selFill: Color(0xFF0B0B0D), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 18, inter: true)),
       gP(1320.125, 368.125, 15.75, 15.75, gImg('assets/figma/v/c7f198a8ce01e5.svg')),
       gP(114, 404, 200, 704, gBox(color: Color(0xFFF1EFEC))),
       gP(134, 432, 42, 12, gText('Principal', 10, Color(0xFF716D65), weight: 500, inter: true)),
@@ -58,15 +59,15 @@ class G_D1 extends ConsumerWidget {
       gP(144.25, 461.25, 10.375, 10.375, gImg('assets/figma/v/46f5855326ca3f.svg')),
       gP(137.375, 461.25, 10.375, 10.375, gImg('assets/figma/v/46f5855326ca3f.svg')),
       gP(166, 455, 94, 15, gText('Tableau de bord', 12, Color(0xFF111015), weight: 600, inter: true)),
-      gP(136.75, 493.75, 18.5, 12.25, gImg('assets/figma/v/a8962ce588a956.svg')),
-      gP(136.75, 503.125, 18.5, 9.125, gImg('assets/figma/v/24a45f8b5f58fe.svg')),
-      gP(136.75, 500, 18.5, 9.125, gImg('assets/figma/v/24a45f8b5f58fe.svg')),
-      gP(166, 495, 50, 15, gText('Missions', 12, Color(0xFF55524C), inter: true)),
-      gP(137.375, 534.375, 17.25, 17.25, gImg('assets/figma/v/0e8e9b6945f1c7.svg')),
-      gP(146.75, 538.125, 6, 11, gImg('assets/figma/v/4b7c01062373f8.svg')),
-      gP(143.625, 535.625, 6, 13.5, gImg('assets/figma/v/9e3bcb7e9c574c.svg')),
-      gP(140.5, 541.25, 6, 7.875, gImg('assets/figma/v/5eccc4607ecf23.svg')),
-      gP(166, 535, 60, 15, gText('Analytique', 12, Color(0xFF55524C), inter: true)),
+      gP(136.75, 493.75, 18.5, 12.25, gImg('assets/figma/v/a8962ce588a956.svg'), show: demoContent),
+      gP(136.75, 503.125, 18.5, 9.125, gImg('assets/figma/v/24a45f8b5f58fe.svg'), show: demoContent),
+      gP(136.75, 500, 18.5, 9.125, gImg('assets/figma/v/24a45f8b5f58fe.svg'), show: demoContent),
+      gP(166, 495, 50, 15, gText('Missions', 12, Color(0xFF55524C), inter: true), show: demoContent),
+      gP(137.375, 534.375, 17.25, 17.25, gImg('assets/figma/v/0e8e9b6945f1c7.svg'), show: demoContent),
+      gP(146.75, 538.125, 6, 11, gImg('assets/figma/v/4b7c01062373f8.svg'), show: demoContent),
+      gP(143.625, 535.625, 6, 13.5, gImg('assets/figma/v/9e3bcb7e9c574c.svg'), show: demoContent),
+      gP(140.5, 541.25, 6, 7.875, gImg('assets/figma/v/5eccc4607ecf23.svg'), show: demoContent),
+      gP(166, 535, 60, 15, gText('Analytique', 12, Color(0xFF55524C), inter: true), show: demoContent),
       gP(134, 584, 44, 12, gText('Contacts', 10, Color(0xFF716D65), weight: 500, inter: true)),
       gP(138.5, 607.5, 15, 15, const SizedBox.expand(), tap: () => gTab(context, '10')),
       gP(139.875, 606.375, 12.25, 12.25, gImg('assets/figma/v/24e83dedb394fa.svg')),
@@ -86,11 +87,11 @@ class G_D1 extends ConsumerWidget {
       gP(166, 761, 58, 15, gText('Messages', 12, Color(0xFF55524C), inter: true)),
       gP(270, 762, 22, 18, gBox(color: Color(0xFF111015), radii: [9, 9, 9, 9]), show: demoContent),
       gP(278, 765, 6, 11, gText(gm('2', ''), 9.5, Color(0xFFFFFFFF), weight: 700, inter: true, align: TextAlign.center), show: demoContent),
-      gP(137.375, 800.375, 17.25, 17.25, gImg('assets/figma/v/0e8e9b6945f1c7.svg')),
-      gP(146.75, 804.125, 6, 11, gImg('assets/figma/v/4b7c01062373f8.svg')),
-      gP(143.625, 801.625, 6, 13.5, gImg('assets/figma/v/9e3bcb7e9c574c.svg')),
-      gP(140.5, 807.25, 6, 7.875, gImg('assets/figma/v/5eccc4607ecf23.svg')),
-      gP(166, 801, 139, 15, gText('Insights de performance', 12, Color(0xFF55524C), inter: true)),
+      gP(137.375, 800.375, 17.25, 17.25, gImg('assets/figma/v/0e8e9b6945f1c7.svg'), show: demoContent),
+      gP(146.75, 804.125, 6, 11, gImg('assets/figma/v/4b7c01062373f8.svg'), show: demoContent),
+      gP(143.625, 801.625, 6, 13.5, gImg('assets/figma/v/9e3bcb7e9c574c.svg'), show: demoContent),
+      gP(140.5, 807.25, 6, 7.875, gImg('assets/figma/v/5eccc4607ecf23.svg'), show: demoContent),
+      gP(166, 801, 139, 15, gText('Insights de performance', 12, Color(0xFF55524C), inter: true), show: demoContent),
       gP(134, 852, 38, 12, gText('Compte', 10, Color(0xFF716D65), weight: 500, inter: true)),
       gP(141.125, 878.125, 9.75, 9.75, gImg('assets/figma/v/b916ebbd5954b5.svg')),
       gP(136.75, 873.75, 18.5, 18.5, gImg('assets/figma/v/6cbb5365a7f38e.svg')),
@@ -107,12 +108,14 @@ class G_D1 extends ConsumerWidget {
       gP(974, 426, 110, 34, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E3DE), bw: 1, radii: [17, 17, 17, 17])),
       gP(988.125, 435.125, 15.75, 15.75, gImg('assets/figma/v/e1d0d9c2726ec6.svg')),
       gP(1012, 435, 56, 14, gText('Actualiser', 11.5, Color(0xFF111015), weight: 500, inter: true)),
-      gP(1094, 426, 142, 34, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E3DE), bw: 1, radii: [17, 17, 17, 17])),
-      gP(1108.667, 436.75, 14.667, 12.5, gImg('assets/figma/v/54d63e10c1f201.svg')),
-      gP(1114.083, 435.667, 8.167, 8.167, gImg('assets/figma/v/aa6a66611de441.svg')),
-      gP(1110.833, 438.917, 8.167, 8.167, gImg('assets/figma/v/aa6a66611de441.svg')),
-      gP(1115.167, 442.167, 8.167, 8.167, gImg('assets/figma/v/aa6a66611de441.svg')),
-      gP(1132, 435, 111, 14, gText('Personnaliser la vue', 11.5, Color(0xFF111015), weight: 500, inter: true)),
+      gP(1094, 426, 142, 34, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E3DE), bw: 1, radii: [17, 17, 17, 17]), show: demoContent),
+      gP(1108.667, 436.75, 14.667, 12.5, gImg('assets/figma/v/54d63e10c1f201.svg'), show: demoContent),
+      gP(1114.083, 435.667, 8.167, 8.167, gImg('assets/figma/v/aa6a66611de441.svg'), show: demoContent),
+      gP(1110.833, 438.917, 8.167, 8.167, gImg('assets/figma/v/aa6a66611de441.svg'), show: demoContent),
+      gP(1115.167, 442.167, 8.167, 8.167, gImg('assets/figma/v/aa6a66611de441.svg'), show: demoContent),
+      gP(1132, 435, 111, 14, gText('Personnaliser la vue', 11.5, Color(0xFF111015), weight: 500, inter: true), show: demoContent),
+      // production : tout le contenu de maquette (graphiques, tableau, objectif, Kéla) est remplacé par les données réelles du vendeur
+      if (demoContent) ...[
       gP(334, 482, 360, 244, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF6C84B), Color(0xFFFBE49A), Color(0xFFF9C860)], stops: [0, 0.5, 1]), radii: [26, 26, 26, 26])),
       gClip(334, 482, 360, 244, null, [
 gP(-13, 53.179, 396, 103.892, gImg('assets/figma/v/bae0ce81114650.svg')),
@@ -332,10 +335,12 @@ gP(-13, 165.451, 296, 34.583, gImg('assets/figma/v/5ffec176ca9577.svg'))
       gP(1008, 968, 336, 34, GField(hint: 'Quels enseignements cherches-tu ?', size: 11, hintColor: Color(0xFF57545F), weight: 400, padL: 16, inter: true)),
       gP(1008, 1012, 336, 76, gBox(color: Color(0xFFFFFFFF), radii: [16, 16, 16, 16])),
       gP(1022, 1020, 313, 45, gText(gm('Tes revenus ont progressé de 6 % ce mois-ci, portés par tes meilleurs produits. Veux-tu un plan pour doubler les commandes de la lampe ?', ''), 10.5, Color(0xFF4A4944), inter: true, lh: 15, wrap: true)),
-      gTap(974, 426, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
-      gTap(1094, 426, 142, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
-      gTap(1264, 496, 80, 26, () { uiFilters(context); }), // audit 01/11 : « Filtrer » n'avait aucun effet
-      gTap(874, 756, 80, 26, () { uiFilters(context); }), // audit 01/11 : « Filtrer » n'avait aucun effet
+      ],
+      if (!demoContent) gP(334, 482, 1032, 610, const StudioOverview()),
+      gTap(974, 426, 110, 34, () { ref.invalidate(sellerOverviewProvider); uiRefresh(context, ref); }), // « Actualiser » relit aussi les statistiques du vendeur
+      if (demoContent) gTap(1094, 426, 142, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
+      if (demoContent) gTap(1264, 496, 80, 26, () { uiFilters(context); }), // audit 01/11 : « Filtrer » n'avait aucun effet
+      if (demoContent) gTap(874, 756, 80, 26, () { uiFilters(context); }), // audit 01/11 : « Filtrer » n'avait aucun effet
     ]);
   }
 }

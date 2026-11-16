@@ -372,6 +372,15 @@ class UserDoc {
   String get statusLabel => switch (status) { 'verified' => 'Vérifié', 'rejected' => 'Refusé', _ => 'En attente' };
 }
 
+/// Vrai quand la dernière lecture des documents a échoué (panne réseau, serveur) : le dossier affiche alors une erreur et non « tout manque ».
+class DocsErrorNotifier extends Notifier<bool> {
+  @override
+  bool build() => false;
+  void set(bool v) => state = v;
+}
+
+final docsErrorProvider = NotifierProvider<DocsErrorNotifier, bool>(DocsErrorNotifier.new);
+
 /// `null` : lecture en cours ou serveur absent ; liste vide : aucun document.
 class DocsNotifier extends Notifier<List<UserDoc>?> {
   @override
@@ -390,7 +399,9 @@ class DocsNotifier extends Notifier<List<UserDoc>?> {
     }
     final r = await Backend.rows('user_documents', 'id, kind, name, path, size_bytes, status, review_note, created_at', eq: {'owner_id': uid}, order: 'created_at', limit: 100);
     if (!ref.mounted) return;
-    state = r.error == null ? [for (final x in r.rows) UserDoc.fromRow(x)] : const [];
+    ref.read(docsErrorProvider.notifier).set(r.error != null);
+    // En cas d'erreur, la liste déjà connue est conservée ; sinon elle reste vide et l'erreur est signalée à part.
+    state = r.error == null ? [for (final x in r.rows) UserDoc.fromRow(x)] : (state ?? const []);
   }
 }
 

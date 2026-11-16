@@ -77,11 +77,22 @@ void main() {
   testWidgets('145 connecté : bornes réelles', (t) async {
     await monter(t, const G_145(), connecte: true, large: true, overrides: [
       kiosksProvider.overrideWith(() => _Rows('table:kiosks', [
-            {'id': 'borne-1', 'name': 'Borne Test', 'location': 'Hall', 'status': 'online', 'updated_at': '2026-11-01T10:00:00Z'}
+            {'id': 'borne-1', 'name': 'Borne Test', 'location': 'Hall', 'status': 'online', 'updated_at': '2026-11-01T10:00:00Z', 'last_seen_at': DateTime.now().toUtc().toIso8601String()}
           ]))
     ]);
     expect(find.text('Borne Test'), findsOneWidget);
     expect(find.text('En ligne'), findsOneWidget);
+  });
+
+  test('S9-38 : « en ligne » exige un battement de cœur récent', () {
+    final now = DateTime.utc(2026, 11, 17, 12);
+    Map<String, dynamic> k(String s, String? seen) => {'status': s, 'last_seen_at': seen};
+    expect(kioskLiveStatus(k('online', '2026-11-17T11:59:00Z'), now: now), 'online');
+    expect(kioskLiveStatus(k('online', '2026-11-17T11:50:00Z'), now: now), 'unknown');
+    expect(kioskLiveStatus(k('online', null), now: now), 'unknown');
+    expect(kioskLiveStatus(k('maintenance', null), now: now), 'maintenance');
+    expect(kioskStateOf([k('online', null)]).label, startsWith('État inconnu'));
+    expect(kioskStateOf([k('online', DateTime.now().toUtc().toIso8601String())]).label, startsWith('Borne en ligne'));
   });
 
   testWidgets('147_2 connecté : compteurs et incidents ouverts réels', (t) async {

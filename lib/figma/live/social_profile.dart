@@ -3,6 +3,7 @@ import 'innovations_screens.dart' show UserLevelBadge;
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'home_live.dart' show liveTalentsProvider;
+import 'circle_feed.dart' show purgeReplacedPostMedia;
 import 'tp_ui.dart' show TpRound, tpPickFile, tpUpload;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -176,6 +177,7 @@ class SocialProfilePanel extends ConsumerWidget {
     final r = await Backend.rpc('set_my_cover', {'p_path': path, 'p_kind': f.mime.startsWith('video/') ? 'video' : 'image'});
     if (!context.mounted) return;
     if (r.error != null) return gToast(context, Backend.userMessage(r.error!));
+    await purgeReplacedPostMedia(r.data);
     await ref.read(liveTalentsProvider.notifier).refresh();
     if (context.mounted) gToast(context, 'Couverture enregistrée.');
   }

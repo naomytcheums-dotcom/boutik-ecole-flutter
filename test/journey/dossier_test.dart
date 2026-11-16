@@ -19,6 +19,11 @@ class _Docs extends DocsNotifier {
   List<UserDoc>? build() => v;
 }
 
+class _Err extends DocsErrorNotifier {
+  @override
+  bool build() => true;
+}
+
 UserDoc _d(String kind, String name, {String status = 'pending'}) => UserDoc(id: kind, kind: kind, name: name, path: 'p/$kind', size: 10, status: status, note: '', createdAt: DateTime(2026, 11, 1));
 
 void main() {
@@ -71,6 +76,14 @@ void main() {
     await monter(t, connecte: true, overrides: [myDocsProvider.overrideWith(() => _Docs(const []))]);
     expect(find.text('Document manquant'), findsWidgets);
     expect(find.text('CV_Mariam_Essono.pdf'), findsNothing);
+  });
+
+  testWidgets('erreur de lecture : « Réessayer » et non « tout est manquant » (S8-19)', (t) async {
+    await monter(t, connecte: true, overrides: [myDocsProvider.overrideWith(() => _Docs(const [])), docsErrorProvider.overrideWith(_Err.new)]);
+    expect(find.textContaining('n’a pas pu être chargé'), findsOneWidget);
+    expect(find.text('Réessayer'), findsOneWidget);
+    expect(find.text('Document manquant'), findsNothing);
+    expect(find.textContaining('Encore 6 éléments'), findsNothing);
   });
 
   testWidgets('hors connexion : la démonstration reste affichée', (t) async {

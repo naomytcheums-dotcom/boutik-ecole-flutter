@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 
 import 'auth.dart';
 import 'backend.dart';
+import '../gdata.dart' show gNetImage;
+import 'marche/marche_data.dart' show mImageUrl;
 import 'store.dart' show IntV, fcfa;
 
 /// Impact et sponsoring (écrans 105, 107, 237, 238, 239), lus sur le serveur (migration 20261105000100) :
@@ -77,7 +79,13 @@ class SponsorReportNotifier extends Notifier<Map<String, dynamic>?> {
 final sponsorReportProvider = NotifierProvider<SponsorReportNotifier, Map<String, dynamic>?>(SponsorReportNotifier.new);
 
 class OtherListings extends Notifier<List<Map<String, dynamic>>?> {
+  OtherListings({this.all = false});
+
+  /// Showroom national (270) : tous les établissements, dont celui de la personne et ses propres créations.
+  final bool all;
   bool error = false;
+  bool hasMore = false;
+  static const _page = 20;
 
   @override
   List<Map<String, dynamic>>? build() {
@@ -87,15 +95,32 @@ class OtherListings extends Notifier<List<Map<String, dynamic>>?> {
     return null;
   }
 
+  Future<List<Map<String, dynamic>>?> _fetch(int offset) async {
+    final r = await Backend.rpc('listings_other_institutions', {'p_limit': _page, 'p_all': all, 'p_offset': offset});
+    if (r.error != null || r.data is! List) return null;
+    return [for (final x in r.data as List) Map<String, dynamic>.from(x as Map)];
+  }
+
   Future<void> refresh() async {
-    final r = await Backend.rpc('listings_other_institutions', {'p_limit': 20});
+    final rows = await _fetch(0);
     if (!ref.mounted) return;
-    error = r.error != null || r.data is! List;
-    state = error ? const [] : [for (final x in r.data as List) Map<String, dynamic>.from(x as Map)];
+    error = rows == null;
+    hasMore = (rows?.length ?? 0) >= _page;
+    state = rows ?? const [];
+  }
+
+  /// Page suivante du showroom.
+  Future<void> more() async {
+    final cur = state ?? const <Map<String, dynamic>>[];
+    final rows = await _fetch(cur.length);
+    if (!ref.mounted || rows == null) return;
+    hasMore = rows.length >= _page;
+    state = [...cur, ...rows];
   }
 }
 
 final otherListingsProvider = NotifierProvider<OtherListings, List<Map<String, dynamic>>?>(OtherListings.new);
+final showroomListingsProvider = NotifierProvider<OtherListings, List<Map<String, dynamic>>?>(() => OtherListings(all: true));
 
 /// Ville choisie sur le showroom national (270) : 0 tous, puis Douala, Bandjoun, Ngaoundéré.
 final showroomCityProvider = NotifierProvider<IntV, int>(IntV.new);
@@ -151,8 +176,8 @@ class PlatformImpactPanel extends ConsumerWidget {
       child: SingleChildScrollView(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Wrap(spacing: 12, runSpacing: 12, children: [
-            _kpi('Chiffre des commandes payées', fcfa(((d['revenue_paid'] as num?) ?? 0).toInt()), w),
-            _kpi('Étudiants payés', '${d['students_paid'] ?? 0}', w),
+            _kpi('Ventes payées par les clients (hors frais)', fcfa(((d['revenue_paid'] as num?) ?? 0).toInt()), w),
+            _kpi('Étudiants-vendeurs ayant vendu', '${d['students_paid'] ?? 0}', w),
             _kpi('Missions livrées', '${d['missions_delivered'] ?? 0}', w),
             _kpi('Commandes payées', '${d['orders_paid'] ?? 0}', w),
             _kpi('Déchets valorisés (déclarés)', _kg(d['recycled_kg']), width),
@@ -160,7 +185,7 @@ class PlatformImpactPanel extends ConsumerWidget {
           const SizedBox(height: 18),
           Text('Par ville', style: _st(15, w: FontWeight.w700)),
           const SizedBox(height: 8),
-          if (cities.isEmpty) Text('Aucune commande payée pour le moment.', style: _st(12.5, c: _grey)),
+          if (cities.isEmpty) Text('Aucune ville n’a encore assez d’étudiants pour être affichée.', style: _st(12.5, c: _grey)),
           for (final c in cities)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 6),
@@ -187,6 +212,7 @@ class MyImpactPanel extends ConsumerWidget {
     if (d == null) return _note('Chargement de votre impact…', width);
     if (ref.read(myImpactProvider.notifier).error) return _note('Votre impact ne peut pas être chargé pour le moment.', width);
     final months = [for (final m in (d['months'] as List? ?? const [])) Map<String, dynamic>.from(m as Map)];
+    final seller = d['seller'] is Map ? Map<String, dynamic>.from(d['seller'] as Map) : null;
     final maxKg = months.fold<double>(0, (a, m) => ((m['recycled_kg'] as num?)?.toDouble() ?? 0) > a ? (m['recycled_kg'] as num).toDouble() : a);
     final w = (width - 12) / 2;
     return SizedBox(
@@ -203,7 +229,7 @@ class MyImpactPanel extends ConsumerWidget {
           const SizedBox(height: 20),
           Text('Déchets valorisés par mois', style: _st(15, w: FontWeight.w700)),
           const SizedBox(height: 4),
-          Text('Poids déclaré par les vendeurs sur les produits que vous avez achetés.', style: _st(11.5, c: _grey)),
+          Text('Poids déclaré par les vendeurs sur les produits que vous avez achetés (hors vos propres annonces).', style: _st(11.5, c: _grey)),
           const SizedBox(height: 12),
           if (months.isEmpty || maxKg == 0)
             Text('Aucun produit issu de matériaux récupérés dans vos achats pour le moment.', style: _st(12.5, c: _grey))
@@ -221,6 +247,21 @@ class MyImpactPanel extends ConsumerWidget {
                   ),
               ]),
             ),
+          if (seller != null && ((seller['listings'] as num? ?? 0) > 0 || (seller['orders'] as num? ?? 0) > 0)) ...[
+            const SizedBox(height: 24),
+            Text('Mon impact de vendeur', style: _st(15, w: FontWeight.w700)),
+            const SizedBox(height: 4),
+            Text('Calculé sur les commandes payées de vos annonces. Le poids de matériaux récupérés est celui que vous avez déclaré sur vos annonces.', style: _st(11.5, c: _grey)),
+            const SizedBox(height: 12),
+            Wrap(spacing: 12, runSpacing: 12, children: [
+              _kpi('Commandes payées', '${seller['orders'] ?? 0}', w),
+              _kpi('Ventes (hors frais)', fcfa(((seller['sales'] as num?) ?? 0).toInt()), w),
+              _kpi('Clients servis', '${seller['clients'] ?? 0}', w),
+              _kpi('Déchets valorisés', _kg(seller['recycled_kg']), w),
+            ]),
+            if ((seller['listings'] as num? ?? 0) > 0 && (seller['recycled_listings'] as num? ?? 0) == 0)
+              Padding(padding: const EdgeInsets.only(top: 10), child: Text('Vos annonces ne sont pas déclarées en matériaux récupérés : ouvrez « Mes annonces » > « Éditer » pour le déclarer et indiquer le poids.', style: _st(12, c: _grey))),
+          ],
         ]),
       ),
     );
@@ -271,39 +312,57 @@ class SponsorReportPanel extends ConsumerWidget {
 
 /// Créations des autres établissements (écran 105) : annonces publiées dont le vendeur appartient à un autre établissement.
 class OtherInstitutionsGrid extends ConsumerWidget {
-  const OtherInstitutionsGrid({super.key, this.width = 342, this.height = 520});
+  const OtherInstitutionsGrid({super.key, this.width = 342, this.height = 520, this.showroom = false});
   final double width, height;
+
+  /// Showroom national (270) : tous les établissements, le sien et ses propres créations compris.
+  final bool showroom;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final all = ref.watch(otherListingsProvider);
+    final provider = showroom ? showroomListingsProvider : otherListingsProvider;
+    final all = ref.watch(provider);
     if (all == null) return _note('Chargement des créations…', width);
-    if (ref.read(otherListingsProvider.notifier).error) return _note('Les créations ne peuvent pas être chargées pour le moment.', width);
+    if (ref.read(provider.notifier).error) return _note('Les créations ne peuvent pas être chargées pour le moment.', width);
     final city = showroomCities[ref.watch(showroomCityProvider).clamp(0, showroomCities.length - 1)];
     final list = [
       for (final x in all)
         if (city.isEmpty || '${x['institution']}'.toLowerCase().contains(city)) x,
     ];
-    if (list.isEmpty && city.isNotEmpty) return _note('Aucune création de cet établissement pour le moment.', width);
-    if (list.isEmpty) return _note('Aucune création d’un autre établissement pour le moment.\nLes annonces des étudiants des autres établissements apparaîtront ici.', width);
+    final more = ref.read(provider.notifier).hasMore;
+    if (list.isEmpty && city.isNotEmpty && !more) return _note('Aucune création de cet établissement pour le moment.', width);
+    if (list.isEmpty && !more) return _note(showroom ? 'Aucune création publiée pour le moment.' : 'Aucune création d’un autre établissement pour le moment.\nLes annonces des étudiants des autres établissements apparaîtront ici.', width);
     return SizedBox(
       width: width,
       height: height,
       child: ListView.separated(
         padding: EdgeInsets.zero,
-        itemCount: list.length,
+        itemCount: list.length + (more ? 1 : 0),
         separatorBuilder: (_, _) => const Divider(height: 18, thickness: 1, color: Color(0xFFF2EFF6)),
         itemBuilder: (_, i) {
+          if (i == list.length) {
+            return Center(child: TextButton(onPressed: () => ref.read(provider.notifier).more(), child: Text('Voir plus de créations', style: _st(13, w: FontWeight.w700, c: const Color(0xFF5A3FE0)))));
+          }
           final x = list[i];
+          final img = mImageUrl(x['image']);
           return GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: '${x['id'] ?? ''}'.isEmpty ? null : () => GoRouter.of(context).push('/marche/produit/${x['id']}'),
             child: Row(children: [
+              if (showroom)
+                Container(
+                  width: 48,
+                  height: 48,
+                  margin: const EdgeInsets.only(right: 12),
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(color: const Color(0xFFEDE9F6), borderRadius: BorderRadius.circular(12)),
+                  child: img.isEmpty ? null : gNetImage(img, fit: BoxFit.cover, errorBuilder: (_, _, _) => const ColoredBox(color: Color(0xFFEDE9F6))),
+                ),
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text('${x['title']}', maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(13.5, w: FontWeight.w600)),
                   const SizedBox(height: 2),
-                  Text('${x['institution']}', maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(11.5, c: const Color(0xFF5A3FE0))),
+                  Text(x['is_mine'] == true ? '${x['institution']} · Votre annonce' : '${x['institution']}', maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(11.5, c: const Color(0xFF5A3FE0))),
                 ]),
               ),
               Text(fcfa(((x['price'] as num?) ?? 0).toInt()), style: _st(12.5, w: FontWeight.w700)),

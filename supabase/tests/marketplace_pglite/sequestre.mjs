@@ -38,7 +38,7 @@ export async function run(db) {
   await fails('versement : impossible avant livraison', `select payout_create('${S1}', 1000)`, /solde disponible \(0 FCFA\)/);
   // livraison -> deblocage
   await sup();
-  await db.exec(`update order_lines set fulfillment = 4 where order_id = '${o1}' and listing_id = '${l1}'`);
+  await db.exec(`update order_lines set fulfillment = 4, confirmed_at = now(), confirmed_via = 'buyer' where order_id = '${o1}' and listing_id = '${l1}'`);
   await as(S1);
   w = (await q(`select my_money() r`))[0].r;
   check('livraison : 7000 debloques pour le vendeur 1', w.available === 7000 && w.held === 0 && w.released === 7000);
@@ -57,7 +57,7 @@ export async function run(db) {
   // reclamation ouverte : le deblocage attend
   await sup();
   await db.exec(`insert into claims (order_id, claimant_id, seller_id, reason, details) values ('${o1}', '${B}', '${S2}', 'damaged', 'Table abimee a la livraison, photo disponible')`);
-  await db.exec(`update order_lines set fulfillment = 4 where order_id = '${o1}' and listing_id = '${l2}'`);
+  await db.exec(`update order_lines set fulfillment = 4, confirmed_at = now(), confirmed_via = 'buyer' where order_id = '${o1}' and listing_id = '${l2}'`);
   await as(S2);
   check('reclamation ouverte : l argent reste en sequestre', (await q(`select my_money() r`))[0].r.available === 0);
   // blocage / deblocage par l'administrateur
@@ -83,7 +83,7 @@ export async function run(db) {
   // paiement a la livraison : part a reverser
   const o3 = await newOrder('#T-3', true, [[l1, 'Lampe', 10000, 1]]);
   await db.exec(`update orders set paid = true where id = '${o3}'`);
-  await db.exec(`update order_lines set fulfillment = 4 where order_id = '${o3}'`);
+  await db.exec(`update order_lines set fulfillment = 4, confirmed_at = now(), confirmed_via = 'buyer' where order_id = '${o3}'`);
   check('paiement a la livraison : part a recouvrer (30 % = 3000)', (await q(`select status, institution_amount + platform_amount as du from money_entries where order_id = '${o3}'`))[0].du === 3000);
   await as(S1);
   w = (await q(`select my_money() r`))[0].r;

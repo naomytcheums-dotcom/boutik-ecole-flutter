@@ -97,19 +97,31 @@ Future<void> deleteProfileLink(BuildContext context, WidgetRef ref, List<Profile
   return (short: '', color: kAccent);
 }
 
+/// Liens https:// d'une AUTRE personne (RPC profile_links_public : selon la visibilité de son profil).
+final publicProfileLinksProvider = FutureProvider.autoDispose.family<List<ProfileLink>, String>((ref, userId) async {
+  final r = await Backend.rpc('profile_links_public', {'p_user': userId});
+  if (r.error != null) throw StateError(r.error!);
+  return [
+    for (final l in (r.data is List ? r.data as List : const []))
+      if (l is Map && '${l['url'] ?? ''}'.startsWith('https://')) ProfileLink('${l['label'] ?? ''}'.trim(), '${l['url']}'),
+  ];
+}, retry: (_, _) => null);
+
 /// Icônes du profil (écran 10) : uniquement les liens réellement enregistrés, ouverts tels quels. Au plus quatre ; la liste complète
-/// est dans « Mes liens et réseaux ».
+/// est dans « Mes liens et réseaux ». Avec [userId], liens publics d'une autre personne (lecture seule).
 class ProfileLinkIcons extends ConsumerWidget {
-  const ProfileLinkIcons({super.key});
+  const ProfileLinkIcons({super.key, this.userId});
+  final String? userId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final links = ref.watch(savedProfileLinksProvider);
+    final other = (userId ?? '').isNotEmpty;
+    final links = other ? ref.watch(publicProfileLinksProvider(userId!)) : ref.watch(savedProfileLinksProvider);
     return links.when(
       loading: () => const SizedBox.shrink(),
       error: (_, _) => Align(alignment: Alignment.centerLeft, child: Text('Liens indisponibles', style: intText(11, color: kMuted))),
       data: (list) {
-        if (list.isEmpty) return Align(alignment: Alignment.centerLeft, child: Text('Aucun lien · touchez +', style: intText(11, color: kMuted)));
+        if (list.isEmpty) return Align(alignment: Alignment.centerLeft, child: Text(other ? 'Aucun lien partagé' : 'Aucun lien · touchez +', style: intText(11, color: kMuted)));
         return Row(children: [
           for (final l in list.take(4))
             Padding(

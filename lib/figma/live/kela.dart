@@ -76,6 +76,20 @@ String _kelaFailure(FunctionException e) {
   return server.isNotEmpty ? server : 'Kéla est momentanément indisponible. Réessayez dans un instant.';
 }
 
+/// Kéla est-elle activée sur le serveur ? `false` : la clé de l'IA manque (le serveur répond 503) ; `true` : activée ou état inconnu
+/// (panne réseau : on laisse essayer, l'échec sera annoncé tel quel). Aucune réponse n'est jamais simulée.
+final kelaAvailableProvider = FutureProvider<bool>((ref) async {
+  if (!Backend.ready) return true;
+  try {
+    await Supabase.instance.client.functions.invoke('kela-chat', body: {'status': true});
+    return true;
+  } on FunctionException catch (e) {
+    return e.status != 503;
+  } catch (_) {
+    return true;
+  }
+});
+
 /// Fil de conversation avec Kéla : l'historique est gardé pour la session et renvoyé à chaque message pour que Kéla s'en souvienne.
 class KelaThread extends Notifier<KelaThreadState> {
   @override
@@ -207,6 +221,13 @@ Future<void> kelaToggle(WidgetRef ref, bool listening, BuildContext context, {bo
   if (!listening) return _kelaFinish(n, text, thread, context, openThread);
   if (n.listening) return;
   if (!await requireLogin(context, ref, 'parler à Kéla') || !context.mounted) return;
+  if (!await ref.read(kelaAvailableProvider.future) || !context.mounted) {
+    if (context.mounted) {
+      gToast(context, kelaNotConfigured);
+      if (openThread) gOpen(context, '232');
+    }
+    return;
+  }
   text.set('');
   n.start();
   _speechEnded = () => unawaited(_kelaFinish(n, text, thread, context, openThread));
@@ -267,6 +288,10 @@ class _KelaThreadPanelState extends ConsumerState<KelaThreadPanel> {
     final t = _field.text.trim();
     if (t.length < 2 || ref.read(kelaThreadProvider).busy) return;
     if (!await requireLogin(context, ref, 'écrire à Kéla') || !mounted) return;
+    if (!await ref.read(kelaAvailableProvider.future) || !mounted) {
+      if (mounted) gToast(context, kelaNotConfigured);
+      return;
+    }
     _field.clear();
     setState(() {});
     await ref.read(kelaThreadProvider.notifier).send(t);
@@ -313,13 +338,21 @@ class _KelaThreadPanelState extends ConsumerState<KelaThreadPanel> {
       });
     });
     final hasText = _field.text.trim().length >= 2;
+    final available = ref.watch(kelaAvailableProvider).value ?? true;
     return Column(children: [
+      if (!available)
+        Container(
+          margin: const EdgeInsets.fromLTRB(20, 4, 20, 4),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(color: const Color(0x33F5A524), borderRadius: BorderRadius.circular(14)),
+          child: Text(kelaNotConfigured, style: _st(12, c: const Color(0xFF7A4B00))),
+        ),
       Expanded(
         child: ListView(
           controller: _scroll,
           padding: const EdgeInsets.fromLTRB(22, 8, 22, 12),
           children: [
-            _bubble('Décris-moi ton besoin : ce que tu veux, ton style et ton budget. Je prépare le brief.', mine: false),
+            _bubble(available ? 'Décris-moi ton besoin : ce que tu veux, ton style et ton budget. Je prépare le brief.' : 'Kéla n’est pas encore disponible.', mine: false),
             for (final m in t.messages) _bubble(m.text, mine: m.mine, failed: m.failed),
             if (phase == KelaPhase.listening) _bubble(heard.isEmpty ? 'Je t’écoute…' : heard, mine: true),
             if (t.busy) _bubble('Kéla réfléchit…', mine: false),
@@ -361,7 +394,7 @@ class _KelaThreadPanelState extends ConsumerState<KelaThreadPanel> {
                 onSubmitted: (_) => _send(),
                 style: _st(13),
                 cursorColor: const Color(0xFF6A4DFF),
-                decoration: InputDecoration(isCollapsed: true, border: InputBorder.none, hintText: 'Écris ou parle à Kéla…', hintStyle: _st(13, c: const Color(0xFF57545F), w: FontWeight.w400)),
+                decoration: InputDecoration(isCollapsed: true, border: InputBorder.none, hintText: available ? 'Écris ou parle à Kéla…' : 'Kéla n’est pas encore activée', hintStyle: _st(13, c: const Color(0xFF57545F), w: FontWeight.w400)),
               ),
             ),
             const SizedBox(width: 6),
@@ -370,11 +403,11 @@ class _KelaThreadPanelState extends ConsumerState<KelaThreadPanel> {
               label: 'Envoyer le message',
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
-                onTap: hasText && !t.busy ? _send : null,
+                onTap: hasText && !t.busy && available ? _send : null,
                 child: Container(
                   width: 44,
                   height: 44,
-                  decoration: BoxDecoration(shape: BoxShape.circle, color: hasText && !t.busy ? _ink : const Color(0x33111015)),
+                  decoration: BoxDecoration(shape: BoxShape.circle, color: hasText && !t.busy && available ? _ink : const Color(0x33111015)),
                   child: const Icon(Icons.arrow_upward_rounded, size: 22, color: Colors.white),
                 ),
               ),

@@ -63,7 +63,7 @@ set role authenticated;
 do $$ declare e uuid; begin
   select v::uuid into e from ids where k = 'entry';
   perform duel_vote(e);
-  insert into res values (default, 'X17 le vote est compté', (select (x->>'votes')::int from jsonb_array_elements(duels_list()) d, jsonb_array_elements(d->'entries') x where x->>'id' = e::text) = 1, '');
+  insert into res values (default, 'X17 le vote est compté (compteur masqué tant que le duel est ouvert)', (select (x->>'my_vote')::boolean and x->'votes' = 'null'::jsonb from jsonb_array_elements(duels_list()) d, jsonb_array_elements(d->'entries') x where x->>'id' = e::text), '');
   begin perform duel_vote(e); insert into res values (default, 'X18 double vote refusé', false, 'accepté'); exception when others then insert into res values (default, 'X18 double vote refusé', sqlerrm like 'Vous avez déjà voté%', sqlerrm); end;
 end $$;
 reset role;

@@ -9,6 +9,7 @@ export async function run(db) {
   for (const [id, nm, skills] of [[A, 'Awa Etudiante', 'Flutter'], [B, 'Boris Etudiant', 'Figma'], [C, 'Cora Etudiante', 'Marketing']]) {
     await db.exec(`insert into auth.users(id,email) values ('${id}','${nm.split(' ')[0]}@t.cm'); insert into profiles(id,name,role,email,skills) values ('${id}','${nm}','student','${nm.split(' ')[0]}@t.cm','${skills}')`);
   }
+  await db.exec(`insert into mate_consents(user_id, visible) values ('${A}', true), ('${B}', true), ('${C}', true)`);
   await as(A);
   const inv = (await q(`select teammate_invite('${B}', 'On monte une equipe') id`))[0].id;
   await fails('message : invitation pas encore acceptee', `select teammate_message_send('${inv}', 'Salut')`, /acceptée/);

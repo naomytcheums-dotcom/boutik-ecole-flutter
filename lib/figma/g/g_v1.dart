@@ -96,6 +96,8 @@ class G_V1 extends ConsumerWidget {
       gP(276, 692, 80, 32, gBox(color: Color(0xFF111015), radii: [16, 16, 16, 16]), show: demoContent),
       gP(287, 700, 58, 14, gText('S’abonner', 11.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center), show: demoContent),
       gP(36, 744, 183, 21, gText(gm('Lampe en bois recyclé', ''), 17, Color(0xFF111015), weight: 600), show: demoContent),
+      // Maquette (étoiles, compteurs, « Dans le même métier », angles du produit, recommandations) : jamais affichée en production.
+      if (demoContent) ...[
       gP(34.083, 770.083, 16.833, 16.292, gImg('assets/figma/v/a191f48b00a67b.svg')),
       gP(50.083, 770.083, 16.833, 16.292, gImg('assets/figma/v/a191f48b00a67b.svg')),
       gP(66.083, 770.083, 16.833, 16.292, gImg('assets/figma/v/a191f48b00a67b.svg')),
@@ -139,6 +141,7 @@ class G_V1 extends ConsumerWidget {
       gP(235.75, 1487.75, 13.5, 13.125, gImg('assets/figma/v/7f531b21f45797.svg')),
       gP(247.75, 1487.75, 13.5, 13.125, gImg('assets/figma/v/7f531b21f45797.svg')),
       gP(259.75, 1487.75, 13.5, 13.125, gImg('assets/figma/v/7f531b21f45797.svg')),
+      ],
       gP(22, 1520, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
       gP(47.5, 1541.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(47.125, 1541.125, 20, 20, gImg('assets/figma/v/96285515fb0e14.svg')),
@@ -155,13 +158,13 @@ class G_V1 extends ConsumerWidget {
       gP(169, 1526, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gTab(context, '03')),
       gP(184, 1541, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 1539.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
-      gP(200.333, 815, 19.333, 14.333, gImg('assets/figma/v/9c92298f9fd6b2.svg')),
-      gP(203.667, 806.667, 12.667, 9.333, gImg('assets/figma/v/bb8ad3c4792df6.svg')),
-      gP(207, 806.667, 6, 16.833, gImg('assets/figma/v/5bb53be308dfb1.svg')),
+      gP(200.333, 815, 19.333, 14.333, gImg('assets/figma/v/9c92298f9fd6b2.svg'), show: demoContent),
+      gP(203.667, 806.667, 12.667, 9.333, gImg('assets/figma/v/bb8ad3c4792df6.svg'), show: demoContent),
+      gP(207, 806.667, 6, 16.833, gImg('assets/figma/v/5bb53be308dfb1.svg'), show: demoContent),
       gTap(317.5, 104, 59, 32, () { gOpen(context, '223'); }), // audit 01/11 : « Voir tout » n'avait aucun effet
       if (demoContent) gTap(276, 692, 80, 32, () { uiFollow(context); }), // audit 01/11 : « S’abonner » n'avait aucun effet
-      gTap(220, 801, 60, 32, () { uiCopy(context, uiLink('V1'), 'Lien de la vitrine'); }), // audit 01/11 : « Partager » n'avait aucun effet
-      gTap(310, 801, 44, 32, () { gOpen(context, '31'); }), // audit 01/11 : « Noter » n'avait aucun effet
+      if (demoContent) gTap(220, 801, 60, 32, () { uiCopy(context, uiLink('V1'), 'Lien de la vitrine'); }), // audit 01/11 : « Partager » n'avait aucun effet
+      if (demoContent) gTap(310, 801, 44, 32, () { gOpen(context, '31'); }), // audit 01/11 : « Noter » n'avait aucun effet
       if (!demoContent) gP(24, 125, 342, 620, const LiveRoom(width: 342, height: 620)),
     ]);
   }

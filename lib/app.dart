@@ -10,8 +10,10 @@ import 'core/state/app_settings.dart';
 import 'core/theme/app_theme.dart';
 import 'figma/gsound.dart' show GAnim;
 import 'figma/i18n.dart' show I18n, I18nScope;
-import 'figma/live/auth.dart' show appSessionExpired, authProvider;
+import 'figma/live/auth.dart' show appSessionExpired, authProvider, requireLogin;
 import 'figma/live/access.dart' show roleKey;
+import 'figma/live/kiosk_mode.dart' show KioskIdleGuard, KioskTerminal;
+import 'figma/live/qr.dart' show handleQrToken, pendingQrToken;
 import 'figma/live/test_accounts.dart' show TestAccountBanner;
 import 'figma/gdata.dart';
 import 'figma/live/device_prefs.dart' show accessPrefs149Provider, accessPrefsProvider, dataPrefsProvider, textSizeProvider;
@@ -44,6 +46,26 @@ class _BoutikEcoleAppState extends ConsumerState<BoutikEcoleApp> {
     _router.routerDelegate.addListener(_ordersScreen);
     _router.routerDelegate.addListener(_missionScreen);
     _router.routerDelegate.addListener(_orderDetailScreen);
+    // Code QR lu par l'appareil photo ordinaire (adresse « …/?qr=<jeton> ») : traité une fois l'écran de départ en place.
+    if (pendingQrToken != null) Future.delayed(const Duration(milliseconds: 900), _openPendingQr);
+  }
+
+  bool _qrPrompted = false;
+
+  /// Résout le code QR de l'adresse d'ouverture. Sans compte, la connexion est proposée une fois ; le code est repris dès la connexion.
+  Future<void> _openPendingQr() async {
+    final token = pendingQrToken;
+    if (token == null || !mounted || !Backend.ready) return;
+    final ctx = _router.routerDelegate.navigatorKey.currentContext;
+    if (ctx == null) return;
+    if (ref.read(authProvider).current == null) {
+      if (_qrPrompted) return;
+      _qrPrompted = true;
+      await requireLogin(ctx, ref, 'ouvrir ce code QR');
+      return;
+    }
+    pendingQrToken = null;
+    await handleQrToken(ctx, ref, token);
   }
 
   void _onRecovery() {
@@ -91,7 +113,7 @@ class _BoutikEcoleAppState extends ConsumerState<BoutikEcoleApp> {
       });
       return;
     }
-    if (!redirectMissionScreen(ready: Backend.ready, loaded: ref.read(missionLoadedProvider), mission: ref.read(missionProvider))) return;
+    if (!redirectMissionScreen(ready: Backend.ready, loaded: ref.read(missionLoadedProvider), mission: ref.read(missionProvider), screen: here, role: roleKey(ref.read(authProvider).current))) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || screenOf(_router) != here) return;
       _router.pushReplacement(screenPath('191'));
@@ -133,6 +155,9 @@ class _BoutikEcoleAppState extends ConsumerState<BoutikEcoleApp> {
       GAnim.enabled = !accMotion;
     }
     if (Backend.ready) {
+      ref.listen(authProvider.select((a) => a.current?.serverId ?? ''), (_, id) {
+        if (id.isNotEmpty && pendingQrToken != null) _openPendingQr();
+      });
       ref.listen(ordersLoadedProvider, (_, _) => _ordersScreen());
       ref.listen(ordersProvider, (_, _) => _ordersScreen());
       ref.listen(ordersLoadedProvider, (_, _) => _orderDetailScreen());
@@ -170,7 +195,7 @@ class _BoutikEcoleAppState extends ConsumerState<BoutikEcoleApp> {
               highContrast: mq.highContrast || settings.highContrast || accContrast,
               disableAnimations: mq.disableAnimations || settings.reduceMotion || accMotion,
             ),
-            child: TestAccountBanner(child: child!),
+            child: TestAccountBanner(child: KioskTerminal.active ? KioskIdleGuard(child: child!) : child!),
           ),
         ),
         );

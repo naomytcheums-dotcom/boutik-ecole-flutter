@@ -2,6 +2,7 @@ import '../gdata.dart' show gNetImage;
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:video_player/video_player.dart';
 
 import '../nav.dart';
@@ -215,11 +216,20 @@ class CommentsHost extends ConsumerStatefulWidget {
 class _CommentsHostState extends ConsumerState<CommentsHost> {
   bool _opened = false;
 
-  void _openSheet(Reel r) {
+  /// Publication visée par l'adresse (`/s/252?post=<id>`), par exemple depuis une notification de commentaire ; vide sans paramètre.
+  String _linkedPost() {
+    try {
+      return GoRouterState.of(context).uri.queryParameters['post']?.trim() ?? '';
+    } catch (_) {
+      return '';
+    }
+  }
+
+  void _openSheet(String postId) {
     _opened = true;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) return;
-      await showCommentsSheet(context, r.id);
+      await showCommentsSheet(context, postId);
       if (mounted) gBack(context);
     });
   }
@@ -229,9 +239,11 @@ class _CommentsHostState extends ConsumerState<CommentsHost> {
     final feed = ref.watch(reelsProvider);
     final failed = ref.watch(reelsLoadErrorProvider);
     final r = ref.watch(currentReelProvider);
-    if (r != null && !_opened) _openSheet(r);
+    final linked = _linkedPost();
+    if (linked.isNotEmpty && !_opened) _openSheet(linked);
+    if (linked.isEmpty && r != null && !_opened) _openSheet(r.id);
     Widget? status;
-    if (r == null) {
+    if (r == null && linked.isEmpty) {
       if (feed == null && !failed) {
         status = const Center(child: SizedBox(width: 30, height: 30, child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white)));
       } else {

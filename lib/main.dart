@@ -10,6 +10,8 @@ import 'figma/live/auth.dart';
 import 'figma/live/backend.dart';
 import 'figma/live/drafts.dart';
 import 'figma/live/referral.dart' show capturePendingReferral;
+import 'figma/live/kiosk_mode.dart' show KioskTerminal;
+import 'figma/live/qr.dart' show capturePendingQr;
 import 'figma/live/native_push_stub.dart'
     if (dart.library.io) 'figma/live/native_push.dart'
     as native_push;
@@ -38,6 +40,10 @@ Future<void> main() async {
   await native_push.initNativePush().timeout(limite, onTimeout: () {});
   await Drafts.load().timeout(limite, onTimeout: () {});
   await capturePendingReferral().timeout(limite, onTimeout: () {});
+  capturePendingQr();
+  // Terminal public (?kiosk=…&kt=…) : jamais de session personnelle, battement de cœur de la borne.
+  KioskTerminal.configure();
+  await KioskTerminal.start().timeout(limite, onTimeout: () {});
   await I18n.init();
   final remembered = await loadRemembered().timeout(const Duration(seconds: 25), onTimeout: () => null);
   // Session restaurée d'un compte protégé par la vérification en 2 étapes : le code est exigé avant tout accès (porte SecondFactorGate).
@@ -130,6 +136,7 @@ class _AppRootState extends State<AppRoot> {
 
   /// Session ouverte : accueil du rôle. Premier démarrage : présentation S1 (qui passe seule à 01). Sinon : accueil visiteur.
   String get _startLocation {
+    if (KioskTerminal.active) return '/s/206';
     if (_expired) return '/s/150-2';
     if (_loggedOut) return '/s/03';
     final a = widget.remembered;

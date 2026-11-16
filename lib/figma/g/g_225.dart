@@ -37,8 +37,8 @@ class G_225 extends ConsumerWidget {
       gP(42.65, 82.65, 18.7, 18.7, const SizedBox.expand(), tap: () => gBack(context)),
       gP(43.546, 83.546, 11.454, 16.908, gImg('assets/figma/v/eadfa38ab5fb32.svg')),
       gP(43.546, 89, 16.908, 6, gImg('assets/figma/v/876f9e4ca5bd5d.svg')),
-      gP(151, 82, 88, 21, gText(gm('Jumeau 3D', ''), 17, Color(0xFF111015), weight: 500)),
-      gP(316, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),
+      gP(151, 82, 88, 21, gText('Jumeau 3D', 17, Color(0xFF111015), weight: 500)),
+      gP(316, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context), show: demoContent),
       gP(85, 190, 220, 220, gBox(color: Color(0x8CCDB2F2), layerBlur: 60, oval: true), fx: 'halo', show: demoContent),
       gP(42, 403, 306, 98, gImg('assets/figma/v/7e3a50b24384df.svg'), show: demoContent),
       gP(42, 403, 306, 98, gImg('assets/figma/v/8a0a52a519aa8c.svg'), show: demoContent),
@@ -69,9 +69,9 @@ class G_225 extends ConsumerWidget {
       gP(44, 746, 303, 28, gText('Bois de récupération, finition huile naturelle. Fabriquée par l’atelier Génie civil.', 11.5, Color(0xFF5B5963), wrap: true), show: demoContent),
       gP(44, 788, 302, 40, gBox(color: Color(0xFF111015), radii: [100, 100, 100, 100]), show: demoContent),
       gP(90.5, 800, 209, 16, gText('Voir chez moi en réalité augmentée', 12.5, Color(0xFFFFFFFF), weight: 600), show: demoContent),
-      gP(328.333, 89, 19.333, 14.333, gImg('assets/figma/v/9c92298f9fd6b2.svg')),
-      gP(331.667, 80.667, 12.667, 9.333, gImg('assets/figma/v/bb8ad3c4792df6.svg')),
-      gP(335, 80.667, 6, 16.833, gImg('assets/figma/v/5bb53be308dfb1.svg')),
+      gP(328.333, 89, 19.333, 14.333, gImg('assets/figma/v/9c92298f9fd6b2.svg'), show: demoContent),
+      gP(331.667, 80.667, 12.667, 9.333, gImg('assets/figma/v/bb8ad3c4792df6.svg'), show: demoContent),
+      gP(335, 80.667, 6, 16.833, gImg('assets/figma/v/5bb53be308dfb1.svg'), show: demoContent),
       if (demoContent) gTap(82.5, 792, 225, 32, () { gOpen(context, '226'); }), // lien métier 225 -> 226
       if (!demoContent) gP(24, 125, 342, 620, const ProductNoModel(width: 342)),
     ]);

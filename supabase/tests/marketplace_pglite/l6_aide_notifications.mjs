@@ -125,6 +125,7 @@ export async function run(db) {
   const inst = (await q(`insert into institutions(name, short_name, city, status) values ('Institut L6', 'IL6', 'Douala', 'verified') returning id`))[0].id;
   const dep = (await q(`insert into departments(institution_id, name, status) values ('${inst}', 'Génie L6', 'verified') returning id`))[0].id;
   await db.exec(`update profiles set department_id = '${dep}', skills = 'Flutter, SQL' where id = '${U(24)}'`);
+  await db.exec(`insert into user_documents (owner_id, kind, name, path, mime, size_bytes, status) values ('${U(24)}', 'student_card', 'c', '${U(24)}/c.pdf', 'application/pdf', 10, 'verified')`);
   await as(null, 'anon');
   const dv = (await q(`select department_detail('${dep}') d`))[0].d;
   check('département : fiche visiteur sans étudiants à la une', dv.name === 'Génie L6' && dv.students === 1 && dv.featured.length === 0, JSON.stringify(dv));

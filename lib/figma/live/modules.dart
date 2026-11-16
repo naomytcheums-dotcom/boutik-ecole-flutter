@@ -279,7 +279,7 @@ Future<void> inviteFromContacts(BuildContext context, WidgetRef ref, String msg)
 
 // ------------------------------------------------------------------ duels de talents
 
-final duelsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => RpcRows('duels_list', const {}, true));
+final duelsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => RpcRows('duels_list', const {'p_limit': 100}, true));
 
 class _DuelsBase extends ConsumerWidget {
   const _DuelsBase({super.key, required this.open, required this.width, required this.height});
@@ -307,6 +307,7 @@ class _DuelsBase extends ConsumerWidget {
           final winnerId = '${d['winner_id'] ?? ''}';
           final myVote = entries.any((e) => e['my_vote'] == true);
           final iAmCreator = d['mine'] == true;
+          final iEntered = d['my_entry'] == true || entries.any((e) => e['mine'] == true);
           final me = Backend.userId;
           return Container(
             padding: const EdgeInsets.all(16),
@@ -322,12 +323,22 @@ class _DuelsBase extends ConsumerWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 6),
                   child: Row(children: [
-                    Expanded(child: Text('${e['author']} · ${e['title']}${!open && winnerEntry.isNotEmpty && '${e['id']}' == winnerEntry ? '  🏆' : ''}', style: _st(13, w: FontWeight.w600))),
-                    Text('${e['votes']} vote${(e['votes'] as num) == 1 ? '' : 's'}', style: _st(11.5, c: _grey)),
+                    Expanded(
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text('${e['author']}${e['mine'] == true ? ' (vous)' : ''} · ${e['title']}${!open && winnerEntry.isNotEmpty && '${e['id']}' == winnerEntry ? '  🏆' : ''}', style: _st(13, w: FontWeight.w600)),
+                        if ('${e['link'] ?? ''}'.isNotEmpty)
+                          GestureDetector(
+                            onTap: () => openUrl(context, '${e['link']}'),
+                            child: Padding(padding: const EdgeInsets.only(top: 2), child: Text('Voir le visuel ou le dossier joint', style: _st(11.5, w: FontWeight.w700, c: const Color(0xFF5A3FE0)))),
+                          ),
+                      ]),
+                    ),
+                    if (e['votes'] != null) Text('${e['votes']} vote${(e['votes'] as num) == 1 ? '' : 's'}', style: _st(11.5, c: _grey)),
                     if (open && e['my_vote'] == true) ...[const SizedBox(width: 8), Text('Voté ✓', style: _st(11.5, w: FontWeight.w700, c: const Color(0xFF0F7A52)))]
-                    else if (open && !myVote && !iAmCreator && (me == null || '${e['author_id']}' != me)) ...[const SizedBox(width: 8), _btn('Voter', () async { if (!await requireLogin(context, ref, 'voter') || !context.mounted) return; if (await _run(context, 'duel_vote', {'p_entry': '${e['id']}'}, 'Vote enregistré.')) await ref.read(duelsProvider.notifier).refresh(); })],
+                    else if (open && !myVote && !iAmCreator && !iEntered && (me == null || '${e['author_id']}' != me)) ...[const SizedBox(width: 8), _btn('Voter', () async { if (!await requireLogin(context, ref, 'voter') || !context.mounted) return; if (await _run(context, 'duel_vote', {'p_entry': '${e['id']}'}, 'Vote enregistré.')) await ref.read(duelsProvider.notifier).refresh(); })],
                   ]),
                 ),
+              if (open && entries.isNotEmpty) Text('Les votes sont affichés à la fin du duel. Les participants ne votent pas.', style: _st(10.5, c: _grey)),
               if (!open && entries.isNotEmpty && winnerEntry.isEmpty) Text('Aucun gagnant : aucun vote n’a été enregistré.', style: _st(12.5, c: _grey)),
               if (!open && winnerEntry.isNotEmpty)
                 Padding(
@@ -340,10 +351,13 @@ class _DuelsBase extends ConsumerWidget {
                     gOpenProfile(context, winnerId);
                   }, dark: false),
                 ),
-              if (open && !iAmCreator) Padding(padding: const EdgeInsets.only(top: 8), child: _btn('Participer', () async {
+              if (open && !iAmCreator && !iEntered) Padding(padding: const EdgeInsets.only(top: 8), child: _btn('Participer', () async {
                 if (!await requireLogin(context, ref, 'participer à un duel') || !context.mounted) return;
                 if (roleKey(ref.read(authProvider).current) != 'student') return gToast(context, 'Seuls les étudiants peuvent participer à un duel.');
                 await enterDuelDialog(context, ref, '${d['id']}');
+              }, dark: false)),
+              if (open && iEntered) Padding(padding: const EdgeInsets.only(top: 8), child: _btn('Retirer ma proposition', () async {
+                if (await _run(context, 'duel_withdraw', {'p_duel': '${d['id']}'}, 'Proposition retirée.')) await ref.read(duelsProvider.notifier).refresh();
               }, dark: false)),
               if (open && iAmCreator) Text('C’est votre duel : vous ne votez pas et vous ne participez pas.', style: _st(11.5, c: _grey)),
             ]),
@@ -364,10 +378,22 @@ class DuelResultsPanel extends _DuelsBase {
 
 Future<void> enterDuelDialog(BuildContext context, WidgetRef ref, String duel) async {
   final t = TextEditingController();
-  final ok = await showDialog<bool>(context: context, builder: (c) => AlertDialog(title: const Text('Ma proposition'), content: TextField(controller: t, decoration: const InputDecoration(labelText: 'Titre de ma proposition')), actions: [TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('Annuler')), TextButton(onPressed: () => Navigator.pop(c, true), child: const Text('Envoyer'))]));
+  final link = TextEditingController();
+  final ok = await showDialog<bool>(
+      context: context,
+      builder: (c) => AlertDialog(
+            title: const Text('Ma proposition'),
+            content: Column(mainAxisSize: MainAxisSize.min, children: [
+              TextField(controller: t, decoration: const InputDecoration(labelText: 'Titre de ma proposition')),
+              TextField(controller: link, keyboardType: TextInputType.url, decoration: const InputDecoration(labelText: 'Lien vers mon visuel ou mon dossier (facultatif)', hintText: 'https://…')),
+            ]),
+            actions: [TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('Annuler')), TextButton(onPressed: () => Navigator.pop(c, true), child: const Text('Envoyer'))],
+          ));
   if (ok != true || !context.mounted) return;
   if (t.text.trim().length < 2) return gToast(context, 'Donnez un titre à votre proposition (2 caractères au moins).');
-  if (await _run(context, 'duel_enter', {'p_duel': duel, 'p_title': t.text.trim()}, 'Participation enregistrée.')) await ref.read(duelsProvider.notifier).refresh();
+  final l = link.text.trim();
+  if (l.isNotEmpty && !RegExp(r'^https?://[^\s]+\.[^\s]+$').hasMatch(l)) return gToast(context, 'Le lien doit commencer par https:// (ou laissez le champ vide).');
+  if (await _run(context, 'duel_enter', {'p_duel': duel, 'p_title': t.text.trim(), if (l.isNotEmpty) 'p_link': l}, 'Participation enregistrée.')) await ref.read(duelsProvider.notifier).refresh();
 }
 
 class DuelCreateForm extends ConsumerStatefulWidget {

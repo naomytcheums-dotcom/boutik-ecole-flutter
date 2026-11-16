@@ -233,7 +233,7 @@ void main() {
     expect(find.text(mFcfa(90000)), findsOneWidget);
     expect(find.text('2.5 %'), findsOneWidget);
     expect(find.text('Lampe en bois'), findsOneWidget);
-    expect(find.text('Chiffre d’affaires par jour'), findsOneWidget);
+    expect(find.text('Ventes brutes par jour'), findsOneWidget);
     await tester.tap(find.text('7 jours'));
     expect(tester.takeException(), isNull);
   });

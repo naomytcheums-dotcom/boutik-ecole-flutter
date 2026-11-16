@@ -24,6 +24,8 @@ import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
 import '../live/lots.dart';
+import '../live/access.dart' show roleKey;
+import '../live/s8_etudiant.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_158 extends ConsumerWidget {
@@ -31,6 +33,7 @@ class G_158 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final student = roleKey(ref.watch(authProvider).current) == 'student';
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
@@ -80,10 +83,10 @@ class G_158 extends ConsumerWidget {
       gP(49, 471.167, 6.007, 6, gImg('assets/figma/v/c499ab72bb5251.svg'), show: demoContent),
       gP(76, 460, 277, 34, gText('Le classement est une aide à la décision. La décision finale reste toujours humaine.', 12, Color(0xFF4A4854), lh: 17, wrap: true), show: demoContent),
       gP(0, 744, 390, 100, gBox(color: Color(0x00FFFFFF)), show: demoContent),
-      gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => compareProposalsDialog(context, ref)),
-      gP(70, 778, 250, 18, gText(demoContent ? 'Comparer la sélection' : 'Comparer les propositions', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
+      gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => student && !demoContent ? gOpen(context, '76') : compareProposalsDialog(context, ref)),
+      gP(70, 778, 250, 18, gText(demoContent ? 'Comparer la sélection' : (student ? 'Mes candidatures' : 'Comparer les propositions'), 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
-      if (!demoContent) gP(24, 180, 342, 570, proposalsMobile(height: 570)),
+      if (!demoContent) gP(24, 180, 342, 570, student ? StudentProposals(height: 570) : proposalsMobile(height: 570)),
     ]);
   }
 }

@@ -327,6 +327,7 @@ Deno.serve(async (req) => {
   }
 
   let sent = 0;
+  const twilioToCheck: { id: number | string; channel: string; sid: string }[] = [];
 
   for (const r of rows) {
     let error: string | null = null;
@@ -334,7 +335,7 @@ Deno.serve(async (req) => {
     try {
       const { data: profile, error: profileError } = await admin
         .from("profiles")
-        .select("email, phone, name")
+        .select("email, phone, phone_verified, name")
         .eq("id", r.user_id)
         .maybeSingle();
 
@@ -367,12 +368,14 @@ Deno.serve(async (req) => {
           throw new Error(`e-mail refusé (${response.status})`);
         }
       } else if (r.channel === "sms" || r.channel === "whatsapp") {
-        if (!profile?.phone) {
-          throw new Error("pas de numéro");
+        // Adresse choisie par la file (numéro saisi aux réglages) ; à défaut, le numéro du profil, seulement s'il a été vérifié.
+        const dest = r.to_address || (profile?.phone_verified ? profile?.phone : null);
+        if (!dest) {
+          throw new Error(profile?.phone ? "numéro non vérifié" : "pas de numéro");
         }
 
         const whatsapp = r.channel === "whatsapp";
-        const to = (whatsapp ? "whatsapp:" : "") + toE164(profile.phone);
+        const to = (whatsapp ? "whatsapp:" : "") + toE164(dest);
 
         const response = await fetch(
           `https://api.twilio.com/2010-04-01/Accounts/${env("TWILIO_ACCOUNT_SID")}/Messages.json`,
@@ -406,23 +409,12 @@ Deno.serve(async (req) => {
           throw new Error(`${r.channel} refusé (${response.status}${code ? ` Twilio ${code}` : ""})`);
         }
 
-        // Statut réel après quelques secondes : un message accepté peut encore échouer (undelivered / failed).
+        // Statut réel de livraison : relevé UNE SEULE FOIS pour tout le lot, après la boucle (plus d'attente de 5 s par message).
         try {
           const sid = (await response.json())?.sid;
-          if (sid) {
-            await new Promise((res) => setTimeout(res, 5000));
-            const st = await fetch(
-              `https://api.twilio.com/2010-04-01/Accounts/${env("TWILIO_ACCOUNT_SID")}/Messages/${sid}.json`,
-              { headers: { Authorization: "Basic " + btoa(`${env("TWILIO_ACCOUNT_SID")}:${env("TWILIO_AUTH_TOKEN")}`) } },
-            );
-            const j = await st.json();
-            if (j?.status === "failed" || j?.status === "undelivered") {
-              throw new Error(`${r.channel} ${j.status} (Twilio ${j.error_code ?? "?"})`);
-            }
-            console.log(`twilio ${r.channel} statut ${j?.status}`);
-          }
-        } catch (e) {
-          if (e instanceof Error && /Twilio/.test(e.message)) throw e;
+          if (sid) twilioToCheck.push({ id: r.id, channel: r.channel, sid: String(sid) });
+        } catch {
+          // réponse non lisible : le message reste « envoyé »
         }
       } else if (r.channel === "push") {
         const { data: devices, error: devicesError } = await admin
@@ -521,6 +513,31 @@ Deno.serve(async (req) => {
     if (!error && !updateError) {
       sent++;
     }
+  }
+
+  // Contrôle de livraison Twilio pour tout le lot : une seule attente de 5 s, relevés en parallèle ; un échec marque le message « failed ».
+  if (twilioToCheck.length) {
+    await new Promise((res) => setTimeout(res, 5000));
+    const auth = "Basic " + btoa(`${env("TWILIO_ACCOUNT_SID")}:${env("TWILIO_AUTH_TOKEN")}`);
+    await Promise.all(twilioToCheck.map(async (t) => {
+      try {
+        const st = await fetch(
+          `https://api.twilio.com/2010-04-01/Accounts/${env("TWILIO_ACCOUNT_SID")}/Messages/${t.sid}.json`,
+          { headers: { Authorization: auth } },
+        );
+        const j = await st.json();
+        if (j?.status === "failed" || j?.status === "undelivered") {
+          await admin.from("notification_outbox")
+            .update({ status: "failed", last_error: `${t.channel} ${j.status} (Twilio ${j.error_code ?? "?"})`.slice(0, 200), sent_at: null })
+            .eq("id", t.id);
+          sent = Math.max(0, sent - 1);
+        } else {
+          console.log(`twilio ${t.channel} statut ${j?.status}`);
+        }
+      } catch {
+        // relevé impossible : le message reste « envoyé »
+      }
+    }));
   }
 
   return Response.json({

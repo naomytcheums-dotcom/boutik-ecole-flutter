@@ -10,7 +10,7 @@ export async function run(db) {
     await db.exec(`insert into auth.users(id,email) values ('${id}','${nm.split(' ')[0]}@t.cm'); insert into profiles(id,name,role,email) values ('${id}','${nm}','${role}','${nm.split(' ')[0]}@t.cm')`);
   }
   await as(A);
-  let r = (await q(`select shop_save('{"name":"Atelier Awa","description":"Bois recycle","logo_url":"http://x/l.png","categories":["Maison"]}'::jsonb) s`))[0].s;
+  let r = (await q(`select shop_save('{"name":"Atelier Awa","description":"Bois recycle","logo_url":"https://abcdefgh.supabase.co/storage/v1/object/public/listing-images/u/boutique/l.png","categories":["Maison"]}'::jsonb) s`))[0].s;
   check('creation boutique en brouillon, adresse derivee du nom', r.status === 'draft' && r.slug === 'atelier-awa', JSON.stringify(r));
   await as(B);
   await fails('slug deja pris refuse', `select shop_save('{"name":"Autre nom","slug":"atelier-awa"}'::jsonb)`, /déjà prise/);

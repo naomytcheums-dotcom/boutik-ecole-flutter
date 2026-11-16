@@ -47,7 +47,7 @@ void main() {
     Backend.ready = false;
   });
 
-  Future<void> monter(WidgetTester t, Widget ecran, {required bool connecte, bool large = false, List<Override> overrides = const []}) async {
+  Future<void> monter(WidgetTester t, Widget ecran, {required bool connecte, bool large = false, List<Override> overrides = const [], Account compte = demoAccount}) async {
     Backend.ready = connecte;
     GAnim.enabled = false;
     t.view.physicalSize = large ? const Size(1280, 890) : const Size(393, 852);
@@ -56,7 +56,7 @@ void main() {
     await t.pumpWidget(ProviderScope(overrides: overrides, child: MaterialApp(home: ecran)));
     await t.pumpAndSettle();
     if (connecte) {
-      ProviderScope.containerOf(t.element(find.byWidget(ecran))).read(authProvider.notifier).login(demoAccount);
+      ProviderScope.containerOf(t.element(find.byWidget(ecran))).read(authProvider.notifier).login(compte);
       await t.pumpAndSettle();
     }
   }
@@ -73,8 +73,8 @@ void main() {
     expect(find.text('0 annonce'), findsOneWidget);
   });
 
-  testWidgets('158 connecté : propositions réelles', (t) async {
-    await monter(t, const G_158(), connecte: true, overrides: [
+  testWidgets('158 connecté (client) : propositions réelles reçues sur ses besoins', (t) async {
+    await monter(t, const G_158(), connecte: true, compte: demoAccount.copyWith(role: 0), overrides: [
       companyProposalsProvider.overrideWith(() => _Rows('company_proposals', [
             {'author': 'Alice Test', 'mission': 'Logo', 'amount': 90000, 'delay_days': 7, 'status': 'submitted'}
           ]))

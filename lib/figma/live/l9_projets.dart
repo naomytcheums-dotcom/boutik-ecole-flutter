@@ -33,8 +33,8 @@ mixin _MyProjectsLoader<T extends StatefulWidget> on State<T> {
     return null;
   }
 
-  Future<void> loadProjects({bool approvedOnly = false, String preferred = ''}) async {
-    final r = await loadMyProjects(approvedOnly: approvedOnly);
+  Future<void> loadProjects({bool approvedOnly = false, String preferred = '', bool includeMember = false}) async {
+    final r = await loadMyProjects(approvedOnly: approvedOnly, includeMember: includeMember);
     if (!mounted) return;
     setState(() {
       projects = r;
@@ -74,7 +74,7 @@ class _TeamBodyState extends ConsumerState<_TeamBody> with _MyProjectsLoader<_Te
   @override
   void initState() {
     super.initState();
-    loadProjects(preferred: widget.projectId ?? '');
+    loadProjects(preferred: widget.projectId ?? '', includeMember: true);
     _loadInvitations();
   }
 
@@ -115,7 +115,7 @@ class _TeamBodyState extends ConsumerState<_TeamBody> with _MyProjectsLoader<_Te
 
   Future<void> _search() async {
     final q = query.text.trim();
-    if (q.length < 2) return gToast(context, 'Saisissez au moins 2 lettres du nom.');
+    if (q.length < 3) return gToast(context, 'Saisissez au moins 3 lettres du nom.');
     setState(() => busy = true);
     final r = await Backend.rpc('project_member_search', {'p_q': q});
     if (!mounted) return;
@@ -149,9 +149,20 @@ class _TeamBodyState extends ConsumerState<_TeamBody> with _MyProjectsLoader<_Te
     _loadMembers();
   }
 
+  Future<void> _leave() async {
+    if (!await tpConfirm(context, 'Quitter l’équipe ?', 'Vous ne verrez plus ce projet, son journal ni ses fichiers. Le porteur sera prévenu.', yes: 'Quitter l’équipe')) return;
+    final r = await Backend.rpc('project_member_remove', {'p_project': selected, 'p_user': Backend.userId});
+    if (!mounted) return;
+    if (r.error != null) return gToast(context, _err(r.error));
+    gToast(context, 'Vous avez quitté l’équipe.');
+    members = const [];
+    await loadProjects(includeMember: true);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = projects;
+    final asMember = isMemberProject(project);
     return TpPage(title: 'Équipe du projet', subtitle: project == null ? null : '${project!['title']}', children: [
       for (final inv in invitations)
         TpCard(
@@ -189,10 +200,14 @@ class _TeamBodyState extends ConsumerState<_TeamBody> with _MyProjectsLoader<_Te
                   Text([if ('${m['role']}'.isNotEmpty) '${m['role']}', if (m['status'] == 'invited') 'Invitation en attente'].join(' · '), style: tpSt(12, c: tpGrey)),
                 ]),
               ),
-              if (m['status'] != 'owner') IconButton(tooltip: 'Retirer', icon: const Icon(Icons.close_rounded, color: tpGrey), onPressed: () => _remove(m)),
+              if (m['status'] != 'owner' && !asMember) IconButton(tooltip: 'Retirer', icon: const Icon(Icons.close_rounded, color: tpGrey), onPressed: () => _remove(m)),
             ]),
           ),
-        tpSection('Inviter un étudiant', hint: 'Recherchez par nom. Seuls les comptes étudiants peuvent rejoindre un projet.'),
+        if (asMember) ...[
+          tpNote('Vous faites partie de l’équipe de ce projet : vous pouvez tenir son journal et déposer des fichiers. Seul le porteur invite ou retire des membres.'),
+          TpButton('Quitter l’équipe', _leave, dark: false, compact: true, icon: Icons.logout_rounded),
+        ] else ...[
+        tpSection('Inviter un étudiant', hint: 'Recherchez par nom (3 lettres au moins). Seuls les comptes étudiants peuvent rejoindre un projet.'),
         TpField('Rôle dans le projet (facultatif)', role, maxLength: 80),
         TpField('Nom de l’étudiant', query, maxLength: 60),
         TpButton(busy ? 'Recherche…' : 'Rechercher', busy ? null : _search, dark: false, compact: true, icon: Icons.search_rounded),
@@ -206,6 +221,7 @@ class _TeamBodyState extends ConsumerState<_TeamBody> with _MyProjectsLoader<_Te
               const Icon(Icons.person_add_alt_rounded, color: tpViolet, size: 20),
             ]),
           ),
+        ],
       ],
     ]);
   }
@@ -233,7 +249,7 @@ class _JournalBodyState extends ConsumerState<_JournalBody> with _MyProjectsLoad
   @override
   void initState() {
     super.initState();
-    loadProjects();
+    loadProjects(includeMember: true);
   }
 
   @override
@@ -288,10 +304,11 @@ class _JournalBodyState extends ConsumerState<_JournalBody> with _MyProjectsLoad
                 onProjectChanged();
               })),
           const SizedBox(height: 8),
-          if (s == null)
-            l9Loading()
-          else if (stepsError != null)
-            TpEmpty(title: 'Lecture impossible', text: Backend.userMessage(stepsError!), icon: Icons.cloud_off_rounded)
+          tpNote('Ce journal est privé : il n’est visible que de l’équipe du projet et du département, jamais du public (la fiche publique affiche le champ « Étapes réalisées » du formulaire).'),
+                    if (s == null)
+                      l9Loading()
+                    else if (stepsError != null)
+                      TpEmpty(title: 'Lecture impossible', text: Backend.userMessage(stepsError!), icon: Icons.cloud_off_rounded)
           else if (s.isEmpty)
             const TpEmpty(title: 'Journal vide', text: 'Aucune étape enregistrée pour ce projet. Ajoutez la première étape réalisée.', icon: Icons.timeline_rounded)
           else
@@ -302,11 +319,13 @@ class _JournalBodyState extends ConsumerState<_JournalBody> with _MyProjectsLoad
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text('${st['title']}', style: tpSt(14, w: FontWeight.w700, h: 1.3)),
                       const SizedBox(height: 3),
-                      Text(tpDate(st['happened_on']), style: tpSt(12, c: tpGrey)),
+                      Text([tpDate(st['happened_on']), if ('${st['author'] ?? ''}'.isNotEmpty) '${st['author']}'].join(' · '), style: tpSt(12, c: tpGrey)),
                     ]),
                   ),
-                  IconButton(tooltip: 'Modifier', icon: const Icon(Icons.edit_outlined, color: tpGrey, size: 20), onPressed: () => _edit(st)),
-                  IconButton(tooltip: 'Supprimer', icon: const Icon(Icons.delete_outline_rounded, color: tpGrey, size: 20), onPressed: () => _delete(st)),
+                  if (st['mine'] == true) ...[
+                    IconButton(tooltip: 'Modifier', icon: const Icon(Icons.edit_outlined, color: tpGrey, size: 20), onPressed: () => _edit(st)),
+                    IconButton(tooltip: 'Supprimer', icon: const Icon(Icons.delete_outline_rounded, color: tpGrey, size: 20), onPressed: () => _delete(st)),
+                  ],
                 ]),
               ),
         ],
@@ -382,7 +401,7 @@ class _FilesBodyState extends ConsumerState<_FilesBody> with _MyProjectsLoader<_
   @override
   void initState() {
     super.initState();
-    loadProjects();
+    loadProjects(includeMember: true);
   }
 
   @override
@@ -445,7 +464,7 @@ class _FilesBodyState extends ConsumerState<_FilesBody> with _MyProjectsLoader<_
                 files = null;
                 onProjectChanged();
               })),
-          tpNote('JPG, PNG, WebP (5 Mo au plus), PDF, MP4 et ZIP (50 Mo au plus). Seuls le type et la taille sont contrôlés ; les fichiers ne sont pas analysés. Ils ne sont visibles que de vous et du département.'),
+          tpNote('JPG, PNG, WebP (5 Mo au plus), PDF, MP4 et ZIP (50 Mo au plus). Seuls le type et la taille sont contrôlés ; les fichiers ne sont pas analysés. Ils ne sont visibles que de l’équipe du projet et du département (50 fichiers et 500 Mo au plus par projet).'),
           const SizedBox(height: 6),
           if (f == null)
             l9Loading()
@@ -464,10 +483,10 @@ class _FilesBodyState extends ConsumerState<_FilesBody> with _MyProjectsLoader<_
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text('${x['name']}', maxLines: 2, overflow: TextOverflow.ellipsis, style: tpSt(13.5, w: FontWeight.w700)),
                       const SizedBox(height: 2),
-                      Text('${_size(x['size_bytes'])} · ${tpDate(x['created_at'])}', style: tpSt(12, c: tpGrey)),
+                      Text([_size(x['size_bytes']), tpDate(x['created_at']), if ('${x['author'] ?? ''}'.isNotEmpty) '${x['author']}'].join(' · '), style: tpSt(12, c: tpGrey)),
                     ]),
                   ),
-                  IconButton(tooltip: 'Retirer', icon: const Icon(Icons.delete_outline_rounded, color: tpGrey, size: 20), onPressed: () => _remove(x)),
+                  if (x['mine'] == true || !isMemberProject(project)) IconButton(tooltip: 'Retirer', icon: const Icon(Icons.delete_outline_rounded, color: tpGrey, size: 20), onPressed: () => _remove(x)),
                 ]),
               ),
         ],

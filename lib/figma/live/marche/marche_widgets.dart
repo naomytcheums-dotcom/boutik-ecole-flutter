@@ -125,6 +125,7 @@ class MarcheProductTile extends ConsumerWidget {
     final rating = card['rating_avg'];
     final inCompare = ref.watch(marcheCompareProvider).contains('${card['id']}');
     final soldOut = mInt(card['stock']) <= 0;
+    final mine = card['is_mine'] == true;
     final open = onTap ?? () => context.push('/marche/produit/${card['id']}');
     final shop = [if ('${card['shop_name'] ?? ''}'.isNotEmpty) '${card['shop_name']}', if ('${card['city'] ?? ''}'.isNotEmpty) '${card['city']}'].join(' · ');
     return ProductCardView(
@@ -143,8 +144,9 @@ class MarcheProductTile extends ConsumerWidget {
         if (offerTypeBadges['${card['offer_type']}'] != null)
           Positioned(left: 8, bottom: soldOut ? 36 : 8, child: Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(3)), child: Text(offerTypeBadges['${card['offer_type']}']!, style: mst(11, w: FontWeight.w700)))),
         if (soldOut) Positioned(left: 8, bottom: 8, child: Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)), child: Text('Épuisé', style: mst(11, w: FontWeight.w700)))),
-        Positioned(right: 2, top: 46, child: FavoriteHeart(title: '${card['title']}')),
-        Positioned(
+        if (mine) Positioned(right: 8, top: 8, child: Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4), decoration: BoxDecoration(color: kInk, borderRadius: BorderRadius.circular(10)), child: Text('Votre annonce', style: mst(11, w: FontWeight.w700, c: Colors.white)))),
+        if (!mine) Positioned(right: 2, top: 46, child: FavoriteHeart(title: '${card['title']}')),
+        if (!mine) Positioned(
           right: 2,
           top: 2,
           child: Semantics(

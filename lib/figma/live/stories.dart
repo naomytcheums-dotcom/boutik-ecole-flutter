@@ -8,10 +8,12 @@ import 'package:video_player/video_player.dart';
 
 import '../../core/router/paths.dart';
 import '../gen.dart';
+import 'access.dart' show roleKey;
 import 'auth.dart';
 import 'backend.dart';
 import 'reels.dart' show relativeTime;
 import 'social_posts.dart';
+import 'talents.dart' show askText;
 
 /// Histoires de 24 h : barre en tête du Cercle, anneau sur la photo du profil, visionneuse plein écran avec défilement,
 /// passage à l'histoire suivante, retour, pause, et accès au profil du créateur (ses publications).
@@ -363,6 +365,48 @@ class _StoryViewerState extends ConsumerState<StoryViewer> with SingleTickerProv
     _close();
   }
 
+  Future<void> _report() async {
+    _timer.stop();
+    _video?.pause();
+    void resume() {
+      if (!mounted) return;
+      _timer.forward();
+      _video?.play();
+    }
+
+    if (!await requireLogin(context, ref, 'signaler une histoire') || !mounted) return resume();
+    final why = await askText(context, title: 'Signaler cette histoire', body: 'Pourquoi cette histoire pose-t-elle problème ?', hint: 'Contenu choquant, trompeur…', ok: 'Signaler', min: 3);
+    if (why == null || !mounted) return resume();
+    final r = await Backend.rpc('report_story', {'p_story': _story.id, 'p_reason': why});
+    if (!mounted) return;
+    gToast(context, r.error != null ? Backend.userMessage(r.error!) : 'Signalement transmis à la modération');
+    resume();
+  }
+
+  /// Modération (département, administration, support) : retire l'histoire avec un motif ; l'auteur est prévenu.
+  Future<void> _moderate() async {
+    _timer.stop();
+    _video?.pause();
+    final why = await askText(context, title: 'Retirer cette histoire', body: 'Le motif est envoyé à l’auteur.', hint: 'Motif (3 caractères au moins)', ok: 'Retirer', min: 3);
+    if (why == null || !mounted) {
+      if (mounted) {
+        _timer.forward();
+        _video?.play();
+      }
+      return;
+    }
+    final r = await Backend.rpc('moderate_story', {'p_story': _story.id, 'p_hide': true, 'p_note': why});
+    if (!mounted) return;
+    if (r.error != null) {
+      gToast(context, Backend.userMessage(r.error!));
+      _timer.forward();
+      _video?.play();
+      return;
+    }
+    gToast(context, 'Histoire retirée : l’auteur est prévenu.');
+    _close();
+  }
+
   @override
   Widget build(BuildContext context) {
     final g = widget.groups[_g];
@@ -423,6 +467,8 @@ class _StoryViewerState extends ConsumerState<StoryViewer> with SingleTickerProv
                   ]),
                 ),
                 if (g.authorId == me) IconButton(onPressed: _delete, tooltip: 'Supprimer cette histoire', icon: const Icon(Icons.delete_outline, color: Colors.white)),
+                if (g.authorId != me) IconButton(onPressed: _report, tooltip: 'Signaler cette histoire', icon: const Icon(Icons.flag_outlined, color: Colors.white)),
+                if (g.authorId != me && const {'dept', 'admin', 'support'}.contains(roleKey(ref.read(authProvider).current))) IconButton(onPressed: _moderate, tooltip: 'Retirer cette histoire (modération)', icon: const Icon(Icons.gavel_outlined, color: Colors.white)),
                 IconButton(onPressed: _close, tooltip: 'Fermer', icon: const Icon(Icons.close, color: Colors.white)),
               ]),
             ]),

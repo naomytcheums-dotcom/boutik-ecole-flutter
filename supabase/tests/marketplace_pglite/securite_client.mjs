@@ -50,6 +50,8 @@ export async function run(db) {
   await q(`select profile_set_phone('690000001')`);
   check('profile_set_phone : numéro enregistré', (await q(`select phone from profiles where id = '${U(21)}'`))[0].phone === '690000001');
   await fails('profile_set_phone : un second numéro est refusé', `select profile_set_phone('690000002')`, /contactez le support/);
+  await db.exec('reset role');
+  await db.exec(`select phone_verify_apply('${U(21)}', '690000001')`);
   await as(U(22));
   await fails('profile_set_phone : numéro déjà utilisé', `select profile_set_phone('+237690000001')`, /déjà utilisé/);
   await fails('profile_set_phone : numéro invalide', `select profile_set_phone('12345')`, /invalide/);

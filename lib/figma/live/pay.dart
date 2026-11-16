@@ -13,6 +13,7 @@ import 'audit.dart';
 import 'delivery.dart' show discardTransientAddress, selectedAddressProvider;
 import 'auth.dart';
 import 'backend.dart';
+import 'money_lot.dart' show requestViewedOrderRefund;
 import 'promo_state.dart' show promoCodeProvider;
 import 'store.dart';
 
@@ -296,6 +297,20 @@ Future<Map<String, dynamic>?> _startMobileMoney(WidgetRef ref, Order o, String p
   });
 }
 
+/// Paiement par messagerie depuis un panier neuf (S10-16) : la commande (non payée) est créée avec la même vérification des totaux que
+/// « Payer maintenant », puis le panier est vidé. Null : panier vide, livraison impossible ou refus (message déjà affiché).
+Future<Order?> createOrderForMessagePayment(WidgetRef ref, BuildContext context) async {
+  if (ref.read(cartProvider).isEmpty) return null;
+  final shown = ref.read(totalsProvider);
+  if (ref.read(homeDeliveryProvider) && shown.feeProblem != null) {
+    await gAlert(context, 'Livraison à domicile', shown.feeProblem!);
+    return null;
+  }
+  final o = await _createOrder(ref, context, shown.total);
+  if (o != null) _completeCheckout(ref, keepAddress: true);
+  return o;
+}
+
 /// Crée la commande sur le serveur à partir du panier. Le total serveur peut différer de celui affiché (prix, vente flash, pack, frais) :
 /// le client le confirme avant tout prélèvement. Retourne la commande enregistrée, ou null (échec affiché, ou refus du client).
 Future<Order?> _createOrder(WidgetRef ref, BuildContext context, int shownTotal) async {
@@ -349,7 +364,20 @@ final cancelReasonProvider = NotifierProvider<CancelReason, int>(CancelReason.ne
 Future<void> cancelViewedOrder(WidgetRef ref, BuildContext context) async {
   final o = ref.read(viewedOrderProvider);
   if (o.cancelled) return gToast(context, 'Cette commande est déjà annulée.');
-  if (o.paid) return gAlert(context, 'Annulation impossible', 'Cette commande est déjà payée. Contactez le vendeur depuis le suivi de commande pour toute demande.');
+  if (o.paid && Backend.ready && !o.cod) {
+    final go = await gDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Colors.white,
+        title: const Text('Commande déjà payée'),
+        content: const Text('Une commande payée ne s’annule pas directement : envoyez une demande d’annulation. Le support ou la finance l’examine, vous êtes remboursé si elle est acceptée, et le vendeur est prévenu.'),
+        actions: [TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Fermer')), FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Demander l’annulation'))],
+      ),
+    );
+    if (go == true && context.mounted) await requestViewedOrderRefund(ref, context);
+    return;
+  }
+  if (o.paid) return gAlert(context, 'Annulation impossible', 'Cette commande est déjà payée : déposez une réclamation depuis le suivi de commande.');
   if (Backend.ready) {
     final err = await Backend.cancelOrderWithReason(o.id, cancelReasons[ref.read(cancelReasonProvider)]);
     if (err != null) {

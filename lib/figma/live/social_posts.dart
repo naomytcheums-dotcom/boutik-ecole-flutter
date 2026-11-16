@@ -13,6 +13,7 @@ import 'package:video_player/video_player.dart';
 
 import '../gen.dart';
 import '../nav.dart';
+import 'access.dart' show roleKey;
 import 'auth.dart';
 import 'backend.dart';
 import 'dictation_stub.dart' if (dart.library.js_interop) 'dictation_web.dart';
@@ -514,6 +515,15 @@ class _CommentsSheetState extends ConsumerState<_CommentsSheet> {
     ref.invalidate(postCommentsProvider(widget.postId));
   }
 
+  Future<void> _report(PostComment c) async {
+    if (!await requireLogin(context, ref, 'signaler un commentaire') || !mounted) return;
+    final why = await askText(context, title: 'Signaler ce commentaire', body: 'Pourquoi ce commentaire pose-t-il problème ?', hint: 'Insulte, spam…', ok: 'Signaler', min: 3);
+    if (why == null || !mounted) return;
+    final r = await Backend.rpc('report_comment', {'p_comment': c.id, 'p_reason': why});
+    if (!mounted) return;
+    gToast(context, r.error != null ? Backend.userMessage(r.error!) : 'Signalement transmis à la modération');
+  }
+
   Future<void> _delete(PostComment c) async {
     final r = await Backend.rpc('delete_post_comment', {'p_comment': c.id});
     if (!mounted) return;
@@ -620,6 +630,13 @@ class _CommentsSheetState extends ConsumerState<_CommentsSheet> {
               if (c.mine) ...[
                 const SizedBox(width: 16),
                 GestureDetector(behavior: HitTestBehavior.opaque, onTap: () => _delete(c), child: Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Text('Supprimer', style: sty(11.5, w: FontWeight.w600, c: kGrey)))),
+              ] else ...[
+                const SizedBox(width: 16),
+                GestureDetector(behavior: HitTestBehavior.opaque, onTap: () => _report(c), child: Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Text('Signaler', style: sty(11.5, w: FontWeight.w600, c: kGrey)))),
+                if (const {'dept', 'admin', 'support'}.contains(roleKey(ref.read(authProvider).current))) ...[
+                  const SizedBox(width: 16),
+                  GestureDetector(behavior: HitTestBehavior.opaque, onTap: () => _delete(c), child: Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Text('Masquer', style: sty(11.5, w: FontWeight.w600, c: kLike)))),
+                ],
               ],
             ]),
           ]),
@@ -743,6 +760,79 @@ Future<void> reportPost(BuildContext context, WidgetRef ref, Reel r) async {
   if (context.mounted) res.error != null ? gAlert(context, 'Signalement impossible', Backend.userMessage(res.error!)) : gToast(context, 'Signalement transmis à la modération');
 }
 
+/// Liste des personnes bloquées, avec « Débloquer » (le blocage venant du réseau social n'a pas toujours de conversation où le lever).
+Future<void> blockedPeopleDialog(BuildContext context, WidgetRef ref) async {
+  if (!await requireLogin(context, ref, 'voir les personnes bloquées') || !context.mounted) return;
+  final res = await Backend.rows('user_blocks', 'blocked_id', limit: 100);
+  if (!context.mounted) return;
+  if (res.error != null) return gAlert(context, 'Personnes bloquées', Backend.userMessage(res.error!));
+  final people = <({String id, String name})>[];
+  for (final b in res.rows) {
+    final id = '${b['blocked_id']}';
+    final n = await Backend.rpc('display_name', {'p_user': id});
+    people.add((id: id, name: n.error == null && '${n.data ?? ''}'.isNotEmpty ? '${n.data}' : 'Membre'));
+  }
+  if (!context.mounted) return;
+  await showDialog<void>(
+    context: context,
+    builder: (ctx) => StatefulBuilder(
+      builder: (ctx, set) => AlertDialog(
+        title: Text('Personnes bloquées', style: sty(16, w: FontWeight.w800)),
+        content: SizedBox(
+          width: 320,
+          child: people.isEmpty
+              ? Text('Vous n’avez bloqué personne.', style: sty(13.5, c: kGrey))
+              : Column(mainAxisSize: MainAxisSize.min, children: [
+                  for (final p in List.of(people))
+                    ListTile(
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(p.name, style: sty(14, w: FontWeight.w600)),
+                      trailing: TextButton(
+                        onPressed: () async {
+                          final r = await Backend.rpc('block_user', {'p_user': p.id, 'p_block': false});
+                          if (r.error != null) return;
+                          set(() => people.remove(p));
+                          if (ctx.mounted) await ref.read(reelsProvider.notifier).refresh();
+                        },
+                        child: Text('Débloquer', style: sty(13, w: FontWeight.w700)),
+                      ),
+                    ),
+                ]),
+        ),
+        actions: [TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text('Fermer', style: sty(13.5, w: FontWeight.w700)))],
+      ),
+    ),
+  );
+}
+
+/// Bloque l'auteur d'une publication : ses publications et commentaires disparaissent pour vous, et il ne peut plus vous écrire ni vous inviter.
+Future<void> blockPostAuthor(BuildContext context, WidgetRef ref, Reel r) async {
+  if (!await requireLogin(context, ref, 'bloquer cette personne') || !context.mounted) return;
+  final yes = await gConfirm(context, 'Bloquer ${r.author} ?', 'Vous ne verrez plus ses publications ni ses commentaires, et elle ne pourra plus vous écrire. Vous pourrez la débloquer depuis « Personnes bloquées » (menu du compte).', yes: 'Bloquer');
+  if (!yes || !context.mounted) return;
+  final res = await Backend.rpc('block_user', {'p_user': r.authorId, 'p_block': true});
+  if (!context.mounted) return;
+  if (res.error != null) return gAlert(context, 'Blocage impossible', Backend.userMessage(res.error!));
+  await ref.read(reelsProvider.notifier).refresh();
+  if (context.mounted) gToast(context, '${r.author} est bloqué(e)');
+}
+
+/// Retire sa propre publication (après confirmation) ; les fichiers envoyés sont effacés du stockage.
+Future<void> deleteMyPost(BuildContext context, WidgetRef ref, Reel r) async {
+  final yes = await gConfirm(context, 'Supprimer cette publication ?', 'Elle disparaîtra du fil et de votre profil, avec ses commentaires. Cette action est définitive.', yes: 'Supprimer');
+  if (!yes || !context.mounted) return;
+  final res = await Backend.rpc('delete_my_post', {'p_post': r.id});
+  if (!context.mounted) return;
+  if (res.error != null) return gAlert(context, 'Suppression impossible', Backend.userMessage(res.error!));
+  final paths = res.data is Map ? [for (final p in ((res.data as Map)['paths'] as List? ?? const [])) '$p'] : const <String>[];
+  for (final p in paths) {
+    await Backend.removeFile('post-media', p);
+  }
+  await ref.read(reelsProvider.notifier).refresh();
+  if (context.mounted) gToast(context, 'Publication supprimée');
+}
+
 /// Republier : ajoute la publication d'origine (avec un commentaire facultatif) à son propre fil.
 Future<void> repostPost(BuildContext context, WidgetRef ref, Reel r) async {
   if (!Backend.ready) return gToast(context, 'Republication (démonstration)');
@@ -802,6 +892,8 @@ Future<void> showPostMenu(BuildContext context, WidgetRef ref, Reel r) {
         item(ctx, Icons.link, 'Copier le lien', () => copyPostLink(context, r)),
         if (r.authorId.isNotEmpty) item(ctx, Icons.person_outline, 'Voir le profil', () => gOpenProfile(context, r.authorId)),
         if (r.authorId != me) item(ctx, Icons.flag_outlined, 'Signaler', () => reportPost(context, ref, r), color: kLike),
+        if (r.authorId.isNotEmpty && r.authorId != me) item(ctx, Icons.block, 'Bloquer cette personne', () => blockPostAuthor(context, ref, r), color: kLike),
+        if (r.authorId.isNotEmpty && r.authorId == me) item(ctx, Icons.delete_outline, 'Supprimer ma publication', () => deleteMyPost(context, ref, r), color: kLike),
         const SizedBox(height: 8),
       ])),
     ),
@@ -1208,8 +1300,10 @@ class _ComposerSheetState extends ConsumerState<_ComposerSheet> {
       final nav = Navigator.of(context);
       final messenger = ScaffoldMessenger.maybeOf(context);
       final when = _at!;
+      final me = ref.read(authProvider).current;
+      final needsReview = me != null && !me.certified && !const {'dept', 'admin'}.contains(roleKey(me));
       widget.page ? gBack(context) : nav.pop();
-      messenger?.showSnackBar(SnackBar(content: Text('Publication programmée le ${_fmt(when)}'), behavior: SnackBarBehavior.floating));
+      messenger?.showSnackBar(SnackBar(content: Text('Publication programmée le ${_fmt(when)}${needsReview ? ' ; elle devra ensuite être validée par le département avant d’apparaître' : ''}'), behavior: SnackBarBehavior.floating));
       unawaited(feed.refresh());
       return;
     }

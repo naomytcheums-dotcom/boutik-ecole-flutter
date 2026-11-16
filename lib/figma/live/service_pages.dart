@@ -39,6 +39,7 @@ class _ServiceFormPageState extends ConsumerState<ServiceFormPage> {
     if (raw.isNotEmpty && p < 500) return gToast(context, 'Tarif : 500 FCFA minimum, ou laissez vide pour « Sur devis ».');
     if (submit && desc.text.trim().length < 20) return gToast(context, 'Pour publier, décrivez votre service (20 caractères minimum).');
     if (!await requireLogin(context, ref, 'publier un service') || !mounted) return;
+    if (submit && (!await requireCertified(context, ref, 'publier un service') || !mounted)) return;
     setState(() => busy = true);
     final lines = [
       desc.text.trim(),

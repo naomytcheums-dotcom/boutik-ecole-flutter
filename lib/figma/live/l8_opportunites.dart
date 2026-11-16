@@ -25,11 +25,13 @@ final oppRecommendedProvider = FutureProvider.autoDispose<List<Map<String, dynam
 /// Offre dont l'écran 153 détaille la correspondance.
 final whyOfferProvider = NotifierProvider<StrV, String>(StrV.new);
 
-/// Ouvre la fiche de l'offre dont l'écran 153 détaille la correspondance.
+/// Ouvre la fiche de l'offre dont l'écran 153 détaille la correspondance (à défaut d'offre choisie : la mieux classée, sinon la liste des offres).
 void openWhyOffer(BuildContext context, WidgetRef ref) {
-  final id = ref.read(whyOfferProvider);
-  if (id.isNotEmpty) context.push('/opportunites/$id');
+  final id = _whyId(ref.read(whyOfferProvider), ref.read(oppRecommendedProvider).asData?.value);
+  context.push(id.isEmpty ? '/opportunites' : '/opportunites/$id');
 }
+
+String _whyId(String chosen, List<Map<String, dynamic>>? ranked) => chosen.isNotEmpty ? chosen : (ranked != null && ranked.isNotEmpty ? '${ranked.first['id']}' : '');
 
 final oppMatchProvider = FutureProvider.autoDispose.family<Map<String, dynamic>, String>((ref, id) async {
   ref.watch(authProvider.select((a) => a.current?.serverId));
@@ -115,9 +117,12 @@ class WhyOffer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final id = ref.watch(whyOfferProvider);
+    final chosen = ref.watch(whyOfferProvider);
     if (ref.watch(authProvider.select((a) => a.current == null))) return _signIn(context, ref, width, height, 'Connectez-vous pour voir pourquoi une offre vous correspond.', 'voir le détail de correspondance');
-    if (id.isEmpty) return l8Note(width, 'Choisissez une offre dans « Offres pour vous » pour voir pourquoi elle vous correspond.', height: height, action: 'Voir les offres pour moi', onAction: () => gOpen(context, '152'));
+    // Ouverture directe ou rechargement : sans offre choisie, l'offre la mieux classée pour la personne est détaillée.
+    final id = _whyId(chosen, chosen.isEmpty ? ref.watch(oppRecommendedProvider).asData?.value : null);
+    if (id.isEmpty && chosen.isEmpty && ref.watch(oppRecommendedProvider).isLoading) return _loading(width, height);
+    if (id.isEmpty) return l8Note(width, 'Aucune offre à détailler pour le moment : choisissez une offre dans « Offres pour vous ».', height: height, action: 'Voir les offres pour moi', onAction: () => gOpen(context, '152'));
     return ref.watch(oppMatchProvider(id)).when(
           loading: () => _loading(width, height),
           error: (e, _) => l8Note(width, _error(e), height: height, action: 'Voir les offres pour moi', onAction: () => gOpen(context, '152')),
@@ -186,8 +191,13 @@ class ApplicationSentCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final a = ref.watch(lastApplicationProvider);
-    if (a == null) return l8Note(width, 'Aucune candidature envoyée depuis cet appareil : retrouvez les vôtres dans « Mes candidatures ».', height: 120);
+    var a = ref.watch(lastApplicationProvider);
+    // Ouverture directe ou rechargement : la dernière candidature est relue sur le serveur.
+    if (a == null) {
+      final mine = ref.watch(oppMyApplicationsProvider).asData?.value;
+      if (mine != null && mine.isNotEmpty) a = {'title': mine.first['title'], 'org': mine.first['org'], 'sent_at': mine.first['created_at']};
+    }
+    if (a == null) return l8Note(width, 'Aucune candidature envoyée pour le moment : retrouvez les vôtres dans « Mes candidatures ».', height: 120);
     Widget row(String l, String v) => Padding(
           padding: const EdgeInsets.symmetric(vertical: 9),
           child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -274,7 +284,7 @@ final alertsFilterProvider = NotifierProvider<IntV, int>(IntV.new);
 bool _alertInGroup(NotificationItem n, int f) => switch (f) {
       1 => n.kind.startsWith('document') || n.kind.startsWith('profile') || n.kind == 'dossier',
       2 => n.kind.startsWith('opportunity') && n.kind != 'opportunity_reminder',
-      3 => n.kind == 'opportunity_reminder' || n.kind.contains('deadline'),
+      3 => n.kind == 'opportunity_reminder' || n.kind == 'contest_reminder' || n.kind.contains('deadline'),
       _ => true,
     };
 

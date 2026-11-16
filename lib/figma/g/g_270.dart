@@ -54,7 +54,7 @@ class G_270 extends ConsumerWidget {
       gP(200, 638, 166, 150, gBox(image: 'assets/figma/img/4b7b6cea2f4622846841cd8342842e81fa1ed891.png', fit: BoxFit.cover, radii: [28, 28, 28, 28]), show: demoContent),
       gP(204, 796, 88, 16, gText(gm('Pont miniature', ''), 12.5, Color(0xFF111015), weight: 600), show: demoContent),
       gP(204, 816, 104, 13, gText(gm('IUT de Bandjoun · GC', ''), 10.5, Color(0xFF57545F)), show: demoContent),
-      if (!demoContent) gP(24, 150, 342, 640, const OtherInstitutionsGrid(width: 342, height: 640)),
+      if (!demoContent) gP(24, 150, 342, 640, const OtherInstitutionsGrid(width: 342, height: 640, showroom: true)),
     ]);
   }
 }

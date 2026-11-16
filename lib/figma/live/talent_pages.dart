@@ -12,6 +12,7 @@ import 'profile_extras.dart';
 import 'backend.dart';
 import 'profile_data.dart';
 import 'tp_ui.dart';
+import 'talent_passport.dart' show ImportedItemsSection;
 
 /// Talent Passport réel : compétences (domaine, métier, compétence, niveau, expérience, description, justificatif facultatif), documents
 /// (CV, diplômes, certificats, justificatifs) et portfolio. Aucun champ n'est prérempli ; les listes s'adaptent au domaine et au métier.
@@ -261,7 +262,7 @@ class _SkillFormPageState extends ConsumerState<SkillFormPage> {
               proofName = null;
             }))],
         ]),
-        tpNote('Le justificatif est examiné par l’équipe ; il n’est jamais obligatoire pour enregistrer une compétence.'),
+        tpNote('Le justificatif est un document de votre dossier : une fois vérifié par l’équipe, il est signalé sur cette compétence ; le fichier reste privé. Il n’est jamais obligatoire. Le niveau et les années d’expérience sont visibles de ceux qui peuvent voir votre profil.'),
       ],
     );
   }
@@ -358,7 +359,7 @@ class _DocumentsPageState extends ConsumerState<DocumentsPage> {
       subtitle: busy ? 'Envoi en cours…' : null,
       children: [
         tpNote(student
-            ? 'Formats : PDF, JPG, PNG ou WebP, 10 Mo au maximum. Les documents vérifiés affichent un badge de confiance sur votre profil. Vos fichiers sont privés : seule l’équipe de validation peut les consulter avec vous.'
+            ? 'Formats : PDF, JPG, PNG ou WebP, 10 Mo au maximum. Une pièce vérifiée par l’équipe est signalée sur la compétence à laquelle vous l’avez jointe, dans votre Talent Passport. Vos fichiers sont privés : seule l’équipe de validation peut les consulter avec vous.'
             : 'Formats : PDF, JPG, PNG ou WebP, 10 Mo au maximum. Vos fichiers sont privés : seule l’équipe de validation peut les consulter avec vous. La carte d’étudiant et le certificat de scolarité ne concernent que les étudiants.'),
         if (docs == null) const Padding(padding: EdgeInsets.all(30), child: Center(child: CircularProgressIndicator())) else ...[
           for (final k in kinds) section(k),
@@ -503,6 +504,8 @@ class _PortfolioPageState extends ConsumerState<PortfolioPage> {
               : const TpEmpty(title: 'Aucun portfolio', text: 'Cette personne n’a pas encore ajouté de réalisation.', icon: Icons.collections_bookmark_outlined)
         else
           for (final it in l) _item(it),
+        ImportedItemsSection(userId: mine ? '' : widget.userId),
+        if (mine) tpNote('Les images et vidéos de votre portfolio sont publiques : toute personne qui connaît leur adresse peut les ouvrir. Ne déposez ici que ce que vous acceptez de montrer.'),
       ],
     );
   }
@@ -527,7 +530,7 @@ class _PortfolioPageState extends ConsumerState<PortfolioPage> {
         if ('${it['url']}'.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 6), child: Text('${it['url']}', maxLines: 1, overflow: TextOverflow.ellipsis, style: tpSt(12, c: tpViolet, w: FontWeight.w600))),
         if (mine)
           Wrap(spacing: 2, children: [
-            TextButton(onPressed: () => _feature(it), child: Text(it['featured'] == true ? 'Retirer des favoris' : 'Mettre en phare', style: tpSt(12.5, w: FontWeight.w700, c: tpViolet))),
+            TextButton(onPressed: () => _feature(it), child: Text(it['featured'] == true ? 'Retirer le phare' : 'Mettre en phare', style: tpSt(12.5, w: FontWeight.w700, c: tpViolet))),
             TextButton(onPressed: () => _edit(it), child: Text('Modifier', style: tpSt(12.5, w: FontWeight.w700, c: tpViolet))),
             TextButton(onPressed: () => _delete(it), child: Text('Supprimer', style: tpSt(12.5, w: FontWeight.w700, c: tpRed))),
           ]),

@@ -17,6 +17,7 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/kiosk_mode.dart' show KioskIdleGuard;
 import '../live/qr.dart' show QrView, qrPayload;
 import '../live/docs.dart';
 import '../live/kela.dart';
@@ -388,6 +389,7 @@ class G_209 extends ConsumerWidget {
       if (demoContent) gP(130, 290, 460, 460, const SizedBox.expand(), tap: () => gOpen(context, '210')),
       if (demoContent) gTap(130, 290, 460, 460, () { scanQr(ref, context); }),
       gTap(230, 1130, 260, 84, () { ref.read(kioskSessionProvider.notifier).cancel(); gOpen(context, '207'); }),
+      gP(0, 0, 1, 1, const KioskIdleGuard(screenLevel: true)),
     ]);
   }
 }

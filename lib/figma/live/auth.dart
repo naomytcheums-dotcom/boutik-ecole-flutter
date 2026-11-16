@@ -205,6 +205,12 @@ void Function()? appReset;
 /// Session perdue sans déconnexion demandée : l'état est remis à zéro puis l'écran 150-2 « Session expirée » s'affiche.
 void Function()? appSessionExpired;
 
+/// Établissement du compte connecté (vide sans compte) : les textes de retrait et les documents ne citent plus un établissement écrit en dur.
+String gSelfInstitution = '';
+
+/// « à l'IUT de Douala » : le lieu de retrait réel de la personne connectée, sinon une formulation neutre.
+String campusPlace() => gSelfInstitution.trim().isEmpty ? 'sur votre campus' : 'à ${gSelfInstitution.trim()}';
+
 class AuthState {
   const AuthState({this.accounts = seedAccounts, this.current, this.pending});
   final List<Account> accounts;
@@ -227,12 +233,14 @@ class AuthNotifier extends Notifier<AuthState> {
   AuthState build() {
     final a = ref.read(initialAccountProvider);
     gSelfAvatarUrl = a?.avatarUrl ?? '';
+    gSelfInstitution = a?.institution ?? '';
     return AuthState(current: a);
   }
 
   void login(Account a) {
     Backend.sessionWasLost = false;
     gSelfAvatarUrl = a.avatarUrl;
+    gSelfInstitution = a.institution;
     state = state.copy(current: a);
     unawaited(native_push.syncNativePushForCurrentUser());
     unawaited(applyPendingReferral());
@@ -243,6 +251,7 @@ class AuthNotifier extends Notifier<AuthState> {
     Drafts.clearAll(); // brouillons de cet appareil : jamais visibles par l'utilisateur suivant
     Backend.signOut(before: unregisterThisDevice); // l'appareil ne reçoit plus les notifications de ce compte
     gSelfAvatarUrl = '';
+    gSelfInstitution = '';
     state = state.copy(clearCurrent: true);
     appReset?.call(); // aucun état du compte précédent ne survit (formulaires, annonces, panier, commandes…)
   }
@@ -251,7 +260,10 @@ class AuthNotifier extends Notifier<AuthState> {
       state = state.copy(accounts: [...state.accounts, a], pending: a);
 
   void update(Account a) {
-    if (state.current?.email == a.email) gSelfAvatarUrl = a.avatarUrl;
+    if (state.current?.email == a.email) {
+      gSelfAvatarUrl = a.avatarUrl;
+      gSelfInstitution = a.institution;
+    }
     state = state.copy(
       accounts: [for (final x in state.accounts) x.email == a.email ? a : x],
       current: state.current?.email == a.email ? a : state.current,
@@ -326,6 +338,9 @@ final termsProvider = NotifierProvider<FlagOff, bool>(FlagOff.new);
 
 /// Version des conditions d'utilisation enregistrée à l'acceptation (la même à l'inscription et aux écrans 17 et 274).
 const kTermsVersion = 'cgu-2026-10';
+
+/// Conditions générales de vente (onglet « Ventes » de l'écran 17) : acceptées séparément des CGU, à la confirmation d'une commande et à l'écran 274.
+const kSalesTermsVersion = 'cgv-2026-11';
 const _termsPendingKey = 'boutik_terms_pending';
 
 /// Acceptation donnée à l'inscription mais pas encore enregistrée (aucune session ouverte : confirmation d'e-mail demandée).
@@ -755,6 +770,14 @@ Future<void> _serverLoginRun(
   ref.read(authProvider.notifier).login(a);
   applyRememberChoice(a.email, ref.read(rememberProvider));
   unawaited(syncPendingTerms());
+  if (Backend.profileMissing) {
+    // inscription interrompue avant le choix du profil : la personne choisit maintenant (rien n'est créé à sa place)
+    if (context.mounted) {
+      gToast(context, 'Choisissez votre profil pour terminer l’inscription.');
+      gTab(context, '13');
+    }
+    return;
+  }
   ref
       .read(auditProvider.notifier)
       .log(a.name, 'Connexion réussie', 'Application', 'Connexions');
@@ -771,12 +794,58 @@ Future<bool> askSecondFactor(BuildContext context) async {
   final factor = await Backend.pendingSecondFactor();
   if (factor == null || !context.mounted) return true;
   for (var essai = 0; essai < 3; essai++) {
-    final f = await formDialog(context, 'Vérification en 2 étapes', [('Code à 6 chiffres', '')], intro: 'Saisissez le code affiché par votre application d’authentification.', submit: 'Vérifier', numeric: true);
+    final f = await gDialog<String>(
+      context: context,
+      builder: (ctx) {
+        final ctrl = TextEditingController();
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: const Text('Vérification en 2 étapes'),
+          content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const Text('Saisissez le code affiché par votre application d’authentification.'),
+            const SizedBox(height: 10),
+            TextField(controller: ctrl, autofocus: true, keyboardType: TextInputType.number, maxLength: 6, decoration: const InputDecoration(labelText: 'Code à 6 chiffres', border: OutlineInputBorder(), counterText: '')),
+          ]),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx, '__backup__'), child: const Text('Code de secours')),
+            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Annuler')),
+            FilledButton(onPressed: () => Navigator.pop(ctx, ctrl.text.trim()), child: const Text('Vérifier')),
+          ],
+        );
+      },
+    );
     if (f == null || !context.mounted) return false;
-    final err = await Backend.verifyTotp(factor, f.first.replaceAll(' ', ''));
+    if (f == '__backup__') return askBackupCode(context);
+    final err = await Backend.verifyTotp(factor, f.replaceAll(' ', ''));
     if (err == null) return true;
     if (!context.mounted) return false;
     gToast(context, err);
+  }
+  return false;
+}
+
+/// Récupération avec un code de secours (téléphone perdu) : le code est consommé et la 2FA du compte est désactivée ; la personne doit la réactiver.
+Future<bool> askBackupCode(BuildContext context) async {
+  for (var essai = 0; essai < 3; essai++) {
+    final f = await formDialog(context, 'Code de secours', [('Code de secours (ex. A1B2C3-D4E5F6)', '')],
+        intro: 'Utilisez l’un des codes de secours créés lors de l’activation. Chaque code ne sert qu’une fois. Si vous n’en avez plus, contactez le support : l’équipe vérifiera votre identité.', submit: 'Récupérer mon compte');
+    if (f == null || !context.mounted) return false;
+    final r = await Backend.useBackupCode(f.first);
+    if (!context.mounted) return false;
+    if (r.error != null) {
+      gToast(context, r.error!);
+      continue;
+    }
+    switch (r.status) {
+      case 'ok':
+        await gAlert(context, 'Compte récupéré', 'La vérification en 2 étapes est désactivée sur votre compte. Réactivez-la dès maintenant depuis « Vérification en 2 étapes » et créez de nouveaux codes de secours.');
+        return true;
+      case 'locked':
+        await gAlert(context, 'Trop d’essais', 'Trop de codes incorrects. Réessayez dans 15 minutes ou contactez le support.');
+        return false;
+      default:
+        gToast(context, 'Code de secours incorrect ou déjà utilisé.');
+    }
   }
   return false;
 }
@@ -1651,9 +1720,14 @@ Widget profilePassport(double x, double y) => gP(
     builder: (context, ref, _) {
       final a = ref.watch(profileAccountProvider);
       return gText(
-        a.certified
-            ? 'Talent Passport · Certifié'
-            : 'Talent Passport · Non certifié',
+        switch (a.certification) {
+          _ when a.certified => 'Talent Passport · Certifié',
+          'pending' => 'Talent Passport · Certification en attente',
+          'review' => 'Talent Passport · Certification en examen',
+          'rejected' => 'Talent Passport · Certification refusée',
+          'revoked' => 'Talent Passport · Certification révoquée',
+          _ => 'Talent Passport · Non certifié',
+        },
         12,
         const Color(0xFF111015),
         weight: 600,
@@ -1661,6 +1735,15 @@ Widget profilePassport(double x, double y) => gP(
     },
   ),
 );
+
+/// Compétences saisies à la main + compétences du Talent Passport absentes de la saisie (sans doublon, casse ignorée, ordre conservé).
+List<String> mergeSkillLists(List<String> typed, List<String> passport) {
+  final seen = <String>{};
+  return [
+    for (final s in [...typed, ...passport])
+      if (s.trim().isNotEmpty && seen.add(s.trim().toLowerCase())) s.trim(),
+  ];
+}
 
 /// « Modifier mon profil » : description, compétences et ville du titulaire. Enregistré sur le serveur ; jamais le rôle ni la certification.
 Future<void> editProfileDialog(BuildContext context, WidgetRef ref) async {
@@ -1670,6 +1753,25 @@ Future<void> editProfileDialog(BuildContext context, WidgetRef ref) async {
   final bio = TextEditingController(text: a.bio);
   final skills = TextEditingController(text: a.skills);
   final city = TextEditingController(text: a.city);
+  var visibility = 'public';
+  var directory = true;
+  var privacyLoaded = false;
+  if (Backend.ready) {
+    final p = await Backend.rpc('profile_privacy_get', {});
+    if (p.data is Map) {
+      visibility = '${(p.data as Map)['visibility'] ?? 'public'}';
+      directory = (p.data as Map)['directory'] != false;
+      privacyLoaded = true;
+    }
+  }
+  final initialVisibility = visibility, initialDirectory = directory;
+  // Les compétences du Talent Passport restent affichées : elles sont réajoutées si la saisie les a retirées.
+  final passportSkills = <String>[];
+  if (Backend.ready && a.serverId.isNotEmpty) {
+    final ts = await Backend.rows('talent_skills', 'skill', eq: {'owner_id': a.serverId}, order: 'created_at', ascending: true, limit: 100);
+    if (ts.error == null) passportSkills.addAll([for (final r in ts.rows) '${r['skill']}'.trim()].where((e) => e.isNotEmpty));
+  }
+  if (!context.mounted) return;
   const st = TextStyle(
     inherit: false,
     fontFamily: 'PlusJakartaSans',
@@ -1722,6 +1824,11 @@ Future<void> editProfileDialog(BuildContext context, WidgetRef ref) async {
                 style: st,
                 decoration: deco('Python, React, Design'),
               ),
+              const SizedBox(height: 4),
+              Text(
+                'Les compétences ajoutées dans votre Talent Passport restent affichées.',
+                style: st.copyWith(fontSize: 11.5, color: const Color(0xFF57545F)),
+              ),
               const SizedBox(height: 14),
               Text('Ville', style: st.copyWith(fontWeight: FontWeight.w600)),
               const SizedBox(height: 6),
@@ -1730,6 +1837,49 @@ Future<void> editProfileDialog(BuildContext context, WidgetRef ref) async {
                 style: st,
                 decoration: deco('Douala'),
               ),
+              if (privacyLoaded)
+                StatefulBuilder(
+                  builder: (ctx, setLocal) => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 16),
+                      Text('Visibilité de mon profil', style: st.copyWith(fontWeight: FontWeight.w600)),
+                      const SizedBox(height: 6),
+                      Wrap(
+                        spacing: 8,
+                        children: [
+                          for (final o in const [('public', 'Tout le monde'), ('members', 'Comptes connectés'), ('private', 'Moi seul')])
+                            ChoiceChip(
+                              label: Text(o.$2, style: st.copyWith(fontSize: 12.5)),
+                              selected: visibility == o.$1,
+                              onSelected: (_) => setLocal(() => visibility = o.$1),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        switch (visibility) {
+                          'private' => 'Votre profil, votre portfolio et votre passport sont masqués aux autres. Un CV partagé par lien reste ouvert tant que vous ne le désactivez pas.',
+                          'members' => 'Seuls les comptes connectés voient votre profil et votre portfolio.',
+                          _ => 'Votre profil et votre portfolio sont visibles de tous, visiteurs compris.',
+                        },
+                        style: st.copyWith(fontSize: 11.5, color: const Color(0xFF57545F)),
+                      ),
+                      if (a.role == 1)
+                        SwitchListTile(
+                          contentPadding: EdgeInsets.zero,
+                          dense: true,
+                          title: Text('Apparaître dans l’annuaire des talents', style: st.copyWith(fontWeight: FontWeight.w600)),
+                          subtitle: Text(
+                            'Sinon, entreprises et clients ne vous trouvent pas dans « Talents à découvrir ».',
+                            style: st.copyWith(fontSize: 11.5, color: const Color(0xFF57545F)),
+                          ),
+                          value: directory && visibility != 'private',
+                          onChanged: visibility == 'private' ? null : (v) => setLocal(() => directory = v),
+                        ),
+                    ],
+                  ),
+                ),
             ],
           ),
         ),
@@ -1753,14 +1903,11 @@ Future<void> editProfileDialog(BuildContext context, WidgetRef ref) async {
     ),
   );
   if (saved != true) return;
+  final typedSkills = skills.text.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
   final updated = a.copyWith(
     bio: bio.text.trim(),
-    skills: skills.text
-        .split(',')
-        .map((e) => e.trim())
-        .where((e) => e.isNotEmpty)
-        .join(', '),
-    city: city.text.trim().isEmpty ? a.city : city.text.trim(),
+    skills: mergeSkillLists(typedSkills, passportSkills).join(', '),
+    city: city.text.trim(),
   );
   if (Backend.ready && !await Backend.saveProfile(updated)) {
     if (context.mounted)
@@ -1772,6 +1919,13 @@ Future<void> editProfileDialog(BuildContext context, WidgetRef ref) async {
     return;
   }
   ref.read(authProvider.notifier).update(updated);
+  if (privacyLoaded && (visibility != initialVisibility || directory != initialDirectory)) {
+    final r = await Backend.rpc('profile_privacy_set', {'p_visibility': visibility, 'p_directory': directory});
+    if (r.error != null) {
+      if (context.mounted) await gAlert(context, 'Visibilité non enregistrée', Backend.userMessage(r.error!));
+      return;
+    }
+  }
   if (context.mounted) gToast(context, 'Profil enregistré');
 }
 

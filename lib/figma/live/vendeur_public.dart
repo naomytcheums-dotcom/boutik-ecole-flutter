@@ -187,6 +187,19 @@ class SellerTrustBlock extends ConsumerWidget {
   }
 }
 
+/// Codes de certificat valides : « BE-CERT- » + 8 (anciens) ou 16 (depuis la migration 20261031000200) chiffres hexadécimaux.
+final RegExp certificateCodeFormat = RegExp(r'^BE-CERT-([0-9A-F]{8}|[0-9A-F]{16})$');
+final RegExp _certificateCodeInText = RegExp(r'BE-CERT-(?:[0-9A-F]{16}|[0-9A-F]{8})(?![0-9A-F])', caseSensitive: false);
+
+/// Code de certificat normalisé (majuscules, sans espaces) ; null s'il n'a pas le bon format.
+String? normalizeCertificateCode(String raw) {
+  final code = raw.replaceAll(RegExp(r'\s+'), '').toUpperCase();
+  return certificateCodeFormat.hasMatch(code) ? code : null;
+}
+
+/// Premier code de certificat contenu dans un texte (contenu d'un QR, lien) ; null s'il n'y en a pas.
+String? certificateCodeInText(String raw) => _certificateCodeInText.firstMatch(raw)?.group(0)?.toUpperCase();
+
 /// 212 : vérification d'un certificat par son code, auprès du serveur (fonction publique verify_certificate).
 class CertificateChecker extends ConsumerStatefulWidget {
   const CertificateChecker({super.key, this.width = 342});
@@ -208,9 +221,9 @@ class _CertificateCheckerState extends ConsumerState<CertificateChecker> {
   }
 
   Future<void> _check() async {
-    final code = _code.text.trim().toUpperCase();
-    if (code.isEmpty) return setState(() => _res = {'empty': true});
-    if (!RegExp(r'^BE-CERT-[0-9A-F]{8}$').hasMatch(code)) return setState(() => _res = {'format': true});
+    final code = normalizeCertificateCode(_code.text);
+    if (_code.text.trim().isEmpty) return setState(() => _res = {'empty': true});
+    if (code == null) return setState(() => _res = {'format': true});
     setState(() => _busy = true);
     final r = await Backend.rpc('verify_certificate', {'p_code': code});
     if (!mounted) return;
@@ -224,9 +237,9 @@ class _CertificateCheckerState extends ConsumerState<CertificateChecker> {
   Future<void> _scan() async {
     final raw = await scanQrCamera(context);
     if (raw == null || !mounted) return;
-    final m = RegExp(r'BE-CERT-[0-9A-F]{8}', caseSensitive: false).firstMatch(raw);
-    if (m == null) return setState(() => _res = {'badqr': true});
-    _code.text = m.group(0)!.toUpperCase();
+    final found = certificateCodeInText(raw);
+    if (found == null) return setState(() => _res = {'badqr': true});
+    _code.text = found;
     await _check();
   }
 
@@ -239,7 +252,7 @@ class _CertificateCheckerState extends ConsumerState<CertificateChecker> {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text('Entrez le code du certificat', style: _st(15, w: FontWeight.w700)),
         const SizedBox(height: 10),
-        TextField(controller: _code, textCapitalization: TextCapitalization.characters, maxLength: 16, decoration: const InputDecoration(hintText: 'Ex. BE-CERT-1A2B3C4D', counterText: '', border: OutlineInputBorder()), onSubmitted: (_) => _check()),
+        TextField(controller: _code, textCapitalization: TextCapitalization.characters, maxLength: 30, autocorrect: false, decoration: const InputDecoration(labelText: 'Code du certificat', hintText: 'Ex. BE-CERT-1A2B3C4D5E6F7A8B', counterText: '', border: OutlineInputBorder()), onSubmitted: (_) => _check()),
         const SizedBox(height: 12),
         GestureDetector(
           onTap: _busy ? null : _check,
@@ -252,7 +265,7 @@ class _CertificateCheckerState extends ConsumerState<CertificateChecker> {
           if (r['empty'] == true)
             Text('Saisissez le code du certificat, ou scannez son QR.', style: _st(13.5, w: FontWeight.w700, c: red))
           else if (r['format'] == true)
-            Text('Ce code n’est pas valide : un code de certificat ressemble à BE-CERT-1A2B3C4D.', style: _st(13.5, w: FontWeight.w700, c: red))
+            Text('Ce code n’est pas valide : un code de certificat ressemble à BE-CERT-1A2B3C4D5E6F7A8B.', style: _st(13.5, w: FontWeight.w700, c: red))
           else if (r['badqr'] == true)
             Text('Ce QR ne contient pas de code de certificat Boutik-École.', style: _st(13.5, w: FontWeight.w700, c: red))
           else if (r['limite'] == true)
@@ -267,6 +280,7 @@ class _CertificateCheckerState extends ConsumerState<CertificateChecker> {
             Text('${r['objet']}', style: _st(14, w: FontWeight.w700)),
             Text('Titulaire : ${r['titulaire']}', style: _st(12.5, c: _grey)),
             Text('Délivré le ${r['delivre_le']}', style: _st(12.5, c: _grey)),
+            if ('${r['empreinte'] ?? ''}'.length >= 16) Text('Empreinte : ${'${r['empreinte']}'.substring(0, 16)}…', style: _st(12.5, c: _grey)),
             if (r['valide'] != true && '${r['motif_revocation'] ?? ''}'.isNotEmpty) Text('Motif : ${r['motif_revocation']}', style: _st(12.5, c: _grey)),
           ],
       ]),

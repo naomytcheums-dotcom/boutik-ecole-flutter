@@ -161,7 +161,7 @@ class ReferralTiers extends ConsumerWidget {
                 Text(next == null ? '${r.minActive} et + amis' : '${r.minActive} à $next amis', style: const TextStyle(fontSize: 9.5, color: Color(0xFF57545F))),
                 const SizedBox(height: 5),
                 Text(ruleReward(r), textAlign: TextAlign.center, style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w700, color: Color(0xFF111015))),
-                Text(r.sharePct > 0 ? 'par inscrit + ventes' : 'par inscrit', style: const TextStyle(fontSize: 9, color: Color(0xFF57545F))),
+                Text(r.sharePct > 0 ? 'par inscrit + % des achats' : 'par inscrit', style: const TextStyle(fontSize: 9, color: Color(0xFF57545F))),
               ]),
             );
           },
@@ -412,7 +412,7 @@ Widget refereeList(ReferralSummary? s, {bool signedOut = false}) {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 5),
           child: Row(children: [
-            Expanded(child: Text('${day(h['at'])} · ${h['source'] == 'referral_share' ? 'part des ventes' : 'prime de parrainage'}${h['status'] == 'void' ? ' · annulé (commande annulée)' : ''}', style: grey.copyWith(fontSize: 11.5))),
+            Expanded(child: Text('${day(h['at'])} · ${h['source'] == 'referral_share' ? 'part des achats de votre filleul' : 'prime de parrainage'}${h['status'] == 'void' ? ' · annulé (commande annulée)' : ''}', style: grey.copyWith(fontSize: 11.5))),
             Text('+ ${fcfa((h['amount'] as num?)?.toInt() ?? 0)}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: h['status'] == 'void' ? const Color(0xFF8A8794) : const Color(0xFF111015), decoration: h['status'] == 'void' ? TextDecoration.lineThrough : null)),
           ]),
         ),

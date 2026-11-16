@@ -122,8 +122,8 @@ Future<void> submitVerification(WidgetRef ref, BuildContext context) async {
     return;
   }
   final docs = ref.read(myDocsProvider);
-  if (latestDoc(docs, 'student_card') == null && latestDoc(docs, 'enrollment_certificate') == null) {
-    gToast(context, 'Ajoutez au moins une pièce justificative : carte d’étudiant ou certificat de scolarité.');
+  if (!(docs ?? const []).any((d) => d.status != 'rejected' && (d.kind == 'student_card' || d.kind == 'enrollment_certificate'))) {
+    gToast(context, 'Ajoutez au moins une pièce justificative valable : carte d’étudiant ou certificat de scolarité (une pièce refusée ne compte pas).');
     return;
   }
   final instId = (f['pf_inst_id'] ?? '').isNotEmpty ? f['pf_inst_id']! : a.institutionId;
@@ -136,7 +136,14 @@ Future<void> submitVerification(WidgetRef ref, BuildContext context) async {
     return;
   }
   ref.read(authProvider.notifier).update(a.copyWith(matricule: matricule, studyLevel: level, institutionId: instId, departmentId: deptId));
-  gToast(context, 'Pièces envoyées : l’équipe de validation va les examiner.');
+  // l'équipe concernée (département de l'étudiant, administration, support) est prévenue : c'est ce qui rend la phrase ci-dessous vraie
+  final sub = await Backend.rpc('verification_submit', const {});
+  if (!context.mounted) return;
+  if (sub.error != null) {
+    await gAlert(context, 'Envoi à l’équipe impossible', sub.error!);
+    return;
+  }
+  gToast(context, 'Pièces envoyées : l’équipe de votre département a été prévenue. Vous serez notifié de sa décision.');
   gOpen(context, '175');
 }
 
@@ -211,6 +218,84 @@ class DocumentsList extends ConsumerWidget {
                   if (context.mounted) gToast(context, err ?? 'Document supprimé');
                 },
               ),
+          ]),
+        );
+      },
+    );
+  }
+}
+
+/// État de vérification réel de la personne connectée (fonction serveur my_student_status).
+final myStudentStatusProvider = FutureProvider.autoDispose<Map<String, dynamic>?>((ref) async {
+  if (!Backend.ready) return null;
+  final r = await Backend.rpc('my_student_status', const {});
+  return r.error == null && r.data is Map ? Map<String, dynamic>.from(r.data as Map) : null;
+});
+
+/// Carte « Étudiant vérifié » des écrans 18 et 69 : statut réel, état de la certification, et les deux démarches (pièces, certification).
+/// « Vérifié » = une carte d'étudiant ou un certificat de scolarité validé par l'équipe, ou une certification approuvée : le serveur n'ouvre
+/// l'annuaire des talents, les invitations d'entreprises et le vivier qu'aux étudiants vérifiés.
+class StudentVerificationCard extends ConsumerWidget {
+  const StudentVerificationCard({super.key, this.width = 342});
+  final double width;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final st = ref.watch(myStudentStatusProvider);
+    return st.when(
+      loading: () => SizedBox(width: width, height: 60, child: Center(child: Text('Chargement…', style: TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 13, color: _grey)))),
+      error: (_, _) => const SizedBox.shrink(),
+      data: (s) {
+        if (s == null) return const SizedBox.shrink();
+        final verified = s['verified'] == true;
+        final hasDoc = s['has_identity_document'] == true;
+        final cert = '${s['certification']}';
+        final canAsk = s['can_request_certification'] == true;
+        const certLabel = {
+          'none': 'Certification : non demandée',
+          'pending': 'Certification : demande en attente',
+          'review': 'Certification : en cours d’examen',
+          'approved': 'Certification : badge accordé',
+          'rejected': 'Certification : refusée (vous pouvez refaire une demande)',
+          'revoked': 'Certification : badge retiré',
+        };
+        final title = verified ? 'Étudiant vérifié' : (hasDoc ? 'Vérification en cours' : 'Vérification à compléter');
+        final body = verified
+            ? 'Votre carte d’étudiant a été validée par l’équipe : vous apparaissez dans l’annuaire des talents et pouvez recevoir des invitations d’entreprises.'
+            : (hasDoc
+                ? 'Votre pièce est en attente de décision de l’équipe de votre département. Vous serez notifié du résultat.'
+                : 'Déposez votre carte d’étudiant ou votre certificat de scolarité : l’annuaire des talents et les invitations d’entreprises ne s’ouvrent qu’après leur validation.');
+        const ink = Color(0xFF111015);
+        Widget btn(String t, VoidCallback f, {bool dark = true}) => GestureDetector(
+              onTap: f,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
+                decoration: BoxDecoration(color: dark ? ink : Colors.white, borderRadius: BorderRadius.circular(22), border: dark ? null : Border.all(color: const Color(0xFFD9D3E6))),
+                child: Text(t, style: TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 13, fontWeight: FontWeight.w700, color: dark ? Colors.white : ink)),
+              ),
+            );
+        return Container(
+          width: width,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20), border: Border.all(color: verified ? const Color(0xFF1F9D6B) : const Color(0xFFECE8F2), width: verified ? 1.5 : 1)),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(title, style: TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 17, fontWeight: FontWeight.w800, color: verified ? const Color(0xFF0F7A52) : ink)),
+            const SizedBox(height: 6),
+            Text(body, style: const TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 12.5, height: 1.5, color: Color(0xFF4A4854))),
+            const SizedBox(height: 10),
+            Text(certLabel[cert] ?? 'Certification', style: const TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 12.5, fontWeight: FontWeight.w600, color: _grey)),
+            const SizedBox(height: 12),
+            Wrap(spacing: 8, runSpacing: 8, children: [
+              if (!verified) btn('Déposer une pièce', () => gOpen(context, '18c'), dark: !hasDoc),
+              if (canAsk) btn('Demander la certification', () async {
+                await requestCertificationFlow(ref, context);
+                ref.invalidate(myStudentStatusProvider);
+              }),
+              btn('Actualiser', () {
+                ref.invalidate(myStudentStatusProvider);
+                ref.read(myDocsProvider.notifier).refresh();
+              }, dark: false),
+            ]),
           ]),
         );
       },

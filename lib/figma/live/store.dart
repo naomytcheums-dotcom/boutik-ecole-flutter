@@ -357,7 +357,7 @@ final lastSyncProvider = NotifierProvider<_When, DateTime?>(_When.new);
 bool showEmptyOrders({required bool ready, required bool loaded, required List<Order> orders}) => ready && loaded && orders.isEmpty;
 
 /// Écrans qui montrent une commande existante : sans commande réelle, ils ne s'affichent pas (connecté au serveur).
-const orderDetailScreens = {'09', '29', '46', '47'};
+const orderDetailScreens = {'09', '29', '44', '46', '47'};
 
 /// Faut-il quitter un écran de commande ? Oui : connecté au serveur, commandes lues, aucune commande, et écran de détail.
 bool redirectOrderDetail({required bool ready, required bool loaded, required List<Order> orders, required String screen}) =>

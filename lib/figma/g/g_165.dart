@@ -15,6 +15,7 @@ import '../live/audit.dart';
 import '../live/admin.dart';
 import '../live/talents.dart';
 import '../live/hackathons.dart';
+import '../live/contests.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
 import '../live/docs.dart';
@@ -83,7 +84,7 @@ class G_165 extends ConsumerWidget {
       gP(41.917, 611.917, 20.167, 20.167, gImg('assets/figma/v/48fd286aff90cc.svg')),
       gP(49, 614.75, 8.833, 11.667, gImg('assets/figma/v/3a93fa78124c31.svg')),
       gP(76, 613.5, 277, 17, Consumer(builder: (context, ref, _) {
-        final close = ref.watch(currentEventProvider).submitClose;
+        final close = contestOfMyTeam(ref.watch(currentEventProvider), ref.watch(myContestTeamsProvider), ref.watch(contestsProvider)).submitClose;
         return gText(demoContent ? 'Dépôt possible jusqu’au 16 nov. à 12 h.' : (close == null ? 'Date limite de dépôt non communiquée.' : 'Dépôt possible jusqu’au ${close.day}/${close.month} à ${close.hour} h.'), 12, Color(0xFF4A4854), lh: 17, wrap: true);
       })),
       gP(0, 744, 390, 100, gBox(color: Color(0x00FFFFFF))),

@@ -65,13 +65,20 @@ class ProjectRoleGate extends ConsumerWidget {
 }
 
 /// Projets du compte connecté (la table n'est lisible que par son propriétaire et le département).
-Future<List<Map<String, dynamic>>> loadMyProjects({bool approvedOnly = false}) async {
+/// Avec [includeMember], s'y ajoutent les projets où la personne est membre accepté (marqués `member: true`).
+Future<List<Map<String, dynamic>>> loadMyProjects({bool approvedOnly = false, bool includeMember = false}) async {
   final uid = Backend.userId;
   if (uid == null) return const [];
   final r = await Backend.rows('projects', 'id,kind,title,status,department,details,links,updated_at',
       eq: {'owner_id': uid, if (approvedOnly) 'status': 'approved'}, order: 'updated_at', limit: 100);
-  return r.rows;
+  if (!includeMember || approvedOnly) return r.rows;
+  final m = await Backend.rpc('my_member_projects', const {});
+  final member = m.data is List ? [for (final x in m.data as List) Map<String, dynamic>.from(x as Map)] : const <Map<String, dynamic>>[];
+  return [...r.rows, ...member];
 }
+
+/// Vrai pour un projet où la personne est membre de l'équipe sans en être le porteur.
+bool isMemberProject(Map<String, dynamic>? p) => p != null && p['member'] == true;
 
 /// Choix du projet sur lequel on travaille (pastilles) ; la sélection est renvoyée par [onChanged].
 class ProjectPicker extends StatelessWidget {
@@ -81,7 +88,7 @@ class ProjectPicker extends StatelessWidget {
   final ValueChanged<String> onChanged;
 
   @override
-  Widget build(BuildContext context) => TpChoice(label, {for (final p in projects) '${p['id']}': '${p['title']}'}, value, onChanged, required: true);
+  Widget build(BuildContext context) => TpChoice(label, {for (final p in projects) '${p['id']}': '${p['title']}${isMemberProject(p) ? ' (équipe)' : ''}'}, value, onChanged, required: true);
 }
 
 /// Écran d'attente d'une lecture serveur.

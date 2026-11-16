@@ -8,6 +8,7 @@ import '../../nav.dart' show gOpenProfile;
 import '../access.dart' show roleKey;
 import '../auth.dart';
 import '../backend.dart';
+import '../project_cards.dart' show showProjectSheet;
 import 'marche_data.dart';
 import 'marche_widgets.dart';
 
@@ -238,7 +239,7 @@ class ProjetsIutScreen extends ConsumerWidget {
               for (final p in e.value)
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
-                  onTap: () => gOpenProfile(context, '${p['owner_id']}'),
+                  onTap: () => showProjectSheet(context, p),
                   child: Container(
                     width: double.infinity,
                     margin: const EdgeInsets.fromLTRB(16, 0, 16, 10),
@@ -254,7 +255,11 @@ class ProjetsIutScreen extends ConsumerWidget {
                         Flexible(child: Text('Projet validé par ${'${p['institution'] ?? ''}'.trim().isEmpty ? 'l’établissement' : '${p['institution']}'.trim()} · ${p['owner']}', style: mst(11.5, w: FontWeight.w700, c: kGreen))),
                       ]),
                       const SizedBox(height: 10),
-                      Align(alignment: Alignment.centerLeft, child: mButton(p['voted'] == true ? 'Soutenu · ${mInt(p['votes'])}' : 'Soutenir · ${mInt(p['votes'])}', () => _support(context, ref, p), dark: p['voted'] != true, icon: p['voted'] == true ? Icons.thumb_up : Icons.thumb_up_outlined)),
+                      Wrap(alignment: WrapAlignment.spaceBetween, crossAxisAlignment: WrapCrossAlignment.center, runSpacing: 4, children: [
+                        if ('${p['owner_id']}' == (ref.watch(authProvider).current?.serverId ?? '')) Text('C’est votre projet · ${mInt(p['votes'])} soutien(s)', style: mst(12.5, w: FontWeight.w700, c: kGrey))
+                        else mButton(p['voted'] == true ? 'Soutenu · ${mInt(p['votes'])}' : 'Soutenir · ${mInt(p['votes'])}', () => _support(context, ref, p), dark: p['voted'] != true, icon: p['voted'] == true ? Icons.thumb_up : Icons.thumb_up_outlined),
+                        TextButton(onPressed: () => gOpenProfile(context, '${p['owner_id']}'), child: Text('Profil du porteur', style: mst(12, w: FontWeight.w700, c: kViolet))),
+                      ]),
                     ]),
                   ),
                 ),

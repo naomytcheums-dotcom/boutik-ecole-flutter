@@ -18,6 +18,7 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/missions_prestataire.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
@@ -82,14 +83,14 @@ class G_195 extends ConsumerWidget {
       gP(47.796, 654.375, 8.408, 6.712, gImg('assets/figma/v/f59da0513c0b4c.svg'), show: demoContent),
       gP(76, 634, 277, 34, gText('Le client est notifié dès l’envoi et peut valider ou demander une correction.', 12, Color(0xFF4A4854), lh: 17, wrap: true), show: demoContent),
       gP(0, 744, 390, 100, gBox(color: Color(0x00FFFFFF)), show: demoContent),
-      gP(24, 760, 163, 54, gBox(color: Color(0x00FFFFFF), border: Color(0xFFD9D3E6), bw: 1.5, radii: [27, 27, 27, 27])),
-      gP(74.5, 778, 62, 18, gText('Brouillon', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),
-      gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27])),
-      gP(202.5, 778, 164, 18, gText('Envoyer pour validation', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
+      gP(24, 760, 163, 54, gBox(color: Color(0x00FFFFFF), border: Color(0xFFD9D3E6), bw: 1.5, radii: [27, 27, 27, 27]), show: demoContent),
+      gP(74.5, 778, 62, 18, gText('Brouillon', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center), show: demoContent),
+      gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), show: demoContent),
+      gP(202.5, 778, 164, 18, gText('Envoyer pour validation', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center), show: demoContent),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
-      gTap(203, 760, 163, 54, () { submitProof(ref, context); }),
-      gTap(24, 760, 163, 54, () { saveDraft(context, ref, '195', const ['ms_proof']); }),
-      if (!demoContent) gP(24, 125, 342, 620, milestonesListing(height: 620)),
+      if (demoContent) gTap(203, 760, 163, 54, () { submitProof(ref, context); }),
+      if (demoContent) gTap(24, 760, 163, 54, () { saveDraft(context, ref, '195', const ['ms_proof']); }),
+      if (!demoContent) gP(24, 112, 342, 700, const ProofPanel()),
     ]);
   }
 }

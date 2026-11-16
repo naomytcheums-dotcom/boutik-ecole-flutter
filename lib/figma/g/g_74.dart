@@ -79,7 +79,7 @@ class G_74 extends ConsumerWidget {
       gP(24, 788, 202, 19, gText('Partager mon profil', 15, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(234, 770, 132, 52, gBox(color: Color(0xB2FFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, radii: [26, 26, 26, 26]), tap: () => myQrDialog(context, ref)),
       gP(234, 788, 132, 19, gText('Mon QR', 15, Color(0xFF111015), weight: 600, align: TextAlign.center)),
-      if (!demoContent) gP(24, 125, 342, 620, const MyProfileCard(width: 342)),
+      if (!demoContent) gP(24, 125, 342, 620, const MyProfileCard(width: 342, scroll: true)),
     ]);
   }
 }

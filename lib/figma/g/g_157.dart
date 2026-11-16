@@ -6,6 +6,7 @@ import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/opportunites.dart';
+import '../live/access.dart' show roleKey;
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -44,11 +45,11 @@ class G_157 extends ConsumerWidget {
       gP(331.5, 19.5, 28, 17, gImg('assets/figma/v/6a818f3296df50.svg')),
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
-      gP(24, 70, 220, 26, gText(demoContent ? 'Résumé de Kéla' : 'Résumé de mes besoins', 21, Color(0xFF111015), weight: 700)),
+      gP(24, 70, 220, 26, gText(demoContent ? 'Résumé de Kéla' : (roleKey(ref.watch(authProvider).current) == 'student' ? 'Résumé de mes candidatures' : 'Résumé de mes besoins'), 21, Color(0xFF111015), weight: 700)),
       gP(340.75, 69.833, 22.5, 19.75, gImg('assets/figma/v/c416ae6fb27d36.svg')),
       gP(347.442, 87.25, 9.117, 6.922, gImg('assets/figma/v/76ffe03c455014.svg')),
       gP(24, 96, 106, 15, Consumer(builder: (context, ref, _) { final a = ref.watch(profileAccountProvider); return gText(demoContent ? 'Orange Cameroun' : a.name, 12, Color(0xFF57545F)); })),
-      gP(24, 120, 342, 168, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xFF0F2E4E), Color(0xFF1E4A80)], stops: [0, 1]), radii: [24, 24, 24, 24])),
+      gP(24, 120, 342, 168, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xFF0F2E4E), Color(0xFF1E4A80)], stops: [0, 1]), radii: [24, 24, 24, 24]), show: demoContent),
       gP(84, 137, 269, 18, gText('Résumé de la semaine par Kéla', 14, Color(0xFFFFFFFF), weight: 700, wrap: true), show: demoContent),
       gP(84, 160, 269, 32, gText(gm('23 propositions reçues pour 3 besoins. 6 sont très adaptées.', ''), 11.5, Color(0xFFE9E4F5), lh: 16, wrap: true), show: demoContent),
       gP(46.667, 205.75, 14.667, 11.958, gImg('assets/figma/v/ac006383c9ee5c.svg'), show: demoContent),

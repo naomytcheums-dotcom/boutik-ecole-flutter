@@ -115,6 +115,24 @@ class Backend {
     }
   }
 
+  /// Vérification du numéro du compte (code reçu par SMS ou WhatsApp). Un numéro non vérifié ne sert ni à la connexion par téléphone,
+  /// ni à la récupération du mot de passe, ni aux notifications SMS/WhatsApp.
+  static Future<bool> phoneVerified() async {
+    final c = _c;
+    final uid = c?.auth.currentUser?.id;
+    if (c == null || uid == null) return false;
+    try {
+      final r = await c.from('profiles').select('phone,phone_verified').eq('id', uid).maybeSingle();
+      return r != null && r['phone_verified'] == true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  static Future<String?> phoneVerifyRequest({String channel = 'sms'}) async => (await _recoveryCall({'action': 'phone_verify_request', 'channel': channel})).error;
+
+  static Future<String?> phoneVerifyConfirm(String code) async => (await _recoveryCall({'action': 'phone_verify_confirm', 'code': code})).error;
+
   /// Renvoie l'e-mail de confirmation d'inscription (Supabase Auth). Retourne null si le serveur a accepté l'envoi.
   static Future<String?> resendSignupConfirmation(String email) async {
     final c = _c;
@@ -218,19 +236,30 @@ class Backend {
         email = user?.email ?? email;
       }
       if (user == null) return (account: null, error: 'Identifiant ou mot de passe incorrect.');
-      var row = await c.from('profiles').select().eq('id', user.id).maybeSingle();
+      final row = await c.from('profiles').select().eq('id', user.id).maybeSingle();
       if (row == null) {
-        // Profil absent (inscription interrompue) : on l'initialise vierge, pour CET utilisateur uniquement.
+        // Profil absent (choix du rôle interrompu ou sauté) : AUCUN profil « client » n'est créé en silence. Le compte est rendu sans rôle choisi
+        // et l'appelant renvoie la personne à l'écran 13 : le profil est alors créé avec le rôle qu'elle choisit.
         final meta = user.userMetadata ?? const {};
         final name = (meta['name'] ?? '').toString().trim();
-        await _insertProfile(c, user.id, name.isEmpty ? email.split('@').first : name, (meta['phone'] ?? '').toString(), email, 'client');
-        row = await c.from('profiles').select().eq('id', user.id).maybeSingle();
+        profileMissing = true;
+        return (
+          account: Account(
+            name: name.isEmpty ? email.split('@').first : name,
+            phone: (meta['phone'] ?? '').toString(),
+            email: email,
+            password: '',
+            role: 0,
+            verified: user.emailConfirmedAt != null || user.phoneConfirmedAt != null,
+            institution: '',
+            department: '',
+            city: '',
+            serverId: user.id,
+          ),
+          error: null,
+        );
       }
-      if (row == null) {
-        signingOut = true;
-        await c.auth.signOut();
-        return (account: null, error: 'Profil introuvable. Contactez le support.');
-      }
+      profileMissing = false;
       final a = _fromRow(row, email);
       if (a.suspended) {
         signingOut = true;
@@ -585,15 +614,20 @@ class Backend {
 
   static Future<String?> cancelQuote(String id) => _call('cancel_quote', {'p_id': id});
 
-  /// Demandes de devis de la personne connectée (envoyées ou reçues).
+  /// Demandes de devis de la personne connectée (envoyées ou reçues), avec noms abrégés et état de la commande née du devis (fonction my_quotes).
   static Future<List<Map<String, dynamic>>> myQuotes() async {
     final c = _c;
     if (c == null || c.auth.currentUser == null) return const [];
     try {
-      final r = await c.from('quote_requests').select('id,requester_id,provider_id,brief,budget,deadline,status,quote_amount,quote_delay_days,quote_message,order_number,created_at,listings(title)').order('created_at', ascending: false);
+      final r = await c.rpc('my_quotes') as List;
       return [for (final x in r) Map<String, dynamic>.from(x as Map)];
     } catch (_) {
-      return const [];
+      try {
+        final r = await c.from('quote_requests').select('id,requester_id,provider_id,brief,budget,deadline,status,quote_amount,quote_delay_days,quote_message,order_number,created_at,listings(title)').order('created_at', ascending: false);
+        return [for (final x in r) Map<String, dynamic>.from(x as Map)];
+      } catch (_) {
+        return const [];
+      }
     }
   }
 
@@ -744,6 +778,13 @@ class Backend {
     }
   }
 
+  /// Toutes les missions du compte (client et prestataire) avec jalons, preuves et règlements ; null si la fonction serveur est indisponible.
+  static Future<List<Map<String, dynamic>>?> myMissionsList() async {
+    final r = await rpc('my_missions', const {});
+    if (r.error != null || r.data is! List) return null;
+    return [for (final x in r.data as List) Map<String, dynamic>.from(x as Map)];
+  }
+
   /// Mission en cours du compte connecté (la plus récente qu'il a commandée, sinon celle qu'il a obtenue comme talent),
   /// avec le montant accepté et les jalons. `mission` null : aucune mission ; résultat null : lecture impossible.
   static Future<({Map<String, dynamic>? mission, int? accepted, List<Map<String, dynamic>> milestones})?> currentMission() async {
@@ -814,6 +855,8 @@ class Backend {
     final m = e is PostgrestException ? e.message : e.toString();
     if (m.contains('row-level security')) return 'Cette personne ne peut pas recevoir vos messages.';
     if (m.contains('messages_body_check')) return 'Message trop long (4 000 caractères maximum).';
+    if (m.contains('Trop de messages')) return 'Vous envoyez trop de messages à la suite : patientez une minute avant de réessayer.';
+    if (m.contains('ne peut pas recevoir vos messages')) return 'Cette personne ne peut pas recevoir vos messages.';
     return _msg(e);
   }
 
@@ -1245,6 +1288,30 @@ class Backend {
 
   /// Vrai pendant une déconnexion demandée par l'utilisateur (sinon, une perte de session est une expiration : écran 150-2).
   static bool signingOut = false;
+
+  /// Vrai quand la dernière connexion a ouvert un compte SANS profil (choix du rôle sauté ou interrompu) : l'application renvoie alors vers l'écran 13.
+  static bool profileMissing = false;
+
+  /// Codes de secours 2FA : crée 8 nouveaux codes (session aal2 exigée) ; les codes ne sont renvoyés qu'ici.
+  static Future<({List<String> codes, String? error})> backupCodesGenerate() async {
+    final r = await rpc('mfa_backup_codes_generate', const {});
+    if (r.error != null) return (codes: const <String>[], error: userMessage(r.error!));
+    return (codes: [for (final x in (r.data as List? ?? const [])) '$x'], error: null);
+  }
+
+  /// Nombre de codes de secours restants (null : lecture impossible).
+  static Future<int?> backupCodesRemaining() async {
+    final r = await rpc('mfa_backup_codes_status', const {});
+    if (r.error != null || r.data is! Map) return null;
+    return ((r.data as Map)['remaining'] as num?)?.toInt();
+  }
+
+  /// Récupération avec un code de secours : 'ok' (la 2FA du compte est désactivée), 'invalid', 'locked' ; sinon error.
+  static Future<({String? status, String? error})> useBackupCode(String code) async {
+    final r = await rpc('mfa_use_backup_code', {'p_code': code});
+    if (r.error != null) return (status: null, error: userMessage(r.error!));
+    return (status: '${r.data}', error: null);
+  }
 
   /// Administration (écran 128) : comptes lisibles par l'administrateur (RLS), les plus récents d'abord.
   static Future<List<Account>?> adminAccounts() async {

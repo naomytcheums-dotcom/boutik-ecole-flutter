@@ -19,7 +19,7 @@ final termsTabProvider = NotifierProvider<IntState, int>(IntState.new);
 final termsCguProvider = NotifierProvider<FlagOff, bool>(FlagOff.new);
 final termsCgvProvider = NotifierProvider<FlagOff, bool>(FlagOff.new);
 
-const _tabs = ['Conditions', 'Confidentialité', 'Consentements'];
+const _tabs = ['Conditions', 'Ventes', 'Confidentialité', 'Consentements'];
 
 const termsSections = <List<(String, String)>>[
   [
@@ -31,11 +31,21 @@ const termsSections = <List<(String, String)>>[
     ('6. Évolution', 'Ces conditions peuvent changer. La version que vous acceptez est enregistrée avec la date de votre acceptation ; une nouvelle version vous sera proposée si elle modifie vos droits.'),
   ],
   [
+    ('Objet (version cgv-2026-11)', 'Ces conditions de vente s’appliquent aux achats de produits et de services publiés par des étudiants-vendeurs sur Boutik-École. Elles complètent les conditions d’utilisation. Votre acceptation est enregistrée séparément, à la confirmation d’une commande.'),
+    ('Prix et paiement', 'Les prix sont affichés en FCFA. Le paiement se fait par Mobile Money (Orange Money, MTN MoMo) ou selon les moyens proposés par l’annonce. Une commande non payée dans le délai prévu (2 heures, 48 heures si un paiement manuel est en cours de vérification) est annulée automatiquement ; votre panier n’est alors pas débité.'),
+    ('Retrait et livraison', 'Le retrait sur le campus est gratuit. La livraison à domicile, lorsqu’elle est proposée, est facturée au tarif affiché avant la confirmation de la commande ; aucun frais n’est ajouté après coup.'),
+    ('Répartition du prix', 'Sur chaque vente payée, le montant est réparti ainsi : 70 % pour l’étudiant-vendeur, 20 % pour le fonds d’innovation de l’établissement, 10 % pour la plateforme. Cette répartition ne modifie pas le prix que vous payez.'),
+    ('Somme gardée jusqu’à la réception', 'Le montant d’une commande payée reste gardé par la plateforme jusqu’à la confirmation de la remise (par vous ou par le kiosque), ou jusqu’à la fin d’un délai de garde sans réclamation. Il n’est jamais reversé au vendeur pendant une réclamation, un litige ou une demande de remboursement en cours.'),
+    ('Annulation et remboursement', 'Tant que la commande n’est pas payée, vous pouvez l’annuler depuis « Mes commandes ». Une fois payée, elle ne s’annule plus seule : vous demandez l’annulation ou le remboursement depuis la commande ; la demande est examinée par l’équipe et, si elle est acceptée, le remboursement se fait par le moyen de paiement utilisé.'),
+    ('Réclamations et litiges', 'Si le produit n’est pas conforme ou n’est pas remis, ouvrez une réclamation depuis la commande : le vendeur répond. Sans accord, vous pouvez ouvrir un litige, tranché par l’équipe de la plateforme sur la base des échanges et des justificatifs de chacun.'),
+    ('Responsabilité du vendeur', 'Le vendeur est responsable de la conformité, de la description et de la remise de ce qu’il propose. Boutik-École met les personnes en relation, garde les fonds jusqu’à la réception et arbitre les litiges.'),
+  ],
+  [
     ('Données collectées', 'Identité (nom, e-mail, téléphone), profil (ville, établissement, département, photo), pièces justificatives déposées dans un espace privé, commandes, adresses de livraison, messages, notifications et journaux de sécurité.'),
     ('À quoi elles servent', 'Au fonctionnement du service : commandes et livraison, vérification du compte, messagerie, notifications de service, sécurité et lutte contre la fraude.'),
     ('Qui les voit', 'Le vendeur reçoit ce qui est nécessaire à votre commande ; l’équipe de modération et d’administration accède aux informations utiles à sa mission ; les prestataires de paiement traitent les paiements. Vos données ne sont pas vendues.'),
     ('Position', 'Votre position n’est utilisée que si vous demandez vous-même la détection de votre ville.'),
-    ('Conservation', 'Vos données sont conservées tant que le compte est actif. Après une demande de suppression, un délai de 30 jours permet de changer d’avis ; ensuite le compte et les données personnelles sont supprimés. Les factures et les certificats émis sont conservés (obligation légale).'),
+    ('Conservation', 'Vos données sont conservées tant que le compte est actif. Après une demande de suppression, un délai de 30 jours permet de changer d’avis ; ensuite le compte est désactivé et vos données personnelles (nom, e-mail, téléphone, adresses, pièces, profil) sont anonymisées. Les commandes, paiements, factures et certificats émis sont conservés (obligation légale), sans votre identité. La suppression est suspendue tant que des commandes sont en cours.'),
     ('Vos droits', 'Écran « Mes données » : exporter vos données ou demander la suppression du compte. Vous corrigez votre profil à tout moment. Pour toute question, contactez le support depuis l’aide.'),
   ],
   [
@@ -70,7 +80,7 @@ class TermsReader extends ConsumerWidget {
                     height: 48,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(border: Border(bottom: BorderSide(color: tab == i ? const Color(0xFF6A4DFF) : const Color(0xFFECE8F2), width: tab == i ? 3 : 1))),
-                    child: Text(_tabs[i], style: _st(13, w: tab == i ? FontWeight.w700 : FontWeight.w500, c: tab == i ? _ink : const Color(0xFF57545F))),
+                    child: Text(_tabs[i], maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(12, w: tab == i ? FontWeight.w700 : FontWeight.w500, c: tab == i ? _ink : const Color(0xFF57545F))),
                   ),
                 ),
               ),
@@ -86,7 +96,7 @@ class TermsReader extends ConsumerWidget {
                 Text(body, style: _st(13, h: 1.55)),
                 const SizedBox(height: 16),
               ],
-              if (tab == 2)
+              if (tab == 3)
                 GestureDetector(
                   onTap: () => gOpen(context, '56'),
                   child: Container(

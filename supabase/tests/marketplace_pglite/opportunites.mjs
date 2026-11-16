@@ -89,7 +89,8 @@ export async function run(db) {
   await as(null, 'anon');
   check('recrutes : rien tant que le candidat n a pas donne son accord', (await q(`select opp_hired_list() r`))[0].r.length === 0);
   await as(A);
-  await q(`select opp_hire_publish('${app1}')`);
+  await fails('recrute : le partage exige une confirmation explicite', `select opp_hire_publish('${app1}')`, /Confirmez le partage/);
+  await q(`select opp_hire_publish('${app1}', true)`);
   await as(null, 'anon');
   const hl = (await q(`select opp_hired_list() r`))[0].r;
   check('recrutes : visible apres accord du candidat', hl.length === 1 && hl[0].org === 'Orange Cameroun' && hl[0].department === 'Génie informatique' && hl[0].role === 'Stagiaire developpeur Flutter');

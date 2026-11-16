@@ -90,6 +90,7 @@ Set<String>? allowedRoles(String id) {
       return {admin};
     case 268:
     case 277:
+    case 282: // QR de transfert / programmation des événements de borne : zone du support (la page se garde aussi elle-même)
       return {'support', admin};
     case 284:
       return {'finance', 'direction', admin};
@@ -102,6 +103,16 @@ bool canOpen(Account? a, String id) {
   return r == null || r.contains(roleKey(a));
 }
 
+/// Concours dont le compte connecté est juré (désigné par le département, quel que soit son rôle) : c'est ce qui ouvre l'écran de notation 167
+/// à un juré qui n'est ni département ni administrateur (le serveur reste l'autorité : score_contest_submission exige is_contest_juror).
+final jurorContestsProvider = FutureProvider<List<Map<String, dynamic>>>((ref) async {
+  final uid = ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
+  if (!Backend.ready || uid.isEmpty) return const [];
+  final r = await Backend.rpc('my_juror_contests', const {});
+  if (r.error != null) return const [];
+  return [for (final x in (r.data is List ? r.data as List : const []) ) if (x is Map) Map<String, dynamic>.from(x)];
+});
+
 /// Écrans qu'un Client peut atteindre par une adresse directe (le serveur reste l'autorité) mais que « Mes rubriques » ne lui propose pas :
 /// outils d'étudiant-vendeur, de prestataire, de jury et d'équipe, bornes, discussions de mission et maquettes de référence.
 const _hiddenInEspaceForClient = {
@@ -110,8 +121,14 @@ const _hiddenInEspaceForClient = {
   'A1', 'A2', 'A3', 'P1', 'P2', 'P4', 'P5', 'V1', 'L1', '250b', 'S1',
 };
 
-/// Écran proposé dans « Mes rubriques » : ouvert au rôle, et pertinent pour lui.
-bool listedInEspace(Account? a, String id) => canOpen(a, id) && !(roleKey(a) == 'client' && _hiddenInEspaceForClient.contains(id));
+/// Écrans pas encore disponibles en production (jumeau 3D, réalité augmentée) : ils restent joignables par leur adresse, qui affiche l'état réel,
+/// mais « Mes rubriques » ne les propose pas comme s'ils fonctionnaient.
+const _notYetAvailable = {'225', '226'};
+
+/// Écran proposé dans « Mes rubriques » : ouvert au rôle, et pertinent pour lui. [juror] : le compte est juré d'un concours (écran de notation 167).
+bool listedInEspace(Account? a, String id, {bool juror = false}) =>
+    !(Backend.ready && _notYetAvailable.contains(id)) &&
+    (canOpen(a, id) || (juror && a != null && id == '167')) && !(roleKey(a) == 'client' && _hiddenInEspaceForClient.contains(id) && !(juror && id == '167'));
 
 /// Enveloppe d'un écran : affiche l'écran si le rôle l'autorise, sinon « Accès réservé ».
 class AccessGuard extends ConsumerWidget {
@@ -123,6 +140,13 @@ class AccessGuard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final account = ref.watch(authProvider).current;
     if (canOpen(account, id)) return child;
+    if (id == '167' && account != null && Backend.ready) {
+      return ref.watch(jurorContestsProvider).when(
+            loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+            error: (_, _) => AccessDenied(id: id),
+            data: (l) => l.isEmpty ? AccessDenied(id: id) : child,
+          );
+    }
     return AccessDenied(id: id);
   }
 }

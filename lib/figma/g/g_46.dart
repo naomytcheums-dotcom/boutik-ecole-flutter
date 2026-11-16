@@ -62,7 +62,7 @@ class G_46 extends ConsumerWidget {
       gP(252, 146, 100, 14, Consumer(builder: (context, ref, _) => gText(orderStatusLabel(ref.watch(viewedOrderProvider)), 11, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center))),
       gP(24, 200, 340, 248, const OrderTimeline()),
       gP(40, 470, 120, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(viewedOrderProvider).home ? 'Livraison à' : 'Point de retrait', 12.5, Color(0xFF57545F)))),
-      gP(150, 470, 200, 16, Consumer(builder: (context, ref, _) { final o = ref.watch(viewedOrderProvider); return gText(demoContent ? 'Kiosque IUT – Bloc A' : (o.home ? (o.address.isEmpty ? 'Adresse non disponible' : o.address.replaceAll('\n', ' · ')) : 'Campus de l’IUT de Douala'), 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right, wrap: true, maxLines: 4); })),
+      gP(150, 470, 200, 16, Consumer(builder: (context, ref, _) { final o = ref.watch(viewedOrderProvider); return gText(demoContent ? 'Kiosque IUT – Bloc A' : (o.home ? (o.address.isEmpty ? 'Adresse non disponible' : o.address.replaceAll('\n', ' · ')) : 'Campus : ${gSelfInstitution.trim().isEmpty ? 'votre établissement' : gSelfInstitution.trim()}'), 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right, wrap: true, maxLines: 4); })),
       gP(40, 495, 310, 1, gBox(color: Color(0xFFF2EFF6)), show: demoContent || !ref.watch(viewedOrderProvider).home),
       gP(40, 504, 90, 16, gText('Code de retrait', 12.5, Color(0xFF57545F)), show: demoContent || !ref.watch(viewedOrderProvider).home),
       gP(303, 504, 47, 16, gText(demoContent ? '482 915' : '••• •••', 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right), show: demoContent || !ref.watch(viewedOrderProvider).home), // code réel : bouton ci-dessous

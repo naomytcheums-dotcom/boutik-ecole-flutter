@@ -239,7 +239,9 @@ class HomeProducts extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final list = ref.watch(allProductsProvider).take(2).toList();
+    final me = Backend.userId ?? '';
+    // « Produits en vedette » : jamais les annonces de la personne connectée (elles passaient en premier dans la liste).
+    final list = [for (final p in ref.watch(allProductsProvider)) if (me.isEmpty || p.sellerId != me) p].take(2).toList();
     if (list.isEmpty) {
       Widget note(String t, {VoidCallback? onTap}) => GestureDetector(
             behavior: HitTestBehavior.opaque,

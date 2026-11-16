@@ -11,13 +11,15 @@ import 'audit.dart';
 import 'backend.dart';
 import 'auth.dart';
 import 'store.dart';
+import 'offer_types.dart' show offerTypeOfCategory;
+import 'seller_new_product.dart';
 
 /// Espace étudiant-vendeur : annonces, stocks, commandes reçues, préparation (écrans 57 à 67).
 
 // ------------------------------------------------------------------ annonces
 
 class Listing {
-  const Listing({required this.title, required this.category, required this.price, required this.stock, this.published = true, this.inReview = false, this.description = '', this.id = '', this.status = '', this.note = '', this.images = const [], this.department = '', this.platform = false, this.showcase = false, this.supervisor = '', this.sellerId});
+  const Listing({required this.title, required this.category, required this.price, required this.stock, this.published = true, this.inReview = false, this.description = '', this.id = '', this.status = '', this.note = '', this.images = const [], this.department = '', this.platform = false, this.showcase = false, this.supervisor = '', this.sellerId, this.recycled = false, this.recycledKg});
   final String title, category, description, department;
 
   /// Identifiant du vendeur (colonne `seller_id`) ; nul pour un produit de la plateforme ou hors connexion.
@@ -25,6 +27,10 @@ class Listing {
 
   /// Enseignant qui encadre le projet (facultatif), affiché sur la fiche de l'offre.
   final String supervisor;
+
+  /// Déclaration « matériaux récupérés » (colonnes `recycled` et `recycled_kg`, poids par article) : alimente l'économie circulaire et les déchets valorisés.
+  final bool recycled;
+  final double? recycledKg;
   final int price, stock;
   final bool published, inReview;
 
@@ -62,10 +68,16 @@ class Listing {
       showcase: r['showcase'] == true,
       supervisor: (r['supervisor'] ?? '').toString(),
       sellerId: r['seller_id']?.toString(),
+      recycled: r['recycled'] == true,
+      recycledKg: (r['recycled_kg'] as num?)?.toDouble(),
     );
   }
 
-  static const lowStock = 30;
+  /// Seuil de « Stock bas » : réglage du vendeur (seller_settings), 30 par défaut.
+  static int lowStock = 30;
+
+  /// Clé stable d'une annonce : son identifiant serveur, à défaut (hors connexion) son titre.
+  String get key => id.isNotEmpty ? id : title;
 
   /// Libellé d'état : Brouillon, Rupture, Stock bas ou Publié.
   String get label => !published ? (inReview ? 'En validation' : (rejected ? 'Refusée' : 'Brouillon')) : (stock == 0 ? 'Rupture' : (stock <= lowStock ? 'Stock bas' : 'Publié'));
@@ -86,7 +98,9 @@ class Listing {
         inReview: inReview ?? this.inReview,
         description: description,
         sellerId: sellerId,
-        supervisor: supervisor);
+        supervisor: supervisor,
+        recycled: recycled,
+        recycledKg: recycledKg);
 }
 
 class Listings extends Notifier<List<Listing>> {
@@ -106,13 +120,19 @@ class Listings extends Notifier<List<Listing>> {
   Future<void> refresh() async {
     final staff = ref.read(authProvider).current?.staff ?? '';
     final l = await Backend.myListings(platform: platformManagers.contains(staff));
+    final s = await Backend.rpc('seller_settings_get', const {});
+    if (s.error == null && s.data is Map) Listing.lowStock = ((s.data as Map)['stock_threshold'] as num?)?.toInt() ?? Listing.lowStock;
     if (ref.mounted) state = l;
   }
+
+  /// Dernière annonce créée par ce compte (sert à lui rattacher les photos choisies dans le formulaire).
+  Listing? lastCreated;
 
   /// Création réelle : retourne un message d'erreur, ou null si l'annonce est enregistrée.
   Future<String?> create(Listing l, {required bool submit}) async {
     final r = await Backend.createListing(l, submit: submit);
     if (r.error != null) return r.error;
+    lastCreated = r.listing;
     if (ref.mounted) state = [r.listing!, ...state];
     return null;
   }
@@ -126,21 +146,23 @@ class Listings extends Notifier<List<Listing>> {
       ];
 
   void add(Listing l) => state = [l, ...state];
-  void setStock(String title, int stock) {
+  void setStock(String key, int stock) {
     final before = state;
     final s = stock < 0 ? 0 : stock;
-    state = [for (final l in state) l.title == title ? l.copyWith(stock: s) : l];
+    bool hit(Listing l) => l.id == key || l.title == key;
+    state = [for (final l in state) hit(l) ? l.copyWith(stock: s) : l];
     if (!Backend.ready) return;
-    final id = before.firstWhere((l) => l.title == title, orElse: () => const Listing(title: '', category: '', price: 0, stock: 0)).id;
+    final id = before.firstWhere(hit, orElse: () => const Listing(title: '', category: '', price: 0, stock: 0)).id;
     if (id.isEmpty) return;
     Backend.updateListingStock(id, s).then((err) {
       if (err != null && ref.mounted) state = before; // l'écriture a échoué : on n'affiche pas un stock faux
     });
   }
 
-  Listing? _find(String title) {
+  /// Retrouve une annonce par identifiant (ou titre hors connexion).
+  Listing? _find(String key) {
     for (final l in state) {
-      if (l.title == title) return l;
+      if (l.id == key || l.title == key) return l;
     }
     return null;
   }
@@ -155,10 +177,10 @@ class Listings extends Notifier<List<Listing>> {
   }
 
   /// Modification des champs (titre, prix, stock, description) ; le serveur valide et historise.
-  Future<String?> edit(String title, {required String title2, required int price, required int stock, required String description}) async {
+  Future<String?> edit(String title, {required String title2, required int price, required int stock, required String description, bool? recycled, double? recycledKg}) async {
     final l = _find(title);
     if (l == null || l.id.isEmpty) return 'Annonce introuvable.';
-    final err = await Backend.updateListing(l.id, {'title': title2, 'price': price, 'stock': stock, 'description': description.isEmpty ? null : description});
+    final err = await Backend.updateListing(l.id, {'title': title2, 'price': price, 'stock': stock, 'description': description.isEmpty ? null : description, if (recycled != null) 'recycled': recycled, if (recycled != null) 'recycled_kg': recycled ? recycledKg : null});
     if (err == null) await refresh();
     return err;
   }
@@ -180,13 +202,13 @@ class Listings extends Notifier<List<Listing>> {
   }
 
   /// Suppression (archivage) par le vendeur.
-  Future<String?> remove(String title) async {
-    final l = state.firstWhere((x) => x.title == title, orElse: () => const Listing(title: '', category: '', price: 0, stock: 0));
+  Future<String?> remove(String key) async {
+    final l = state.firstWhere((x) => x.id == key || x.title == key, orElse: () => const Listing(title: '', category: '', price: 0, stock: 0));
     if (Backend.ready && l.id.isNotEmpty) {
       final err = await Backend.setListingStatus(l.id, 'removed');
       if (err != null) return err;
     }
-    if (ref.mounted) state = [for (final x in state) if (x.title != title) x];
+    if (ref.mounted) state = [for (final x in state) if (!(x.id == key || x.title == key)) x];
     return null;
   }
   /// Décision du valideur : publie l'annonce (approve) ou la renvoie en brouillon.
@@ -310,8 +332,8 @@ final allProductsProvider = Provider<List<LiveProduct>>((ref) {
         () {
           final isOwn = (l.id.isNotEmpty && ownIds.contains(l.id)) || (l.id.isEmpty && own.contains(l));
           final sid = (l.sellerId ?? '').isNotEmpty ? l.sellerId : (isOwn ? Backend.userId : null);
-          return LiveProduct(l.title, l.department.isEmpty ? 'IUT de Douala' : l.department, l.price, isOwn ? ref.watch(profileAccountProvider).name : (names[sid] ?? 'Vendeur'),
-              l.description.isEmpty ? 'Annonce publiée par un étudiant de l’IUT de Douala.' : l.description, _photoOf(l),
+          return LiveProduct(l.title, l.department.isEmpty ? 'Non renseigné' : l.department, l.price, isOwn ? ref.watch(profileAccountProvider).name : (names[sid] ?? 'Vendeur'),
+              l.description.isEmpty ? 'Annonce publiée par un étudiant.' : l.description, _photoOf(l),
               category: liveCategories.contains(l.category) ? l.category : 'Maison', sellerId: sid, stock: l.stock, id: l.id.isEmpty ? null : l.id);
         }(),
   ];
@@ -332,12 +354,16 @@ final filteredProductsProvider = Provider<List<LiveProduct>>((ref) {
 // ------------------------------------------------------------------ commandes reçues
 
 class SellerOrder {
-  const SellerOrder(this.id, this.title, this.client, this.total, this.qty, {this.status = 1});
+  const SellerOrder(this.id, this.title, this.client, this.total, this.qty, {this.status = 1, this.cod = false, this.home = false, this.city = '', this.confirmed = false, this.releaseAt = ''});
   final String id, title, client;
   final int total, qty;
 
   /// État de préparation côté serveur : 0 nouvelle · 1 acceptée · 2 en préparation · 3 prête · 4 livrée.
   final int status;
+
+  /// Paiement à la livraison (le vendeur encaisse à la remise), remise à domicile et ville, confirmation de l'acheteur, date de libération prévue (ISO) de l'argent.
+  final bool cod, home, confirmed;
+  final String city, releaseAt;
 }
 
 /// Commandes payées contenant les annonces du vendeur connecté (serveur, isolées par RLS), actualisées toutes les 20 s.
@@ -366,6 +392,11 @@ class ServerSellerOrders extends Notifier<List<SellerOrder>> {
           (r['total'] as num?)?.toInt() ?? 0,
           (r['qty'] as num?)?.toInt() ?? 0,
           status: (r['status'] as num?)?.toInt() ?? 0,
+          cod: r['cod'] == true,
+          home: r['home_delivery'] == true,
+          city: (r['delivery_city'] ?? '').toString(),
+          confirmed: r['confirmed'] == true,
+          releaseAt: (r['release_at'] ?? '').toString(),
         ),
     ];
   }
@@ -488,15 +519,39 @@ String newProductErrorsSummary(Map<String, String> errs) {
   return '$n champ${n > 1 ? 's' : ''} à corriger avant de continuer. Rien n’a été enregistré.';
 }
 
+bool _submittingListing = false;
+
+/// Valeurs de départ du formulaire hors connexion : celles que la maquette affiche (prix « 25 000 », stock « 15 »).
+/// Connecté, les champs démarrent vides : ce qui est enregistré est exactement ce que le vendeur a saisi.
+String _priceOf(Map<String, String> f) => f['np_price'] ?? (demoContent ? '25 000' : '');
+String _stockOf(Map<String, String> f) => f['np_stock'] ?? (demoContent ? '15' : '');
+
 Future<void> submitListing(WidgetRef ref, BuildContext context, {required bool publish}) async {
+  if (_submittingListing) return; // un double toucher ne crée pas deux annonces
+  _submittingListing = true;
+  try {
+    await _submitListing(ref, context, publish: publish);
+  } finally {
+    _submittingListing = false;
+  }
+}
+
+Future<void> _submitListing(WidgetRef ref, BuildContext context, {required bool publish}) async {
+  final f0 = ref.read(formProvider);
+  if (offerTypeOfCategory((f0['np_cat'] ?? '').trim()) == 'service') {
+    // un service n'a ni stock ni tarif ferme : il se crée avec le formulaire dédié (tarif « Sur devis » possible)
+    await gAlert(context, 'Utilisez « Nouveau service »', 'Un service se publie avec le formulaire « Nouveau service » : tarif « à partir de » ou « Sur devis », délai et mode de prestation. Ce formulaire est réservé aux produits, solutions et projets.');
+    if (context.mounted) gOpen(context, '59');
+    return;
+  }
   if (publish && !await requireCertified(context, ref, 'publier une annonce') || !context.mounted) return;
   final f = ref.read(formProvider);
   final title = (f['np_title'] ?? '').trim();
   final cat = (f['np_cat'] ?? 'Maison et déco').trim();
   final errs = <String, String?>{
     'np_title': title.length < 3 ? 'Le titre est obligatoire (3 à 80 caractères).' : (title.length > 80 ? 'Titre trop long (80 caractères maximum).' : null),
-    'np_price': _intError(f['np_price'] ?? '25 000', 'Prix', min: 500),
-    'np_stock': _intError(f['np_stock'] ?? '30', 'Stock'),
+    'np_price': _intError(_priceOf(f), 'Prix', min: 500),
+    'np_stock': _intError(_stockOf(f), 'Stock'),
   };
   if (cat.isEmpty) errs['np_cat'] = 'Choisissez une catégorie.';
   final bad = {for (final e in errs.entries) if (e.value != null) e.key: e.value!};
@@ -509,13 +564,18 @@ Future<void> submitListing(WidgetRef ref, BuildContext context, {required bool p
     ref.read(errorsProvider.notifier).setAll({'np_title': 'Une annonce porte déjà ce titre.'});
     return;
   }
+  final photos = ref.read(newProductPhotosProvider);
+  if (publish && Backend.ready && photos.isEmpty) {
+    await gAlert(context, 'Ajoutez une photo', 'Une annonce sans photo ne peut pas être envoyée en validation. Touchez « Ajouter des photos », ou enregistrez un brouillon pour continuer plus tard.');
+    return;
+  }
   ref.read(errorsProvider.notifier).clear();
   final catShort = cat.toLowerCase().contains('maison') ? 'Maison' : (cat.toLowerCase().contains('mode') ? 'Mode' : (cat.toLowerCase().contains('tech') ? 'Tech' : (cat.toLowerCase().contains('art') ? 'Art' : (cat.toLowerCase().contains('alim') ? 'Alimentation' : cat))));
   final nouvelle = Listing(
     title: title,
     category: catShort,
-    price: int.parse((f['np_price'] ?? '25 000').replaceAll(RegExp(r'[\s ]'), '')),
-    stock: int.parse(f['np_stock'] ?? '30'),
+    price: int.parse(_priceOf(f).replaceAll(RegExp(r'[\s\u00A0\u202F]'), '')),
+    stock: int.parse(_stockOf(f).replaceAll(RegExp(r'[\s\u00A0\u202F]'), '')),
     published: false,
     inReview: publish,
     description: f['np_desc'] ?? '',
@@ -530,13 +590,34 @@ Future<void> submitListing(WidgetRef ref, BuildContext context, {required bool p
   } else {
     ref.read(listingsProvider.notifier).add(nouvelle);
   }
+  var photosFailed = 0;
+  final created = ref.read(listingsProvider.notifier).lastCreated;
+  if (Backend.ready && photos.isNotEmpty && created != null && created.id.isNotEmpty) {
+    photosFailed = await uploadPickedPhotos(created.id, photos);
+    await ref.read(listingsProvider.notifier).refresh();
+  }
+  resetNewProduct(ref);
   ref.read(sellerFilterProvider.notifier).set(0);
   ref.read(auditProvider.notifier).log(ref.read(profileAccountProvider).name, publish ? 'Annonce soumise' : 'Brouillon créé', title, 'Validations');
   if (!context.mounted) return;
-  gToast(context, publish ? 'Annonce envoyée en validation au département' : 'Brouillon enregistré');
+  gToast(context, photosFailed > 0
+      ? 'Annonce enregistrée, mais $photosFailed photo${photosFailed > 1 ? 's' : ''} n’a pas pu être envoyée : ajoutez-la depuis « Modifier ».'
+      : (publish ? 'Annonce envoyée en validation au département' : 'Brouillon enregistré'));
   gOpen(context, '61');
 }
 
+/// Mode de remise de la commande (sans adresse personnelle de l'acheteur) : retrait sur campus ou livraison dans sa ville.
+String sellerOrderModeText(SellerOrder o) => !Backend.ready ? '' : (o.home ? 'Livraison à domicile${o.city.isEmpty ? '' : ' · ${o.city}'}' : 'Retrait sur campus');
+
+/// Ce que le vendeur doit savoir de l'argent : montant à encaisser (paiement à la livraison) ou moment de libération de sa part.
+String sellerOrderMoneyText(SellerOrder o) {
+  if (!Backend.ready) return '';
+  if (o.cod) return '${fcfa(o.total)} à encaisser à la remise';
+  if (o.status < 4) return 'Libérée après la livraison confirmée';
+  if (o.confirmed) return 'Libérée : réception confirmée';
+  final d = DateTime.tryParse(o.releaseAt)?.toLocal();
+  return d == null ? 'À la confirmation du client' : 'Le ${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')} à ${d.hour.toString().padLeft(2, '0')} h sans réclamation';
+}
 /// Libellé du bouton principal selon l'état de préparation : accepter → préparer → prête → livrée.
 String orderActionLabel(int status) => switch (status) {
       0 => 'Accepter',
@@ -559,7 +640,7 @@ Future<void> advanceCurrentOrder(WidgetRef ref, BuildContext context) async {
     1 => 'Commande ${o.id} acceptée : le client est averti',
     2 => 'Préparation de ${o.id} démarrée : le client est averti',
     3 => 'Commande ${o.id} prête : le client est averti',
-    _ => 'Commande ${o.id} livrée : le client est averti',
+    _ => 'Commande ${o.id} livrée : le client est averti et doit confirmer la réception (sinon votre part est libérée sous 72 h sans réclamation)',
   });
   if (next >= 3) gOpen(context, '63');
 }

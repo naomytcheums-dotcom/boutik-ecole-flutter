@@ -96,7 +96,7 @@ class G_13 extends ConsumerWidget {
       gP(282, 634, 62, 13, gText('Sélectionné', 10, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center, wrap: true), show: ref.watch(signupRoleProvider) == 3),
       gP(118, 674, 151, 36, gText('Enseignant, partenaire ou\nadministration de l’IUT.', 12.5, Color(0xFF57545F), lh: 18)),
       gP(328, 630, 20, 20, gBox(border: Color(0xFF57545F), bw: 1.8, oval: true)),
-      gP(24, 736, 342, 26, gText('Boutique, entreprise et certification restent soumises à une vérification par l’administration.', 11, Color(0xFF57545F), lh: 13, wrap: true), show: !demoContent),
+      gP(24, 736, 342, 26, gText('Vente, annuaire des talents et invitations d’entreprises : après vérification de votre carte d’étudiant par l’équipe.', 11, Color(0xFF57545F), lh: 13, wrap: true), show: !demoContent),
       gP(24, 762, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x29122640), offset: Offset(0, 5), blurRadius: 12, spreadRadius: 0)], radii: [27, 27, 27, 27])),
       gP(142.5, 779, 77, 20, gText('Continuer', 16, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(230.25, 786, 16.5, 6, gImg('assets/figma/v/2d30ecf6147fbb.svg')),

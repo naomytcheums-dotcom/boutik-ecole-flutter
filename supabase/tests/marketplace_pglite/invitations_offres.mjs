@@ -9,6 +9,7 @@ export async function run(db) {
   await db.exec('reset role');
   for (const [id, nm, role] of [[E, 'Orange', 'company'], [A, 'Alice', 'student'], [B, 'Bob', 'student'], [X, 'Xena', 'company'], [C, 'Carl', 'client']]) await db.exec(`insert into auth.users(id,email) values ('${id}','${nm}@t.cm'); insert into profiles(id,name,role,email) values ('${id}','${nm}','${role}','${nm}@t.cm')`);
   await db.exec(`update profiles set skills='Flutter', bio='dev' where id in ('${A}','${B}')`);
+  await db.exec(`insert into user_documents (owner_id, kind, name, path, mime, size_bytes, status) select id, 'student_card', 'c', id || '/c.pdf', 'application/pdf', 10, 'verified' from profiles where id in ('${A}', '${B}')`);
   await db.exec(`insert into opportunities (id, poster_id, org_name, kind, title, status, skills) values ('${O}', '${E}', 'Orange', 'stage', 'Stage Flutter', 'published', array['Flutter']), ('${P}', '${E}', 'Orange', 'stage', 'Brouillon', 'pending', array[]::text[])`);
   await as(E);
   check('invitation envoyee', (await q(`select opp_invite('${O}', '${A}', 'Venez !') r`))[0].r === 'invited');

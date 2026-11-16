@@ -7,6 +7,7 @@ import '../gen.dart' show gAlert, gToast;
 import '../nav.dart' show gOpen;
 import 'auth.dart' show Account, authProvider, normPhone, parseBirth, validName, validPhone;
 import 'backend.dart';
+import 'phone_verify.dart';
 import 'tp_ui.dart';
 
 String _frDate(String iso) {
@@ -101,6 +102,7 @@ class _PersonalInfoPageState extends ConsumerState<PersonalInfoPage> {
           const SizedBox(height: 6),
           TpCard(margin: const EdgeInsets.only(bottom: 4), child: Row(children: [const Icon(Icons.lock_outline, size: 18, color: tpGrey), const SizedBox(width: 10), Text('+237 ${normPhone(a.phone)}', style: tpSt(14))])),
           tpNote('Ce numéro est enregistré et ne se change pas ici : contactez le support (Aide et support) pour le remplacer.'),
+                    const PhoneVerifyCard(),
         ] else ...[
           TpField('Téléphone', _phone, keyboard: TextInputType.phone, formatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9 +]')), LengthLimitingTextInputFormatter(16)]),
           tpNote('9 chiffres commençant par 6. Une fois enregistré, le numéro ne se modifie plus ici.'),

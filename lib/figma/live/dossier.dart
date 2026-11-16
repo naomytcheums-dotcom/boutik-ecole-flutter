@@ -80,6 +80,13 @@ class DossierPanel extends ConsumerWidget {
     Widget note(String t) => Container(width: width, height: 150, alignment: Alignment.center, padding: const EdgeInsets.symmetric(horizontal: 24), child: Text(t, textAlign: TextAlign.center, style: _st(13, c: _grey)));
     if (ref.watch(authProvider.select((s) => s.current == null))) return note('Connectez-vous pour voir votre dossier.');
     if (!Backend.ready || docs == null) return note('Chargement de votre dossier…');
+    if (ref.watch(docsErrorProvider) && docs.isEmpty) {
+      return Container(width: width, height: 190, alignment: Alignment.center, padding: const EdgeInsets.symmetric(horizontal: 24), child: Column(mainAxisSize: MainAxisSize.min, children: [
+        Text('Votre dossier n’a pas pu être chargé. Vérifiez votre connexion puis réessayez.', textAlign: TextAlign.center, style: _st(13, c: _grey)),
+        const SizedBox(height: 10),
+        TextButton(onPressed: () => ref.read(myDocsProvider.notifier).refresh(), child: Text('Réessayer', style: _st(13, w: FontWeight.w700, c: const Color(0xFF5A3FE0)))),
+      ]));
+    }
     final items = dossierItems(docs, a);
     final pct = dossierPercent(items);
     final missing = items.where((i) => !i.done && !i.waiting).length;

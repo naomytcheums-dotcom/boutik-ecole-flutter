@@ -10,11 +10,13 @@ import '../../core/router/paths.dart' show screenPath;
 
 import '../gen.dart';
 import '../nav.dart';
-import 'access.dart' show canOpen;
+import 'access.dart' show canOpen, roleKey;
 import 'auth.dart';
 import '../gdata.dart' show GData;
 import 'backend.dart';
 import 'messages.dart' show selectedConversationProvider, conversationsProvider, contactOrderSeller;
+import 'missions.dart' show selectedMissionIdProvider, missionProvider;
+import 'services.dart' show quotesDialog;
 import 'paiement_messagerie.dart' show selectedPaymentProvider;
 import 'seller.dart' show selectedSellerOrderProvider;
 import 'store.dart' show StrV, ordersProvider, selectedOrderIdProvider;
@@ -182,6 +184,10 @@ bool openNotification(BuildContext context, WidgetRef? ref, NotificationItem n, 
       if (!canOpen(account, '61')) return false;
       gOpen(context, '61');
       return true;
+    case 'money':
+      if (!canOpen(account, '66')) return false;
+      gOpen(context, '66');
+      return true;
     case 'payment':
       final pid = first(['payment_id', 'payment']);
       if (pid.isEmpty) {
@@ -195,11 +201,29 @@ bool openNotification(BuildContext context, WidgetRef? ref, NotificationItem n, 
       r.push('/litiges');
       return true;
     case 'mission':
+      final mid = s('mission_id');
+      if (mid.isNotEmpty) {
+        read(selectedMissionIdProvider.notifier).set(mid);
+        read(missionProvider.notifier).refresh();
+      }
       gOpen(context, '194');
+      return true;
+    case 'quote':
+      if (ref == null) return false;
+      quotesDialog(context, ref);
       return true;
     case 'opportunity_reminder' || 'opportunity_alert' || 'opportunity_review' || 'opportunity_application' || 'opportunity_invite':
       final id = first(['opportunity', 'opportunity_id']);
       r.push(id.isEmpty ? '/opportunites' : '/opportunites/$id');
+      return true;
+    case 'mentor_request':
+      r.push('/mentors/demandes');
+      return true;
+    case 'mentor_profile':
+      r.push('/mentors/profil');
+      return true;
+    case 'document':
+      gOpen(context, '154');
       return true;
     case 'contest_reminder' || 'contest_review' || 'contest_prize' || 'contest':
       final id = first(['announcement', 'announcement_id']);
@@ -216,13 +240,62 @@ bool openNotification(BuildContext context, WidgetRef? ref, NotificationItem n, 
       gOpenProfile(context, uid);
       return true;
     case 'post' || 'comment':
-      gOpen(context, '244');
+      final pid = first(['post', 'post_id']);
+      final target = n.kind == 'comment' && pid.isNotEmpty ? screenPath('252') : screenPath('244');
+      r.push(pid.isEmpty ? target : '$target?post=${Uri.encodeQueryComponent(pid)}');
+      return true;
+    case 'post_review':
+      if (!const {'dept', 'admin', 'support'}.contains(roleKey(account))) return false;
+      r.push('/moderation/reseau');
+      return true;
+    case 'report':
+      if (!const {'dept', 'admin', 'support'}.contains(roleKey(account)) || first(['post', 'comment', 'story']).isEmpty) return false;
+      r.push('/moderation/reseau');
+      return true;
+    case 'shop':
+      final slug = first(['shop']);
+      if (slug.isEmpty) return false;
+      r.push('/marche/boutique/$slug');
       return true;
     case 'live':
       gOpen(context, 'L1');
       return true;
     case 'event':
-      gOpen(context, '101');
+      if (s('event').isEmpty) {
+        gOpen(context, '101');
+      } else if (n.title.startsWith('Nouvelle inscription') && const {'dept', 'direction', 'finance', 'admin'}.contains(roleKey(account))) {
+        r.push('/evenements/gerer');
+      } else {
+        r.push('/evenements/mes');
+      }
+      return true;
+    case 'project':
+      final staff = const {'dept', 'admin'}.contains(roleKey(account));
+      if (n.title.startsWith('Accompagnement') || n.title.startsWith('Demande d’accompagnement') || n.title.startsWith('Demande d\'accompagnement')) {
+        r.push('/accompagnement');
+      } else if (d['invitation'] == true || n.title.contains('équipe') || n.title.startsWith('Invitation')) {
+        gOpen(context, '81');
+      } else {
+        gOpen(context, staff ? '108' : '205');
+      }
+      return true;
+    case 'campaign':
+      gOpen(context, const {'dept', 'admin'}.contains(roleKey(account)) ? '108' : '86');
+      return true;
+    case 'sos':
+      r.push('/innovations/sos');
+      return true;
+    case 'victory':
+      r.push('/innovations/victoires');
+      return true;
+    case 'skill':
+      r.push('/innovations/competences');
+      return true;
+    case 'challenge':
+      r.push('/innovations/defis');
+      return true;
+    case 'points':
+      r.push('/innovations/points');
       return true;
     case 'support':
       r.push('/aide/demandes');
@@ -231,7 +304,13 @@ bool openNotification(BuildContext context, WidgetRef? ref, NotificationItem n, 
       r.push('/support/boite');
       return true;
     case String k when k.startsWith('community'):
-      r.push('/communautes');
+      final cid = first(['community']);
+      r.push(RegExp(r'^[0-9a-fA-F-]{36}$').hasMatch(cid) ? '/communaute/$cid' : '/communautes');
+      return true;
+    case 'study_room':
+      final rid = first(['community']);
+      if (!RegExp(r'^[0-9a-fA-F-]{36}$').hasMatch(rid)) return false;
+      r.push('/communaute/$rid');
       return true;
   }
   return false;
@@ -242,16 +321,32 @@ String? notificationActionLabel(NotificationItem n) => switch (n.kind) {
       'order' => 'Voir la commande',
       'message' || 'teammate_message' => 'Ouvrir la conversation',
       'listing' => 'Mon catalogue',
+      'money' => 'Voir mes revenus',
       'payment' => 'Voir le paiement',
       'claim' || 'dispute' => 'Voir mon litige',
       'mission' => 'Voir la mission',
+      'quote' => 'Voir mes devis',
       'opportunity_reminder' || 'opportunity_alert' || 'opportunity_review' || 'opportunity_application' || 'opportunity_invite' => 'Voir l’opportunité',
       'contest_reminder' || 'contest_review' || 'contest_prize' || 'contest' => 'Voir le concours',
+      'mentor_request' => 'Voir mes demandes de mentor',
+      'mentor_profile' => 'Voir mon profil mentor',
+      'document' => 'Voir mon dossier',
       'review' || 'question' || 'alert' => 'Voir le produit',
       'follow' => 'Voir le profil',
       'post' || 'comment' => 'Voir la publication',
+      'post_review' => 'Valider les publications',
+      'report' => 'Voir les signalements',
+      'shop' => 'Voir la boutique',
+      'study_room' => 'Ouvrir la communauté',
       'live' => 'Voir les lives',
       'event' => 'Voir l’événement',
+      'project' => 'Voir mon projet',
+      'campaign' => 'Voir la campagne',
+      'sos' => 'Voir le SOS',
+      'victory' => 'Voir le mur des victoires',
+      'skill' => 'Voir le marché des compétences',
+      'challenge' => 'Voir les défis',
+      'points' => 'Voir mes points',
       'support' => 'Mes demandes d’aide',
       'support_ticket' => 'Ouvrir la boîte du support',
       'message_report' => 'Voir les signalements',

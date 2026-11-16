@@ -61,16 +61,16 @@ void main() {
     expect(find.textContaining('Aucune création en matériaux récupérés'), findsOneWidget);
   });
 
-  testWidgets('106 connecté : seuls les produits de récupération réels sont affichés', (t) async {
-    await monter(t, const G_106(), connecte: true, produits: [_lampe, _sac]);
+  testWidgets('106 connecté : seuls les produits déclarés récupérés par leur vendeur sont affichés', (t) async {
+    await monter(t, const G_106(), connecte: true, produits: [_lampe, _sac], recycles: {'a'});
     expect(find.text('Lampe en bois recyclé'), findsOneWidget);
     expect(find.text('Sac à dos'), findsNothing);
   });
 
-  testWidgets('106 connecté : les annonces déclarées en matériaux récupérés s’ajoutent à celles dont le texte l’évoque', (t) async {
+  testWidgets('106 connecté : une annonce dont le texte évoque la récupération mais non déclarée n’est pas affichée (S5-66)', (t) async {
     await monter(t, const G_106(), connecte: true, produits: [_lampe, _sac, _bocal], recycles: {'c'});
-    expect(find.text('Lampe en bois recyclé'), findsOneWidget);
     expect(find.text('Bocal en verre'), findsOneWidget);
+    expect(find.text('Lampe en bois recyclé'), findsNothing);
     expect(find.text('Sac à dos'), findsNothing);
   });
 

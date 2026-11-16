@@ -5,7 +5,7 @@ import '../../data/demo/section_a_demo.dart' show CartLine;
 import '../../data/repositories/repositories.dart' show cartProvider;
 import '../gen.dart';
 import '../nav.dart';
-import 'auth.dart' show kTermsVersion, requireLogin;
+import 'auth.dart' show gSelfInstitution, kSalesTermsVersion, requireLogin;
 import 'backend.dart';
 import 'store.dart';
 
@@ -20,7 +20,7 @@ String feeLabel(int fee) => fee == 0 ? 'Gratuit' : fcfa(fee);
 
 /// Mode de livraison retenu (07) : intitulé et précision.
 ({String title, String detail}) deliveryChoice(bool home) =>
-    home ? (title: 'Livraison à domicile', detail: 'À l’adresse du carnet') : (title: 'Retrait sur campus', detail: 'IUT de Douala – Bâtiment principal');
+    home ? (title: 'Livraison à domicile', detail: 'À l’adresse du carnet') : (title: 'Retrait sur campus', detail: gSelfInstitution.trim().isEmpty ? 'Sur votre campus' : gSelfInstitution.trim());
 
 /// Moyen de paiement retenu (08).
 String payMethodLabel(int method) => method == 0 ? 'Orange Money' : (method == 2 ? 'Paiement à la livraison' : 'Mobile Money');
@@ -89,7 +89,7 @@ Future<void> confirmOrderSummary(WidgetRef ref, BuildContext context) async {
   }
   if (Backend.ready && GAnim.enabled) {
     if (!await requireLogin(context, ref, 'confirmer votre commande') || !context.mounted) return;
-    final err = await Backend.acceptTerms(kTermsVersion);
+    final err = await Backend.acceptTerms(kSalesTermsVersion);
     if (err != null) {
       if (context.mounted) gToast(context, err);
       return;
@@ -155,7 +155,7 @@ class _Row extends StatelessWidget {
 /// Mode de livraison et adresse réels de la commande : l'adresse figée à la commande (livraison à domicile), sinon le point de retrait.
 String orderDeliveryText(Order o) {
   if (o.home) return 'Livraison à domicile\n${o.address.isEmpty ? 'Adresse non disponible' : o.address}';
-  return 'Retrait sur campus\nIUT de Douala – Bâtiment principal';
+  return 'Retrait sur campus\n${gSelfInstitution.trim().isEmpty ? 'Votre campus' : gSelfInstitution.trim()}';
 }
 
 /// « Total 25 000 FCFA · remise −2 000 FCFA (code) · livraison 3 000 FCFA » : montants de la commande.

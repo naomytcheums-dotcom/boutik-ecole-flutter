@@ -9,21 +9,23 @@ import '../nav.dart';
 import 'auth.dart';
 import 'backend.dart';
 import 'seller.dart';
+import 'seller_live.dart' show sellerShopProvider;
 import 'store.dart';
 
 /// Modification d'une annonce du vendeur (écran 60) : titre, prix, stock, description, photos, suppression, soumission.
 /// Tout est enregistré sur le serveur ; la propriété et les transitions de statut sont contrôlées par la base (RLS + déclencheurs).
 
-/// Annonce ouverte depuis « Mon catalogue » (titre).
+/// Annonce ouverte depuis « Mon catalogue » (identifiant serveur ; le titre hors connexion).
 final selectedListingProvider = NotifierProvider<StrV, String>(StrV.new);
 
 final currentListingProvider = Provider<Listing?>((ref) {
   final all = ref.watch(listingsProvider);
   final t = ref.watch(selectedListingProvider);
   for (final l in all) {
-    if (l.title == t) return l;
+    if (t.isNotEmpty && (l.id == t || l.title == t)) return l;
   }
-  return all.isEmpty ? null : all.first;
+  // connecté : jamais une annonce que le vendeur n'a pas choisie (Publier / Supprimer agiraient dessus)
+  return Backend.ready || all.isEmpty ? null : all.first;
 });
 
 const _ink = Color(0xFF111015);
@@ -48,10 +50,29 @@ Widget listingDescLive() => _live(24, 493, 345, 60, (l) => Text(l.description.is
 
 Widget listingStockLive() => _live(250, 560, 100, 16, (l) => Align(alignment: Alignment.centerRight, child: Text('${l.stock} unité${l.stock > 1 ? 's' : ''}', style: _t(12.5, FontWeight.w600, _ink))));
 
-Widget listingStatusLive() => _live(230, 628, 120, 16, (l) => Align(alignment: Alignment.centerRight, child: Text(l.label, style: _t(12.5, FontWeight.w600, _ink))));
+Widget listingStatusLive() => _live(
+      150, 628, 200, 16,
+      (l) => Consumer(builder: (context, ref, _) {
+        final shop = ref.watch(sellerShopProvider).value ?? const <String, dynamic>{};
+        final hidden = l.published && shop['id'] != null && shop['status'] != 'active';
+        return Align(alignment: Alignment.centerRight, child: Text(hidden ? '${l.label} · boutique non active' : l.label, style: _t(12.5, FontWeight.w600, _ink)));
+      }),
+    );
 
-/// Note de refus du département, visible du vendeur.
-Widget listingNoteLive() => _live(24, 656, 342, 20, (l) => l.rejected && l.note.isNotEmpty ? Text('Motif du refus : ${l.note}', maxLines: 1, overflow: TextOverflow.ellipsis, style: _t(12, FontWeight.w600, const Color(0xFFD64545))) : const SizedBox.shrink());
+/// Aucune annonce choisie (ouverture directe de l'écran) : invitation à en ouvrir une depuis « Mon catalogue ».
+Widget listingEmptyLive() => gP(
+      24, 174, 342, 200,
+      Consumer(builder: (context, ref, _) => ref.watch(currentListingProvider) != null ? const SizedBox.shrink() : Container(decoration: BoxDecoration(color: const Color(0xFFEDE9F6), borderRadius: BorderRadius.circular(24)), alignment: Alignment.center, padding: const EdgeInsets.all(20), child: Text('Aucune annonce sélectionnée.\nOuvrez-en une depuis « Mon catalogue ».', textAlign: TextAlign.center, style: _t(13, FontWeight.w500, _mute).copyWith(height: 1.5)))),
+      show: !demoContent,
+    );
+
+/// Note de refus du département, visible du vendeur : deux lignes, le motif complet s'ouvre au toucher.
+Widget listingNoteLive() => _live(
+      24, 646, 342, 32,
+      (l) => l.rejected && l.note.isNotEmpty
+          ? Consumer(builder: (context, ref, _) => GestureDetector(behavior: HitTestBehavior.opaque, onTap: () => gAlert(context, 'Motif du refus', l.note), child: Text('Motif du refus : ${l.note}', maxLines: 2, overflow: TextOverflow.ellipsis, style: _t(11.5, FontWeight.w600, const Color(0xFFD64545)).copyWith(height: 1.3))))
+          : const SizedBox.shrink(),
+    );
 
 Widget listingHeroLive() => _live(
       24, 174, 342, 200,
@@ -89,6 +110,8 @@ Future<void> editListingDialog(BuildContext context, WidgetRef ref) async {
   final price = TextEditingController(text: '${l0.price}');
   final stock = TextEditingController(text: '${l0.stock}');
   final desc = TextEditingController(text: l0.description);
+  final recycledKg = TextEditingController(text: l0.recycledKg == null ? '' : '${l0.recycledKg}'.replaceAll('.', ','));
+  var recycled = l0.recycled;
   String? error;
   var busy = false;
   var images = [...l0.images];
@@ -134,16 +157,18 @@ Future<void> editListingDialog(BuildContext context, WidgetRef ref) async {
           if (title.text.trim().length < 3) return set(() => error = 'Le titre doit comporter au moins 3 caractères.');
           if (p == null || p < 500) return set(() => error = 'Le prix doit être d’au moins 500 FCFA.');
           if (s == null || s < 0) return set(() => error = 'Le stock doit être un nombre entier positif.');
+          final kg = double.tryParse(recycledKg.text.trim().replaceAll(',', '.'));
+          if (recycled && (kg == null || kg <= 0 || kg > 1000)) return set(() => error = 'Matériaux récupérés : indiquez le poids par article, entre 0,01 et 1 000 kg.');
           set(() {
             busy = true;
             error = null;
           });
-          final err = await ref.read(listingsProvider.notifier).edit(l0.title, title2: title.text.trim(), price: p, stock: s, description: desc.text.trim());
+          final err = await ref.read(listingsProvider.notifier).edit(l0.title, title2: title.text.trim(), price: p, stock: s, description: desc.text.trim(), recycled: recycled, recycledKg: kg);
           if (err != null) return set(() {
                 busy = false;
                 error = err;
               });
-          ref.read(selectedListingProvider.notifier).set(title.text.trim());
+          ref.read(selectedListingProvider.notifier).set(l0.key);
           if (ctx.mounted) Navigator.of(ctx).pop();
         }
 
@@ -179,6 +204,7 @@ Future<void> editListingDialog(BuildContext context, WidgetRef ref) async {
             child: SizedBox(
               width: 340,
               child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                if (l0.status == 'approved') Padding(padding: const EdgeInsets.only(bottom: 10), child: Text('Annonce publiée : modifier le titre, la description, la catégorie ou les photos la renvoie en validation (elle n’est plus visible des acheteurs le temps de la relecture). Le prix et le stock restent modifiables librement.', style: st.copyWith(fontSize: 12, color: const Color(0xFF8F5400), height: 1.4))),
                 Text('Titre', style: st.copyWith(fontWeight: FontWeight.w600)),
                 const SizedBox(height: 6),
                 TextField(controller: title, style: st, maxLength: 80, decoration: deco('Titre de l’annonce')),
@@ -191,6 +217,8 @@ Future<void> editListingDialog(BuildContext context, WidgetRef ref) async {
                 Text('Description', style: st.copyWith(fontWeight: FontWeight.w600)),
                 const SizedBox(height: 6),
                 TextField(controller: desc, style: st, maxLines: 3, maxLength: 2000, decoration: deco('Décrivez votre produit')),
+                CheckboxListTile(contentPadding: EdgeInsets.zero, dense: true, controlAffinity: ListTileControlAffinity.leading, value: recycled, onChanged: busy ? null : (v) => set(() => recycled = v ?? false), title: Text('Matériaux récupérés', style: st.copyWith(fontWeight: FontWeight.w600)), subtitle: Text('Produit fabriqué à partir de matériaux de récupération (économie circulaire).', style: st.copyWith(fontSize: 12, color: _mute))),
+                if (recycled) TextField(controller: recycledKg, style: st, keyboardType: const TextInputType.numberWithOptions(decimal: true), decoration: deco('Poids récupéré par article (kg), ex. 1,2')),
                 const SizedBox(height: 8),
                 Text('Photos (${images.length}/8)', style: st.copyWith(fontWeight: FontWeight.w600)),
                 const SizedBox(height: 8),
@@ -249,6 +277,6 @@ Future<void> editListingDialog(BuildContext context, WidgetRef ref) async {
 void openListingRow(WidgetRef ref, BuildContext context, int index) {
   final l = ref.read(visibleListingsProvider);
   if (index >= l.length) return;
-  ref.read(selectedListingProvider.notifier).set(l[index].title);
+  ref.read(selectedListingProvider.notifier).set(l[index].key);
   gOpen(context, '60');
 }

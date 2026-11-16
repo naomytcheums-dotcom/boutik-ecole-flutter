@@ -95,6 +95,7 @@ class G_18c extends ConsumerWidget {
       gTap(24, 576, 342, 110, () { importDocument(context, ref, kind: 'enrollment_certificate'); }),
       gTap(24, 780, 342, 54, () { submitVerification(ref, context); }),
       if (!demoContent) gP(24, 842, 342, 30, gText('Passer pour l’instant', 14, Color(0xFF5A3FE0), weight: 600, align: TextAlign.center), tap: () => skipVerification(ref, context)),
+      if (!demoContent) gP(24, 866, 342, 18, gText('Demander aussi la certification (badge)', 12.5, Color(0xFF57545F), weight: 600, align: TextAlign.center), tap: () => requestCertificationFlow(ref, context)),
     ]);
   }
 }

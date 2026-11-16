@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:qr/qr.dart';
 
@@ -180,19 +181,45 @@ Future<void> scanAndHandleQr(BuildContext context, WidgetRef ref) async {
   if (raw == null || !context.mounted) return;
   final token = qrTokenOf(raw);
   if (token == null) return gAlert(context, 'Code non reconnu', 'Ce code QR n’a pas été créé par Boutik-École.');
+  return handleQrToken(context, ref, token);
+}
+
+/// Jeton d'un code lu par l'appareil photo ordinaire (adresse `…/?qr=<jeton>`), à traiter dès que la personne est connectée.
+String? pendingQrToken;
+
+/// Au démarrage de l'application : mémorise le jeton `qr` de l'adresse d'ouverture (comme le paramètre `ref` du parrainage).
+void capturePendingQr([Uri? uri]) {
+  try {
+    final t = (uri ?? Uri.base).queryParameters['qr'];
+    if (t != null && RegExp(r'^[A-Za-z0-9_-]{32}$').hasMatch(t)) pendingQrToken = t;
+  } catch (_) {}
+}
+
+const _qrWhy = {
+  'expired': 'Ce code a expiré. Demandez-en un nouveau.',
+  'used': 'Ce code a déjà été utilisé : il ne sert qu’une fois.',
+  'revoked': 'Ce code a été retiré par son propriétaire.',
+  'unavailable': 'Cet article n’est plus disponible à la vente.',
+};
+
+/// Résout un jeton de code QR pour la personne connectée : code d'appariement d'une borne (ouvre la fiche de l'article), puis code personnel
+/// (profil, annonce…). Chaque réponse du serveur est annoncée telle quelle ; rien n'est ajouté au panier sans que la personne le décide.
+Future<void> handleQrToken(BuildContext context, WidgetRef ref, String token) async {
+  final k = await Backend.rpc('kiosk_pair_claim', {'p_token': token});
+  if (!context.mounted) return;
+  final kd = k.data is Map ? Map<String, dynamic>.from(k.data as Map) : <String, dynamic>{};
+  if (k.error == null && kd['kind'] == 'kiosk_pair') {
+    if (kd['valid'] != true) return gAlert(context, 'Code refusé', _qrWhy['${kd['reason']}'] ?? 'Ce code est inconnu.');
+    if (kd['own'] == true) return gAlert(context, 'Votre propre annonce', '« ${kd['label']} » est votre annonce : vous ne pouvez pas l’acheter. Modifiez-la depuis votre catalogue.');
+    gToast(context, 'Article de la borne : ${kd['label']}');
+    GoRouter.of(context).push('/marche/produit/${kd['listing_id']}');
+    return;
+  }
   final r = await Backend.rpc('qr_resolve', {'p_token': token, 'p_consume': true});
   if (!context.mounted) return;
-  if (r.error != null) return gAlert(context, 'Lecture impossible', r.error!);
+  if (r.error != null) return gAlert(context, 'Lecture impossible', Backend.userMessage(r.error!));
   final d = r.data is Map ? Map<String, dynamic>.from(r.data as Map) : <String, dynamic>{};
-  if (d['valid'] != true) {
-    final why = switch (d['reason']) {
-      'expired' => 'Ce code a expiré. Demandez-en un nouveau.',
-      'used' => 'Ce code a déjà été utilisé : il ne sert qu’une fois.',
-      'revoked' => 'Ce code a été retiré par son propriétaire.',
-      _ => 'Ce code est inconnu.',
-    };
-    return gAlert(context, 'Code refusé', why);
-  }
+  if (d['valid'] != true) return gAlert(context, 'Code refusé', _qrWhy['${d['reason']}'] ?? 'Ce code est inconnu.');
   final label = '${d['label'] ?? ''}';
   switch (d['kind']) {
     case 'profile':
@@ -200,12 +227,22 @@ Future<void> scanAndHandleQr(BuildContext context, WidgetRef ref) async {
     case 'kiosk_transfer':
       final hit = ref.read(allProductsProvider).where((p) => p.title == label).toList();
       if (hit.isEmpty) return gAlert(context, 'Article introuvable', 'L’article de ce code n’est plus au catalogue.');
+      final sid = hit.first.sellerId;
+      if (sid != null && sid.isNotEmpty && sid == Backend.userId) {
+        return gAlert(context, 'Votre propre annonce', '« $label » est votre annonce : vous ne pouvez pas l’acheter.');
+      }
       ref.read(cartProvider.notifier).add(hit.first.toLine());
       ref.read(kioskSessionProvider.notifier).confirm(hit.first, token);
       gToast(context, '$label ajouté à votre panier.');
       return gOpen(context, '210');
-    case 'order_pickup':
     case 'listing':
+      final id = '${d['target_id'] ?? ''}';
+      if (id.isNotEmpty) {
+        GoRouter.of(context).push('/marche/produit/$id');
+        return;
+      }
+      return gAlert(context, 'Code valide', '${label.isEmpty ? 'Contenu' : label} · proposé par ${d['owner_name']}.');
+    case 'order_pickup':
     case 'event':
     case 'certificate':
       return gAlert(context, 'Code valide', '${label.isEmpty ? 'Contenu' : label} · proposé par ${d['owner_name']}.');

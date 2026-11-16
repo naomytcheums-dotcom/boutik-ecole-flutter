@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
 import 'auth.dart';
+import 'access.dart' show roleKey;
 import 'backend.dart';
 import 'inert_actions.dart' show uiSoon;
 import 'l10_ui.dart';
@@ -50,6 +51,14 @@ class CvSections extends StatelessWidget {
   Widget build(BuildContext context) {
     final skills = [for (final s in '${cv['competences'] ?? ''}'.split(RegExp(r'[,;\n]'))) if (s.trim().isNotEmpty) s.trim()];
     final works = l10Rows(cv['realisations']);
+    final levels = l10Rows(cv['competences_niveaux']);
+    const levelText = {'debutant': 'Débutant', 'intermediaire': 'Intermédiaire', 'avance': 'Avancé', 'expert': 'Expert'};
+    final detailed = {for (final l in levels) '${l['competence']}'.toLowerCase()};
+    final chips = [
+      for (final l in levels) '${l['competence']} · ${levelText['${l['niveau']}'] ?? ''}',
+      for (final s in skills) if (!detailed.contains(s.toLowerCase())) s,
+    ];
+    const workKinds = {'realisation': 'Réalisation', 'image': 'Image', 'video': 'Vidéo', 'link': 'Lien'};
     final missions = l10Rows(cv['missions']);
     final reviews = cv['avis'] is Map ? Map<String, dynamic>.from(cv['avis'] as Map) : null;
     final last = l10Rows(reviews?['derniers']);
@@ -61,9 +70,9 @@ class CvSections extends StatelessWidget {
         Text([cv['departement'], cv['etablissement']].where((x) => x != null && '$x'.isNotEmpty).join(' · '), style: l10St(12.5, c: l10Grey)),
         if (cv['certifie'] == true) Text('✓ Profil certifié par l’établissement', style: l10St(12.5, w: FontWeight.w600, c: const Color(0xFF0F7A52))),
         if ('${cv['bio'] ?? ''}'.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 12), child: Text('${cv['bio']}', style: l10St(13.5, w: FontWeight.w400, h: 1.55))),
-        if (skills.isNotEmpty) ...[
+        if (chips.isNotEmpty) ...[
           title('Compétences'),
-          Wrap(spacing: 8, runSpacing: 8, children: [for (final s in skills) l10Chip(s)]),
+          Wrap(spacing: 8, runSpacing: 8, children: [for (final s in chips) l10Chip(s)]),
         ],
       ],
       if (works.isNotEmpty) ...[
@@ -73,7 +82,7 @@ class CvSections extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 8),
             child: l10Card(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text('${w['titre']}', style: l10St(13.5, w: FontWeight.w700)),
-              if ('${w['categorie'] ?? ''}'.isNotEmpty || '${w['date'] ?? ''}'.isNotEmpty) Text([w['categorie'], w['date']].where((x) => x != null && '$x'.isNotEmpty).join(' · '), style: l10St(11.5, c: l10Grey)),
+              if ('${w['categorie'] ?? ''}'.isNotEmpty || '${w['date'] ?? ''}'.isNotEmpty || workKinds.containsKey('${w['type']}')) Text([workKinds['${w['type']}'], w['categorie'], w['date']].where((x) => x != null && '$x'.isNotEmpty).join(' · '), style: l10St(11.5, c: l10Grey)),
               if ('${w['description'] ?? ''}'.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 4), child: Text('${w['description']}', style: l10St(12, w: FontWeight.w400, c: const Color(0xFF4A4854), h: 1.45))),
             ])),
           ),
@@ -108,7 +117,7 @@ class CvLivePanel extends ConsumerWidget {
       child: SingleChildScrollView(
         padding: const EdgeInsets.only(bottom: 40),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          MyProfileCard(width: width),
+          MyProfileCard(width: width, passport: false),
           preview.when(
             loading: () => l10Note(width, 'Chargement…', height: 60),
             error: (_, _) => l10Note(width, 'Vos réalisations, missions et avis ne peuvent pas être chargés pour le moment.', height: 70),
@@ -259,7 +268,7 @@ class _CvSharePanelState extends ConsumerState<CvSharePanel> {
         final r = await Backend.rpc('send_cv_to_recruiter', {'p_email': mail, 'p_message': ''});
         if (!mounted) return;
         if (r.error != null) return gAlert(context, 'Envoi impossible', r.error!);
-        gToast(context, 'CV envoyé : l’entreprise a reçu une notification.');
+        gToast(context, 'Demande enregistrée. Si cette adresse est celle d’un compte entreprise, votre CV lui est envoyé.');
       }, dark: false, width: w, compact: true),
       const SizedBox(height: 8),
       l10Btn('Télécharger en PDF', () => uiSoon(context, 'Télécharger le CV en PDF', 'Partagez le lien de votre CV : il s’ouvre dans tout navigateur et peut être imprimé.'), dark: false, width: w, compact: true),
@@ -326,13 +335,15 @@ class CvTalentScreen extends ConsumerWidget {
                       : ListView(padding: const EdgeInsets.only(bottom: 30), children: [
                           CvSections(cv: d),
                           const SizedBox(height: 20),
-                          if (!own) ...[
+                          if (!own && const {'company', 'client', 'other', 'dept', 'admin'}.contains(roleKey(ref.watch(authProvider).current))) ...[
                             l10Btn('Proposer un stage', () => _contact(context, ref, user, 'internship_offer'), width: 342),
                             const SizedBox(height: 8),
                             l10Btn('Contacter', () => _contact(context, ref, user, 'contact'), dark: false, width: 342),
                             const SizedBox(height: 8),
                             Text('Réservé aux entreprises, aux clients et au département. Dix demandes par jour au plus.', style: l10St(11, c: l10Grey)),
-                          ] else
+                          ] else if (!own)
+                            Text('Les propositions de stage et les demandes de contact sont réservées aux entreprises, aux clients et au département.', style: l10St(11, c: l10Grey))
+                          else
                             l10Btn('Partager mon CV', () => gOpen(context, '228'), width: 342),
                         ]),
                 ),

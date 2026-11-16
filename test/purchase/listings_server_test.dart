@@ -61,7 +61,7 @@ void main() {
     final p = c.read(allProductsProvider).firstWhere((p) => p.title == "Casque d'un autre vendeur");
     expect(p.image, 'placeholder');
     expect(p.seller, 'Vendeur'); // pas le nom de la personne qui consulte
-    expect(p.department, 'IUT de Douala');
+    expect(p.department, 'Non renseigné'); // plus de « IUT de Douala » écrit en dur : le département affiché est celui de l'annonce
   });
 
   test('catalogue acheteur : nom d\'affichage du vendeur et identifiant transmis au produit', () async {

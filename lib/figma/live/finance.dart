@@ -46,7 +46,7 @@ class JournalRows extends RpcRows {
 final financeJournalProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(JournalRows.new);
 
 String paymentState(Object? s) => switch ('$s') { 'verified' => 'Vérifié', 'rejected' => 'Rejeté', _ => 'À vérifier' };
-String payoutStatus(Object? s) => switch ('$s') { 'verse' => 'Versé', 'rejete' => 'Rejeté', _ => 'Prévu' };
+String payoutStatus(Object? s) => switch ('$s') { 'verse' => 'Versé', 'rejete' => 'Rejeté', 'demande' => 'Demandé', _ => 'Prévu' };
 
 /// Ancienneté d'un paiement déclaré : « Il y a 2 h », « Hier », ou la date.
 String agoLabel(Object? iso, DateTime now) {

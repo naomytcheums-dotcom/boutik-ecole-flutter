@@ -99,7 +99,7 @@ class _ProjectFormPageState extends ConsumerState<ProjectFormPage> {
   List<String> domains = const [];
   bool busy = false, uploading = false;
 
-  bool get locked => status == 'submitted' || status == 'approved';
+  bool get locked => status == 'submitted';
 
   @override
   void initState() {
@@ -250,7 +250,11 @@ class _ProjectFormPageState extends ConsumerState<ProjectFormPage> {
         );
         return false;
       }
-      if (!await tpConfirm(context, kind == 'innovation' ? 'Publier cette innovation ?' : 'Publier ce projet ?', 'Il sera envoyé à votre établissement pour examen. Pendant l’examen, vous ne pourrez plus le modifier.', yes: 'Publier')) return false;
+      if (!await tpConfirm(context, status == 'approved' ? 'Renvoyer ce projet en validation ?' : (kind == 'innovation' ? 'Publier cette innovation ?' : 'Publier ce projet ?'),
+          status == 'approved'
+              ? 'Ce projet est publié. Vos modifications le retirent du catalogue public jusqu’à la nouvelle décision du département (sa campagne éventuelle reste ouverte). Vous serez notifié.'
+              : 'Il sera envoyé à votre établissement pour examen. Pendant l’examen, vous ne pourrez plus le modifier.',
+          yes: status == 'approved' ? 'Renvoyer en validation' : 'Publier')) return false;
     }
     setState(() => busy = true);
     final r = await Backend.rpc('project_save_full', {
@@ -382,8 +386,13 @@ class _ProjectFormPageState extends ConsumerState<ProjectFormPage> {
       subtitle: id == null ? 'Nouvelle fiche' : projectStatusLabels[status],
       actions: [TpRound(icon: Icons.folder_open_rounded, label: 'Mes projets', onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const MyProjectsPage())))],
       bottom: locked
-          ? Text(status == 'submitted' ? 'Cette fiche est en cours d’examen : elle ne peut plus être modifiée.' : 'Cette fiche est publiée.', textAlign: TextAlign.center, style: tpSt(13, c: tpGrey))
-          : Row(children: [
+          ? Text('Cette fiche est en cours d’examen : elle ne peut plus être modifiée jusqu’à la décision.', textAlign: TextAlign.center, style: tpSt(13, c: tpGrey))
+          : status == 'approved'
+              ? TpButton('Modifier et renvoyer en validation', busy ? null : () async {
+                  final ok = await _save(publish: true);
+                  if (ok && context.mounted) Navigator.of(context).pop(true);
+                }, busy: busy)
+              : Row(children: [
               Expanded(child: TpButton('Enregistrer le brouillon', busy ? null : () => _save(publish: false), dark: false, busy: busy)),
               const SizedBox(width: 10),
               Expanded(
@@ -396,7 +405,7 @@ class _ProjectFormPageState extends ConsumerState<ProjectFormPage> {
             ]),
       children: [
         IgnorePointer(ignoring: locked, child: Opacity(opacity: locked ? .6 : 1, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: form))),
-        if (id != null && !locked) Padding(padding: const EdgeInsets.only(top: 16), child: TpButton('Supprimer ce brouillon', _delete, danger: true, compact: true)),
+        if (id != null && !locked && status != 'approved') Padding(padding: const EdgeInsets.only(top: 16), child: TpButton('Supprimer ce brouillon', _delete, danger: true, compact: true)),
       ],
     ));
   }
@@ -411,6 +420,7 @@ class MyProjectsPage extends ConsumerStatefulWidget {
 
 class _MyProjectsPageState extends ConsumerState<MyProjectsPage> {
   List<Map<String, dynamic>>? items;
+  List<Map<String, dynamic>> memberOf = const [];
   String? error;
 
   @override
@@ -423,11 +433,22 @@ class _MyProjectsPageState extends ConsumerState<MyProjectsPage> {
     final uid = Backend.userId;
     if (uid == null) return setState(() => items = const []);
     final r = await Backend.rows('projects', 'id,kind,title,summary,department,details,media,visibility,status,review_note,updated_at', eq: {'owner_id': uid}, order: 'updated_at', limit: 100);
+    final mp = await Backend.rpc('my_member_projects', const {});
     if (!mounted) return;
     setState(() {
       items = r.rows;
       error = r.error;
+      memberOf = mp.data is List ? [for (final x in mp.data as List) Map<String, dynamic>.from(x as Map)] : const [];
     });
+  }
+
+  Future<void> _leave(Map<String, dynamic> p) async {
+    if (!await tpConfirm(context, 'Quitter l’équipe ?', 'Vous ne verrez plus « ${p['title']} », son journal ni ses fichiers. Le porteur sera prévenu.', yes: 'Quitter l’équipe')) return;
+    final r = await Backend.rpc('project_member_remove', {'p_project': p['id'], 'p_user': Backend.userId});
+    if (!mounted) return;
+    if (r.error != null) return gToast(context, Backend.userMessage(r.error!));
+    gToast(context, 'Vous avez quitté l’équipe.');
+    _load();
   }
 
   Future<void> _open([Map<String, dynamic>? p, String kind = 'projet']) async {
@@ -475,6 +496,18 @@ class _MyProjectsPageState extends ConsumerState<MyProjectsPage> {
                 if ('${p['status']}' == 'rejected' && '${p['review_note'] ?? ''}'.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 6), child: Text('Motif : ${p['review_note']}', style: tpSt(12, c: tpRed))),
               ]),
             ),
+        if (memberOf.isNotEmpty) ...[
+          tpSection('Projets où je suis membre', hint: 'Vous pouvez y tenir le journal et déposer des fichiers ; seul le porteur modifie la fiche.'),
+          for (final p in memberOf)
+            TpCard(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text('${p['title']}', maxLines: 2, overflow: TextOverflow.ellipsis, style: tpSt(15, w: FontWeight.w700)),
+                Padding(padding: const EdgeInsets.only(top: 3), child: Text(['Porteur : ${p['owner']}', if ('${p['role'] ?? ''}'.isNotEmpty) '${p['role']}', projectStatusLabels['${p['status']}'] ?? ''].where((s) => s.isNotEmpty).join(' · '), style: tpSt(12, c: tpGrey))),
+                const SizedBox(height: 8),
+                TpButton('Quitter l’équipe', () => _leave(p), dark: false, compact: true, icon: Icons.logout_rounded),
+              ]),
+            ),
+        ],
       ],
     );
   }

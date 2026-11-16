@@ -136,7 +136,8 @@ class ChallengesPanel extends ConsumerWidget {
             Expanded(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text('Récompense du jour', style: _st(13.5, w: FontWeight.w700)),
-                Text('Un boost gratuit de 24 h sur votre dernière publication, à 6 jours de série.', style: _st(11, c: _grey)),
+                Text('Un boost gratuit de 24 h sur votre dernière publication du fil, à 6 jours de série (un boost tous les 6 jours).', style: _st(11, c: _grey)),
+                if (c.boostNote != null) _hint(context, ref, c.boostNote!, c.certified),
               ]),
             ),
             const SizedBox(width: 8),
@@ -159,10 +160,25 @@ class ChallengesPanel extends ConsumerWidget {
               Expanded(child: Text('${c.postsWeek.clamp(0, 3)} / 3 · + 200 points', style: _st(11.5, c: _grey))),
               _button(c.postsClaimed ? 'Récupérée ✓' : 'Récupérer', c.postsClaimable ? () => claimReward(context, ref, streak: false) : null),
             ]),
+            if (c.pendingNote != null) _hint(context, ref, c.pendingNote!, c.certified),
           ]),
         ),
         _badgesCard(c),
       ],
     );
   }
+
+  /// Message d'attente de validation, avec le chemin pour obtenir la certification (publication immédiate) quand le compte ne l'a pas.
+  Widget _hint(BuildContext context, WidgetRef ref, String text, bool certified) => Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(text, style: _st(11.5, c: const Color(0xFFB26A00))),
+          if (!certified)
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => requestCertificationFlow(ref, context),
+              child: Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Text('Les comptes certifiés publient sans attente : demander la certification', style: _st(11.5, w: FontWeight.w700, c: _violet))),
+            ),
+        ]),
+      );
 }

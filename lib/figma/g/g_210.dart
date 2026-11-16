@@ -17,6 +17,7 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/kiosk_mode.dart' show KioskIdleGuard;
 import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
@@ -121,6 +122,7 @@ class G_210 extends ConsumerWidget {
           child: Container(color: Color(0xFFF4EFE6), alignment: Alignment.center, padding: EdgeInsets.all(60), child: gText('Aucun transfert en cours. Choisissez un produit à la borne, puis scannez son code avec votre téléphone.', 30, Color(0xFF111015), weight: 600, align: TextAlign.center, wrap: true)),
         );
       })),
+      gP(0, 0, 1, 1, const KioskIdleGuard(screenLevel: true)),
     ]);
   }
 }

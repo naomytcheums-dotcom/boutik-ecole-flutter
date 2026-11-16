@@ -17,6 +17,7 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/kiosk_mode.dart' show KioskIdleGuard;
 import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
@@ -37,7 +38,7 @@ class G_207 extends ConsumerWidget {
       Positioned.fill(child: GChoiceGroup(chips: [GChip(520, 50, 68, 48, 'FR', 20, 600), GChip(596, 50, 68, 48, 'EN', 20, 600)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 24)),
       gP(596, 50, 68, 48, gBox(color: Color(0xFFFFFFFF), radii: [24, 24, 24, 24])),
       gP(48, 140, 624, 84, GField(hint: 'Que cherchez-vous ?', size: 26, hintColor: Color(0xFF57545F), weight: 400, padL: 88, onChanged: (v) { ref.read(kioskQueryProvider.notifier).set(v); ref.read(kioskPageProvider.notifier).set(0); }, multiline: true, padT: 24)),
-      gP(84, 166, 32, 32, const SizedBox.expand(), tap: () => gTab(context, '19')),
+      gP(84, 166, 32, 32, const SizedBox.expand()),
       gP(85, 167, 27.333, 27.333, gImg('assets/figma/v/6942bfb3846595.svg')),
       gP(103.267, 185.267, 11.733, 11.733, gImg('assets/figma/v/e1a28e5ccaba89.svg')),
       gP(598, 152, 60, 60, GMic(child: gBox(color: Color(0xFF111015), oval: true))),
@@ -86,11 +87,11 @@ class G_207 extends ConsumerWidget {
         gP(552, 1080, 120, 28, gText('Suivant ›', 18, Color(0xFF111015), weight: 600, align: TextAlign.right)),
       ],
       gP(48, 1112, 624, 124, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 8), blurRadius: 24, spreadRadius: 0)], backBlur: 28, radii: [62, 62, 62, 62])),
-      gP(108, 1142, 36, 36, const SizedBox.expand(), tap: () => gTab(context, '03')),
+      gP(108, 1142, 36, 36, const SizedBox.expand(), tap: () => gTab(context, '206')),
       gP(109.5, 1142.03, 33, 34.47, gImg('assets/figma/v/591e7e13beabb7.svg')),
-      gP(96, 1190, 60, 21, gText('Accueil', 17, Color(0xFF111015), weight: 500), tap: () => gTab(context, '03')),
+      gP(96, 1190, 60, 21, gText('Accueil', 17, Color(0xFF111015), weight: 500), tap: () => gTab(context, '206')),
       gP(212, 1126, 140, 96, gBox(color: Color(0xFF111015), radii: [48, 48, 48, 48])),
-      gP(264, 1142, 36, 36, const SizedBox.expand(), tap: () => gTab(context, '19')),
+      gP(264, 1142, 36, 36, const SizedBox.expand(), tap: () => gTab(context, '207')),
       gP(265.5, 1143.5, 30, 30, gImg('assets/figma/v/0e0e8a6ca98696.svg')),
       gP(286.05, 1164.05, 12.45, 12.45, gImg('assets/figma/v/b24debd4c97b40.svg')),
       gP(247.5, 1190, 69, 21, gText('Explorer', 17, Color(0xFFFFFFFF), weight: 600)),
@@ -108,6 +109,7 @@ class G_207 extends ConsumerWidget {
       gTap(48, 720, 304, 360, () { final l = ref.read(kioskProductsProvider); if (l.length > 2) { ref.read(kioskProductProvider.notifier).set(l[2].title); gOpen(context, '208'); } }),
       gTap(368, 720, 304, 360, () { final l = ref.read(kioskProductsProvider); if (l.length > 3) { ref.read(kioskProductProvider.notifier).set(l[3].title); gOpen(context, '208'); } }),
       gTap(397.5, 1182, 81, 37, () { gOpen(context, '282'); }), // lien métier 207 -> 282
+      gP(0, 0, 1, 1, const KioskIdleGuard(screenLevel: true)),
     ]);
   }
 }

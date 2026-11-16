@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' hide Text;
+import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import '../i18n.dart' show I18n;
 import '../i18n.dart' show Text;
 import 'package:flutter_svg/flutter_svg.dart';
@@ -14,6 +15,7 @@ import 'device_prefs.dart';
 import 'dictation_stub.dart' if (dart.library.js_interop) 'dictation_web.dart';
 import 'entreprise.dart';
 import 'l10_ui.dart' show l10Query;
+import 'seller_edit.dart' show selectedListingProvider;
 import 'store.dart';
 
 /// Écrans qui demandaient une décision : assistante Kéla (brief par écrit, la voix n'est pas disponible), double authentification par
@@ -281,6 +283,45 @@ class _MfaPanelState extends ConsumerState<MfaPanel> {
   bool? _active;
   String? _factorId, _secret, _uri, _error, _qr;
   bool _busy = false;
+  int? _remaining;
+
+  /// Crée 8 codes de secours (session aal2) et les montre UNE seule fois.
+  Future<void> _codes() async {
+    final r = await Backend.backupCodesGenerate();
+    if (!mounted) return;
+    if (r.error != null) {
+      setState(() => _error = r.error);
+      return;
+    }
+    setState(() => _remaining = r.codes.length);
+    final text = r.codes.join('\n');
+    await gDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Colors.white,
+        title: Text('Vos codes de secours', style: _st(16, w: FontWeight.w700)),
+        content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text('Notez-les dans un endroit sûr : ils ne seront plus affichés. Chacun ne sert qu’une fois si vous perdez votre téléphone. Les anciens codes ne fonctionnent plus.', style: _st(12.5, c: _grey).copyWith(height: 1.45)),
+          const SizedBox(height: 12),
+          Container(width: double.infinity, padding: const EdgeInsets.all(12), decoration: BoxDecoration(color: const Color(0xFFF2EFF6), borderRadius: BorderRadius.circular(14)), child: SelectableText(text, style: _st(15, w: FontWeight.w700))),
+        ]),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              try {
+                await Clipboard.setData(ClipboardData(text: text));
+                if (ctx.mounted) gToast(ctx, 'Codes copiés');
+              } catch (_) {
+                if (ctx.mounted) gToast(ctx, 'Copie refusée : recopiez les codes à la main.');
+              }
+            },
+            child: const Text('Copier'),
+          ),
+          FilledButton(onPressed: () => Navigator.pop(ctx), child: const Text('J’ai noté mes codes')),
+        ],
+      ),
+    );
+  }
 
   @override
   void initState() {
@@ -305,7 +346,12 @@ class _MfaPanelState extends ConsumerState<MfaPanel> {
     try {
       final f = await c.auth.mfa.listFactors();
       if (!mounted) return;
-      setState(() => _active = f.totp.any((x) => x.status == FactorStatus.verified));
+      final on = f.totp.any((x) => x.status == FactorStatus.verified);
+      setState(() => _active = on);
+      if (on) {
+        final n = await Backend.backupCodesRemaining();
+        if (mounted) setState(() => _remaining = n);
+      }
     } catch (_) {
       if (mounted) setState(() => _error = 'La double authentification n’est pas disponible pour le moment.');
     }
@@ -355,6 +401,7 @@ class _MfaPanelState extends ConsumerState<MfaPanel> {
         _code.clear();
       });
       gToast(context, 'Double authentification activée.');
+      await _codes();
     } catch (e) {
       if (mounted) setState(() => _error = 'Code incorrect ou expiré.');
     }
@@ -438,9 +485,13 @@ class _MfaPanelState extends ConsumerState<MfaPanel> {
           TextField(controller: _code, keyboardType: TextInputType.number, maxLength: 6, decoration: const InputDecoration(border: OutlineInputBorder(), counterText: '')),
           const SizedBox(height: 10),
           _btn(_busy ? 'Vérification…' : 'Valider le code', _busy ? () {} : _verify, w: w),
-        ] else if (_active!)
-          _btn('Désactiver', _busy ? () {} : _disable, dark: false, w: w)
-        else
+        ] else if (_active!) ...[
+          Text(_remaining == null ? 'Codes de secours : état indisponible.' : (_remaining == 0 ? 'Aucun code de secours : créez-en pour pouvoir récupérer votre compte si vous perdez votre téléphone.' : 'Codes de secours restants : $_remaining'), style: _st(12.5, c: _grey).copyWith(height: 1.5)),
+          const SizedBox(height: 10),
+          _btn(_remaining == null || _remaining == 0 ? 'Créer des codes de secours' : 'Recréer des codes de secours', _busy ? () {} : _codes, dark: false, w: w),
+          const SizedBox(height: 10),
+          _btn('Désactiver', _busy ? () {} : _disable, dark: false, w: w),
+        ] else
           _btn(_busy ? 'Préparation…' : 'Activer la vérification en 2 étapes', _busy ? () {} : _enroll, w: w),
         if (_error != null) Padding(padding: const EdgeInsets.only(top: 12), child: Text(_error!, style: _st(12.5, c: const Color(0xFFC0392B)))),
       ]),
@@ -525,7 +576,7 @@ class _LanguagePanelState extends State<LanguagePanel> {
 
 // ------------------------------------------------------------------ contrôles d'une fiche
 
-final checkListingsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('listings', 'title,description,price,stock,images,status,seller_id', order: 'created_at'));
+final checkListingsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('listings', 'id,title,description,price,stock,images,status,seller_id,category', order: 'created_at', ownerColumn: 'seller_id', neq: const {'status': 'removed'}, limit: 200));
 
 class ListingChecks extends ConsumerWidget {
   const ListingChecks({super.key, this.width = 342});
@@ -539,13 +590,17 @@ class ListingChecks extends ConsumerWidget {
     final uid = Backend.userId;
     final mine = [for (final r in all) if (uid != null && '${r['seller_id']}' == uid) r];
     if (mine.isEmpty) return _note(width, 'Vous n’avez pas encore d’annonce à contrôler.');
-    final l = mine.first;
+    // l'annonce ouverte depuis « Mon catalogue » si elle existe, sinon la plus récente
+    final chosen = ref.watch(selectedListingProvider);
+    final l = mine.firstWhere((r) => '${r['id']}' == chosen, orElse: () => mine.first);
     final images = (l['images'] as List?) ?? const [];
+    final price = ((l['price'] as num?) ?? 0).toInt();
+    final service = '${l['category']}' == 'Services';
     final checks = <(String, bool)>[
       ('Titre renseigné (3 caractères minimum)', '${l['title']}'.trim().length >= 3),
       ('Description détaillée (20 caractères minimum)', '${l['description'] ?? ''}'.trim().length >= 20),
-      ('Prix en FCFA supérieur à zéro', ((l['price'] as num?) ?? 0) > 0),
-      ('Quantité renseignée', l['stock'] != null),
+      (service ? 'Tarif de 500 FCFA minimum, ou « Sur devis »' : 'Prix de 500 FCFA minimum', price >= 500 || (service && price == 0)),
+      ('Quantité renseignée', service || l['stock'] != null),
       ('Au moins une photo', images.isNotEmpty),
     ];
     final ok = checks.where((c) => c.$2).length;

@@ -85,7 +85,7 @@ class G_22b extends ConsumerWidget {
       gP(222.36, 612, 143.64, 132, gBox(image: 'assets/figma/img/cbf050b9f90ddf4164a56ebd171cee79dfa21141.png', fit: BoxFit.cover, radii: [24, 24, 24, 24], decor: true)),
       gP(190, 612, 110, 132, gBox(gradient: LinearGradient(begin: Alignment(-1, 0), end: Alignment(1, 0), colors: [Color(0xFF163B66), Color(0xBF163B66), Color(0x4D163B66), Color(0x00163B66)], stops: [0, 0.35, 0.7, 1]))),
       gP(42, 632, 174, 20, gText('Un service sur mesure ?', 15, Color(0xFFFFFFFF), weight: 700, lh: 20, wrap: true)),
-      gP(42, 660, 160.32, 30, gText('Décrivez votre besoin, les étudiants vous répondent.', 11, Color(0xFFE9E4F5), lh: 15, wrap: true)),
+      gP(42, 660, 160.32, 30, gText('Choisissez un service : son prestataire vous répond.', 11, Color(0xFFE9E4F5), lh: 15, wrap: true)),
       gP(42, 704, 149, 28, gBox(color: Color(0xFFFFFFFF), radii: [14, 14, 14, 14])),
       gTap(24, 612, 342, 132, () { askGeneralQuoteFromList(context, ref); }),
       gP(63.5, 710, 106, 14, gText('Demander un devis', 11.5, Color(0xFF120F14), weight: 600, align: TextAlign.center)),

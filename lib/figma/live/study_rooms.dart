@@ -168,7 +168,7 @@ class SupabaseRoomSignaling implements RoomSignaling {
   @override
   Future<void> join({required String selfId, required Map<String, dynamic> me, required void Function(Map<String, Map<String, dynamic>> peers) onPeers, required void Function(String from, String data) onSignal, required void Function(Map<String, dynamic> msg) onBoard}) async {
     _self = selfId;
-    final ch = Supabase.instance.client.channel('study-room:$roomId', opts: RealtimeChannelConfig(key: selfId));
+    final ch = Supabase.instance.client.channel('study-room:$roomId', opts: RealtimeChannelConfig(key: selfId, private: true));
     _ch = ch;
     Map<String, dynamic> body(Map<String, dynamic> p) => Map<String, dynamic>.from((p['payload'] as Map?) ?? p);
     ch

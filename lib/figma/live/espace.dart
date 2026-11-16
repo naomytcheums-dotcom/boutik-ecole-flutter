@@ -73,11 +73,11 @@ int _cle(String id) {
 }
 
 /// Rubriques et écrans ouverts au compte (null = visiteur), triés par numéro.
-Map<Rubrique, List<(String, String)>> rubriquesPour(Account? a, {String filtre = ''}) {
+Map<Rubrique, List<(String, String)>> rubriquesPour(Account? a, {String filtre = '', bool juror = false}) {
   final q = filtre.trim().toLowerCase();
   final out = <Rubrique, List<(String, String)>>{};
   for (final s in allScreens) {
-    if (!listedInEspace(a, s.id)) continue;
+    if (!listedInEspace(a, s.id, juror: juror)) continue;
     if (q.isNotEmpty && !s.title.toLowerCase().contains(q) && !s.id.toLowerCase().contains(q)) continue;
     out.putIfAbsent(rubriqueDe(s.id), () => []).add((s.id, s.title));
   }
@@ -102,7 +102,7 @@ class _EspaceScreenState extends ConsumerState<EspaceScreen> {
   @override
   Widget build(BuildContext context) {
     final account = ref.watch(authProvider).current;
-    final data = rubriquesPour(account, filtre: _q);
+    final data = rubriquesPour(account, filtre: _q, juror: ref.watch(jurorContestsProvider).asData?.value.isNotEmpty ?? false);
     final order = [...rubriques, _autres];
     final total = data.values.fold<int>(0, (a, l) => a + l.length);
     return Scaffold(

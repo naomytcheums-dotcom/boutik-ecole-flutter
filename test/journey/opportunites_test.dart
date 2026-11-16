@@ -1,6 +1,7 @@
 import 'package:boutik_ecole/figma/g/g_152.dart';
 import 'package:boutik_ecole/figma/g/g_153.dart';
 import 'package:boutik_ecole/figma/g/g_157.dart';
+import 'package:boutik_ecole/figma/g/g_158.dart';
 import 'package:boutik_ecole/figma/g/g_203.dart';
 import 'package:boutik_ecole/figma/g/g_204.dart';
 import 'package:boutik_ecole/figma/g/g_76.dart';
@@ -11,7 +12,7 @@ import 'package:boutik_ecole/figma/live/backend.dart';
 import 'package:boutik_ecole/figma/live/console.dart';
 import 'package:boutik_ecole/figma/live/entreprise.dart';
 import 'package:boutik_ecole/figma/live/l8_opportunites.dart';
-import 'package:boutik_ecole/figma/live/opportunites_screens.dart' show oppMyApplicationsProvider;
+import 'package:boutik_ecole/figma/live/opportunites_screens.dart' show OppQuery, oppMyApplicationsProvider, oppMyInvitesProvider, oppsProvider, talentVisibilityProvider;
 import 'package:boutik_ecole/figma/live/store.dart' show StrV;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,7 +41,7 @@ void main() {
     Backend.ready = false;
   });
 
-  Future<void> monter(WidgetTester t, Widget ecran, {required bool connecte, List<Override> overrides = const []}) async {
+  Future<void> monter(WidgetTester t, Widget ecran, {required bool connecte, List<Override> overrides = const [], Account compte = demoAccount}) async {
     Backend.ready = connecte;
     GAnim.enabled = false;
     t.view.physicalSize = const Size(393, 852);
@@ -49,7 +50,7 @@ void main() {
     await t.pumpWidget(ProviderScope(overrides: overrides, child: MaterialApp(home: ecran)));
     await t.pumpAndSettle();
     if (connecte) {
-      ProviderScope.containerOf(t.element(find.byWidget(ecran))).read(authProvider.notifier).login(demoAccount);
+      ProviderScope.containerOf(t.element(find.byWidget(ecran))).read(authProvider.notifier).login(compte);
       await t.pumpAndSettle();
     }
   }
@@ -97,8 +98,8 @@ void main() {
     expect(find.text('Technicien électronique'), findsNothing);
   });
 
-  testWidgets('157 connecté : résumé calculé', (t) async {
-    await monter(t, const G_157(), connecte: true, overrides: [
+  testWidgets('157 connecté (client) : résumé calculé sur ses besoins', (t) async {
+    await monter(t, const G_157(), connecte: true, compte: demoAccount.copyWith(role: 0), overrides: [
       companyProposalsProvider.overrideWith(() => _Rows('company_proposals', [
             {'author': 'Alice Test', 'mission': 'Logo', 'status': 'submitted'},
             {'author': 'Bob Test', 'mission': 'Site', 'status': 'accepted'},
@@ -109,8 +110,55 @@ void main() {
     ]);
     expect(find.text('Alice Test'), findsOneWidget);
     expect(find.text('Propositions reçues'), findsOneWidget);
+    expect(find.text('Résumé de mes besoins'), findsOneWidget);
     expect(find.text('Application de suivi clients'), findsNothing);
     expect(find.text('23'), findsNothing);
+  });
+
+  testWidgets('157 connecté (étudiant) : résumé de SES candidatures, pas des besoins d\'entreprise', (t) async {
+    await monter(t, const G_157(), connecte: true, overrides: [
+      oppMyApplicationsProvider.overrideWith((ref) async => [
+            {'id': 'a1', 'status': 'sent', 'created_at': '2026-11-01T10:00:00Z', 'opportunity_id': 'o1', 'title': 'Affiche Test', 'org': 'Acme Test'},
+            {'id': 'a2', 'status': 'shortlisted', 'created_at': '2026-10-01T10:00:00Z', 'opportunity_id': 'o2', 'title': 'Autre offre', 'org': 'Beta'},
+            {'id': 'a3', 'status': 'rejected', 'created_at': '2026-09-01T10:00:00Z', 'opportunity_id': 'o3', 'title': 'Offre refusée', 'org': 'Gamma'},
+          ]),
+      oppMyInvitesProvider.overrideWith((ref) async => [
+            {'opportunity_id': 'o9', 'title': 'Invitation', 'org': 'Delta', 'status': 'invited', 'open': true, 'created_at': '2026-11-02T10:00:00Z'}
+          ]),
+      oppsProvider(const OppQuery(section: 'saved')).overrideWith((ref) async => const []),
+    ]);
+    expect(find.text('Résumé de mes candidatures'), findsOneWidget);
+    expect(find.text('Candidatures envoyées'), findsOneWidget);
+    expect(find.text('3'), findsOneWidget);
+    expect(find.text('Affiche Test'), findsOneWidget);
+    expect(find.text('Non retenue'), findsOneWidget);
+    expect(find.text('Résumé de mes besoins'), findsNothing);
+    expect(find.text('Aucune proposition reçue pour le moment.'), findsNothing);
+  });
+
+  testWidgets('158 connecté (étudiant) : propositions reçues = invitations des recruteurs, avec le réglage de visibilité', (t) async {
+    await monter(t, const G_158(), connecte: true, overrides: [
+      oppMyInvitesProvider.overrideWith((ref) async => [
+            {'opportunity_id': 'o9', 'title': 'Stage Delta', 'org': 'Delta', 'status': 'invited', 'message': 'Venez postuler', 'open': true, 'created_at': '2026-11-02T10:00:00Z'},
+            {'opportunity_id': 'o8', 'title': 'Stage Echo', 'org': 'Echo', 'status': 'applied', 'open': false, 'created_at': '2026-10-02T10:00:00Z'},
+          ]),
+      talentVisibilityProvider.overrideWith((ref) async => true),
+    ]);
+    expect(find.text('Stage Delta'), findsOneWidget);
+    expect(find.text('À traiter'), findsOneWidget);
+    expect(find.text('Candidature envoyée'), findsOneWidget);
+    expect(find.text('Me proposer aux recruteurs'), findsOneWidget);
+    expect(find.text('Mes candidatures'), findsOneWidget);
+    expect(find.text('Comparer les propositions'), findsNothing);
+  });
+
+  testWidgets('158 connecté (étudiant) sans invitation : état vide explicite', (t) async {
+    await monter(t, const G_158(), connecte: true, overrides: [
+      oppMyInvitesProvider.overrideWith((ref) async => const []),
+      talentVisibilityProvider.overrideWith((ref) async => false),
+    ]);
+    expect(find.textContaining('Aucune proposition reçue pour le moment'), findsOneWidget);
+    expect(find.textContaining('Vous n’apparaissez plus dans les suggestions'), findsOneWidget);
   });
 
   testWidgets('203 connecté : compétences du profil, aucun score inventé', (t) async {

@@ -12,6 +12,7 @@ export async function run(db) {
   await db.exec(`update profiles set skills='Flutter, Excel', department='Génie informatique', bio='Je developpe des apps', avatar_url='a.png' where id='${A}'`);
   await db.exec(`update profiles set skills='Excel', department='Gestion', bio='Gestionnaire' where id='${B}'`);
   await db.exec(`insert into student_availability (user_id, kinds) values ('${A}', array['internship'])`);
+  await db.exec(`insert into user_documents (owner_id, kind, name, path, mime, size_bytes, status) select id, 'student_card', 'c', id || '/c.pdf', 'application/pdf', 10, 'verified' from profiles where id in ('${A}', '${B}')`);
   await db.exec(`insert into opportunities (id, poster_id, org_name, kind, title, status, skills, department_target) values ('${O}', '${E}', 'Orange', 'stage', 'Stage Flutter', 'published', array['Flutter','Excel'], 'Génie informatique')`);
   await db.exec(`insert into opportunity_applications (opportunity_id, applicant_id) values ('${O}', '${A}'), ('${O}', '${C}')`);
   await as(E);

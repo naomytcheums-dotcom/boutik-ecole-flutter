@@ -101,6 +101,31 @@ void main() {
     expect(find.textContaining('Pas encore d’avis'), findsOneWidget);
   });
 
+  testWidgets('profil mentor : en attente de vérification, pas d\'histoire publiable, pièce à déposer (S8-15)', (t) async {
+    await _pump(t, const MentorProfileScreen(), overrides: [myMentorProvider.overrideWith((ref) async => {..._mentor(), 'active': true, 'status': 'pending'})]);
+    expect(find.text('Profil en attente de vérification'), findsOneWidget);
+    expect(find.text('Déposer une pièce dans mon dossier'), findsOneWidget);
+    expect(find.text('Raconter mon parcours'), findsNothing);
+  });
+
+  testWidgets('profil mentor vérifié : visible dans l\'annuaire, histoire de réussite possible', (t) async {
+    await _pump(t, const MentorProfileScreen(), overrides: [myMentorProvider.overrideWith((ref) async => {..._mentor(), 'active': true, 'status': 'verified'})]);
+    expect(find.textContaining('Profil vérifié'), findsOneWidget);
+    expect(find.text('Raconter mon parcours'), findsOneWidget);
+    expect(find.text('Profil en attente de vérification'), findsNothing);
+  });
+
+  testWidgets('profil mentor refusé : motif affiché', (t) async {
+    await _pump(t, const MentorProfileScreen(), overrides: [myMentorProvider.overrideWith((ref) async => {..._mentor(), 'active': true, 'status': 'rejected', 'review_note': 'Profil incomplet'})]);
+    expect(find.textContaining('Profil non validé : Profil incomplet'), findsOneWidget);
+  });
+
+  testWidgets('match : « Pertinence » en points, plus de « Compatibilité » sans unité (S8-18)', (t) async {
+    await _pump(t, Scaffold(body: MentorCard(m: {..._mentor(), 'score': 17})));
+    expect(find.text('Pertinence : 17 pts'), findsOneWidget);
+    expect(find.textContaining('Compatibilité'), findsNothing);
+  });
+
   testWidgets('demandes : l’étudiant note après acceptation, le mentor accepte ou décline', (t) async {
     await _pump(t, const MentorRequestsScreen(), overrides: [
       myMentorProvider.overrideWith((ref) async => _mentor()),

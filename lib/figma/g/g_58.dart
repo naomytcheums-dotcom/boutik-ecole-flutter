@@ -11,6 +11,7 @@ import '../live/l09.dart';
 import '../live/lfav.dart';
 import '../live/auth.dart';
 import '../live/seller.dart';
+import '../live/seller_new_product.dart';
 import '../live/review.dart';
 import '../live/audit.dart';
 import '../live/admin.dart';
@@ -49,22 +50,25 @@ class G_58 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 171, 26, gText('Nouveau produit', 21, Color(0xFF111015), weight: 700)),
-      gP(60, 134, 68.667, 2, gBox(color: Color(0xFFE6E1EE), radii: [1, 1, 1, 1])),
-      gP(27, 118, 34, 34, gBox(color: Color(0xFF111015), oval: true)),
-      gP(30.5, 158, 27, 14, gText('Infos', 11, Color(0xFF111015), weight: 700, align: TextAlign.center)),
-      gP(160.667, 134, 68.667, 2, gBox(color: Color(0xFFE6E1EE), radii: [1, 1, 1, 1])),
-      gP(129.667, 120, 30, 30, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true)),
-      gP(125.667, 158, 38, 14, gText('Photos', 11, Color(0xFF57545F), weight: 500, align: TextAlign.center)),
-      gP(261.333, 134, 68.667, 2, gBox(color: Color(0xFFE6E1EE), radii: [1, 1, 1, 1])),
-      gP(230.333, 120, 30, 30, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true)),
-      gP(235.333, 158, 20, 14, gText('Prix', 11, Color(0xFF57545F), weight: 500, align: TextAlign.center)),
-      gP(331, 120, 30, 30, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true)),
-      gP(316, 158, 60, 14, gText('Publication', 11, Color(0xFF57545F), weight: 500, align: TextAlign.center)),
+      gP(0, 0, 0, 0, const NewProductReset(), show: !demoContent),
+      gP(60, 134, 68.667, 2, gBox(color: Color(0xFFE6E1EE), radii: [1, 1, 1, 1]), show: demoContent),
+      gP(27, 118, 34, 34, gBox(color: Color(0xFF111015), oval: true), show: demoContent),
+      gP(30.5, 158, 27, 14, gText('Infos', 11, Color(0xFF111015), weight: 700, align: TextAlign.center), show: demoContent),
+      gP(160.667, 134, 68.667, 2, gBox(color: Color(0xFFE6E1EE), radii: [1, 1, 1, 1]), show: demoContent),
+      gP(129.667, 120, 30, 30, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true), show: demoContent),
+      gP(125.667, 158, 38, 14, gText('Photos', 11, Color(0xFF57545F), weight: 500, align: TextAlign.center), show: demoContent),
+      gP(261.333, 134, 68.667, 2, gBox(color: Color(0xFFE6E1EE), radii: [1, 1, 1, 1]), show: demoContent),
+      gP(230.333, 120, 30, 30, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true), show: demoContent),
+      gP(235.333, 158, 20, 14, gText('Prix', 11, Color(0xFF57545F), weight: 500, align: TextAlign.center), show: demoContent),
+      gP(331, 120, 30, 30, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true), show: demoContent),
+      gP(316, 158, 60, 14, gText('Publication', 11, Color(0xFF57545F), weight: 500, align: TextAlign.center), show: demoContent),
       gP(36, 201, 40, 40, gBox(color: Color(0xFFFDEFC8), radii: [13, 13, 13, 13])),
       gP(44.667, 211.333, 22.667, 19.333, gImg('assets/figma/v/b357168830edbf.svg')),
       gP(50.5, 216.333, 11, 11, gImg('assets/figma/v/3bae74da037db6.svg')),
       gP(88, 200, 124, 17, gText('Ajouter des photos', 13.5, Color(0xFF111015), weight: 600)),
       gP(88, 222, 150, 14, gText(gm('Jusqu’à 6 photos · JPG, PNG', ''), 11.5, Color(0xFF57545F))),
+      gP(88, 222, 250, 14, const NewProductPhotoCount(), show: !demoContent),
+      if (!demoContent) gTap(24, 192, 342, 56, () { managePhotos(context, ref); }),
       gP(336.75, 213.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
       gP(24, 268, 92, 16, gText('Titre du produit', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 288, 342, 48, GField(hint: demoContent ? 'Ex. Lampe en bois recyclé' : 'Ex. Titre de votre produit', size: 13.5, hintColor: Color(0xFF57545F), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('np_title', v); })),
@@ -80,11 +84,13 @@ class G_58 extends ConsumerWidget {
       gP(38.25, 392.5, 11.25, 11.25, gImg('assets/figma/v/4aa41d01b63de8.svg')),
       gP(334.5, 388.75, 15, 10.5, gImg('assets/figma/v/7abbf201b36418.svg')),
       gP(24, 432, 66, 16, gText('Prix (FCFA)', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 452, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22])),
+      gP(24, 452, 342, 48, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFECE8F2), bw: 1.5, radii: [22, 22, 22, 22]), show: demoContent),
+      // production : vrai champ de saisie du prix (obligatoire, 500 FCFA minimum)
+      gP(24, 452, 342, 48, GField(hint: 'Ex. 5 000', size: 13.5, hintColor: Color(0xFF57545F), weight: 500, padL: 48, numeric: true, maxLength: 10, onChanged: (v) { ref.read(formProvider.notifier).put('np_price', v); }), show: !demoContent),
       errorText('np_price', 28, 502),
       gP(72, 467, 49, 17, gText(demoContent ? '25 000' : '', 13.5, Color(0xFF111015), weight: 500)),
       gP(24, 514, 108, 16, gText('Quantité en stock', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 534, 342, 48, GField(hint: '', initial: '15', size: 13.5, hintColor: Color(0xFF111015), weight: 500, padL: 48, onChanged: (v) { ref.read(formProvider.notifier).put('np_stock', v); })),
+      gP(24, 534, 342, 48, GField(hint: demoContent ? '' : 'Ex. 10', initial: demoContent ? '15' : '', size: 13.5, hintColor: demoContent ? Color(0xFF111015) : Color(0xFF57545F), weight: 500, padL: 48, numeric: true, maxLength: 6, onChanged: (v) { ref.read(formProvider.notifier).put('np_stock', v); })),
       errorText('np_stock', 28, 584),
       gP(38.25, 548.25, 19.5, 18.75, gImg('assets/figma/v/959bd6157e02d7.svg')),
       gP(38.25, 552, 19.5, 6, gImg('assets/figma/v/40b22babe144e0.svg')),
@@ -105,8 +111,8 @@ class G_58 extends ConsumerWidget {
       gP(316, 468, 34, 16, gText('FCFA', 13, Color(0xFF5A3FE0), weight: 600)),
       gTap(24, 760, 163, 54, () { submitListing(ref, context, publish: false); }),
       gTap(203, 760, 163, 54, () { submitListing(ref, context, publish: true); }),
-      gTap(80, 214, 166, 32, () { gOpen(context, '279'); }), // lien métier 58 -> 279
-      gTap(82, 193, 136, 32, () { uiSoon(context, 'Ajouter des photos au produit', 'Enregistrez d’abord le produit en brouillon ; les photos se gèrent ensuite depuis « Modifier l’annonce ».'); }), // audit 01/11 : « Ajouter des photos » n'avait aucun effet
+      if (demoContent) gTap(80, 214, 166, 32, () { gOpen(context, '279'); }), // lien métier 58 -> 279
+      if (demoContent) gTap(82, 193, 136, 32, () { uiSoon(context, 'Ajouter des photos au produit', 'Enregistrez d’abord le produit en brouillon ; les photos se gèrent ensuite depuis « Modifier l’annonce ».'); }), // audit 01/11 : « Ajouter des photos » n'avait aucun effet
     ]);
   }
 }

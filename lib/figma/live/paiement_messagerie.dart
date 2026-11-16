@@ -12,6 +12,8 @@ import 'access.dart' show roleKey;
 import 'auth.dart';
 import 'backend.dart';
 import 'console.dart';
+import 'pay.dart' show createOrderForMessagePayment;
+import '../../data/repositories/repositories.dart' show cartProvider;
 import 'store.dart' show fcfa, ordersProvider, payableOrderProvider;
 import 'talents.dart' show askText;
 
@@ -86,9 +88,15 @@ Future<void> startMessagePayment(BuildContext context, WidgetRef ref, {required 
 /// Écran 43 « Payer par messagerie » : le paiement vise la commande enregistrée la plus récente qui n'est ni payée ni annulée.
 Future<void> payOrderByMessage(BuildContext context, WidgetRef ref) async {
   if (!await requireLogin(context, ref, 'payer par messagerie') || !context.mounted) return;
-  final o = ref.read(payableOrderProvider);
+  var o = ref.read(payableOrderProvider);
+  if (o == null && ref.read(cartProvider).isNotEmpty) {
+    // panier neuf : la commande est créée ici (elle n'existe qu'à partir de ce moment), puis le paiement par messagerie démarre
+    o = await createOrderForMessagePayment(ref, context);
+    if (!context.mounted) return;
+    if (o != null) gToast(context, 'Commande ${o.id} enregistrée : elle sera confirmée à la réception du paiement.');
+  }
   if (o == null) {
-    gToast(context, ref.read(ordersProvider).isEmpty ? 'Aucune commande enregistrée : validez d’abord votre commande pour la payer par messagerie.' : 'Aucune commande à payer.');
+    if (ref.read(cartProvider).isEmpty) gToast(context, ref.read(ordersProvider).isEmpty ? 'Votre panier est vide : ajoutez un article pour commander.' : 'Aucune commande à payer.');
     return;
   }
   await startMessagePayment(context, ref, kind: 'order', subject: 'Commande ${o.id}', amount: o.total);

@@ -12,6 +12,7 @@ import 'auth.dart' show authProvider, requireLogin;
 import 'backend.dart';
 import 'chat_server.dart' show mimeOf;
 import 'share.dart' show openUrl;
+import 'community_moderation.dart' show communityActionLink, communityRemoveContent, communityReportContent;
 
 /// Échanges d'une communauté : chat du groupe, questions et réponses, événements, fichiers partagés.
 /// Tout est lu et écrit par des fonctions serveur qui vérifient l'appartenance à la communauté (migration 20261114001000).
@@ -54,9 +55,12 @@ Widget _btn(String label, VoidCallback? onTap, {bool dark = true}) => GestureDet
 // ------------------------------------------------------------------ chat du groupe
 
 class CommunityChatTab extends ConsumerStatefulWidget {
-  const CommunityChatTab({super.key, required this.communityId, required this.isMember});
+  const CommunityChatTab({super.key, required this.communityId, required this.isMember, this.canModerate = false});
   final String communityId;
   final bool isMember;
+
+  /// Propriétaire, administrateur ou modérateur : peut retirer le message d'un autre membre (avec un motif).
+  final bool canModerate;
 
   @override
   ConsumerState<CommunityChatTab> createState() => _ChatState();
@@ -119,6 +123,11 @@ class _ChatState extends ConsumerState<CommunityChatTab> {
     await _load();
   }
 
+  Future<void> _remove(Map<String, dynamic> m) async {
+    final ok = await communityRemoveContent(context, fn: 'community_chat_delete', params: {'p_message': m['id']}, mine: m['mine'] == true);
+    if (ok && mounted) setState(() => _msgs = [for (final x in _msgs) if (x['id'] != m['id']) x]);
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!widget.isMember) return communityGate(context, ref, 'Le chat est réservé aux membres. Rejoignez la communauté pour discuter en direct.', 'accéder au chat de cette communauté');
@@ -146,6 +155,11 @@ class _ChatState extends ConsumerState<CommunityChatTab> {
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                             if (!mine) Text('${m['author']}', style: _st(11, w: FontWeight.w700, c: _violet)),
                             Text('${m['body']}', style: _st(13.5, c: mine ? Colors.white : _ink).copyWith(height: 1.35)),
+                            Row(mainAxisSize: MainAxisSize.min, children: [
+                              if (mine) communityActionLink('Supprimer', () => _remove(m), color: const Color(0xCCFFFFFF)),
+                              if (!mine) communityActionLink('Signaler', () => communityReportContent(context, ref, communityId: widget.communityId, kind: 'chat', id: '${m['id']}')),
+                              if (!mine && widget.canModerate) communityActionLink('Retirer', () => _remove(m), color: const Color(0xFFB42318)),
+                            ]),
                           ]),
                         ),
                       );
@@ -168,9 +182,12 @@ class _ChatState extends ConsumerState<CommunityChatTab> {
 // ------------------------------------------------------------------ questions et réponses
 
 class CommunityQaTab extends ConsumerStatefulWidget {
-  const CommunityQaTab({super.key, required this.communityId, required this.isMember});
+  const CommunityQaTab({super.key, required this.communityId, required this.isMember, this.canModerate = false});
   final String communityId;
   final bool isMember;
+
+  /// Propriétaire, administrateur ou modérateur : peut retirer la question ou la réponse d'un autre membre (avec un motif).
+  final bool canModerate;
 
   @override
   ConsumerState<CommunityQaTab> createState() => _QaState();
@@ -210,6 +227,11 @@ class _QaState extends ConsumerState<CommunityQaTab> {
     if (r.error != null) return gToast(context, Backend.userMessage(r.error!));
     if (ok != null) gToast(context, ok);
     await _load();
+  }
+
+  Future<void> _removeContent(String kind, Map<String, dynamic> x) async {
+    final ok = await communityRemoveContent(context, fn: kind == 'question' ? 'community_question_delete' : 'community_answer_delete', params: {kind == 'question' ? 'p_question' : 'p_answer': x['id']}, mine: x['mine'] == true);
+    if (ok && mounted) await _load();
   }
 
   Future<void> _answer(Map<String, dynamic> q) async {
@@ -267,6 +289,12 @@ class _QaState extends ConsumerState<CommunityQaTab> {
           ]),
           const SizedBox(height: 4),
           Text('${q['body']}', style: _st(14, w: FontWeight.w700).copyWith(height: 1.4)),
+          if (widget.isMember)
+            Row(children: [
+              if (q['mine'] == true) communityActionLink('Supprimer', () => _removeContent('question', q)),
+              if (q['mine'] != true) communityActionLink('Signaler', () => communityReportContent(context, ref, communityId: widget.communityId, kind: 'question', id: '${q['id']}')),
+              if (q['mine'] != true && widget.canModerate) communityActionLink('Retirer', () => _removeContent('question', q), color: const Color(0xFFB42318)),
+            ]),
           for (final a in (q['answers'] as List? ?? const [])) ...[
             const SizedBox(height: 8),
             Container(
@@ -276,6 +304,12 @@ class _QaState extends ConsumerState<CommunityQaTab> {
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text('${a['author']}${a['accepted'] == true ? ' · réponse retenue' : ''}', style: _st(11.5, w: FontWeight.w700, c: a['accepted'] == true ? const Color(0xFF0F7A52) : _grey)),
                 Text('${a['body']}', style: _st(13).copyWith(height: 1.4)),
+                if (widget.isMember)
+                  Row(children: [
+                    if (a['mine'] == true) communityActionLink('Supprimer', () => _removeContent('answer', Map<String, dynamic>.from(a))),
+                    if (a['mine'] != true) communityActionLink('Signaler', () => communityReportContent(context, ref, communityId: widget.communityId, kind: 'answer', id: '${a['id']}')),
+                    if (a['mine'] != true && widget.canModerate) communityActionLink('Retirer', () => _removeContent('answer', Map<String, dynamic>.from(a)), color: const Color(0xFFB42318)),
+                  ]),
                 if (q['mine'] == true && q['solved'] != true) Align(alignment: Alignment.centerRight, child: GestureDetector(onTap: () => _call('community_accept_answer', {'p_answer': a['id']}, ok: 'Réponse retenue.'), child: Padding(padding: const EdgeInsets.only(top: 4), child: Text('Cette réponse m’a aidé', style: _st(12, w: FontWeight.w700, c: _violet))))),
               ]),
             ),

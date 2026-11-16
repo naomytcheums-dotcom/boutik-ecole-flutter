@@ -23,6 +23,7 @@ import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
 import '../live/seller_edit.dart';
+import '../live/seller_live.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_60 extends ConsumerWidget {
@@ -79,6 +80,7 @@ class G_60 extends ConsumerWidget {
       gP(296, 628, 54, 16, gText('Brouillon', 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right), show: demoContent),
       listingStatusLive(),
       listingNoteLive(),
+      listingEmptyLive(),
       gP(24, 680, 342, 62, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
       gP(36, 695, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(41.917, 703.042, 20.167, 15.917, gImg('assets/figma/v/073897e05a984a.svg')),
@@ -90,6 +92,9 @@ class G_60 extends ConsumerWidget {
       gP(203, 782, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => submitCurrentListing(ref, context)),
       gP(260, 800, 49, 18, gText('Publier', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 852, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
+      // « Prévisualiser » : ouvre la fiche publique de l'annonce telle que le client la voit
+      if (!demoContent) gTap(214, 120, 130, 36, () => previewCurrentListing(ref, context)),
+      if (!demoContent) gTap(24, 680, 342, 62, () => previewCurrentListing(ref, context)),
     ]);
   }
 }

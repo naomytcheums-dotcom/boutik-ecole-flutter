@@ -84,14 +84,18 @@ void main() {
     expect(live.read(missionProvider).real, isFalse);
   });
 
-  testWidgets('201 connecté : la vraie mission, sans mission inventée, note ni gains gonflés', (tester) async {
+  testWidgets('201 connecté : aucune mission inventée, ni note ni gains gonflés (plus de « 70 % gagnés » : valeurs réelles du serveur)', (tester) async {
     Backend.ready = true;
     await _pump(tester, const G_201(), _Real.new);
-    expect(find.text('Affiche du gala'), findsOneWidget);
+    await tester.pumpAndSettle();
     expect(find.text('Emballage savons Kamga'), findsNothing);
     expect(find.text('Spot promo parfums'), findsNothing);
     expect(find.text('4,9'), findsNothing);
-    expect(find.text('21 k'), findsOneWidget, reason: '70 % des 30 000 FCFA validés, sans les 245 000 de la maquette');
+    expect(find.text('21 k'), findsNothing, reason: 'S4-108 : 70 % des jalons validés n’est pas versé par la plateforme');
+    expect(find.text('Gagnés'), findsNothing);
+    expect(find.text('Disponible au versement'), findsNothing);
+    expect(find.text('Aucune mission retenue pour le moment.'), findsOneWidget, reason: 'les missions viennent du serveur (my_missions), jamais de la maquette');
+    expect(find.textContaining('ne bloque ni ne verse'), findsOneWidget);
   });
 
   testWidgets('192 connecté : statut, date et équipe réels', (tester) async {

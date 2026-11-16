@@ -11,9 +11,10 @@ import 'auth.dart';
 import 'backend.dart';
 import 'drafts.dart';
 import 'engage.dart' show unavailableAction;
-import 'lots.dart' show firstInt, formDialog, lastInt, publishMissionBrief, myNeedsDialog, myMissionsDialog;
+import 'lots.dart' show firstInt, formDialog, lastInt, publishMissionBrief, myNeedsDialog;
 import 'marche/marche_catalogue.dart' show marcheFetcherProvider;
 import 'marche/marche_data.dart' show mImageUrl, mInt;
+import 'kiosk_mode.dart';
 import 'qr.dart';
 import 'seller.dart';
 import 'store.dart';
@@ -23,7 +24,7 @@ import '../../data/repositories/repositories.dart' show cartProvider;
 
 /// Session de transfert borne → téléphone : code signé, valable 5 minutes, à usage unique.
 class QrSession {
-  const QrSession(this.token, this.product, this.createdAt, {this.used = false, this.server = false});
+  const QrSession(this.token, this.product, this.createdAt, {this.used = false, this.server = false, this.pair = false});
   final String token;
   final LiveProduct product;
   final DateTime createdAt;
@@ -32,11 +33,14 @@ class QrSession {
   /// Jeton créé par le serveur (donc réellement scannable) et non code de démonstration local.
   final bool server;
 
+  /// Code d'appariement émis par une borne enregistrée, sans compte (le téléphone le réclame avec son propre compte).
+  final bool pair;
+
   /// Code de suivi affiché sur le ticket (BE-xxxx-XXXX).
   String get tracking => 'BE-${token.substring(0, 4)}-${token.substring(4, 8).toUpperCase()}';
   int secondsLeft([DateTime? now]) => (300 - (now ?? DateTime.now()).difference(createdAt).inSeconds).clamp(0, 300);
   bool get expired => secondsLeft() == 0;
-  QrSession consumed() => QrSession(token, product, createdAt, used: true, server: server);
+  QrSession consumed() => QrSession(token, product, createdAt, used: true, server: server, pair: pair);
 }
 
 /// Jeton pseudo-signé (démonstration) : empreinte du produit + heure + secret.
@@ -62,6 +66,15 @@ class KioskSession extends Notifier<QrSession?> {
 
   /// Connecté : le code est créé par le serveur (jeton aléatoire unique, 5 minutes, usage unique). Retourne le message d'erreur, ou null.
   Future<String?> issue(LiveProduct p) async {
+    if (KioskTerminal.active) {
+      final id = p.id ?? '';
+      if (id.isEmpty) return 'Cet article ne peut pas être transféré sur un téléphone pour le moment.';
+      final r = await KioskTerminal.pairIssue(id);
+      final t = r.token;
+      if (t == null) return r.error ?? 'Code indisponible pour le moment.';
+      if (ref.mounted) state = QrSession(t, p, DateTime.now(), server: true, pair: true);
+      return null;
+    }
     final r = await issueQr('kiosk_transfer', p.title, label: p.title, ttlSeconds: 300);
     final t = r.token;
     if (t == null) return r.error ?? 'Code QR indisponible pour le moment.';
@@ -77,7 +90,12 @@ class KioskSession extends Notifier<QrSession?> {
   void cancel() {
     final s = state;
     state = null;
-    if (s != null && s.server && !s.used) Backend.rpc('qr_revoke', {'p_token': s.token});
+    if (s == null || !s.server || s.used) return;
+    if (s.pair) {
+      KioskTerminal.pairRevoke(s.token);
+    } else {
+      Backend.rpc('qr_revoke', {'p_token': s.token});
+    }
   }
 
   void use() => state = state?.consumed();
@@ -205,7 +223,7 @@ Future<void> startPhoneTransfer(WidgetRef ref, BuildContext context) async {
   } else {
     ref.read(kioskSessionProvider.notifier).start(p);
   }
-  ref.read(auditProvider.notifier).log('Borne n°2', 'Code de transfert créé', p.title, 'Connexions');
+  ref.read(auditProvider.notifier).log(KioskTerminal.label, 'Code de transfert créé', p.title, 'Connexions');
   gOpen(context, '209');
 }
 
@@ -236,6 +254,16 @@ Future<void> kioskOrder(WidgetRef ref, BuildContext context) async {
     return;
   }
   if (kioskIsService(p)) return kioskAskQuote(context, p);
+  if (KioskTerminal.active) {
+    // terminal public : aucune connexion ici, la commande se poursuit sur le téléphone de la personne
+    gToast(context, 'Pour commander, continuez sur votre téléphone : scannez le code.');
+    return startPhoneTransfer(ref, context);
+  }
+  final mineSeller = p.sellerId;
+  if (mineSeller != null && mineSeller.isNotEmpty && mineSeller == Backend.userId) {
+    gToast(context, 'C’est votre propre annonce : vous ne pouvez pas l’acheter.');
+    return;
+  }
   if (!await requireLogin(context, ref, 'commander cet article') || !context.mounted) return;
   final stock = p.stock;
   if (stock != null && stock <= 0) {
@@ -275,6 +303,14 @@ class _KioskTransferWatcherState extends ConsumerState<KioskTransferWatcher> {
     final s = ref.read(kioskSessionProvider);
     if (_busy || s == null || !s.server || s.used || s.expired) return;
     _busy = true;
+    if (s.pair) {
+      final st = await KioskTerminal.pairStatus(s.token);
+      _busy = false;
+      if (!mounted || st != 'used' || ref.read(kioskSessionProvider)?.token != s.token) return;
+      ref.read(kioskSessionProvider.notifier).use();
+      gOpen(context, '210');
+      return;
+    }
     final r = await Backend.rpc('qr_resolve', {'p_token': s.token, 'p_consume': false});
     _busy = false;
     final d = r.data;
@@ -343,6 +379,11 @@ class Mission {
     this.steps = const [],
     this.real = false,
     this.uuid = '',
+    this.role = '',
+    this.counterpart = '',
+    this.invoice = '',
+    this.pays = const [],
+    this.proofs = const [],
   });
   final String id, kind, desc, date;
   final int total;
@@ -351,6 +392,18 @@ class Mission {
 
   /// Identifiant serveur de la mission réelle (vide pour la mission d'exemple).
   final String uuid;
+
+  /// Rôle du compte sur cette mission (« client » ou « provider ») ; vide pour la mission d'exemple.
+  final String role;
+
+  /// Nom abrégé du prestataire (vu par le client) et numéro de facture de mission (accord conclu).
+  final String counterpart, invoice;
+
+  /// Par jalon : état du règlement entre les parties (unpaid · declared · confirmed) et preuve de livraison (texte).
+  final List<String> pays, proofs;
+
+  bool get isProvider => role == 'provider';
+  bool get isClient => role == 'client';
 
   /// Mission lue sur le serveur : équipe attribuée, échéance, statut serveur et montants réels des jalons.
   final String team, deadline, status;
@@ -398,6 +451,11 @@ class Mission {
       ],
       real: true,
       uuid: (m['id'] ?? '').toString(),
+      role: (m['role'] ?? '').toString(),
+      counterpart: (m['counterpart'] ?? '').toString(),
+      invoice: ((m['agreement'] as Map?)?['invoice_number'] ?? '').toString(),
+      pays: [for (final x in miles) (x['pay_status'] ?? 'unpaid').toString()],
+      proofs: [for (final x in miles) (x['proof_note'] ?? '').toString()],
     );
   }
 
@@ -407,6 +465,14 @@ class Mission {
   int get releasedAmount => [for (var i = 0; i < released; i++) amountOf(i)].fold(0, (a, b) => a + b);
   int get studentEarned => releasedAmount * 70 ~/ 100;
   int get pendingAmount => proof > released ? amountOf(released) : 0;
+
+  /// Montants réels d'une mission du serveur (aucun séquestre) : jalons dont le règlement est confirmé par le prestataire,
+  /// jalons validés mais pas encore réglés, jalons livrés en attente de validation du client.
+  int get confirmedPaid => real ? _sumWhere((i) => i < pays.length && pays[i] == 'confirmed') : 0;
+  int get validatedUnpaid => real ? _sumWhere((i) => i < steps.length && steps[i].$2 == 'Validé' && (i >= pays.length || pays[i] != 'confirmed')) : 0;
+  int get awaitingValidation => real ? _sumWhere((i) => i < steps.length && steps[i].$2 == 'Livré, à valider') : 0;
+  int _sumWhere(bool Function(int) test) => [for (var i = 0; i < milestoneAmounts.length; i++) if (test(i)) milestoneAmounts[i]].fold(0, (a, b) => a + b);
+
   int get nextToFund => funded.clamp(0, 3);
   int get milestoneCount => milestoneAmounts.isNotEmpty ? milestoneAmounts.length : 3;
   int get pct => real
@@ -415,6 +481,7 @@ class Mission {
 
   Mission copyWith({bool? accepted, int? funded, int? proof, int? released}) => Mission(
         id: id, kind: kind, desc: desc, total: total, date: date, team: team, deadline: deadline, status: status, milestoneAmounts: milestoneAmounts, steps: steps, real: real, uuid: uuid,
+        role: role, counterpart: counterpart, invoice: invoice, pays: pays, proofs: proofs,
         accepted: accepted ?? this.accepted, funded: funded ?? this.funded, proof: proof ?? this.proof, released: released ?? this.released);
 }
 
@@ -465,8 +532,18 @@ class MissionNotifier extends Notifier<Mission> {
         accepted: true, funded: 2, proof: 1, released: 1);
   }
 
-  /// Relit la mission sur le serveur ; une lecture échouée laisse l'état inchangé (et non « aucune mission »).
+  /// Relit les missions sur le serveur (client ET prestataire) et garde celle choisie (selectedMissionIdProvider), à défaut la plus récente ;
+  /// une lecture échouée laisse l'état inchangé (et non « aucune mission »).
   Future<void> refresh() async {
+    final all = await Backend.myMissionsList();
+    if (!ref.mounted) return;
+    if (all != null) {
+      ref.read(missionChoicesProvider.notifier).set(all);
+      final pick = pickMissionJson(all, ref.read(selectedMissionIdProvider));
+      state = pick == null ? Mission.none : missionFromMyMissions(pick);
+      ref.read(missionLoadedProvider.notifier).set(true);
+      return;
+    }
     final r = await Backend.currentMission();
     if (!ref.mounted || r == null) return;
     state = r.mission == null ? Mission.none : Mission.fromServer(r.mission!, r.accepted, r.milestones);
@@ -482,6 +559,46 @@ class MissionNotifier extends Notifier<Mission> {
 }
 
 final missionProvider = NotifierProvider<MissionNotifier, Mission>(MissionNotifier.new);
+
+/// Mission choisie par le compte (vide : la plus récemment modifiée). Voir selectMission.
+final selectedMissionIdProvider = NotifierProvider<StrV, String>(StrV.new);
+
+class _MissionChoices extends Notifier<List<Map<String, dynamic>>> {
+  @override
+  List<Map<String, dynamic>> build() {
+    ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
+    return const [];
+  }
+
+  void set(List<Map<String, dynamic>> v) => state = v;
+}
+
+/// Toutes les missions du compte (client et prestataire), pour choisir celle que les écrans 192 à 197 affichent.
+final missionChoicesProvider = NotifierProvider<_MissionChoices, List<Map<String, dynamic>>>(_MissionChoices.new);
+
+/// Mission choisie dans la liste (la plus récente à défaut) ; null s'il n'y en a aucune.
+Map<String, dynamic>? pickMissionJson(List<Map<String, dynamic>> all, String selected) {
+  if (all.isEmpty) return null;
+  if (selected.isNotEmpty) {
+    for (final m in all) {
+      if ('${m['id']}' == selected) return m;
+    }
+  }
+  return all.first;
+}
+
+/// Mission construite depuis une ligne de my_missions (jalons avec preuve et règlement, accord).
+Mission missionFromMyMissions(Map<String, dynamic> m) {
+  final miles = [for (final x in (m['milestones'] as List? ?? const [])) Map<String, dynamic>.from(x as Map)];
+  final amount = ((m['agreement'] as Map?)?['amount'] as num?)?.toInt();
+  return Mission.fromServer({...m, 'assigned_team': m['team']}, amount, miles);
+}
+
+/// Les écrans 192 à 197 passent à la mission [id] (notification, liste « Mes missions »).
+void selectMission(WidgetRef ref, String id) {
+  ref.read(selectedMissionIdProvider.notifier).set(id);
+  ref.read(missionProvider.notifier).refresh();
+}
 
 class _MissionLoaded extends Notifier<bool> {
   @override
@@ -499,7 +616,12 @@ final missionLoadedProvider = NotifierProvider<_MissionLoaded, bool>(_MissionLoa
 /// Écrans du suivi d'une mission : sans mission réelle, ils ne montrent pas la mission d'exemple.
 const missionScreens = {'192', '193', '194', '195', '196', '197', '201'};
 
-bool redirectMissionScreen({required bool ready, required bool loaded, required Mission mission}) => ready && loaded && !mission.real;
+/// Redirection vers « Votre besoin » (191) : seulement pour un compte sans mission sur un écran qui n'a rien à montrer sans mission.
+/// 195 et 201 sont les écrans du prestataire : un talent sans mission retenue y voit ses propositions, pas le formulaire du client.
+bool redirectMissionScreen({required bool ready, required bool loaded, required Mission mission, String screen = '', String role = ''}) {
+  if (!(ready && loaded && !mission.real)) return false;
+  return !(providerMissionScreens.contains(screen) && const {'student', 'dept', 'admin'}.contains(role));
+}
 
 /// Écrans du prestataire (195 « Ajouter une preuve », 201 « Mes missions ») : un compte qui n'est pas talent (Client, entreprise) est renvoyé
 /// vers le suivi de sa propre mission (194), qui redirige à son tour vers « Votre besoin » (191) s'il n'en a aucune.
@@ -602,7 +724,8 @@ void payNextMilestone(WidgetRef ref, BuildContext context) {
 
 void submitProof(WidgetRef ref, BuildContext context) {
   if (Backend.ready) {
-    myMissionsDialog(context, ref); // missions réellement obtenues : livraison du jalon (submit_milestone)
+    // La preuve (texte, photo, fichier) se saisit et s'envoie dans le panneau de l'écran 195 (submit_milestone) ; ici : retour au suivi des missions.
+    gOpen(context, '201');
     return;
   }
   final f = ref.read(formProvider);
@@ -639,6 +762,10 @@ void submitProof(WidgetRef ref, BuildContext context) {
 
 /// Décision du client sur le jalon affiché : valide (statut seulement : aucun argent n'est libéré par l'application) ou demande une correction.
 Future<void> _decideDelivered(WidgetRef ref, BuildContext context, {required bool validate}) async {
+  if (ref.read(missionProvider).isProvider) {
+    gToast(context, 'Seul le client valide un jalon livré : vous serez prévenu de sa décision.');
+    return;
+  }
   final j = deliveredMilestone(ref.read(missionProvider));
   if (j == null) {
     gToast(context, 'Aucun jalon livré à valider pour le moment.');

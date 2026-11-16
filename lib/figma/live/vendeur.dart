@@ -1,4 +1,5 @@
 import 'talent_pages.dart';
+import 'talent_passport.dart' show TalentPassportSection;
 import 'certificates_page.dart' show CertificatesPage;
 import 'tp_ui.dart' show TpButton;
 import 'package:flutter/material.dart' hide Text;
@@ -7,8 +8,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'auth.dart';
 import 'impact.dart' show RpcMap;
+import 'money_lot.dart';
 import 'profile_data.dart';
 import 'store.dart' show fcfa, selectedProductProvider;
+import 'verification.dart' show StudentVerificationCard;
 
 /// Espace vendeur (écrans 66 Revenus, 67 Statistiques, 69 Validations) : chiffres calculés sur les commandes payées de ses annonces
 /// (migration 20261105000800) et état réel de ses justificatifs. Les vues d'annonces et le taux de conversion ne sont pas mesurés.
@@ -72,21 +75,36 @@ class SellerRevenuePanel extends ConsumerWidget {
     if (g != null) return SizedBox(width: width, child: g);
     return SizedBox(
       width: width,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(children: [_tile('Disponible', fcfa(_i(d!['available'])), null), const SizedBox(width: 12), _tile('En attente', fcfa(_i(d['pending_amount'])), '${_i(d['pending_count'])} paiement${_i(d['pending_count']) > 1 ? 's' : ''}')]),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.only(bottom: 24),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [_tile('Disponible', fcfa(_i(d!['available'])), null), const SizedBox(width: 12), _tile('En attente', fcfa(_i(d['pending_amount'])), '${_i(d['pending_count'])} paiement${_i(d['pending_count']) > 1 ? 's' : ''} · part nette')]),
         const SizedBox(height: 12),
-        Row(children: [_tile('Déjà reversé', fcfa(_i(d['paid_out'])), null), const SizedBox(width: 12), _tile('Reversement prévu', fcfa(_i(d['scheduled'])), null)]),
+        Row(children: [_tile('Déjà reversé', fcfa(_i(d['paid_out'])), null), const SizedBox(width: 12), _tile('Retrait en cours', fcfa(_i(d['scheduled']) + _i(d['requested'])), _i(d['requested']) > 0 ? 'demande envoyée' : 'reversement prévu')]),
         const SizedBox(height: 12),
-        Row(children: [_tile('En séquestre', fcfa(_i(d['held'])), 'Débloqué à la livraison'), const SizedBox(width: 12), _tile('À reverser', fcfa(_i(d['owed'])), 'Paiements à la livraison')]),
+        Row(children: [_tile('En séquestre', fcfa(_i(d['held'])), _i(d['frozen']) > 0 ? '${fcfa(_i(d['frozen']))} bloqués' : 'Débloqué après livraison'), const SizedBox(width: 12), _tile('À reverser', fcfa(_i(d['owed'])), 'Paiements à la livraison')]),
         const SizedBox(height: 10),
-        Text('Parts nettes (règle ${d['rule'] ?? '70/20/10'}). L’argent reste en séquestre jusqu’à la livraison.', style: _st(12, c: _grey).copyWith(height: 1.4)),
+        Text('Parts nettes (règle ${d['rule'] ?? '70/20/10'}). L’argent reste en séquestre jusqu’à la confirmation de l’acheteur, ou ${_i(d['hold_hours']) == 0 ? 72 : _i(d['hold_hours'])} h après la livraison sans réclamation.', style: _st(12, c: _grey).copyWith(height: 1.4)),
+        const SizedBox(height: 14),
+        Wrap(spacing: 10, runSpacing: 8, children: [
+          TpButton('Demander un retrait', () => requestPayoutDialog(context, ref), compact: true),
+          TpButton('Mes retraits', () => payoutHistoryDialog(context, ref), dark: false, compact: true),
+          TpButton('Relevé de ventes', () => statementDialog(context), dark: false, compact: true),
+        ]),
+        if (_list(d['holds']).isNotEmpty) ...[
+          const SizedBox(height: 18),
+          Text('Pourquoi mon argent est-il en séquestre ?', style: _st(13.5, w: FontWeight.w700)),
+          const SizedBox(height: 6),
+          for (final h in _list(d['holds']).take(6)) Padding(padding: const EdgeInsets.only(bottom: 6), child: Text('${h['ref']} · ${fcfa(_i(h['amount']))} : ${holdReasonLabel(h)}', style: _st(12, c: _grey).copyWith(height: 1.4))),
+        ],
         const SizedBox(height: 22),
         Text('Gains nets · 6 mois', style: _st(15, w: FontWeight.w700)),
         const SizedBox(height: 4),
-        Text('Total : ${fcfa(_i(d['total']))} sur ${_i(d['orders'])} commande${_i(d['orders']) > 1 ? 's' : ''}', style: _st(12, c: _grey)),
+        Text('Total : ${fcfa(_i(d['total']))} sur ${_i(d['orders'])} commande${_i(d['orders']) > 1 ? 's' : ''} (parts nettes débloquées ou en séquestre)', style: _st(12, c: _grey)),
         const SizedBox(height: 12),
         _bars(_list(d['months']), 'month', (m) => m.length >= 7 ? m.substring(5) : m, width),
       ]),
+      ),
     );
   }
 }
@@ -104,7 +122,7 @@ class SellerStatsPanel extends ConsumerWidget {
     return SizedBox(
       width: width,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(children: [_tile('Ventes payées', '${_i(d!['orders'])}', null), const SizedBox(width: 12), _tile('Chiffre d’affaires', fcfa(_i(d['total'])), null)]),
+        Row(children: [_tile('Ventes payées', '${_i(d!['orders'])}', null), const SizedBox(width: 12), _tile('Chiffre d’affaires brut', fcfa(_i(d['gross'])), 'Ma part nette : ${fcfa(_i(d['total']) + _i(d['cod_net']))}')]),
         const SizedBox(height: 22),
         Text('Ventes par semaine', style: _st(15, w: FontWeight.w700)),
         const SizedBox(height: 12),
@@ -136,28 +154,54 @@ class ValidationsPanel extends ConsumerWidget {
       for (final k in kinds)
         () {
           final d = latestDoc(docs, k.$1);
-          return (k.$2, d == null ? 'Non envoyé' : d.name, d == null ? 'À fournir' : d.statusLabel);
+          return (k.$2, d == null ? 'Non envoyé' : (d.status == 'rejected' && d.note.isNotEmpty ? '${d.name} — motif : ${d.note}' : d.name), d == null ? 'À fournir' : d.statusLabel);
         }(),
       ('Matricule', a.matricule.isEmpty ? 'Non renseigné' : a.matricule, a.matricule.isEmpty ? 'À fournir' : 'Renseigné'),
     ];
-    final ok = rows.where((r) => r.$3 == 'Vérifié').length;
-    Color tone(String s) => s == 'Vérifié' ? const Color(0xFF0F7A52) : s == 'Refusé' ? const Color(0xFFC0392B) : const Color(0xFF8F5400);
+    final ok = rows.take(kinds.length).where((r) => r.$3 == 'Vérifié').length;
+    Color tone(String s) => s == 'Vérifié' || s == 'Renseigné' ? const Color(0xFF0F7A52) : s == 'Refusé' ? const Color(0xFFC0392B) : const Color(0xFF8F5400);
+    // état réel de la certification : c'est lui, et non le nombre de pièces, qui autorise la publication d'annonces
+    const certLabels = {
+      'approved': 'Compte certifié : vous pouvez publier des annonces.',
+      'pending': 'Certification en attente de décision du département : vous pouvez enregistrer des brouillons, pas encore publier.',
+      'review': 'Certification en cours d’examen par le département : vous pouvez enregistrer des brouillons, pas encore publier.',
+      'rejected': 'Certification refusée : corrigez votre dossier puis refaites une demande pour publier.',
+      'revoked': 'Certification révoquée : contactez le département pour publier de nouveau.',
+      'none': 'Compte non certifié : envoyez vos justificatifs puis demandez la certification pour publier des annonces.',
+    };
+    final certOk = a.certification == 'approved';
+    final canAsk = a.certification == 'none' || a.certification == 'rejected';
     return SizedBox(
       width: width,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      child: SingleChildScrollView(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Container(
+          width: width,
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(color: certOk ? const Color(0xFFDDF5EC) : const Color(0xFFFFF4E0), borderRadius: BorderRadius.circular(16)),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('Certification du compte', style: _st(14, w: FontWeight.w800, c: certOk ? const Color(0xFF0F7A52) : const Color(0xFF8F5400))),
+            const SizedBox(height: 4),
+            Text(certLabels[a.certification] ?? certLabels['none']!, style: _st(12.5).copyWith(height: 1.4)),
+            if (canAsk) Padding(padding: const EdgeInsets.only(top: 8), child: GestureDetector(onTap: () => requestCertificationFlow(ref, context), child: SizedBox(height: 48, child: Align(alignment: Alignment.centerLeft, child: Text('Demander la certification', style: _st(13, w: FontWeight.w700, c: const Color(0xFF5A3FE0))))))),
+            Text('Le badge « Identité vérifiée » affiché aux acheteurs vient de cette certification, décidée par le département après examen de vos pièces.', style: _st(11.5, c: _grey).copyWith(height: 1.4)),
+          ]),
+        ),
+        const SizedBox(height: 14),
+        StudentVerificationCard(width: width),
+        const SizedBox(height: 18),
         Text('Conformité du compte', style: _st(16, w: FontWeight.w700)),
         const SizedBox(height: 4),
-        Text('$ok justificatif${ok > 1 ? 's' : ''} vérifié${ok > 1 ? 's' : ''} sur ${rows.length}', style: _st(12.5, c: _grey)),
+        Text('$ok justificatif${ok > 1 ? 's' : ''} vérifié${ok > 1 ? 's' : ''} sur ${kinds.length} (le matricule est déclaré par vous, il n’entre pas dans ce décompte)', style: _st(12.5, c: _grey)),
         const SizedBox(height: 14),
         for (final r in rows)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Row(children: [
-              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(r.$1, style: _st(13.5, w: FontWeight.w600)), const SizedBox(height: 2), Text(r.$2, maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(11.5, c: _grey))])),
+              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(r.$1, style: _st(13.5, w: FontWeight.w600)), const SizedBox(height: 2), Text(r.$2, maxLines: 2, overflow: TextOverflow.ellipsis, style: _st(11.5, c: _grey))])),
               Text(r.$3, style: _st(11.5, w: FontWeight.w700, c: tone(r.$3))),
             ]),
           ),
-      ]),
+      ])),
     );
   }
 }
@@ -189,8 +233,14 @@ class SelectedProductInfo extends ConsumerWidget {
 
 /// Écrans 227 et 229 : carte de présentation construite sur le profil réel (nom, établissement, compétences, présentation, dernier CV envoyé).
 class MyProfileCard extends ConsumerWidget {
-  const MyProfileCard({super.key, this.width = 342});
+  const MyProfileCard({super.key, this.width = 342, this.scroll = false, this.passport = true});
   final double width;
+
+  /// Vrai quand la carte occupe un cadre de hauteur fixe (écran 74) : elle défile au lieu de déborder.
+  final bool scroll;
+
+  /// Faux dans le CV vivant (227, 229) : ni niveaux/badges ni raccourcis du passport, étrangers au CV partagé.
+  final bool passport;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -199,34 +249,49 @@ class MyProfileCard extends ConsumerWidget {
     final docs = ref.watch(myDocsProvider);
     final cv = latestDoc(docs, 'cv');
     final skills = [for (final s in a.skills.split(RegExp(r'[,;\n]'))) if (s.trim().isNotEmpty) s.trim()];
-    return SizedBox(
+    final card = SizedBox(
       width: width,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(a.name, style: _st(22, w: FontWeight.w800)),
         const SizedBox(height: 4),
         Text([if (a.department.isNotEmpty) a.department, if (a.institution.isNotEmpty) a.institution].join(' · '), style: _st(12.5, c: _grey)),
         const SizedBox(height: 6),
-        Text(a.certified ? '✓ Profil certifié par l’établissement' : 'Profil non certifié', style: _st(12.5, w: FontWeight.w600, c: a.certified ? const Color(0xFF0F7A52) : _grey)),
+        Text(a.certified ? '✓ Profil certifié par l’établissement' : switch (a.certification) {
+          'pending' => 'Certification en attente d’examen',
+          'review' => 'Certification en cours d’examen',
+          'rejected' => 'Certification refusée : complétez votre dossier et refaites une demande',
+          'revoked' => 'Certification révoquée',
+          _ => 'Profil non certifié',
+        }, style: _st(12.5, w: FontWeight.w600, c: a.certified ? const Color(0xFF0F7A52) : _grey)),
+        if (passport && !a.certified && (a.certification == 'none' || a.certification == 'rejected') && a.role != 0)
+          Padding(padding: const EdgeInsets.only(top: 6), child: TpButton('Demander la certification', () => requestCertificationFlow(ref, context), dark: false, compact: true)),
         const SizedBox(height: 16),
         Text(a.bio.isEmpty ? 'Aucune présentation renseignée. Ajoutez-la depuis votre profil.' : a.bio, style: _st(13.5, c: a.bio.isEmpty ? _grey : _ink).copyWith(height: 1.55)),
         const SizedBox(height: 18),
         Text('Compétences', style: _st(15, w: FontWeight.w700)),
         const SizedBox(height: 8),
         if (skills.isEmpty) Text('Aucune compétence renseignée.', style: _st(13, c: _grey)) else Wrap(spacing: 8, runSpacing: 8, children: [for (final s in skills) Container(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7), decoration: BoxDecoration(color: const Color(0xFFEEE9FF), borderRadius: BorderRadius.circular(14)), child: Text(s, style: _st(12, w: FontWeight.w600, c: const Color(0xFF5A3FE0))))]),
+        if (passport) ...[
+          const SizedBox(height: 18),
+          Text('Niveau et badges', style: _st(15, w: FontWeight.w700)),
+          const SizedBox(height: 8),
+          TalentPassportSection(width: width),
+        ],
         const SizedBox(height: 18),
         Text('CV envoyé', style: _st(15, w: FontWeight.w700)),
         const SizedBox(height: 6),
         Text(docs == null ? 'Chargement…' : (cv == null ? 'Aucun CV envoyé pour le moment.' : cv.name), style: _st(13, c: _grey)),
-        const SizedBox(height: 18),
-        Wrap(spacing: 8, runSpacing: 8, children: [
-          TpButton('Mes compétences', () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SkillsPage())), dark: false, compact: true),
-          TpButton(cv == null ? 'Ajouter un CV' : 'Gérer mes documents', () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const DocumentsPage())), dark: false, compact: true),
-          TpButton('Mon portfolio', () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PortfolioPage())), dark: false, compact: true),
-          TpButton('Mes certificats', () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const CertificatesPage())), dark: false, compact: true),
-        ]),
-        const SizedBox(height: 10),
-        Text('Le niveau et les badges ne sont pas encore calculés : ce passport présente vos compétences, vos documents et vos certificats réels.', style: _st(11.5, c: _grey).copyWith(height: 1.45)),
+        if (passport) ...[
+          const SizedBox(height: 18),
+          Wrap(spacing: 8, runSpacing: 8, children: [
+            TpButton('Mes compétences', () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SkillsPage())), dark: false, compact: true),
+            TpButton(cv == null ? 'Ajouter un CV' : 'Gérer mes documents', () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const DocumentsPage())), dark: false, compact: true),
+            TpButton('Mon portfolio', () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PortfolioPage())), dark: false, compact: true),
+            TpButton('Mes certificats', () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const CertificatesPage())), dark: false, compact: true),
+          ]),
+        ],
       ]),
     );
+    return scroll ? SingleChildScrollView(padding: const EdgeInsets.only(bottom: 20), child: card) : card;
   }
 }

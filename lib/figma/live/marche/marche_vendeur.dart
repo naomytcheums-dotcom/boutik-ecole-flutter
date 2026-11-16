@@ -10,6 +10,7 @@ import '../../gen.dart' show gToast;
 import '../auth.dart';
 import '../backend.dart';
 import '../litiges_screens.dart' show openDisputeDialog;
+import '../money_lot.dart' show claimThreadDialog;
 import '../seller.dart' show serverSellerOrdersProvider, SellerOrder;
 import 'marche_data.dart';
 import 'marche_widgets.dart';
@@ -114,6 +115,9 @@ class _ShopFormState extends ConsumerState<_ShopForm> {
   String get status => '${widget.shop['status'] ?? ''}';
   bool get locked => status == 'suspended';
 
+  /// Boutique fermée : le serveur refuse toute modification, seule la soumission (réouverture) est possible.
+  bool get closed => status == 'closed';
+
   Future<void> _upload(bool isLogo) async {
     final p = await _pickImage();
     if (p == null) return;
@@ -157,15 +161,18 @@ class _ShopFormState extends ConsumerState<_ShopForm> {
       return false;
     }
     if (!quiet) gToast(context, 'Boutique enregistrée.');
+    final saved = r.data;
+    if (saved is Map && saved['slug'] is String && slug.text != saved['slug']) slug.text = saved['slug'] as String;
     ref.invalidate(marcheMyShopProvider);
     return true;
   }
 
   Future<void> _submit() async {
-    if (!await _save(quiet: true)) return;
+    // une boutique fermée n'est pas enregistrable : on la soumet telle quelle pour la rouvrir
+    if (!closed && !await _save(quiet: true)) return;
     final r = await marcheCall('shop_submit', const {});
     if (!mounted) return;
-    gToast(context, r.error != null ? Backend.userMessage('${r.error}') : 'Boutique envoyée à la modération pour validation.');
+    gToast(context, r.error != null ? Backend.userMessage('${r.error}') : (closed ? 'Boutique rouverte : elle est envoyée à la modération pour validation.' : 'Boutique envoyée à la modération pour validation.'));
     ref.invalidate(marcheMyShopProvider);
   }
 
@@ -195,12 +202,16 @@ class _ShopFormState extends ConsumerState<_ShopForm> {
             if (status == 'active') Row(children: [
               TextButton(onPressed: () => Clipboard.setData(ClipboardData(text: '$publicShopBase${widget.shop['slug']}')).then((_) => gToast(context, 'Lien copié')), child: const Text('Copier le lien')),
               TextButton(onPressed: () => context.push('/marche/boutique/${widget.shop['slug']}'), child: const Text('Voir ma vitrine')),
-            ]),
+            ])
+            else ...[
+              Align(alignment: Alignment.centerLeft, child: TextButton(onPressed: () => context.push('/marche/boutique/${widget.shop['slug']}'), child: const Text('Aperçu de ma vitrine (visible de vous seul)'))),
+              Text(status == 'closed' ? 'Boutique fermée : vos produits ne sont plus visibles. Touchez « Soumettre à la validation » pour la rouvrir.' : 'Tant que la boutique n’est pas validée, vos annonces ne sont visibles que de vous : les acheteurs ne les voient pas et ne peuvent pas les commander.', style: mst(12.5, c: kGrey).copyWith(height: 1.4)),
+            ],
           ]),
         ),
         if (status == 'active') Padding(padding: const EdgeInsets.only(bottom: 14), child: mButton('Tableau de bord vendeur', () => context.push('/marche/vendeur'))),
       ] else
-        Padding(padding: const EdgeInsets.only(bottom: 14), child: Text('Créez votre boutique : elle sera validée par la modération avant d’apparaître dans la marketplace. Vos annonces existantes restent inchangées.', style: mst(13, c: kGrey).copyWith(height: 1.5))),
+        Padding(padding: const EdgeInsets.only(bottom: 14), child: Text('Créez votre boutique : elle sera validée par la modération avant d’apparaître dans la marketplace. Vos annonces existantes y seront rattachées automatiquement.', style: mst(13, c: kGrey).copyWith(height: 1.5))),
       Text('Identité', style: mst(16, w: FontWeight.w800)),
       const SizedBox(height: 10),
       _field(name, 'Nom de la boutique', max: 60),
@@ -209,9 +220,9 @@ class _ShopFormState extends ConsumerState<_ShopForm> {
       Padding(padding: const EdgeInsets.only(bottom: 12), child: kelaButton(context, prompt: 'Rédige en français, en 400 caractères maximum, une description attrayante pour la boutique « ${name.text.trim()} » de la marketplace étudiante Boutik-École (catégories : ${cats.join(', ')}). N’invente ni prix ni promesse. Réponds uniquement par le texte de la description.', target: desc)),
       _field(city, 'Ville ou lieu'),
       Row(children: [
-        Expanded(child: mButton(logo.isEmpty ? 'Ajouter le logo' : 'Changer le logo', _busy || locked ? null : () => _upload(true), dark: false, icon: Icons.image_outlined)),
+        Expanded(child: mButton(logo.isEmpty ? 'Ajouter le logo' : 'Changer le logo', _busy || locked || closed ? null : () => _upload(true), dark: false, icon: Icons.image_outlined)),
         const SizedBox(width: 10),
-        Expanded(child: mButton(banner.isEmpty ? 'Ajouter la bannière' : 'Changer la bannière', _busy || locked ? null : () => _upload(false), dark: false, icon: Icons.panorama_outlined)),
+        Expanded(child: mButton(banner.isEmpty ? 'Ajouter la bannière' : 'Changer la bannière', _busy || locked || closed ? null : () => _upload(false), dark: false, icon: Icons.panorama_outlined)),
       ]),
       if (logo.isNotEmpty || banner.isNotEmpty)
         Padding(padding: const EdgeInsets.only(top: 10), child: Row(children: [if (logo.isNotEmpty) ClipRRect(borderRadius: BorderRadius.circular(12), child: SizedBox(width: 64, height: 64, child: MImage(logo))), const SizedBox(width: 10), if (banner.isNotEmpty) Expanded(child: ClipRRect(borderRadius: BorderRadius.circular(12), child: SizedBox(height: 64, child: MImage(banner))))])),
@@ -228,9 +239,10 @@ class _ShopFormState extends ConsumerState<_ShopForm> {
       const SizedBox(height: 10),
       _field(delivery, 'Livraison (délais, zones, frais)', lines: 3, max: 500),
       _field(terms, 'Conditions (retours, paiement)', lines: 3, max: 1500),
-      for (final e in socials.entries) _field(e.value, e.key[0].toUpperCase() + e.key.substring(1)),
+      for (final e in socials.entries) _field(e.value, e.key[0].toUpperCase() + e.key.substring(1), hint: e.key == 'whatsapp' ? 'https://wa.me/237… ou numéro' : 'https://…'),
+      if (status == 'active') Padding(padding: const EdgeInsets.only(bottom: 10), child: Text('Boutique active : un changement de nom, de description, de logo, de bannière ou de réseaux reste publié et est signalé à la modération, qui peut le vérifier.', style: mst(12, c: kGrey).copyWith(height: 1.4))),
       const SizedBox(height: 8),
-      mButton(exists ? 'Enregistrer' : 'Créer ma boutique (brouillon)', locked ? null : _save, busy: _busy),
+      mButton(exists ? 'Enregistrer' : 'Créer ma boutique (brouillon)', locked || closed ? null : _save, busy: _busy),
       if (exists && (status == 'draft' || status == 'closed')) ...[const SizedBox(height: 10), mButton('Soumettre à la validation', _busy ? null : _submit, dark: false)],
       if (exists && status != 'closed' && status != 'suspended') ...[const SizedBox(height: 10), mButton('Fermer la boutique', _close, dark: false)],
     ]);
@@ -301,12 +313,12 @@ class _DashboardTab extends ConsumerWidget {
       return ListView(padding: const EdgeInsets.fromLTRB(16, 12, 16, 100), children: [
         Row(children: [for (final p in const [7, 30, 90]) ...[MChip('$p jours', selected: days == p, onTap: () => ref.read(_periodProvider.notifier).set(p)), const SizedBox(width: 8)]]),
         const SizedBox(height: 6),
-        Row(children: [tile('Chiffre d’affaires', mFcfa(d['revenue'])), const SizedBox(width: 10), tile('Commandes payées', '${mInt(d['orders'])}')]),
+        Row(children: [tile('Ventes brutes', mFcfa(d['revenue'])), const SizedBox(width: 10), tile('Commandes payées', '${mInt(d['orders'])}')]),
         const SizedBox(height: 10),
         Row(children: [tile('Vues produits', '${mInt(d['views'])}'), const SizedBox(width: 10), tile('Conversion', d['conversion'] == null ? '—' : '${d['conversion']} %')]),
         const SizedBox(height: 10),
         Row(children: [tile('À préparer', '${mInt(d['pending_orders'])}'), const SizedBox(width: 10), tile('Abonnés', '${mInt(d['followers'])}')]),
-        mSectionTitle('Chiffre d’affaires par jour'),
+        mSectionTitle('Ventes brutes par jour'),
         SizedBox(height: 140, child: _Bars(values: [for (final s in series) mInt(s['revenue'])], labels: [for (final s in series) '${s['day']}'.substring(5)])),
         mSectionTitle('Vues par jour'),
         SizedBox(height: 100, child: _Bars(values: [for (final s in series) mInt(s['views'])], labels: [for (final s in series) '${s['day']}'.substring(5)], color: kViolet)),
@@ -314,7 +326,7 @@ class _DashboardTab extends ConsumerWidget {
         if (top.isEmpty) Text('Aucune vente sur la période.', style: mst(13, c: kGrey)),
         for (final t in top) Padding(padding: const EdgeInsets.symmetric(vertical: 6), child: Row(children: [Expanded(child: Text('${t['title']}', style: mst(13.5, w: FontWeight.w600))), Text('${mInt(t['qty'])} vendu(s) · ${mFcfa(t['revenue'])}', style: mst(12.5, c: kGrey))])),
         const SizedBox(height: 10),
-        Text('La conversion rapporte les commandes payées aux vues des fiches produit.', style: mst(11.5, c: kGrey)),
+        Text('La conversion rapporte les commandes payées aux vues des fiches produit. « Ventes brutes » = montant payé avant la répartition de la plateforme ; votre part nette figure dans « Revenus » (espace vendeur).', style: mst(11.5, c: kGrey)),
         const _AdvancedStats(),
       ]);
     });
@@ -465,10 +477,12 @@ class _OrderCard extends ConsumerWidget {
 
 // ------------------------------------------------------------------ produits : médias, prix normal, variantes, caractéristiques
 
+const _listingStatusLabels = {'approved': 'Publiée', 'pending': 'En validation', 'draft': 'Brouillon', 'rejected': 'Refusée'};
+
 final _myListingsProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
   final uid = ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
   if (!Backend.ready || uid.isEmpty) return const [];
-  final r = await Backend.rows('listings', 'id,title,price,price_before,stock,status,images,video_url,variants,specs,description,category', eq: {'seller_id': uid}, order: 'updated_at', limit: 100);
+  final r = await Backend.rows('listings', 'id,title,price,price_before,stock,status,images,video_url,variants,specs,description,category,recycled,recycled_kg', eq: {'seller_id': uid}, order: 'updated_at', limit: 300);
   return r.rows;
 });
 
@@ -478,7 +492,7 @@ class _ProductsTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => mAsync<List<Map<String, dynamic>>>(ref.watch(_myListingsProvider), (l) {
         final l2 = [for (final x in l) if (x['status'] != 'removed') x];
-        if (l2.isEmpty) return mNote('Vous n’avez pas encore de produit. Publiez une annonce depuis l’espace vendeur (écran « Mes produits »), puis enrichissez-la ici.');
+        if (l2.isEmpty) return mNote('Vous n’avez pas encore de produit. Publiez une annonce depuis « Mon catalogue » (bouton +), puis enrichissez-la ici.');
         return ListView(padding: const EdgeInsets.fromLTRB(16, 12, 16, 100), children: [
           for (final p in l2)
             Container(
@@ -488,7 +502,7 @@ class _ProductsTab extends ConsumerWidget {
               child: Row(children: [
                 ClipRRect(borderRadius: BorderRadius.circular(12), child: SizedBox(width: 64, height: 80, child: MImage(mImageUrl((p['images'] as List?)?.isNotEmpty == true ? (p['images'] as List).first : '')))),
                 const SizedBox(width: 12),
-                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('${p['title']}', maxLines: 2, overflow: TextOverflow.ellipsis, style: mst(13.5, w: FontWeight.w700)), Text('${mFcfa(p['price'])} · stock ${mInt(p['stock'])} · ${p['status']}', style: mst(12, c: kGrey)), Text('${(p['images'] as List?)?.length ?? 0}/4 photos · ${'${p['video_url'] ?? ''}'.isEmpty ? 'pas de vidéo' : '1 vidéo'}', style: mst(12, c: kViolet))])),
+                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('${p['title']}', maxLines: 2, overflow: TextOverflow.ellipsis, style: mst(13.5, w: FontWeight.w700)), Text('${mFcfa(p['price'])} · stock ${mInt(p['stock'])} · ${_listingStatusLabels['${p['status']}'] ?? p['status']}', style: mst(12, c: kGrey)), Text('${(p['images'] as List?)?.length ?? 0}/8 photos · ${'${p['video_url'] ?? ''}'.isEmpty ? 'pas de vidéo' : '1 vidéo'}', style: mst(12, c: kViolet)), TextButton(style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: const Size(48, 48), alignment: Alignment.centerLeft), onPressed: () => context.push('/marche/produit/${p['id']}'), child: const Text('Voir ma fiche'))])),
                 mButton('Éditer', () async {
                   await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ProductMediaEditor(listing: p)));
                   ref.invalidate(_myListingsProvider);
@@ -513,6 +527,8 @@ class _ProductMediaEditorState extends State<ProductMediaEditor> {
   late final before = TextEditingController(text: widget.listing['price_before']?.toString() ?? '');
   late final specs = TextEditingController(text: _specsText(widget.listing['specs']));
   late final variants = TextEditingController(text: _variantsText(widget.listing['variants']));
+  late bool recycled = widget.listing['recycled'] == true;
+  late final recycledKg = TextEditingController(text: widget.listing['recycled_kg'] == null ? '' : '${widget.listing['recycled_kg']}'.replaceAll('.', ','));
   bool busy = false;
   String? error;
 
@@ -522,7 +538,7 @@ class _ProductMediaEditorState extends State<ProductMediaEditor> {
   String get id => '${widget.listing['id']}';
 
   Future<void> _addImage() async {
-    if (images.length >= 4) return setState(() => error = '4 photos au maximum par produit.');
+    if (images.length >= 8) return setState(() => error = '8 photos au maximum par produit.');
     final p = await _pickImage();
     if (p == null) return;
     if (p.bytes.length > 5 * 1024 * 1024) return setState(() => error = 'Photo trop lourde (5 Mo maximum).');
@@ -589,12 +605,14 @@ class _ProductMediaEditorState extends State<ProductMediaEditor> {
       }
     }
     if (vars.length > 5) return setState(() => error = '5 variantes au maximum.');
+    final kg = double.tryParse(recycledKg.text.trim().replaceAll(',', '.'));
+    if (recycled && (kg == null || kg <= 0 || kg > 1000)) return setState(() => error = 'Matériaux récupérés : indiquez le poids par article, entre 0,01 et 1 000 kg.');
     setState(() => busy = true);
-    final err = await Backend.updateListing(id, {'price_before': pb, 'specs': specMap, 'variants': vars});
+    final err = await Backend.updateListing(id, {'price_before': pb, 'specs': specMap, 'variants': vars, 'recycled': recycled, 'recycled_kg': recycled ? kg : null});
     if (!mounted) return;
     setState(() {
       busy = false;
-      error = err == null ? null : Backend.userMessage(err);
+      error = err == null ? null : (err.contains('price_before') ? 'Le prix normal doit être supérieur au prix actuel.' : Backend.userMessage(err));
     });
     if (err == null) {
       gToast(context, 'Produit enregistré.');
@@ -609,7 +627,7 @@ class _ProductMediaEditorState extends State<ProductMediaEditor> {
           Text('${widget.listing['title']}', style: mst(16, w: FontWeight.w800)),
           Text('Prix actuel : ${mFcfa(widget.listing['price'])}. Pour afficher une promotion, saisissez ci-dessous le prix normal (supérieur au prix actuel).', style: mst(12.5, c: kGrey)),
           const SizedBox(height: 14),
-          Text('Photos (${images.length}/4)', style: mst(15, w: FontWeight.w800)),
+          Text('Photos (${images.length}/8)', style: mst(15, w: FontWeight.w800)),
           const SizedBox(height: 8),
           Wrap(spacing: 10, runSpacing: 10, children: [
             for (final p in images)
@@ -617,7 +635,7 @@ class _ProductMediaEditorState extends State<ProductMediaEditor> {
                 ClipRRect(borderRadius: BorderRadius.circular(12), child: SizedBox(width: 96, height: 120, child: MImage(mImageUrl(p)))),
                 Positioned(right: 0, top: 0, child: Semantics(button: true, label: 'Retirer la photo', excludeSemantics: true, child: GestureDetector(onTap: busy ? null : () => _removeImage(p), child: Container(width: 32, height: 32, decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle), child: const Icon(Icons.close, size: 18))))),
               ]),
-            if (images.length < 4) Semantics(button: true, label: 'Ajouter une photo', excludeSemantics: true, child: GestureDetector(onTap: busy ? null : _addImage, child: Container(width: 96, height: 120, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: kLine)), child: const Icon(Icons.add_a_photo_outlined)))),
+            if (images.length < 8) Semantics(button: true, label: 'Ajouter une photo', excludeSemantics: true, child: GestureDetector(onTap: busy ? null : _addImage, child: Container(width: 96, height: 120, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: kLine)), child: const Icon(Icons.add_a_photo_outlined)))),
           ]),
           const SizedBox(height: 18),
           Text('Vidéo (1 maximum, MP4 ou WebM, 30 Mo)', style: mst(15, w: FontWeight.w800)),
@@ -628,6 +646,15 @@ class _ProductMediaEditorState extends State<ProductMediaEditor> {
           _field(before, 'Prix normal avant promotion (FCFA, facultatif)', type: TextInputType.number),
           _field(variants, 'Variantes (une ligne par type)', lines: 3, hint: 'Couleur: Rouge, Bleu\nTaille: S, M, L'),
           _field(specs, 'Caractéristiques (une ligne par élément)', lines: 4, hint: 'Matière: Bois recyclé\nPoids: 1,2 kg'),
+          Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
+            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(4), border: Border.all(color: kLine)),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              SwitchListTile(contentPadding: EdgeInsets.zero, value: recycled, onChanged: busy ? null : (v) => setState(() => recycled = v), title: Text('Matériaux récupérés', style: mst(14, w: FontWeight.w800)), subtitle: Text('À cocher si ce produit est fabriqué à partir de matériaux de récupération : il apparaît dans « Économie circulaire » et compte dans les déchets valorisés.', style: mst(12, c: kGrey))),
+              if (recycled) _field(recycledKg, 'Poids de matériaux récupérés par article (kg)', type: const TextInputType.numberWithOptions(decimal: true), hint: 'Ex. 1,2'),
+            ]),
+          ),
           Padding(padding: const EdgeInsets.only(bottom: 12), child: kelaButton(context, prompt: 'Pour le produit « ${widget.listing['title']} » (catégorie ${widget.listing['category']}), propose au plus 5 caractéristiques plausibles à vérifier par le vendeur, une par ligne au format « Nom: valeur », sans inventer de chiffre précis. Réponds uniquement par ces lignes.', target: specs)),
           if (error != null) Padding(padding: const EdgeInsets.only(bottom: 10), child: Text(error!, style: mst(13, w: FontWeight.w600, c: kRed))),
           mButton('Enregistrer', _save, busy: busy),
@@ -650,11 +677,30 @@ class _PromotionsTab extends ConsumerWidget {
           ref.invalidate(marchePromotionsProvider);
         }
 
+        final shop = ref.watch(marcheMyShopProvider).value ?? const <String, dynamic>{};
+        final shopStatus = '${shop['status'] ?? ''}';
+        final active = shopStatus == 'active';
+        // chaque création exige une boutique active : on le dit avant, au lieu d'une erreur après la saisie
+        void need(void Function() go) => active ? go() : gToast(context, shop['id'] == null ? 'Créez d’abord votre boutique (Ma boutique).' : 'Votre boutique doit être active (validée par la modération) : statut actuel « ${shopStatusLabels[shopStatus] ?? shopStatus} ».');
+        Widget toggle(Map<String, dynamic> x, String fn, String what) => Switch(
+              value: x['active'] == true,
+              onChanged: (v) async {
+                final r = await marcheCall(fn, {'p_id': x['id'], 'p_active': v});
+                done(r.error, v ? '$what réactivé(e).' : '$what désactivé(e) : il/elle n’est plus proposé(e) aux acheteurs.');
+              },
+            );
+        final codes = l('codes');
+
         return ListView(padding: const EdgeInsets.fromLTRB(16, 8, 16, 100), children: [
-          mSectionTitle('Codes promo', trailing: TextButton(onPressed: () async => done((await _promoDialog(context)), 'Code créé.'), child: const Text('Nouveau'))),
-          if (l('codes').isEmpty) Text('Aucun code. Un code peut être limité en nombre d’utilisations et en durée.', style: mst(13, c: kGrey)),
-          for (final c in l('codes')) Padding(padding: const EdgeInsets.symmetric(vertical: 4), child: Text('${c['code']} · ${c['kind'] == 'percent' ? '−${c['value']} %' : '−${mFcfa(c['value'])}'} · utilisé ${mInt(c['used_count'])}${c['max_uses'] != null ? '/${c['max_uses']}' : ''} fois${c['active'] == true ? '' : ' · inactif'}', style: mst(13))),
-          mSectionTitle('Ventes flash', trailing: TextButton(onPressed: () async => done(await _flashDialog(context, listings), 'Vente flash programmée : le stock est réservé.'), child: const Text('Nouvelle'))),
+          if (!active) Container(margin: const EdgeInsets.only(bottom: 8), padding: const EdgeInsets.all(12), decoration: BoxDecoration(color: const Color(0xFFFFF4E0), borderRadius: BorderRadius.circular(14)), child: Text(shop['id'] == null ? 'Les promotions sont réservées aux boutiques validées. Créez votre boutique (menu « Ma boutique »), puis soumettez-la à la modération.' : 'Les promotions seront disponibles quand votre boutique sera active (statut actuel : ${shopStatusLabels[shopStatus] ?? shopStatus}).', style: mst(12.5, c: kInk).copyWith(height: 1.4))),
+          mSectionTitle('Codes promo', trailing: TextButton(onPressed: () => need(() async => done((await _promoDialog(context, codes)), 'Code enregistré.')), child: const Text('Nouveau'))),
+          if (codes.isEmpty) Text('Aucun code. Un code peut être limité en nombre d’utilisations et en durée.', style: mst(13, c: kGrey)),
+          for (final c in codes)
+            Row(children: [
+              Expanded(child: Text('${c['code']} · ${c['kind'] == 'percent' ? '−${c['value']} %' : '−${mFcfa(c['value'])}'} · utilisé ${mInt(c['used_count'])}${c['max_uses'] != null ? '/${c['max_uses']}' : ''} fois${c['active'] == true ? '' : ' · désactivé'}', style: mst(13))),
+              Semantics(label: 'Code ${c['code']} actif', child: toggle(c, 'promo_toggle', 'Code')),
+            ]),
+          mSectionTitle('Ventes flash', trailing: TextButton(onPressed: () => need(() async => done(await _flashDialog(context, listings), 'Vente flash programmée : le stock est réservé.')), child: const Text('Nouvelle'))),
           if (l('flash').isEmpty) Text('Aucune vente flash. Le stock choisi est réservé pour la durée de la vente.', style: mst(13, c: kGrey)),
           for (final f in l('flash'))
             Padding(
@@ -664,17 +710,25 @@ class _PromotionsTab extends ConsumerWidget {
                 if (f['cancelled'] != true) TextButton(onPressed: () async { final r = await marcheCall('flash_cancel', {'p_id': f['id']}); done(r.error, 'Vente flash annulée.'); }, child: const Text('Annuler')),
               ]),
             ),
-          mSectionTitle('Campagnes', trailing: TextButton(onPressed: () async => done(await _campaignDialog(context, listings), 'Campagne publiée sur votre vitrine.'), child: const Text('Nouvelle'))),
+          mSectionTitle('Campagnes', trailing: TextButton(onPressed: () => need(() async => done(await _campaignDialog(context, listings), 'Campagne publiée sur votre vitrine.')), child: const Text('Nouvelle'))),
           if (l('campaigns').isEmpty) Text('Aucune campagne.', style: mst(13, c: kGrey)),
-          for (final c in l('campaigns')) Padding(padding: const EdgeInsets.symmetric(vertical: 4), child: Text('${c['title']} · ${(c['listing_ids'] as List?)?.length ?? 0} produit(s)', style: mst(13))),
-          mSectionTitle('Packs', trailing: TextButton(onPressed: () async => done(await _packDialog(context, listings), 'Pack créé.'), child: const Text('Nouveau'))),
+          for (final c in l('campaigns'))
+            Row(children: [
+              Expanded(child: Text('${c['title']} · ${(c['listing_ids'] as List?)?.length ?? 0} produit(s)${c['active'] == true ? '' : ' · désactivée'}', style: mst(13))),
+              Semantics(label: 'Campagne ${c['title']} active', child: toggle(c, 'campaign_toggle', 'Campagne')),
+            ]),
+          mSectionTitle('Packs', trailing: TextButton(onPressed: () => need(() async => done(await _packDialog(context, listings), 'Pack créé.')), child: const Text('Nouveau'))),
           if (l('packs').isEmpty) Text('Aucun pack. Un pack regroupe 2 à 6 produits à prix réduit.', style: mst(13, c: kGrey)),
-          for (final k in l('packs')) Padding(padding: const EdgeInsets.symmetric(vertical: 4), child: Text('${k['title']} · ${mFcfa(k['price'])}', style: mst(13))),
+          for (final k in l('packs'))
+            Row(children: [
+              Expanded(child: Text('${k['title']} · ${mFcfa(k['price'])}${k['active'] == true ? '' : ' · désactivé'}', style: mst(13))),
+              Semantics(label: 'Pack ${k['title']} actif', child: toggle(k, 'pack_toggle', 'Pack')),
+            ]),
         ]);
       });
 }
 
-Future<String?> _promoDialog(BuildContext context) async {
+Future<String?> _promoDialog(BuildContext context, List<Map<String, dynamic>> existing) async {
   final code = TextEditingController(), value = TextEditingController(), min = TextEditingController(), uses = TextEditingController();
   var percent = true;
   final ok = await showDialog<bool>(
@@ -693,12 +747,15 @@ Future<String?> _promoDialog(BuildContext context) async {
         )),
   );
   if (ok != true) return 'cancel';
-  final r = await marcheCall('promo_save', {'p_code': code.text, 'p_kind': percent ? 'percent' : 'fixed', 'p_value': int.tryParse(value.text) ?? 0, 'p_min': int.tryParse(min.text) ?? 0, 'p_max_uses': int.tryParse(uses.text)});
+  // re-saisir un code existant le modifie sans changer son état (un code désactivé le reste)
+  final norm = code.text.toUpperCase().replaceAll(RegExp(r'[^A-Z0-9]'), '');
+  final known = existing.where((c) => '${c['code']}' == norm).firstOrNull;
+  final r = await marcheCall('promo_save', {'p_code': code.text, 'p_kind': percent ? 'percent' : 'fixed', 'p_value': int.tryParse(value.text) ?? 0, 'p_min': int.tryParse(min.text) ?? 0, 'p_max_uses': int.tryParse(uses.text), if (known != null) 'p_active': known['active'] == true});
   return r.error;
 }
 
 Future<String?> _flashDialog(BuildContext context, List<Map<String, dynamic>> listings) async {
-  final approved = [for (final x in listings) if (x['status'] == 'approved') x];
+  final approved = [for (final x in listings) if (x['status'] == 'approved' && x['category'] != 'Services') x];
   if (approved.isEmpty) return 'Aucun produit approuvé dans votre boutique.';
   var sel = approved.first;
   final price = TextEditingController(), stock = TextEditingController(text: '5');
@@ -744,7 +801,7 @@ Future<String?> _campaignDialog(BuildContext context, List<Map<String, dynamic>>
 }
 
 Future<String?> _packDialog(BuildContext context, List<Map<String, dynamic>> listings) async {
-  final approved = [for (final x in listings) if (x['status'] == 'approved') x];
+  final approved = [for (final x in listings) if (x['status'] == 'approved' && x['category'] != 'Services') x];
   final title = TextEditingController(), desc = TextEditingController(), price = TextEditingController();
   final chosen = <String>{};
   final ok = await showDialog<bool>(
@@ -823,10 +880,17 @@ class ModerationScreen extends ConsumerWidget {
             mSectionTitle('Litiges ouverts (${l('disputes').length})'),
             if (l('disputes').isEmpty) Text('Aucun litige ouvert.', style: mst(13, c: kGrey)),
             for (final r in l('disputes'))
-              Row(children: [
-                Expanded(child: Text('${r['reason']} : ${r['details']}', maxLines: 2, overflow: TextOverflow.ellipsis, style: mst(13))),
-                TextButton(onPressed: () => act('dispute_close', {'p_id': r['id']}, 'Litige clos.'), child: const Text('Clore')),
-              ]),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text('${r['reason']} : ${r['details']}', maxLines: 2, overflow: TextOverflow.ellipsis, style: mst(13)),
+                  Wrap(spacing: 4, children: [
+                    TextButton(onPressed: () => claimThreadDialog(context, '${r['id']}'), child: const Text('Voir le fil')),
+                    TextButton(onPressed: () => act('claim_decide', {'p_id': r['id'], 'p_decision': 'release', 'p_note': ''}, 'Réclamation non retenue : l’argent du vendeur suit son cours.'), child: const Text('Rejeter')),
+                    TextButton(onPressed: () async { final n = await note('Motif du remboursement'); if (n != null) act('claim_decide', {'p_id': r['id'], 'p_decision': 'refund', 'p_note': n}, 'Acheteur remboursé : commande annulée.'); }, child: const Text('Rembourser l’acheteur')),
+                  ]),
+                ]),
+              ),
             mSectionTitle('Catégories'),
             Wrap(spacing: 8, children: [for (final c in l('categories')) Chip(label: Text('${c['label']}${c['active'] == true ? '' : ' (masquée)'}'))]),
             TextButton(

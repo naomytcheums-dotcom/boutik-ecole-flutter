@@ -17,6 +17,7 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/missions_prestataire.dart';
 import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
@@ -178,7 +179,15 @@ class G_194 extends ConsumerWidget {
       if (demoContent) gTap(250, 560, 60, 30, () { gOpen(context, '197'); }),
       if (demoContent) gTap(250, 644, 60, 30, () { gOpen(context, '197'); }),
       for (var i = 0; i < 4; i++)
-        if (!demoContent && ref.watch(missionProvider).step(i).$2 == 'Livré, à valider') gTap(24, 560.0 + 84 * i, 342, 40, () { gOpen(context, '197'); }),
+        if (!demoContent && ref.watch(missionProvider).step(i).$2 == 'Livré, à valider') gTap(24, 560.0 + 84 * i, 342, 40, () {
+          if (ref.read(missionProvider).isProvider) {
+            gToast(context, 'Ce jalon est livré : le client doit le valider. Vous serez prévenu de sa décision.');
+          } else {
+            gOpen(context, '197');
+          }
+        }),
+      if (!demoContent) gP(262, 68, 108, 30, gBox(color: Color(0xFFF2EFF6), radii: [15, 15, 15, 15]), tap: () => missionSwitcherDialog(context, ref)),
+      if (!demoContent) gP(262, 74, 108, 18, gText('Mes missions', 12, Color(0xFF111015), weight: 600, align: TextAlign.center)),
       gTap(24, 910, 342, 84, () { missionDossierDialog(context, ref); }),
       gTap(144, 356, 217, 50, () { gOpen(context, '233'); }), // lien métier 194 -> 233
     ]);

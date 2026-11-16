@@ -248,7 +248,7 @@ class _UpcomingRow extends ConsumerWidget {
       title: Text(l.title, maxLines: 2, overflow: TextOverflow.ellipsis, style: sty(13, w: FontWeight.w600)),
       subtitle: Text('${l.host}${when == null ? '' : ' · ${when.day.toString().padLeft(2, '0')}/${when.month.toString().padLeft(2, '0')} à ${when.hour.toString().padLeft(2, '0')}h${when.minute.toString().padLeft(2, '0')}'}', style: sty(11.5, c: kGrey)),
       trailing: mine ? Text('Ouvrir la régie', style: sty(11.5, w: FontWeight.w700, c: const Color(0xFF5A3FE0))) : null,
-      onTap: mine ? () => openHostConsole(context, l.id) : null,
+      onTap: mine ? () => openHostConsole(context, l.id) : () => openLive(context, l.id),
     );
   }
 }

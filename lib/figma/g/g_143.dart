@@ -6,6 +6,7 @@ import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/finance.dart';
+import '../live/money_lot.dart' show FinanceMoneyActions;
 import '../live/entreprise.dart' show dateCourte;
 import '../live/console.dart';
 import '../live/l06.dart';
@@ -177,6 +178,7 @@ class G_143 extends ConsumerWidget {
       gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
       gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
       if (!demoContent) gP(268, 146, 940, 90, const PayoutKpis(width: 940)),
+      if (!demoContent) gP(268, 244, 940, 40, const FinanceMoneyActions()),
       if (!demoContent) gP(268, 290, 940, 520, ConsoleTable(provider: financePayoutsProvider, columns: [ConsoleColumn(16, 120, (r) => '${r['number']}', bold: true), ConsoleColumn(149.28, 200, (r) => '${r['seller']}'), ConsoleColumn(358.72, 150, (r) => fcfa(((r['amount'] as num?) ?? 0).toInt())), ConsoleColumn(530.08, 140, (r) => '${r['method']}'), ConsoleColumn(682.4, 120, (r) => dateCourte(r['date'])), ConsoleColumn(815.68, 100, (r) => payoutStatus(r['status']))], emptyText: 'Aucun lot de reversement pour le moment.', width: 940, height: 520)),
     ]);
   }

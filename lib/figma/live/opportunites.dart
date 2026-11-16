@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:go_router/go_router.dart' show GoRouter;
 import 'auth.dart';
+import 'access.dart' show roleKey;
 import 'entreprise.dart';
 import 'lots.dart' show compareProposalsDialog;
+import 's8_etudiant.dart';
 
 /// Opportunités (écrans 157 Résumé de mes besoins, 203 Mes compétences, 204 Coup de pouce startup) :
 /// uniquement des données réelles. Les offres recommandées (152) sont dans l8_opportunites.dart, classées par le score de correspondance du serveur.
@@ -24,6 +26,7 @@ class CompanySummary extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     Widget note(String t) => Container(width: width, height: 150, alignment: Alignment.center, padding: const EdgeInsets.symmetric(horizontal: 24), child: Text(t, textAlign: TextAlign.center, style: _st(13, c: _grey)));
     if (ref.watch(authProvider.select((a) => a.current == null))) return note('Connectez-vous pour voir votre résumé.');
+    if (roleKey(ref.watch(authProvider).current) == 'student') return StudentApplicationsSummary(width: width, height: height);
     final props = ref.watch(companyProposalsProvider);
     final missions = ref.watch(companyMissionsProvider);
     if (props == null || missions == null) return note('Chargement…');
@@ -103,9 +106,15 @@ class StartupSupport extends ConsumerWidget {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text(n == null ? 'Projets validés : …' : 'Projets validés : $n', style: _st(16, w: FontWeight.w700)),
       const SizedBox(height: 6),
-      _intro(width, 'Le suivi du financement et des mentors n’est pas encore disponible en ligne.'),
+      _intro(width, 'Demandez un accompagnement (mentor, financement, matériel, compétences) pour l’un de vos projets : le département répond et vous suivez l’état de chaque demande. Aucun financement n’est promis.'),
+      const SizedBox(height: 10),
+      SizedBox(width: width, child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => GoRouter.of(context).push('/accompagnement'),
+        child: Container(height: 46, alignment: Alignment.center, decoration: BoxDecoration(color: _ink, borderRadius: BorderRadius.circular(4)), child: Text('Mon accompagnement', style: _st(14, w: FontWeight.w700, c: Colors.white))),
+      )),
       const SizedBox(height: 14),
-      MobileList(provider: projectsCatalogProvider, title: (r) => '${r['title']}', subtitle: (r) => [if ('${r['department'] ?? ''}'.isNotEmpty) '${r['department']}', '${r['summary'] ?? ''}'].where((e) => e.isNotEmpty).join(' · '), trailing: (r) => projectStatus(r['status']), emptyText: 'Aucun projet pour le moment.', width: width, height: height - 90),
+      MobileList(provider: projectsCatalogProvider, title: (r) => '${r['title']}', subtitle: (r) => [if ('${r['department'] ?? ''}'.isNotEmpty) '${r['department']}', '${r['summary'] ?? ''}'].where((e) => e.isNotEmpty).join(' · '), trailing: (r) => projectStatus(r['status']), emptyText: 'Aucun projet pour le moment.', width: width, height: (height - 180).clamp(120.0, double.infinity)),
     ]);
   }
 }

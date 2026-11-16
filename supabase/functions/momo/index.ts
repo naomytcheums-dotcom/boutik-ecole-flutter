@@ -60,6 +60,11 @@ Deno.serve(async (req) => {
 
     if (b.action === "confirm_transfer") {
       if (b.confirm !== true) return jsonResponse(req, { error: "confirmation_required", message: "Confirmation explicite requise." }, 400);
+      // Un envoi débite le compte marchand de la plateforme : opération de trésorerie réservée à la finance et à l'administration.
+      const { data: me } = await admin.from("profiles").select("role,suspended").eq("id", uid).maybeSingle();
+      if (!me || me.suspended || !["finance", "admin"].includes(String(me.role))) {
+        return jsonResponse(req, { error: "forbidden", message: "Les virements Mobile Money sont réservés à la finance. Aucun débit n'a été fait." }, 403);
+      }
       const { data: tx } = await admin.from("momo_transactions").select("*").eq("reference", String(b.reference ?? "")).eq("user_id", uid).maybeSingle();
       if (!tx) return jsonResponse(req, { error: "not_found", message: "Transaction introuvable." }, 404);
       if (tx.status !== "awaiting_confirmation") return jsonResponse(req, { status: tx.status, reference: tx.reference, message: "Cette transaction a déjà été traitée." });

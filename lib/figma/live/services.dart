@@ -218,6 +218,8 @@ Future<void> orderService(BuildContext context, WidgetRef ref) async {
   final l = currentService(ref);
   if (l == null) return gToast(context, 'Choisissez un service dans la liste.');
   if (l.stock <= 0) return gToast(context, 'Ce service n’est plus disponible pour le moment. Demandez un devis au prestataire.');
+  if ((l.sellerId ?? '').isNotEmpty && l.sellerId == Backend.userId) return gToast(context, 'C’est votre propre service : vous ne pouvez pas le commander.');
+  if (l.price <= 0) return gToast(context, 'Ce service est « Sur devis » : demandez un devis au prestataire pour connaître le montant.');
   if (!await requireLogin(context, ref, 'commander ce service') || !context.mounted) return;
   ref.read(cartProvider.notifier).add(CartLine(l.title, 'Prestation étudiante', l.price, _photo(l)));
   gToast(context, 'Ajouté au panier au tarif affiché');
@@ -235,6 +237,8 @@ bool _quoteAllowed(BuildContext context, WidgetRef ref) {
 Future<void> askQuote(BuildContext context, WidgetRef ref) async {
   if (!Backend.ready) return gAlert(context, 'Hors connexion', 'La demande de devis nécessite la connexion au serveur.');
   if (currentService(ref) == null) return gToast(context, 'Choisissez un service dans la liste.');
+  final mine = currentService(ref)!;
+  if ((mine.sellerId ?? '').isNotEmpty && mine.sellerId == Backend.userId) return gToast(context, 'C’est votre propre service : vous ne pouvez pas demander un devis pour lui.'); 
   if (!await requireLogin(context, ref, 'demander un devis') || !context.mounted) return;
   if (_quoteAllowed(context, ref)) gOpen(context, '95b');
 }
@@ -310,8 +314,17 @@ String quoteStatusLabel(String s) => switch (s) {
       'quoted' => 'Devis reçu',
       'accepted' => 'Devis accepté',
       'declined' => 'Devis refusé',
+      'rejected' => 'Demande déclinée par le prestataire',
+      'expired' => 'Devis expiré',
       _ => 'Demande annulée',
     };
+
+/// Un devis « reçu » dont la date de validité est passée ne s'accepte plus (le serveur le refuse aussi ; la tâche planifiée le clôture).
+bool quoteIsExpired(Map<String, dynamic> r, [DateTime? now]) {
+  if (r['status'] == 'expired') return true;
+  final until = DateTime.tryParse('${r['valid_until'] ?? ''}');
+  return r['status'] == 'quoted' && until != null && until.isBefore(now ?? DateTime.now());
+}
 
 /// Mes devis : demandes envoyées (on y accepte, refuse ou annule) et reçues (on y répond avec un montant et un délai).
 Future<void> quotesDialog(BuildContext context, WidgetRef ref) async {
@@ -360,32 +373,90 @@ class _QuoteTile extends StatelessWidget {
     final s = r['status'] as String;
     final title = (r['listings'] as Map?)?['title'] ?? 'Service';
     final amount = r['quote_amount'] as int?;
+    final expired = quoteIsExpired(r);
+    final until = DateTime.tryParse('${r['valid_until'] ?? ''}')?.toLocal();
+    final who = mine ? '${r['provider_name'] ?? ''}' : '${r['requester_name'] ?? ''}';
     final lines = [
-      '${mine ? 'Demande envoyée' : 'Demande reçue'} · ${quoteStatusLabel(s)}',
+      '${mine ? 'Demande envoyée' : 'Demande reçue'}${who.isEmpty ? '' : (mine ? ' à $who' : ' de $who')} · ${expired && s == 'quoted' ? quoteStatusLabel('expired') : quoteStatusLabel(s)}',
       (r['brief'] as String),
       if (amount != null) 'Devis : ${_fcfa(amount)} en ${r['quote_delay_days']} jour(s)${(r['quote_message'] ?? '').toString().isEmpty ? '' : ' — ${r['quote_message']}'}',
+      if (s == 'quoted' && until != null && !expired) 'Valable jusqu’au ${until.day.toString().padLeft(2, '0')}/${until.month.toString().padLeft(2, '0')}/${until.year}',
+      if (s == 'rejected' && '${r['decline_reason'] ?? ''}'.isNotEmpty) 'Motif : ${r['decline_reason']}',
     ].join('\n');
-    final open = s == 'requested' || s == 'quoted';
+    final open = (s == 'requested' || s == 'quoted') && !(expired && s == 'quoted');
     final cancelledOrder = order != null && (order!['cancelled'] == true || order!['cancelled_at'] != null);
     final hasOrder = r['order_number'] != null;
     final orderState = cancelledOrder ? 'annulée' : (order?['paid'] == true ? 'payée' : (order == null ? 'créée' : 'en attente de paiement'));
+    final serverState = switch ('${r['order_state'] ?? ''}') { 'cancelled' => 'annulée', 'paid' => 'payée', 'pending' => 'en attente de paiement', _ => orderState };
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text('$title', style: _st.copyWith(fontWeight: FontWeight.w700)),
         Text(lines, style: _st.copyWith(fontSize: 12, color: const Color(0xFF57545F))),
         Wrap(spacing: 6, children: [
-          if (!mine && open) TextButton(onPressed: () { close(); _answer(parent, r['id'] as String, amount); }, child: Text(s == 'quoted' ? 'Modifier mon devis' : 'Répondre avec un devis')),
-          if (mine && s == 'quoted') TextButton(onPressed: () { close(); _decide(parent, r['id'] as String, true, amount: amount, days: r['quote_delay_days'] as int?); }, child: const Text('Accepter')),
+          if (!mine && (s == 'requested' || s == 'quoted')) TextButton(onPressed: () { close(); _answer(parent, r['id'] as String, amount); }, child: Text(s == 'quoted' ? 'Modifier mon devis' : 'Répondre avec un devis')),
+          if (!mine && (s == 'requested' || s == 'quoted')) TextButton(onPressed: () { close(); _declineQuote(parent, r['id'] as String); }, child: const Text('Décliner')),
+          if (s != 'cancelled') TextButton(onPressed: () { close(); _contactQuote(parent, r['id'] as String, mine ? 'au prestataire' : 'au demandeur'); }, child: Text(mine ? 'Écrire au prestataire' : 'Écrire au demandeur')),
+          if (mine && s == 'quoted' && !expired) TextButton(onPressed: () { close(); _decide(parent, r['id'] as String, true, amount: amount, days: r['quote_delay_days'] as int?); }, child: const Text('Accepter')),
           if (mine && s == 'quoted') TextButton(onPressed: () { close(); _decide(parent, r['id'] as String, false); }, child: const Text('Refuser')),
           if (mine && open) TextButton(onPressed: () { close(); _cancel(parent, r['id'] as String); }, child: const Text('Annuler la demande')),
           if (mine && s == 'accepted' && (!hasOrder || cancelledOrder)) TextButton(onPressed: () { close(); _checkout(parent, r['id'] as String); }, child: Text(cancelledOrder ? 'Commander de nouveau au prix du devis' : 'Commander au prix du devis')),
-          if (mine && s == 'accepted' && hasOrder) Text('Commande ${r['order_number']} · $orderState', style: _st.copyWith(fontSize: 12, fontWeight: FontWeight.w700, color: cancelledOrder ? const Color(0xFFE5484D) : const Color(0xFF0F7A52))),
+          if (s == 'accepted' && hasOrder) Text('Commande ${r['order_number']} · $serverState', style: _st.copyWith(fontSize: 12, fontWeight: FontWeight.w700, color: serverState == 'annulée' ? const Color(0xFFE5484D) : const Color(0xFF0F7A52))),
         ]),
         const Divider(height: 14),
       ]),
     );
   }
+}
+
+Future<void> _declineQuote(BuildContext context, String id) async {
+  final ctrl = TextEditingController();
+  final ok = await gDialog<bool>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      backgroundColor: Colors.white,
+      title: Text('Décliner cette demande ?', style: _st.copyWith(fontSize: 16, fontWeight: FontWeight.w700)),
+      content: Column(mainAxisSize: MainAxisSize.min, children: [
+        Text('Le demandeur est prévenu et pourra faire une nouvelle demande.', style: _st),
+        TextField(controller: ctrl, maxLength: 500, maxLines: 2, style: _st, decoration: const InputDecoration(labelText: 'Motif (facultatif)')),
+      ]),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Retour')),
+        FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Décliner')),
+      ],
+    ),
+  );
+  final reason = ctrl.text.trim();
+  ctrl.dispose();
+  if (ok != true || !context.mounted) return;
+  final r = await Backend.rpc('decline_quote', {'p_id': id, 'p_reason': reason.isEmpty ? null : reason});
+  if (!context.mounted) return;
+  if (r.error != null) return gAlert(context, 'Action impossible', r.error!);
+  gToast(context, 'Demande déclinée : le demandeur est prévenu.');
+}
+
+/// Message lié au devis : la réponse arrive dans la messagerie, dans la conversation de l'annonce.
+Future<void> _contactQuote(BuildContext context, String id, String to) async {
+  final ctrl = TextEditingController();
+  final ok = await gDialog<bool>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      backgroundColor: Colors.white,
+      title: Text('Écrire $to', style: _st.copyWith(fontSize: 16, fontWeight: FontWeight.w700)),
+      content: TextField(controller: ctrl, maxLength: 1000, maxLines: 4, style: _st, decoration: const InputDecoration(labelText: 'Votre message')),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuler')),
+        FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Envoyer')),
+      ],
+    ),
+  );
+  final body = ctrl.text.trim();
+  ctrl.dispose();
+  if (ok != true || body.isEmpty || !context.mounted) return;
+  final r = await Backend.rpc('quote_contact', {'p_quote': id, 'p_body': body});
+  if (!context.mounted) return;
+  if (r.error != null) return gAlert(context, 'Message non envoyé', r.error!);
+  gToast(context, 'Message envoyé : la réponse arrive dans vos messages.');
 }
 
 Future<void> _decide(BuildContext context, String id, bool accept, {int? amount, int? days}) async {
@@ -494,8 +565,9 @@ class QuoteServicePicker extends ConsumerWidget {
 /// Bandeau « Un service sur mesure ? » : choisit un service de la liste puis ouvre la demande de devis ; sans service publié, le dit.
 Future<void> askGeneralQuoteFromList(BuildContext context, WidgetRef ref) async {
   if (!Backend.ready) return gAlert(context, 'Hors connexion', 'La demande de devis nécessite la connexion au serveur.');
-  final l = ref.read(servicesProvider);
-  if (l.isEmpty) return gAlert(context, 'Aucun service publié', 'Aucun prestataire n’a encore publié de service. Revenez bientôt ou contactez directement un talent depuis son profil.');
+  final me = Backend.currentUserId;
+  final l = [for (final x in ref.read(servicesProvider)) if (me == null || x.sellerId != me) x];
+  if (l.isEmpty) return gAlert(context, 'Aucun service publié', 'Aucun autre prestataire n’a encore publié de service. Revenez bientôt ou contactez directement un talent depuis son profil.');
   final v = await tpPick(context, 'Pour quel service ?', [for (final x in l) x.title], allowCustom: false);
   if (v == null || !context.mounted) return;
   ref.read(selectedServiceProvider.notifier).set(v);

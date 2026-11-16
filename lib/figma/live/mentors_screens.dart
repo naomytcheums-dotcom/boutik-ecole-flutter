@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../gen.dart' show gToast;
 import '../i18n.dart' show Text;
+import '../nav.dart' show gOpen;
 import 'auth.dart';
 import 'backend.dart';
 import 'l8_actions.dart';
@@ -43,7 +44,7 @@ final mentorDetailProvider = FutureProvider.autoDispose.family<Map<String, dynam
 });
 final mentorRequestsProvider = FutureProvider.autoDispose.family<List<Map<String, dynamic>>, String>((ref, role) => _list('my_mentor_requests', {'p_role': role}));
 
-Widget _box(Widget child) => Container(margin: const EdgeInsets.fromLTRB(16, 0, 16, 10), padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(4), border: Border.all(color: kLine)), child: child);
+Widget _box(Widget child, {EdgeInsets margin = const EdgeInsets.fromLTRB(16, 0, 16, 10)}) => Container(margin: margin, padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(4), border: Border.all(color: kLine)), child: child);
 
 Widget _pill(String label, Color c) => Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3), decoration: BoxDecoration(color: c.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(4)), child: Text(label, style: mst(10.5, w: FontWeight.w700, c: c)));
 
@@ -75,7 +76,7 @@ class MentorCard extends StatelessWidget {
             Wrap(spacing: 6, runSpacing: 4, children: [
               _pill(availabilityLabels[avail] ?? avail, availabilityColor(avail)),
               _pill(stars(m['rating'] as num?) + (mInt(m['reviews']) > 0 ? ' (${m['reviews']})' : ''), const Color(0xFF8F5400)),
-              if (m['score'] != null) _pill('Compatibilité : ${m['score']}', kGreen),
+              if (m['score'] != null) _pill('Pertinence : ${m['score']} pts', kGreen),
             ]),
           ]),
         ),
@@ -422,6 +423,7 @@ class _MentorProfileState extends ConsumerState<MentorProfileScreen> {
   }
 
   Future<void> _save() async {
+    final verified = '${ref.read(myMentorProvider).value?['status'] ?? ''}' == 'verified';
     setState(() => _busy = true);
     final r = await marcheCall('mentor_save', {
       'p_works_at': _works.text,
@@ -434,7 +436,7 @@ class _MentorProfileState extends ConsumerState<MentorProfileScreen> {
     });
     if (!mounted) return;
     setState(() => _busy = false);
-    gToast(context, r.error != null ? Backend.userMessage('${r.error}') : 'Profil mentor enregistré.');
+    gToast(context, r.error != null ? Backend.userMessage('${r.error}') : (verified ? 'Profil mentor enregistré.' : 'Profil mentor enregistré : il sera visible dans l’annuaire une fois vérifié par l’équipe.'));
     if (r.error == null) {
       ref.invalidate(myMentorProvider);
       ref.invalidate(mentorsProvider);
@@ -460,9 +462,22 @@ class _MentorProfileState extends ConsumerState<MentorProfileScreen> {
     final mine = ref.watch(myMentorProvider);
     _fill(mine.value);
     final isMentor = mine.value != null;
+    final status = '${mine.value?['status'] ?? ''}';
     return MarchePage(
       title: isMentor ? 'Mon profil mentor' : 'Devenir mentor',
       child: ListView(padding: const EdgeInsets.fromLTRB(16, 4, 16, 90), children: [
+        if (isMentor && status == 'pending')
+          _box(Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('Profil en attente de vérification', style: mst(13.5, w: FontWeight.w800, c: const Color(0xFFB45309))),
+            const SizedBox(height: 4),
+            Text('Il n’est pas encore visible dans l’annuaire. Il le sera dès qu’une de vos pièces (carte d’étudiant, certificat de scolarité, diplôme ou certificat) aura été vérifiée par l’équipe, ou que l’équipe aura validé votre profil.', style: mst(12.5, c: kGrey).copyWith(height: 1.4)),
+            const SizedBox(height: 8),
+            mButton('Déposer une pièce dans mon dossier', () => gOpen(context, '73'), dark: false),
+          ]), margin: const EdgeInsets.only(bottom: 12)),
+        if (isMentor && status == 'rejected')
+          _box(Text('Profil non validé${'${mine.value?['review_note'] ?? ''}'.isEmpty ? '' : ' : ${mine.value?['review_note']}'}. Modifiez-le puis enregistrez-le pour demander un nouvel examen.', style: mst(12.5, w: FontWeight.w700, c: kRed).copyWith(height: 1.4)), margin: const EdgeInsets.only(bottom: 12)),
+        if (isMentor && status == 'verified')
+          _box(Text('Profil vérifié : il est visible dans l’annuaire des mentors.', style: mst(12.5, w: FontWeight.w700, c: kGreen)), margin: const EdgeInsets.only(bottom: 12)),
         Text('Les étudiants pourront vous demander de l’aide. Indiquez où vous travaillez et sur quoi vous pouvez aider.', style: mst(13, c: kGrey).copyWith(height: 1.5)),
         const SizedBox(height: 12),
         TextField(controller: _works, decoration: _deco('Où je travaille maintenant', hint: 'Ex. Orange Cameroun')),
@@ -476,7 +491,7 @@ class _MentorProfileState extends ConsumerState<MentorProfileScreen> {
         SwitchListTile(contentPadding: EdgeInsets.zero, title: Text('Disponible le soir', style: mst(13.5)), value: _evening, onChanged: (v) => setState(() => _evening = v)),
         SwitchListTile(contentPadding: EdgeInsets.zero, title: Text('Visible dans l’annuaire', style: mst(13.5)), value: _active, onChanged: (v) => setState(() => _active = v)),
         mButton(_busy ? 'Enregistrement…' : (isMentor ? 'Enregistrer' : 'Devenir mentor'), _busy ? null : _save, width: double.infinity),
-        if (isMentor) ...[
+        if (isMentor && status == 'verified') ...[
           mSectionTitle('Raconter mon parcours'),
           Text('Une histoire de réussite : de l’IUT à votre emploi. Elle sera visible dans le réseau des mentors.', style: mst(12.5, c: kGrey)),
           const SizedBox(height: 10),

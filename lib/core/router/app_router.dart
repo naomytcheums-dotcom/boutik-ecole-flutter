@@ -16,6 +16,7 @@ import '../../figma/live/payment_methods_page.dart' show PaymentMethodsPage;
 import '../../figma/live/personal_info.dart';
 import '../../figma/live/shared_cv.dart';
 import '../../figma/live/notifs.dart' show NotificationLauncher;
+import '../../figma/live/moderation_reseau.dart' show SocialModerationScreen;
 import '../../figma/live/support_screens.dart';
 import '../../figma/live/support_staff.dart';
 import '../theme/app_colors.dart';
@@ -47,6 +48,8 @@ import '../../figma/live/marche/marche_livraison.dart';
 import '../../figma/live/marche/marche_promotions.dart';
 import '../../figma/live/marche/marche_screens.dart';
 import '../../figma/live/marche/marche_vendeur.dart';
+import '../../figma/live/evenements_gestion.dart';
+import '../../figma/live/accompagnement.dart';
 
 final Map<String, ScreenEntry> screensById = {for (final s in allScreens) s.id: s};
 
@@ -113,6 +116,9 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/mentors/demandes', builder: (_, _) => const LoginGuard(child: MentorRequestsScreen())),
     GoRoute(path: '/mentors/:id', builder: (_, state) => MentorDetailScreen(id: state.pathParameters['id'] ?? '')),
     GoRoute(path: '/communautes', builder: (_, _) => const CommunityExploreScreen()),
+    GoRoute(path: '/accompagnement', builder: (_, _) => const RouteGuard(name: '/accompagnement', roles: {'student', 'dept', 'admin'}, child: SupportRequestsScreen())),
+    GoRoute(path: '/evenements/mes', builder: (_, _) => const LoginGuard(child: MyEventsScreen())),
+    GoRoute(path: '/evenements/gerer', builder: (_, _) => const RouteGuard(name: '/evenements/gerer', roles: {'dept', 'direction', 'finance', 'admin'}, child: EventsManageScreen())),
     GoRoute(path: '/marche/appels', builder: (_, _) => const AppelsScreen()),
     GoRoute(path: '/marche/projets', builder: (_, _) => const ProjetsIutScreen()),
     GoRoute(path: '/marche/boutique/:slug', builder: (_, state) => ShopPageScreen(slug: state.pathParameters['slug'] ?? '')),
@@ -124,6 +130,7 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/marche/ma-boutique', builder: (_, _) => const LoginGuard(child: RouteGuard(name: '/marche/ma-boutique', roles: {'student', 'dept', 'admin'}, child: ShopEditorScreen()))),
     GoRoute(path: '/marche/vendeur', builder: (_, _) => const LoginGuard(child: RouteGuard(name: '/marche/vendeur', roles: {'student', 'dept', 'admin'}, child: SellerHubScreen()))),
     GoRoute(path: '/marche/moderation', builder: (_, _) => const RouteGuard(name: '/marche/moderation', roles: {'admin', 'dept', 'support'}, child: ModerationScreen())),
+    GoRoute(path: '/moderation/reseau', builder: (_, _) => const RouteGuard(name: '/moderation/reseau', roles: {'admin', 'dept', 'support'}, child: SocialModerationScreen())),
     GoRoute(path: '/paiement', builder: (_, _) => const PaymentChatScreen()),
     GoRoute(path: '/paiements', builder: (_, _) => const MyPaymentsScreen()),
     GoRoute(path: '/aide/contact', builder: (_, _) => const LoginGuard(child: SupportContactScreen())),

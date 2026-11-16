@@ -153,15 +153,16 @@ class Prefs extends Notifier<Map<String, bool>> {
     final channels = srv.error == null ? {for (final r in srv.rows) '${r['channel']}': r['enabled'] == true} : const <String, bool>{};
     final serverTypes = types != null && types.error == null && types.data is Map ? types.data as Map : const {};
     bool typeValue(String k) {
-      final s = serverTypes[k == 'offres' ? 'offers' : 'results'];
+      final s = serverTypes[const {'offres': 'offers', 'resultats': 'results', 'dossier': 'documents'}[k]];
       return s is bool ? s : (d[k] is bool ? d[k] as bool : defaults[k]!);
     }
 
     final next = {
       for (final k in defaults.keys)
+        // Le serveur envoie l'application (push) par défaut : sans ligne enregistrée, ce canal s'affiche donc activé.
         k: _channels.containsKey(k)
-            ? (srv.error == null ? (channels[_channels[k]] ?? false) : defaults[k]!)
-            : (k == 'offres' || k == 'resultats') && kind == 'alert_prefs' ? typeValue(k) : (d[k] is bool ? d[k] as bool : defaults[k]!),
+            ? (srv.error == null ? (channels[_channels[k]] ?? (k == 'app')) : defaults[k]!)
+            : (k == 'offres' || k == 'resultats' || k == 'dossier') && kind == 'alert_prefs' ? typeValue(k) : (d[k] is bool ? d[k] as bool : defaults[k]!),
     };
     if (next.entries.any((e) => state[e.key] != e.value)) state = next;
   }
@@ -191,9 +192,17 @@ Future<void> savePrefs(BuildContext context, WidgetRef ref, NotifierProvider<Pre
   }
   if (kind == 'alert_prefs' && Backend.ready) {
     final v = ref.read(p);
-    final r = await Backend.rpc('alert_prefs_set', {'p_offers': v['offres'] ?? true, 'p_results': v['resultats'] ?? true});
+    final r = await Backend.rpc('alert_prefs_set', {'p_offers': v['offres'] ?? true, 'p_results': v['resultats'] ?? true, 'p_documents': v['dossier'] ?? true});
     if (!context.mounted) return;
     if (r.error != null) return gAlert(context, 'Préférences non enregistrées', Backend.userMessage(r.error!));
+    if (v['offres'] ?? true) {
+      final g = await Backend.rpc('alert_prefs_get', const {});
+      if (!context.mounted) return;
+      if (g.error == null && g.data is Map && (g.data as Map)['needs_department'] == true) {
+        await gAlert(context, 'Filière manquante', 'Les alertes d’offres reposent sur la filière de votre profil. Renseignez votre filière pour les recevoir.');
+        if (!context.mounted) return;
+      }
+    }
   }
   final ok = await engageAction(context, ref, kind, 'me', data: {...ref.read(p), ...extra}, success: 'Préférences enregistrées.', need: 'enregistrer vos préférences');
   if (ok) {
@@ -320,7 +329,7 @@ Future<void> acceptTerms(BuildContext context, WidgetRef ref, {bool confirmed = 
     return;
   }
   if (Backend.ready && Backend.currentUserId != null) {
-    final err = await Backend.acceptTerms(kTermsVersion);
+    final err = await Backend.acceptTerms(kTermsVersion) ?? await Backend.acceptTerms(kSalesTermsVersion);
     if (err != null) {
       if (context.mounted) await gAlert(context, 'Acceptation non enregistrée', err);
       return;
@@ -387,7 +396,7 @@ Future<void> requestAccountDeletion(BuildContext context, WidgetRef ref) async {
     builder: (ctx) => AlertDialog(
       backgroundColor: Colors.white,
       title: Text('Supprimer mon compte ?', style: _st.copyWith(fontSize: 16, fontWeight: FontWeight.w700)),
-      content: Text('Votre demande est transmise à l’administration. Votre compte et vos données personnelles seront supprimés après un délai de rétractation de 30 jours, pendant lequel vous pouvez annuler la demande depuis cet écran. Les factures et certificats émis sont conservés. Vos commandes en cours doivent être terminées au préalable.', style: _st),
+      content: Text('Votre demande est transmise à l’administration. Après un délai de rétractation de 30 jours (vous pouvez annuler depuis cet écran), votre compte est désactivé et vos données personnelles sont anonymisées : nom, e-mail, téléphone, adresses, pièces et profil sont effacés. Les commandes, paiements, factures et certificats émis sont conservés (obligation légale), sans votre identité. La demande est refusée tant que vous avez des commandes en cours : terminez-les d’abord.', style: _st),
       actions: [
         TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuler')),
         FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Envoyer la demande')),

@@ -33,6 +33,32 @@ void main() {
     expect(a.certified, isFalse);
   });
 
+  testWidgets('la ville peut être effacée (S2-3)', (t) async {
+    const compte = Account(name: 'Nina Test', phone: '690000001', email: 'nina@example.com', password: '', city: 'Douala');
+    late ProviderContainer container;
+    await t.pumpWidget(ProviderScope(
+      overrides: [initialAccountProvider.overrideWithValue(compte)],
+      child: MaterialApp(
+        home: Consumer(builder: (context, ref, _) {
+          container = ProviderScope.containerOf(context);
+          return Scaffold(body: Center(child: TextButton(onPressed: () => editProfileDialog(context, ref), child: const Text('modifier'))));
+        }),
+      ),
+    ));
+    await t.tap(find.text('modifier'));
+    await t.pumpAndSettle();
+    await t.enterText(find.byType(TextField).at(2), '');
+    await t.tap(find.text('Enregistrer'));
+    await t.pumpAndSettle();
+    expect(container.read(authProvider).current!.city, '');
+  });
+
+  test('fusion des compétences : le texte libre est conservé, celles du Passport sont ajoutées sans doublon (S2-1)', () {
+    expect(mergeSkillLists(['Python', 'React'], ['react', 'Flutter', 'Python']), ['Python', 'React', 'Flutter']);
+    expect(mergeSkillLists([], ['Logo']), ['Logo']);
+    expect(mergeSkillLists(['', ' '], []), isEmpty);
+  });
+
   testWidgets('annuler ne change rien', (t) async {
     const compte = Account(name: 'Nina Test', phone: '690000001', email: 'nina@example.com', password: '', bio: 'avant');
     late ProviderContainer container;

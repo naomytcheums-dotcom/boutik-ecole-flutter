@@ -64,6 +64,62 @@ final myMateInvitesProvider = FutureProvider.autoDispose.family<List<Map<String,
   return [for (final x in (r.data as List? ?? const [])) Map<String, dynamic>.from(x as Map)];
 });
 
+/// Mon réglage « Apparaître dans l'annuaire » (consentement explicite, désactivé par défaut) : visible, compétences renseignées, compte étudiant.
+final mateVisibilityProvider = FutureProvider.autoDispose<Map<String, dynamic>>((ref) async {
+  ref.watch(authProvider.select((a) => a.current?.serverId));
+  final r = await marcheCall('mates_visibility_get', const {});
+  if (r.error != null) throw MarcheException(r.error);
+  return r.data is Map ? Map<String, dynamic>.from(r.data as Map) : const <String, dynamic>{};
+});
+
+/// Carte de consentement de l'écran 163 : l'étudiant choisit d'être listé ou non ; sans compétences renseignées il ne peut pas l'être.
+class MateVisibilityCard extends ConsumerWidget {
+  const MateVisibilityCard({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final v = ref.watch(mateVisibilityProvider).asData?.value;
+    if (v == null || v['eligible'] != true) return const SizedBox.shrink();
+    final on = v['visible'] == true;
+    final hasSkills = v['has_skills'] == true;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(14, 10, 8, 10),
+        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18)),
+        child: Row(children: [
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text('Apparaître dans l’annuaire', style: mst(13, w: FontWeight.w700)),
+              const SizedBox(height: 2),
+              Text(
+                !hasSkills && !on
+                    ? 'Renseignez vos compétences dans votre profil pour pouvoir apparaître ici.'
+                    : on
+                        ? 'Les autres étudiants voient votre prénom, filière, compétences et photo. Désactivez à tout moment.'
+                        : 'Désactivé : vous restez invisible. Activez pour que d’autres étudiants vous trouvent (prénom, filière, compétences, photo).',
+                style: mst(11.5, c: kGrey),
+              ),
+            ]),
+          ),
+          Switch(
+            value: on,
+            onChanged: !hasSkills && !on
+                ? null
+                : (next) async {
+                    final ok = await _call(context, 'mates_visibility_set', {'p_visible': next}, ok: next ? 'Vous apparaissez dans l’annuaire des coéquipiers.' : 'Vous n’apparaissez plus dans l’annuaire.');
+                    if (ok) {
+                      ref.invalidate(mateVisibilityProvider);
+                      ref.invalidate(matesSearchProvider);
+                    }
+                  },
+          ),
+        ]),
+      ),
+    );
+  }
+}
+
 /// Texte du bouton d'invitation selon l'état renvoyé par le serveur (aucune invitation, en attente, acceptée, déclinée).
 String mateInviteLabel(Object? status) => switch ('$status') {
       'pending' => 'En attente',
@@ -390,6 +446,7 @@ class _MatesState extends ConsumerState<TeammatesScreen> {
                 if (admin) _chip('Gérer les catégories', false, _manage, icon: Icons.edit_outlined),
               ]),
             ),
+            const MateVisibilityCard(),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 10, 16, 4),
               child: Align(alignment: Alignment.centerLeft, child: Text(count == null ? ' ' : mateCountLabel(count), style: mst(15, w: FontWeight.w800))),
@@ -399,7 +456,7 @@ class _MatesState extends ConsumerState<TeammatesScreen> {
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (e, _) => _error(e),
                 data: (rows) => ListView(padding: const EdgeInsets.fromLTRB(16, 0, 16, 120), children: [
-                  if (rows.isEmpty) mNote('Aucun étudiant ne correspond. Essayez une autre compétence, filière ou catégorie.'),
+                  if (rows.isEmpty) mNote('Aucun étudiant ne correspond. Seuls les étudiants qui ont choisi d’apparaître dans l’annuaire (avec leurs compétences renseignées) sont listés. Essayez une autre compétence, filière ou catégorie.'),
                   for (var i = 0; i < rows.length; i++) ...[
                     if (i > 0) const Divider(height: 1, indent: 62, color: Color(0xFFF2EFF6)),
                     _row(rows[i]),

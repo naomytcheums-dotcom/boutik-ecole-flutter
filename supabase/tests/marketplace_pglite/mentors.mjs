@@ -19,6 +19,15 @@ export async function run(db) {
   await q(`select mentor_save('Eneo', 'Promo 2019', array['Electricite','Chantier'], 'Ingenieure', 'available', false)`);
   await as(D);
   await q(`select mentor_save('Camlight', 'Promo 2020', array['Flutter','Design'], 'Occupe en ce moment', 'busy', false)`);
+  // --- vérification minimale (lot S8) : un profil mentor n'est listé qu'une fois validé par l'équipe
+  await as(B);
+  check('mentor : non listé avant validation', (await q(`select mentors_list() r`))[0].r.length === 0);
+  await db.exec('reset role');
+  await as(null, null);
+  const E = '00000000-0000-0000-0000-00000000000e';
+  await db.exec(`insert into auth.users(id,email) values ('${E}','equipe-s8@t.cm'); insert into profiles(id,name,role,email) values ('${E}','Equipe','admin','equipe-s8@t.cm')`);
+  await as(E);
+  for (const id of [A, C, D]) await q(`select mentor_validate('${id}', true)`);
   // --- annuaire et match
   await as(B);
   let list = (await q(`select mentors_list() r`))[0].r;

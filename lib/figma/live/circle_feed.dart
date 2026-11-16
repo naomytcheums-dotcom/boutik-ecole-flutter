@@ -93,7 +93,7 @@ class PendingPostsBanner extends ConsumerWidget {
 }
 
 /// Publications visibles selon l'onglet. « Abonnements » ne garde que les auteurs réellement suivis
-/// (`engagements.follow`) ; `following` vaut null tant que la liste n'est pas lue.
+/// (`engagements.follow`) ou dont on suit la boutique ; `following` vaut null tant que la liste n'est pas lue.
 List<Reel> filterCircle(List<Reel> all, int tab, {Set<String>? following}) => switch (tab) {
       1 => [for (final r in all) if (following?.contains(r.authorId) ?? false) r],
       2 => [for (final r in all) if (r.video) r],
@@ -113,7 +113,9 @@ class CircleFeed extends ConsumerWidget {
     final all = ref.watch(reelsProvider);
     final failed = ref.watch(reelsLoadErrorProvider);
     final tab = ref.watch(circleTabProvider);
-    final following = ref.watch(followingIdsProvider);
+    final followingProfiles = ref.watch(followingIdsProvider);
+    final shopOwners = ref.watch(followedShopOwnersProvider).asData?.value ?? const <String>{};
+    final following = followingProfiles == null ? null : {...followingProfiles, ...shopOwners};
     Widget note(String t, {String? action, VoidCallback? onTap}) => Column(mainAxisSize: MainAxisSize.min, children: [
           SizedBox(width: width, child: const PendingPostsBanner()),
           Container(
@@ -243,7 +245,14 @@ Future<void> _addCover(BuildContext context, WidgetRef ref, int slot) async {
   final res = await Backend.rpc('profile_cover_set', {'p_slot': slot, 'p_path': up.path, 'p_kind': up.kind});
   if (!context.mounted) return;
   if (res.error != null) return gAlert(context, 'Ajout impossible', Backend.userMessage(res.error!));
+  await purgeReplacedPostMedia(res.data);
   ref.invalidate(profileCoversProvider);
+}
+
+/// Supprime du stockage public l'ancien fichier d'une couverture remplacée ou retirée (chemin renvoyé par le serveur, vide s'il est encore utilisé ailleurs).
+Future<void> purgeReplacedPostMedia(Object? path) async {
+  final p = '${path ?? ''}';
+  if (p.length > 4 && !p.startsWith('{') && !p.startsWith('[')) await Backend.removeFile('post-media', p);
 }
 
 Future<void> _coverMenu(BuildContext context, WidgetRef ref, int slot) async {
@@ -262,6 +271,7 @@ Future<void> _coverMenu(BuildContext context, WidgetRef ref, int slot) async {
   final res = await Backend.rpc('profile_cover_clear', {'p_slot': slot});
   if (!context.mounted) return;
   if (res.error != null) return gAlert(context, 'Suppression impossible', Backend.userMessage(res.error!));
+  await purgeReplacedPostMedia(res.data);
   ref.invalidate(profileCoversProvider);
 }
 

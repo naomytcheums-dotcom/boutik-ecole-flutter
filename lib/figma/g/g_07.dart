@@ -54,7 +54,7 @@ class G_07 extends ConsumerWidget {
       
       
       gP(102.85, 191.477, 136, 19, gText('Retrait sur campus', 15.186, Color(0xFF111015), weight: 600)),
-      gP(102.85, 215.459, 158, 36, gText('Récupérez votre commande\nà l’IUT de Douala.', 11.735, Color(0xFF57545F), lh: 17.947)),
+      gP(102.85, 215.459, 158, 36, gText('Récupérez votre commande\n${campusPlace()}.', 11.735, Color(0xFF57545F), lh: 17.947)),
       gP(276.796, 182.03, 76.619, 21.654, gBox(color: Color(0xFF111015), radii: [11.044, 11.044, 11.044, 11.044]), show: (!ref.watch(homeDeliveryProvider))),
       gP(285.261, 186.357, 59, 13, gText('Sélectionné', 10.009, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center), show: (!ref.watch(homeDeliveryProvider))),
       gP(24.85, 279.474, 345.823, 104.887, gBox(color: Color(0xFFFFFDF7), border: Color(0xFFF5B730), bw: 2.071, shadows: [BoxShadow(color: Color(0x14122640), offset: Offset(0, 3), blurRadius: 10)], radii: [17.947, 17.947, 17.947, 17.947]), show: ref.watch(homeDeliveryProvider)),

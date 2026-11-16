@@ -33,7 +33,7 @@ do $$ declare b uuid; begin
   b := payout_create('a7ae1021-2bc7-437b-b7af-bd7d6422c5ab', 25000, 'ZZ test', current_date);
   insert into ids values ('lot', b);
   insert into res values (default, 'F7 un lot prévu compte dans les montants dus', (finance_overview()->>'due')::bigint >= 25000, '');
-  perform payout_set_status(b, 'verse');
+  perform payout_set_status(b, 'verse', 'REF-TEST-1');
   insert into res values (default, 'F8 un lot versé compte dans le versé sur 30 jours et débite le journal', (finance_overview()->>'paid_out_30d')::bigint >= 25000 and (finance_journal(300)->>'total_debit')::bigint >= 25000, '');
   insert into res values (default, 'F9 le lot apparaît avec le nom du vendeur', exists (select 1 from jsonb_array_elements(finance_payouts(50)) e where e->>'method' = 'ZZ test' and e->>'status' = 'verse'), '');
   begin perform payout_set_status(b, 'inconnu'); insert into res values (default, 'F10 statut invalide refusé', false, 'accepté'); exception when others then insert into res values (default, 'F10 statut invalide refusé', sqlerrm = 'Statut invalide', sqlerrm); end;

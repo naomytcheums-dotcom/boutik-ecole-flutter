@@ -17,6 +17,7 @@ import '../live/talents.dart';
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
+import '../live/kiosk_mode.dart' show KioskIdleGuard;
 import '../live/docs.dart';
 import '../live/kela.dart';
 import '../live/chat.dart';
@@ -64,11 +65,11 @@ class G_208 extends ConsumerWidget {
       gP(452, 980, 188, 82, gBox(color: Color(0xFFF1EEFB), radii: [41, 41, 41, 41])),
       gP(479, 1003, 134, 28, gText('Commander', 22, Color(0xFF5A3FE0), weight: 600)),
       gP(48, 1112, 624, 124, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x0F403366), offset: Offset(0, 8), blurRadius: 24, spreadRadius: 0)], backBlur: 28, radii: [62, 62, 62, 62])),
-      gP(108, 1142, 36, 36, const SizedBox.expand(), tap: () => gTab(context, '03')),
+      gP(108, 1142, 36, 36, const SizedBox.expand(), tap: () => gTab(context, '206')),
       gP(109.5, 1142.03, 33, 34.47, gImg('assets/figma/v/591e7e13beabb7.svg')),
-      gP(96, 1190, 60, 21, gText('Accueil', 17, Color(0xFF111015), weight: 500), tap: () => gTab(context, '03')),
+      gP(96, 1190, 60, 21, gText('Accueil', 17, Color(0xFF111015), weight: 500), tap: () => gTab(context, '206')),
       gP(212, 1126, 140, 96, gBox(color: Color(0xFF111015), radii: [48, 48, 48, 48])),
-      gP(264, 1142, 36, 36, const SizedBox.expand(), tap: () => gTab(context, '19')),
+      gP(264, 1142, 36, 36, const SizedBox.expand(), tap: () => gTab(context, '207')),
       gP(265.5, 1143.5, 30, 30, gImg('assets/figma/v/0e0e8a6ca98696.svg')),
       gP(286.05, 1164.05, 12.45, 12.45, gImg('assets/figma/v/b24debd4c97b40.svg')),
       gP(247.5, 1190, 69, 21, gText('Explorer', 17, Color(0xFFFFFFFF), weight: 600)),
@@ -82,6 +83,7 @@ class G_208 extends ConsumerWidget {
       gP(575, 1190, 38, 21, gText('Aide', 17, Color(0xFF111015), weight: 500)),
       gTap(80, 980, 360, 82, () { startPhoneTransfer(ref, context); }),
       gTap(452, 980, 188, 82, () { kioskOrder(ref, context); }),
+      gP(0, 0, 1, 1, const KioskIdleGuard(screenLevel: true)),
     ]);
   }
 }

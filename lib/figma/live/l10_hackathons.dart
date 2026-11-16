@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../gen.dart';
 import '../nav.dart';
@@ -11,6 +12,7 @@ import 'contests.dart';
 import 'hackathons.dart';
 import 'l10_ui.dart';
 import 'lots.dart' show myCertificatesDialog;
+import 'store.dart' show normText;
 import 'talents.dart' show askText;
 
 /// Écrans réels des hackathons (161 à 166) : règlement lu sur le serveur, inscription individuelle ou en équipe,
@@ -123,6 +125,151 @@ class _ContestInfoPanelState extends ConsumerState<ContestInfoPanel> {
       : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_p(ev.rules.trim())]);
 }
 
+// ------------------------------------------------------------------ 160 : liste des concours
+
+/// Ordre de l'écran 160 : concours ouverts d'abord (clôture la plus proche en tête), puis jury, résultats et clos (les plus récents d'abord).
+List<Hackathon> sortContestsForList(Iterable<Hackathon> all) {
+  int rank(Hackathon h) => switch (h.status) { 'Ouvert' => 0, 'Jury' => 1, 'Résultats' => 2, 'Clos' => 3, _ => 4 };
+  final l = [...all];
+  l.sort((a, b) {
+    final r = rank(a).compareTo(rank(b));
+    if (r != 0) return r;
+    final x = a.regClose, y = b.regClose;
+    if (x == null || y == null) return x == null && y == null ? a.title.compareTo(b.title) : (x == null ? 1 : -1);
+    return rank(a) == 0 ? x.compareTo(y) : y.compareTo(x);
+  });
+  return l;
+}
+
+/// Filtres de l'écran 160 dérivés des concours réellement publiés : « Tous », chaque ville (sans tenir compte des accents ni de la casse), « Gratuits ».
+List<(String, String)> contestFilters(Iterable<Hackathon> all) {
+  final seen = <String>{};
+  final out = <(String, String)>[('all', 'Tous')];
+  for (final h in all) {
+    final city = h.city.trim();
+    if (city.isEmpty) continue;
+    final k = normText(city);
+    if (seen.add(k)) out.add(('city:$k', city));
+  }
+  if (all.any((h) => h.free)) out.add(('free', 'Gratuits'));
+  return out;
+}
+
+bool contestMatchesFilter(Hackathon h, String filter) =>
+    filter == 'all' || (filter == 'free' && h.free) || (filter.startsWith('city:') && normText(h.city.trim()) == filter.substring(5));
+
+const contestsPageSize = 10;
+
+/// Écran 160 en production : tous les concours publiés (ouverts d'abord), filtres par ville réelle et par gratuité, pagination, états de chargement, d'erreur et vide.
+class ContestsListScreen extends ConsumerStatefulWidget {
+  const ContestsListScreen({super.key});
+
+  @override
+  ConsumerState<ContestsListScreen> createState() => _ContestsListState();
+}
+
+class _ContestsListState extends ConsumerState<ContestsListScreen> {
+  String _filter = 'all';
+  int _shown = contestsPageSize;
+
+  (Color, Color) _pill(String status) => switch (status) {
+        'Ouvert' => (const Color(0xFFDDF5EC), const Color(0xFF0F7A52)),
+        'Jury' => (const Color(0xFFFFF1D6), const Color(0xFF8F5400)),
+        'Résultats' => (const Color(0xFFEEE9FF), const Color(0xFF5A3FE0)),
+        'Annulé' => (const Color(0xFFFDE4E4), const Color(0xFFB02A2A)),
+        _ => (const Color(0xFFF2EFF6), const Color(0xFF57545F)),
+      };
+
+  @override
+  Widget build(BuildContext context) {
+    final loaded = ref.watch(serverContestsProvider);
+    final error = ref.watch(contestsErrorProvider);
+    final all = sortContestsForList(ref.watch(contestsProvider));
+    final filters = contestFilters(all);
+    final filter = filters.any((f) => f.$1 == _filter) ? _filter : 'all';
+    final list = [for (final h in all) if (contestMatchesFilter(h, filter)) h];
+
+    Widget body;
+    if (loaded == null && error.isEmpty) {
+      body = l10Note(342, 'Chargement…');
+    } else if (all.isEmpty) {
+      body = Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        l10Note(342, error.isNotEmpty ? error : 'Aucun concours publié pour le moment.', height: 90),
+        if (error.isNotEmpty) l10Btn('Réessayer', () => ref.read(serverContestsProvider.notifier).refresh(), width: 200, compact: true),
+      ]);
+    } else if (list.isEmpty) {
+      body = l10Note(342, 'Aucun concours ne correspond à ce filtre.');
+    } else {
+      final shown = list.take(_shown).toList();
+      body = ListView(padding: const EdgeInsets.only(bottom: 30), children: [
+        for (final h in shown)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Semantics(
+              button: true,
+              label: 'Ouvrir le concours ${h.title}',
+              child: l10Card(
+                onTap: () {
+                  ref.read(selectedEventProvider.notifier).set(h.id);
+                  gOpen(context, '161');
+                },
+                child: Row(children: [
+                  Expanded(
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(h.title, maxLines: 2, overflow: TextOverflow.ellipsis, style: l10St(13.5, w: FontWeight.w700)),
+                      const SizedBox(height: 3),
+                      Text(h.listSub, maxLines: 2, overflow: TextOverflow.ellipsis, style: l10St(11.5, c: l10Grey)),
+                    ]),
+                  ),
+                  const SizedBox(width: 8),
+                  l10Chip(h.status, fill: _pill(h.status).$1, ink: _pill(h.status).$2),
+                ]),
+              ),
+            ),
+          ),
+        if (list.length > shown.length) l10Btn('Afficher plus (${list.length - shown.length})', () => setState(() => _shown += contestsPageSize), dark: false, width: 342, compact: true),
+        const SizedBox(height: 14),
+        l10Card(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('Pas encore d’équipe ?', style: l10St(14, w: FontWeight.w800)),
+            const SizedBox(height: 4),
+            Text('Trouvez des coéquipiers dans l’annuaire des talents.', style: l10St(12, c: l10Grey)),
+            const SizedBox(height: 10),
+            l10Btn('Trouver une équipe', () => gOpen(context, '163'), compact: true),
+          ]),
+        ),
+        const SizedBox(height: 10),
+        l10Btn('Concours, bourses et appels à projets', () => GoRouter.of(context).push('/concours'), dark: false, width: 342, compact: true),
+      ]);
+    }
+
+    return L10Screen(
+      title: 'Hackathons et concours',
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        SizedBox(
+          height: 40,
+          child: ListView(scrollDirection: Axis.horizontal, children: [
+            for (final f in filters)
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: Semantics(
+                  button: true,
+                  selected: f.$1 == filter,
+                  child: l10Btn(f.$2, () => setState(() {
+                        _filter = f.$1;
+                        _shown = contestsPageSize;
+                      }), dark: f.$1 == filter, compact: true),
+                ),
+              ),
+          ]),
+        ),
+        const SizedBox(height: 10),
+        Expanded(child: body),
+      ]),
+    );
+  }
+}
+
 // ------------------------------------------------------------------ 162 : inscription
 
 class ContestRegisterScreen extends ConsumerWidget {
@@ -176,6 +323,10 @@ class ContestRegisterScreen extends ConsumerWidget {
               else ...[
                 Row(children: [mode('Individuelle', solo, true), const SizedBox(width: 10), mode('En équipe', !solo, false)]),
                 const SizedBox(height: 16),
+                if (ev.fee > 0) ...[
+                  l10Card(child: Text('Frais de participation : ${prizeShort(ev.fee)}. Ils sont réglés directement auprès de l’organisateur : Boutik-École n’encaisse rien et cette inscription ne vaut pas paiement.', style: l10St(12, c: l10Grey, h: 1.5))),
+                  const SizedBox(height: 12),
+                ],
                 if (!solo) field('hk_team', 'Nom de l’équipe', 'Au moins 3 caractères'),
                 field('hk_theme', 'Thématique (facultatif)', 'Ex. inclusion financière'),
                 l10Card(child: Text(
@@ -325,7 +476,30 @@ class _TeamSpace extends ConsumerWidget {
         ),
       if (team['solo'] != true && members.length < 5 && team['captain'] == true) ...[
         const SizedBox(height: 4),
-        l10Btn('Inviter ou écrire à un coéquipier', () => gOpen(context, '163'), dark: false, width: 342, compact: true),
+        l10Btn('Inviter ou écrire à un coéquipier', () {
+          ref.read(selectedEventProvider.notifier).set(contest);
+          gOpen(context, '163');
+        }, dark: false, width: 342, compact: true),
+      ],
+      if (team['captain'] != true && !submitted && !hidden) ...[
+        const SizedBox(height: 4),
+        l10Btn('Quitter cette équipe', () async {
+          final ok = await gDialog<bool>(
+            context: context,
+            builder: (c) => AlertDialog(
+              title: const Text('Quitter l’équipe ?'),
+              content: Text('Vous ne ferez plus partie de « ${team['name']} » ; le capitaine sera prévenu. Vous pourrez vous inscrire seul ou rejoindre une autre équipe tant que les inscriptions sont ouvertes.'),
+              actions: [TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('Rester')), FilledButton(onPressed: () => Navigator.pop(c, true), child: const Text('Quitter'))],
+            ),
+          );
+          if (ok != true || !context.mounted) return;
+          final r = await Backend.rpc('contest_team_leave', {'p_team': teamId});
+          if (!context.mounted) return;
+          if (r.error != null) return gAlert(context, 'Sortie impossible', r.error!);
+          await ref.read(myContestTeamsProvider.notifier).refresh();
+          ref.invalidate(teamSpaceProvider(contest));
+          if (context.mounted) gToast(context, 'Vous avez quitté l’équipe.');
+        }, dark: false, width: 342, compact: true),
       ],
       const SizedBox(height: 18),
       Row(children: [
@@ -373,7 +547,10 @@ class _TeamSpace extends ConsumerWidget {
         style: l10St(12.5, c: l10Grey, h: 1.5),
       ),
       const SizedBox(height: 14),
-      if (!submitted && !hidden && team['captain'] == true) l10Btn('Déposer le projet', () => gOpen(context, '165'), width: 342),
+      if (!submitted && !hidden && team['captain'] == true) l10Btn('Déposer le projet', () {
+        ref.read(selectedEventProvider.notifier).set(contest);
+        gOpen(context, '165');
+      }, width: 342),
       if (!submitted && team['captain'] != true) Text('Seul le capitaine dépose le projet.', style: l10St(12, c: l10Grey)),
       const SizedBox(height: 10),
       l10Btn('Voir les résultats du concours', () {
@@ -393,7 +570,7 @@ class ContestResultsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final ev = ref.watch(currentEventProvider);
     final ranking = ref.watch(rankingProvider);
-    final withResults = [for (final h in ref.watch(contestsProvider)) if (h.serverStatus == 'results') h];
+    final withResults = [for (final h in ref.watch(contestsProvider)) if (h.id.isNotEmpty) h];
     final published = ev.serverStatus == 'results';
     final waiting = switch (ev.serverStatus) {
       'judging' => 'Le jury délibère : les résultats seront publiés par le département.',

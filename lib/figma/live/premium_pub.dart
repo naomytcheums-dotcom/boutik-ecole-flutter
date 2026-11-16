@@ -135,7 +135,7 @@ class PlansScreen extends ConsumerWidget {
         ],
       ]);
     }
-    return DecoratedBox(decoration: tpBackground, child: TpFrame(child: Scaffold(backgroundColor: Colors.transparent, appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0, scrolledUnderElevation: 0, leadingWidth: 64, foregroundColor: _ink, leading: Padding(padding: const EdgeInsets.only(left: 12, top: 4, bottom: 4), child: GlassBack(onTap: () => gBack(context))), title: Text('Offres premium', style: _st(16, w: FontWeight.w700))), body: SafeArea(child: body))));
+    return DecoratedBox(decoration: tpBackground, child: TpFrame(child: Scaffold(backgroundColor: Colors.transparent, appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0, scrolledUnderElevation: 0, leadingWidth: 64, foregroundColor: _ink, leading: Padding(padding: const EdgeInsets.only(left: 12, top: 4, bottom: 4), child: GlassBack(onTap: () => gBack(context))), title: Text('Offres premium', style: _st(16, w: FontWeight.w700))), body: SafeArea(child: _OnOpen(onOpen: () { if (!_out(ref)) ref.read(entitlementsProvider.notifier).refresh(); }, child: body)))));
   }
 
   static String _status(String s) => switch (s) { 'pending' => 'paiement en attente', 'active' => 'actif', 'cancel_at_period_end' => 'se termine à l’échéance', _ => 'expiré' };
@@ -226,11 +226,17 @@ class AdsScreen extends ConsumerWidget {
               const SizedBox(height: 10),
               Wrap(spacing: 8, runSpacing: 8, children: [
                 if ('${r['status']}' == 'draft' || '${r['status']}' == 'rejected')
-                  _btn('Payer le budget', () async {
+                  _btn(r['paid'] == true ? 'Renvoyer en validation (budget déjà payé)' : 'Payer le budget', () async {
                     final x = await Backend.rpc('ad_campaign_submit', {'p_id': '${r['id']}'});
                     if (!context.mounted) return;
                     if (x.error != null) {
                       gToast(context, Backend.userMessage(x.error!));
+                      return;
+                    }
+                    if (r['paid'] == true) {
+                      // le paiement confirmé est reporté : aucun nouveau règlement
+                      gToast(context, 'Campagne renvoyée en validation : votre budget déjà payé est reporté, rien à payer de nouveau.');
+                      await ref.read(myAdsProvider.notifier).refresh();
                       return;
                     }
                     ref.read(selectedPaymentProvider.notifier).select('${x.data}');
@@ -244,7 +250,7 @@ class AdsScreen extends ConsumerWidget {
                   }, dark: false),
                 if (const {'draft', 'rejected', 'awaiting_payment'}.contains('${r['status']}'))
                   _btn('Annuler', () async {
-                    final go = await showDialog<bool>(context: context, builder: (d) => AlertDialog(title: const Text('Annuler cette campagne ?'), content: const Text('Elle sera supprimée et son paiement en attente annulé. Rien n’a été débité.'), actions: [TextButton(onPressed: () => Navigator.pop(d, false), child: const Text('Garder')), TextButton(onPressed: () => Navigator.pop(d, true), child: const Text('Annuler la campagne'))]));
+                    final go = await showDialog<bool>(context: context, builder: (d) => AlertDialog(title: const Text('Annuler cette campagne ?'), content: Text(r['paid'] == true ? 'Le budget de cette campagne est déjà payé : elle ne peut pas être supprimée. Corrigez-la plutôt (le paiement est reporté).' : 'Elle sera supprimée et son paiement en attente annulé. Rien n’a été débité.'), actions: [TextButton(onPressed: () => Navigator.pop(d, false), child: const Text('Garder')), TextButton(onPressed: () => Navigator.pop(d, true), child: const Text('Annuler la campagne'))]));
                     if (go != true || !context.mounted) return;
                     if (await _run(context, 'ad_campaign_cancel', {'p_id': '${r['id']}'}, 'Campagne annulée.')) await ref.read(myAdsProvider.notifier).refresh();
                   }, dark: false),
@@ -255,12 +261,32 @@ class AdsScreen extends ConsumerWidget {
         if (admin) ...[const SizedBox(height: 12), _btn('Campagnes à valider', () => GoRouter.of(context).push('/campagnes/validation'), dark: false)],
       ]);
     }
-    return DecoratedBox(decoration: tpBackground, child: TpFrame(child: Scaffold(backgroundColor: Colors.transparent, appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0, scrolledUnderElevation: 0, leadingWidth: 64, foregroundColor: _ink, leading: Padding(padding: const EdgeInsets.only(left: 12, top: 4, bottom: 4), child: GlassBack(onTap: () => gBack(context))), title: Text('Campagnes sponsorisées', style: _st(16, w: FontWeight.w700))), body: SafeArea(child: body))));
+    return DecoratedBox(decoration: tpBackground, child: TpFrame(child: Scaffold(backgroundColor: Colors.transparent, appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0, scrolledUnderElevation: 0, leadingWidth: 64, foregroundColor: _ink, leading: Padding(padding: const EdgeInsets.only(left: 12, top: 4, bottom: 4), child: GlassBack(onTap: () => gBack(context))), title: Text('Campagnes sponsorisées', style: _st(16, w: FontWeight.w700))), body: SafeArea(child: _OnOpen(onOpen: () { if (!_out(ref)) { ref.read(entitlementsProvider.notifier).refresh(); ref.read(myPostsProvider.notifier).refresh(); ref.read(myListingsForAdsProvider.notifier).refresh(); } }, child: body)))));
   }
 }
 
-final myPostsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('posts', 'id,caption,author_id,status', order: 'created_at'));
-final myListingsForAdsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('listings', 'id,title,seller_id,status', order: 'created_at'));
+final myPostsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('posts', 'id,caption,author_id,status', order: 'created_at', ownerColumn: 'author_id', eq: const {'status': 'published'}, limit: 100));
+final myListingsForAdsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('listings', 'id,title,seller_id,status', order: 'created_at', ownerColumn: 'seller_id', eq: const {'status': 'approved'}, limit: 100));
+
+/// Exécute une action une fois, à l'ouverture de l'écran (rafraîchissement des droits, lecture des listes).
+class _OnOpen extends StatefulWidget {
+  const _OnOpen({required this.onOpen, required this.child});
+  final VoidCallback onOpen;
+  final Widget child;
+  @override
+  State<_OnOpen> createState() => _OnOpenState();
+}
+
+class _OnOpenState extends State<_OnOpen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(widget.onOpen);
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
+}
 
 Future<void> adDialog(BuildContext context, WidgetRef ref) async {
   if (!hasFeature(ref, 'boost_campagnes')) {
@@ -269,6 +295,9 @@ Future<void> adDialog(BuildContext context, WidgetRef ref) async {
     return;
   }
   final uid = Backend.userId;
+  // première ouverture : les listes n'ont peut-être pas encore été lues (elles ne se chargent qu'à leur première utilisation)
+  await Future.wait([ref.read(myPostsProvider.notifier).refresh(), ref.read(myListingsForAdsProvider.notifier).refresh()]);
+  if (!context.mounted) return;
   final posts = [for (final r in (ref.read(myPostsProvider) ?? const <Map<String, dynamic>>[])) if ('${r['author_id']}' == uid && '${r['status']}' == 'published') r];
   final listings = [for (final r in (ref.read(myListingsForAdsProvider) ?? const <Map<String, dynamic>>[])) if ('${r['seller_id']}' == uid && '${r['status']}' == 'approved') r];
   final title = TextEditingController(), body = TextEditingController(), budget = TextEditingController();

@@ -24,6 +24,7 @@ import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/pay.dart';
 import '../live/messages.dart';
+import '../live/money_lot.dart' show canConfirmReceipt, canRequestRefund, confirmViewedOrderReceipt, requestViewedOrderRefund;
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_29 extends ConsumerWidget {
@@ -88,6 +89,11 @@ class G_29 extends ConsumerWidget {
       // annulation avec motif (écran 47) : seulement pour une commande réelle, ni payée ni déjà annulée
       gP(236, 652, 131, 30, Center(child: gText('Annuler la commande', 11.729, Color(0xFFE5484D), weight: 600, align: TextAlign.center)),
           tap: () => gOpen(context, '47'), show: canCancelViewedOrder(ref)),
+      // argent : confirmer la réception (libère le paiement au vendeur) ou demander l'annulation d'une commande payée (traitée par le support / la finance)
+      gP(236, 652, 131, 30, Center(child: gText('Confirmer la réception', 11.729, Color(0xFF0F7A52), weight: 700, align: TextAlign.center)),
+          tap: () { confirmViewedOrderReceipt(ref, context); }, show: !demoContent && canConfirmReceipt(ref)),
+      gP(236, 690, 131, 30, Center(child: gText('Demander l’annulation', 11.729, Color(0xFFE5484D), weight: 600, align: TextAlign.center)),
+          tap: () { requestViewedOrderRefund(ref, context); }, show: !demoContent && canRequestRefund(ref)),
     ]);
   }
 }

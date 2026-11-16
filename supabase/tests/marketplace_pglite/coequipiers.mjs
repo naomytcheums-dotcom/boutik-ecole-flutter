@@ -15,6 +15,8 @@ export async function run(db) {
   ]) {
     await db.exec(`insert into auth.users(id,email) values ('${id}','${nm.split(' ')[0]}@t.cm'); insert into profiles(id,name,role,email,department,skills) values ('${id}','${nm}','${role}','${nm.split(' ')[0]}@t.cm','${dept}','${skills}')`);
   }
+  // consentement (S6-15) : seuls les étudiants qui ont activé « Apparaître dans l'annuaire » sont listés
+  await db.exec(`insert into mate_consents(user_id, visible) values ('${A}', true), ('${B}', true), ('${C}', true), ('${D}', true)`);
   // --- catégories : les 4 d'origine, lisibles par tous
   await as(null, 'anon');
   let cats = (await q(`select mate_categories_list() r`))[0].r;

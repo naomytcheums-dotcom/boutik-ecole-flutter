@@ -7,6 +7,7 @@ export async function run(db) {
   const fails = async (name, sql, re) => { try { await q(sql); check(name, false, 'aurait du echouer'); } catch (e) { check(name, re.test(e.message), e.message); } };
   await db.exec('reset role');
   for (const [id, nm, role] of [[E, 'Orange', 'company'], [X, 'Xena', 'company'], [A, 'Alice', 'student'], [B, 'Bob', 'student'], [C, 'Carl', 'client']]) await db.exec(`insert into auth.users(id,email) values ('${id}','${nm}@t.cm'); insert into profiles(id,name,role,email) values ('${id}','${nm}','${role}','${nm}@t.cm')`);
+  await db.exec(`insert into user_documents (owner_id, kind, name, path, mime, size_bytes, status) select id, 'student_card', 'c', id || '/c.pdf', 'application/pdf', 10, 'verified' from profiles where id in ('${A}', '${B}')`);
   await as(E);
   let lists = (await q(`select talent_lists_get() r`))[0].r;
   check('la liste Favoris existe d emblee', lists.length === 1 && lists[0].name === 'Favoris' && lists[0].count === 0, JSON.stringify(lists));

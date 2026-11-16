@@ -288,6 +288,14 @@ class FollowingIdsNotifier extends Notifier<Set<String>?> {
   }
 }
 
+/// Créateurs dont la boutique est suivie (`shop_follows`) : leurs publications figurent aussi dans l'onglet « Abonnements » du Cercle (S7-18).
+final followedShopOwnersProvider = FutureProvider.autoDispose<Set<String>>((ref) async {
+  if (!Backend.ready || ref.watch(authProvider.select((a) => a.current?.serverId ?? '')).isEmpty) return const {};
+  final r = await Backend.rpc('my_followed_shops', const {});
+  if (r.error != null || r.data is! List) return const {};
+  return {for (final s in r.data as List) if (s is Map && '${s['owner_id'] ?? ''}'.isNotEmpty) '${s['owner_id']}'};
+});
+
 final followingIdsProvider = NotifierProvider<FollowingIdsNotifier, Set<String>?>(FollowingIdsNotifier.new);
 
 /// « S'abonner » : suit (ou ne suit plus) l'auteur du reel affiché, par le mécanisme d'engagements existant (`follow`).
@@ -470,9 +478,14 @@ class Challenges {
     this.weekMarks = const [],
     this.todayIndex = 0,
     this.badges = const {},
+    this.postsWeekPending = 0,
+    this.pendingPosts = 0,
+    this.certified = true,
+    this.boostNextIn = 0,
+    this.boostReady = true,
   });
-  final int streak, nextIn, weekEndDays, postsWeek, points, todayIndex;
-  final bool streakClaimable, postsClaimable, checkedToday, streakClaimed, postsClaimed;
+  final int streak, nextIn, weekEndDays, postsWeek, points, todayIndex, postsWeekPending, pendingPosts, boostNextIn;
+  final bool streakClaimable, postsClaimable, checkedToday, streakClaimed, postsClaimed, certified, boostReady;
   final List<bool> weekMarks;
   final Map<String, bool> badges;
 
@@ -490,12 +503,32 @@ class Challenges {
         weekMarks: j['week_marks'] is List ? [for (final m in j['week_marks'] as List) m == true] : const [],
         todayIndex: (j['today_index'] as num?)?.toInt() ?? 0,
         badges: j['badges'] is Map ? {for (final e in (j['badges'] as Map).entries) '${e.key}': e.value == true} : const {},
+        postsWeekPending: (j['posts_week_pending'] as num?)?.toInt() ?? 0,
+        pendingPosts: (j['pending_posts'] as num?)?.toInt() ?? 0,
+        certified: j['certified'] != false,
+        boostNextIn: (j['boost_next_in'] as num?)?.toInt() ?? 0,
+        boostReady: j['boost_ready'] != false,
       );
 
   String get streakLabel => 'Série de $streak jour${streak > 1 ? 's' : ''}';
   String get nextLabel => streakClaimable
       ? 'Série de 6 jours atteinte : récupérez votre boost de 24 h'
-      : (nextIn <= 0 ? 'Boost du jour déjà récupéré' : 'Encore $nextIn jour${nextIn > 1 ? 's' : ''} pour gagner un boost de 24 h');
+      : (nextIn <= 0
+          ? (!streakClaimed && boostNextIn > 0 ? 'Prochain boost possible dans $boostNextIn jour${boostNextIn > 1 ? 's' : ''}' : 'Boost du jour déjà récupéré')
+          : 'Encore $nextIn jour${nextIn > 1 ? 's' : ''} pour gagner un boost de 24 h');
+
+  /// Pourquoi la progression n'avance pas : des publications attendent la validation du département (compte non certifié).
+  String? get pendingNote {
+    if (postsWeekPending > 0 && postsWeek < 3) {
+      return '$postsWeekPending publication${postsWeekPending > 1 ? 's' : ''} de la semaine attend${postsWeekPending > 1 ? 'ent' : ''} la validation du département : elle${postsWeekPending > 1 ? 's' : ''} compteront dès qu’elle${postsWeekPending > 1 ? 's' : ''} sera${postsWeekPending > 1 ? 'ont' : ''} validée${postsWeekPending > 1 ? 's' : ''}.';
+    }
+    return null;
+  }
+
+  /// Boost impossible pour l'instant parce qu'aucune publication validée n'est visible dans le fil.
+  String? get boostNote => !boostReady && pendingPosts > 0
+      ? 'Le boost s’applique à une publication validée : la vôtre attend encore la validation du département.'
+      : null;
 }
 
 class ChallengesNotifier extends Notifier<Challenges?> {

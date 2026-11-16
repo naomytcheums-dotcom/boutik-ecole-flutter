@@ -6,6 +6,7 @@ import '../gen.dart';
 import '../nav.dart';
 import 'auth.dart';
 import 'backend.dart';
+import 'money_lot.dart' show claimsCenter;
 import 'store.dart';
 
 const _st = TextStyle(fontFamily: 'Inter', fontSize: 13, color: Color(0xFF111015));
@@ -179,69 +180,10 @@ Future<void> submitClaimForm(BuildContext context, WidgetRef ref) async {
   gBack(context);
 }
 
-/// Réclamations de la personne connectée : les siennes (acheteur) ou celles de ses ventes (vendeur, qui peut répondre).
+/// Réclamations de la personne connectée : les siennes (acheteur) ou celles de ses ventes (vendeur, y compris commande multi-vendeurs) ;
+/// fil d'échanges, réponse, retrait par l'acheteur (money_lot.dart).
 Future<void> claimsDialog(BuildContext context, WidgetRef ref) async {
   if (!await _allowed(context, ref, 'consulter vos réclamations')) return;
-  final me = ref.read(profileAccountProvider).serverId;
-  final rows = await Backend.claims();
   if (!context.mounted) return;
-  if (rows.isEmpty) return gAlert(context, 'Réclamations', 'Aucune réclamation pour le moment.');
-  await gDialog<void>(
-    context: context,
-    builder: (ctx) => AlertDialog(
-      backgroundColor: Colors.white,
-      title: Text('Réclamations', style: _st.copyWith(fontSize: 16, fontWeight: FontWeight.w700)),
-      content: SizedBox(
-        width: 340,
-        child: ListView(shrinkWrap: true, children: [
-          for (final r in rows)
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(claimReasonLabels[claimReasons.indexOf(r['reason'] as String).clamp(0, 3)], style: _st.copyWith(fontWeight: FontWeight.w600)),
-              subtitle: Text('${r['details']}\n${r['status'] == 'open' ? 'En attente de réponse' : 'Réponse : ${r['answer']}'}', style: _st.copyWith(fontSize: 12, color: const Color(0xFF57545F))),
-              isThreeLine: true,
-              trailing: r['status'] == 'open' && r['claimant_id'] != me
-                  ? TextButton(
-                      onPressed: () async {
-                        Navigator.pop(ctx);
-                        await _answerDialog(context, r['id'] as String);
-                      },
-                      child: const Text('Répondre'))
-                  : null,
-            ),
-        ]),
-      ),
-      actions: [TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Fermer'))],
-    ),
-  );
-}
-
-Future<void> _answerDialog(BuildContext context, String id) async {
-  final c = TextEditingController();
-  await gDialog<void>(
-    context: context,
-    builder: (ctx) => AlertDialog(
-      backgroundColor: Colors.white,
-      title: Text('Répondre à la réclamation', style: _st.copyWith(fontSize: 16, fontWeight: FontWeight.w700)),
-      content: SizedBox(width: 340, child: TextField(controller: c, maxLines: 4, maxLength: 2000, style: _st, decoration: const InputDecoration(hintText: 'Votre réponse'))),
-      actions: [
-        TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Annuler')),
-        FilledButton(
-          onPressed: () async {
-            final err = await Backend.answerClaim(id, c.text);
-            if (!ctx.mounted) return;
-            Navigator.pop(ctx);
-            if (!context.mounted) return;
-            if (err != null) {
-              await gAlert(context, 'Réponse non envoyée', err);
-            } else {
-              gToast(context, 'Réponse envoyée. L’acheteur est prévenu.');
-            }
-          },
-          child: const Text('Envoyer'),
-        ),
-      ],
-    ),
-  );
-  c.dispose();
+  await claimsCenter(context, ref);
 }

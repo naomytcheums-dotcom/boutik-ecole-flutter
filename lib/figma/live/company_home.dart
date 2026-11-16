@@ -86,6 +86,8 @@ class CompanyHomeScreen extends ConsumerWidget {
     final d = ref.watch(companyDashboardProvider);
     final account = ref.watch(authProvider.select((a) => a.current));
     final org = const {'company', 'other', 'admin'}.contains(roleKey(account));
+    // Un membre d'équipe (compte client, étudiant…) consulte les offres de l'entreprise depuis son espace : lecture ouverte par le serveur (20261118000100).
+    final viaTeam = ref.watch(companyContextProvider) != null;
     final open99 = canOpen(account, '99');
     return Scaffold(
       backgroundColor: const Color(0xFFF7F4FA),
@@ -134,12 +136,12 @@ class CompanyHomeScreen extends ConsumerWidget {
                 _tile(context, Icons.mark_email_unread_outlined, '${n('proposals_new')}', 'Propositions à traiter', open99 ? '/s/93' : null),
               ]),
               Row(children: [
-                _tile(context, Icons.work_outline, '${n('offers_active')}', 'Offres actives', org ? '/opportunites/mes' : null),
-                _tile(context, Icons.how_to_reg_outlined, '${n('applications_new')}', 'Candidatures reçues', org ? '/opportunites/mes' : null),
+                _tile(context, Icons.work_outline, '${n('offers_active')}', 'Offres actives', (org || viaTeam) ? '/opportunites/mes' : null),
+                _tile(context, Icons.how_to_reg_outlined, '${n('applications_new')}', 'Candidatures reçues', (org || viaTeam) ? '/opportunites/mes' : null),
               ]),
               Row(children: [
                 _tile(context, Icons.emoji_events_outlined, '${n('contests_active')}', 'Concours actifs', org ? '/concours/mes' : null),
-                _tile(context, Icons.celebration_outlined, '${n('recruits')}', 'Recrutés', org ? '/opportunites/mes' : null),
+                _tile(context, Icons.celebration_outlined, '${n('recruits')}', 'Recrutés', (org || viaTeam) ? '/opportunites/mes' : null),
               ]),
               Padding(padding: const EdgeInsets.fromLTRB(5, 6, 5, 0), child: mButton('Équipe de l’entreprise · ${n('members')} personne${n('members') > 1 ? 's' : ''}', () => context.push('/entreprise/equipe'), dark: false, icon: Icons.groups_2_outlined)),
               if (!shared) ...[

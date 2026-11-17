@@ -7,6 +7,7 @@ import 'package:boutik_ecole/figma/g/g_69.dart';
 import 'package:boutik_ecole/figma/gen.dart';
 import 'package:boutik_ecole/figma/gsound.dart';
 import 'package:boutik_ecole/figma/live/auth.dart';
+import 'package:boutik_ecole/figma/live/b2b_screens.dart' show b2bQuotesProvider;
 import 'package:boutik_ecole/figma/live/backend.dart';
 import 'package:boutik_ecole/figma/live/console.dart';
 import 'package:boutik_ecole/figma/live/entreprise.dart';
@@ -104,8 +105,8 @@ void main() {
 
   testWidgets('190 connecté : devis réels', (t) async {
     await monter(t, const G_190(), connecte: true, large: true, overrides: [
-      quotesListProvider.overrideWith(() => _Rows('table:quote_requests', [
-            {'brief': 'Borne Test', 'status': 'requested', 'quote_amount': null, 'quote_delay_days': null}
+      b2bQuotesProvider.overrideWith(() => _Rows('my_quotes', [
+            {'id': 'q1', 'brief': 'Borne Test', 'status': 'requested', 'quote_amount': null, 'quote_delay_days': null}
           ]))
     ]);
     expect(find.text('Borne Test'), findsOneWidget);

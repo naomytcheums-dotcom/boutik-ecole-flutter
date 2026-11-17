@@ -6,6 +6,7 @@ import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/entreprise.dart';
+import '../live/ent_f3b.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -56,7 +57,8 @@ class G_96 extends ConsumerWidget {
       gP(24, 120, 342, 170, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [24, 24, 24, 24])),
       gP(42, 228, 309, 46, gText(gm('Défi Orange : paiement mobile inclusif', ''), 18, Color(0xFFFFFFFF), weight: 700, wrap: true), show: demoContent),
       gP(42, 256, 309, 15, gText(gm('Prix de 500 000 FCFA · Clôture le 30 nov.', ''), 12, Color(0xFFE3ECF7), wrap: true), show: demoContent),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 304, 77.8, 34, 'Ouverts', 12.5, 600), GChip(109.8, 304, 85.2, 34, 'En cours', 12.5, 500), GChip(203, 304, 85.2, 34, 'Terminés', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
+      if (demoContent) Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 304, 77.8, 34, 'Ouverts', 12.5, 600), GChip(109.8, 304, 85.2, 34, 'En cours', 12.5, 500), GChip(203, 304, 85.2, 34, 'Terminés', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
+      if (!demoContent) gP(42, 200, 309, 74, DefisBanner()),
       gP(36, 365, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13]), show: demoContent),
       gP(48, 373.667, 16, 16, gImg('assets/figma/v/f44e883cdba29a.svg'), show: demoContent),
       gP(50.5, 387, 11, 6, gImg('assets/figma/v/c4124addb3c439.svg'), show: demoContent),
@@ -97,7 +99,7 @@ class G_96 extends ConsumerWidget {
       gP(169, 762, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gTab(context, '03')),
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
-      if (!demoContent) gP(24, 226, 342, 460, contestsListWidget()),
+      if (!demoContent) gP(24, 298, 342, 434, DefisPanel(width: 342, height: 434)),
     ]);
   }
 }

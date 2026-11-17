@@ -6,6 +6,7 @@ import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/lot20b.dart';
+import '../live/ent_f3b.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -48,7 +49,7 @@ class G_94 extends ConsumerWidget {
       gP(32.583, 72.583, 12.417, 18.833, gImg('assets/figma/v/65dc27d13237d5.svg')),
       gP(32.583, 79, 18.833, 6, gImg('assets/figma/v/cfefc4b0da4201.svg')),
       gP(76, 70, 271, 26, gText('Comparer les propositions', 21, Color(0xFF111015), weight: 700)),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 55.6, 34, 'Prix', 12.5, 600), GChip(87.6, 120, 63, 34, 'Délai', 12.5, 500), GChip(158.6, 120, 55.6, 34, 'Note', 12.5, 500), GChip(222.2, 120, 92.6, 34, 'Portfolio', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
+      if (demoContent) Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 55.6, 34, 'Prix', 12.5, 600), GChip(87.6, 120, 63, 34, 'Délai', 12.5, 500), GChip(158.6, 120, 55.6, 34, 'Note', 12.5, 500), GChip(222.2, 120, 92.6, 34, 'Portfolio', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
       gP(25, 169, 340, 39, gBox(color: Color(0xFFF4F1F8), radii: [15, 15, 15, 15]), show: demoContent),
       gP(40, 181, 38, 14, gText('Critère', 11, Color(0xFF57545F), weight: 600), show: demoContent),
       gP(126.8, 181, 52, 14, gText(gSelf(ref, 'Mariam E.'), 11, Color(0xFF57545F), weight: 600), show: demoContent),
@@ -84,11 +85,11 @@ class G_94 extends ConsumerWidget {
       gP(49, 470, 6, 8.833, gImg('assets/figma/v/9fc27387b9ffa1.svg'), show: demoContent),
       gP(49, 467.167, 6.007, 6, gImg('assets/figma/v/c499ab72bb5251.svg'), show: demoContent),
       gP(76, 456, 277, 34, gText('Comparez les critères puis acceptez la proposition qui répond le mieux à votre besoin.', 12, Color(0xFF4A4854), lh: 17, wrap: true), show: demoContent),
-      gP(0, 744, 390, 100, gBox(color: Color(0x00FFFFFF)), show: demoContent),
-      gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gOpen(context, '93b')),
+      gP(0, 744, 390, 100, gBox(color: Color(0x00FFFFFF))),
+      gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => demoContent ? gOpen(context, '93b') : chooseCompared(context, ref)),
       gP(114, 778, 162, 18, gText('Choisir une proposition', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
-      if (!demoContent) gP(24, 125, 342, 620, proposalsMobile(height: 620)),
+      if (!demoContent) gP(24, 112, 342, 624, CompareProposals(width: 342, height: 624)),
     ]);
   }
 }

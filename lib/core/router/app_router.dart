@@ -34,6 +34,8 @@ import '../../figma/live/concours_screens.dart';
 import '../../figma/live/company_home.dart';
 import '../../figma/live/company_screens.dart';
 import '../../figma/live/company_team.dart';
+import '../../figma/live/company_public_page.dart' show CompanyPublicPage;
+import '../../figma/live/company_purchases.dart' show CompanyPurchasesScreen;
 import '../../figma/live/student_profile.dart';
 import '../../figma/live/litiges_screens.dart';
 import '../../figma/live/money_admin.dart';
@@ -95,6 +97,8 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/entreprise/equipe', builder: (_, _) => const CompanyGuard(useContext: true, child: CompanyMembersScreen())),
     GoRoute(path: '/mes-entreprises', builder: (_, _) => const LoginGuard(child: MyCompaniesScreen())),
     GoRoute(path: '/entreprise/espace/:owner', builder: (_, s) => CompanyGuard(owner: s.pathParameters['owner'] ?? '', child: CompanySpaceScreen(owner: s.pathParameters['owner'] ?? ''))),
+    GoRoute(path: '/entreprise/fiche/:owner', builder: (_, s) => CompanyPublicPage(ownerId: s.pathParameters['owner'] ?? '')),
+    GoRoute(path: '/entreprise/achats', builder: (_, _) => const CompanyGuard(useContext: true, child: CompanyPurchasesScreen())),
     GoRoute(path: '/comptes-test', builder: (_, _) => const RouteGuard(name: '/comptes-test', roles: {'admin'}, child: TestAccountsScreen())),
     GoRoute(path: '/equipe/:key', builder: (_, s) => StaffPortalScreen(portalKey: s.pathParameters['key'] ?? '')),
     GoRoute(path: '/concours/publier', builder: (_, _) => const AnnouncementEditScreen()),

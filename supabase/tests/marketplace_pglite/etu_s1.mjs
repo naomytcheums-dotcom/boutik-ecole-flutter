@@ -69,6 +69,8 @@ export async function run(db) {
   check('S1-24 : audit de la décision', (await q(`select count(*)::int n from audit_log where category='Vérification'`))[0].n === 2);
 
   // --- surfaces réservées aux vérifiés
+  await db.exec('reset role');
+  await db.exec(`insert into company_profiles (owner_id, company_name, status) values ('${U(48)}', 'Orange', 'approved') on conflict (owner_id) do update set status = 'approved'`);
   await as(U(48));
   const tl = (await q(`select talents_list('') t`))[0].t;
   check('S1-4 : l\'annuaire ne montre que l\'étudiante vérifiée', tl.length === 1 && tl[0].id === U(41), JSON.stringify(tl.map((x) => x.id)));

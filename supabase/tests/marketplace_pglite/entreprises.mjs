@@ -20,6 +20,9 @@ export async function run(db) {
   check('fiche : enregistree en brouillon', (await q(fiche()))[0].r === 'draft');
   await fails('envoi : au moins une piece justificative', `select company_submit()`, /pièce justificative/);
   await fails('piece : dans son dossier', `select company_doc_add('registration', 'RCCM.pdf', '${S}/rccm.pdf', 'application/pdf', 1000)`, /dossier/);
+  await db.exec('reset role');
+  await db.exec(`insert into storage.objects (bucket_id, name, metadata) values ('profile-documents', '${E}/company/rccm.pdf', '{"mimetype":"application/pdf","size":52000}')`);
+  await as(E);
   const doc = (await q(`select company_doc_add('registration', 'RCCM.pdf', '${E}/company/rccm.pdf', 'application/pdf', 52000) id`))[0].id;
   check('envoi : en attente d examen', (await q(`select company_submit() r`))[0].r === 'pending');
   await fails('envoi : deja en cours', `select company_submit()`, /déjà en cours/);
@@ -49,7 +52,10 @@ export async function run(db) {
   check('carte publique : verifiee, sans piece ni numero', pub.verified === true && pub.company_name === 'Orange Cameroun' && pub.registration_number === undefined && pub.documents === undefined);
   await as(E);
   check('modifier le nom apres approbation : nouvelle verification', (await q(`select company_save(jsonb_build_object('company_name','Orange Cameroun SA','sector','Telecoms','city','Douala')) r`))[0].r === 'pending');
-  check('piece supprimee par son proprietaire', (await q(`select company_doc_delete('${doc}') r`))[0].r.endsWith('rccm.pdf'));
+  await fails('piece envoyee pour verification : plus supprimable par son proprietaire (F2)', `select company_doc_delete('${doc}')`, /ne peut plus être supprimée/);
+  await as(M);
+  check('piece supprimee par l administrateur de la plateforme', (await q(`select company_doc_delete('${doc}') r`))[0].r.endsWith('rccm.pdf'));
+  await as(E);
   await fails('tables : aucun acces direct', `select * from company_profiles`, /permission/);
   console.log(`\n${ok}/${ok + ko}`);
 }

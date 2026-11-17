@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart' show GoRouter;
 
 import '../gen.dart' show gToast;
 import 'auth.dart';
@@ -378,12 +379,15 @@ class AddToProfilePage extends ConsumerWidget {
     if (_loggedOut(ref)) return _needLogin(context, ref, 'Ajouter à mon profil', 'enrichir votre profil');
     final role = roleKey(ref.watch(authProvider).current);
     if (role != 'student' && role != 'admin') {
+      final org = role == 'company' || role == 'other';
       return TpPage(title: 'Ajouter à mon profil', children: [
         TpEmpty(
           title: 'Réservé aux étudiants',
-          text: 'Les compétences, réalisations et documents de cette page alimentent la liste des talents, qui présente les étudiants. Votre profil n’y apparaît pas : complétez plutôt votre description et votre ville.',
-          action: 'Modifier mon profil',
-          onAction: () => editProfileDialog(context, ref),
+          text: org
+              ? 'Les compétences, réalisations et documents de cette page alimentent la liste des talents, qui présente les étudiants. Pour une entreprise, c’est la fiche entreprise (secteur, présentation, logo, pièces) qui compte.'
+              : 'Les compétences, réalisations et documents de cette page alimentent la liste des talents, qui présente les étudiants. Votre profil n’y apparaît pas : complétez plutôt votre description et votre ville.',
+          action: org ? 'Compléter la fiche entreprise' : 'Modifier mon profil',
+          onAction: () => org ? GoRouter.of(context).push('/entreprise/profil') : editProfileDialog(context, ref),
           icon: Icons.school_outlined,
         ),
       ]);

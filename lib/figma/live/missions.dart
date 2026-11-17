@@ -11,6 +11,7 @@ import 'auth.dart';
 import 'backend.dart';
 import 'drafts.dart';
 import 'engage.dart' show unavailableAction;
+import 'entreprise.dart' show invalidateCompanyData;
 import 'lots.dart' show firstInt, formDialog, lastInt, publishMissionBrief, myNeedsDialog;
 import 'marche/marche_catalogue.dart' show marcheFetcherProvider;
 import 'marche/marche_data.dart' show mImageUrl, mInt;
@@ -795,6 +796,7 @@ Future<void> _decideDelivered(WidgetRef ref, BuildContext context, {required boo
   }
   await ref.read(missionProvider.notifier).refresh();
   if (!context.mounted) return;
+  invalidateCompanyData(context);
   gToast(context, validate ? 'Jalon validé : la livraison est acceptée.' : 'Correction demandée au prestataire.');
   gOpen(context, '194');
 }

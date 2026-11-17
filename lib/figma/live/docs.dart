@@ -8,6 +8,7 @@ import 'package:printing/printing.dart';
 import '../gen.dart';
 import 'auth.dart';
 import 'backend.dart';
+import '../../data/demo/section_a_demo.dart' show CartLine;
 import 'order_summary.dart' show orderDeliveryText;
 import 'store.dart';
 
@@ -39,7 +40,26 @@ String orderPaymentStatus(Order o) {
   return o.cod ? 'À payer à la livraison' : 'En attente de paiement';
 }
 
-Future<pw.Document> _build(Order o, Account who, {required bool invoice}) async {
+/// Lignes « Facturé à » d'une commande passée au nom d'une entreprise : raison sociale, NIU, RCCM, adresse, e-mail (identité figée par le serveur, fonction order_billing_get).
+String companyBillingLines(Map<String, dynamic> b) {
+  String v(String k) => '${b[k] ?? ''}'.trim();
+  final place = [v('address'), v('city')].where((e) => e.isNotEmpty).join(', ');
+  return [
+    if (v('tax_id').isNotEmpty) 'NIU : ${v('tax_id')}',
+    if (v('registration_number').isNotEmpty) 'RCCM : ${v('registration_number')}',
+    if (place.isNotEmpty) place,
+    if (v('email').isNotEmpty) v('email'),
+  ].join('\n');
+}
+
+/// Identité de facturation de l'entreprise pour cette commande (null : achat personnel, ou lecture impossible : la facture porte alors la personne).
+Future<Map<String, dynamic>?> _companyBilling(String orderNumber) async {
+  if (!Backend.ready || orderNumber.isEmpty) return null;
+  final r = await Backend.rpc('order_billing_get', {'p_number': orderNumber});
+  return r.error == null && r.data is Map ? Map<String, dynamic>.from(r.data as Map) : null;
+}
+
+Future<pw.Document> _build(Order o, Account who, {required bool invoice, Map<String, dynamic>? billing, String orderedBy = ''}) async {
   final reg = pw.Font.ttf(await rootBundle.load('assets/fonts/PlusJakartaSans-400.ttf'));
   final bold = pw.Font.ttf(await rootBundle.load('assets/fonts/PlusJakartaSans-700.ttf'));
   final logo = pw.MemoryImage((await rootBundle.load(_logo)).buffer.asUint8List());
@@ -84,8 +104,14 @@ Future<pw.Document> _build(Order o, Account who, {required bool invoice}) async 
           child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
             pw.Text('FACTURÉ À', style: st(8.5, b: true, c: _muted)),
             pw.SizedBox(height: 4),
-            pw.Text(who.name, style: st(12, b: true)),
-            pw.Text('${who.email}\n+237 ${who.phone}\n${who.city}, Cameroun', style: st(10, c: _muted)),
+            if (billing != null) ...[
+              pw.Text('${billing['company_name'] ?? ''}', style: st(12, b: true)),
+              pw.Text(companyBillingLines(billing), style: st(10, c: _muted)),
+              if (orderedBy.isNotEmpty) pw.Text('Commandé par : $orderedBy', style: st(10, c: _muted)),
+            ] else ...[
+              pw.Text(who.name, style: st(12, b: true)),
+              pw.Text('${who.email}\n+237 ${who.phone}\n${who.city}, Cameroun', style: st(10, c: _muted)),
+            ],
           ]),
         ),
         pw.Expanded(
@@ -211,10 +237,51 @@ Future<void> downloadDocument(BuildContext context, WidgetRef ref, {required boo
   final who = ref.read(profileAccountProvider);
   gToast(context, invoice ? 'Préparation de la facture…' : 'Préparation du reçu…');
   try {
-    final doc = await _build(o, who, invoice: invoice);
+    final billing = await _companyBilling(o.id);
+    final doc = await _build(o, who, invoice: invoice, billing: billing, orderedBy: billing == null ? '' : who.name);
     final bytes = await doc.save();
     final name = '${invoice ? 'facture' : 'recu'}-${o.id.replaceAll('#', '')}.pdf';
     await Printing.sharePdf(bytes: bytes, filename: name);
+  } catch (e) {
+    if (context.mounted) gToast(context, 'Téléchargement impossible : $e');
+  }
+}
+
+/// Commande d'« Achats de l'entreprise » (ligne de company_orders_list) sous la forme d'une commande pour le PDF.
+Order companyOrderFromRow(Map<String, dynamic> r) {
+  final d = DateTime.tryParse('${r['created_at'] ?? ''}')?.toLocal();
+  const mois = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+  final lines = [
+    for (final l in (r['items'] as List? ?? const [])) CartLine('${(l as Map)['title']}', '', (l['unit_price'] as num).toInt(), '', qty: (l['qty'] as num).toInt()),
+  ];
+  final total = (r['total'] as num?)?.toInt() ?? 0, fee = (r['fee'] as num?)?.toInt() ?? 0;
+  return Order(
+    id: '${r['number']}',
+    date: d == null ? '—' : '${d.day} ${mois[d.month - 1]} ${d.year}',
+    lines: lines,
+    subtotal: total - fee,
+    fee: fee,
+    method: '${r['method'] ?? ''}',
+    reference: '',
+    paid: r['paid'] == true,
+    cancelled: r['cancelled'] == true,
+    cod: r['cod'] == true,
+    discount: (r['discount'] as num?)?.toInt() ?? 0,
+  );
+}
+
+/// Facture (PDF) d'une commande de l'entreprise, au nom de l'entreprise ; la personne qui a commandé y figure. Disponible pour toute l'équipe finance.
+Future<void> downloadCompanyOrderInvoice(BuildContext context, WidgetRef ref, Map<String, dynamic> row) async {
+  final o = companyOrderFromRow(row);
+  gToast(context, 'Préparation de la facture…');
+  try {
+    final billing = await _companyBilling(o.id);
+    if (billing == null) {
+      if (context.mounted) gToast(context, 'Identité de facturation introuvable pour cette commande.');
+      return;
+    }
+    final doc = await _build(o, ref.read(profileAccountProvider), invoice: true, billing: billing, orderedBy: row['by_me'] == true ? ref.read(profileAccountProvider).name : '${row['buyer_name'] ?? ''}');
+    await Printing.sharePdf(bytes: await doc.save(), filename: 'facture-${o.id.replaceAll('#', '')}.pdf');
   } catch (e) {
     if (context.mounted) gToast(context, 'Téléchargement impossible : $e');
   }

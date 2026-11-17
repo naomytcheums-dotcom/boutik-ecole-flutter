@@ -45,7 +45,7 @@ void main() {
     expect(find.text('Orange Cameroun'), findsOneWidget);
     expect(find.text('Entreprise vérifiée'), findsOneWidget);
     expect(find.text('Forfait Entreprise'), findsOneWidget);
-    expect(find.text('Actif jusqu’au 2026-12-14'), findsOneWidget);
+    expect(find.text('Actif jusqu’au 14/12/2026'), findsOneWidget); // date lisible (et non plus la date ISO brute)
     expect(find.text('Propositions à traiter'), findsOneWidget);
     expect(find.text('5'), findsOneWidget);
     expect(find.text('7'), findsOneWidget);

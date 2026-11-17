@@ -24,6 +24,7 @@ import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/inert_actions.dart';
 import '../live/pay.dart';
+import '../live/b2b_screens.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_189 extends ConsumerWidget {
@@ -31,7 +32,10 @@ class G_189 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return GScreen(w: 1280, h: 890, radius: 16, color: Color(0xFFF7F6F4), children: [
+    if (b2bIsPhone(context)) {
+      return B2bPhoneShell(current: '189', title: 'Propositions reçues', subtitle: b2bCompanyName(ref), onExport: b2bExportProposals, child: const B2bProposalsContent());
+    }
+    final canvas = <Widget>[
       if (demoContent) Positioned.fill(child: GChoiceGroup(chips: [GChip(268, 134, 107.4, 34, 'Toutes (23)', 12.5, 600), GChip(383.4, 134, 144.4, 34, 'Présélection (4)', 12.5, 500), GChip(535.8, 134, 85.2, 34, 'Refusées', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17, inter: true)),
       gP(268, 182, 582, 216, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26]), show: demoContent),
       gP(269, 183, 580, 39, gBox(color: Color(0xFFF4F1F8), radii: [15, 15, 15, 15]), show: demoContent),
@@ -143,9 +147,17 @@ class G_189 extends ConsumerWidget {
       gP(1095.833, 90.917, 8.167, 8.167, gImg('assets/figma/v/aa6a66611de441.svg')),
       gP(1100.167, 94.167, 8.167, 8.167, gImg('assets/figma/v/aa6a66611de441.svg')),
       gP(1118, 87, 111, 14, gText('Personnaliser la vue', 11.5, Color(0xFF111015), weight: 500, inter: true)),
-      gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
+      gTap(954, 78, 110, 34, () { b2bRefresh(context, ref); }), // « Actualiser » relit réellement besoins, propositions et devis
       gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
-      if (!demoContent) gP(268, 150, 984, 640, MobileList(provider: companyProposalsProvider, title: (r) => '${r['author']}', subtitle: (r) => '${r['mission']} · ${r['amount']} FCFA · ${r['delay_days']} jours', trailing: (r) => proposalStatus(r['status']), emptyText: 'Aucune proposition reçue pour le moment.', width: 984, height: 640)),
+    ];
+    // Production : toile débarrassée des éléments de maquette (cadres vides, avatars, faux boutons, menu sans lien), contenu réel.
+    return GScreen(w: 1280, h: 890, radius: 16, color: Color(0xFFF7F6F4), children: demoContent ? canvas : [
+      ...b2bProdCanvas(canvas, content: Rect.fromLTWH(250, 126, 1030, 764), sideWidth: 240, drop: [Rect.fromLTWH(930, 0, 140, 56), Rect.fromLTWH(1075, 70, 205, 50), Rect.fromLTWH(260, 106, 420, 24), Rect.fromLTWH(60, 820, 170, 40)]),
+      gP(268, 110, 500, 15, gText('Propositions reçues sur vos besoins, à accepter ou refuser.', 12, Color(0xFF6D6A64), inter: true)),
+      ...b2bSideTaps(context, 240, [(107, '187'), (147, '99'), (187, '188'), (227, '189'), (299, '190'), (339, '98'), (379, '96'), (419, '97')]),
+      b2bSideUser(66, 827),
+      b2bExportPill(1086, b2bExportProposals),
+      b2bWide(268, 134, 984, 740, const B2bProposalsContent()),
     ]);
   }
 }

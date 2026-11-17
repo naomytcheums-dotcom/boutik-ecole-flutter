@@ -29,6 +29,9 @@ String roleKey(Account? a) {
   return const ['client', 'student', 'company', 'other'][a.role.clamp(0, 3)];
 }
 
+/// Compte entreprise ou organisation (rôles company et other, hors personnel de la plateforme) : mêmes écrans et menus entreprise (décision 2).
+bool isCompanyAccount(Account? a) => a != null && a.staff.isEmpty && (a.role == 2 || a.role == 3);
+
 const roleNames = {
   'visitor': 'Visiteur',
   'client': 'Client',
@@ -52,7 +55,7 @@ Set<String>? allowedRoles(String id) {
   // Demande de devis : tout compte connecté peut en adresser une à un prestataire (pas seulement les entreprises).
   if (id == '95b') return {'client', 'student', 'company', 'other', 'dept', admin};
   if (n >= 57 && n <= 69) return {'student', admin}; // espace vendeur : étudiants-vendeurs ; l'administrateur peut le consulter (la création de boutique reste refusée aux autres rôles par le serveur)
-  if ((n >= 88 && n <= 99) || (n >= 187 && n <= 190)) return {'company', admin};
+  if ((n >= 88 && n <= 99) || (n >= 187 && n <= 190)) return {'company', 'other', admin}; // décision 2 : l'organisation (rôle other) a les écrans entreprise ; le serveur applique la même porte de vérification
   if (n >= 108 && n <= 116) return {'dept', 'direction', admin};
   if (n >= 117 && n <= 126) return {'direction', admin};
   if (n >= 127 && n <= 138) {
@@ -71,7 +74,7 @@ Set<String>? allowedRoles(String id) {
   switch (n) {
     case 262:
     case 285:
-      return {'company', admin};
+      return {'company', 'other', admin};
     case 263:
     case 286:
     case 287:
@@ -121,6 +124,13 @@ const _hiddenInEspaceForClient = {
   'A1', 'A2', 'A3', 'P1', 'P2', 'P4', 'P5', 'V1', 'L1', '250b', 'S1',
 };
 
+/// Écrans qu'une entreprise ou organisation peut atteindre par une adresse directe mais que « Mes rubriques » ne lui propose pas (E6-9) :
+/// ceux du Client, plus les outils d'étudiant (compte étudiant, matricule, candidatures et profil vendeur).
+const _hiddenInEspaceForCompany = {
+  ..._hiddenInEspaceForClient,
+  '154', '18c', '72', '74', '76',
+};
+
 /// Écrans pas encore disponibles en production (jumeau 3D, réalité augmentée) : ils restent joignables par leur adresse, qui affiche l'état réel,
 /// mais « Mes rubriques » ne les propose pas comme s'ils fonctionnaient.
 const _notYetAvailable = {'225', '226'};
@@ -128,7 +138,8 @@ const _notYetAvailable = {'225', '226'};
 /// Écran proposé dans « Mes rubriques » : ouvert au rôle, et pertinent pour lui. [juror] : le compte est juré d'un concours (écran de notation 167).
 bool listedInEspace(Account? a, String id, {bool juror = false}) =>
     !(Backend.ready && _notYetAvailable.contains(id)) &&
-    (canOpen(a, id) || (juror && a != null && id == '167')) && !(roleKey(a) == 'client' && _hiddenInEspaceForClient.contains(id) && !(juror && id == '167'));
+    (canOpen(a, id) || (juror && a != null && id == '167')) &&
+    !((roleKey(a) == 'client' && _hiddenInEspaceForClient.contains(id) || isCompanyAccount(a) && _hiddenInEspaceForCompany.contains(id)) && !(juror && id == '167'));
 
 /// Enveloppe d'un écran : affiche l'écran si le rôle l'autorise, sinon « Accès réservé ».
 class AccessGuard extends ConsumerWidget {

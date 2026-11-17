@@ -21,6 +21,9 @@ export async function run(db) {
   // --- verification
   await as(E);
   await q(`select company_save(jsonb_build_object('company_name','Orange Cameroun','sector','Telecoms','city','Douala','phone','699','contact_name','Mme N'))`);
+  await db.exec('reset role');
+  await db.exec(`insert into storage.objects (bucket_id, name, metadata) values ('profile-documents', '${E}/company/rccm.pdf', '{"mimetype":"application/pdf","size":1000}')`);
+  await as(E);
   await q(`select company_doc_add('registration', 'RCCM.pdf', '${E}/company/rccm.pdf', 'application/pdf', 1000)`);
   await q(`select company_submit()`);
   await as(M);
@@ -59,9 +62,9 @@ export async function run(db) {
   // --- tableau de bord
   const d = (await q(`select company_dashboard() r`))[0].r;
   check('accueil : statut, forfait et chiffres', d.status === 'approved' && d.plan_name === 'Découverte' && d.needs_open === 2 && d.offers_active === 1 && d.contests_active === 1 && d.proposals_new === 0);
-  // --- organisation non commerciale : pas de porte
+  // --- organisation (rôle other) : traitée comme une entreprise (décision 2, lot F1) : vérification requise
   await as(O);
-  check('ONG / universite (autre role) : aucune porte', (await q(offer('Benevolat environnement'))).length === 1);
+  await fails('ONG / universite (role other) : verification requise comme une entreprise (decision 2)', offer('Benevolat environnement'), /doit être vérifiée/);
   // --- gestion des forfaits par l'administrateur
   await as(E);
   await fails('forfait : creation reservee a l administrateur', `select company_plan_save(jsonb_build_object('code','gold','name','Or','price_fcfa',100000))`, /Réservé/);

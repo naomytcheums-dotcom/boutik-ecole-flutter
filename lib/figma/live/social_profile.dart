@@ -11,6 +11,7 @@ import '../gen.dart';
 import '../nav.dart';
 import 'auth.dart';
 import 'backend.dart';
+import 'company_public_page.dart' show CompanyPublicPage;
 import 'messages.dart';
 import 'reels.dart';
 import 'social_posts.dart' show VerifiedBadge;
@@ -132,7 +133,10 @@ class SocialProfilePanel extends ConsumerWidget {
     final posts = ref.watch(authorPostsProvider(id));
     final following = ref.watch(followingIdsProvider);
 
-    return Container(
+    final org = profile.asData?.value.role;
+    final orgPage = !own && (org == 'company' || org == 'other');
+
+    Widget panel() => Container(
       key: const Key('social-profile-panel'),
         child: Column(
         children: [
@@ -147,6 +151,8 @@ class SocialProfilePanel extends ConsumerWidget {
         ],
       ),
     );
+    // Une entreprise ou une organisation : sa fiche réelle (raison sociale, secteur, badge vérifié), pas le profil de la personne qui l'a créée.
+    return orgPage ? CompanyPublicPage(ownerId: id, fallback: panel) : panel();
   }
 
   Widget _topBar(BuildContext context, bool own, WidgetRef ref) => Padding(

@@ -6,6 +6,7 @@ import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/entreprise.dart';
+import '../live/ent_f3b.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -44,7 +45,7 @@ class G_99 extends ConsumerWidget {
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
       gP(24, 70, 107, 26, gText('Historique', 21, Color(0xFF111015), weight: 700)),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 77.8, 34, 'Besoins', 12.5, 600), GChip(109.8, 120, 63, 34, 'Devis', 12.5, 500), GChip(180.8, 120, 77.8, 34, 'Projets', 12.5, 500), GChip(266.6, 120, 70.4, 34, 'Stages', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
+      if (demoContent) Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 77.8, 34, 'Besoins', 12.5, 600), GChip(109.8, 120, 63, 34, 'Devis', 12.5, 500), GChip(180.8, 120, 77.8, 34, 'Projets', 12.5, 500), GChip(266.6, 120, 70.4, 34, 'Stages', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
       gP(36, 181, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13]), show: demoContent),
       gP(46.333, 189.667, 19.333, 22.667, gImg('assets/figma/v/8a418070bfb100.svg'), show: demoContent),
       gP(54.667, 189.667, 11, 11, gImg('assets/figma/v/2e28e879cb0de7.svg'), show: demoContent),
@@ -102,7 +103,7 @@ class G_99 extends ConsumerWidget {
       gP(169, 762, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gTab(context, '03')),
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
-      if (!demoContent) gP(24, 176, 342, 520, missionsHistory()),
+      if (!demoContent) gP(24, 112, 342, 626, HistoryPanel(width: 342, height: 626)),
     ]);
   }
 }

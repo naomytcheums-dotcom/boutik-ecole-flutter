@@ -11,6 +11,7 @@ import 'delivery.dart' show homeDeliverySettingsDialog;
 import 'docs_prestataire.dart' show downloadSellerStatement;
 import 'feedback.dart';
 import 'certificates_page.dart';
+import 'company_home.dart' show showCompanyPlans;
 import 'lots.dart';
 import 'qr.dart' show myQrDialog;
 import 'verification_equipe.dart';
@@ -27,6 +28,13 @@ Future<void> _concours(BuildContext context, WidgetRef ref) async => GoRouter.of
 Future<void> _mentors(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/mentors');
 Future<void> _litiges(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/litiges');
 Future<void> _ficheEntreprise(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/entreprise/profil');
+Future<void> _equipeEntreprise(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/entreprise/equipe');
+Future<void> _forfaitsDeLEntreprise(BuildContext context, WidgetRef ref) => showCompanyPlans(context, ref);
+Future<void> _publierOffre(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/opportunites/publier');
+Future<void> _mesOffres(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/opportunites/mes');
+Future<void> _publierConcours(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/concours/publier');
+Future<void> _mesConcours(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/concours/mes');
+Future<void> _achatsEntreprise(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/entreprise/achats');
 Future<void> _entreprisesAVerifier(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/admin/entreprises');
 Future<void> _forfaitsEntreprises(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/admin/forfaits');
 Future<void> _sequestre(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/admin/sequestre');
@@ -140,15 +148,23 @@ final _groups = <_Group>[
     _Entry('Journal du projet', screen: '82', roles: {'student', 'dept', 'admin'}),
   ]),
   const _Group('Espace entreprise', [
-    _Entry('Fiche entreprise et vérification', action: _ficheEntreprise, roles: {'company'}),
-    _Entry('Tableau de bord entreprise', screen: '187', roles: {'company', 'admin'}),
-    _Entry('Publier un besoin', screen: '90', roles: {'company', 'admin'}),
-    _Entry('Historique des besoins', screen: '99', roles: {'company', 'admin'}),
-    _Entry('Propositions reçues', screen: '93', roles: {'company', 'admin'}),
-    _Entry('Rechercher des talents', screen: '91', roles: {'company', 'admin'}),
-    _Entry('Défis d’innovation', screen: '96', roles: {'company', 'admin'}),
-    _Entry('Espace projet', screen: '285', roles: {'company', 'admin'}),
-    _Entry('Accueil B2B', screen: '262', roles: {'company', 'admin'}),
+    _Entry('Fiche entreprise et vérification', action: _ficheEntreprise, roles: {'company', 'other', 'admin'}),
+    _Entry('Équipe de l’entreprise', action: _equipeEntreprise, roles: {'company', 'other', 'admin'}),
+    _Entry('Forfaits de l’entreprise', action: _forfaitsDeLEntreprise, roles: {'company', 'other', 'admin'}),
+    _Entry('Mes entreprises (invitations et espaces partagés)', action: _mesEntreprises, roles: {'company', 'other', 'admin'}),
+    _Entry('Tableau de bord entreprise', screen: '187', roles: {'company', 'other', 'admin'}),
+    _Entry('Publier un besoin', screen: '90', roles: {'company', 'other', 'admin'}),
+    _Entry('Historique des besoins', screen: '99', roles: {'company', 'other', 'admin'}),
+    _Entry('Propositions reçues', screen: '93', roles: {'company', 'other', 'admin'}),
+    _Entry('Publier une offre (stage, emploi, mission)', action: _publierOffre, roles: {'company', 'other', 'admin'}),
+    _Entry('Mes offres et candidatures', action: _mesOffres, roles: {'company', 'other', 'admin'}),
+    _Entry('Publier un concours ou un hackathon', action: _publierConcours, roles: {'company', 'other', 'admin'}),
+    _Entry('Mes concours', action: _mesConcours, roles: {'company', 'other', 'admin'}),
+    _Entry('Rechercher des talents', screen: '91', roles: {'company', 'other', 'admin'}),
+    _Entry('Défis d’innovation', screen: '96', roles: {'company', 'other', 'admin'}),
+    _Entry('Espace projet', screen: '285', roles: {'company', 'other', 'admin'}),
+    _Entry('Accueil B2B', screen: '262', roles: {'company', 'other', 'admin'}),
+    _Entry('Achats de l’entreprise', action: _achatsEntreprise, roles: {'company', 'other', 'admin'}),
   ]),
   const _Group('Administration', [
     _Entry('Console du département', screen: '108', roles: {'dept', 'admin'}),

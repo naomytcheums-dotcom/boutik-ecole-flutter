@@ -13,6 +13,7 @@ import 'access.dart' show roleKey;
 import 'auth.dart';
 import 'backend.dart';
 import 'download_stub.dart' if (dart.library.js_interop) 'download_web.dart';
+import 'entreprise.dart' show invalidateCompanyData;
 import 'docs_prestataire.dart' show downloadMissionInvoice;
 import 'l10_voeux.dart' show openWish, openWishEditor;
 import 'lot20.dart' show kioskLiveStatus, kioskStatus;
@@ -209,6 +210,7 @@ Future<void> saveNeed(BuildContext context, WidgetRef ref, {required bool publis
     'p_deadline': field(ref, 'b_deadline', '30 nov. 2026'), 'p_publish': publish, 'p_kind': 'besoin',
   }, title: publish ? 'Besoin non publié' : 'Brouillon non enregistré');
   if (!r.ok || !context.mounted) return;
+  invalidateCompanyData(context);
   ref.read(formProvider.notifier).clear(const ['b_title', 'b_cat', 'b_desc', 'b_budget', 'b_deadline']);
   gToast(context, publish ? 'Besoin publié : les talents peuvent vous faire des propositions.' : 'Brouillon enregistré.');
   if (publish) gBack(context);
@@ -223,6 +225,7 @@ Future<bool> publishMissionBrief(BuildContext context, WidgetRef ref, String kin
     'p_id': null, 'p_title': 'Mission sur mesure · $kind', 'p_description': desc,
     'p_budget_min': budgetMin, 'p_budget_max': budgetMax, 'p_deadline': deadline, 'p_publish': true, 'p_kind': 'mission',
   }, title: 'Besoin non envoyé');
+  if (r.ok && context.mounted) invalidateCompanyData(context);
   return r.ok;
 }
 
@@ -257,6 +260,7 @@ Future<void> orderPack(BuildContext context, WidgetRef ref) async {
   }, title: 'Demande non envoyée');
   if (r.ok && context.mounted) {
     ref.read(missionProvider.notifier).refresh();
+    invalidateCompanyData(context);
     gToast(context, 'Demande envoyée : le département est prévenu et qualifie les équipes.');
   }
 }
@@ -356,6 +360,7 @@ Future<bool> _closeMission(BuildContext context, WidgetRef ref, Map<String, dyna
   final r = await _run(context, 'mission_close', {'p_mission': m['id']});
   if (r.ok && context.mounted) {
     ref.read(missionProvider.notifier).refresh();
+    invalidateCompanyData(context);
     gToast(context, 'Mission clôturée.');
   }
   return r.ok;
@@ -380,15 +385,26 @@ Future<bool> _cancelNeed(BuildContext context, WidgetRef ref, Map<String, dynami
   final r = await _run(context, 'mission_cancel', {'p_id': m['id']});
   if (r.ok && context.mounted) {
     ref.read(missionProvider.notifier).refresh();
+    invalidateCompanyData(context);
     gToast(context, 'Besoin annulé.');
   }
   return r.ok;
 }
 
 Future<bool> _decideProposal(BuildContext context, WidgetRef ref, Map<String, dynamic> p, bool accept) async {
-  final r = await _run(context, 'decide_proposal', {'p_id': p['id'], 'p_accept': accept});
+  final who = '${p['author_name'] ?? 'cet auteur'}';
+  var reason = '';
+  if (accept) {
+    if (!await _confirm(context, 'Accepter la proposition de $who ?', 'La mission lui est attribuée pour ${_money(p['amount'])}. Les autres propositions de ce besoin sont refusées et leurs auteurs prévenus ; trois jalons (30 / 40 / 30 %) sont créés. Cette décision est définitive.', 'Accepter') || !context.mounted) return false;
+  } else {
+    final v = await formDialog(context, 'Refuser la proposition de $who ?', [('Motif (facultatif, transmis au talent)', '')], intro: 'L’auteur est prévenu que sa proposition n’est pas retenue.', submit: 'Refuser');
+    if (v == null || !context.mounted) return false;
+    reason = v.first.trim();
+  }
+  final r = await _run(context, 'decide_proposal', {'p_id': p['id'], 'p_accept': accept, if (reason.isNotEmpty) 'p_reason': reason});
   if (r.ok && context.mounted) {
     ref.read(missionProvider.notifier).refresh();
+    invalidateCompanyData(context);
     gToast(context, accept ? 'Proposition acceptée : la mission est attribuée.' : 'Proposition refusée.');
   }
   return r.ok;
@@ -404,6 +420,7 @@ Future<bool> _decideMilestone(BuildContext context, Map<String, dynamic> j, bool
   if (!context.mounted) return false;
   final r = await _run(context, 'decide_milestone', {'p_mission': j['mission_id'], 'p_position': j['position'], 'p_validate': validate, 'p_note': note});
   if (r.ok && context.mounted) {
+    invalidateCompanyData(context);
     gToast(context, validate ? 'Jalon validé : la livraison est acceptée. Le paiement se règle directement avec le prestataire.' : 'Correction demandée au prestataire.');
   }
   return r.ok;

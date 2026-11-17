@@ -14,8 +14,8 @@ import 'package:boutik_ecole/figma/live/auth.dart';
 import 'package:boutik_ecole/figma/live/backend.dart';
 import 'package:boutik_ecole/figma/live/console.dart';
 import 'package:boutik_ecole/figma/live/entreprise.dart';
+import 'package:boutik_ecole/figma/live/f4_api.dart';
 import 'package:boutik_ecole/figma/live/project_cards.dart';
-import 'package:boutik_ecole/figma/live/home_live.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -28,13 +28,6 @@ class _Rows extends RpcRows {
   final List<Map<String, dynamic>>? v;
   @override
   List<Map<String, dynamic>>? build() => v;
-}
-
-class _Talents extends TalentsNotifier {
-  _Talents(this.v);
-  final List<LiveTalent> v;
-  @override
-  List<LiveTalent>? build() => v;
 }
 
 void main() {
@@ -110,15 +103,17 @@ void main() {
     expect(find.text('DEV-2026-014 · Borne solaire'), findsNothing);
   });
 
-  testWidgets('96 connecté : défis réels, état vide sinon', (t) async {
-    await monter(t, const G_96(), connecte: true, overrides: [contestsListProvider.overrideWith(() => _Rows('table:contests', const []))]);
+  testWidgets('96 connecté : défis réels (concours et hackathons), état vide sinon', (t) async {
+    await monter(t, const G_96(), connecte: true, overrides: [defisListProvider.overrideWith(() => _Rows('defis_list', const []))]);
     expect(find.text('Défi Orange : paiement mobile inclusif'), findsNothing);
     expect(find.textContaining('Aucun défi ouvert'), findsOneWidget);
   });
 
   testWidgets('91 connecté : talents réels', (t) async {
     await monter(t, const G_91(), connecte: true, overrides: [
-      liveTalentsProvider.overrideWith(() => _Talents(const [LiveTalent(id: 'u1', name: 'Alice Test', department: 'Informatique', skills: 'Flutter', avatarUrl: '', certified: false)]))
+      f4RpcProvider.overrideWithValue((fn, p) async => fn == 'talents_search'
+          ? (data: {'total': 1, 'items': [{'id': 'u1', 'name': 'Alice Test', 'department': 'Informatique', 'skills': 'Flutter', 'avatar_url': null, 'certified': false}], 'locked': false, 'limit': 20, 'offset': 0}, error: null)
+          : (data: null, error: 'Fonction non prévue'))
     ]);
     expect(find.text('Alice Test'), findsOneWidget);
     expect(find.text('Aminata Bello'), findsNothing);

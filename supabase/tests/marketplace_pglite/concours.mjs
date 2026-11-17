@@ -9,6 +9,9 @@ export async function run(db) {
   for (const [id, nm, role, dept] of [[A, 'Awa Etudiante', 'student', 'Génie informatique'], [B, 'Universite Canada', 'other', ''], [C, 'Cora Etudiante', 'student', 'Génie civil'], [M, 'Mod Admin', 'admin', 'Direction']]) {
     await db.exec(`insert into auth.users(id,email) values ('${id}','${nm.split(' ')[0]}@t.cm'); insert into profiles(id,name,role,email,department) values ('${id}','${nm}','${role}','${nm.split(' ')[0]}@t.cm','${dept}')`);
   }
+  // Lot F1 : une organisation (rôle other) publie sous sa fiche approuvée et dans les quotas de son forfait (Partenaire : 20 concours).
+  await db.exec(`insert into company_profiles (owner_id, company_name, status) values ('${B}', 'Universite Canada', 'approved')`);
+  await db.exec(`insert into company_subscriptions (owner_id, plan_code, status, starts_at, ends_at) values ('${B}', 'partner', 'active', now(), now() + interval '30 days')`);
   const ann = (title, kind, extra = {}) => {
     const e = { organizer: 'Universite de Montreal', country: 'Canada', place: 'online', domain: 'scholarship', deadline: "'2099-12-31'", free: 'true', url: 'https://bourse.exemple.ca/apply', reward: 'Bourse complete', ...extra };
     return `select ann_save(jsonb_build_object('title','${title}','organizer','${e.organizer}','organizer_kind','university','country','${e.country}','place_kind','${e.place}','domain','${e.domain}','kind','${kind}',

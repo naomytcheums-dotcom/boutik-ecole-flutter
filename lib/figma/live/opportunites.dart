@@ -2,10 +2,12 @@ import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart' show GoRouter;
+import '../nav.dart' show gOpen;
 import 'auth.dart';
 import 'access.dart' show roleKey;
+import 'company_screens.dart' show companyProvider, companyStatusLabel;
+import 'ent_f3b.dart' show EntButton, openNeedForm;
 import 'entreprise.dart';
-import 'lots.dart' show compareProposalsDialog;
 import 's8_etudiant.dart';
 
 /// Opportunités (écrans 157 Résumé de mes besoins, 203 Mes compétences, 204 Coup de pouce startup) :
@@ -30,38 +32,77 @@ class CompanySummary extends ConsumerWidget {
     final props = ref.watch(companyProposalsProvider);
     final missions = ref.watch(companyMissionsProvider);
     if (props == null || missions == null) return note('Chargement…');
-    if (ref.read(companyProposalsProvider.notifier).error || ref.read(companyMissionsProvider.notifier).error) return note('Résumé indisponible pour le moment.');
-    final received = props.length;
-    final pending = props.where((p) => '${p['status']}' == 'submitted' || '${p['status']}' == 'pending').length;
-    final now = DateTime.now();
-    final soon = missions.where((m) {
-      final d = DateTime.tryParse('${m['deadline'] ?? ''}');
-      return d != null && d.isAfter(now) && d.difference(now).inDays <= 7;
-    }).length;
-    Widget tile(String l, String v) => Expanded(child: Container(padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18), border: Border.all(color: const Color(0xFFECE8F2))), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(l, style: _st(11.5, c: _grey)), const SizedBox(height: 6), Text(v, style: _st(22, w: FontWeight.w800))])));
+    if (ref.read(companyProposalsProvider.notifier).error || ref.read(companyMissionsProvider.notifier).error) {
+      return Container(
+        width: width,
+        height: 190,
+        alignment: Alignment.center,
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Text('Résumé indisponible pour le moment.', style: _st(13, c: _grey)),
+          TextButton(
+            style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+            onPressed: () {
+              ref.invalidate(companyProposalsProvider);
+              ref.invalidate(companyMissionsProvider);
+            },
+            child: Text('Réessayer', style: _st(13, w: FontWeight.w700, c: const Color(0xFF5A3FE0))),
+          ),
+        ]),
+      );
+    }
+    final c = companyCounters(missions, props, DateTime.now());
+    final company = ref.watch(companyProvider).asData?.value;
+    Widget tile(String l, String v, String screen) => Expanded(
+          child: Semantics(
+            button: true,
+            label: '$l : $v',
+            excludeSemantics: true,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => gOpen(context, screen),
+              child: Container(constraints: const BoxConstraints(minHeight: 72), padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18), border: Border.all(color: const Color(0xFFECE8F2))), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(l, style: _st(11.5, c: _grey)), const SizedBox(height: 6), Text(v, style: _st(22, w: FontWeight.w800))])),
+            ),
+          ),
+        );
+    final empty = missions.isEmpty && props.isEmpty;
     return SizedBox(
       width: width,
       height: height,
       child: SingleChildScrollView(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(children: [tile('Propositions reçues', '$received'), const SizedBox(width: 12), tile('À examiner', '$pending')]),
+          if (company != null) Padding(padding: const EdgeInsets.only(bottom: 10), child: Text('${company['company_name'] ?? ''} · ${companyStatusLabel('${company['status']}')}', style: _st(12.5, c: _grey))),
+          Row(children: [tile('Propositions reçues', '${c.proposals}', '93'), const SizedBox(width: 12), tile('À examiner', '${c.toReview}', '93')]),
           const SizedBox(height: 12),
-          Row(children: [tile('Besoins publiés', '${missions.length}'), const SizedBox(width: 12), tile('Échéances sous 7 jours', '$soon')]),
-          const SizedBox(height: 22),
-          Text('Dernières propositions', style: _st(15, w: FontWeight.w700)),
-          const SizedBox(height: 10),
-          if (props.isEmpty)
-            Text('Aucune proposition reçue pour le moment.', style: _st(13, c: _grey))
-          else
-            for (final p in props.take(5))
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () => compareProposalsDialog(context, ref),
-                child: Padding(padding: const EdgeInsets.symmetric(vertical: 7), child: Row(children: [
-                  Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('${p['author']}', style: _st(13.5, w: FontWeight.w600)), Text('${p['mission']} · ${proposalStatus(p['status'])}', style: _st(11.5, c: _grey))])),
-                  const Icon(Icons.chevron_right, size: 20, color: _grey),
-                ])),
-              ),
+          Row(children: [tile('Besoins publiés', '${c.needs}', '99'), const SizedBox(width: 12), tile('Échéances sous 7 jours', '${c.deadlines}', '99')]),
+          const SizedBox(height: 12),
+          Row(children: [tile('Collaborations en cours', '${c.collaborations}', '98'), const SizedBox(width: 12), const Expanded(child: SizedBox.shrink())]),
+          const SizedBox(height: 18),
+          if (empty) ...[
+            Text('Vous n’avez encore publié aucun besoin.\nDécrivez ce que vous cherchez : les talents qualifiés vous envoient leurs propositions.', style: _st(13, c: _grey).copyWith(height: 1.5)),
+            const SizedBox(height: 12),
+            EntButton('Publier un besoin', () => openNeedForm(context), icon: Icons.add),
+          ] else ...[
+            Text('Dernières propositions', style: _st(15, w: FontWeight.w700)),
+            const SizedBox(height: 6),
+            if (props.isEmpty)
+              Text('Aucune proposition reçue pour le moment.', style: _st(13, c: _grey))
+            else
+              for (final p in props.take(5))
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => openProposal(context, ref, p),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(minHeight: 56),
+                    child: Row(children: [
+                      Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('${p['author']}', style: _st(13.5, w: FontWeight.w600)), Text('${p['mission']} · ${proposalStatus(p['status'])}', style: _st(11.5, c: _grey))])),
+                      const Icon(Icons.chevron_right, size: 20, color: _grey),
+                    ]),
+                  ),
+                ),
+            const SizedBox(height: 12),
+            EntButton('Publier un besoin', () => openNeedForm(context), dark: false, icon: Icons.add),
+          ],
+          const SizedBox(height: 12),
         ]),
       ),
     );

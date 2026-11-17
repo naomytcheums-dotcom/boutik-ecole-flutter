@@ -6,6 +6,7 @@ import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/entreprise.dart';
+import '../live/ent_f3b.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -82,10 +83,10 @@ class G_93 extends ConsumerWidget {
       gP(164, 522, 43, 15, gText(demoContent ? '65 000' : '', 12, Color(0xFF4A4854)), show: demoContent),
       gP(263.2, 522, 37, 15, gText(gm('6 jours', ''), 12, Color(0xFF4A4854)), show: demoContent),
       gP(0, 744, 390, 100, gBox(color: Color(0x00FFFFFF))),
-      gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gOpen(context, '94')),
+      gP(24, 760, 342, 54, demoContent ? gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]) : const CompareButtonFace(), tap: () => demoContent ? gOpen(context, '94') : compareSelection(context, ref)),
       gP(118, 778, 154, 18, gText('Comparer la sélection', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
-      if (!demoContent) gP(24, 176, 342, 520, proposalsList()),
+      if (!demoContent) gP(24, 112, 342, 624, ProposalsPanel(width: 342, height: 624)),
     ]);
   }
 }

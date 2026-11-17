@@ -94,6 +94,13 @@ void main() {
     final company = seedAccounts.firstWhere((a) => a.role == 2);
     expect(canOpen(company, '90'), isTrue);
     expect(canOpen(student, '90'), isFalse);
+    // organisation (rôle other) : mêmes écrans entreprise (décision 2) ; un Client ne les ouvre pas
+    const other = Account(name: 'ONG Verte', phone: '690000000', email: 'ong@t.cm', password: 'Boutik2026', role: 3);
+    expect(roleKey(other), 'other');
+    for (final id in ['88', '90', '93', '99', '187', '190', '262', '285']) {
+      expect(canOpen(other, id), isTrue, reason: 'other : écran $id');
+      expect(canOpen(_client, id), isFalse, reason: 'client : écran $id');
+    }
     // l'administrateur global ouvre tout
     for (final id in ['58', '90', '110', '126', '128', '139', '145', '213']) {
       expect(canOpen(admin, id), isTrue, reason: 'écran $id');

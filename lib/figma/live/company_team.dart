@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../gen.dart' show gToast;
 import '../i18n.dart' show Text;
-import 'access.dart' show LoginGuard, roleKey;
+import 'access.dart' show LoginGuard, roleKey, roleNames;
 import 'auth.dart';
 import 'backend.dart';
 import 'company_home.dart';
@@ -32,6 +32,15 @@ final myCompaniesProvider = FutureProvider.autoDispose<List<Map<String, dynamic>
 /// Droits d'un rôle : modifier la fiche, gérer l'équipe, payer le forfait.
 bool roleCanManage(String role) => role == 'owner' || role == 'admin';
 bool roleCanPay(String role) => role == 'owner' || role == 'admin' || role == 'finance';
+
+/// Changement de rôle d'un membre : le propriétaire gère tout le monde ; un administrateur ne touche ni aux autres administrateurs ni à lui-même.
+bool canChangeMemberRole(String myRole, String memberRole, {required bool isMe}) => !isMe && (myRole == 'owner' || (myRole == 'admin' && memberRole != 'admin'));
+
+/// Retrait d'un membre : chacun peut quitter l'équipe ; le propriétaire retire tout le monde, un administrateur seulement les non-administrateurs.
+bool canRemoveMember(String myRole, String memberRole, {required bool isMe}) => isMe || myRole == 'owner' || (myRole == 'admin' && memberRole != 'admin');
+
+/// Rôles attribuables : seul le propriétaire nomme un administrateur.
+Map<String, String> assignableCompanyRoles(String myRole) => {for (final e in companyRoleLabels.entries) if (e.key != 'owner' && (e.key != 'admin' || myRole == 'owner')) e.key: e.value};
 
 /// Garde des routes de l'espace entreprise : comptes Entreprise, Autre rôle et administrateur, ou membre actif d'une entreprise
 /// (espace partagé). Un autre compte, un Client sans entreprise par exemple, voit « Réservé aux entreprises » avec le chemin
@@ -118,21 +127,30 @@ class _MembersState extends ConsumerState<CompanyMembersScreen> {
 
   String? get _owner => ref.read(companyContextProvider);
 
-  Future<void> _call(String fn, Map<String, dynamic> p, String ok) async {
+  Future<bool> _call(String fn, Map<String, dynamic> p, String ok) async {
     final r = await marcheCall(fn, {...p, if (_owner != null) 'p_owner': _owner});
-    if (!mounted) return;
+    if (!mounted) return false;
     gToast(context, r.error != null ? Backend.userMessage('${r.error}') : ok);
     ref.invalidate(companyMembersProvider);
     ref.invalidate(companyDashboardProvider);
+    return r.error == null;
+  }
+
+  Future<void> _leave(String me) async {
+    final ok = await _call('company_member_remove', {'p_user': me}, 'Vous avez quitté l’équipe.');
+    if (!ok || !mounted) return;
+    ref.invalidate(myCompaniesProvider);
+    context.go('/mes-entreprises');
   }
 
   Future<void> _invite() async {
-    if (_email.text.trim().isEmpty) return gToast(context, 'Saisissez l’e-mail de la personne.');
+    final email = _email.text.trim();
+    if (email.isEmpty) return gToast(context, 'Saisissez l’e-mail de la personne.');
     setState(() => _busy = true);
-    await _call('company_invite', {'p_email': _email.text, 'p_role': _role}, 'Si un compte existe avec cet e-mail, la personne reçoit l’invitation.');
+    final ok = await _call('company_invite', {'p_email': email, 'p_role': _role}, 'Si un compte existe avec cet e-mail, la personne reçoit l’invitation.');
     if (mounted) {
       setState(() => _busy = false);
-      _email.clear();
+      if (ok) _email.clear();
     }
   }
 
@@ -169,13 +187,19 @@ class _MembersState extends ConsumerState<CompanyMembersScreen> {
                   Text(m['status'] == 'invited' ? 'Invitation envoyée' : (companyRoleLabels['${m['role']}'] ?? '${m['role']}'), style: mst(12, w: FontWeight.w700, c: m['status'] == 'invited' ? const Color(0xFFB45309) : kViolet)),
                 ]),
                 if ('${m['email'] ?? ''}'.isNotEmpty) Text('${m['email']}', style: mst(12, c: kGrey)),
-                if (canManage || '${m['user_id']}' == me)
+                if (m['status'] == 'active' && '${m['account_role'] ?? ''}'.isNotEmpty)
+                  Text('Compte : ${roleNames['${m['account_role']}'] ?? m['account_role']} · ${m['certified'] == true ? 'profil certifié' : 'profil non certifié'}', style: mst(11.5, c: kGrey)),
+                if (canChangeMemberRole(myRole, '${m['role']}', isMe: '${m['user_id']}' == me) || canRemoveMember(myRole, '${m['role']}', isMe: '${m['user_id']}' == me))
                   Padding(
                     padding: const EdgeInsets.only(top: 8),
                     child: Row(children: [
-                      if (canManage) Expanded(child: MDropdown(label: 'Rôle', value: '${m['role']}', items: {for (final e in companyRoleLabels.entries) if (e.key != 'owner') e.key: e.value}, onChanged: (v) => _call('company_member_set_role', {'p_user': m['user_id'], 'p_role': v}, 'Rôle modifié.'))),
-                      if (canManage) const SizedBox(width: 8),
-                      TextButton(onPressed: () => _call('company_member_remove', {'p_user': m['user_id']}, '${m['user_id']}' == me ? 'Vous avez quitté l’équipe.' : 'Membre retiré.'), child: Text('${m['user_id']}' == me ? 'Quitter' : 'Retirer', style: mst(12.5, w: FontWeight.w700, c: kRed))),
+                      if (canChangeMemberRole(myRole, '${m['role']}', isMe: '${m['user_id']}' == me)) Expanded(child: MDropdown(label: 'Rôle', value: '${m['role']}', items: assignableCompanyRoles(myRole), onChanged: (v) => _call('company_member_set_role', {'p_user': m['user_id'], 'p_role': v}, 'Rôle modifié.'))),
+                      if (canChangeMemberRole(myRole, '${m['role']}', isMe: '${m['user_id']}' == me)) const SizedBox(width: 8),
+                      TextButton(
+                        style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+                        onPressed: () => '${m['user_id']}' == me ? _leave(me) : _call('company_member_remove', {'p_user': m['user_id']}, m['status'] == 'invited' ? 'Invitation annulée.' : 'Membre retiré.'),
+                        child: Text('${m['user_id']}' == me ? 'Quitter' : (m['status'] == 'invited' ? 'Annuler l’invitation' : 'Retirer'), style: mst(12.5, w: FontWeight.w700, c: kRed)),
+                      ),
                     ]),
                   ),
               ]),
@@ -190,7 +214,9 @@ class _MembersState extends ConsumerState<CompanyMembersScreen> {
                 const SizedBox(height: 6),
                 Text('L’invitation de nouveaux membres demande l’abonnement Entreprise ou un forfait d’entreprise payant. Les membres déjà dans l’équipe gardent leur accès.', style: mst(12.5, c: kGrey).copyWith(height: 1.4)),
                 const SizedBox(height: 10),
-                mButton('Voir les offres', () => context.push('/offres'), dark: false),
+                mButton('Voir les forfaits d’entreprise', () => showCompanyPlans(context, ref), icon: Icons.workspace_premium_outlined),
+                const SizedBox(height: 8),
+                mButton('Voir les offres premium', () => context.push('/offres'), dark: false),
               ]),
             ),
           if (canManage && teamOpen) ...[
@@ -200,7 +226,7 @@ class _MembersState extends ConsumerState<CompanyMembersScreen> {
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 TextField(controller: _email, keyboardType: TextInputType.emailAddress, decoration: InputDecoration(labelText: 'E-mail du compte', hintText: 'collegue@entreprise.cm', filled: true, fillColor: Colors.white, border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)))),
                 const SizedBox(height: 10),
-                MDropdown(label: 'Rôle', value: _role, items: {for (final e in companyRoleLabels.entries) if (e.key != 'owner') e.key: e.value}, onChanged: (v) => setState(() => _role = v)),
+                MDropdown(label: 'Rôle', value: assignableCompanyRoles(myRole).containsKey(_role) ? _role : 'viewer', items: assignableCompanyRoles(myRole), onChanged: (v) => setState(() => _role = v)),
                 Padding(padding: const EdgeInsets.only(top: 6), child: Text(companyRoleHelp[_role] ?? '', style: mst(12, c: kGrey))),
                 const SizedBox(height: 4),
                 Text('La personne doit déjà avoir un compte Boutik-École. Elle reçoit une notification et accepte l’invitation.', style: mst(12, c: kGrey)),
@@ -285,7 +311,7 @@ class _SpaceState extends ConsumerState<CompanySpaceScreen> {
   @override
   void dispose() {
     // l'espace partagé se referme : on revient à sa propre entreprise (après l'image en cours)
-    Future.microtask(() => _ctx.set(null));
+    Future.microtask(() => _ctx.clearIf(widget.owner));
     super.dispose();
   }
 

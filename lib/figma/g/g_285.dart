@@ -25,6 +25,7 @@ import '../live/share.dart';
 import '../live/pay.dart';
 import '../live/engage.dart';
 import '../live/lots.dart';
+import '../live/ent_f3b.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_285 extends ConsumerWidget {
@@ -32,6 +33,7 @@ class G_285 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final action = demoContent ? (label: '', action: () {}) : projectSpaceAction(context, ref);
     return GScreen(w: 390, h: 844, radius: 46, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 140, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 580, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
@@ -70,9 +72,10 @@ class G_285 extends ConsumerWidget {
       gP(306, 588, 40, 15, gText('À venir', 12, Color(0xFF57545F), weight: 700), show: demoContent),
       gP(44, 676, 278, 16, gText(gm('Messagerie du projet · 3 nouveaux messages', ''), 13, Color(0xFF111015), weight: 600), show: demoContent),
       gP(44, 696, 210, 14, gText('Historique des échanges et des versions', 11, Color(0xFF57545F)), show: demoContent),
-      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => myNeedsDialog(context, ref)),
-      gP(137.5, 788, 115, 19, gText(gm('Valider le jalon 3', ''), 15, Color(0xFFFFFFFF), weight: 600)),
-      if (!demoContent) gP(24, 235, 342, 510, missionsMobile(height: 510)),
+      gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => demoContent ? myNeedsDialog(context, ref) : action.action()),
+      gP(137.5, 788, 115, 19, gText(gm('Valider le jalon 3', ''), 15, Color(0xFFFFFFFF), weight: 600), show: demoContent),
+      gP(36, 788, 318, 19, gText(action.label, 15, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center), show: !demoContent),
+      if (!demoContent) gP(24, 190, 342, 566, ProjectSpacePanel(width: 342, height: 566)),
     ]);
   }
 }

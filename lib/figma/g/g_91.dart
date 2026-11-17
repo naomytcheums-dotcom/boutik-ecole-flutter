@@ -15,6 +15,7 @@ import '../live/review.dart';
 import '../live/audit.dart';
 import '../live/admin.dart';
 import '../live/talents.dart';
+import '../live/talent_search_panel.dart' show TalentSearchScreen;
 import '../live/hackathons.dart';
 import '../live/ops.dart';
 import '../live/missions.dart';
@@ -30,6 +31,8 @@ class G_91 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Connecté : vraie mise en page de recherche (champ, filtres, résultats, vivier) à la place de la toile de maquette.
+    if (!demoContent) return const TalentSearchScreen();
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo', show: demoContent),
@@ -105,7 +108,6 @@ class G_91 extends ConsumerWidget {
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       if (demoContent) gTap(90, 338, 106, 33, () { gOpen(context, 'p1'); }), // lien métier 91 -> p1
-      if (!demoContent) gP(24, 230, 342, 500, const TalentSearchList(width: 342, height: 500)),
     ]);
   }
 }

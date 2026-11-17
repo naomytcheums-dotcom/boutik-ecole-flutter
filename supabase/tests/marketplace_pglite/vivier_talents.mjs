@@ -7,6 +7,8 @@ export async function run(db) {
   const fails = async (name, sql, re) => { try { await q(sql); check(name, false, 'aurait du echouer'); } catch (e) { check(name, re.test(e.message), e.message); } };
   await db.exec('reset role');
   for (const [id, nm, role] of [[E, 'Orange', 'company'], [X, 'Xena', 'company'], [A, 'Alice', 'student'], [B, 'Bob', 'student'], [C, 'Carl', 'client']]) await db.exec(`insert into auth.users(id,email) values ('${id}','${nm}@t.cm'); insert into profiles(id,name,role,email) values ('${id}','${nm}','${role}','${nm}@t.cm')`);
+  // Lot F1 : le vivier est réservé aux entreprises dont la fiche est approuvée.
+  await db.exec(`insert into company_profiles (owner_id, company_name, status) values ('${E}', 'Orange', 'approved'), ('${X}', 'Xena', 'approved')`);
   await db.exec(`insert into user_documents (owner_id, kind, name, path, mime, size_bytes, status) select id, 'student_card', 'c', id || '/c.pdf', 'application/pdf', 10, 'verified' from profiles where id in ('${A}', '${B}')`);
   await as(E);
   let lists = (await q(`select talent_lists_get() r`))[0].r;

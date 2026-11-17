@@ -52,7 +52,7 @@ class G_177 extends ConsumerWidget {
       gP(186, 344, 8, 6, gBox(color: Color(0xFFE6E1EE), radii: [3, 3, 3, 3])),
       gP(204, 344, 18, 6, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
       gP(24, 366, 345, 28, gText('Trouvez vos futurs talents', 22, Color(0xFF111015), weight: 800, wrap: true)),
-      gP(24, 398, 345, 38, gText('Publiez un besoin, recevez des propositions et laissez l’IA classer les meilleurs dossiers.', 13, Color(0xFF57545F), lh: 19, wrap: true)),
+      gP(24, 398, 345, 38, gText('Publiez un besoin, recevez des propositions et comparez-les : montant, délai et profil de chaque équipe.', 13, Color(0xFF57545F), lh: 19, wrap: true)),
       gP(36, 456, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(46.333, 464.667, 19.333, 22.667, gImg('assets/figma/v/8a418070bfb100.svg')),
       gP(54.667, 464.667, 11, 11, gImg('assets/figma/v/2e28e879cb0de7.svg')),
@@ -62,7 +62,7 @@ class G_177 extends ConsumerWidget {
       gP(36, 508, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
       gP(45.917, 516.667, 20.167, 19.75, gImg('assets/figma/v/f0d089e1b980ff.svg')),
       gP(56.333, 527.5, 11, 11, gImg('assets/figma/v/b5d7b991b3a965.svg')),
-      gP(88, 519, 182, 17, gText('Propositions classées par IA', 13.5, Color(0xFF111015), weight: 600)),
+      gP(88, 519, 250, 17, gText('Comparer les propositions reçues', 13.5, Color(0xFF111015), weight: 600)),
       gP(336.75, 520.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
       gP(88, 554, 266, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(36, 560, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13])),
@@ -70,7 +70,10 @@ class G_177 extends ConsumerWidget {
       gP(47.167, 569.5, 12.667, 12.667, gImg('assets/figma/v/50a1540c3efbda.svg')),
       gP(58.833, 579.608, 8.5, 10.892, gImg('assets/figma/v/f73f5c2da1a756.svg')),
       gP(56.333, 569.608, 8.507, 12.458, gImg('assets/figma/v/385c8732cbe0ba.svg')),
-      gP(88, 571, 186, 17, gText('Collaborer avec des équipes', 13.5, Color(0xFF111015), weight: 600)),
+      gP(88, 571, 250, 17, gText('Collaborer avec des équipes', 13.5, Color(0xFF111015), weight: 600)),
+      gTap(24, 452, 342, 52, () => gOpen(context, gDest(ref, '90'))),
+      gTap(24, 504, 342, 52, () => gOpen(context, gDest(ref, '93'))),
+      gTap(24, 556, 342, 52, () => gOpen(context, gDest(ref, '98'))),
       gP(336.75, 572.5, 10.5, 15, gImg('assets/figma/v/b8b27a74d41268.svg')),
       gP(0, 744, 390, 100, gBox(color: Color(0x00FFFFFF))),
       gP(24, 760, 163, 54, gBox(color: Color(0x00FFFFFF), border: Color(0xFFD9D3E6), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => gTab(context, '03')),
@@ -78,7 +81,7 @@ class G_177 extends ConsumerWidget {
       gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => gVisiteNext(context, '177', gDest(ref, '88'))),
       gP(249.5, 778, 70, 18, gText('Continuer', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
-      if (!demoContent) gP(0, 100, 390, 700, const CmsPageOverlay(title: 'Bienvenue, entreprise', height: 700)),
+      if (!demoContent) gP(0, 100, 390, 640, const CmsPageOverlay(title: 'Bienvenue, entreprise', height: 640)),
     ]);
   }
 }

@@ -1,25 +1,27 @@
 import 'package:boutik_ecole/figma/live/entreprise.dart';
-import 'package:boutik_ecole/figma/live/home_live.dart';
+import 'package:boutik_ecole/figma/live/f4_api.dart';
 import 'package:boutik_ecole/figma/live/talent_pool.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 
-class _FakeTalents extends TalentsNotifier {
-  @override
-  List<LiveTalent>? build() => const [
-        LiveTalent(id: 'a', name: 'Alice Ngo', department: 'Génie informatique', skills: 'Flutter', avatarUrl: '', certified: false),
-        LiveTalent(id: 'b', name: 'Bob Eto', department: 'Gestion', skills: 'Excel', avatarUrl: '', certified: false),
-      ];
-}
+const _alice = {'id': 'a', 'name': 'Alice Ngo', 'department': 'Génie informatique', 'skills': 'Flutter', 'avatar_url': null, 'certified': false};
+const _bob = {'id': 'b', 'name': 'Bob Eto', 'department': 'Gestion', 'skills': 'Excel', 'avatar_url': null, 'certified': false};
+
+/// Faux serveur : annuaire de deux étudiants (talents_search) et contenu des listes du vivier (talent_list_members_get).
+Future<({Object? data, String? error})> _server(String fn, Map<String, dynamic> p) async => switch (fn) {
+      'talents_search' => (data: {'total': 2, 'items': [_alice, _bob], 'locked': false, 'limit': 20, 'offset': 0}, error: null),
+      'talent_list_members_get' => (data: p['p_list'] == 'fav' ? [_alice] : <Map<String, dynamic>>[], error: null),
+      _ => (data: null, error: 'Fonction $fn non prévue'),
+    };
 
 Future<void> _pump(WidgetTester t, {String? only}) async {
   t.view.physicalSize = const Size(420, 900);
   t.view.devicePixelRatio = 1;
   addTearDown(t.view.reset);
   final List<Override> overrides = [
-    liveTalentsProvider.overrideWith(_FakeTalents.new),
+    f4RpcProvider.overrideWithValue(_server),
     talentListsProvider.overrideWith((ref) async => [
           {'id': 'fav', 'name': 'Favoris', 'count': 1},
           {'id': 'dev', 'name': 'Développeurs', 'count': 0},
@@ -54,6 +56,6 @@ void main() {
     await t.tap(find.text('Développeurs (0)'));
     await t.pumpAndSettle();
     expect(find.text('Alice Ngo'), findsNothing);
-    expect(find.textContaining('Aucun membre'), findsOneWidget);
+    expect(find.textContaining('Cette liste est vide'), findsOneWidget);
   });
 }

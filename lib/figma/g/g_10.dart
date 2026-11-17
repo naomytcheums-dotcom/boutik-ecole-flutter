@@ -50,7 +50,7 @@ class G_10 extends ConsumerWidget {
     final me = ref.watch(authProvider.select((a) => a.current));
     // Une entreprise a le même écran 10 (design du Figma) avec son propre contenu : nom, secteur, présentation, chiffres, vérification.
     final isView = viewProfile != null;
-    final isCo = !isView && !demoContent && me != null && me.role == 2 && me.staff.isEmpty;
+    final isCo = !isView && !demoContent && me != null && (me.role == 2 || me.role == 3) && me.staff.isEmpty;
     final hideLinks = isCo || isView || !demoContent; // connecté : seuls les liens réellement enregistrés s'affichent (ProfileLinkIcons)
     final isClient = !isView && !isCo && !demoContent && me != null && me.role == 0 && me.staff.isEmpty;
     // Un Client n'a ni boutique ni talent à certifier : le Talent Passport et la demande de certification ne lui sont proposés que si son compte est déjà certifié ou en cours d'examen.
@@ -133,7 +133,7 @@ class G_10 extends ConsumerWidget {
       gP(198.659, 559.333, 16.682, 19.333, gImg('assets/figma/v/9420af15075547.svg'), show: !hideLinks),
       gP(197.333, 568.667, 10.667, 7.707, gImg('assets/figma/v/4b0531a4484979.svg'), show: !hideLinks),
       gP(232, 556, 82, 26, gBox(color: Color(0xCCFFFFFF), border: Color(0xFFFFFFFF), bw: 1, radii: [100, 100, 100, 100])),
-      gP(245, 562, 56, 14, gText(isCo ? 'Site web ↗' : 'Portfolio ↗', 11, Color(0xFF120F14), weight: 600)),
+      gP(245, 562, 56, 14, gText(isCo ? ((co?.website ?? '').isEmpty ? 'Mon site' : 'Site web ↗') : 'Portfolio ↗', 11, Color(0xFF120F14), weight: 600)),
       gP(326, 556, 26, 26, gBox(color: Color(0xFF111015), oval: true), show: !isView),
       gP(326, 556, 26, 26, const Icon(Icons.add_rounded, size: 18, color: Color(0xFFFFFFFF)), show: !isView),
       if (!demoContent && !isCo) gP(89, 553, 140, 32, ProfileLinkIcons(userId: isView ? viewProfile!.id : null)),

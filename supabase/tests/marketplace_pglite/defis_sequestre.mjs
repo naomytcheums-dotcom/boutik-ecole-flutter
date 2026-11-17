@@ -9,6 +9,9 @@ export async function run(db) {
   await db.exec('reset role');
   for (const [id, nm, role] of [[E, 'Orange', 'company'], [X, 'Xena', 'company'], [A, 'Alice', 'student'], [B, 'Bob', 'student'], [ADM, 'Admin', 'admin']]) await db.exec(`insert into auth.users(id,email) values ('${id}','${nm}@t.cm'); insert into profiles(id,name,role,email) values ('${id}','${nm}','${role}','${nm}@t.cm')`);
   await db.exec(`insert into contest_announcements (id, poster_id, title, organizer, kind, status, official_url) values ('${N}', '${E}', 'Defi solaire', 'Orange', 'contest', 'pending', 'https://orange.cm/defi')`);
+  // Lot F1 : le gagnant doit être un étudiant vérifié lié à l'annonce (ici Alice l'a enregistrée ; Bob n'est lié à rien).
+  await db.exec(`insert into user_documents (owner_id, kind, name, path, mime, size_bytes, status) select id, 'student_card', 'c', id || '/c.pdf', 'application/pdf', 10, 'verified' from profiles where id in ('${A}', '${B}')`);
+  await db.exec(`insert into contest_ann_saves (announcement_id, user_id) values ('${N}', '${A}')`);
   await as(E);
   await fails('montant trop petit', `select ann_prize_set('${N}', 500)`, /au moins 1 000/);
   check('recompense fixee : en attente de paiement', (await q(`select ann_prize_set('${N}', 100000) r`))[0].r === 'awaiting');
@@ -30,8 +33,9 @@ export async function run(db) {
   check('publication possible apres sequestre', (await q(`select ann_decide('${N}', true) r`))[0].r === 'published');
   await as(E);
   await fails('plus de modification apres publication', `select ann_prize_set('${N}', 200000)`, /avant la publication/);
-  await fails('gagnant inconnu', `select ann_prize_award('${N}', 'inconnu@t.cm')`, /Aucun compte étudiant/);
-  await fails('le sponsor ne se l attribue pas', `select ann_prize_award('${N}', 'Orange@t.cm')`, /Aucun compte étudiant/);
+  check('gagnant inconnu : not_eligible', (await q(`select ann_prize_award('${N}', 'inconnu@t.cm') r`))[0].r === 'not_eligible');
+  check('le sponsor ne se l attribue pas (compte non étudiant)', (await q(`select ann_prize_award('${N}', 'Orange@t.cm') r`))[0].r === 'not_eligible');
+  check('étudiant vérifié mais non lié à l annonce : not_eligible (même réponse)', (await q(`select ann_prize_award('${N}', 'bob@t.cm') r`))[0].r === 'not_eligible');
   check('gagnant designe', (await q(`select ann_prize_award('${N}', ' alice@T.cm ') r`))[0].r === 'awarded');
   await db.exec('reset role');
   const ent2 = (await q(`select status, beneficiary_id, beneficiary_amount, platform_amount, split from money_entries where id = '${st.prize_entry}'`))[0];

@@ -24,6 +24,7 @@ import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/inert_actions.dart';
 import '../live/pay.dart';
+import '../live/b2b_screens.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_190 extends ConsumerWidget {
@@ -31,7 +32,10 @@ class G_190 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return GScreen(w: 1280, h: 880, radius: 16, color: Color(0xFFF7F6F4), children: [
+    if (b2bIsPhone(context)) {
+      return B2bPhoneShell(current: '190', title: 'Devis et négociations', subtitle: b2bCompanyName(ref), onExport: b2bExportQuotes, child: const B2bQuotesContent());
+    }
+    final canvas = <Widget>[
       gP(268, 160, 984, 1, gBox(color: Color(0xFFECE8F2)), show: demoContent),
       gP(404, 134, 56, 16, gText('En cours', 13, Color(0xFF111015), weight: 700, inter: true, align: TextAlign.center), show: demoContent),
       gP(317.2, 158, 229.6, 3, gBox(color: Color(0xFF6A4DFF), radii: [2, 2, 2, 2]), show: demoContent),
@@ -128,9 +132,17 @@ class G_190 extends ConsumerWidget {
       gP(1095.833, 90.917, 8.167, 8.167, gImg('assets/figma/v/aa6a66611de441.svg')),
       gP(1100.167, 94.167, 8.167, 8.167, gImg('assets/figma/v/aa6a66611de441.svg')),
       gP(1118, 87, 111, 14, gText('Personnaliser la vue', 11.5, Color(0xFF111015), weight: 500, inter: true)),
-      gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
+      gTap(954, 78, 110, 34, () { b2bRefresh(context, ref); }), // « Actualiser » relit réellement besoins, propositions et devis
       gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
-      if (!demoContent) gP(268, 150, 984, 640, quotesListWidgetWide()),
+    ];
+    // Production : toile débarrassée des éléments de maquette (cadres vides, avatars, faux boutons, menu sans lien), contenu réel.
+    return GScreen(w: 1280, h: 880, radius: 16, color: Color(0xFFF7F6F4), children: demoContent ? canvas : [
+      ...b2bProdCanvas(canvas, content: Rect.fromLTWH(250, 126, 1030, 754), sideWidth: 240, drop: [Rect.fromLTWH(930, 0, 140, 56), Rect.fromLTWH(1075, 70, 205, 50), Rect.fromLTWH(260, 106, 420, 24), Rect.fromLTWH(60, 810, 170, 40)]),
+      gP(268, 110, 500, 15, gText('Vos demandes de devis aux prestataires et leurs réponses.', 12, Color(0xFF6D6A64), inter: true)),
+      ...b2bSideTaps(context, 240, [(107, '187'), (147, '99'), (187, '188'), (227, '189'), (299, '190'), (339, '98'), (379, '96'), (419, '97')]),
+      b2bExportPill(1086, b2bExportQuotes),
+      b2bSideUser(66, 817),
+      b2bWide(268, 134, 984, 730, const B2bQuotesContent()),
     ]);
   }
 }

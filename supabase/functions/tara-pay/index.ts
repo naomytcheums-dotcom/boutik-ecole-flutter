@@ -47,8 +47,30 @@ Deno.serve(async (req) => {
   // Une commande ou une contribution doit suivre son propre circuit : sinon la confirmation n'aurait aucun effet.
   const subject = String(tx.subject ?? "");
   const eventId = /^evt:([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i.exec(subject)?.[1];
-  const supported = (tx.kind === "subscription" && subject.startsWith("plan:")) || (tx.kind === "event" && (subject.startsWith("prize:") || !!eventId));
+  // Forfait d'entreprise : « cplan:<code>[:<propriétaire>] » (ancien sujet « plan:… » accepté tant qu'aucune offre premium n'est liée au paiement).
+  const planMatch = tx.kind === "subscription" ? /^(c?plan):([a-z0-9_]{2,30})(?::([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}))?$/i.exec(subject) : null;
+  const supported = !!planMatch || (tx.kind === "event" && (subject.startsWith("prize:") || !!eventId));
   if (!supported) return json({ error: "unsupported_kind", message: "Ce paiement ne peut pas être réglé par Tara Money." }, 400);
+  if (planMatch) {
+    // Le débit n'est lancé que pour un forfait d'entreprise réel, demandé par le propriétaire, un administrateur ou la finance d'une fiche APPROUVÉE,
+    // au prix de la base : sinon le paiement serait confirmé sans activer aucun forfait.
+    const { data: plan } = await admin.from("company_plans").select("code, price_fcfa").eq("code", planMatch[2].toLowerCase()).maybeSingle();
+    if (!plan) return json({ error: "unsupported_kind", message: "Ce forfait ne peut pas être réglé par Tara Money." }, 400);
+    if (planMatch[1].toLowerCase() === "plan") {
+      const { data: premium } = await admin.from("subscriptions").select("id").eq("payment_id", tx.id).maybeSingle();
+      if (premium) return json({ error: "unsupported_kind", message: "Cette offre premium se règle par paiement manuel." }, 400);
+    }
+    const owner = (planMatch[3] ?? u.user.id).toLowerCase();
+    const { data: fiche } = await admin.from("company_profiles").select("status").eq("owner_id", owner).maybeSingle();
+    if (fiche?.status !== "approved") return json({ error: "company_not_approved", message: "Faites d'abord vérifier votre entreprise : le forfait ne peut pas être payé avant la vérification." }, 403);
+    let allowed = owner === u.user.id;
+    if (!allowed) {
+      const { data: member } = await admin.from("company_members").select("role").eq("owner_id", owner).eq("user_id", u.user.id).eq("status", "active").maybeSingle();
+      allowed = !!member && ["admin", "finance"].includes(member.role);
+    }
+    if (!allowed) return json({ error: "forbidden", message: "Seuls le propriétaire, un administrateur ou la finance de l'entreprise peuvent payer son forfait." }, 403);
+    if (Number(tx.amount) < Number(plan.price_fcfa)) return json({ error: "amount_mismatch", message: "Le montant de cette transaction ne couvre pas le prix du forfait." }, 400);
+  }
   if (eventId && tx.status !== "confirmed" && tx.status !== "pending") {
     // Le débit n'est lancé que pour une réservation de place encore active (30 minutes), liée à cette transaction.
     const { data: hold } = await admin.from("event_registrations").select("event_id").eq("event_id", eventId).eq("user_id", u.user.id)

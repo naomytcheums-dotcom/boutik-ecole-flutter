@@ -40,6 +40,14 @@ const annDomains = {
   'other': 'Autre',
 };
 const annOrganizers = {'university': 'Université', 'company': 'Entreprise', 'ngo': 'ONG', 'government': 'Gouvernement', 'other': 'Autre'};
+
+/// Type d'organisateur proposé par défaut selon le rôle (une entreprise ne se présente pas comme une université).
+String defaultOrganizerKind(String role) => switch (role) {
+      'company' => 'company',
+      'other' => 'ngo',
+      'dept' || 'direction' || 'admin' => 'university',
+      _ => 'other',
+    };
 const annCosts = {'': 'Gratuit ou payant', 'free': 'Gratuit', 'paid': 'Payant'};
 const annWithin = {'': 'Toute date limite', '7': 'Dans 7 jours', '30': 'Dans 30 jours'};
 
@@ -438,6 +446,10 @@ Future<void> awardPrize(BuildContext context, WidgetRef ref, Map<String, dynamic
     await gAlert(context, 'Attribution impossible', Backend.userMessage('${r.error}'));
     return;
   }
+  if (r.data == 'not_eligible') {
+    await gAlert(context, 'Gagnant non éligible', 'Le gagnant doit être un étudiant vérifié lié à cette annonce (annonce enregistrée, rappel programmé ou victoire déclarée). Vérifiez l’adresse e-mail.');
+    return;
+  }
   await gAlert(context, 'Récompense attribuée', 'Le gagnant est prévenu. L’équipe Boutik-École débloque la somme sur son solde.');
   ref.invalidate(annPostedProvider);
 }
@@ -580,6 +592,12 @@ class _AnnEditState extends ConsumerState<AnnouncementEditScreen> {
   String _currency = 'FCFA';
   bool _free = true, _iut = false, _busy = false;
   DateTime? _opens, _deadline, _results, _start;
+
+  @override
+  void initState() {
+    super.initState();
+    _orgKind = defaultOrganizerKind(roleKey(ref.read(authProvider).current));
+  }
 
   @override
   void dispose() {

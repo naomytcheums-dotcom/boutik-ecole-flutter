@@ -17,6 +17,7 @@ import 'backend.dart';
 import 'messages.dart' show selectedConversationProvider, conversationsProvider, contactOrderSeller;
 import 'missions.dart' show selectedMissionIdProvider, missionProvider;
 import 'services.dart' show quotesDialog;
+import 'quote_negotiation.dart' show openQuoteNegotiation;
 import 'paiement_messagerie.dart' show selectedPaymentProvider;
 import 'seller.dart' show selectedSellerOrderProvider;
 import 'store.dart' show StrV, ordersProvider, selectedOrderIdProvider;
@@ -210,7 +211,12 @@ bool openNotification(BuildContext context, WidgetRef? ref, NotificationItem n, 
       return true;
     case 'quote':
       if (ref == null) return false;
-      quotesDialog(context, ref);
+      final quoteId = first(['quote_id', 'quote']);
+      if (quoteId.isNotEmpty) {
+        openQuoteNegotiation(context, ref, {'id': quoteId});
+      } else {
+        quotesDialog(context, ref);
+      }
       return true;
     case 'opportunity_reminder' || 'opportunity_alert' || 'opportunity_review' || 'opportunity_application' || 'opportunity_invite':
       final id = first(['opportunity', 'opportunity_id']);
@@ -307,6 +313,28 @@ bool openNotification(BuildContext context, WidgetRef? ref, NotificationItem n, 
       final cid = first(['community']);
       r.push(RegExp(r'^[0-9a-fA-F-]{36}$').hasMatch(cid) ? '/communaute/$cid' : '/communautes');
       return true;
+    case 'company_plan':
+      // administrateur : demandes de forfait à activer ; entreprise : accueil entreprise (forfait, paiement)
+      r.push(roleKey(account) == 'admin' && s('owner').isNotEmpty ? '/admin/forfaits' : '/s/03');
+      return true;
+    case 'company_team':
+      // invitation reçue : « Mes entreprises » permet de la rejoindre ou de la décliner ; sinon la liste de l'équipe
+      r.push(d['invitation'] == true || n.title.startsWith('Invitation à rejoindre') ? '/mes-entreprises' : '/entreprise/equipe');
+      return true;
+    case 'company_review':
+      // administrateur : file de vérification ; entreprise : sa fiche (statut, motif)
+      r.push(roleKey(account) == 'admin' && s('owner').isNotEmpty && s('status').isEmpty ? '/admin/entreprises' : '/entreprise/profil');
+      return true;
+    case 'talent_contact':
+      final from = first(['from']);
+      if (from.isEmpty) return false;
+      gOpenProfile(context, from);
+      return true;
+    case 'cv_shared':
+      final token = first(['cv_token']);
+      if (token.isEmpty) return false;
+      r.push('/cv/${Uri.encodeComponent(token)}');
+      return true;
     case 'study_room':
       final rid = first(['community']);
       if (!RegExp(r'^[0-9a-fA-F-]{36}$').hasMatch(rid)) return false;
@@ -333,6 +361,11 @@ String? notificationActionLabel(NotificationItem n) => switch (n.kind) {
       'document' => 'Voir mon dossier',
       'review' || 'question' || 'alert' => 'Voir le produit',
       'follow' => 'Voir le profil',
+      'company_plan' => 'Voir le forfait',
+      'company_team' => 'Voir l’équipe ou l’invitation',
+      'company_review' => 'Voir la vérification',
+      'talent_contact' => 'Voir qui vous contacte',
+      'cv_shared' => 'Voir le CV',
       'post' || 'comment' => 'Voir la publication',
       'post_review' => 'Valider les publications',
       'report' => 'Voir les signalements',

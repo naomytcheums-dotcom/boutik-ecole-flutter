@@ -24,6 +24,7 @@ import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/inert_actions.dart';
 import '../live/pay.dart';
+import '../live/b2b_screens.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_187 extends ConsumerWidget {
@@ -31,7 +32,10 @@ class G_187 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return GScreen(w: 1272, h: 760, radius: 30, color: Color(0xFFF7F6F4), children: [
+    if (b2bIsPhone(context)) {
+      return B2bPhoneShell(current: '187', title: 'Tableau de bord', subtitle: b2bCompanyName(ref), onExport: b2bExportNeeds, child: const B2bSummaryContent());
+    }
+    final canvas = <Widget>[
       gP(0, 0, 1272, 56, gBox(color: Color(0xFFFFFFFF))),
       gP(20, 10, 36, 34, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(62, 17, 107, 21, gText('Boutik-École', 17, Color(0xFF18181B), weight: 700, inter: true)),
@@ -333,11 +337,19 @@ gP(-13, 165.451, 296, 34.583, gImg('assets/figma/v/5ffec176ca9577.svg'))
       gTap(44, 445, 89, 32, () { gOpen(context, '97'); }), // parcours 187 -> 97
       gTap(44, 405, 130, 32, () { gOpen(context, '96'); }), // lien métier 187 -> 96
       gTap(44, 139, 105, 32, () { gOpen(context, '99'); }), // lien métier 187 -> 99
-      gTap(860, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
+      gTap(860, 78, 110, 34, () { b2bRefresh(context, ref); }), // « Actualiser » relit réellement besoins, propositions et devis
       gTap(980, 78, 142, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
       if (demoContent) gTap(1150, 148, 80, 26, () { uiFilters(context); }), // audit 01/11 : « Filtrer » n'avait aucun effet
       if (demoContent) gTap(760, 408, 80, 26, () { uiFilters(context); }), // audit 01/11 : « Filtrer » n'avait aucun effet
-      if (!demoContent) gP(268, 150, 984, 640, MobileList(provider: companyMissionsProvider, title: (r) => '${r['title']}', subtitle: (r) => '${r['proposals']} proposition(s) · publié le ${dateCourte(r['created_at'])}', trailing: (r) => missionStatus(r['status']), emptyText: 'Aucun besoin publié pour le moment.', width: 984, height: 640)),
+    ];
+    // Production : toile débarrassée des éléments de maquette (bandeau « données en direct », cadres vides, badge « 2 » figé, pastilles
+    // « +3 » / « Exporter » sans effet, avatars, carte utilisateur en double) ; indicateurs et listes réels, menu latéral relié.
+    return GScreen(w: 1272, h: 760, radius: 30, color: Color(0xFFF7F6F4), children: demoContent ? canvas : [
+      ...b2bProdCanvas(canvas, content: Rect.fromLTWH(210, 126, 1062, 634), sideWidth: 200, drop: [Rect.fromLTWH(900, 0, 160, 56), Rect.fromLTWH(975, 70, 297, 50), Rect.fromLTWH(150, 408, 40, 30), Rect.fromLTWH(60, 700, 130, 40)]),
+      ...b2bSideTaps(context, 200, [(107, '187'), (147, '99'), (187, '188'), (259, '189'), (299, '190'), (339, '98'), (413, '96'), (453, '97'), (527, '/parametres/informations'), (567, '/aide/contact')]),
+      b2bSideUser(66, 707),
+      b2bExportPill(1078, b2bExportNeeds),
+      b2bWide(220, 134, 1032, 610, const B2bSummaryContent()),
     ]);
   }
 }

@@ -34,8 +34,11 @@ class RpcRows extends Notifier<List<Map<String, dynamic>>?> {
     return null;
   }
 
+  /// Paramètres de la lecture (surchargé quand ils dépendent du contexte : entreprise consultée par un membre d'équipe).
+  Map<String, dynamic> callArgs() => args;
+
   Future<void> refresh() async {
-    final r = await Backend.rpc(fn, args);
+    final r = await Backend.rpc(fn, callArgs());
     if (!ref.mounted) return;
     error = r.error != null || r.data is! List;
     state = error ? const [] : [for (final x in r.data as List) Map<String, dynamic>.from(x as Map)];

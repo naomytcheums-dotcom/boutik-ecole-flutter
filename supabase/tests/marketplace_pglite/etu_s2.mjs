@@ -17,6 +17,8 @@ export async function run(db) {
     await db.exec(`insert into auth.users(id,email) values ('${U(n)}','s${n}@t.cm'); insert into profiles(id,name,role,email) values ('${U(n)}','Personne ${n}','${r}','s${n}@t.cm')`);
   }
   await db.exec(`update profiles set email = 'recrute@boite.cm' where id = '${C}'`);
+  // Lot F1 : seule une entreprise dont la fiche est approuvée reçoit un CV.
+  await db.exec(`insert into company_profiles (owner_id, company_name, status) values ('${C}', 'Boite SARL', 'approved')`);
 
   // ---------------------------------------------------------------- S2-55 : envoi du CV à une entreprise
   await as(A);

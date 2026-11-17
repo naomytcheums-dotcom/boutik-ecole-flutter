@@ -24,6 +24,7 @@ import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/inert_actions.dart';
 import '../live/pay.dart';
+import '../live/b2b_screens.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_262 extends ConsumerWidget {
@@ -31,7 +32,10 @@ class G_262 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return GScreen(w: 1280, h: 890, radius: 24, color: Color(0xFFF7F6F4), children: [
+    if (b2bIsPhone(context)) {
+      return B2bPhoneShell(current: '262', title: 'Accueil B2B', subtitle: b2bCompanyName(ref), child: const B2bSummaryContent(home: true));
+    }
+    final canvas = <Widget>[
       gP(0, 0, 1280, 56, gBox(color: Color(0xFFFFFFFF))),
       gP(20, 10, 36, 34, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(62, 17, 107, 21, gText('Boutik-École', 17, Color(0xFF18181B), weight: 700, inter: true)),
@@ -150,9 +154,17 @@ class G_262 extends ConsumerWidget {
       gP(668, 838, 54, 14, gText(gm('4 équipes', ''), 11.5, Color(0xFF3D3B37), inter: true)),
       gP(828, 838, 39, 14, gText(gm('15 nov.', ''), 11.5, Color(0xFF3D3B37), inter: true)),
       gP(988, 838, 38, 14, gText('Ouvert', 11.5, Color(0xFF3D3B37), inter: true)),
-      gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
+      gTap(954, 78, 110, 34, () { b2bRefresh(context, ref); }), // « Actualiser » relit réellement besoins, propositions et devis
       gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
-      if (!demoContent) gP(268, 150, 984, 640, const CompanySummary(width: 984, height: 640)),
+    ];
+    // Production : résumé réel et vrais boutons ; plus de titre vide, de mot « Ouvert » isolé, de faux « Exporter », de menu sans lien.
+    return GScreen(w: 1280, h: 890, radius: 24, color: Color(0xFFF7F6F4), children: demoContent ? canvas : [
+      ...b2bProdCanvas(canvas, content: Rect.fromLTWH(250, 126, 1030, 764), sideWidth: 240, drop: [Rect.fromLTWH(930, 0, 140, 56), Rect.fromLTWH(1075, 70, 205, 50), Rect.fromLTWH(60, 820, 170, 40)]),
+      gP(268, 76, 300, 29, gText('Accueil B2B', 24, Color(0xFF18181B), weight: 500, inter: true)),
+      gP(52, 107, 120, 15, gText('Accueil B2B', 12, Color(0xFF111015), weight: 600, inter: true)),
+      ...b2bSideTaps(context, 240, [(107, '262'), (147, '99'), (187, '188'), (227, '189'), (267, '190'), (307, '98')]),
+      b2bSideUser(66, 827),
+      b2bWide(268, 134, 984, 740, const B2bSummaryContent(home: true)),
     ]);
   }
 }

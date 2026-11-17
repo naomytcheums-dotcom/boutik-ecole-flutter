@@ -10,6 +10,8 @@ import '../nav.dart';
 import 'auth.dart';
 import 'access.dart' show canOpen;
 import 'backend.dart';
+import 'entreprise.dart' show invalidateCompanyData;
+import 'quote_negotiation.dart' show openQuoteNegotiation;
 import 'produit_fiche.dart' show openForProduct, providerCardProvider;
 import 'marche/marche_widgets.dart' show MarchePage, mButton, mNote;
 import 'seller.dart';
@@ -297,6 +299,7 @@ Future<void> submitQuoteRequest(BuildContext context, WidgetRef ref) async {
   if (err != null) return gAlert(context, 'Demande non envoyée', err);
   ref.read(formProvider.notifier).clear(const ['q95_obj', 'q95_desc', 'q95_qty', 'q95_budget', 'q95_date']);
   ref.read(quoteFormResetProvider.notifier).set(ref.read(quoteFormResetProvider) + 1);
+  invalidateCompanyData(context);
   gToast(context, 'Demande envoyée. Le prestataire vous répondra avec un devis.');
   gBack(context);
 }
@@ -350,6 +353,7 @@ Future<void> quotesDialog(BuildContext context, WidgetRef ref) async {
               order: orders['${r['order_number']}'],
               close: () => Navigator.pop(ctx),
               parent: context,
+              ref: ref,
             ),
         ]),
       ),
@@ -359,9 +363,10 @@ Future<void> quotesDialog(BuildContext context, WidgetRef ref) async {
 }
 
 class _QuoteTile extends StatelessWidget {
-  const _QuoteTile({required this.r, required this.mine, required this.order, required this.close, required this.parent});
+  const _QuoteTile({required this.r, required this.mine, required this.order, required this.close, required this.parent, required this.ref});
   final Map<String, dynamic> r;
   final bool mine;
+  final WidgetRef ref;
 
   /// Commande créée au prix du devis (null : aucune, ou non lisible).
   final Map<String, dynamic>? order;
@@ -394,6 +399,7 @@ class _QuoteTile extends StatelessWidget {
         Text('$title', style: _st.copyWith(fontWeight: FontWeight.w700)),
         Text(lines, style: _st.copyWith(fontSize: 12, color: const Color(0xFF57545F))),
         Wrap(spacing: 6, children: [
+          TextButton(onPressed: () { close(); openQuoteNegotiation(parent, ref, r); }, child: const Text('Fil et négociation')),
           if (!mine && (s == 'requested' || s == 'quoted')) TextButton(onPressed: () { close(); _answer(parent, r['id'] as String, amount); }, child: Text(s == 'quoted' ? 'Modifier mon devis' : 'Répondre avec un devis')),
           if (!mine && (s == 'requested' || s == 'quoted')) TextButton(onPressed: () { close(); _declineQuote(parent, r['id'] as String); }, child: const Text('Décliner')),
           if (s != 'cancelled') TextButton(onPressed: () { close(); _contactQuote(parent, r['id'] as String, mine ? 'au prestataire' : 'au demandeur'); }, child: Text(mine ? 'Écrire au prestataire' : 'Écrire au demandeur')),
@@ -432,6 +438,7 @@ Future<void> _declineQuote(BuildContext context, String id) async {
   final r = await Backend.rpc('decline_quote', {'p_id': id, 'p_reason': reason.isEmpty ? null : reason});
   if (!context.mounted) return;
   if (r.error != null) return gAlert(context, 'Action impossible', r.error!);
+  invalidateCompanyData(context);
   gToast(context, 'Demande déclinée : le demandeur est prévenu.');
 }
 
@@ -478,6 +485,7 @@ Future<void> _decide(BuildContext context, String id, bool accept, {int? amount,
   final err = await Backend.decideQuote(id, accept, amount: amount);
   if (!context.mounted) return;
   if (err != null) return gAlert(context, 'Action impossible', err);
+  invalidateCompanyData(context);
   gToast(context, accept ? 'Devis accepté. Le prestataire est prévenu.' : 'Devis refusé.');
 }
 
@@ -494,6 +502,7 @@ Future<void> _cancel(BuildContext context, String id) async {
   final err = await Backend.cancelQuote(id);
   if (!context.mounted) return;
   if (err != null) return gAlert(context, 'Action impossible', err);
+  invalidateCompanyData(context);
   gToast(context, 'Demande annulée.');
 }
 
@@ -534,6 +543,7 @@ Future<void> _answer(BuildContext context, String id, int? current) async {
             if (err != null) {
               await gAlert(context, 'Devis non envoyé', err);
             } else {
+              invalidateCompanyData(context);
               gToast(context, 'Devis envoyé. Le demandeur est prévenu.');
             }
           },

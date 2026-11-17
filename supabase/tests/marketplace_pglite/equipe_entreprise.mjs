@@ -61,7 +61,7 @@ export async function run(db) {
   const c = (await q(`select company_plan_checkout('pro', '${E}') r`))[0].r;
   check('finance : peut lancer le paiement du forfait de l entreprise', c.amount === 25000);
   await db.exec('reset role');
-  check('sujet de la transaction : forfait et entreprise visee', (await q(`select subject from payment_transactions where reference = '${c.reference}'`))[0].subject === `plan:pro:${E}`);
+  check('sujet de la transaction : forfait et entreprise visee', (await q(`select subject from payment_transactions where reference = '${c.reference}'`))[0].subject === `cplan:pro:${E}`);
   await db.exec(`update payment_transactions set status = 'confirmed' where reference = '${c.reference}'`);
   await as(E);
   check('confirmation du paiement : forfait Entreprise actif pour l entreprise', (await q(`select company_plan_status() r`))[0].r.plan.code === 'pro');

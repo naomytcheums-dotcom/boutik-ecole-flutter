@@ -40,8 +40,12 @@ void main() {
   }
 
   // un test par écran : l'application monte son routeur une seule fois par test
+  // 187 à 190 et 262 ont une vraie mise en page téléphone (barre du bas, menu « Plus ») : elle est vérifiée par ent_f3a_test.dart ;
+  // la toile web avec tiroir ne sert plus qu'à partir de 700 px.
+  const mobileNatif = {'187', '188', '189', '190', '262'};
   for (final s in screensById.values.where((s) => s.format == ScreenFormat.web)) {
     for (final size in const [Size(768, 1024), Size(360, 740)]) {
+      if (size.width < 700 && mobileNatif.contains(s.id)) continue;
       testWidgets('console ${s.id} à ${size.width.toInt()}×${size.height.toInt()} : barre, tiroir avec au moins une entrée', (tester) async {
         await pumpScreen(tester, s.id, size: size);
         expect(tester.takeException(), isNull);

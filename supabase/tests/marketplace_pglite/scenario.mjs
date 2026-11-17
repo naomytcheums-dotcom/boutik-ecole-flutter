@@ -169,7 +169,7 @@ export async function run(db) {
   check('recommandes : offres de ma filiere en premier, jamais les miennes', ['Lampe en bois', 'Table basse'].every(t => reco.slice(0, 2).some(x => x.title === t)) && !reco.some(x => miennes.includes(x.title)), JSON.stringify(reco.map(x => x.title)));
   // --- appel à entreprises et projets de l'IUT
   let calls = (await q(`select open_calls() r`))[0].r;
-  check('appel : le besoin publie est visible, pas le brouillon', calls.length === 1 && calls[0].title === 'Gestion des stocks pour ma boutique' && calls[0].own === true && calls[0].company === 'Paul Buyer');
+  check('appel : le besoin publie est visible, pas le brouillon', calls.length === 1 && calls[0].title === 'Gestion des stocks pour ma boutique' && calls[0].own === true && calls[0].company === 'Paul B. · Client' && calls[0].verified === false);
   await as(A);
   calls = (await q(`select open_calls('stock') r`))[0].r;
   check('appel : un etudiant le voit et peut le chercher par mot', calls.length === 1 && calls[0].own === false && calls[0].proposed === false);

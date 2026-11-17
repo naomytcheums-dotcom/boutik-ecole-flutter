@@ -44,7 +44,7 @@ class G_03 extends ConsumerWidget {
     try {
       vue = GoRouterState.of(context).uri.queryParameters['vue'] ?? '';
     } catch (_) {}
-    if (!demoContent && me != null && me.role == 2 && me.staff.isEmpty && vue != 'standard') return const CompanyHomeScreen();
+    if (!demoContent && me != null && (me.role == 2 || me.role == 3) && me.staff.isEmpty && vue != 'standard') return const CompanyHomeScreen();
     // connecté : la page s'allonge pour recevoir la liste réelle des talents ; le menu reste au bas de la page
     final dr = demoContent ? 0.0 : 285.0; // bloc « Recommandé pour vous » inséré entre les produits et les talents
     final dy = demoContent ? 0.0 : 191.0 + dr;

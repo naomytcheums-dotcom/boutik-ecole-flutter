@@ -8,6 +8,7 @@ import '../../nav.dart' show gOpenProfile;
 import '../access.dart' show roleKey;
 import '../auth.dart';
 import '../backend.dart';
+import '../company_public_page.dart' show openCompanyPublic;
 import '../project_cards.dart' show showProjectSheet;
 import 'marche_data.dart';
 import 'marche_widgets.dart';
@@ -167,7 +168,13 @@ class AppelsScreen extends ConsumerWidget {
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(4), border: Border.all(color: kLine)),
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text('${c['company']}', style: mst(11.5, w: FontWeight.w700, c: kViolet)),
+                        InkWell(
+                          onTap: c['verified'] == true && '${c['company_id'] ?? ''}'.isNotEmpty ? () => openCompanyPublic(context, '${c['company_id']}') : null,
+                          child: Row(mainAxisSize: MainAxisSize.min, children: [
+                            Flexible(child: Text('${c['company']}', style: mst(11.5, w: FontWeight.w700, c: kViolet), overflow: TextOverflow.ellipsis)),
+                            if (c['verified'] == true) ...[const SizedBox(width: 4), const Icon(Icons.verified, size: 14, color: kGreen)],
+                          ]),
+                        ),
                         const SizedBox(height: 4),
                         Text('${c['title']}', style: mst(15, w: FontWeight.w800)),
                         if ('${c['description'] ?? ''}'.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 6), child: Text('${c['description']}', maxLines: 4, overflow: TextOverflow.ellipsis, style: mst(13, c: kGrey).copyWith(height: 1.45))),

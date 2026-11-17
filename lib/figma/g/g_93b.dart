@@ -25,6 +25,7 @@ import '../live/share.dart';
 import '../live/pay.dart';
 import '../live/engage.dart';
 import '../live/lots.dart';
+import '../live/ent_f3b.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_93b extends ConsumerWidget {
@@ -32,6 +33,7 @@ class G_93b extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final canDecide = demoContent || openedProposalIsOpen(ref);
     return GScreen(w: 390, h: 844, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 128.52, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo', show: demoContent),
       gP(-110, 575.84, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
@@ -81,13 +83,13 @@ class G_93b extends ConsumerWidget {
       gP(24, 640, 20, 20, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E1EE), bw: 2, oval: true), show: demoContent),
       gP(56, 639, 305, 17, gText('Tests et livraison', 13.5, Color(0xFF111015), weight: 600, wrap: true), show: demoContent),
       gP(56, 659, 305, 14, gText(gm('Jour 7', ''), 11.5, Color(0xFF57545F), wrap: true), show: demoContent),
-      gP(0, 744, 390, 100, gBox(color: Color(0x00FFFFFF)), show: demoContent),
-      gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE5484D), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => myNeedsDialog(context, ref)),
-      gP(78.5, 778, 54, 18, gText('Refuser', 14.5, Color(0xFFE5484D), weight: 600, align: TextAlign.center)),
-      gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => myNeedsDialog(context, ref)),
-      gP(251.5, 778, 66, 18, gText('Accepter', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
+      gP(0, 744, 390, 100, gBox(color: Color(0x00FFFFFF)), show: canDecide),
+      gP(24, 760, 163, 54, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE5484D), bw: 1.5, radii: [27, 27, 27, 27]), tap: () => demoContent ? myNeedsDialog(context, ref) : decideOpenedProposal(context, ref, accept: false), show: canDecide),
+      gP(78.5, 778, 54, 18, gText('Refuser', 14.5, Color(0xFFE5484D), weight: 600, align: TextAlign.center), show: canDecide),
+      gP(203, 760, 163, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => demoContent ? myNeedsDialog(context, ref) : decideOpenedProposal(context, ref, accept: true), show: canDecide),
+      gP(251.5, 778, 66, 18, gText('Accepter', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center), show: canDecide),
       gP(125, 830, 140, 5, gBox(color: Color(0xFF111015), radii: [3, 3, 3, 3])),
-      if (!demoContent) gP(24, 125, 342, 620, proposalsMobile(height: 620)),
+      if (!demoContent) gP(24, 112, 342, 624, ProposalDetail(width: 342, height: 624)),
     ]);
   }
 }

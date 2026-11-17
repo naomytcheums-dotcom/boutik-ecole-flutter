@@ -7,6 +7,7 @@ import '../i18n.dart' show Text;
 import '../nav.dart' show gOpen;
 import 'auth.dart';
 import 'backend.dart';
+import 'company_public_page.dart' show CompanyPublicPage;
 import 'marche/marche_data.dart' show kGrey, mst;
 import 'messages.dart';
 import 'social_profile.dart' show SocialProfile, publicProfileProvider;
@@ -81,10 +82,13 @@ class StudentProfileScreen extends ConsumerWidget {
           certification: p.certified ? 'approved' : 'none',
           serverId: p.id,
         );
-        return ProviderScope(
+        Widget person() => ProviderScope(
           overrides: [profileAccountProvider.overrideWithValue(acc)],
           child: G_10(viewProfile: p, onPrimary: () => _message(context, ref, p)),
         );
+        // Entreprise ou organisation : la fiche réelle (raison sociale, secteur, badge vérifié) ; sans fiche visible, le profil de la personne.
+        if (p.role == 'company' || p.role == 'other') return CompanyPublicPage(ownerId: p.id, fallback: person);
+        return person();
       },
     );
   }

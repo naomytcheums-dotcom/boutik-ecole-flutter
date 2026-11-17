@@ -6,6 +6,7 @@ import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/lot20b.dart';
+import '../live/ent_f3b.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -50,7 +51,8 @@ class G_97 extends ConsumerWidget {
       gP(76, 70, 134, 26, gText('Recrutement', 21, Color(0xFF111015), weight: 700)),
       gP(342.583, 79, 18.833, 6, gImg('assets/figma/v/6fe571ab77e960.svg')),
       gP(349, 72.583, 6, 18.833, gImg('assets/figma/v/87cbf4a9a18b64.svg')),
-      Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 70.4, 34, 'Stages', 12.5, 600), GChip(102.4, 120, 77.8, 34, 'Emplois', 12.5, 500), GChip(188.2, 120, 100, 34, 'Alternance', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
+      if (demoContent) Positioned.fill(child: GChoiceGroup(chips: [GChip(24, 120, 70.4, 34, 'Stages', 12.5, 600), GChip(102.4, 120, 77.8, 34, 'Emplois', 12.5, 500), GChip(188.2, 120, 100, 34, 'Alternance', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
+      gP(331.5, 61.5, 40, 40, const SizedBox.expand(), tap: () => openOfferForm(context)),
       gP(36, 181, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13]), show: demoContent),
       gP(44.667, 193.833, 22.667, 17.667, gImg('assets/figma/v/0b1915710c6b88.svg'), show: demoContent),
       gP(49.667, 190.5, 12.667, 21, gImg('assets/figma/v/baf18a4f525e16.svg'), show: demoContent),
@@ -101,7 +103,7 @@ class G_97 extends ConsumerWidget {
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
       if (demoContent) gTap(80, 194, 197, 32, () { gOpen(context, '158'); }), // lien métier 97 -> 158
-      if (!demoContent) gP(24, 125, 342, 620, missionsMobile(height: 620)),
+      if (!demoContent) gP(24, 112, 342, 626, RecruitPanel(width: 342, height: 626)),
     ]);
   }
 }

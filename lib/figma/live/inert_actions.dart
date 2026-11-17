@@ -5,6 +5,7 @@ import '../gen.dart' show gAlert, gToast;
 import 'admin.dart' show serverAccountsProvider;
 import 'backend.dart';
 import 'contests.dart' show serverContestsProvider;
+import 'entreprise.dart' show refreshCompanyData;
 import 'lots.dart' show copyText;
 import 'notifs.dart' show notifsProvider;
 import 'ops.dart' show serverReportsProvider;
@@ -32,12 +33,13 @@ Future<void> uiRefresh(BuildContext context, WidgetRef ref) async {
     await requireLogin(context, ref, 'actualiser vos données');
     return;
   }
+  final container = ProviderScope.containerOf(context, listen: false);
   if (!await Backend.probe('messages')) {
     if (context.mounted) gToast(context, 'Actualisation impossible : connexion au serveur indisponible.');
     return;
   }
   try {
-    await Future.wait([
+    final results = await Future.wait<Object?>([
       ref.read(serverAccountsProvider.notifier).refresh(),
       ref.read(serverReportsProvider.notifier).refresh(),
       ref.read(reviewQueueProvider.notifier).refresh(),
@@ -46,8 +48,15 @@ Future<void> uiRefresh(BuildContext context, WidgetRef ref) async {
       ref.read(serverSellerOrdersProvider.notifier).refresh(),
       ref.read(platformListingsProvider.notifier).refresh(),
       ref.read(notifsProvider.notifier).refresh(),
+      refreshCompanyData(container),
     ]);
-    if (context.mounted) gToast(context, 'Données relues sur le serveur à ${_hm(DateTime.now())}');
+    if (!context.mounted) return;
+    // « Données relues » seulement si les besoins, propositions, devis et défis de l'entreprise ont réellement été relus.
+    if (results.last == true) {
+      gToast(context, 'Données relues sur le serveur à ${_hm(DateTime.now())}');
+    } else {
+      gToast(context, 'Actualisation incomplète : certaines listes n’ont pas pu être relues. Réessayez dans un instant.');
+    }
   } catch (_) {
     if (context.mounted) gToast(context, 'Actualisation incomplète : réessayez dans un instant.');
   }

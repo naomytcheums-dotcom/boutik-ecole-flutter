@@ -23,6 +23,7 @@ import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/inert_actions.dart';
 import '../live/pay.dart';
+import '../live/b2b_screens.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_188 extends ConsumerWidget {
@@ -30,7 +31,10 @@ class G_188 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return GScreen(w: 1280, h: 890, radius: 16, color: Color(0xFFF7F6F4), children: [
+    if (b2bIsPhone(context)) {
+      return B2bPhoneShell(current: '188', title: 'Recherche de talents', subtitle: b2bCompanyName(ref), child: const B2bTalentsContent());
+    }
+    final canvas = <Widget>[
       gP(268, 134, 727.5, 48, GField(hint: 'Compétence, filière, nom…', size: 13.5, hintColor: Color(0xFF57545F), weight: 400, padL: 46, inter: true, onSubmitted: (v) { ref.read(talentQueryProvider.notifier).set(v); gOpen(context, '70'); })),
       gP(284.5, 148.5, 19, 19, const SizedBox.expand(), tap: () => gTab(context, '19')),
       gP(283.875, 147.875, 18.667, 18.667, gImg('assets/figma/v/50f467eb8a9b46.svg')),
@@ -141,8 +145,16 @@ class G_188 extends ConsumerWidget {
       gP(1095.833, 90.917, 8.167, 8.167, gImg('assets/figma/v/aa6a66611de441.svg')),
       gP(1100.167, 94.167, 8.167, 8.167, gImg('assets/figma/v/aa6a66611de441.svg')),
       gP(1118, 87, 111, 14, gText('Personnaliser la vue', 11.5, Color(0xFF111015), weight: 500, inter: true)),
-      gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
+      gTap(954, 78, 110, 34, () { b2bRefresh(context, ref); }), // « Actualiser » relit réellement besoins, propositions et devis
       gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
+    ];
+    // Production : plus de talents inventés, de cœurs locaux ni de filtres sans effet : champ de recherche actif et recherche réelle.
+    return GScreen(w: 1280, h: 890, radius: 16, color: Color(0xFFF7F6F4), children: demoContent ? canvas : [
+      ...b2bProdCanvas(canvas, content: Rect.fromLTWH(250, 126, 1030, 764), sideWidth: 240, drop: [Rect.fromLTWH(930, 0, 140, 56), Rect.fromLTWH(1075, 70, 205, 50), Rect.fromLTWH(260, 106, 420, 24), Rect.fromLTWH(60, 820, 170, 40)]),
+      gP(268, 110, 500, 15, gText('Recherchez des profils étudiants par compétence ou filière.', 12, Color(0xFF6D6A64), inter: true)),
+      ...b2bSideTaps(context, 240, [(107, '187'), (147, '99'), (187, '188'), (227, '189'), (299, '190'), (339, '98'), (379, '96'), (419, '97')]),
+      b2bSideUser(66, 827),
+      b2bWide(268, 134, 984, 740, const B2bTalentsContent()),
     ]);
   }
 }

@@ -6,6 +6,7 @@ import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/entreprise.dart';
+import '../live/ent_f3b.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -44,11 +45,11 @@ class G_95 extends ConsumerWidget {
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
       gP(24, 70, 219, 26, gText('Devis et négociations', 21, Color(0xFF111015), weight: 700)),
-      gP(24, 156, 342, 1, gBox(color: Color(0xFFECE8F2))),
-      gP(54, 130, 54, 16, gText('En cours', 13, Color(0xFF111015), weight: 700, align: TextAlign.center)),
-      gP(41.1, 154, 79.8, 3, gBox(color: Color(0xFF6A4DFF), radii: [2, 2, 2, 2])),
-      gP(164.5, 130, 61, 16, gText('Acceptés', 13, Color(0xFF57545F), weight: 500, align: TextAlign.center)),
-      gP(284, 130, 50, 16, gText('Refusés', 13, Color(0xFF57545F), weight: 500, align: TextAlign.center)),
+      gP(24, 156, 342, 1, gBox(color: Color(0xFFECE8F2)), show: demoContent),
+      gP(54, 130, 54, 16, gText('En cours', 13, Color(0xFF111015), weight: 700, align: TextAlign.center), show: demoContent),
+      gP(41.1, 154, 79.8, 3, gBox(color: Color(0xFF6A4DFF), radii: [2, 2, 2, 2]), show: demoContent),
+      gP(164.5, 130, 61, 16, gText('Acceptés', 13, Color(0xFF57545F), weight: 500, align: TextAlign.center), show: demoContent),
+      gP(284, 130, 50, 16, gText('Refusés', 13, Color(0xFF57545F), weight: 500, align: TextAlign.center), show: demoContent),
       gP(36, 187, 40, 40, gBox(color: Color(0xFFF1EEFB), radii: [13, 13, 13, 13]), show: demoContent),
       gP(46.333, 195.667, 19.333, 22.667, gImg('assets/figma/v/6b7ab80aa88481.svg'), show: demoContent),
       gP(49.667, 200.667, 12.667, 12.667, gImg('assets/figma/v/3d81e69f675694.svg'), show: demoContent),
@@ -99,7 +100,7 @@ class G_95 extends ConsumerWidget {
       gP(169, 762, 52, 52, gBox(gradient: RadialGradient(center: Alignment(0, 0), radius: 0.5, colors: [Color(0xFF2A2D36), Color(0xFF0E0F14)], stops: [0, 1]), border: Color(0xFFFF8A3D), bw: 2.5, shadows: [BoxShadow(color: Color(0x59FF8A3D), offset: Offset(-2, 2), blurRadius: 10, spreadRadius: 0), BoxShadow(color: Color(0x594F8CFF), offset: Offset(2, -1), blurRadius: 10, spreadRadius: 0)], oval: true), tap: () => gTab(context, '03')),
       gP(184, 777, 22, 22, const SizedBox.expand(), tap: () => gTab(context, '03')),
       gP(183.75, 775.852, 22.5, 23.398, gImg('assets/figma/v/af3cc156833fdf.svg')),
-      if (!demoContent) gP(24, 182, 342, 520, quotesListWidget()),
+      if (!demoContent) gP(24, 112, 342, 630, QuotesPanel(width: 342, height: 630)),
     ]);
   }
 }

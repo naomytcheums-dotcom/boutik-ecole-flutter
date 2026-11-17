@@ -1492,4 +1492,36 @@ class Backend {
       await c.rpc('log_audit', params: {'p_action': action, 'p_target': target, 'p_category': category, 'p_level': level});
     } catch (_) {}
   }
+
+  // ---- Lot F1 : recherche de talents et porte de publication de l'entreprise (règles appliquées par le serveur)
+
+  /// Recherche de talents (RPC `talents_search`) : le serveur applique toutes les règles de visibilité (entreprise approuvée,
+  /// étudiant proposé aux recruteurs, nom abrégé sauf CV publié). [locked] : l'entreprise n'est pas encore vérifiée ([reason] l'explique).
+  /// [skills] : l'étudiant doit avoir TOUTES les compétences listées.
+  static Future<({List<Map<String, dynamic>> items, int total, bool locked, String? reason, String? error})> talentsSearch(
+      {String query = '', String filiere = '', List<String> skills = const [], int limit = 20, int offset = 0}) async {
+    final r = await rpc('talents_search', {'p_query': query, 'p_filiere': filiere, 'p_skills': skills, 'p_limit': limit, 'p_offset': offset});
+    final d = r.data;
+    if (r.error != null || d is! Map) {
+      return (items: const <Map<String, dynamic>>[], total: 0, locked: false, reason: null, error: r.error ?? 'Recherche indisponible.');
+    }
+    final items = d['items'];
+    return (
+      items: [for (final x in (items is List ? items : const [])) if (x is Map) Map<String, dynamic>.from(x)],
+      total: (d['total'] as num?)?.toInt() ?? 0,
+      locked: d['locked'] == true,
+      reason: d['reason'] as String?,
+      error: null,
+    );
+  }
+
+  /// Ce que le compte peut publier MAINTENANT (RPC `company_publish_status`) : vérification de la fiche, forfait, quotas restants, plafond quotidien.
+  /// Clés : `can` {need, offer, contest, draft}, `reasons` (message de refus ou null), `needs`/`offers`/`contests` {used, max, remaining}, `daily` {used, max, next_at},
+  /// `verified`, `plan`, `is_org`, `can_publish`. À appeler AVANT d'ouvrir un formulaire de publication. [owner] : publier au nom d'une entreprise dont on est administrateur.
+  static Future<({Map<String, dynamic>? status, String? error})> companyPublishStatus({String? owner}) async {
+    final r = await rpc('company_publish_status', {'p_owner': ?owner});
+    final d = r.data;
+    if (r.error != null || d is! Map) return (status: null, error: r.error ?? 'État de publication indisponible.');
+    return (status: Map<String, dynamic>.from(d), error: null);
+  }
 }

@@ -19,6 +19,7 @@ import 'marche/marche_data.dart';
 import 'marche/marche_widgets.dart';
 import 'share.dart' show openUrl;
 import 'social_posts.dart' show uploadPostMedia;
+import 'company_billing.dart' show CompanyBillingCard, CompanyCoverCard;
 
 /// Profil Entreprise : fiche (nom, secteur, taille, ville, site, interlocuteur, présentation, logo), pièces justificatives et vérification par
 /// l'administrateur. Tout vient du serveur (migration 20261114002500) ; les pièces restent dans le compartiment privé de la personne.
@@ -50,11 +51,73 @@ Color companyStatusColor(String s) => switch (s) {
 /// Vrai pour une adresse web complète (même règle que le serveur).
 bool validCompanyWebsite(String s) => s.trim().isEmpty || RegExp(r'^https?://[^ ]+$', caseSensitive: false).hasMatch(s.trim());
 
+/// Champs obligatoires manquants avant l'envoi pour vérification (mêmes exigences que `company_submit` côté serveur : secteur, ville,
+/// interlocuteur, téléphone et au moins une pièce justificative).
+List<String> companyMissingForSubmit({required String sector, required String city, required String contact, required String phone, required int documents}) => [
+      if (sector.trim().isEmpty) 'le secteur d’activité',
+      if (city.trim().isEmpty) 'la ville',
+      if (contact.trim().isEmpty) 'l’interlocuteur',
+      if (phone.trim().isEmpty) 'le téléphone',
+      if (documents <= 0) 'au moins une pièce justificative',
+    ];
+
+/// Message à afficher avant l'envoi quand [missing] n'est pas vide.
+String companyMissingMessage(List<String> missing) => 'Pour envoyer la demande, renseignez : ${missing.join(', ')}.';
+
+/// Contrôles de saisie de la fiche (null si tout est correct) : interlocuteur et fonction (80 caractères), site web, année de création.
+String? companyFieldError({required String name, required String contact, required String role, required String website, required String year}) {
+  if (name.trim().length < 2) return 'Indiquez le nom de l’entreprise.';
+  if (contact.trim().length > 80) return 'L’interlocuteur ne doit pas dépasser 80 caractères.';
+  if (role.trim().length > 80) return 'La fonction ne doit pas dépasser 80 caractères.';
+  if (!validCompanyWebsite(website)) return 'Le site doit commencer par https://';
+  final y = year.trim();
+  if (y.isNotEmpty) {
+    final n = int.tryParse(y);
+    if (n == null || n < 1900 || n > 2100) return 'L’année de création doit être comprise entre 1900 et 2100.';
+  }
+  return null;
+}
+
+/// Contenu envoyé à `company_save` / `company_submit` ; le logo n'est renvoyé que s'il vient d'être choisi (un administrateur de l'équipe ne recopie pas celui du propriétaire).
+Map<String, dynamic> companySavePayload({
+  required String name,
+  required String sector,
+  required String size,
+  required String city,
+  required String website,
+  required String phone,
+  required String contact,
+  required String role,
+  required String description,
+  required String year,
+  required String registration,
+  String? newLogoPath,
+}) =>
+    {
+      'company_name': name.trim(),
+      'sector': sector.trim(),
+      'size': size,
+      'city': city.trim(),
+      'website': website.trim(),
+      'phone': phone.trim(),
+      'contact_name': contact.trim(),
+      'contact_role': role.trim(),
+      'description': description,
+      'founded_year': year.trim().isEmpty ? null : int.tryParse(year.trim()),
+      'registration_number': registration.trim(),
+      if (newLogoPath != null && newLogoPath.isNotEmpty) 'logo_path': newLogoPath,
+    };
+
 /// Entreprise consultée : null = la mienne ; sinon l'entreprise dont je suis membre (espace partagé).
 class CompanyContext extends Notifier<String?> {
   @override
   String? build() => null;
   void set(String? v) => state = v;
+
+  /// Referme l'espace [owner] seulement s'il est toujours le contexte courant (passage d'un espace à un autre sans écraser le nouveau).
+  void clearIf(String owner) {
+    if (state == owner) state = null;
+  }
 }
 
 final companyContextProvider = NotifierProvider<CompanyContext, String?>(CompanyContext.new);
@@ -92,7 +155,7 @@ class CompanyProfileScreen extends ConsumerStatefulWidget {
 class _CompanyState extends ConsumerState<CompanyProfileScreen> {
   final _name = TextEditingController(), _sector = TextEditingController(), _city = TextEditingController(), _site = TextEditingController(), _phone = TextEditingController();
   final _contact = TextEditingController(), _role = TextEditingController(), _desc = TextEditingController(), _year = TextEditingController(), _reg = TextEditingController();
-  String _sectorPick = '', _size = '', _docKind = 'registration', _logo = '';
+  String _sectorPick = '', _size = '', _docKind = 'registration', _logo = '', _newLogo = '', _origName = '', _origReg = '', _origStatus = '';
   bool _filled = false, _busy = false;
 
   @override
@@ -106,16 +169,13 @@ class _CompanyState extends ConsumerState<CompanyProfileScreen> {
   void _fill(Map<String, dynamic>? c) {
     if (_filled) return;
     _filled = true;
-    if (c == null) {
-      _phone.text = ref.read(authProvider).current?.phone ?? '';
-      return;
-    }
+    if (c == null) return;
     _name.text = '${c['company_name'] ?? ''}';
     _sector.text = '${c['sector'] ?? ''}';
     _sectorPick = _sector.text.isEmpty ? '' : (companySectors.contains(_sector.text) ? _sector.text : companySectorOther);
     _city.text = '${c['city'] ?? ''}';
     _site.text = '${c['website'] ?? ''}';
-    _phone.text = '${c['phone'] ?? ''}'.isNotEmpty ? '${c['phone']}' : (ref.read(authProvider).current?.phone ?? '');
+    _phone.text = '${c['phone'] ?? ''}';
     _contact.text = '${c['contact_name'] ?? ''}';
     _role.text = '${c['contact_role'] ?? ''}';
     _desc.text = '${c['description'] ?? ''}';
@@ -123,31 +183,48 @@ class _CompanyState extends ConsumerState<CompanyProfileScreen> {
     _reg.text = '${c['registration_number'] ?? ''}';
     _size = '${c['size'] ?? ''}';
     _logo = '${c['logo_path'] ?? ''}';
+    _origName = _name.text.trim();
+    _origReg = _reg.text.trim();
+    _origStatus = '${c['status'] ?? 'draft'}';
   }
 
+  /// Enregistre la fiche ; avertit d'abord quand le changement du nom ou du RCCM d'une fiche vérifiée la repasse en vérification.
   Future<bool> _save() async {
-    if (!validCompanyWebsite(_site.text)) {
-      gToast(context, 'Le site doit commencer par https://');
+    final err = companyFieldError(name: _name.text, contact: _contact.text, role: _role.text, website: _site.text, year: _year.text);
+    if (err != null) {
+      gToast(context, err);
       return false;
+    }
+    final reverify = _origStatus == 'approved' && (_name.text.trim() != _origName || _reg.text.trim() != _origReg);
+    if (reverify) {
+      final ok = await showDialog<bool>(
+        context: context,
+        builder: (d) => AlertDialog(
+          title: Text('Nouvelle vérification nécessaire'),
+          content: Text('Modifier le nom ou le numéro d’immatriculation d’une entreprise vérifiée la remet en cours de vérification : le badge « Entreprise vérifiée » disparaît et la publication de besoins, d’offres et de concours est suspendue jusqu’à la nouvelle approbation de l’administrateur.'),
+          actions: [TextButton(onPressed: () => Navigator.pop(d, false), child: Text('Annuler')), TextButton(onPressed: () => Navigator.pop(d, true), child: Text('Enregistrer quand même'))],
+        ),
+      );
+      if (ok != true || !mounted) return false;
     }
     setState(() => _busy = true);
     final ctx = ref.read(companyContextProvider);
     final r = await marcheCall('company_save', {
       if (ctx != null) 'p_owner': ctx,
-      'p': {
-        'company_name': _name.text,
-        'sector': _sector.text,
-        'size': _size,
-        'city': _city.text,
-        'website': _site.text,
-        'phone': _phone.text,
-        'contact_name': _contact.text,
-        'contact_role': _role.text,
-        'description': _desc.text,
-        'founded_year': _year.text.trim().isEmpty ? null : int.tryParse(_year.text.trim()),
-        'registration_number': _reg.text,
-        if (_logo.isNotEmpty) 'logo_path': _logo,
-      }
+      'p': companySavePayload(
+        name: _name.text,
+        sector: _sector.text,
+        size: _size,
+        city: _city.text,
+        website: _site.text,
+        phone: _phone.text,
+        contact: _contact.text,
+        role: _role.text,
+        description: _desc.text,
+        year: _year.text,
+        registration: _reg.text,
+        newLogoPath: _newLogo,
+      )
     });
     if (!mounted) return false;
     setState(() => _busy = false);
@@ -155,6 +232,13 @@ class _CompanyState extends ConsumerState<CompanyProfileScreen> {
       gToast(context, Backend.userMessage('${r.error}'));
       return false;
     }
+    if (reverify && '${r.data}' == 'pending') {
+      gToast(context, 'Fiche enregistrée, mais elle repasse en vérification : le badge est retiré et la publication reste suspendue jusqu’à la nouvelle approbation.');
+    }
+    _origName = _name.text.trim();
+    _origReg = _reg.text.trim();
+    _origStatus = r.data is String && (r.data as String).isNotEmpty ? r.data as String : _origStatus;
+    _newLogo = '';
     ref.invalidate(companyProvider);
     return true;
   }
@@ -167,11 +251,15 @@ class _CompanyState extends ConsumerState<CompanyProfileScreen> {
     if (p.isEmpty || !mounted) return;
     final up = await uploadPostMedia(context, p.first);
     if (up == null || !mounted) return;
-    setState(() => _logo = up.path);
+    setState(() {
+      _logo = up.path;
+      _newLogo = up.path;
+    });
     gToast(context, 'Logo ajouté : touchez « Enregistrer » pour le conserver.');
   }
 
   Future<void> _addDoc() async {
+    if (_name.text.trim().length < 2) return gToast(context, 'Indiquez d’abord le nom de l’entreprise : la fiche est enregistrée avant l’ajout d’une pièce.');
     final p = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: const ['pdf', 'jpg', 'jpeg', 'png', 'webp']);
     if (p.isEmpty || !mounted) return;
     if (!await _save() || !mounted) return;
@@ -213,6 +301,9 @@ class _CompanyState extends ConsumerState<CompanyProfileScreen> {
   }
 
   Future<void> _submit() async {
+    final docs = (ref.read(companyProvider).asData?.value?['documents'] as List?)?.length ?? 0;
+    final missing = companyMissingForSubmit(sector: _sector.text, city: _city.text, contact: _contact.text, phone: _phone.text, documents: docs);
+    if (missing.isNotEmpty) return gToast(context, companyMissingMessage(missing));
     if (!await _save() || !mounted) return;
     final r = await marcheCall('company_submit', const {});
     if (!mounted) return;
@@ -241,7 +332,7 @@ class _CompanyState extends ConsumerState<CompanyProfileScreen> {
             if (status != 'approved') Padding(padding: const EdgeInsets.only(top: 6), child: Text('Votre entreprise doit être vérifiée par l’administrateur : complétez la fiche, ajoutez vos pièces justificatives, puis envoyez la demande.', style: mst(12, c: kGrey).copyWith(height: 1.4))),
           ]),
         ),
-        if (!canEdit) Padding(padding: const EdgeInsets.only(top: 10), child: Text('Lecture seule : votre rôle (${companyRoleLabels[myRole] ?? myRole}) ne permet pas de modifier la fiche.', style: mst(12.5, w: FontWeight.w600, c: kGrey))),
+        if (!canEdit) Padding(padding: const EdgeInsets.only(top: 10), child: Text('Lecture seule : votre rôle (${companyRoleLabels[myRole] ?? myRole}) ne permet pas de modifier la fiche. Le numéro d’immatriculation, le téléphone, l’interlocuteur et les pièces sont réservés au propriétaire et aux administrateurs.', style: mst(12.5, w: FontWeight.w600, c: kGrey))),
         const SizedBox(height: 14),
         Row(children: [
           GestureDetector(
@@ -258,6 +349,7 @@ class _CompanyState extends ConsumerState<CompanyProfileScreen> {
           Expanded(child: Text('Logo de l’entreprise (touchez pour choisir)', style: mst(12.5, c: kGrey))),
         ]),
         const SizedBox(height: 14),
+        CompanyCoverCard(canEdit: canEdit && c != null),
         _field(_name, 'Nom de l’entreprise', max: 120),
         MDropdown(
           label: 'Secteur d’activité',
@@ -274,14 +366,16 @@ class _CompanyState extends ConsumerState<CompanyProfileScreen> {
         const SizedBox(height: 10),
         _field(_city, 'Ville', max: 80),
         _field(_site, 'Site web', hint: 'https://…', type: TextInputType.url),
-        _field(_phone, 'Téléphone', type: TextInputType.phone, max: 30),
+        _field(_contact, 'Interlocuteur', hint: 'Nom de la personne à contacter', max: 80),
+        _field(_role, 'Fonction', hint: 'Ex. Responsable RH', max: 80),
+        _field(_phone, 'Téléphone de l’entreprise', type: TextInputType.phone, max: 30),
         _field(_year, 'Année de création', type: TextInputType.number, max: 4),
         _field(_reg, 'Numéro d’immatriculation (RCCM)', max: 60),
         _field(_desc, 'Présentation', lines: 4, max: 1500),
         const SizedBox(height: 4),
         if (isOwner) ...[
         mSectionTitle('Pièces justificatives'),
-        Text('Elles ne sont visibles que de vous et de l’administrateur.', style: mst(12, c: kGrey)),
+        Text('Elles sont visibles de vous, des administrateurs de votre entreprise, de l’administration de la plateforme et de l’équipe d’assistance (support). Elles ne sont jamais publiques.', style: mst(12, c: kGrey)),
         const SizedBox(height: 8),
         for (final d in docs)
           ListTile(
@@ -289,13 +383,15 @@ class _CompanyState extends ConsumerState<CompanyProfileScreen> {
             leading: const Icon(Icons.description_outlined, color: kViolet),
             title: Text('${d['name']}', maxLines: 1, overflow: TextOverflow.ellipsis, style: mst(13.5, w: FontWeight.w600)),
             subtitle: Text(companyDocKinds['${d['kind']}'] ?? '${d['kind']}', style: mst(12, c: kGrey)),
-            trailing: locked ? null : IconButton(tooltip: 'Supprimer', icon: const Icon(Icons.delete_outline), onPressed: () => _deleteDoc(d)),
+            trailing: locked || status == 'approved' ? null : IconButton(tooltip: 'Supprimer', icon: const Icon(Icons.delete_outline), onPressed: () => _deleteDoc(d)),
           ),
+        if (status == 'approved' || status == 'pending') Padding(padding: const EdgeInsets.only(bottom: 4), child: Text('Les pièces envoyées pour vérification ne peuvent plus être supprimées (elles servent de preuve).', style: mst(11.5, c: kGrey))),
         if (docs.isEmpty) Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Text('Aucune pièce pour le moment.', style: mst(13, c: kGrey))),
         MDropdown(label: 'Type de pièce', value: _docKind, items: companyDocKinds, onChanged: (v) => setState(() => _docKind = v)),
         const SizedBox(height: 8),
         mButton('Ajouter une pièce', locked ? null : _addDoc, dark: false, icon: Icons.upload_file),
         ],
+        if (myRole != 'viewer') const CompanyBillingCard(),
         const SizedBox(height: 16),
         if (isOwner && (status == 'draft' || status == 'rejected'))
           mButton(status == 'rejected' ? 'Enregistrer et renvoyer pour vérification' : 'Enregistrer et envoyer pour vérification', locked ? null : _submit, busy: _busy, icon: Icons.send_outlined)

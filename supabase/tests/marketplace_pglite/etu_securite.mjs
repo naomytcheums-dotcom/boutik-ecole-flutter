@@ -65,8 +65,12 @@ export async function run(db) {
   await as(U(42));
   const tl = (await q(`select talents_list('', 10) r`))[0].r;
   check('talents_list : un client ne voit que « Prénom N. »', tl.length >= 1 && tl.every((t) => /\.$/.test(t.name)));
+  // Lot F1 (décision 4) : le nom complet n'est donné qu'à une entreprise APPROUVÉE et seulement si l'étudiant a publié le lien de son CV.
+  await db.exec('reset role');
+  await db.exec(`insert into company_profiles (owner_id, company_name, status) values ('${U(44)}', 'Entreprise 44', 'approved') on conflict (owner_id) do update set status = 'approved'`);
+  await db.exec(`insert into cv_links (token, owner_id, consent_at) values ('${'c'.repeat(32)}', '${U(41)}', now())`);
   await as(U(44));
-  check('talents_list : une entreprise voit le nom complet (étudiant vérifié)', (await q(`select talents_list('', 10) r`))[0].r.some((t) => t.name === 'Prénom41 Nom41'));
+  check('talents_list : une entreprise approuvée voit le nom complet (étudiant vérifié, CV publié)', (await q(`select talents_list('', 10) r`))[0].r.some((t) => t.name === 'Prénom41 Nom41'));
   await db.exec('reset role');
   await db.exec(`update profiles set certification = 'none' where id = '${U(41)}'`);
   await as(U(44));

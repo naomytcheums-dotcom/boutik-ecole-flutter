@@ -238,5 +238,5 @@
   "Registration open",
   "Default language"
  ],
- "keep_digits": "^(9:41|\\+237)$|XX|^\\+237|^Étape \\d|caractères|chiffres|Mo max|px|Après 30 min|Blocage après|Validation automatique|Double validation|Si montant|48 h max|valable pendant|Ne partagez|Erreur 40|Retour à l’accueil|Renvoyer dans|24 h ouvrées|sous 24|Entrez le code|^\\d+\\.\\s|^J-\\d|^S\\d$|^[A-Z]{1,3}\\d?$|^\\d{1,2}$|^Garde|^\\+?\\d$|minutes maximum|Dépôt possible|Vous êtes hors ligne|1\\.8\\.2|Taille \\d|≥|étoile|^\\d★|★$|\\d★|\\(30 j\\)|\\(30 jours\\)|sur \\d$|Aperçu sur|Aucune publication|Adressez-vous|incluses|jours ouvrés|à \\d+ amis|requêtes|^\\d+ à \\d+ (jours|h)|^1 an$|Mo image|^payées, 30 derniers jours$|^Jumeau 3D$"
+ "keep_digits": "^(9:41|\\+237)$|XX|^\\+237|^Étape \\d|caractères|chiffres|Mo max|px|Après 30 min|Blocage après|Validation automatique|Double validation|Si montant|48 h max|valable pendant|Ne partagez|Erreur 40|Retour à l’accueil|Renvoyer dans|24 h ouvrées|sous 24|Entrez le code|^\\d+\\.\\s|^J-\\d|^S\\d$|^[A-Z]{1,3}\\d?$|^\\d{1,2}$|^Garde|^\\+?\\d$|minutes maximum|Dépôt possible|Vous êtes hors ligne|1\\.8\\.2|Taille \\d|≥|étoile|^\\d★|★$|\\d★|\\(30 j\\)|\\(30 jours\\)|sur \\d$|Aperçu sur|Aucune publication|Adressez-vous|incluses|jours ouvrés|à \\d+ amis|requêtes|^\\d+ à \\d+ (jours|h)|^1 an$|Mo image|^payées, 30 derniers jours$|^Jumeau 3D$|^Accueil B2B$"
 }

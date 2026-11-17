@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gen.dart';
 import 'access.dart' show canOpen;
+import 'package:go_router/go_router.dart' show GoRouter;
 import 'geo_stub.dart' if (dart.library.js_interop) 'geo_web.dart' as geo;
 import 'audit.dart';
 import 'backend.dart';
@@ -1581,28 +1582,42 @@ Future<bool> requireCertified(BuildContext context, WidgetRef ref, String action
   if (a == null) return false;
   const staff = {'Resp. département', 'Direction', 'Finance', 'Support', 'Admin global'};
   if (a.certified || staff.contains(a.staff)) return true;
-  final state = switch (a.certification) {
-    'pending' => 'Votre demande de certification est en attente d’examen.',
-    'review' => 'Votre demande de certification est en cours d’examen.',
-    'rejected' => 'Votre dernière demande a été refusée : complétez votre dossier et refaites une demande.',
-    'revoked' => 'Le badge de certification de votre compte a été retiré.',
-    _ => 'Votre compte n’est pas encore certifié.',
-  };
-  final ask = (a.certification == 'none' || a.certification == 'rejected') && a.role != 0;
+  // Entreprise ou organisation : la vérification de la fiche entreprise vaut certification (une seule vérification, par l'administrateur).
+  final org = a.staff.isEmpty && (a.role == 2 || a.role == 3);
+  final state = org
+      ? switch (a.certification) {
+          'pending' || 'review' => 'Votre fiche entreprise est en cours de vérification par l’administrateur.',
+          'rejected' || 'revoked' => 'La vérification de votre fiche a été refusée ou retirée : corrigez la fiche, puis renvoyez-la.',
+          _ => 'Votre fiche entreprise n’est pas encore vérifiée : complétez-la, ajoutez vos pièces justificatives et envoyez-la pour vérification.',
+        }
+      : switch (a.certification) {
+          'pending' => 'Votre demande de certification est en attente d’examen.',
+          'review' => 'Votre demande de certification est en cours d’examen.',
+          'rejected' => 'Votre dernière demande a été refusée : complétez votre dossier et refaites une demande.',
+          'revoked' => 'Le badge de certification de votre compte a été retiré.',
+          _ => 'Votre compte n’est pas encore certifié.',
+        };
+  final ask = org ? a.certification != 'pending' && a.certification != 'review' : (a.certification == 'none' || a.certification == 'rejected') && a.role != 0;
   final go = await gDialog<bool>(
     context: context,
     builder: (ctx) => AlertDialog(
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
-      title: const Text('Publication réservée aux comptes certifiés', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700, color: Color(0xFF111015))),
-      content: Text('Pour $action, votre compte doit être certifié. $state\n\nVous pouvez continuer à parcourir, rechercher et acheter normalement.', style: const TextStyle(fontSize: 14, height: 1.45, color: Color(0xFF4A4854))),
+      title: Text(org ? 'Publication réservée aux entreprises vérifiées' : 'Publication réservée aux comptes certifiés', style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700, color: Color(0xFF111015))),
+      content: Text(org ? 'Pour $action, votre entreprise doit être vérifiée. $state\n\nVous pouvez continuer à parcourir, rechercher et acheter normalement.' : 'Pour $action, votre compte doit être certifié. $state\n\nVous pouvez continuer à parcourir, rechercher et acheter normalement.', style: const TextStyle(fontSize: 14, height: 1.45, color: Color(0xFF4A4854))),
       actions: [
         TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Plus tard', style: TextStyle(color: Color(0xFF57545F)))),
-        if (ask) TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: const Text('Demander la certification', style: TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF111015)))),
+        if (ask) TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(org ? 'Ouvrir la fiche entreprise' : 'Demander la certification', style: const TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF111015)))),
       ],
     ),
   );
-  if (go == true && context.mounted) await requestCertificationFlow(ref, context);
+  if (go == true && context.mounted) {
+    if (org) {
+      GoRouter.of(context).push('/entreprise/profil');
+    } else {
+      await requestCertificationFlow(ref, context);
+    }
+  }
   return false;
 }
 
@@ -1622,6 +1637,11 @@ Future<void> requestCertificationFlow(
   final me = ref.read(authProvider).current;
   if (me != null && me.role == 0 && me.staff.isEmpty) {
     await gAlert(context, 'Certification', 'La certification est réservée aux étudiants-vendeurs et aux comptes validés par l’établissement. Un compte Client peut acheter, commander et suivre ses commandes sans certification.');
+    return;
+  }
+  if (me != null && (me.role == 2 || me.role == 3) && me.staff.isEmpty) {
+    // une seule vérification : celle de la fiche entreprise (l'administrateur approuve la fiche = compte certifié)
+    GoRouter.of(context).push('/entreprise/profil');
     return;
   }
   final v = await formDialog(

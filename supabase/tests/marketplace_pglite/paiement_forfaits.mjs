@@ -19,7 +19,7 @@ export async function run(db) {
   const c = (await q(`select company_plan_checkout('pro') r`))[0].r;
   check('paiement : transaction creee au prix de la base (25000)', c.amount === 25000 && c.reference.length > 3 && c.plan === 'Entreprise');
   const t = (await q(`select provider, kind, subject, status, amount from payment_transactions where reference = '${c.reference}'`))[0];
-  check('transaction : Tara, abonnement, plan:pro, a payer', t.provider === 'tara' && t.kind === 'subscription' && t.subject === 'plan:pro' && t.status === 'created' && t.amount === 25000);
+  check('transaction : Tara, abonnement, cplan:pro, a payer', t.provider === 'tara' && t.kind === 'subscription' && t.subject === 'cplan:pro' && t.status === 'created' && t.amount === 25000);
   check('avant confirmation : toujours Decouverte', (await q(`select company_plan_status() r`))[0].r.plan.code === 'free');
   // le client ne peut pas se confirmer lui-meme
   await fails('le client ne confirme pas son propre paiement', `update payment_transactions set status = 'confirmed' where reference = '${c.reference}'`, /permission|row-level|violates/);

@@ -1,6 +1,7 @@
 // Edge Function « tara-webhook » : réception des notifications de paiement Tara Money (Dikalo).
-// Déployer avec --no-verify-jwt ; l'authenticité repose sur le secret TARA_WEBHOOK_SECRET (paramètre `s` de l'URL transmise
-// à Tara par `tara-pay`, comparé en temps constant). Idempotent : une transaction déjà confirmée n'est jamais retraitée.
+// Déployer avec --no-verify-jwt ; l'authenticité repose sur le secret TARA_WEBHOOK_SECRET, accepté soit dans l'en-tête `x-webhook-secret` (à préférer :
+// les URL se retrouvent dans les journaux), soit dans le paramètre `s` de l'URL transmise à Tara par `tara-pay` (seul moyen tant que Tara Money ne permet
+// pas de configurer un en-tête personnalisé : blocage externe), comparé en temps constant. Idempotent : une transaction déjà confirmée n'est jamais retraitée.
 // Une confirmation exige : secret valide, référence connue, statut de succès explicite, montant (s'il est fourni) >= montant attendu.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 

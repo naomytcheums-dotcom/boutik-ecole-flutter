@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/router/paths.dart' show screenPath;
 import '../gen.dart' show gAlert, gToast;
 import '../i18n.dart' show Text;
 import 'auth.dart';
@@ -12,6 +13,7 @@ import 'coequipiers_screens.dart' show MateNavPill;
 import 'company_screens.dart' show companyContextProvider, companyRoleLabels, companyStatusColor, companyStatusLabel;
 import 'marche/marche_data.dart';
 import 'marche/marche_widgets.dart';
+import 'notifs.dart' show NotifBadge;
 import 'tara_payment.dart';
 
 /// Accueil et forfaits de l'entreprise. Tout vient du serveur (migration 20261114002600) ; les prix et quotas sont ceux que l'administrateur a définis.
@@ -22,7 +24,7 @@ final companyDashboardProvider = FutureProvider.autoDispose<Map<String, dynamic>
   final r = await marcheCall('company_dashboard', {'p_owner': ?ctx});
   if (r.error != null) throw MarcheException(r.error);
   return Map<String, dynamic>.from(r.data as Map);
-});
+}, retry: (_, _) => null);
 
 final companyPlansProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
   ref.watch(authProvider.select((a) => a.current?.serverId));
@@ -62,6 +64,34 @@ String quotaLabel(int used, int max) => max >= 999 ? '$used (illimité)' : '$use
 /// Quota d'un forfait tel qu'affiché sur sa carte : « 0 sur 10 » ou « illimité ».
 String planQuotaLabel(int max) => max >= 999 ? 'illimité' : quotaLabel(0, max);
 
+/// Paiement ou demande de forfait : propriétaire, administrateur ou finance de l'entreprise.
+bool roleCanPayHome(String role) => role == 'owner' || role == 'admin' || role == 'finance';
+
+/// « 2026-11-17T10:00:00+00:00 » -> « 17/11/2026 » (vide si la date est illisible).
+String frDate(Object? iso) {
+  final d = DateTime.tryParse('$iso');
+  if (d == null) return '';
+  final l = d.toLocal();
+  return '${l.day.toString().padLeft(2, '0')}/${l.month.toString().padLeft(2, '0')}/${l.year}';
+}
+
+/// Message de l'accueil entreprise quand le chargement échoue (jamais le texte de la marketplace).
+String companyLoadErrorText(Object e) {
+  final code = e is MarcheException ? e.code : e;
+  if (code == 'offline' || code == 'missing') return 'L’espace entreprise n’est pas joignable pour le moment. Vérifiez votre connexion, puis réessayez.';
+  return Backend.userMessage('$code');
+}
+
+/// Instructions de paiement d'une demande de forfait manuelle : le numéro vient du réglage de l'administrateur (payments.manual_number) ;
+/// s'il n'est pas renseigné, on le dit franchement au lieu d'inventer une consigne.
+String manualPlanPaymentMessage({required String planName, required String reference, required num amount, String number = '', String operator = ''}) {
+  final amountText = planPriceLabel({'price_fcfa': amount, 'period_days': 30}).split(' /').first;
+  if (number.trim().isEmpty) {
+    return 'Votre demande du forfait « $planName » est enregistrée (référence $reference, $amountText). L’administration n’a pas encore communiqué de numéro pour le paiement manuel : elle vous contactera avec les instructions. Vous pouvez aussi payer tout de suite par Mobile Money avec le bouton « Payer par Mobile Money ».';
+  }
+  return 'Envoyez $amountText par ${operator.trim().isEmpty ? 'Mobile Money' : operator.trim()} au $number en indiquant la référence $reference. Puis déclarez votre paiement dans « Mes paiements » (bouton « J’ai payé ») : le forfait « $planName » s’active dès que la finance a confirmé la réception.';
+}
+
 class CompanyHomeScreen extends ConsumerWidget {
   const CompanyHomeScreen({super.key, this.shared = false});
 
@@ -81,21 +111,44 @@ class CompanyHomeScreen extends ConsumerWidget {
         ),
       );
 
+  /// En-tête (titre, notifications, menu du compte) : toujours affiché, même quand le chargement échoue.
+  Widget _header(BuildContext context, WidgetRef ref, String title) => Padding(
+        padding: const EdgeInsets.fromLTRB(5, 0, 0, 4),
+        child: Row(children: [
+          if (shared) IconButton(tooltip: 'Retour', onPressed: () => context.canPop() ? context.pop() : context.go('/mes-entreprises'), icon: const Icon(Icons.arrow_back_rounded, color: kInk)),
+          Expanded(child: Text(title, style: mst(22, w: FontWeight.w800))),
+          IconButton(
+            tooltip: 'Notifications',
+            onPressed: () => context.push(screenPath('50')),
+            icon: SizedBox(width: 28, height: 28, child: Stack(clipBehavior: Clip.none, children: [const Center(child: Icon(Icons.notifications_none_rounded, color: kInk)), const Positioned(left: 14, top: 0, child: NotifBadge())])),
+          ),
+          IconButton(tooltip: 'Menu du compte', onPressed: () => accountMenu(context, ref), icon: const Icon(Icons.menu_rounded, color: kInk)),
+        ]),
+      );
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final d = ref.watch(companyDashboardProvider);
     final account = ref.watch(authProvider.select((a) => a.current));
-    final org = const {'company', 'other', 'admin'}.contains(roleKey(account));
-    final open99 = canOpen(account, '99');
+    final org = const {'company', 'other', 'admin'}.contains(roleKey(account)) && !shared;
+    final open99 = canOpen(account, '99') && !shared;
     return Scaffold(
       backgroundColor: const Color(0xFFF7F4FA),
       body: SafeArea(
         child: Stack(children: [
-          mAsync<Map<String, dynamic>>(d, (x) {
+          d.when(
+            loading: () => ListView(padding: const EdgeInsets.fromLTRB(11, 12, 11, 130), children: [_header(context, ref, 'Mon entreprise'), const Padding(padding: EdgeInsets.all(40), child: Center(child: CircularProgressIndicator()))]),
+            error: (e, _) => ListView(padding: const EdgeInsets.fromLTRB(11, 12, 11, 130), children: [
+              _header(context, ref, 'Mon entreprise'),
+              mNote(companyLoadErrorText(e)),
+              Padding(padding: const EdgeInsets.symmetric(horizontal: 5), child: mButton('Réessayer', () => ref.invalidate(companyDashboardProvider), icon: Icons.refresh)),
+            ]),
+            data: (x) {
             final status = '${x['status']}' == 'none' ? 'draft' : '${x['status']}';
             int n(String k) => (x[k] as num?)?.toInt() ?? 0;
+            final myRole = '${x['my_role'] ?? 'owner'}';
             return ListView(padding: const EdgeInsets.fromLTRB(11, 12, 11, 130), children: [
-              Padding(padding: const EdgeInsets.fromLTRB(5, 0, 0, 4), child: Row(children: [Expanded(child: Text('${x['company_name'] ?? 'Mon entreprise'}', style: mst(22, w: FontWeight.w800))), IconButton(tooltip: 'Menu du compte', onPressed: () => accountMenu(context, ref), icon: const Icon(Icons.menu_rounded, color: kInk))])),
+              _header(context, ref, '${x['company_name'] ?? 'Mon entreprise'}'),
               if (shared) Padding(padding: const EdgeInsets.fromLTRB(5, 0, 5, 8), child: Text('Vous êtes ${companyRoleLabels['${x['my_role']}'] ?? x['my_role']} de cette entreprise.', style: mst(12.5, w: FontWeight.w600, c: kViolet)))
               else const SizedBox(height: 4),
               GestureDetector(
@@ -108,7 +161,7 @@ class CompanyHomeScreen extends ConsumerWidget {
                     Icon(status == 'approved' ? Icons.verified : Icons.info_outline, color: companyStatusColor(status)),
                     const SizedBox(width: 10),
                     Expanded(child: Text(status == 'approved' ? 'Entreprise vérifiée' : companyStatusLabel(status), style: mst(13, w: FontWeight.w700, c: companyStatusColor(status)))),
-                    if (status != 'approved') Text('Compléter', style: mst(12.5, w: FontWeight.w800, c: kViolet)),
+                    if (status == 'draft' || status == 'rejected') Text('Compléter', style: mst(12.5, w: FontWeight.w800, c: kViolet)),
                   ]),
                 ),
               ),
@@ -123,12 +176,14 @@ class CompanyHomeScreen extends ConsumerWidget {
                     const SizedBox(width: 10),
                     Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text('Forfait ${x['plan_name'] ?? 'Découverte'}', style: mst(14, w: FontWeight.w800, c: Colors.white)),
-                      Text(x['plan_ends_at'] == null ? 'Sans date de fin' : 'Actif jusqu’au ${'${x['plan_ends_at']}'.substring(0, 10)}', style: mst(12, c: const Color(0xFFD9D5E2))),
+                      Text(x['plan_ends_at'] == null ? 'Sans date de fin' : 'Actif jusqu’au ${frDate(x['plan_ends_at'])}', style: mst(12, c: const Color(0xFFD9D5E2))),
                     ])),
-                    Text('Changer', style: mst(12.5, w: FontWeight.w800, c: Colors.white)),
+                    Text(roleCanPayHome(myRole) ? 'Changer' : 'Voir', style: mst(12.5, w: FontWeight.w800, c: Colors.white)),
                   ]),
                 ),
               ),
+              if (!roleCanPayHome(myRole)) Padding(padding: const EdgeInsets.fromLTRB(8, 0, 8, 10), child: Text('Seuls le propriétaire, les administrateurs et la finance de l’entreprise peuvent changer de forfait.', style: mst(12, c: kGrey))),
+              if (shared) Padding(padding: const EdgeInsets.fromLTRB(8, 0, 8, 10), child: Text('Les besoins, offres et concours se gèrent pour l’instant depuis le compte du propriétaire : les chiffres ci-dessous sont ceux de cette entreprise.', style: mst(12, c: kGrey))),
               Row(children: [
                 _tile(context, Icons.assignment_outlined, '${n('needs_open')}', 'Besoins ouverts', open99 ? '/s/99' : null),
                 _tile(context, Icons.mark_email_unread_outlined, '${n('proposals_new')}', 'Propositions à traiter', open99 ? '/s/93' : null),
@@ -165,7 +220,7 @@ class CompanyHomeScreen extends ConsumerWidget {
                     GestureDetector(
                       onTap: () => context.push(e.$3),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
                         decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(100), border: Border.all(color: kLine)),
                         child: Row(mainAxisSize: MainAxisSize.min, children: [Icon(e.$1, size: 18, color: kViolet), const SizedBox(width: 6), Text(e.$2, style: mst(12.5, w: FontWeight.w700))]),
                       ),
@@ -222,10 +277,33 @@ class CompanyPlansSheet extends ConsumerWidget {
       if (!context.mounted) return;
       if (r.error != null) {
         await gAlert(context, 'Demande impossible', Backend.userMessage('${r.error}'));
-      } else {
-        await gAlert(context, 'Demande envoyée', 'Réglez le forfait comme indiqué par l’administrateur : il l’active dès réception du paiement.');
+        return;
       }
       ref.invalidate(companyPlanStatusProvider);
+      Map<String, dynamic>? st;
+      try {
+        st = await ref.read(companyPlanStatusProvider.future);
+      } catch (_) {}
+      final pay = st?['requested_payment'] is Map ? Map<String, dynamic>.from(st!['requested_payment'] as Map) : null;
+      final ins = await Backend.rpc('payment_instructions', const {});
+      final m = ins.data is Map ? Map<String, dynamic>.from(ins.data as Map) : <String, dynamic>{};
+      if (!context.mounted) return;
+      final planName = '${((plans.asData?.value ?? const []).firstWhere((p) => '${p['code']}' == code, orElse: () => {'name': code}))['name']}';
+      final text = pay == null
+          ? 'Votre demande du forfait « $planName » est enregistrée. L’administration vous communiquera les instructions de paiement.'
+          : manualPlanPaymentMessage(planName: planName, reference: '${pay['reference']}', amount: (pay['amount'] as num?) ?? 0, number: '${m['merchant_number'] ?? ''}', operator: '${m['operator'] ?? ''}');
+      final toPayments = await showDialog<bool>(
+        context: context,
+        builder: (d) => AlertDialog(
+          title: Text('Demande envoyée'),
+          content: Text(text),
+          actions: [TextButton(onPressed: () => Navigator.pop(d, false), child: Text('Fermer')), if (pay != null) TextButton(onPressed: () => Navigator.pop(d, true), child: Text('Mes paiements'))],
+        ),
+      );
+      if (toPayments == true && context.mounted) {
+        Navigator.of(context).maybePop();
+        context.push('/paiements');
+      }
     }
 
     return ConstrainedBox(
@@ -234,7 +312,8 @@ class CompanyPlansSheet extends ConsumerWidget {
         Text('Forfaits entreprise', style: mst(18, w: FontWeight.w800)),
         const SizedBox(height: 4),
         Text('Le forfait fixe le nombre de besoins, d’offres et de concours actifs en même temps.', style: mst(12.5, c: kGrey)),
-        if (status != null) Padding(padding: const EdgeInsets.only(top: 8), child: Text('Utilisé : ${quotaLabel((status['used_needs'] as num?)?.toInt() ?? 0, (((status['plan'] as Map?)?['max_needs']) as num?)?.toInt() ?? 1)} besoin(s) · ${quotaLabel((status['used_offers'] as num?)?.toInt() ?? 0, (((status['plan'] as Map?)?['max_offers']) as num?)?.toInt() ?? 1)} offre(s)', style: mst(12.5, w: FontWeight.w600))),
+        if (status != null) Padding(padding: const EdgeInsets.only(top: 8), child: Text('Utilisé : ${quotaLabel((status['used_needs'] as num?)?.toInt() ?? 0, (((status['plan'] as Map?)?['max_needs']) as num?)?.toInt() ?? 1)} besoin(s) · ${quotaLabel((status['used_offers'] as num?)?.toInt() ?? 0, (((status['plan'] as Map?)?['max_offers']) as num?)?.toInt() ?? 1)} offre(s) · ${quotaLabel((status['used_contests'] as num?)?.toInt() ?? 0, (((status['plan'] as Map?)?['max_contests']) as num?)?.toInt() ?? 0)} concours', style: mst(12.5, w: FontWeight.w600))),
+        if (status != null && !canPay) Padding(padding: const EdgeInsets.only(top: 6), child: Text('Seuls le propriétaire, les administrateurs et la finance de l’entreprise peuvent payer ou demander un forfait.', style: mst(12, c: kGrey))),
         const SizedBox(height: 10),
         mAsync<List<Map<String, dynamic>>>(
           plans,
@@ -278,7 +357,19 @@ class CompanyPlansAdminScreen extends ConsumerWidget {
       ),
     );
     if (yes != true || !context.mounted) return;
-    final x = await marcheCall('company_subscription_activate', {'p_owner': r['owner_id'], 'p_plan': r['plan_code']});
+    var x = await marcheCall('company_subscription_activate', {'p_owner': r['owner_id'], 'p_plan': r['plan_code']});
+    if (x.error != null && '${x.error}'.contains('inférieur') && context.mounted) {
+      final replace = await showDialog<bool>(
+        context: context,
+        builder: (c) => AlertDialog(
+          title: Text('Remplacer un forfait supérieur ?'),
+          content: Text('${x.error}'),
+          actions: [TextButton(onPressed: () => Navigator.pop(c, false), child: Text('Annuler')), TextButton(onPressed: () => Navigator.pop(c, true), child: Text('Remplacer quand même'))],
+        ),
+      );
+      if (replace != true || !context.mounted) return;
+      x = await marcheCall('company_subscription_activate', {'p_owner': r['owner_id'], 'p_plan': r['plan_code'], 'p_confirm_replace': true});
+    }
     if (!context.mounted) return;
     gToast(context, x.error != null ? Backend.userMessage('${x.error}') : 'Forfait activé. L’entreprise est prévenue.');
     ref.invalidate(companyPendingPlansProvider);
@@ -340,6 +431,7 @@ class CompanyPlansAdminScreen extends ConsumerWidget {
                         Text('${r['company_name']}', style: mst(15, w: FontWeight.w800)),
                         Text('Forfait « ${r['plan_name']} » · ${planPriceLabel({'price_fcfa': r['price_fcfa'], 'period_days': r['period_days']})}', style: mst(12.5, c: kGrey)),
                         Text('${r['phone'] ?? ''} · ${r['email'] ?? ''}', style: mst(12, c: kGrey)),
+                        if ('${r['payment_reference'] ?? ''}'.isNotEmpty) Text('Paiement ${r['payment_reference']} : ${switch ('${r['payment_status']}') { 'pending' => 'déclaré par l’entreprise${'${r['provider_ref'] ?? ''}'.isEmpty ? '' : ' (réf. ${r['provider_ref']})'}', 'created' => 'pas encore déclaré', 'confirmed' => 'confirmé', _ => '${r['payment_status']}' }}', style: mst(12, w: FontWeight.w600, c: kGrey)),
                         const SizedBox(height: 8),
                         mButton('Paiement reçu : activer', () => _activate(context, ref, r)),
                       ]),

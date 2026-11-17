@@ -25,6 +25,7 @@ import 'package:boutik_ecole/figma/live/backend.dart';
 import 'package:boutik_ecole/figma/live/console.dart';
 import 'package:boutik_ecole/figma/live/entreprise.dart';
 import 'package:boutik_ecole/figma/live/lot20b.dart';
+import 'package:boutik_ecole/figma/live/missions.dart' show Mission, MissionNotifier, missionProvider;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -37,6 +38,13 @@ class _Rows extends RpcRows {
   final List<Map<String, dynamic>>? v;
   @override
   List<Map<String, dynamic>>? build() => v;
+}
+
+class _Mission extends MissionNotifier {
+  _Mission(this.m);
+  final Mission m;
+  @override
+  Mission build() => m;
 }
 
 void main() {
@@ -82,13 +90,17 @@ void main() {
     expect(find.text('Alice Test'), findsOneWidget);
   });
 
-  testWidgets('285 connecté : besoins réels', (t) async {
+  testWidgets('285 connecté : espace du projet réel (contrat, jalons), plus de liste de besoins ni de ligne de maquette', (t) async {
     await monter(t, const G_285(), connecte: true, overrides: [
-      companyMissionsProvider.overrideWith(() => _Rows('company_missions', [
-            {'title': 'Besoin Test', 'proposals': 1, 'status': 'assigned', 'created_at': '2026-11-01T10:00:00Z', 'team': 'Équipe A'}
-          ]))
+      missionProvider.overrideWith(() => _Mission(const Mission(
+            id: '#BR-9', kind: 'Besoin Test', desc: '', total: 100000, date: '', real: true, uuid: 'm9', role: 'client', counterpart: 'Alice T.', invoice: 'MI-2026-00009', team: 'Alice T.',
+            status: 'assigned', milestoneAmounts: [30000, 40000, 30000], steps: [('Brief validé', 'À venir')],
+          )))
     ]);
     expect(find.text('Besoin Test'), findsOneWidget);
+    expect(find.text('Contrat de mission'), findsOneWidget);
+    expect(find.text('Ouvrir la messagerie du projet'), findsWidgets);
+    expect(find.text('Valider le jalon 3'), findsNothing);
   });
 
   testWidgets('278 connecté : liens et PI de MES projets, pas ceux des autres', (t) async {

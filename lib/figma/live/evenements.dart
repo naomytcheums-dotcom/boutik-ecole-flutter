@@ -398,6 +398,8 @@ class EventsList extends ConsumerWidget {
               behavior: HitTestBehavior.opaque,
               onTap: ended || (e.full && !e.mine && !e.pending) ? null : () => toggleRegistration(context, ref, e),
               child: Container(
+                constraints: const BoxConstraints(minHeight: 48, minWidth: 48),
+                alignment: Alignment.center,
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(color: ended ? const Color(0xFFF2EFF6) : (soft ? const Color(0xFFEEE9FF) : (e.full ? const Color(0xFFF2EFF6) : _ink)), borderRadius: BorderRadius.circular(16)),
                 child: Text(label, style: _st(11.5, w: FontWeight.w600, c: ended ? _grey : (soft ? const Color(0xFF5A3FE0) : (e.full ? _grey : Colors.white)))),

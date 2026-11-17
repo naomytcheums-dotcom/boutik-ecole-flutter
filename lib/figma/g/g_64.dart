@@ -84,7 +84,7 @@ class G_64 extends ConsumerWidget {
       gP(272, 532, 78, 16, gText(gm('Demain · 14 h', ''), 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right), show: demoContent),
       gP(40, 532, 90, 16, gText('Argent', 12.5, Color(0xFF57545F)), show: !demoContent),
       gP(130, 532, 220, 16, Consumer(builder: (context, ref, _) => gText(sellerOrderMoneyText(ref.watch(currentSellerOrderProvider)), 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)), show: !demoContent),
-      gP(40, 556, 310, 20, gText('Saisir le code de retrait du client', 12.5, Color(0xFF5A3FE0), weight: 700, align: TextAlign.center), tap: () { enterHandoverCode(ref, context); }, show: !demoContent),
+      gP(40, 556, 310, 20, gText('Saisir le code de retrait du client', 12.5, Color(0xFF5A3FE0), weight: 700, align: TextAlign.center), tap: () { enterHandoverCode(ref, context); }, show: !demoContent && !ref.watch(currentSellerOrderProvider).home),
       gP(24, 584, 342, 62, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
       gP(36, 599, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(42.625, 604.917, 18.75, 16.625, gImg('assets/figma/v/b2ae09d0fd46bb.svg')),

@@ -64,7 +64,7 @@ class G_29 extends ConsumerWidget {
       gP(257.556, 233.211, 79.173, 2.221, gBox(color: (demoContent || ref.watch(viewedOrderProvider).step >= 3 ? Color(0xFFBFE8D6) : Color(0xFFEEEAF4)), radii: [0.489, 0.489, 0.489, 0.489])),
       gP(240.451, 225.643, 16.617, 16.617, gBox(color: (demoContent || ref.watch(viewedOrderProvider).step >= 2 ? Color(0xFF1F9D6B) : Color(0xFFDAD5E4)), oval: true)),
       gP(242.501, 228.507, 12.516, 10.48, gImg('assets/figma/v/2aa6dab576de7d.svg')),
-      gP(225.259, 262.247, 47, 13, gText('Expédiée', 10.263, Color(0xFF57545F), align: TextAlign.center)),
+      gP(225.259, 262.247, 47, 13, Consumer(builder: (context, ref, _) { final o = ref.watch(viewedOrderProvider); return gText(demoContent ? 'Expédiée' : orderStepLabel(o, 2), 10.263, Color(0xFF57545F), align: TextAlign.center, wrap: true, maxLines: 2); })),
       gP(337.218, 225.643, 16.617, 16.617, gBox(color: (demoContent || ref.watch(viewedOrderProvider).step >= 3 ? Color(0xFF1F9D6B) : Color(0xFFDAD5E4)), oval: true)),
       gP(339.268, 228.507, 12.516, 10.48, gImg('assets/figma/v/2aa6dab576de7d.svg')),
       gP(330.526, 262.247, 30, 13, gText('Livrée', 10.263, Color(0xFF57545F), align: TextAlign.center)),

@@ -46,6 +46,7 @@ class SupportRequestsScreen extends ConsumerWidget {
     if (!context.mounted) return;
     if (projects.isEmpty) return gAlert(context, 'Aucun projet', 'L’accompagnement se demande pour l’un de vos projets : créez-le d’abord depuis « Soumettre mon projet ».');
     var project = '${projects.first['id']}', kind = 'mentor';
+    String? error;
     final message = TextEditingController();
     final ok = await showDialog<bool>(
       context: context,
@@ -60,11 +61,19 @@ class SupportRequestsScreen extends ConsumerWidget {
               Wrap(spacing: 8, children: [for (final k in _kinds.entries) ChoiceChip(label: Text(k.value), selected: kind == k.key, onSelected: (_) => set(() => kind = k.key))]),
               const SizedBox(height: 10),
               TextField(controller: message, maxLines: 4, maxLength: 1000, decoration: _deco('Votre besoin (10 caractères au moins)')),
+              if (error != null) Padding(padding: const EdgeInsets.only(top: 6), child: Text(error!, style: mst(12.5, w: FontWeight.w600, c: kRed))),
             ]),
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(d, false), child: Text('Annuler', style: mst(14, c: kGrey))),
-            TextButton(onPressed: () => Navigator.pop(d, true), child: Text('Envoyer', style: mst(14, w: FontWeight.w800))),
+            TextButton(style: TextButton.styleFrom(minimumSize: const Size(48, 48)), onPressed: () => Navigator.pop(d, false), child: Text('Annuler', style: mst(14, c: kGrey))),
+            TextButton(
+              style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+              onPressed: () {
+                if (message.text.trim().length < 10) return set(() => error = 'Expliquez votre besoin en 10 caractères au moins.');
+                Navigator.pop(d, true);
+              },
+              child: Text('Envoyer', style: mst(14, w: FontWeight.w800)),
+            ),
           ],
         ),
       ),
@@ -79,16 +88,29 @@ class SupportRequestsScreen extends ConsumerWidget {
 
   Future<void> _handle(BuildContext context, WidgetRef ref, Map<String, dynamic> x, String status) async {
     final response = TextEditingController();
+    String? error;
     final ok = await showDialog<bool>(
       context: context,
-      builder: (d) => AlertDialog(
-        backgroundColor: Colors.white,
-        title: Text(status == 'in_progress' ? 'Prendre en charge' : (status == 'done' ? 'Répondre' : 'Refuser la demande'), style: mst(17, w: FontWeight.w800)),
-        content: TextField(controller: response, maxLines: 4, maxLength: 1000, decoration: _deco(status == 'in_progress' ? 'Message (facultatif)' : 'Réponse au porteur')),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(d, false), child: Text('Annuler', style: mst(14, c: kGrey))),
-          TextButton(onPressed: () => Navigator.pop(d, true), child: Text('Confirmer', style: mst(14, w: FontWeight.w800))),
-        ],
+      builder: (d) => StatefulBuilder(
+        builder: (d, set) => AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text(status == 'in_progress' ? 'Prendre en charge' : (status == 'done' ? 'Répondre' : 'Refuser la demande'), style: mst(17, w: FontWeight.w800)),
+          content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+            TextField(controller: response, maxLines: 4, maxLength: 1000, decoration: _deco(status == 'in_progress' ? 'Message (facultatif)' : 'Réponse au porteur')),
+            if (error != null) Padding(padding: const EdgeInsets.only(top: 6), child: Text(error!, style: mst(12.5, w: FontWeight.w600, c: kRed))),
+          ]),
+          actions: [
+            TextButton(style: TextButton.styleFrom(minimumSize: const Size(48, 48)), onPressed: () => Navigator.pop(d, false), child: Text('Annuler', style: mst(14, c: kGrey))),
+            TextButton(
+              style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+              onPressed: () {
+                if (status != 'in_progress' && response.text.trim().length < 5) return set(() => error = 'Rédigez une réponse (5 caractères au moins).');
+                Navigator.pop(d, true);
+              },
+              child: Text('Confirmer', style: mst(14, w: FontWeight.w800)),
+            ),
+          ],
+        ),
       ),
     );
     if (ok != true || !context.mounted) return;

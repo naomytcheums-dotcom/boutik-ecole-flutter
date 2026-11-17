@@ -186,7 +186,7 @@ Future<void> inviteContestMate(BuildContext context, WidgetRef ref) async {
   final mail = await askText(context, title: 'Inviter un coéquipier', body: 'Adresse e-mail de son compte étudiant (5 membres au plus).', hint: 'prenom.nom@…', ok: 'Inviter', min: 5);
   if (mail == null || !context.mounted) return;
   if (await _call(context, 'invite_contest_member', {'p_team': team.teamId, 'p_email': mail}, 'Invitation refusée') == null && context.mounted) {
-    gToast(context, 'Invitation envoyée : elle doit être acceptée par l’étudiant.');
+    gToast(context, 'Si cette adresse correspond à un compte étudiant, il reçoit votre invitation et doit l’accepter.');
   }
 }
 

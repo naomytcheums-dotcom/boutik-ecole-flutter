@@ -20,9 +20,29 @@ String fcfaLocalized(num amount, String languageCode) {
   return '${fcfa(amount, withUnit: false).replaceAll(nbsp, ',')}${nbsp}FCFA';
 }
 
-/// Ventilation d'un paiement : 70 % vendeur, 20 % institution, 10 % plateforme.
-({int seller, int institution, int platform}) splitPayment(int amount) {
-  final seller = (amount * 70) ~/ 100;
-  final institution = (amount * 20) ~/ 100;
+/// Règle de répartition d'un paiement (vendeur / fonds d'innovation / plateforme), en pourcentages.
+/// La règle EN BASE (money_split_rules) fait foi : cette classe ne fait que la porter, aucune valeur n'est supposée.
+class SplitRule {
+  const SplitRule(this.beneficiary, this.institution, this.platform);
+  final int beneficiary, institution, platform;
+
+  /// Règle de la maquette hors connexion (`!Backend.ready`) : jamais utilisée avec le serveur.
+  static const demo = SplitRule(70, 20, 10);
+
+  /// Depuis `money_split_get()['current']` ; null si les pourcentages manquent ou sont incohérents.
+  static SplitRule? fromServer(Object? current) {
+    if (current is! Map) return null;
+    final b = (current['beneficiary_pct'] as num?)?.toInt(), i = (current['institution_pct'] as num?)?.toInt(), p = (current['platform_pct'] as num?)?.toInt();
+    if (b == null || i == null || p == null || b < 0 || i < 0 || p < 0 || b + i + p != 100) return null;
+    return SplitRule(b, i, p);
+  }
+
+  String get label => '$beneficiary / $institution / $platform';
+}
+
+/// Ventilation d'un montant selon [rule] ; le reliquat d'arrondi revient à la plateforme (comme `money_split_amounts` côté serveur).
+({int seller, int institution, int platform}) splitPayment(int amount, SplitRule rule) {
+  final seller = (amount * rule.beneficiary) ~/ 100;
+  final institution = (amount * rule.institution) ~/ 100;
   return (seller: seller, institution: institution, platform: amount - seller - institution);
 }

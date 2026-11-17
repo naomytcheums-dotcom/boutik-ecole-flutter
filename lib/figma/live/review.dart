@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:async';
 
 import '../gen.dart';
+import '../gdata.dart' show gNetImage;
 import 'audit.dart';
 import 'auth.dart';
 import 'backend.dart';
@@ -14,10 +15,14 @@ import 'store.dart';
 /// Tableaux de bord web : validation des annonces (département) et flux financiers.
 
 class ReviewItem {
-  const ReviewItem(this.title, this.seller, this.category, this.price, this.submitted, {this.seed = true, this.id = '', this.status = 'pending', this.note = ''});
+  const ReviewItem(this.title, this.seller, this.category, this.price, this.submitted, {this.seed = true, this.id = '', this.status = 'pending', this.note = '', this.description = '', this.photo = '', this.stock = 0, this.department = ''});
   final String title, seller, category, submitted;
   final int price;
   final bool seed;
+
+  /// Description, première photo (chemin du stockage), stock et département de l'annonce : ce que le valideur doit voir pour décider.
+  final String description, photo, department;
+  final int stock;
 
   /// Identifiant serveur, statut (pending · approved · rejected) et motif de refus : renseignés quand les données viennent de Supabase.
   final String id, status, note;
@@ -55,7 +60,7 @@ class ReviewQueue extends Notifier<List<ReviewItem>> {
       for (final r in rows)
         ReviewItem(
           (r['title'] ?? '').toString(),
-          'Étudiant-vendeur',
+          (r['seller_name'] ?? '').toString().isEmpty ? 'Étudiant-vendeur' : (r['seller_name']).toString(),
           (r['category'] ?? '').toString(),
           (r['price'] as num?)?.toInt() ?? 0,
           _ago((r['updated_at'] ?? r['created_at'] ?? '').toString()),
@@ -63,6 +68,10 @@ class ReviewQueue extends Notifier<List<ReviewItem>> {
           id: (r['id'] ?? '').toString(),
           status: (r['status'] ?? 'pending').toString(),
           note: (r['review_note'] ?? '').toString(),
+          description: (r['description'] ?? '').toString(),
+          photo: (r['images'] is List && (r['images'] as List).isNotEmpty) ? (r['images'] as List).first.toString() : '',
+          stock: (r['stock'] as num?)?.toInt() ?? 0,
+          department: (r['department'] ?? '').toString(),
         ),
     ];
   }
@@ -141,17 +150,28 @@ Future<void> reviewDialog(BuildContext context, WidgetRef ref, ReviewItem r) {
     builder: (ctx) => AlertDialog(
       backgroundColor: Colors.white,
       title: Text('Examiner « ${r.title} »', style: st.copyWith(fontSize: 16, fontWeight: FontWeight.w700)),
-      content: SizedBox(
-        width: 360,
-        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('Vendeur : ${r.seller}\nCatégorie : ${r.category}\nPrix : ${fcfa(r.price)}\nSoumise : ${r.submitted}', style: st.copyWith(height: 1.6)),
-          const SizedBox(height: 14),
-          TextField(
-            controller: note,
-            style: st,
-            decoration: const InputDecoration(hintText: 'Motif (obligatoire en cas de refus)', border: OutlineInputBorder()),
-          ),
-        ]),
+      content: SingleChildScrollView(
+        child: SizedBox(
+          width: 360,
+          child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+            if (r.photo.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: ClipRRect(borderRadius: BorderRadius.circular(12), child: SizedBox(height: 150, width: double.infinity, child: gNetImage(Backend.listingImageUrl(r.photo), fit: BoxFit.cover, errorBuilder: (_, _, _) => Container(color: const Color(0xFFEDE9F6), alignment: Alignment.center, child: Text('Photo indisponible', style: st))))),
+              ),
+            Text('Vendeur : ${r.seller}\nCatégorie : ${r.category}\nPrix : ${r.price == 0 ? 'Sur devis' : fcfa(r.price)}${r.seed || r.category == 'Services' ? '' : '\nStock : ${r.stock}'}${r.department.isEmpty ? '' : '\nDépartement : ${r.department}'}\nSoumise : ${r.submitted}', style: st.copyWith(height: 1.6)),
+            if (r.description.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 10), child: Text(r.description, style: st.copyWith(height: 1.45, color: const Color(0xFF4A4854)))),
+            if (r.status == 'rejected' && r.note.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 10), child: Text('Motif du refus précédent : ${r.note}', style: st.copyWith(color: const Color(0xFFD64545), fontWeight: FontWeight.w600))),
+            const SizedBox(height: 14),
+            TextField(
+              controller: note,
+              style: st,
+              maxLines: 3,
+              minLines: 1,
+              decoration: const InputDecoration(hintText: 'Motif (obligatoire en cas de refus)', border: OutlineInputBorder()),
+            ),
+          ]),
+        ),
       ),
       actions: [
         TextButton(

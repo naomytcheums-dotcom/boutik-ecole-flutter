@@ -8,7 +8,7 @@ import 'backend.dart';
 import 'finance.dart' show financeOverviewProvider, financePayoutsProvider;
 import 'lots.dart' show copyText, formDialog;
 import 'seller.dart';
-import 'store.dart' show fcfa, viewedOrderProvider;
+import 'store.dart' show fcfa, ordersProvider, viewedOrderProvider;
 import 'vendeur.dart' show sellerRevenueProvider;
 
 /// Argent des ventes (lot MONEY, migrations 20261117040000 à 20261117040500) : remise en main propre avec le code de retrait,
@@ -85,9 +85,15 @@ bool canRequestRefund(WidgetRef ref) {
 Future<void> confirmViewedOrderReceipt(WidgetRef ref, BuildContext context) async {
   if (!_real(ref)) return;
   final o = ref.read(viewedOrderProvider);
-  if (!await _ask(context, 'Confirmer la réception ?', 'Vous confirmez avoir reçu la commande ${o.id} en bon état. Le paiement est alors versé au vendeur. En cas de problème, déposez plutôt une réclamation : l’argent reste bloqué jusqu’à la décision.', 'Oui, j’ai tout reçu') || !context.mounted) return;
+  final cod = o.cod;
+  if (!await _ask(context, 'Confirmer la réception ?', cod
+          ? 'Vous confirmez avoir reçu la commande ${o.id} en bon état. Le paiement a lieu à la remise, en main propre. En cas de problème, déposez plutôt une réclamation.'
+          : 'Vous confirmez avoir reçu la commande ${o.id} en bon état. Le paiement est alors versé au vendeur. En cas de problème, déposez plutôt une réclamation : l’argent reste bloqué jusqu’à la décision.', 'Oui, j’ai tout reçu') || !context.mounted) return;
   final r = await _run(context, 'confirm_receipt', {'p_number': o.id}, title: 'Confirmation impossible');
-  if (r.ok && context.mounted) gToast(context, 'Réception confirmée. Merci !');
+  if (!r.ok || !context.mounted) return;
+  await ref.read(ordersProvider.notifier).refresh();
+  if (!context.mounted) return;
+  gToast(context, r.data == 'already' ? 'Vous aviez déjà confirmé la réception de cette commande.' : 'Réception confirmée. Merci !');
 }
 
 Future<void> requestViewedOrderRefund(WidgetRef ref, BuildContext context) async {
@@ -97,7 +103,10 @@ Future<void> requestViewedOrderRefund(WidgetRef ref, BuildContext context) async
       submit: 'Envoyer la demande', intro: 'L’équipe examine la demande (support ou finance). Si elle est acceptée, la commande est annulée et vous êtes remboursé sur votre numéro Mobile Money enregistré (Moyens de paiement). En attendant, l’argent reste bloqué.');
   if (v == null || !context.mounted) return;
   final r = await _run(context, 'order_refund_request', {'p_order': o.id, 'p_reason': v[0]}, title: 'Demande non envoyée');
-  if (r.ok && context.mounted) gToast(context, 'Demande envoyée. Le vendeur et l’équipe sont prévenus.');
+  if (r.ok && context.mounted) {
+    await ref.read(ordersProvider.notifier).refresh();
+    if (context.mounted) gToast(context, 'Demande envoyée. Le vendeur et l’équipe sont prévenus.');
+  }
 }
 
 // ------------------------------------------------------------------ réclamations : fil d'échanges

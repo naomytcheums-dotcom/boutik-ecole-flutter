@@ -180,6 +180,7 @@ export async function run(db) {
 
   // ============================================================ E. S4-48 : annulation / remboursement d'une commande payée
   const o7 = await newOrder(B, [[table, 'Table', 5000, 2]]);
+  await steps(S2, o7.num);
   await as(B);
   await fails('E1 reason trop courte', `select order_refund_request('${o7.num}', 'non')`, /10 caractères/);
   const r7 = (await q(`select order_refund_request('${o7.num}', 'Je ne veux plus de cet article, erreur de commande') id`))[0].id;
@@ -189,7 +190,7 @@ export async function run(db) {
   await as(S2);
   const mine = (await q(`select my_refunds() r`))[0].r;
   check('E5 le vendeur voit la demande (sans numero de remboursement)', mine.length === 1 && mine[0].as === 'seller' && mine[0].refund_phone === null);
-  await steps(S2, o7.num); await backdate(o7.id);
+  await backdate(o7.id);
   check('E6 une demande en cours bloque aussi la liberation', (await autoRelease()) === 0 && (await entry(o7.id, S2)).status === 'held');
   await as(S1);
   await fails('E7 un vendeur etranger a la commande ne decide pas', `select order_refund_decide('${r7}', 'approve', '')`, /Réservé/);
@@ -232,9 +233,13 @@ export async function run(db) {
   // ============================================================ G. S4-1 / S4-82 / S4-123 : retraits
   const w0 = await wallet(S1);
   check('G0 le vendeur a un solde disponible (> 5000)', w0.available > 5000, JSON.stringify(w0));
+  await sup(); await db.exec(`update profiles set phone_verified = true, certification = 'approved' where id in ('${S1}', '${S2}')`);
   await as(S1);
   await fails('G1 sans numero Mobile Money enregistre : refuse', `select request_seller_payout(2000)`, /Enregistrez d'abord/);
   await q(`select save_payment_method('orange_money', '691234567', true)`);
+  await fails('G1b delai de securite : un numero tout juste enregistre ne recoit aucun retrait', `select request_seller_payout(2000)`, /vient d'être enregistré/);
+  await sup(); await db.exec(`update payment_methods set created_at = now() - interval '25 hours' where owner_id = '${S1}'`);
+  await as(S1);
   await fails('G2 minimum 1000 FCFA', `select request_seller_payout(500)`, /minimum/);
   await fails('G3 au-dela du solde : refuse', `select request_seller_payout(${w0.available + 1})`, /solde disponible/);
   await fails('G4 numero non enregistre : refuse', `select request_seller_payout(2000, '677000000')`, /pas enregistré/);

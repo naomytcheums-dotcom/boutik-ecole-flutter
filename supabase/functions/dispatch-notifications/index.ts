@@ -368,10 +368,13 @@ Deno.serve(async (req) => {
           throw new Error(`e-mail refusé (${response.status})`);
         }
       } else if (r.channel === "sms" || r.channel === "whatsapp") {
-        // Adresse choisie par la file (numéro saisi aux réglages) ; à défaut, le numéro du profil, seulement s'il a été vérifié.
-        const dest = r.to_address || (profile?.phone_verified ? profile?.phone : null);
-        if (!dest) {
+        // Numéro vérifié uniquement, contrôlé à l'envoi (le numéro du profil a pu changer depuis la mise en file) ; le corps est déjà masqué par la file.
+        if (!profile?.phone_verified) {
           throw new Error(profile?.phone ? "numéro non vérifié" : "pas de numéro");
+        }
+        const dest = r.to_address || profile.phone;
+        if (!dest) {
+          throw new Error("pas de numéro");
         }
 
         const whatsapp = r.channel === "whatsapp";

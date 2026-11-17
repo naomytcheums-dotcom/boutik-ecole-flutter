@@ -346,7 +346,7 @@ Future<Order?> _createOrder(WidgetRef ref, BuildContext context, int shownTotal)
 bool canCancelViewedOrder(WidgetRef ref) {
   if (!Backend.ready || demoContent) return false;
   final o = ref.watch(viewedOrderProvider);
-  return !o.paid && !o.cancelled && ref.watch(ordersProvider).any((x) => x.id == o.id);
+  return !o.paid && !o.cancelled && o.status < 2 && ref.watch(ordersProvider).any((x) => x.id == o.id);
 }
 
 /// Motif choisi sur l'écran 47 (valeurs acceptées par le serveur).

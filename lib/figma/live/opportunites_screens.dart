@@ -229,7 +229,7 @@ class OpportunityCard extends StatelessWidget {
               if (o['verified'] == true) const Padding(padding: EdgeInsets.only(left: 4), child: Icon(Icons.verified_rounded, size: 16, color: kViolet)),
             ]),
           ),
-          if (onSave != null) GestureDetector(behavior: HitTestBehavior.opaque, onTap: onSave, child: Padding(padding: const EdgeInsets.all(4), child: Icon(o['saved'] == true ? Icons.bookmark : Icons.bookmark_border, color: o['saved'] == true ? kViolet : kGrey))),
+          if (onSave != null) Semantics(button: true, label: o['saved'] == true ? 'Retirer des favoris' : 'Enregistrer l’offre', child: GestureDetector(behavior: HitTestBehavior.opaque, onTap: onSave, child: SizedBox(width: 48, height: 48, child: Icon(o['saved'] == true ? Icons.bookmark : Icons.bookmark_border, color: o['saved'] == true ? kViolet : kGrey)))),
         ]),
         const SizedBox(height: 8),
         Text('${o['title']}', style: mst(15, w: FontWeight.w800)),
@@ -303,7 +303,7 @@ class _OppsState extends ConsumerState<OpportunitiesScreen> {
       data: (l) => l.isEmpty
           ? const SizedBox.shrink()
           : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              mSectionTitle(title, trailing: l.length > max ? GestureDetector(onTap: () => _set(_query.copy(section: q.section, paid: q.paid ? true : null, iut: q.iut ? true : null)), child: Text('Voir tout', style: mst(12.5, w: FontWeight.w600, c: kViolet))) : null),
+              mSectionTitle(title, trailing: l.length > max ? GestureDetector(behavior: HitTestBehavior.opaque, onTap: () => _set(_query.copy(section: q.section, paid: q.paid ? true : null, iut: q.iut ? true : null)), child: ConstrainedBox(constraints: const BoxConstraints(minHeight: 48, minWidth: 48), child: Center(child: Text('Voir tout', style: mst(12.5, w: FontWeight.w600, c: kViolet))))) : null),
               for (final o in l.take(max)) OpportunityCard(o: o, onTap: () => context.push('/opportunites/${o['id']}'), onSave: () => _save(o)),
             ]),
     );
@@ -473,6 +473,8 @@ class OpportunityDetailScreen extends ConsumerWidget {
           ref.invalidate(oppDetailProvider(id));
           ref.invalidate(oppsProvider);
           ref.invalidate(oppMyApplicationsProvider);
+          ref.invalidate(oppInviteProvider(id));
+          ref.invalidate(oppMyInvitesProvider);
           final m = await marcheCall('opp_my_match', {'p_id': id});
           if (!context.mounted) return;
           ref.read(lastApplicationProvider.notifier).set({
@@ -544,8 +546,11 @@ class OpportunityDetailScreen extends ConsumerWidget {
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () async {
-                    await marcheCall('opp_invite_decline', {'p_id': id});
+                    final r = await marcheCall('opp_invite_decline', {'p_id': id});
+                    if (!context.mounted) return;
+                    if (r.error != null) gToast(context, Backend.userMessage('${r.error}'));
                     ref.invalidate(oppInviteProvider(id));
+                    ref.invalidate(oppMyInvitesProvider);
                   },
                   child: Text('Non merci', style: mst(12.5, w: FontWeight.w700, c: kGrey)),
                 ),
@@ -599,7 +604,10 @@ class OpportunityDetailScreen extends ConsumerWidget {
               Expanded(
                 child: mButton(o['saved'] == true ? 'Enregistrée' : 'Enregistrer', () async {
                   if (!await requireLogin(context, ref, 'enregistrer une offre') || !context.mounted) return;
-                  if (await _call(context, 'opp_save_toggle', {'p_id': id})) ref.invalidate(oppDetailProvider(id));
+                  if (await _call(context, 'opp_save_toggle', {'p_id': id})) {
+                    ref.invalidate(oppDetailProvider(id));
+                    ref.invalidate(oppsProvider);
+                  }
                 }, dark: false, icon: o['saved'] == true ? Icons.bookmark : Icons.bookmark_border),
               ),
               const SizedBox(width: 8),

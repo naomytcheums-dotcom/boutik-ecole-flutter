@@ -103,18 +103,26 @@ class TpRound extends StatelessWidget {
         button: true,
         label: label,
         child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
           onTap: () {
             GSound.play('click');
             onTap();
           },
-          child: ClipOval(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 13, sigmaY: 13),
-              child: Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(color: const Color(0x99FFFFFF), shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 1.5), boxShadow: const [BoxShadow(color: Color(0x24403366), offset: Offset(0, 3), blurRadius: 8)]),
-                child: Icon(icon, size: 18, color: tpInk),
+          // rond visuel de 44 dp dans une zone tactile de 48 dp
+          child: SizedBox(
+            width: 48,
+            height: 48,
+            child: Center(
+              child: ClipOval(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 13, sigmaY: 13),
+                  child: Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(color: const Color(0x99FFFFFF), shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 1.5), boxShadow: const [BoxShadow(color: Color(0x24403366), offset: Offset(0, 3), blurRadius: 8)]),
+                    child: Icon(icon, size: 18, color: tpInk),
+                  ),
+                ),
               ),
             ),
           ),
@@ -404,15 +412,19 @@ class TpChoice extends StatelessWidget {
           Wrap(spacing: 8, runSpacing: 8, children: [
             for (final e in options.entries)
               GestureDetector(
+                behavior: HitTestBehavior.opaque,
                 onTap: () => onChanged(e.key),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: e.key == value ? tpInk : const Color(0xCCFFFFFF),
-                    borderRadius: BorderRadius.circular(100),
-                    border: Border.all(color: e.key == value ? tpInk : tpLine),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 48),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 15),
+                    decoration: BoxDecoration(
+                      color: e.key == value ? tpInk : const Color(0xCCFFFFFF),
+                      borderRadius: BorderRadius.circular(100),
+                      border: Border.all(color: e.key == value ? tpInk : tpLine),
+                    ),
+                    child: Text(e.value, style: tpSt(13, w: FontWeight.w600, c: e.key == value ? Colors.white : tpInk)),
                   ),
-                  child: Text(e.value, style: tpSt(13, w: FontWeight.w600, c: e.key == value ? Colors.white : tpInk)),
                 ),
               ),
           ]),

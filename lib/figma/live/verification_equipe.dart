@@ -257,7 +257,7 @@ Future<void> accountDeletionsDialog(BuildContext context, WidgetRef ref, {requir
       return [
         'demandée le ${_date(d['requested_at'])}',
         d['due'] == true ? 'échue' : 'exécutable à partir du ${_date(d['scheduled_for'])}',
-        if (open > 0) '$open commande(s) en cours : suppression bloquée',
+        if (d['blocked'] == true && '${d['blocked_reason'] ?? ''}'.isNotEmpty) 'gelée : ${d['blocked_reason']}' else if (open > 0) '$open commande(s) en cours : suppression bloquée',
       ].join(' · ');
     },
     empty: 'Aucune demande de suppression en attente.',
@@ -273,7 +273,7 @@ Future<void> accountDeletionsDialog(BuildContext context, WidgetRef ref, {requir
           }
           final m = r.data is Map ? Map<String, dynamic>.from(r.data as Map) : const <String, dynamic>{};
           final blocked = (m['blocked'] as List?)?.length ?? 0;
-          gToast(context, '${m['processed'] ?? 0} compte(s) anonymisé(s)${blocked > 0 ? ' · $blocked en attente (commandes en cours)' : ''}');
+          gToast(context, '${m['processed'] ?? 0} compte(s) anonymisé(s)${blocked > 0 ? ' · $blocked en attente (commandes en cours ou argent en jeu)' : ''}');
         }),
     ],
   );

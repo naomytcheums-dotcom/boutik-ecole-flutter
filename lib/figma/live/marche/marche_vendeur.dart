@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show FunctionException, Supabase;
 
-import '../../gen.dart' show gToast;
+import '../../gen.dart' show gAlert, gToast;
 import '../auth.dart';
 import '../backend.dart';
 import '../litiges_screens.dart' show openDisputeDialog;
@@ -461,7 +461,11 @@ class _OrderCard extends ConsumerWidget {
             child: mButton('Marquer : ${_OrdersTab._labels[next]}', () async {
               final err = await Backend.setSellerOrderStatus(o.id, next);
               if (!context.mounted) return;
-              gToast(context, err ?? 'Commande mise à jour, l’acheteur est prévenu.');
+              if (err != null) {
+                await gAlert(context, 'Statut non enregistré', err);
+              } else {
+                gToast(context, 'Commande mise à jour, l’acheteur est prévenu.');
+              }
               ref.read(serverSellerOrdersProvider.notifier).refresh();
             }, dark: false),
           ),

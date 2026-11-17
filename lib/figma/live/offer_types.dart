@@ -45,10 +45,12 @@ class OfferCategoryPicker extends ConsumerWidget {
     final value = publishCategories.contains(current) ? current : publishCategories.first;
     const st = TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 13.5, fontWeight: FontWeight.w500, color: Color(0xFF111015));
     return Container(
-      padding: EdgeInsets.only(left: padL, right: 40),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(22), border: Border.all(color: const Color(0xFFECE8F2), width: 1.5)),
+      // bordure en premier plan et marge dans le bouton : toute la zone de 342 × 48 dp ouvre la liste
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(22)),
+      foregroundDecoration: BoxDecoration(borderRadius: BorderRadius.circular(22), border: Border.all(color: const Color(0xFFECE8F2), width: 1.5)),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
+          padding: EdgeInsets.only(left: padL, right: 40),
           isExpanded: true,
           value: value,
           icon: const SizedBox.shrink(),

@@ -373,7 +373,7 @@ Future<void> requestAccountDeletion(BuildContext context, WidgetRef ref) async {
       builder: (ctx) => AlertDialog(
         backgroundColor: Colors.white,
         title: Text('Annuler la demande de suppression ?', style: _st.copyWith(fontSize: 16, fontWeight: FontWeight.w700)),
-        content: Text('Votre compte est programmé pour être supprimé à partir du ${_fr(current['scheduled_for'])}. En annulant, il reste ouvert et rien n’est supprimé.', style: _st),
+        content: Text('Votre compte est programmé pour être supprimé à partir du ${_fr(current['scheduled_for'])}.${current['blocked'] == true ? ' Cette suppression est suspendue tant que : ${current['blocked_reason']}.' : ''} En annulant, il reste ouvert et rien n’est supprimé.', style: _st),
         actions: [
           TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Garder la demande')),
           FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Annuler la demande')),
@@ -396,7 +396,7 @@ Future<void> requestAccountDeletion(BuildContext context, WidgetRef ref) async {
     builder: (ctx) => AlertDialog(
       backgroundColor: Colors.white,
       title: Text('Supprimer mon compte ?', style: _st.copyWith(fontSize: 16, fontWeight: FontWeight.w700)),
-      content: Text('Votre demande est transmise à l’administration. Après un délai de rétractation de 30 jours (vous pouvez annuler depuis cet écran), votre compte est désactivé et vos données personnelles sont anonymisées : nom, e-mail, téléphone, adresses, pièces et profil sont effacés. Les commandes, paiements, factures et certificats émis sont conservés (obligation légale), sans votre identité. La demande est refusée tant que vous avez des commandes en cours : terminez-les d’abord.', style: _st),
+      content: Text('Votre demande est transmise à l’administration. Après un délai de rétractation de 30 jours (vous pouvez annuler depuis cet écran), votre compte est désactivé et vos données personnelles sont anonymisées : nom, e-mail, téléphone, adresses, pièces et profil sont effacés. Les commandes, paiements, factures et certificats émis sont conservés (obligation légale), sans votre identité. La demande est refusée, puis reste en attente, tant que vous avez des commandes en cours, de l’argent gardé en séquestre, un solde ou un retrait non réglé, ou une réclamation ou un litige ouvert : terminez-les d’abord. Vos annonces sont retirées et votre boutique est fermée.', style: _st),
       actions: [
         TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuler')),
         FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Envoyer la demande')),

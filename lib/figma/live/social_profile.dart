@@ -288,6 +288,17 @@ class SocialProfilePanel extends ConsumerWidget {
                       ),
                     ],
                   ),
+                if (!own)
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: TextButton.icon(
+                      key: const Key('social-block'),
+                      style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+                      onPressed: () => _block(context, ref, p),
+                      icon: const Icon(Icons.block, size: 16),
+                      label: const Text('Bloquer cette personne'),
+                    ),
+                  ),
                 if (p.bio.trim().isNotEmpty) ...[
                   const SizedBox(height: 16),
                   Text(
@@ -605,6 +616,7 @@ class SocialProfilePanel extends ConsumerWidget {
       opacity: onTap == null ? 0.55 : 1,
       child: Container(
         alignment: Alignment.center,
+        constraints: const BoxConstraints(minHeight: 48),
         padding: const EdgeInsets.symmetric(vertical: 11),
         decoration: BoxDecoration(
           color: filled ? const Color(0xFF111015) : Colors.white,
@@ -648,6 +660,26 @@ class SocialProfilePanel extends ConsumerWidget {
         followed ? 'Vous ne suivez plus ${p.name}' : 'Vous suivez ${p.name}',
       );
     }
+  }
+
+  Future<void> _block(BuildContext context, WidgetRef ref, SocialProfile p) async {
+    if (!await requireLogin(context, ref, 'bloquer cette personne') || !context.mounted) return;
+    final name = p.name.isEmpty ? 'cette personne' : p.name;
+    final yes = await gConfirm(
+      context,
+      'Bloquer $name ?',
+      'Vous ne verrez plus ses publications, ses histoires ni ses commentaires, et elle ne pourra plus vous écrire. Vous pourrez la débloquer depuis « Personnes bloquées » (menu du compte).',
+      yes: 'Bloquer',
+    );
+    if (!yes || !context.mounted) return;
+    final r = await Backend.rpc('block_user', {'p_user': p.id, 'p_block': true});
+    if (!context.mounted) return;
+    if (r.error != null) return gAlert(context, 'Blocage impossible', Backend.userMessage(r.error!));
+    ref.invalidate(followingIdsProvider);
+    await ref.read(reelsProvider.notifier).refresh();
+    if (!context.mounted) return;
+    gToast(context, '$name est bloqué(e)');
+    gBack(context);
   }
 
   Future<void> _message(

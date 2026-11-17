@@ -372,7 +372,7 @@ class _MatesState extends ConsumerState<TeammatesScreen> {
           behavior: HitTestBehavior.opaque,
           onTap: () => _invite(m),
           child: Container(
-            constraints: const BoxConstraints(minHeight: 36, minWidth: 84),
+            constraints: const BoxConstraints(minHeight: 48, minWidth: 84),
             padding: const EdgeInsets.symmetric(horizontal: 12),
             alignment: Alignment.center,
             decoration: BoxDecoration(color: done ? const Color(0xFFDDF5EC) : const Color(0xFFEFEBFA), borderRadius: BorderRadius.circular(18)),
@@ -439,7 +439,7 @@ class _MatesState extends ConsumerState<TeammatesScreen> {
               ]),
             ),
             SizedBox(
-              height: 42,
+              height: 48,
               child: ListView(scrollDirection: Axis.horizontal, padding: const EdgeInsets.symmetric(horizontal: 16), children: [
                 _chip('Tous', _query.category.isEmpty, () => _set(_query.copy(category: ''))),
                 for (final k in catList) _chip(k.label, _query.category == k.id, () => _set(_query.copy(category: k.id))),
@@ -486,8 +486,10 @@ class _MatesState extends ConsumerState<TeammatesScreen> {
   Widget _chip(String label, bool on, VoidCallback onTap, {IconData? icon}) => Padding(
         padding: const EdgeInsets.only(right: 8),
         child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
           onTap: onTap,
           child: Container(
+            margin: const EdgeInsets.symmetric(vertical: 4),
             padding: const EdgeInsets.symmetric(horizontal: 14),
             alignment: Alignment.center,
             decoration: BoxDecoration(color: on ? kInk : const Color(0xFFF2EFF6), borderRadius: BorderRadius.circular(17)),

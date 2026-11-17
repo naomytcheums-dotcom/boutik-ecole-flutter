@@ -66,16 +66,19 @@ class OrderTermsCheck extends ConsumerWidget {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () => ref.read(orderTermsProvider.notifier).set(!on),
-        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Container(
-            width: 20,
-            height: 20,
-            decoration: BoxDecoration(color: on ? const Color(0xFF111015) : Colors.white, border: on ? null : Border.all(color: const Color(0xFFB8B3C4), width: 1.5), borderRadius: BorderRadius.circular(6)),
-            child: on ? const Icon(Icons.check, size: 14, color: Colors.white) : null,
-          ),
-          const SizedBox(width: 10),
-          Expanded(child: gText('J’accepte les conditions de vente et la politique de retour.', 12.5, const Color(0xFF4A4854), lh: 18, wrap: true, maxLines: 2)),
-        ]),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 48),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+            Container(
+              width: 20,
+              height: 20,
+              decoration: BoxDecoration(color: on ? const Color(0xFF111015) : Colors.white, border: on ? null : Border.all(color: const Color(0xFFB8B3C4), width: 1.5), borderRadius: BorderRadius.circular(6)),
+              child: on ? const Icon(Icons.check, size: 14, color: Colors.white) : null,
+            ),
+            const SizedBox(width: 10),
+            Expanded(child: gText('J’accepte les conditions de vente et la politique de retour.', 12.5, const Color(0xFF4A4854), lh: 18, wrap: true, maxLines: 2)),
+          ]),
+        ),
       ),
     );
   }
@@ -189,8 +192,11 @@ class OrderBadge extends ConsumerWidget {
 /// Étapes de suivi d'une commande, dans l'ordre de `statusLabel` (store.dart) : un seul statut, lu sur la commande affichée.
 final orderSteps = [for (var i = 0; i < 4; i++) statusLabel(i)];
 
+/// Libellé de l'étape i de la commande : connecté, la troisième étape est celle déclarée « prête » par le vendeur (jamais « expédiée » pour un retrait sur campus).
+String orderStepLabel(Order o, int i) => i == 2 && Backend.ready ? (o.home ? 'Prête à livrer' : 'Prête à retirer') : statusLabel(i);
+
 /// Libellé court du statut d'une commande, identique sur 09, 29, 46 et 47.
-String orderStatusLabel(Order o) => o.cancelled ? 'Annulée' : (o.awaitingPayment ? 'En attente de paiement' : statusLabel(o.status));
+String orderStatusLabel(Order o) => o.cancelled ? 'Annulée' : (o.awaitingPayment ? 'En attente de paiement' : orderStepLabel(o, o.status.clamp(0, 3)));
 
 /// Chronologie de la commande affichée : étapes terminées, étape en cours, étapes à venir (D-083).
 class OrderTimeline extends ConsumerWidget {
@@ -221,7 +227,7 @@ class OrderTimeline extends ConsumerWidget {
               child: i < current ? const Icon(Icons.check, size: 13, color: Colors.white) : null,
             ),
           ),
-          Positioned(left: 32, top: 62.0 * i - 1, width: 305, child: gText((i == 0 && current < 0) ? (o.cancelled ? 'Commande annulée' : 'En attente de paiement') : orderSteps[i], 13.5, const Color(0xFF111015), weight: 600, wrap: true)),
+          Positioned(left: 32, top: 62.0 * i - 1, width: 305, child: gText((i == 0 && current < 0) ? (o.cancelled ? 'Commande annulée' : 'En attente de paiement') : orderStepLabel(o, i), 13.5, const Color(0xFF111015), weight: 600, wrap: true)),
           Positioned(
             left: 32,
             top: 62.0 * i + 19,

@@ -98,7 +98,7 @@ class G_58 extends ConsumerWidget {
       gP(24, 596, 71, 16, gText('Description', 12.5, Color(0xFF111015), weight: 600)),
       gP(24, 616, 342, 56, GField(hint: 'Matériaux, dimensions, particularités…', size: 13.5, hintColor: Color(0xFF57545F), weight: 500, padL: 16, onChanged: (v) { ref.read(formProvider.notifier).put('np_desc', v); }, multiline: true, padT: 14)),
       gP(24, 682, 220, 16, gText('Enseignant encadrant (facultatif)', 12.5, Color(0xFF111015), weight: 600)),
-      gP(24, 700, 342, 44, GField(hint: 'Nom de l’enseignant', size: 13.5, hintColor: Color(0xFF57545F), weight: 500, padL: 16, onChanged: (v) { ref.read(formProvider.notifier).put('np_sup', v); })),
+      gP(24, 696, 342, 48, GField(hint: 'Nom de l’enseignant', size: 13.5, hintColor: Color(0xFF57545F), weight: 500, padL: 16, onChanged: (v) { ref.read(formProvider.notifier).put('np_sup', v); })),
       gP(0, 744, 390, 100, gBox(color: Color(0x00FFFFFF))),
       gP(24, 760, 163, 54, gBox(color: Color(0x00FFFFFF), border: Color(0xFFD9D3E6), bw: 1.5, radii: [27, 27, 27, 27])),
       gP(74.5, 778, 62, 18, gText('Brouillon', 14.5, Color(0xFF111015), weight: 600, align: TextAlign.center)),

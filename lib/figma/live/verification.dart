@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart' show GoRouter;
 
 import '../gen.dart';
 import '../nav.dart';
@@ -250,6 +251,11 @@ class StudentVerificationCard extends ConsumerWidget {
         final verified = s['verified'] == true;
         final hasDoc = s['has_identity_document'] == true;
         final cert = '${s['certification']}';
+        // l'état décidé par le département revient à l'étudiant : le compte affiché (badge, publication) suit le serveur
+        final me = ref.read(authProvider).current;
+        if (me != null && me.staff.isEmpty && me.certification != cert && const {'none', 'pending', 'review', 'approved', 'rejected', 'revoked'}.contains(cert)) {
+          WidgetsBinding.instance.addPostFrameCallback((_) => ref.read(authProvider.notifier).update(me.copyWith(certification: cert)));
+        }
         final canAsk = s['can_request_certification'] == true;
         const certLabel = {
           'none': 'Certification : non demandée',
@@ -265,11 +271,21 @@ class StudentVerificationCard extends ConsumerWidget {
             : (hasDoc
                 ? 'Votre pièce est en attente de décision de l’équipe de votre département. Vous serez notifié du résultat.'
                 : 'Déposez votre carte d’étudiant ou votre certificat de scolarité : l’annuaire des talents et les invitations d’entreprises ne s’ouvrent qu’après leur validation.');
+        final phoneOk = s['phone_verified'] == true;
+        final hasPhone = s['has_phone'] == true;
+        final hasDept = s['has_department'] != false;
+        final rejected = [for (final d in (s['rejected_documents'] as List? ?? const [])) if (d is Map) d];
+        final todo = <String>[
+          if (!verified && !hasDept) 'Choisissez votre établissement et votre département dans votre profil : c’est le département qui reçoit et décide de votre dossier.',
+          for (final d in rejected.take(1))
+            if (!verified && !hasDoc) 'Votre dernière pièce a été refusée${'${d['note'] ?? ''}'.isEmpty ? '' : ' (motif : ${d['note']})'} : déposez-en une nouvelle.',
+          if (!phoneOk) hasPhone ? 'Vérifiez votre numéro de téléphone (code reçu par SMS) : tant qu’il ne l’est pas, il ne sert ni à la connexion ni aux notifications SMS et WhatsApp.' : 'Ajoutez puis vérifiez votre numéro de téléphone.',
+        ];
         const ink = Color(0xFF111015);
         Widget btn(String t, VoidCallback f, {bool dark = true}) => GestureDetector(
               onTap: f,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 decoration: BoxDecoration(color: dark ? ink : Colors.white, borderRadius: BorderRadius.circular(22), border: dark ? null : Border.all(color: const Color(0xFFD9D3E6))),
                 child: Text(t, style: TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 13, fontWeight: FontWeight.w700, color: dark ? Colors.white : ink)),
               ),
@@ -284,9 +300,21 @@ class StudentVerificationCard extends ConsumerWidget {
             Text(body, style: const TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 12.5, height: 1.5, color: Color(0xFF4A4854))),
             const SizedBox(height: 10),
             Text(certLabel[cert] ?? 'Certification', style: const TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 12.5, fontWeight: FontWeight.w600, color: _grey)),
+            if (!verified) ...[
+              const SizedBox(height: 8),
+              const Text('Tant que vous n’êtes pas vérifié : vous pouvez parcourir, acheter et préparer vos annonces, mais l’annuaire des talents, les invitations d’entreprises et les offres réservées aux étudiants vérifiés restent fermés. Publier une annonce demande en plus la certification du compte.', style: TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 12, height: 1.5, color: _grey)),
+            ],
+            for (final t in todo) Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const Padding(padding: EdgeInsets.only(top: 2, right: 6), child: Icon(Icons.chevron_right, size: 16, color: Color(0xFF8F5400))),
+                Expanded(child: Text(t, style: const TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 12, height: 1.45, color: Color(0xFF8F5400), fontWeight: FontWeight.w600))),
+              ]),
+            ),
             const SizedBox(height: 12),
             Wrap(spacing: 8, runSpacing: 8, children: [
               if (!verified) btn('Déposer une pièce', () => gOpen(context, '18c'), dark: !hasDoc),
+              if (!phoneOk) btn(hasPhone ? 'Vérifier mon numéro' : 'Ajouter mon numéro', () => GoRouter.of(context).push('/parametres/informations'), dark: false),
               if (canAsk) btn('Demander la certification', () async {
                 await requestCertificationFlow(ref, context);
                 ref.invalidate(myStudentStatusProvider);

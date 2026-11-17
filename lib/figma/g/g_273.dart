@@ -60,7 +60,12 @@ class G_273 extends ConsumerWidget {
       if (!demoContent) gP(44, 596, 302, 70, Consumer(builder: (context, ref, _) {
         final d = ref.watch(myDeletionProvider).value;
         if (d == null) return const SizedBox.shrink();
-        return gText('Demande enregistrée : suppression à partir du ${deletionDate(d['scheduled_for'])}. Touchez « Annuler la demande » pour garder votre compte.', 12.5, Color(0xFFC2410C), weight: 600, lh: 17, wrap: true);
+        final blocked = d['blocked'] == true && '${d['blocked_reason'] ?? ''}'.isNotEmpty;
+        return gText(
+          blocked
+              ? 'Suppression à partir du ${deletionDate(d['scheduled_for'])}, suspendue tant que : ${d['blocked_reason']}. Touchez « Annuler la demande » pour garder votre compte.'
+              : 'Demande enregistrée : suppression à partir du ${deletionDate(d['scheduled_for'])}. Touchez « Annuler la demande » pour garder votre compte.',
+          blocked ? 11.5 : 12.5, Color(0xFFC2410C), weight: 600, lh: blocked ? 15 : 17, wrap: true);
       })),
       gP(44, 676, 170, 40, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFC2410C), bw: 1.5, radii: [20, 20, 20, 20]), tap: () => requestAccountDeletion(context, ref)),
       gP(58, 688, 132, 16, Consumer(builder: (context, ref, _) => gText(!demoContent && ref.watch(myDeletionProvider).value != null ? 'Annuler la demande' : 'Supprimer le compte', 13, Color(0xFFC2410C), weight: 600))),

@@ -110,12 +110,13 @@ class _RoomWhiteboardState extends State<RoomWhiteboard> {
             button: true,
             label: 'Couleur du trait',
             child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
               onTap: () => setState(() => _color = c),
-              child: Container(width: 30, height: 30, margin: const EdgeInsets.only(right: 8), decoration: BoxDecoration(color: Color(c), shape: BoxShape.circle, border: Border.all(color: _color == c ? kViolet : Colors.white, width: 3))),
+              child: SizedBox(width: 48, height: 48, child: Center(child: Container(width: 30, height: 30, decoration: BoxDecoration(color: Color(c), shape: BoxShape.circle, border: Border.all(color: _color == c ? kViolet : Colors.white, width: 3))))),
             ),
           ),
         const Spacer(),
-        TextButton.icon(onPressed: widget.onClear, icon: const Icon(Icons.delete_outline, size: 18), label: Text('Tout effacer', style: mst(12.5, w: FontWeight.w700))),
+        Flexible(child: TextButton.icon(style: TextButton.styleFrom(minimumSize: const Size(48, 48)), onPressed: widget.onClear, icon: const Icon(Icons.delete_outline, size: 18), label: Text('Tout effacer', maxLines: 1, overflow: TextOverflow.ellipsis, style: mst(12.5, w: FontWeight.w700)))),
       ]),
       const SizedBox(height: 6),
       LayoutBuilder(builder: (context, box) {

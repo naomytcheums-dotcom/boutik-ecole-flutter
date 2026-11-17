@@ -200,6 +200,7 @@ const _qrWhy = {
   'used': 'Ce code a déjà été utilisé : il ne sert qu’une fois.',
   'revoked': 'Ce code a été retiré par son propriétaire.',
   'unavailable': 'Cet article n’est plus disponible à la vente.',
+  'forbidden': 'Ce code de retrait n’est pas destiné à votre compte.',
 };
 
 /// Résout un jeton de code QR pour la personne connectée : code d'appariement d'une borne (ouvre la fiche de l'article), puis code personnel
@@ -243,6 +244,7 @@ Future<void> handleQrToken(BuildContext context, WidgetRef ref, String token) as
       }
       return gAlert(context, 'Code valide', '${label.isEmpty ? 'Contenu' : label} · proposé par ${d['owner_name']}.');
     case 'order_pickup':
+      return gAlert(context, 'Code de retrait reconnu', 'Commande ${label.isEmpty ? '' : '$label · '}acheteur ${d['owner_name']}. Ce QR ne confirme pas la remise : demandez le code à 6 chiffres affiché dans « Mon code de retrait » et saisissez-le dans « Confirmer la remise ».');
     case 'event':
     case 'certificate':
       return gAlert(context, 'Code valide', '${label.isEmpty ? 'Contenu' : label} · proposé par ${d['owner_name']}.');

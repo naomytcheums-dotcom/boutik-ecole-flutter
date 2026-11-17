@@ -432,7 +432,8 @@ class Backend {
       return 'Cette fonction n’est pas disponible pour le moment. Réessayez plus tard ou contactez le support.';
     }
     if (m.contains('listings_titre_unique') || m.contains('duplicate key')) return 'Une annonce porte déjà ce titre. Choisissez un titre plus précis (marque, couleur, taille…).';
-    if (m.contains('listings_price_min')) return 'Le prix doit être d’au moins 500 FCFA.';
+    if (m.contains('listings_price_min')) return 'Le prix doit être un nombre entier de FCFA, de 500 à 100 000 000 (un service « Sur devis » peut être à 0).';
+    if (m.contains('listings_price_before_check')) return 'Le prix normal (avant promotion) doit être supérieur au prix actuel : corrigez-le ou videz ce champ.';
     if (m.contains('listings_title_len')) return 'Le titre doit comporter de 3 à 80 caractères.';
     if (m.contains('listings_stock_check')) return 'Le stock doit être compris entre 0 et 100 000.';
     if (m.contains('row-level security')) return 'Votre compte n’est pas autorisé à publier des annonces (rôle étudiant-vendeur requis).';
@@ -440,15 +441,20 @@ class Backend {
   }
 
   /// Annonces du vendeur connecté ; avec [platform] (département, administrateur), aussi les produits de la plateforme.
-  static Future<List<Listing>> myListings({bool platform = false}) async {
+  /// [strict] : une lecture échouée lève l'erreur au lieu de renvoyer une liste vide (l'écran distingue « aucune annonce » de « lecture impossible »).
+  static Future<List<Listing>> myListings({bool platform = false, bool strict = false}) async {
     final c = _c;
     final uid = c?.auth.currentUser?.id;
-    if (c == null || uid == null) return const [];
+    if (c == null || uid == null) {
+      if (strict) throw StateError('Session absente');
+      return const [];
+    }
     try {
       final base = c.from('listings').select();
       final rows = await (platform ? base.or('seller_id.eq.$uid,seller_id.is.null') : base.eq('seller_id', uid)).neq('status', 'removed').order('created_at', ascending: false);
       return [for (final r in rows) Listing.fromRow(r)];
     } catch (_) {
+      if (strict) rethrow;
       return const [];
     }
   }
@@ -704,13 +710,14 @@ class Backend {
     }
   }
 
-  /// File de validation (département / administrateur : la RLS ne renvoie rien aux autres rôles).
+  /// File de validation (département / administrateur) : la fonction serveur refuse les autres rôles.
   static Future<List<Map<String, dynamic>>> reviewQueue() async {
     final c = _c;
     if (c == null || c.auth.currentUser == null) return const [];
     try {
-      final rows = await c.from('listings').select('id,title,category,price,seller_id,status,review_note,created_at,updated_at').not('seller_id', 'is', null).inFilter('status', ['pending', 'approved', 'rejected']).order('updated_at', ascending: false).limit(200);
-      return [for (final r in rows) Map<String, dynamic>.from(r)];
+      // File servie par la fonction listing_review_queue : limitée au département du valideur, avec vendeur, description et photos.
+      final rows = await c.rpc('listing_review_queue') as List;
+      return [for (final r in rows) Map<String, dynamic>.from(r as Map)];
     } catch (_) {
       return const [];
     }

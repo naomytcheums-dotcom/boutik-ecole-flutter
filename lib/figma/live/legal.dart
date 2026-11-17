@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../i18n.dart' show Text;
 import '../nav.dart';
 import 'auth.dart' show IntState, FlagOff;
+import 'backend.dart' show Backend;
 
 /// Texte des conditions (écran 17) : trois onglets réels, du contenu lisible hors démonstration.
 /// Le texte décrit ce que l'application fait réellement ; toute évolution du service doit s'accompagner d'une nouvelle version (kTermsVersion).
@@ -14,6 +15,17 @@ TextStyle _st(double size, {FontWeight w = FontWeight.w400, Color c = _grey, dou
     TextStyle(inherit: false, fontFamily: 'PlusJakartaSans', fontSize: size, fontWeight: w, color: c, height: h, textBaseline: TextBaseline.alphabetic);
 
 final termsTabProvider = NotifierProvider<IntState, int>(IntState.new);
+
+/// Règle de répartition en vigueur, lue en base (money_split_get) : jamais écrite en dur dans le texte. Null hors connexion ou si la lecture échoue.
+final splitRuleLineProvider = FutureProvider.autoDispose<String?>((ref) async {
+  if (!Backend.ready || Backend.currentUserId == null) return null;
+  final r = await Backend.rpc('money_split_get', const {});
+  final cur = r.error == null && r.data is Map ? (r.data as Map)['current'] : null;
+  if (cur is! Map) return null;
+  final b = cur['beneficiary_pct'], i = cur['institution_pct'], p = cur['platform_pct'];
+  if (b == null || i == null || p == null) return null;
+  return 'Règle en vigueur aujourd’hui : $b % pour l’étudiant-vendeur, $i % pour le fonds d’innovation de l’établissement, $p % pour la plateforme, sur le prix des articles hors livraison.';
+}, retry: (_, _) => null);
 
 /// Cases « J'ai lu et j'accepte » de l'écran 274 : « Accepter et continuer » ne vaut acceptation que si les deux sont cochées.
 final termsCguProvider = NotifierProvider<FlagOff, bool>(FlagOff.new);
@@ -35,7 +47,7 @@ const termsSections = <List<(String, String)>>[
     ('Objet (version cgv-2026-11)', 'Ces conditions de vente s’appliquent aux achats de produits et de services publiés par des étudiants-vendeurs sur Boutik-École. Elles complètent les conditions d’utilisation. Votre acceptation est enregistrée séparément, à la confirmation d’une commande.'),
     ('Prix et paiement', 'Les prix sont affichés en FCFA. Le paiement se fait par Mobile Money (Orange Money, MTN MoMo) ou selon les moyens proposés par l’annonce. Une commande non payée dans le délai prévu (2 heures, 48 heures si un paiement manuel est en cours de vérification) est annulée automatiquement ; votre panier n’est alors pas débité.'),
     ('Retrait et livraison', 'Le retrait sur le campus est gratuit. La livraison à domicile, lorsqu’elle est proposée, est facturée au tarif affiché avant la confirmation de la commande ; aucun frais n’est ajouté après coup.'),
-    ('Répartition du prix', 'Sur chaque vente payée, le montant est réparti ainsi : 70 % pour l’étudiant-vendeur, 20 % pour le fonds d’innovation de l’établissement, 10 % pour la plateforme. Cette répartition ne modifie pas le prix que vous payez.'),
+    ('Répartition du prix (texte de travail à valider par le propriétaire de la plateforme)', 'Sur chaque vente payée, le prix des articles (hors frais de livraison) est réparti entre l’étudiant-vendeur, le fonds d’innovation de l’établissement et la plateforme : selon la règle en vigueur, affichée sous ce texte une fois connecté et dans la rubrique « Mes revenus » du vendeur, calculée sur le prix des articles hors livraison. Le reliquat d’arrondi revient à la plateforme. La règle peut être modifiée par l’administration, avec historique ; elle ne s’applique qu’aux paiements futurs et ne modifie pas le prix que vous payez.'),
     ('Somme gardée jusqu’à la réception', 'Le montant d’une commande payée reste gardé par la plateforme jusqu’à la confirmation de la remise (par vous ou par le kiosque), ou jusqu’à la fin d’un délai de garde sans réclamation. Il n’est jamais reversé au vendeur pendant une réclamation, un litige ou une demande de remboursement en cours.'),
     ('Annulation et remboursement', 'Tant que la commande n’est pas payée, vous pouvez l’annuler depuis « Mes commandes ». Une fois payée, elle ne s’annule plus seule : vous demandez l’annulation ou le remboursement depuis la commande ; la demande est examinée par l’équipe et, si elle est acceptée, le remboursement se fait par le moyen de paiement utilisé.'),
     ('Réclamations et litiges', 'Si le produit n’est pas conforme ou n’est pas remis, ouvrez une réclamation depuis la commande : le vendeur répond. Sans accord, vous pouvez ouvrir un litige, tranché par l’équipe de la plateforme sur la base des échanges et des justificatifs de chacun.'),
@@ -47,7 +59,7 @@ const termsSections = <List<(String, String)>>[
     ('Qui les voit', 'Le vendeur reçoit ce qui est nécessaire à votre commande ; l’équipe de modération et d’administration accède aux informations utiles à sa mission ; les prestataires de paiement traitent les paiements. Vos données ne sont pas vendues.'),
     ('Fiche et pièces d’une entreprise', 'Les pièces justificatives d’une entreprise (immatriculation, numéro fiscal…) restent dans un espace privé : seuls le propriétaire de la fiche, ses administrateurs d’équipe, l’administration de la plateforme et l’équipe d’assistance (support) peuvent les consulter. Le numéro d’immatriculation, le téléphone et l’interlocuteur sont réservés au propriétaire, aux administrateurs de l’entreprise et à l’administration ; la fiche publique n’en montre rien.'),
     ('Position', 'Votre position n’est utilisée que si vous demandez vous-même la détection de votre ville.'),
-    ('Conservation', 'Vos données sont conservées tant que le compte est actif. Après une demande de suppression, un délai de 30 jours permet de changer d’avis ; ensuite le compte est désactivé et vos données personnelles (nom, e-mail, téléphone, adresses, pièces, profil) sont anonymisées. Les commandes, paiements, factures et certificats émis sont conservés (obligation légale), sans votre identité. La suppression est suspendue tant que des commandes sont en cours.'),
+    ('Conservation', 'Vos données sont conservées tant que le compte est actif. Après une demande de suppression, un délai de 30 jours permet de changer d’avis ; ensuite le compte est désactivé et vos données personnelles (nom, e-mail, téléphone, adresses, pièces, profil) sont anonymisées. Les commandes, paiements, factures et certificats émis sont conservés (obligation légale), sans votre identité. Vos annonces sont retirées, votre boutique est fermée et vos devis ouverts sont clos. La suppression est refusée, puis reste en attente, tant que des commandes sont en cours, que de l’argent est gardé en séquestre, qu’un solde ou un retrait n’est pas réglé, ou qu’une réclamation ou un litige est ouvert : terminez-les, puis la suppression est exécutée.'),
     ('Vos droits', 'Écran « Mes données » : exporter vos données ou demander la suppression du compte. Vous corrigez votre profil à tout moment. Pour toute question, contactez le support depuis l’aide.'),
   ],
   [
@@ -96,6 +108,10 @@ class TermsReader extends ConsumerWidget {
                 Text(title, style: _st(15, w: FontWeight.w700, c: _ink)),
                 const SizedBox(height: 4),
                 Text(body, style: _st(13, h: 1.55)),
+                if (title.startsWith('Répartition du prix') && ref.watch(splitRuleLineProvider).asData?.value != null) ...[
+                  const SizedBox(height: 6),
+                  Text(ref.watch(splitRuleLineProvider).asData!.value!, style: _st(13, w: FontWeight.w600, c: _ink, h: 1.55)),
+                ],
                 const SizedBox(height: 16),
               ],
               if (tab == 3)

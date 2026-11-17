@@ -86,7 +86,7 @@ class G_42 extends ConsumerWidget {
       gP(40, 617, 310, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 626, 29, 16, gText('Total', 12.5, Color(0xFF57545F))),
       gP(200, 626, 150, 16, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(totalsProvider).total), 12.5, Color(0xFF111015), weight: 700, align: TextAlign.right))),
-      gP(24, 672, 342, 40, const OrderTermsCheck()),
+      gP(24, 668, 342, 48, const OrderTermsCheck()),
       gP(0, 744, 390, 100, gBox(color: Color(0x00FFFFFF))),
       gP(24, 760, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => confirmOrderSummary(ref, context)),
       gP(110.5, 778, 169, 18, gText('Confirmer la commande', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),

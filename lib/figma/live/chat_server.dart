@@ -403,6 +403,8 @@ class _ServerChatPanelState extends ConsumerState<ServerChatPanel> {
         top: 60,
         child: PopupMenuButton<String>(
           icon: const Icon(Icons.more_vert, size: 22),
+          iconSize: 24,
+          constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
           tooltip: 'Plus',
           onSelected: (v) => _menu(v, cid),
           itemBuilder: (_) => [
@@ -442,9 +444,14 @@ class _ServerChatPanelState extends ConsumerState<ServerChatPanel> {
         width: 342,
         height: 56,
         child: Row(children: [
-          GestureDetector(
-            onTap: _attachMenu,
-            child: Container(width: 38, height: 38, alignment: Alignment.center, decoration: const BoxDecoration(color: Color(0xFFF1EEFB), shape: BoxShape.circle), child: const Icon(Icons.add_rounded, size: 22, color: Color(0xFF111015))),
+          Semantics(
+            button: true,
+            label: 'Joindre un fichier',
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: _attachMenu,
+              child: SizedBox(width: 48, height: 48, child: Center(child: Container(width: 38, height: 38, alignment: Alignment.center, decoration: const BoxDecoration(color: Color(0xFFF1EEFB), shape: BoxShape.circle), child: const Icon(Icons.add_rounded, size: 22, color: Color(0xFF111015))))),
+            ),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -461,15 +468,26 @@ class _ServerChatPanelState extends ConsumerState<ServerChatPanel> {
             ),
           ),
           const SizedBox(width: 6),
-          GestureDetector(
-            onTap: hasText ? _sendText : _toggleVoice,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 160),
-              width: 40,
-              height: 40,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(color: recording ? const Color(0xFFD64545) : const Color(0xFF111015), shape: BoxShape.circle),
-              child: Icon(hasText ? Icons.arrow_upward_rounded : (recording ? Icons.stop_rounded : Icons.mic_none_rounded), size: 20, color: Colors.white),
+          Semantics(
+            button: true,
+            label: hasText ? 'Envoyer le message' : (recording ? 'Arrêter et envoyer le vocal' : 'Enregistrer un vocal'),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: hasText ? _sendText : _toggleVoice,
+              child: SizedBox(
+                width: 48,
+                height: 48,
+                child: Center(
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 160),
+                    width: 40,
+                    height: 40,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(color: recording ? const Color(0xFFD64545) : const Color(0xFF111015), shape: BoxShape.circle),
+                    child: Icon(hasText ? Icons.arrow_upward_rounded : (recording ? Icons.stop_rounded : Icons.mic_none_rounded), size: 20, color: Colors.white),
+                  ),
+                ),
+              ),
             ),
           ),
         ]),
@@ -514,12 +532,20 @@ class _VoiceTileState extends State<_VoiceTile> {
   }
 
   @override
-  Widget build(BuildContext context) => GestureDetector(
-        onTap: _toggle,
-        child: Row(mainAxisSize: MainAxisSize.min, children: [
-          Icon(playing ? Icons.pause_circle_filled_rounded : Icons.play_circle_fill_rounded, color: widget.fg, size: 28),
-          const SizedBox(width: 8),
-          Text('Message vocal', style: _st(12.5, c: widget.fg, w: FontWeight.w600)),
-        ]),
+  Widget build(BuildContext context) => Semantics(
+        button: true,
+        label: playing ? 'Mettre le vocal en pause' : 'Écouter le vocal',
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: _toggle,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 48),
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              Icon(playing ? Icons.pause_circle_filled_rounded : Icons.play_circle_fill_rounded, color: widget.fg, size: 28),
+              const SizedBox(width: 8),
+              Text('Message vocal', style: _st(12.5, c: widget.fg, w: FontWeight.w600)),
+            ]),
+          ),
+        ),
       );
 }

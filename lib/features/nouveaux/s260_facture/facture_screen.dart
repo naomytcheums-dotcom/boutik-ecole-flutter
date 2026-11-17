@@ -1,13 +1,15 @@
+import '../../../figma/live/money_admin.dart' show splitRuleProvider;
 import '../../common/common.dart';
 
-/// 260 · Facture avec ventilation 70 / 20 / 10.
+/// 260 · Facture avec ventilation selon la règle de répartition en vigueur.
 class FactureScreen extends ConsumerWidget {
   const FactureScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final inv = ref.watch(nouveauxDataProvider).invoice;
-    final split = splitPayment(inv.gross);
+    final rule = ref.watch(splitRuleProvider).value;
+    final split = rule == null ? null : splitPayment(inv.gross, rule);
     return DetailScreen(
       title: 'Facture',
       subtitle: inv.number,
@@ -63,9 +65,12 @@ class FactureScreen extends ConsumerWidget {
                 KV('Montant brut', fcfa(inv.gross)),
                 KV('Frais de paiement', fcfa(inv.fees)),
                 KV('Taxes applicables', fcfa(inv.taxes)),
-                KV('Commission de la plateforme (10 %)', fcfa(split.platform)),
-                KV('Part étudiants / département (70 %)', fcfa(split.seller)),
-                KV('Fonds d’innovation (20 %)', fcfa(split.institution)),
+                if (rule != null && split != null) ...[
+                  KV('Commission de la plateforme (${rule.platform} %)', fcfa(split.platform)),
+                  KV('Part étudiants / département (${rule.beneficiary} %)', fcfa(split.seller)),
+                  KV('Fonds d’innovation (${rule.institution} %)', fcfa(split.institution)),
+                ] else
+                  KV('Répartition', 'Règle en cours de lecture'),
               ])
                 Padding(padding: const EdgeInsets.symmetric(vertical: 5), child: KeyValueRow(kv)),
               gap16,
@@ -75,7 +80,13 @@ class FactureScreen extends ConsumerWidget {
                 child: Row(
                   children: [
                     Expanded(child: Text('Total TTC', style: AppText.h3.copyWith(fontWeight: FontWeight.w500))),
-                    Text(fcfa(inv.gross + inv.taxes), style: AppText.h1.copyWith(fontWeight: FontWeight.w700)),
+                    Flexible(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerRight,
+                        child: Text(fcfa(inv.gross + inv.taxes), style: AppText.h1.copyWith(fontWeight: FontWeight.w700)),
+                      ),
+                    ),
                   ],
                 ),
               ),

@@ -84,7 +84,7 @@ class SellerRevenuePanel extends ConsumerWidget {
         const SizedBox(height: 12),
         Row(children: [_tile('En séquestre', fcfa(_i(d['held'])), _i(d['frozen']) > 0 ? '${fcfa(_i(d['frozen']))} bloqués' : 'Débloqué après livraison'), const SizedBox(width: 12), _tile('À reverser', fcfa(_i(d['owed'])), 'Paiements à la livraison')]),
         const SizedBox(height: 10),
-        Text('Parts nettes (règle ${d['rule'] ?? '70/20/10'}). L’argent reste en séquestre jusqu’à la confirmation de l’acheteur, ou ${_i(d['hold_hours']) == 0 ? 72 : _i(d['hold_hours'])} h après la livraison sans réclamation.', style: _st(12, c: _grey).copyWith(height: 1.4)),
+        Text('Parts nettes ${(d['rule'] ?? '').toString().isEmpty ? '(règle de répartition en vigueur)' : '(règle ${d['rule']} : vendeur / fonds d’innovation / plateforme)'}, calculées sur le prix des articles, hors livraison. L’argent reste en séquestre jusqu’à la confirmation de l’acheteur, ou ${_i(d['hold_hours']) > 0 ? '${_i(d['hold_hours'])} h' : 'le délai prévu'} après la livraison sans réclamation.', style: _st(12, c: _grey).copyWith(height: 1.4)),
         const SizedBox(height: 14),
         Wrap(spacing: 10, runSpacing: 8, children: [
           TpButton('Demander un retrait', () => requestPayoutDialog(context, ref), compact: true),

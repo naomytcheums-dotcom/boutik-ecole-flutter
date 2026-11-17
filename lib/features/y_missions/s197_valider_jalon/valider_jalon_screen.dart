@@ -1,3 +1,4 @@
+import '../../../figma/live/money_admin.dart' show splitRuleProvider;
 import '../y_widgets.dart';
 
 /// 197 · Valider le jalon : le client examine la preuve et libère le paiement du jalon.
@@ -15,7 +16,8 @@ class _ValiderJalonScreenState extends ConsumerState<ValiderJalonScreen> {
   Widget build(BuildContext context) {
     final d = ref.watch(sectionYDataProvider);
     final (title, subtitle) = d.reviewTitle;
-    final split = splitPayment(d.reviewAmount);
+    final rule = ref.watch(splitRuleProvider).value;
+    final split = rule == null ? null : splitPayment(d.reviewAmount, rule);
     return GPage(
       title: 'Valider le jalon ${d.reviewMilestone}',
       actions: [
@@ -55,12 +57,20 @@ class _ValiderJalonScreenState extends ConsumerState<ValiderJalonScreen> {
           rows: [
             ('Jalon', '${d.reviewMilestone} sur ${d.reviewMilestoneCount}'),
             ('Montant à libérer', fcfa(d.reviewAmount)),
-            ('Part étudiants (70 %)', fcfa(split.seller)),
-            ('Fonds innovation (20 %)', fcfa(split.institution)),
-            ('Plateforme (10 %)', fcfa(split.platform)),
+            if (rule != null && split != null) ...[
+              ('Part étudiants (${rule.beneficiary} %)', fcfa(split.seller)),
+              ('Fonds innovation (${rule.institution} %)', fcfa(split.institution)),
+              ('Plateforme (${rule.platform} %)', fcfa(split.platform)),
+            ] else
+              ('Répartition', 'Règle en cours de lecture'),
           ],
         ),
         const SizedBox(height: 14),
+        const YNote(
+          'La répartition suit la règle en vigueur, calculée sur le prix des articles hors livraison.',
+          icon: AppIcons.info,
+        ),
+        const SizedBox(height: 10),
         const YNote(
           'Vous pouvez demander une correction : le paiement reste bloqué tant que vous n’avez pas validé.',
           icon: AppIcons.shieldCheck,

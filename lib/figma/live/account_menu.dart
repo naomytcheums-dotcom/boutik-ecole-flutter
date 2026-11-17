@@ -186,7 +186,7 @@ final _groups = <_Group>[
     _Entry('Réinitialiser une double authentification', action: mfaResetDialog, roles: {'admin', 'support'}),
     _Entry('Entreprises à vérifier', action: _entreprisesAVerifier, roles: {'admin'}),
     _Entry('Forfaits des entreprises', action: _forfaitsEntreprises, roles: {'admin'}),
-    _Entry('Séquestre et règle 70/20/10', action: _sequestre, roles: {'admin', 'finance'}),
+    _Entry('Séquestre et règle de répartition', action: _sequestre, roles: {'admin', 'finance'}),
     _Entry('Journal des incidents des bornes', action: kioskIncidentsDialog, roles: {'support', 'admin'}),
     _Entry('Remettre une commande (code de retrait)', action: confirmPickupDialog, roles: {'support', 'admin'}),
     _Entry('Établissement et identité visuelle', screen: '118', roles: {'direction', 'admin'}),

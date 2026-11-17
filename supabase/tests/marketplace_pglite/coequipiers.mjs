@@ -92,7 +92,11 @@ export async function run(db) {
   await as(C);
   check('invitation : declinee', (await q(`select teammate_invite_decide('${inv2}', false) r`))[0].r === 'declined');
   await as(A);
-  check('invitation : nouvelle invitation possible apres reponse', (await q(`select teammate_invite('${C}') id`))[0].id !== undefined);
+  await fails('invitation : 7 jours d attente apres un refus (G7)', `select teammate_invite('${C}')`, /patientez 7 jours/);
+  await as(null, null);
+  await q(`update teammate_invites set decided_at = now() - interval '8 days' where id = '${inv2}'`);
+  await as(A);
+  check('invitation : nouvelle invitation possible 7 jours apres le refus', (await q(`select teammate_invite('${C}') id`))[0].id !== undefined);
   // --- pas d'accès direct aux tables
   await fails('tables : aucun acces direct aux invitations', `select * from teammate_invites`, /permission/);
   await fails('tables : aucun acces direct aux categories', `insert into mate_categories(label, keywords) values ('Pirate', array['x'])`, /permission/);

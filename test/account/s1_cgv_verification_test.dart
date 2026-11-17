@@ -34,12 +34,13 @@ void main() {
     expect(kSalesTermsVersion, isNot(kTermsVersion));
   });
 
-  test('S1-60 : le texte des CGV existe et décrit la répartition 70/20/10, les remboursements et les litiges', () {
+  test('S1-60 : le texte des CGV décrit la répartition sans chiffre en dur (règle lue en base), les remboursements et les litiges', () {
     expect(termsSections.length, 4);
     final cgv = termsSections[1].map((s) => '${s.$1} ${s.$2}').join('\n');
-    expect(cgv, contains('70 %'));
-    expect(cgv, contains('20 %'));
-    expect(cgv, contains('10 %'));
+    expect(cgv, contains('Répartition du prix'));
+    expect(cgv, isNot(contains('70 %')));
+    expect(cgv, isNot(contains('20 %')));
+    expect(cgv, contains('hors livraison'));
     expect(cgv.toLowerCase(), contains('remboursement'));
     expect(cgv.toLowerCase(), contains('litige'));
     expect(cgv.toLowerCase(), contains('réclamation'));

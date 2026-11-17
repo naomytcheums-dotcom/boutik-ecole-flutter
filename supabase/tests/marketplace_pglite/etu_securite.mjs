@@ -25,7 +25,7 @@ export async function run(db) {
 
   // --- annonces : re-modération, colonnes figées, médias
   const L = '00000000-0000-0000-0000-0000000000f1';
-  await db.exec(`insert into listings (id, seller_id, title, department, price, status, showcase) values ('${L}', '${U(41)}', 'Lampe', 'Génie', 5000, 'approved', false)`);
+  await db.exec(`insert into listings (id, seller_id, title, department, price, status, showcase, images) values ('${L}', '${U(41)}', 'Lampe', 'Génie', 5000, 'approved', false, array['https://abcdefgh.supabase.co/storage/v1/object/public/listing-images/u/l.png'])`);
   await as(U(41));
   await q(`update listings set price = 4500, stock = 7 where id = '${L}'`);
   check('annonce approuvée : le prix et le stock restent libres', (await q(`select status, price from listings where id = '${L}'`))[0].status === 'approved');

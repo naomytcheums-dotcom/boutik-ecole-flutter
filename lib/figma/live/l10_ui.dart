@@ -30,6 +30,7 @@ Widget l10Btn(String label, VoidCallback? onTap, {bool dark = true, double? widt
         opacity: onTap == null ? 0.45 : 1,
         child: Container(
           width: width,
+          constraints: const BoxConstraints(minHeight: 48),
           padding: EdgeInsets.symmetric(horizontal: compact ? 14 : 18, vertical: compact ? 9 : 14),
           alignment: Alignment.center,
           decoration: BoxDecoration(color: dark ? l10Ink : Colors.white, borderRadius: BorderRadius.circular(compact ? 16 : 24), border: dark ? null : Border.all(color: const Color(0xFFD9D3E6), width: 1.2)),

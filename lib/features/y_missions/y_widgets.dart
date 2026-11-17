@@ -223,7 +223,7 @@ class YKvCard extends StatelessWidget {
                 child: Row(
                   children: [
                     Expanded(child: Text(l, style: AppText.secondary.copyWith(fontSize: 13))),
-                    Text(v, style: AppText.bodyStrong.copyWith(fontSize: 13.5)),
+                    Flexible(child: Text(v, textAlign: TextAlign.end, style: AppText.bodyStrong.copyWith(fontSize: 13.5))),
                   ],
                 ),
               ),

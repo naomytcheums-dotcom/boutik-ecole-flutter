@@ -10,7 +10,7 @@ import 'core/state/app_settings.dart';
 import 'core/theme/app_theme.dart';
 import 'figma/gsound.dart' show GAnim;
 import 'figma/i18n.dart' show I18n, I18nScope;
-import 'figma/live/auth.dart' show appSessionExpired, authProvider, requireLogin;
+import 'figma/live/auth.dart' show appSessionExpired, authProvider, promptTermsUpdate, requireLogin, termsNeedAcceptance;
 import 'figma/live/access.dart' show roleKey;
 import 'figma/live/kiosk_mode.dart' show KioskIdleGuard, KioskTerminal;
 import 'figma/live/qr.dart' show handleQrToken, pendingQrToken;
@@ -48,6 +48,23 @@ class _BoutikEcoleAppState extends ConsumerState<BoutikEcoleApp> {
     _router.routerDelegate.addListener(_orderDetailScreen);
     // Code QR lu par l'appareil photo ordinaire (adresse « …/?qr=<jeton> ») : traité une fois l'écran de départ en place.
     if (pendingQrToken != null) Future.delayed(const Duration(milliseconds: 900), _openPendingQr);
+    // Session restaurée : les conditions sont aussi vérifiées (une connexion fraîche les vérifie via l'écoute de l'identifiant dans build).
+    if (Backend.ready && ref.read(authProvider).current != null) Future.delayed(const Duration(seconds: 2), _checkTerms);
+  }
+
+  String _termsCheckedFor = '';
+
+  /// Une fois par compte et par ouverture : si les CGU acceptées sont absentes ou antérieures à la version en vigueur, la personne est invitée à les accepter.
+  Future<void> _checkTerms() async {
+    if (!mounted) return;
+    final a = ref.read(authProvider).current;
+    final id = a?.serverId ?? '';
+    if (!mounted || id.isEmpty || id == _termsCheckedFor || Backend.profileMissing) return;
+    _termsCheckedFor = id;
+    if (!await termsNeedAcceptance() || !mounted) return;
+    final ctx = _router.routerDelegate.navigatorKey.currentContext;
+    if (ctx == null || !ctx.mounted || ref.read(authProvider).current?.serverId != id) return;
+    await promptTermsUpdate(ctx);
   }
 
   bool _qrPrompted = false;
@@ -157,6 +174,7 @@ class _BoutikEcoleAppState extends ConsumerState<BoutikEcoleApp> {
     if (Backend.ready) {
       ref.listen(authProvider.select((a) => a.current?.serverId ?? ''), (_, id) {
         if (id.isNotEmpty && pendingQrToken != null) _openPendingQr();
+        if (id.isNotEmpty) Future.delayed(const Duration(seconds: 2), _checkTerms);
       });
       ref.listen(ordersLoadedProvider, (_, _) => _ordersScreen());
       ref.listen(ordersProvider, (_, _) => _ordersScreen());

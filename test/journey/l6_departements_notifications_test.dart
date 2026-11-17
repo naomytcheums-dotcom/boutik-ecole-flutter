@@ -97,7 +97,8 @@ void main() {
     expect(notificationActionLabel(n('support')), isNotNull);
     expect(notificationActionLabel(n('support_ticket')), isNotNull);
     expect(notificationActionLabel(n('community_accept')), isNotNull);
-    expect(notificationActionLabel(n('referral')), isNull);
+    expect(notificationActionLabel(n('referral')), 'Voir mon parrainage');
+    expect(notificationActionLabel(n('type_inconnu')), isNull);
   });
 
   test('notification : les données jointes sont conservées et groupées par catégorie', () {

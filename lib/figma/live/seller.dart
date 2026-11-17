@@ -80,7 +80,7 @@ class Listing {
   String get key => id.isNotEmpty ? id : title;
 
   /// Libellé d'état : Brouillon, Rupture, Stock bas ou Publié.
-  String get label => !published ? (inReview ? 'En validation' : (rejected ? 'Refusée' : 'Brouillon')) : (stock == 0 ? 'Rupture' : (stock <= lowStock ? 'Stock bas' : 'Publié'));
+  String get label => !published ? (inReview ? 'En validation' : (rejected ? 'Refusée' : (status == 'draft' && note.isNotEmpty ? 'Masquée' : 'Brouillon'))) : (stock == 0 ? 'Rupture' : (stock <= lowStock ? 'Stock bas' : 'Publié'));
 
   Listing copyWith({int? stock, bool? published, bool? inReview, String? status}) => Listing(
         id: id,
@@ -110,7 +110,11 @@ class Listings extends Notifier<List<Listing>> {
     // connecté au serveur : le vendeur retrouve ses propres annonces (RLS), jamais celles d'un autre ni des exemples
     final uid = ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
     if (uid.isNotEmpty) {
-      Future.microtask(refresh);
+      Future.microtask(() {
+        if (!ref.mounted) return;
+        ref.read(listingsLoadProvider.notifier).set('');
+        refresh();
+      });
       final t = Timer.periodic(const Duration(seconds: 30), (_) => refresh()); // décisions du département, ventes
       ref.onDispose(t.cancel);
     }
@@ -119,10 +123,19 @@ class Listings extends Notifier<List<Listing>> {
 
   Future<void> refresh() async {
     final staff = ref.read(authProvider).current?.staff ?? '';
-    final l = await Backend.myListings(platform: platformManagers.contains(staff));
+    List<Listing> l;
+    try {
+      l = await Backend.myListings(platform: platformManagers.contains(staff), strict: true);
+    } catch (_) {
+      // lecture impossible : on garde la dernière liste connue et on le dit (jamais « aucune annonce » à tort)
+      if (ref.mounted) ref.read(listingsLoadProvider.notifier).set('error');
+      return;
+    }
     final s = await Backend.rpc('seller_settings_get', const {});
     if (s.error == null && s.data is Map) Listing.lowStock = ((s.data as Map)['stock_threshold'] as num?)?.toInt() ?? Listing.lowStock;
-    if (ref.mounted) state = l;
+    if (!ref.mounted) return;
+    state = l;
+    ref.read(listingsLoadProvider.notifier).set('ok');
   }
 
   /// Dernière annonce créée par ce compte (sert à lui rattacher les photos choisies dans le formulaire).
@@ -218,6 +231,9 @@ class Listings extends Notifier<List<Listing>> {
 }
 
 final listingsProvider = NotifierProvider<Listings, List<Listing>>(Listings.new);
+
+/// Lecture des annonces du vendeur : '' = en cours (première lecture), 'ok', 'error' (dernière lecture échouée).
+final listingsLoadProvider = NotifierProvider<StrV, String>(StrV.new);
 
 
 /// Annonces approuvées des vendeurs (visibles de tous les acheteurs), lues sur le serveur.
@@ -503,10 +519,11 @@ final currentSellerOrderProvider = Provider<SellerOrder>((ref) {
 
 // ------------------------------------------------------------------ formulaire « Nouveau produit »
 
-String? _intError(String v, String what, {int min = 0}) {
+String? _intError(String v, String what, {int min = 0, int? max}) {
   final n = int.tryParse(v.replaceAll(RegExp(r'[\s ]'), ''));
   if (n == null) return '$what : entrez un nombre entier.';
   if (n < min) return '$what : minimum $min.';
+  if (max != null && n > max) return '$what : maximum $max.';
   return null;
 }
 
@@ -640,7 +657,9 @@ Future<void> advanceCurrentOrder(WidgetRef ref, BuildContext context) async {
     1 => 'Commande ${o.id} acceptée : le client est averti',
     2 => 'Préparation de ${o.id} démarrée : le client est averti',
     3 => 'Commande ${o.id} prête : le client est averti',
-    _ => 'Commande ${o.id} livrée : le client est averti et doit confirmer la réception (sinon votre part est libérée sous 72 h sans réclamation)',
+    _ => o.cod
+        ? 'Commande ${o.id} livrée : le client est averti et le montant est encaissé à la remise.'
+        : 'Commande ${o.id} livrée : le client est averti et doit confirmer la réception ; sans réclamation de sa part, votre part est libérée après le délai de garde.',
   });
   if (next >= 3) gOpen(context, '63');
 }

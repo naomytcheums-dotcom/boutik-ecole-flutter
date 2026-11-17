@@ -14,6 +14,7 @@ import 'access.dart' show canOpen, roleKey;
 import 'auth.dart';
 import '../gdata.dart' show GData;
 import 'backend.dart';
+import 'certificates_page.dart' show CertificatesPage;
 import 'messages.dart' show selectedConversationProvider, conversationsProvider, contactOrderSeller;
 import 'missions.dart' show selectedMissionIdProvider, missionProvider;
 import 'services.dart' show quotesDialog;
@@ -130,7 +131,7 @@ final notifFilterProvider = NotifierProvider<NotifFilter, int>(NotifFilter.new);
 
 /// Groupe d'une notification : 1 commandes (commande, paiement, réclamation, litige, devis, argent), 2 messages, 3 autres.
 int notifGroup(String kind) => switch (kind) {
-      'order' || 'payment' || 'claim' || 'dispute' || 'money' || 'quote' => 1,
+      'order' || 'payment' || 'claim' || 'dispute' || 'money' || 'quote' || 'payout' || 'refund' => 1,
       'message' || 'teammate_message' => 2,
       _ => 3,
     };
@@ -153,7 +154,18 @@ bool openNotification(BuildContext context, WidgetRef? ref, NotificationItem n, 
   final account = read(authProvider).current;
   String clean(String v) => v.replaceAll('#', '').trim();
   switch (n.kind) {
-    case 'order':
+    case 'payout':
+      if (const {'finance', 'admin'}.contains(roleKey(account))) {
+        r.push('/admin/sequestre');
+        return true;
+      }
+      if (!canOpen(account, '66')) return false;
+      gOpen(context, '66');
+      return true;
+    case 'refund' when const {'finance', 'admin'}.contains(roleKey(account)):
+      r.push('/admin/sequestre');
+      return true;
+    case 'order' || 'refund':
       final num = clean(first(['order_number', 'order']));
       if (num.isEmpty) {
         gOpen(context, '28');
@@ -173,7 +185,11 @@ bool openNotification(BuildContext context, WidgetRef? ref, NotificationItem n, 
       return true;
     case 'message' || 'teammate_message':
       final cid = s('conversation_id');
-      if (n.kind == 'teammate_message' || cid.isEmpty) {
+      if (n.kind == 'teammate_message') {
+        gOpen(context, '163');
+        return true;
+      }
+      if (cid.isEmpty) {
         gOpen(context, '52');
         return true;
       }
@@ -340,6 +356,57 @@ bool openNotification(BuildContext context, WidgetRef? ref, NotificationItem n, 
       if (!RegExp(r'^[0-9a-fA-F-]{36}$').hasMatch(rid)) return false;
       r.push('/communaute/$rid');
       return true;
+    case 'certification':
+      // l'étudiant retrouve l'état de sa certification (et peut la redemander) dans l'espace vendeur ; la file de revue des demandes est ailleurs
+      if (const {'dept', 'admin'}.contains(roleKey(account)) || !canOpen(account, '73')) return false;
+      r.push('/marche/vendeur');
+      return true;
+    case 'verification':
+      if (s('document').isEmpty || !canOpen(account, '154')) return false;
+      gOpen(context, '154');
+      return true;
+    case 'certificate':
+      if (!context.mounted) return false;
+      Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const CertificatesPage()));
+      return true;
+    case 'security':
+      gOpen(context, '148-2');
+      return true;
+    case 'account_deletion':
+      if (const {'admin', 'support'}.contains(roleKey(account))) return false;
+      gOpen(context, '148-1');
+      return true;
+    case 'moderation':
+      gOpen(context, '244');
+      return true;
+    case 'listing_review':
+      if (!const {'dept', 'admin', 'support'}.contains(roleKey(account))) return false;
+      r.push('/marche/moderation');
+      return true;
+    case 'teammate_invite':
+      gOpen(context, '163');
+      return true;
+    case 'wish':
+      final wid = s('wish_id');
+      if (RegExp(r'^[0-9a-fA-F-]{36}$').hasMatch(wid)) {
+        r.push('${screenPath('217')}?wish=${Uri.encodeQueryComponent(wid)}');
+      } else {
+        gOpen(context, '216');
+      }
+      return true;
+    case 'duel':
+      gOpen(context, '220');
+      return true;
+    case 'referral':
+      if (!canOpen(account, '240')) return false;
+      gOpen(context, '240');
+      return true;
+    case 'subscription':
+      r.push('/offres');
+      return true;
+    case 'live_reminder':
+      gOpen(context, 'L1');
+      return true;
   }
   return false;
 }
@@ -371,6 +438,21 @@ String? notificationActionLabel(NotificationItem n) => switch (n.kind) {
       'report' => 'Voir les signalements',
       'shop' => 'Voir la boutique',
       'study_room' => 'Ouvrir la communauté',
+      'payout' => 'Voir mes retraits',
+      'refund' => 'Voir la commande',
+      'certification' => 'Voir ma certification',
+      'verification' => 'Voir mon dossier',
+      'certificate' => 'Voir mes certificats',
+      'security' => 'Sécurité du compte',
+      'account_deletion' => 'Voir mes réglages',
+      'moderation' => 'Voir le réseau',
+      'listing_review' => 'Valider les annonces',
+      'teammate_invite' => 'Voir mes coéquipiers',
+      'wish' => 'Voir le marché des vœux',
+      'duel' => 'Voir le duel',
+      'referral' => 'Voir mon parrainage',
+      'subscription' => 'Voir les offres',
+      'live_reminder' => 'Voir les lives',
       'live' => 'Voir les lives',
       'event' => 'Voir l’événement',
       'project' => 'Voir mon projet',
@@ -571,6 +653,13 @@ class _NotificationDetailState extends ConsumerState<_NotificationDetail> {
           if (!openNotification(context, ref, n!)) gToast(context, 'Cette page n’est pas disponible pour votre compte.');
         }),
       const SizedBox(height: 10),
+      if (n.kind == 'talent_contact' && RegExp(r'^[0-9a-fA-F-]{36}$').hasMatch('${n.data['from'] ?? ''}')) ...[
+        _button('Bloquer cet expéditeur', () async {
+          final res = await Backend.rpc('block_user', {'p_user': '${n!.data['from']}', 'p_block': true});
+          if (context.mounted) gToast(context, res.error == null ? 'Expéditeur bloqué : il ne peut plus vous contacter.' : 'Blocage impossible pour le moment.');
+        }, dark: false),
+        const SizedBox(height: 10),
+      ],
       _button('Réglages des notifications', () => gOpen(context, '56'), dark: false),
       const SizedBox(height: 18),
     ]);

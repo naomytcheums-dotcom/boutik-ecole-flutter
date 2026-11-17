@@ -77,7 +77,7 @@ class SellerMonthsChart extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ref.watch(sellerOverviewProvider).when(
       loading: () => const Center(child: SizedBox(width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2))),
-      error: (_, _) => Center(child: Text('Statistiques indisponibles pour le moment.', style: _t(12.5, FontWeight.w500, _mute))),
+      error: (_, _) => Column(mainAxisAlignment: MainAxisAlignment.center, children: [Text('Statistiques indisponibles pour le moment.', textAlign: TextAlign.center, style: _t(12.5, FontWeight.w500, _mute)), _retryButton('Réessayer', () => refreshSellerData(ref))]),
       data: (d) {
         final months = [for (final m in (d['months'] as List? ?? const [])) Map<String, dynamic>.from(m as Map)];
         final mx = months.fold<int>(0, (a, m) => _n(m['revenue']) > a ? _n(m['revenue']) : a);
@@ -119,6 +119,32 @@ String listingSubtitle(Listing l) {
   return l.category == 'Services' ? price : '$price · ${l.stock} en stock';
 }
 
+/// Relit l'aperçu, la boutique et les annonces du vendeur (tirer pour actualiser, bouton « Réessayer »).
+Future<void> refreshSellerData(WidgetRef ref) async {
+  ref.invalidate(sellerOverviewProvider);
+  ref.invalidate(sellerShopProvider);
+  await ref.read(listingsProvider.notifier).refresh();
+}
+
+/// Bouton d'action d'un état vide ou d'erreur (zone tactile d'au moins 48 dp).
+Widget _retryButton(String label, VoidCallback onTap) => Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: Center(child: ConstrainedBox(constraints: const BoxConstraints(minHeight: 48, minWidth: 48), child: OutlinedButton(onPressed: onTap, child: Text(label, style: _t(13, FontWeight.w600, _ink))))),
+    );
+
+/// État de la lecture des annonces : spinner à la première lecture, message + « Réessayer » si elle échoue sans rien à montrer, bandeau sinon ; null si tout va bien.
+Widget? listingsStatusView(WidgetRef ref, {required bool hasRows}) {
+  final load = ref.watch(listingsLoadProvider);
+  if (load == '' && !hasRows) return const Center(child: SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2)));
+  if (load == 'error' && !hasRows) {
+    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Text('Impossible de lire vos annonces pour le moment.\nVérifiez votre connexion.', textAlign: TextAlign.center, style: _t(13.5, FontWeight.w500, _mute).copyWith(height: 1.5)),
+      _retryButton('Réessayer', () => refreshSellerData(ref)),
+    ]);
+  }
+  return null;
+}
+
 /// Liste défilante des annonces du vendeur (toutes, avec photo, statut lisible et motif de refus complet).
 class SellerCatalogList extends ConsumerWidget {
   const SellerCatalogList({super.key});
@@ -128,8 +154,13 @@ class SellerCatalogList extends ConsumerWidget {
     final all = ref.watch(listingsProvider);
     final rows = ref.watch(visibleListingsProvider);
     final note = shopVisibilityNote(ref.watch(sellerShopProvider).value ?? const {}, all);
+    final status = listingsStatusView(ref, hasRows: all.isNotEmpty);
+    if (status != null) return status;
     if (all.isEmpty) return Center(child: Text('Aucune annonce pour le moment.\nTouchez + pour créer votre premier produit.', textAlign: TextAlign.center, style: _t(13.5, FontWeight.w500, _mute).copyWith(height: 1.5)));
-    return ListView(padding: const EdgeInsets.only(bottom: 120), children: [
+    return RefreshIndicator(
+      onRefresh: () => refreshSellerData(ref),
+      child: ListView(physics: const AlwaysScrollableScrollPhysics(), padding: const EdgeInsets.only(bottom: 120), children: [
+      if (ref.watch(listingsLoadProvider) == 'error') Container(margin: const EdgeInsets.only(bottom: 10), padding: const EdgeInsets.all(12), decoration: BoxDecoration(color: const Color(0xFFFDE6E7), borderRadius: BorderRadius.circular(14)), child: Text('Actualisation impossible : la liste affichée peut ne plus être à jour. Tirez vers le bas pour réessayer.', style: _t(12, FontWeight.w500, _ink).copyWith(height: 1.4))),
       if (note != null) Container(margin: const EdgeInsets.only(bottom: 10), padding: const EdgeInsets.all(12), decoration: BoxDecoration(color: const Color(0xFFFFF4E0), borderRadius: BorderRadius.circular(14)), child: Text(note, style: _t(12, FontWeight.w500, _ink).copyWith(height: 1.4))),
       if (rows.isEmpty) Padding(padding: const EdgeInsets.only(top: 30), child: Center(child: Text('Aucune annonce dans cette liste.', style: _t(13.5, FontWeight.w500, _mute)))),
       for (final l in rows)
@@ -157,7 +188,7 @@ class SellerCatalogList extends ConsumerWidget {
             ]),
           ),
         ),
-    ]);
+    ]));
   }
 }
 
@@ -231,6 +262,8 @@ class SellerStockList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final rows = stockListings(ref.watch(listingsProvider));
+    final status = listingsStatusView(ref, hasRows: rows.isNotEmpty);
+    if (status != null) return status;
     if (rows.isEmpty) return Center(child: Text('Aucun produit à gérer pour le moment.', style: _t(13.5, FontWeight.w500, _mute)));
     return ListView(padding: EdgeInsets.zero, children: [
       for (final l in rows)

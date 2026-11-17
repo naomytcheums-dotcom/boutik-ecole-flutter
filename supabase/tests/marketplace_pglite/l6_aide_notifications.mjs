@@ -62,7 +62,12 @@ export async function run(db) {
   await fails('WhatsApp sans numéro refusé', `select set_notification_preference('whatsapp', '*', true)`, /WhatsApp/);
   await fails('numéro WhatsApp invalide refusé', `select set_whatsapp_number('12')`, /invalide/);
   await as(U(21));
-  check('numéro WhatsApp normalisé', (await q(`select set_whatsapp_number('6 55 00 11 22') n`))[0].n === '+237655001122');
+  await fails('SMS refusé tant que le téléphone n\'est pas vérifié', `select set_notification_preference('sms', '*', true)`, /vérifié/);
+  await db.exec('reset role');
+  await db.exec(`update profiles set phone_verified = true where id = '${U(21)}'`);
+  await as(U(21));
+  await fails('WhatsApp : un autre numéro que le numéro vérifié est refusé', `select set_whatsapp_number('6 55 00 11 22')`, /vérifié/);
+  check('numéro WhatsApp normalisé (numéro vérifié)', (await q(`select set_whatsapp_number('6 77 00 00 21') n`))[0].n === '+237677000021');
   await q(`select set_notification_preference('whatsapp', '*', true)`);
   await q(`select set_notification_preference('sms', '*', true)`);
   await db.exec('reset role');
@@ -71,7 +76,7 @@ export async function run(db) {
   check('message : ni SMS ni WhatsApp sans choix explicite pour ce type', (await q(`select 1 from notification_outbox where kind = 'message' and channel in ('sms','whatsapp','email')`)).length === 0);
   await db.exec(`insert into notifications(user_id, kind, title, body) values ('${U(21)}', 'order', 'Commande payée', 'ok')`);
   const out = await q(`select channel, to_address from notification_outbox where kind = 'order' order by channel`);
-  check('commande : SMS au numéro du profil et WhatsApp au numéro saisi', out.length === 2 && out.find((r) => r.channel === 'sms')?.to_address === '+237677000021' && out.find((r) => r.channel === 'whatsapp')?.to_address === '+237655001122', JSON.stringify(out));
+  check('commande : SMS et WhatsApp au numéro vérifié du profil', out.length === 2 && out.find((r) => r.channel === 'sms')?.to_address === '+237677000021' && out.find((r) => r.channel === 'whatsapp')?.to_address === '+237677000021', JSON.stringify(out));
   await as(U(21));
   await q(`select set_notification_preference('whatsapp', 'message', true)`);
   await db.exec('reset role');

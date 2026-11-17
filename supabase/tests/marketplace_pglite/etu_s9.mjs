@@ -131,20 +131,25 @@ export async function run(db) {
   check('cloche : une vraie notification est comptée', (await q(`select unread_counts() u`))[0].u.notifications === 1);
 
   // --- S9-1 : WhatsApp saisi en 236 (notification_contacts) utilisé comme adresse d'envoi
-  await q(`select set_whatsapp_number('+237 677 00 00 42')`);
+  // Lot G5 : le numéro WhatsApp est le numéro de téléphone VÉRIFIÉ du compte ; un numéro non vérifié ou différent est refusé.
+  await fails('canaux : WhatsApp refusé tant que le téléphone n\'est pas vérifié', `select set_whatsapp_number('+237 690 00 00 42')`, /vérifié/);
+  await db.exec('reset role');
+  await db.exec(`update profiles set phone_verified = true where id = '${U(42)}'`);
+  await as(U(42));
+  await fails('canaux : un autre numéro que le numéro vérifié est refusé', `select set_whatsapp_number('+237 677 00 00 42')`, /vérifié/);
+  await q(`select set_whatsapp_number('+237 690 00 00 42')`);
   await q(`select set_notification_preference('whatsapp', '*', true)`);
   await db.exec('reset role');
   await db.exec(`insert into notifications (user_id, kind, title, body) values ('${U(42)}', 'order', 'Argent débloqué', 'y')`);
   const ob = await q(`select to_address from notification_outbox where user_id = '${U(42)}' and channel = 'whatsapp' order by id desc limit 1`);
-  check('canaux : le WhatsApp part vers le numéro saisi, pas vers profiles.phone', ob.length === 1 && ob[0].to_address === '+237677000042', JSON.stringify(ob));
+  check('canaux : le WhatsApp part vers le numéro vérifié', ob.length === 1 && ob[0].to_address === '+237690000042', JSON.stringify(ob));
   await db.exec(`insert into auth.users(id,email) values ('${U(45)}','e45@t.cm'); insert into profiles(id,name,role,email,phone) values ('${U(45)}','Personne 45','student','e45@t.cm',null)`);
   await as(U(45));
-  await q(`select set_whatsapp_number('677 00 00 45')`);
-  await q(`select set_notification_preference('whatsapp', '*', true)`);
+  await fails('canaux : sans téléphone vérifié, le numéro saisi ne suffit plus', `select set_whatsapp_number('677 00 00 45')`, /vérifié/);
   await db.exec('reset role');
   await db.exec(`insert into notifications (user_id, kind, title, body) values ('${U(45)}', 'order', 'Nouvelle commande', 'z')`);
   const ob2 = await q(`select to_address from notification_outbox where user_id = '${U(45)}' and channel = 'whatsapp'`);
-  check('canaux : sans téléphone de profil, le numéro saisi suffit', ob2.length === 1 && ob2[0].to_address === '+237677000045', JSON.stringify(ob2));
+  check('canaux : sans téléphone vérifié, aucun WhatsApp en file', ob2.length === 0, JSON.stringify(ob2));
 
   console.log(`\nRésultat : ${ok} OK, ${ko} ECHEC`);
   if (ko) process.exitCode = 1;

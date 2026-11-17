@@ -99,6 +99,7 @@ class Account {
     String? institutionId,
     String? departmentId,
     String? studyLevel,
+    String? certification,
   }) => Account(
     name: name ?? this.name,
     phone: phone ?? this.phone,
@@ -115,7 +116,7 @@ class Account {
     bio: bio ?? this.bio,
     skills: skills ?? this.skills,
     avatarUrl: avatarUrl ?? this.avatarUrl,
-    certification: certification,
+    certification: certification ?? this.certification,
     serverId: serverId ?? this.serverId,
     matricule: matricule ?? this.matricule,
     institutionId: institutionId ?? this.institutionId,
@@ -362,6 +363,37 @@ Future<void> syncPendingTerms() async {
     if (parts.length != 2 || parts[1] != session) return;
     if (await Backend.acceptTerms(parts[0]) == null) await p.remove(_termsPendingKey);
   } catch (_) {}
+}
+
+/// Vrai si [accepted] (réponse de my_terms) est absent ou antérieur à [kTermsVersion] (versions de la forme cgu-AAAA-MM, comparables comme du texte).
+bool termsOutdated(Object? accepted) => accepted is! String || accepted.isEmpty || accepted.compareTo(kTermsVersion) < 0;
+
+/// Vrai si le compte connecté n'a jamais accepté les CGU ou n'a accepté qu'une version antérieure à [kTermsVersion].
+/// Une lecture impossible n'interrompt jamais la personne : faux.
+Future<bool> termsNeedAcceptance() async {
+  if (!Backend.ready || Backend.currentUserId == null) return false;
+  await syncPendingTerms();
+  final r = await Backend.rpc('my_terms', const {});
+  return r.error == null && termsOutdated(r.data);
+}
+
+/// Nouvelle version des conditions : la personne est invitée à les relire et à les accepter (écran 274) ; « Plus tard » la laisse continuer,
+/// la question revient à la prochaine ouverture.
+Future<void> promptTermsUpdate(BuildContext context) async {
+  final go = await gDialog<bool>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+      title: const Text('Conditions d’utilisation à accepter'),
+      content: const Text('Les conditions d’utilisation et de vente ont été mises à jour (ou n’ont pas encore été acceptées avec ce compte). Relisez-les et acceptez-les pour continuer à utiliser Boutik-École en toute transparence.'),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Plus tard')),
+        FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Lire et accepter')),
+      ],
+    ),
+  );
+  if (go == true && context.mounted) gOpen(context, '274');
 }
 
 /// Vrai quand l'écran de connexion a été ouvert depuis une action réservée : après connexion on revient où l'on était.
@@ -748,6 +780,25 @@ Future<void> _serverLoginRun(
     _errors(ref, {
       'li_pw': r.error ?? 'Identifiant ou mot de passe incorrect.',
     });
+    // e-mail non confirmé : le lien peut être renvoyé d'ici, sans repasser par l'inscription
+    if (isMail && (r.error ?? '').startsWith('Confirmez d’abord') && context.mounted) {
+      final resend = await gDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          backgroundColor: Colors.white,
+          title: const Text('Adresse e-mail non confirmée'),
+          content: Text('Ouvrez le lien de confirmation envoyé à $id pour activer votre compte. Vous ne le trouvez pas (vérifiez aussi les courriers indésirables) ?'),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Fermer')),
+            FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Renvoyer le lien')),
+          ],
+        ),
+      );
+      if (resend == true) {
+        final err = await Backend.resendSignupConfirmation(id);
+        if (context.mounted) gToast(context, err ?? 'Lien de confirmation renvoyé à $id');
+      }
+    }
     ref
         .read(auditProvider.notifier)
         .log(

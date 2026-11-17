@@ -1,3 +1,4 @@
+import '../../../figma/live/money_admin.dart' show splitRuleProvider;
 import '../../common/common.dart';
 
 /// 284 · Registre financier d'une commande (ventilation après frais et taxes).
@@ -7,10 +8,9 @@ class RegistreFinancierScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final d = ref.watch(nouveauxDataProvider);
+    final rule = ref.watch(splitRuleProvider).value;
     final net = d.ledgerGross - d.ledgerFees - d.ledgerTaxes - d.ledgerRefunds;
-    final platform = (net * 10) ~/ 100;
-    final department = (net * 20) ~/ 100;
-    final students = net - platform - department;
+    final split = rule == null ? null : splitPayment(net, rule);
     return DetailScreen(
       title: 'Registre financier',
       subtitle: 'Commande ${d.ledgerOrder}',
@@ -27,9 +27,12 @@ class RegistreFinancierScreen extends ConsumerWidget {
             KV('Taxes (TVA 19,25 %)', '– ${fcfa(d.ledgerTaxes)}'),
             KV('Remboursements', fcfa(d.ledgerRefunds)),
             KV('Net réparti', fcfa(net), strong: true),
-            KV('Commission plateforme (10 %)', fcfa(platform)),
-            KV('Part département (20 %)', fcfa(department)),
-            KV('Part étudiants (70 %)', fcfa(students)),
+            if (rule != null && split != null) ...[
+              KV('Commission plateforme (${rule.platform} %)', fcfa(split.platform)),
+              KV('Part département (${rule.institution} %)', fcfa(split.institution)),
+              KV('Part étudiants (${rule.beneficiary} %)', fcfa(split.seller)),
+            ] else
+              KV('Répartition', 'Règle en cours de lecture'),
           ],
         ),
         gap16,
@@ -41,7 +44,9 @@ class RegistreFinancierScreen extends ConsumerWidget {
               Text('Répartition configurable', style: AppText.bodyStrong),
               const SizedBox(height: 4),
               Text(
-                '70 / 20 / 10 par défaut · modifiable par l’administrateur global, avec historique.',
+                rule == null
+                    ? 'Règle de répartition en cours de lecture · modifiable par l’administrateur global, avec historique.'
+                    : '${rule.label} · règle en vigueur, modifiable par l’administrateur global, avec historique.',
                 style: AppText.small,
               ),
             ],

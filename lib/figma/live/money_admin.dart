@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' hide Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/utils/money.dart' show SplitRule;
 import '../gen.dart' show gToast;
 import '../i18n.dart' show Text;
 import 'auth.dart';
@@ -8,8 +9,17 @@ import 'backend.dart';
 import 'marche/marche_data.dart';
 import 'marche/marche_widgets.dart';
 
-/// Séquestre de l'administration : l'argent payé est conservé jusqu'à la livraison, puis réparti selon la règle (70 / 20 / 10 par défaut, modifiable ici).
+/// Séquestre de l'administration : l'argent payé est conservé jusqu'à la livraison, puis réparti selon la règle en vigueur (modifiable ici, avec historique).
 /// Seul l'administrateur bloque, débloque ou modifie la règle ; la finance consulte. Tout vient du serveur (migration 20261114002800).
+
+/// Règle de répartition lue en base pour les écrans d'information (facture, registre, validation de jalon) :
+/// la maquette hors connexion garde sa règle de démonstration ; connecté, null si la lecture échoue (aucun montant inventé).
+final splitRuleProvider = FutureProvider.autoDispose<SplitRule?>((ref) async {
+  if (!Backend.ready) return SplitRule.demo;
+  if (Backend.currentUserId == null) return null;
+  final r = await Backend.rpc('money_split_get', const {});
+  return r.error == null && r.data is Map ? SplitRule.fromServer((r.data as Map)['current']) : null;
+}, retry: (_, _) => null);
 
 final moneyOverviewProvider = FutureProvider.autoDispose<Map<String, dynamic>>((ref) async {
   ref.watch(authProvider.select((a) => a.current?.serverId));

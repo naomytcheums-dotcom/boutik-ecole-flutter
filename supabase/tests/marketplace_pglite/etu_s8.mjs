@@ -163,7 +163,7 @@ export async function run(db) {
 
   // ============================================================ S8-4 : e-mail / SMS / WhatsApp
   await db.exec('reset role');
-  await db.exec(`update profiles set phone = '690000011' where id = '${U(11)}'`);
+  await db.exec(`update profiles set phone = '690000011', phone_verified = true where id = '${U(11)}'`);
   await as(U(11));
   await q(`select set_notification_preference('email', '*', true)`);
   await q(`select set_notification_preference('sms', '*', true)`);

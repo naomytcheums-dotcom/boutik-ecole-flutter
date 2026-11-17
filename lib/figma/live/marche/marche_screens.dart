@@ -860,11 +860,11 @@ class _CartByShopScreenState extends ConsumerState<CartByShopScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 3),
                         child: Row(children: [
                           Expanded(child: Text(l.title, style: mst(13))),
-                          IconButton(visualDensity: VisualDensity.compact, tooltip: 'Moins', icon: const Icon(Icons.remove_circle_outline, size: 20), onPressed: () => ref.read(cartProvider.notifier).setQty(lines.indexOf(l), l.qty - 1)),
+                          IconButton(constraints: const BoxConstraints(minWidth: 48, minHeight: 48), padding: EdgeInsets.zero, tooltip: 'Moins', icon: const Icon(Icons.remove_circle_outline, size: 22), onPressed: () => ref.read(cartProvider.notifier).setQty(lines.indexOf(l), l.qty - 1)),
                           Text('${l.qty}', style: mst(13, w: FontWeight.w700)),
-                          IconButton(visualDensity: VisualDensity.compact, tooltip: 'Plus', icon: const Icon(Icons.add_circle_outline, size: 20), onPressed: l.qty >= maxCartQty ? null : () => ref.read(cartProvider.notifier).setQty(lines.indexOf(l), l.qty + 1)),
-                          SizedBox(width: 78, child: Text(mFcfa(l.price * l.qty), textAlign: TextAlign.right, style: mst(13, w: FontWeight.w600))),
-                          IconButton(visualDensity: VisualDensity.compact, tooltip: 'Retirer', icon: const Icon(Icons.delete_outline, size: 20), onPressed: () {
+                          IconButton(constraints: const BoxConstraints(minWidth: 48, minHeight: 48), padding: EdgeInsets.zero, tooltip: 'Plus', icon: const Icon(Icons.add_circle_outline, size: 22), onPressed: l.qty >= maxCartQty ? null : () => ref.read(cartProvider.notifier).setQty(lines.indexOf(l), l.qty + 1)),
+                          SizedBox(width: 70, child: Text(mFcfa(l.price * l.qty), textAlign: TextAlign.right, style: mst(12.5, w: FontWeight.w600))),
+                          IconButton(constraints: const BoxConstraints(minWidth: 48, minHeight: 48), padding: EdgeInsets.zero, tooltip: 'Retirer', icon: const Icon(Icons.delete_outline, size: 22), onPressed: () {
                             ref.read(cartProvider.notifier).remove(lines.indexOf(l));
                             gToast(context, '« ${l.title} » retiré du panier');
                           }),

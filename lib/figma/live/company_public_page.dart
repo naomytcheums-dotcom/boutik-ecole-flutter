@@ -12,13 +12,13 @@ import 'marche/marche_widgets.dart';
 import 'share.dart' show openUrl, shareText, siteUrl;
 import 'tp_ui.dart' show GlassBack;
 
-/// Page publique d'une entreprise : ce que voient les autres comptes. Tout vient de la fonction serveur company_public
-/// (fiche approuvée uniquement pour les autres ; jamais RCCM, téléphone, interlocuteur, pièces ni identité de facturation).
+/// Page publique d'une organisation : ce que voient les autres comptes. Tout vient de la fonction serveur company_public
+/// (fiche approuvée uniquement pour les autres ; jamais RCCM, NIU, téléphone, interlocuteur, pièces ni identité de facturation).
 
-/// Lien public de la page d'une entreprise.
+/// Lien public de la page d'une organisation.
 String companyPageLink(String ownerId) => '$siteUrl/#/entreprise/fiche/${Uri.encodeComponent(ownerId.trim())}';
 
-/// Fiche publique de l'entreprise [id] ; null quand aucune fiche n'est visible (inexistante, non vérifiée ou compte suspendu : même réponse).
+/// Fiche publique de l'organisation [id] ; null quand aucune fiche n'est visible (inexistante, non vérifiée ou compte suspendu : même réponse).
 final companyPublicProvider = FutureProvider.autoDispose.family<Map<String, dynamic>?, String>((ref, id) async {
   final r = await ref.read(f4RpcProvider)('company_public', {'p_owner': id});
   if (r.error != null) throw MarcheException(r.error);
@@ -43,19 +43,19 @@ class CompanyPublicPage extends ConsumerWidget {
       data: (c) {
         if (c == null) {
           if (fallback != null) return fallback!();
-          return _shell(context, mNote('Cette entreprise n’a pas de fiche publique pour le moment.\nSeules les entreprises vérifiées ont une page visible par les autres.'));
+          return _shell(context, mNote('Cette organisation n’a pas de fiche publique pour le moment.\nSeules les organisations vérifiées ont une page visible par les autres.'));
         }
         return _shell(
           context,
           _Body(c: c, onRefresh: () async => ref.refresh(companyPublicProvider(ownerId).future)),
-          title: '${c['company_name'] ?? 'Entreprise'}',
+          title: '${c['company_name'] ?? 'Organisation'}',
           share: c['verified'] == true ? () => shareText(context, 'Découvrez ${c['company_name']} sur Boutik-École : ${companyPageLink(ownerId)}', subject: '${c['company_name']} sur Boutik-École') : null,
         );
       },
     );
   }
 
-  Widget _shell(BuildContext context, Widget child, {String title = 'Entreprise', VoidCallback? share}) => Scaffold(
+  Widget _shell(BuildContext context, Widget child, {String title = 'Organisation', VoidCallback? share}) => Scaffold(
         backgroundColor: const Color(0xFFF7F4FA),
         body: SafeArea(
           child: Column(children: [
@@ -69,7 +69,7 @@ class CompanyPublicPage extends ConsumerWidget {
                   SizedBox(
                     width: 48,
                     height: 48,
-                    child: share == null ? null : IconButton(tooltip: 'Partager la page de l’entreprise', icon: const Icon(Icons.ios_share_rounded, color: kInk), onPressed: share),
+                    child: share == null ? null : IconButton(tooltip: 'Partager la page de l’organisation', icon: const Icon(Icons.ios_share_rounded, color: kInk), onPressed: share),
                   ),
                 ]),
               ),
@@ -113,6 +113,7 @@ class _Body extends StatelessWidget {
     final cover = '${c['cover_path'] ?? ''}', logo = '${c['logo_path'] ?? ''}';
     final site = '${c['website'] ?? ''}';
     final line = [
+      if ('${c['org_type_label'] ?? ''}'.isNotEmpty) '${c['org_type_label']}',
       if ('${c['sector'] ?? ''}'.isNotEmpty) '${c['sector']}',
       if ('${c['city'] ?? ''}'.isNotEmpty) '${c['city']}',
       if ('${c['size'] ?? ''}'.isNotEmpty) companySizes['${c['size']}'] ?? '',
@@ -159,7 +160,7 @@ class _Body extends StatelessWidget {
               Row(children: [
                 const Icon(Icons.verified_rounded, size: 18, color: kGreen),
                 const SizedBox(width: 6),
-                Text('Entreprise vérifiée', style: mst(13, w: FontWeight.w700, c: kGreen)),
+                Text('Organisation vérifiée', style: mst(13, w: FontWeight.w700, c: kGreen)),
               ])
             else if (status.isNotEmpty)
               Row(children: [Icon(Icons.info_outline, size: 18, color: companyStatusColor(status)), const SizedBox(width: 6), Flexible(child: Text(companyStatusLabel(status), style: mst(12.5, w: FontWeight.w700, c: companyStatusColor(status))))]),
@@ -167,11 +168,15 @@ class _Body extends StatelessWidget {
             if (mine && !verified)
               Padding(
                 padding: const EdgeInsets.only(top: 10),
-                child: Text('Cette page n’est visible que de vous et de votre équipe : elle devient publique après la vérification de l’entreprise.', style: mst(12.5, c: kGrey).copyWith(height: 1.4)),
+                child: Text('Cette page n’est visible que de vous et de votre équipe :                 elle devient publique après la vérification de l’organisation.', style: mst(12.5, c: kGrey).copyWith(height: 1.4)),
               ),
           ]),
         ),
         if ('${c['description'] ?? ''}'.trim().isNotEmpty) Text('${c['description']}'.trim(), style: mst(14).copyWith(height: 1.5)),
+                        if ('${c['mission'] ?? ''}'.trim().isNotEmpty) ...[
+                          mSectionTitle('Notre mission'),
+                          Text('${c['mission']}'.trim(), style: mst(14).copyWith(height: 1.5)),
+                        ],
         if (site.isNotEmpty) ...[const SizedBox(height: 12), mButton('Visiter le site', () => openUrl(context, site), dark: false, icon: Icons.language_rounded)],
         if (mine) ...[const SizedBox(height: 10), mButton('Modifier la fiche', () => context.push('/entreprise/profil'), dark: false, icon: Icons.edit_outlined)],
         const SizedBox(height: 16),

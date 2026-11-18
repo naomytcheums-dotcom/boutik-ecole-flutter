@@ -231,7 +231,7 @@ Future<void> orderService(BuildContext context, WidgetRef ref) async {
 /// Rôle exclu du formulaire 95b (direction, finance, support) : message clair plutôt qu'une page d'accès réservé ou une erreur du serveur.
 bool _quoteAllowed(BuildContext context, WidgetRef ref) {
   if (canOpen(ref.read(authProvider).current, '95b')) return true;
-  gAlert(context, 'Action réservée', 'Cette action est réservée aux clients, étudiants-vendeurs, entreprises, responsables de département et administrateurs. Votre rôle ne permet pas de demander un devis.');
+  gAlert(context, 'Action réservée', 'Cette action est réservée aux clients, étudiants-vendeurs, organisations, responsables de département et administrateurs. Votre rôle ne permet pas de demander un devis.');
   return false;
 }
 

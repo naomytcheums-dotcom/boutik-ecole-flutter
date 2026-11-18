@@ -39,7 +39,7 @@ class G_261 extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return GScreen(w: 390, h: 900, radius: 46, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFFFF3C9), Color(0xFFFFF8EA), Color(0xFFFFE9B0)], stops: [0, 0.5, 1]), children: [
       gP(24, 70, 92, 16, gText(gSelf(ref, 'Bonjour Mariam'), 12.5, Color(0xFF57545F))),
-      gP(24, 90, 193, 28, gText('Mon espace client', 22, Color(0xFF111015), weight: 600)),
+      gP(24, 90, 193, 28, gText('Mon espace', 22, Color(0xFF111015), weight: 600)),
       if (demoContent) gP(326, 64, 44, 44, gBox(image: 'assets/figma/img/182e32fd66d212ef3f18ac6a5a7fb09c404b45a7.png', fit: BoxFit.cover, radii: [22, 22, 22, 22])),
       if (!demoContent) profileAvatar(326, 64, 44),
       gP(14, 18, 40, 40, GlassBack(onTap: () => gBack(context))),

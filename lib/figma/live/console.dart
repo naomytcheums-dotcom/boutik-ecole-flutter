@@ -53,8 +53,8 @@ final adminResponsablesProvider = NotifierProvider<RpcRows, List<Map<String, dyn
 const roleLabels = {
   'student': 'Étudiant',
   'client': 'Client',
-  'company': 'Entreprise',
-  'other': 'Autre',
+  'company': 'Organisation',
+  'other': 'Organisation',
   'dept': 'Responsable',
   'direction': 'Direction',
   'finance': 'Finance',

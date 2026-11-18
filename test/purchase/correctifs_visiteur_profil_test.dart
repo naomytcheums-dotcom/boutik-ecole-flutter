@@ -61,7 +61,7 @@ void main() {
 
   testWidgets('étudiant : le dépôt d’offre est refusé d’emblée, l’entreprise voit le formulaire', (t) async {
     await monter(t, const OpportunityEditScreen(), compte: demoAccount);
-    expect(find.text('Réservé aux entreprises, ONG, startups et à l’équipe de l’IUT.'), findsOneWidget);
+    expect(find.text('Réservé aux organisations et à l’équipe de l’IUT.'), findsOneWidget);
     expect(find.text('Organisation'), findsNothing);
     await monter(t, const OpportunityEditScreen(), compte: entreprise);
     expect(find.text('Organisation'), findsOneWidget);

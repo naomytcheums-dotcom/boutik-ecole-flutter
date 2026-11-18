@@ -17,6 +17,8 @@ export async function run(db) {
     [M, 'Mod Admin', 'admin'], [F, 'Fin Finance', 'finance'], [SU, 'Sam Support', 'support'], [D, 'Dep Dept', 'dept'], [CO, 'Ent Cliente', 'client']]) {
     await db.exec(`insert into auth.users(id,email) values ('${i}','${nm.split(' ')[0]}@t.cm'); insert into profiles(id,name,role,email) values ('${i}','${nm}','${role}','${nm.split(' ')[0]}@t.cm')`);
   }
+  // Équipes internes (lot H4) : l'agent de support de ce scénario décide aussi les remboursements (droit explicite).
+  await db.exec(`update admin_team_members set permissions = permissions || array['support.refunds'] where user_id = '${SU}' and team_code = 'support'`);
   await sup();
   await db.exec(`insert into listings (seller_id,title,department,category,price,stock,status,images) values
     ('${S1}','Lampe','Design','Maison',10000,500,'approved','{}'), ('${S2}','Table','Design','Maison',5000,500,'approved','{}'), ('${S3}','Chaise','Design','Maison',1000,500,'approved','{}'),

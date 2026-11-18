@@ -13,10 +13,10 @@ import 'backend.dart';
 import 'store.dart' show normText, searchQueryProvider;
 
 /// Administration des comptes (écran 128) : liste, rôles, suspension.
-const staffRoles = ['Client', 'Étudiant-vendeur', 'Entreprise', 'Autre rôle', 'Resp. département', 'Direction', 'Finance', 'Support', 'Admin global'];
+const staffRoles = ['Client', 'Étudiant-vendeur', 'Organisation', 'Resp. département', 'Direction', 'Finance', 'Support', 'Admin global'];
 
-/// Rôle serveur (app_role) correspondant à chaque libellé de [staffRoles], dans le même ordre.
-const staffRoleKeys = ['client', 'student', 'company', 'other', 'dept', 'direction', 'finance', 'support', 'admin'];
+/// Rôle serveur (app_role) correspondant à chaque libellé de [staffRoles], dans le même ordre. Le rôle « other » n'est plus attribuable : il est fusionné dans Organisation.
+const staffRoleKeys = ['client', 'student', 'company', 'dept', 'direction', 'finance', 'support', 'admin'];
 
 /// Comptes du serveur, lus par l'administrateur (RLS) ; rechargés après chaque modification confirmée.
 class ServerAccounts extends Notifier<List<Account>> {
@@ -70,6 +70,12 @@ Future<void> userDialog(BuildContext context, WidgetRef ref, Account a) {
               items: [for (final r in staffRoles) DropdownMenuItem(value: r, child: Text(r, style: st))],
               onChanged: (v) => set(() => role = v ?? role),
             ),
+            if (role == 'Finance' || role == 'Support')
+              Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: Text('Finance et Support sont des équipes internes : les droits de ce compte (paiements, litiges, modération, technique…) se règlent dans « Équipes et permissions ».',
+                    style: st.copyWith(fontSize: 12, height: 1.5, color: const Color(0xFF57545F))),
+              ),
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
               title: Text('Compte suspendu', style: st),

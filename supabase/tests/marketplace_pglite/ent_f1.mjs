@@ -38,6 +38,11 @@ export async function run(db) {
   await db.exec(`insert into company_profiles(owner_id, company_name, status) values ('${COU}', 'Faux Entrepreneur SARL', 'pending'), ('${OTU}', 'Asso Fantome', 'draft'), ('${SUS}', 'Suspendu Corp', 'approved')`);
   await db.exec(`insert into user_documents (owner_id, kind, name, path, mime, size_bytes, status) select id, 'student_card', 'c', id || '/c.pdf', 'application/pdf', 10, 'verified' from profiles where id in ('${S1}', '${S2}', '${S4}', '${S5}')`);
   await db.exec(`insert into student_talent_prefs(user_id, visible_to_recruiters) values ('${S2}', false)`);
+  // H2 : le responsable DEP est rattaché au département « Réseaux » (celui d'Éric) : il ne cherche des talents que dans son département
+  await db.exec(`insert into institutions (id, name, status) values ('00000000-0000-0000-0000-00000000fa01', 'IUT F1', 'verified');
+    insert into departments (id, institution_id, name, status) values ('00000000-0000-0000-0000-00000000faa1', '00000000-0000-0000-0000-00000000fa01', 'Réseaux', 'verified');
+    update profiles set department_id = '00000000-0000-0000-0000-00000000faa1', institution_id = '00000000-0000-0000-0000-00000000fa01' where id = '${S5}';
+    insert into department_accounts (user_id, department_id) values ('${DEP}', '00000000-0000-0000-0000-00000000faa1')`);
   // Alice a publié le lien de son CV (consentement), Eric non
   await db.exec(`insert into cv_links(token, owner_id, consent_at) values ('${'a'.repeat(32)}', '${S1}', now())`);
 
@@ -191,9 +196,9 @@ export async function run(db) {
   await as(OTU);
   await fails('E5-8 offre : other non approuvée refusée', opp('Faux'), /vérifiée/);
   await as(CLI);
-  await fails('offre : un client ne publie pas d\'offre', opp('Client SARL'), /Réservé aux entreprises/);
+  await fails('offre : un client ne publie pas d\'offre', opp('Client SARL'), /Réservé aux organisations/);
   await as(S5);
-  await fails('offre : un étudiant ne publie pas d\'offre', opp('Etudiant SARL'), /Réservé aux entreprises/);
+  await fails('offre : un étudiant ne publie pas d\'offre', opp('Etudiant SARL'), /Réservé aux organisations/);
   await as(COA);
   const OPP1 = await one(opp('Nom libre usurpe'));
   check('E5-7 offre : le nom de l\'organisation est celui de la fiche approuvée', (await rdone(`select org_name r from opportunities where id = '${OPP1}'`)) === 'Orange Cameroun');
@@ -222,8 +227,8 @@ export async function run(db) {
   const row = (await rd(`select organizer, organizer_kind, status from contest_announcements where id = '${ANN1}'`))[0];
   check('E6-13 concours company : organisateur = fiche, type imposé « company »', row.organizer === 'Orange Cameroun' && row.organizer_kind === 'company' && row.status === 'pending', JSON.stringify(row));
   await works('concours : deuxième autorisé (forfait Entreprise : 2)', ann({ title: 'Concours deux' }));
-  await fails('E5-14 troisième refusé (pas de dépassement de 1)', ann({ title: 'Concours trois' }), /forfait « Entreprise » est atteint : 2 concours actifs sur 2/);
-  await fails('E5-14 même avec un id fourni dans la charge, le quota tient', ann({ title: 'Concours quatre', id: ANN1 }), /forfait « Entreprise » est atteint/);
+  await fails('E5-14 troisième refusé (pas de dépassement de 1)', ann({ title: 'Concours trois' }), /forfait « Organisation » est atteint : 2 concours actifs sur 2/);
+  await fails('E5-14 même avec un id fourni dans la charge, le quota tient', ann({ title: 'Concours quatre', id: ANN1 }), /forfait « Organisation » est atteint/);
   await as(OTA);
   const ANN2 = await one(ann());
   check('E6-13 concours other : « government » ramené à « ngo »', (await rdone(`select organizer_kind r from contest_announcements where id = '${ANN2}'`)) === 'ngo');
@@ -278,7 +283,7 @@ export async function run(db) {
   const ANNM = await one(`select ann_save('${JSON.stringify({ title: 'Concours membre', organizer: 'x', organizer_kind: 'government', kind: 'contest', official_url: 'https://orange.cm/m', deadline: FUT })}'::jsonb, '${COA}') r`);
   check('E5-19 concours au nom de l\'entreprise : poster_id = entreprise, posted_by = membre, organisateur = fiche',
     JSON.stringify((await rd(`select poster_id, posted_by, organizer, organizer_kind from contest_announcements where id = '${ANNM}'`))[0]) === JSON.stringify({ poster_id: COA, posted_by: MA, organizer: 'Orange Cameroun', organizer_kind: 'company' }));
-  await fails('E5-19 le quota de concours de l\'ENTREPRISE s\'applique au membre (2 déjà)', `select ann_save('${JSON.stringify({ title: 'Encore un', organizer: 'x', kind: 'contest', official_url: 'https://orange.cm/m', deadline: FUT })}'::jsonb, '${COA}') r`, /forfait « Entreprise » est atteint/);
+  await fails('E5-19 le quota de concours de l\'ENTREPRISE s\'applique au membre (2 déjà)', `select ann_save('${JSON.stringify({ title: 'Encore un', organizer: 'x', kind: 'contest', official_url: 'https://orange.cm/m', deadline: FUT })}'::jsonb, '${COA}') r`, /forfait « Organisation » est atteint/);
   await as(MF);
   await fails('E5-19 un membre « finance » ne publie pas', needFor('Besoin finance', true, COA), /Réservé au propriétaire et aux administrateurs/);
   await as(MV);
@@ -290,7 +295,7 @@ export async function run(db) {
   await fails('E5-19 un étranger à l\'entreprise ne publie pas', needFor('Besoin étranger', true, COA), /Accès refusé/);
   await fails('E5-19 ni d\'offre', opp('x', `, '${COA}'`), /Accès refusé/);
   await as(MU);
-  await fails('E5-19 la vérification reste exigée : entreprise non approuvée, même par son administrateur', needFor('Besoin MU', true, COU), /Votre entreprise doit être vérifiée/);
+  await fails('E5-19 la vérification reste exigée : entreprise non approuvée, même par son administrateur', needFor('Besoin MU', true, COU), /Votre organisation doit être vérifiée/);
   await db.exec('reset role');
   await db.exec(`update profiles set suspended = true where id = '${MA}'`);
   await as(MA);
@@ -311,7 +316,7 @@ export async function run(db) {
   await as(OTU);
   await fails('E6-8 contact : other non approuvée refusée', contact(S1), /vérifiée par l'administrateur/);
   await as(S5);
-  await fails('contact : un étudiant ne peut pas', contact(S1), /réservée aux entreprises/);
+  await fails('contact : un étudiant ne peut pas', contact(S1), /réservée aux organisations/);
   await as(SUS);
   await fails('contact : compte suspendu refusé', contact(S1), /réservée|suspendu/);
   await as(null, 'anon');
@@ -443,7 +448,7 @@ export async function run(db) {
   check('E5-7 besoin d\'une entreprise approuvée : raison sociale + badge vérifié + identifiant', orange && orange.company === 'Orange Cameroun' && orange.verified === true && orange.company_id === COA && orange.poster_role === 'company', JSON.stringify(orange));
   check('E6-4 besoin d\'un client : nom abrégé + rôle, jamais « entreprise », non vérifié', client && client.company === 'Claire C. · Client' && client.verified === false && client.company_id === null && !/Claire Client/.test(JSON.stringify(client)), JSON.stringify(client));
   check('E6-4 besoin d\'un étudiant : étiquette honnête', stu && stu.company === 'Alice D. · Étudiant' || stu && /Étudiant/.test(stu.company), JSON.stringify(stu));
-  check('E5-7 besoin d\'une entreprise non approuvée : « non vérifiée », sans badge', old && /^Faux E\. · Entreprise non vérifiée$/.test(old.company) && old.verified === false, JSON.stringify(old));
+  check('E5-7 besoin d\'une entreprise non approuvée : « non vérifiée », sans badge', old && /^Faux E\. · Organisation non vérifiée$/.test(old.company) && old.verified === false, JSON.stringify(old));
   check('E6-4 besoin d\'un compte suspendu : filtré', !byTitle('Besoin du suspendu'));
   const cl = await one(`select open_calls(null, 100, 'recent', null) r`);
   check('E6-4 open_calls : mêmes étiquettes, suspendu filtré', cl.find((x) => x.title.startsWith('Besoin Orange 1')).company === 'Orange Cameroun' && cl.find((x) => x.title.startsWith('Besoin du client')).company === 'Claire C. · Client' && !cl.some((x) => x.title === 'Besoin du suspendu'));
@@ -466,7 +471,9 @@ export async function run(db) {
   await as(NEWC);
   await works('E5-1 inscription : le rôle « company » reste auto-déclarable (décision 1)', `insert into profiles(id, name, role, email) values ('${NEWC}', 'Nouvelle Entreprise', 'company', 'nouvelleentreprise@t.cm')`);
   await as(NEWO);
-  await works('E5-1 inscription : le rôle « other » reste auto-déclarable', `insert into profiles(id, name, role, email) values ('${NEWO}', 'Nouvelle Asso', 'other', 'nouvelleasso@t.cm')`);
+  await fails('H1 inscription : le rôle « other » n\'est plus attribuable à l\'inscription', `insert into profiles(id, name, role, email) values ('${NEWO}', 'Nouvelle Asso', 'other', 'nouvelleasso@t.cm')`, /row-level security/);
+  await db.exec('reset role');
+  await db.exec(`insert into profiles(id, name, role, email) values ('${NEWO}', 'Nouvelle Asso', 'other', 'nouvelleasso@t.cm')`);
   for (const [who, id] of [['company', NEWC], ['other', NEWO]]) {
     await as(id);
     check(`E5-1 ${who} auto-déclaré : aucun talent nominatif`, (await one(`select talents_search('', '', '{}', 20, 0) r`)).locked === true);

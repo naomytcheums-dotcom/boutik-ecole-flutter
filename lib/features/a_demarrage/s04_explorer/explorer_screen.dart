@@ -161,7 +161,7 @@ class _EnterpriseCard extends StatelessWidget {
                         TextSpan(
                           text: 'Vous êtes ',
                           children: [
-                            TextSpan(text: 'une entreprise ?', style: AppText.h3.copyWith(color: const Color(0xFFF6C84E))),
+                            TextSpan(text: 'une organisation ?', style: AppText.h3.copyWith(color: const Color(0xFFF6C84E))),
                           ],
                         ),
                         style: AppText.h3.copyWith(color: Colors.white),

@@ -49,7 +49,7 @@ void main() {
     expect(p.rating, 0);
     expect(p.ratingCount, 0);
     expect(profileSubtitle(p), 'Membre de Boutik-École');
-    expect(roleLabel('company'), 'Entreprise');
+    expect(roleLabel('company'), 'Organisation');
     expect(roleLabel('inconnu'), 'Membre');
   });
 }

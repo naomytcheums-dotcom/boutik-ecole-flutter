@@ -264,6 +264,7 @@ export async function run(db) {
   const inst = (await q(`insert into institutions(name, short_name, city, status) values ('Institut S2', 'IS2', 'Douala', 'verified') returning id`))[0].id;
   const dep = (await q(`insert into departments(institution_id, name, status) values ('${inst}', 'Génie S2', 'verified') returning id`))[0].id;
   await db.exec(`update profiles set department_id = '${dep}', institution_id = '${inst}' where id in ('${A}', '${D}')`);
+  await db.exec(`insert into department_accounts (user_id, department_id) values ('${D}', '${dep}')`); // H2 : le responsable est rattaché à son département
   await db.exec(`insert into user_documents (owner_id, kind, name, path, mime, size_bytes, status) values ('${A}', 'student_card', 'Carte', '${A}/student_card/c.pdf', 'application/pdf', 100, 'pending')`);
   await as(D);
   const rev = (await q(`select documents_to_review('pending', 50) r`))[0].r;
@@ -275,3 +276,4 @@ export async function run(db) {
   await db.exec('reset role');
   console.log(`\n${ok}/${ok + ko}`);
 }
+

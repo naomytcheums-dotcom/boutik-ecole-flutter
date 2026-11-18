@@ -11,7 +11,7 @@ const _web = ScreenFormat.web;
 final sectionXScreens = <ScreenEntry>[
   ScreenEntry(
     '187',
-    'Tableau de bord entreprise',
+    'Tableau de bord organisation',
     (_) => const TableauDeBordEntrepriseScreen(),
     section: _s,
     node: '148:1256',

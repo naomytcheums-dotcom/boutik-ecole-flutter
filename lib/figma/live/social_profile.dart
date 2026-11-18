@@ -101,7 +101,7 @@ class SocialProfile {
 String roleLabel(String role) => switch (role) {
   'student' => 'Étudiant',
   'client' => 'Client',
-  'company' => 'Entreprise',
+  'company' || 'other' => 'Organisation',
   'department' || 'dept' => 'Département',
   'admin' => 'Administration',
   'direction' => 'Direction',

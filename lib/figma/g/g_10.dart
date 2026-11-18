@@ -46,11 +46,11 @@ class G_10 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Une entreprise a sa propre fiche (secteur, interlocuteur, pièces, vérification), pas le profil d'un étudiant.
+    // Une organisation a sa propre fiche (type, secteur, interlocuteur, pièces, vérification), pas le profil d'un étudiant.
     final me = ref.watch(authProvider.select((a) => a.current));
-    // Une entreprise a le même écran 10 (design du Figma) avec son propre contenu : nom, secteur, présentation, chiffres, vérification.
+    // Une organisation a le même écran 10 (design du Figma) avec son propre contenu : nom, type, secteur, présentation, chiffres, vérification.
     final isView = viewProfile != null;
-    final isCo = !isView && !demoContent && me != null && (me.role == 2 || me.role == 3) && me.staff.isEmpty;
+    final isCo = !isView && !demoContent && me != null && me.role == 2 && me.staff.isEmpty;
     final hideLinks = isCo || isView || !demoContent; // connecté : seuls les liens réellement enregistrés s'affichent (ProfileLinkIcons)
     final isClient = !isView && !isCo && !demoContent && me != null && me.role == 0 && me.staff.isEmpty;
     // Un Client n'a ni boutique ni talent à certifier : le Talent Passport et la demande de certification ne lui sont proposés que si son compte est déjà certifié ou en cours d'examen.
@@ -82,7 +82,7 @@ class G_10 extends ConsumerWidget {
       gP(334.05, 82.508, 7.9, 7.9, gImg('assets/figma/v/cb3b5db29da178.svg')),
       gP(334.05, 88.05, 7.9, 7.9, gImg('assets/figma/v/fd509ee195da6b.svg')),
       gP(334.05, 93.592, 7.9, 7.9, gImg('assets/figma/v/c2a19bebfb5925.svg')),
-      gP(140, 68, 102, 19, gText(demoContent ? 'Profil étudiant' : (isView ? (viewProfile!.role == 'student' ? 'Profil étudiant' : 'Profil') : (isCo ? 'Profil entreprise' : 'Mon profil')), 15, Color(0xFF111015), weight: 600)),
+      gP(140, 68, 102, 19, gText(demoContent ? 'Profil étudiant' : (isView ? (viewProfile!.role == 'student' ? 'Profil étudiant' : 'Profil') : (isCo ? 'Profil organisation' : 'Mon profil')), 15, Color(0xFF111015), weight: 600)),
       gP(138, 273, 114, 114, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFFF4B6E), Color(0xFFFF8A3D), Color(0xFF9B7BFF)], stops: [0, 0.5, 1]), oval: true)),
       gP(143, 278, 104, 104, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x1A403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], oval: true)),
       if (co != null) companyAvatarLayer(co, 149, 284, 92) else profileAvatar(149, 284, 92),

@@ -315,7 +315,7 @@ _Feed _feed(WidgetRef ref, NotifierProvider<RpcRows, List<Map<String, dynamic>>?
 /// Message à la place du contenu quand le serveur ou le compte manque ; null quand les données peuvent être lues.
 Widget? _gate(WidgetRef ref) {
   if (!Backend.ready) return const _Scroll(children: [_Note('Cet écran affiche vos données réelles : il nécessite la connexion au serveur.')]);
-  if (ref.watch(authProvider.select((a) => a.current == null))) return const _Scroll(children: [_Note('Connectez-vous avec votre compte entreprise pour voir cet écran.')]);
+  if (ref.watch(authProvider.select((a) => a.current == null))) return const _Scroll(children: [_Note('Connectez-vous avec votre compte organisation pour voir cet écran.')]);
   return null;
 }
 
@@ -857,8 +857,8 @@ const _moreEntries = <(IconData, String, String)>[
   (Icons.handshake_outlined, 'Collaborations', '98'),
   (Icons.emoji_events_outlined, 'Défis et hackathons', '96'),
   (Icons.how_to_reg_outlined, 'Recrutement', '97'),
-  (Icons.business_rounded, 'Fiche de l’entreprise', '/entreprise/profil'),
-  (Icons.groups_outlined, 'Équipe de l’entreprise', '/entreprise/equipe'),
+  (Icons.business_rounded, 'Fiche de l’organisation', '/entreprise/profil'),
+  (Icons.groups_outlined, 'Équipe de l’organisation', '/entreprise/equipe'),
   (Icons.settings_outlined, 'Paramètres', '/parametres/informations'),
   (Icons.help_outline_rounded, 'Aide et retours', '/aide/contact'),
   (Icons.apps_rounded, 'Toutes mes rubriques', '/espace'),
@@ -873,7 +873,7 @@ void showB2bMenu(BuildContext context) {
     backgroundColor: const Color(0xFFF7F4FA),
     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
     builder: (sheet) => ListView(shrinkWrap: true, padding: const EdgeInsets.fromLTRB(16, 16, 16, 24), children: [
-      Padding(padding: const EdgeInsets.only(bottom: 8, left: 4), child: Text('Espace entreprise', style: tpSt(17, w: FontWeight.w800))),
+      Padding(padding: const EdgeInsets.only(bottom: 8, left: 4), child: Text('Espace organisation', style: tpSt(17, w: FontWeight.w800))),
       for (final (icon, label, target) in _moreEntries)
         B2bTap(
           label: label,
@@ -1004,8 +1004,8 @@ Widget b2bSideUser(double x, double y) => gP(
         final company = b2bCompanyName(ref);
         final account = ref.watch(profileAccountProvider).name.trim();
         return Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-          Text(company.isEmpty ? 'Mon entreprise' : company, maxLines: 1, overflow: TextOverflow.ellipsis, style: tpSt(11.5, w: FontWeight.w600)),
-          Text(account == company ? 'Compte entreprise' : account, maxLines: 1, overflow: TextOverflow.ellipsis, style: tpSt(9.5, c: tpGrey)),
+          Text(company.isEmpty ? 'Mon organisation' : company, maxLines: 1, overflow: TextOverflow.ellipsis, style: tpSt(11.5, w: FontWeight.w600)),
+          Text(account == company ? 'Compte organisation' : account, maxLines: 1, overflow: TextOverflow.ellipsis, style: tpSt(9.5, c: tpGrey)),
         ]);
       }),
     );

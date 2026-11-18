@@ -23,6 +23,8 @@ export async function run(db) {
   await db.exec(`update profiles set institution_id='${I1}', department_id='${D1}', skills='Flutter' where id in ('${U(41)}','${U(42)}','${U(44)}')`);
   await db.exec(`update profiles set institution_id='${I1}', department_id='${D2}', skills='Compta' where id in ('${U(45)}','${U(49)}')`);
   await db.exec(`update profiles set institution_id='${I2}' where id = '${U(50)}'`);
+  // H2 : les comptes Département sont rattachés à UN département (44 : D1 ; 45 : D2) ; 50 reste non rattaché.
+  await db.exec(`insert into department_accounts (user_id, department_id) values ('${U(44)}', '${D1}'), ('${U(45)}', '${D2}')`);
 
   // --- étudiant vérifié : rien tant qu'aucune pièce n'est validée
   await db.exec(`insert into storage.objects (bucket_id, name, metadata) values ('profile-documents', '${U(41)}/student_card/a.pdf', '{"mimetype":"application/pdf","size":1000}'),
@@ -177,6 +179,9 @@ export async function run(db) {
   await as(U(49), 'authenticated', 'aal1');
   for (let i = 0; i < 5; i++) await q(`select mfa_use_backup_code('FAUX-${i}')`);
   check('S1-51 : 5 essais ratés verrouillent', (await q(`select mfa_use_backup_code('FAUX-9') r`))[0].r === 'locked');
+  await db.exec('reset role');
+  // Depuis le centre d'administration par équipes, la réinitialisation 2FA exige la permission explicite security.accounts.
+  await db.exec(`insert into admin_team_members (user_id, team_code, permissions) values ('${U(46)}', 'security', array['security.accounts']) on conflict (user_id, team_code) do update set permissions = excluded.permissions`);
   await as(U(46), 'authenticated', 'aal1');
   await fails('S1-51 : le support ne réinitialise pas un compte de l\'équipe', `select admin_mfa_reset('${U(44)}', 'identité vérifiée par visio')`, /Seul l'administrateur/);
   await fails('S1-51 : motif de vérification obligatoire', `select admin_mfa_reset('${U(49)}', 'ok')`, /identité a été vérifiée/);

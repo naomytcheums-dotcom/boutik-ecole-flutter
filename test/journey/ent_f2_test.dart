@@ -37,7 +37,7 @@ void main() {
       expect(err(), isNull);
       expect(err(contact: 'x' * 81), contains('80 caractères'));
       expect(err(role: 'x' * 81), contains('80 caractères'));
-      expect(err(name: ' '), contains('nom de l’entreprise'));
+      expect(err(name: ' '), contains('nom de l’organisation'));
       expect(err(site: 'orange.cm'), contains('https://'));
       expect(err(year: '1850'), contains('1900'));
       expect(err(year: '2005'), isNull);
@@ -59,18 +59,18 @@ void main() {
       await _pump(t, const CompanyProfileScreen(showNav: false), overrides: [companyProvider.overrideWith((ref) async => null)]);
       expect(find.text('Interlocuteur'), findsOneWidget);
       expect(find.text('Fonction'), findsOneWidget);
-      expect(find.text('Téléphone de l’entreprise'), findsOneWidget);
-      expect(find.textContaining('administrateurs de votre entreprise, de l’administration de la plateforme et de l’équipe d’assistance'), findsOneWidget);
+      expect(find.text('Téléphone de l’organisation'), findsOneWidget);
+      expect(find.textContaining('administrateurs de votre organisation, de l’administration de la plateforme et de l’équipe d’assistance'), findsOneWidget);
       await t.tap(find.text('Enregistrer et envoyer pour vérification'));
       await t.pump(const Duration(milliseconds: 400));
-      expect(find.textContaining('Pour envoyer la demande, renseignez : le secteur d’activité, la ville, l’interlocuteur, le téléphone, au moins une pièce justificative'), findsOneWidget);
+      expect(find.textContaining('Pour envoyer la demande, renseignez : le secteur d’activité, la ville, l’interlocuteur, le téléphone, la pièce justificative « RCCM ou NIU »'), findsOneWidget);
       await t.enterText(find.widgetWithText(TextField, 'Interlocuteur'), 'Mme Ndongo');
-      await t.enterText(find.widgetWithText(TextField, 'Téléphone de l’entreprise'), '699000000');
+      await t.enterText(find.widgetWithText(TextField, 'Téléphone de l’organisation'), '699000000');
       await t.tap(find.text('Enregistrer et envoyer pour vérification'));
       await t.pump(const Duration(milliseconds: 400));
       // l'interlocuteur et le téléphone sont saisis : ils ne sont plus réclamés
       expect(find.textContaining('l’interlocuteur, le téléphone'), findsNothing);
-      expect(find.textContaining('Pour envoyer la demande, renseignez : le secteur d’activité, la ville, au moins une pièce justificative'), findsOneWidget);
+      expect(find.textContaining('Pour envoyer la demande, renseignez : le secteur d’activité, la ville, la pièce justificative « RCCM ou NIU »'), findsOneWidget);
     });
 
     testWidgets('fiche approuvée : les pièces envoyées ne se suppriment plus', (t) async {
@@ -132,7 +132,7 @@ void main() {
   group('accueil entreprise : erreur, en-tête, forfaits (E4-11, E4-19, E5-23)', () {
     testWidgets('en cas d’erreur : en-tête, menu et cloche restent, bouton Réessayer, message sans « marketplace »', (t) async {
       await _pump(t, const CompanyHomeScreen(), overrides: [companyDashboardProvider.overrideWith((ref) async => throw Exception('offline'))]);
-      expect(find.text('Mon entreprise'), findsOneWidget);
+      expect(find.text('Mon organisation'), findsOneWidget);
       expect(find.byTooltip('Menu du compte'), findsOneWidget);
       expect(find.byTooltip('Notifications'), findsOneWidget);
       expect(find.text('Réessayer'), findsOneWidget);
@@ -166,14 +166,14 @@ void main() {
     });
   });
 
-  group('rôle other : mêmes écrans et menus entreprise (décision 2)', () {
+  group('rôle other fusionné dans Organisation : mêmes écrans et menus (décision 2, H1)', () {
     test('écrans 88-99, 187-190, 262 et 285', () {
       for (final id in ['88', '90', '93', '99', '187', '189', '190', '262', '285']) {
-        expect(canOpen(_other, id), isTrue, reason: 'other doit ouvrir $id');
+        expect(canOpen(_other, id), isFalse, reason: 'un compte « autre » sans rôle interne n’est plus une organisation ($id)');
         expect(canOpen(_company, id), isTrue);
         expect(canOpen(_client, id), isFalse, reason: 'client ne doit pas ouvrir $id');
       }
-      expect(isCompanyAccount(_other), isTrue);
+      expect(isCompanyAccount(_other), isFalse);
       expect(isCompanyAccount(_company), isTrue);
       expect(isCompanyAccount(_client), isFalse);
       expect(isCompanyAccount(null), isFalse);
@@ -198,7 +198,7 @@ void main() {
 
   test('CGU : clause entreprise marquée texte de travail', () {
     final cgu = termsSections[0].map((s) => '${s.$1} ${s.$2}').join('\n');
-    expect(cgu, contains('Entreprises et organisations'));
+    expect(cgu, contains('7. Organisations'));
     expect(cgu, contains('texte de travail'));
   });
 }

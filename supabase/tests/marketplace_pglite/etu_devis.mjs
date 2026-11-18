@@ -17,6 +17,8 @@ export async function run(db) {
   for (const [n, r] of Object.entries(roles)) {
     await db.exec(`insert into auth.users(id,email) values ('${U(n)}','u${n}@t.cm'); insert into profiles(id,name,role,email) values ('${U(n)}','Profil Complet ${n}','${r}','u${n}@t.cm')`);
   }
+  // H2 : le département (13) est rattaché à « Design » ; les prestataires 12 et 17 en sont étudiants (l'attribution reste dans le département)
+  await db.exec(`insert into institutions (id, name, status) values ('00000000-0000-0000-0000-00000000f901', 'IUT Devis', 'verified'); insert into departments (id, institution_id, name, status) values ('00000000-0000-0000-0000-00000000f9a1', '00000000-0000-0000-0000-00000000f901', 'Design', 'verified'); update profiles set department_id = '00000000-0000-0000-0000-00000000f9a1', institution_id = '00000000-0000-0000-0000-00000000f901' where id in ('${U(12)}', '${U(17)}', '${U(18)}'); insert into department_accounts (user_id, department_id) values ('${U(13)}', '00000000-0000-0000-0000-00000000f9a1')`);
   await db.exec(`insert into listings (seller_id,title,department,category,price,stock,status,images) values
     ('${U(12)}','Creation de logo','Design','Services',20000,99,'approved','{}'),
     ('${U(12)}','Lampe en bois','Genie civil','Maison',25000,5,'approved','{a,b,c}')`);
@@ -385,3 +387,4 @@ export async function run(db) {
   await db.exec('reset role');
   console.log(`\n${ok} OK, ${ko} ECHEC`);
 }
+

@@ -64,8 +64,8 @@ export async function run(db) {
   check('décision : approuvée', (await q(`select company_decide('${E}', true) r`))[0].r === 'approved');
   await db.exec('reset role');
   check('décision 5 : la certification du compte est approuvée', (await q(`select certification::text c from profiles where id = '${E}'`))[0].c === 'approved');
-  check('notification de vérification : certifié + données', (await q(`select count(*)::int n from notifications where user_id = '${E}' and kind = 'company_review' and title = 'Entreprise vérifiée' and data->>'status' = 'approved'`))[0].n === 1);
-  check('journal d\'audit : décision tracée', (await q(`select count(*)::int n from audit_log where action = 'Entreprise vérifiée' and target = 'Orange Cameroun'`))[0].n === 1);
+  check('notification de vérification : certifié + données', (await q(`select count(*)::int n from notifications where user_id = '${E}' and kind = 'company_review'   and title = 'Organisation vérifiée' and data->>'status' = 'approved'`))[0].n === 1);
+    check('journal d\'audit : décision tracée', (await q(`select count(*)::int n from audit_log where action = 'Organisation vérifiée' and target = 'Orange Cameroun'`))[0].n === 1);
   await as(E);
   check('PUBLICATION : l\'entreprise vérifiée publie un besoin (chaîne complète)', (await q(need('Gestion de stock'))).length === 1);
   await fails('pièce : suppression refusée après approbation', `select company_doc_delete('${doc}')`, /ne peut plus être supprimée/);
@@ -281,7 +281,7 @@ export async function run(db) {
   await as(M);
   await fails('un code de forfait d\'entreprise ne reprend pas celui d\'une offre premium', `select company_plan_save('{"code":"entreprise","name":"Doublon","price_fcfa":1}'::jsonb)`, /offre premium/);
   check('forfait modifié : journal d\'audit', (await q(`select company_plan_save('{"code":"pro","name":"Entreprise","price_fcfa":25000,"period_days":30,"max_needs":10,"max_offers":10,"max_contests":2,"perks":"x"}'::jsonb) r`))[0].r === 'pro'
-    && (await q(`select count(*)::int n from audit_log where action = 'Forfait entreprise modifié' and target like 'pro%'`))[0].n === 1);
+    && (await q(`select count(*)::int n from audit_log where action = 'Forfait d''organisation modifié' and target like 'pro%'`))[0].n === 1);
 
   // expiration automatique
   await db.exec('reset role');

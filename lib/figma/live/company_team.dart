@@ -42,10 +42,10 @@ bool canRemoveMember(String myRole, String memberRole, {required bool isMe}) => 
 /// Rôles attribuables : seul le propriétaire nomme un administrateur.
 Map<String, String> assignableCompanyRoles(String myRole) => {for (final e in companyRoleLabels.entries) if (e.key != 'owner' && (e.key != 'admin' || myRole == 'owner')) e.key: e.value};
 
-/// Garde des routes de l'espace entreprise : comptes Entreprise, Autre rôle et administrateur, ou membre actif d'une entreprise
-/// (espace partagé). Un autre compte, un Client sans entreprise par exemple, voit « Réservé aux entreprises » avec le chemin
+/// Garde des routes de l'espace Organisation : comptes Organisation (ex-Entreprise, rôle « autre » fusionné) et administrateur, ou membre actif d'une organisation
+/// (espace partagé). Un autre compte, un Client sans organisation par exemple, voit « Réservé aux organisations » avec le chemin
 /// pour rejoindre une équipe. Visiteur : « Connexion requise ». Hors connexion au serveur (aperçu, tests), l'écran reste ouvert.
-/// [owner] : entreprise visée (route d'espace partagé) ; [useContext] : l'entreprise consultée est celle du contexte courant.
+/// [owner] : organisation visée (route d'espace partagé) ; [useContext] : l'organisation consultée est celle du contexte courant.
 class CompanyGuard extends ConsumerWidget {
   const CompanyGuard({super.key, required this.child, this.owner, this.useContext = false});
   final Widget child;
@@ -57,7 +57,7 @@ class CompanyGuard extends ConsumerWidget {
 
   Widget _build(BuildContext context, WidgetRef ref) {
     final account = ref.watch(authProvider.select((a) => a.current));
-    if (!Backend.ready || account == null || const {'company', 'other', 'admin'}.contains(roleKey(account))) return child;
+    if (!Backend.ready || account == null || const {'company', 'admin'}.contains(roleKey(account))) return child;
     final target = owner ?? (useContext ? ref.watch(companyContextProvider) : null);
     if (target == null) return const _CompanyReserved();
     final memberships = ref.watch(myCompaniesProvider);
@@ -74,18 +74,18 @@ class _CompanyReserved extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MarchePage(
-        title: 'Espace entreprise',
+        title: 'Espace organisation',
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(28),
             child: Column(mainAxisSize: MainAxisSize.min, children: [
               const Icon(Icons.business_center_outlined, size: 46, color: kViolet),
               const SizedBox(height: 14),
-              Text('Réservé aux entreprises', style: mst(20, w: FontWeight.w800), textAlign: TextAlign.center),
+              Text('Réservé aux organisations', style: mst(20, w: FontWeight.w800), textAlign: TextAlign.center),
               const SizedBox(height: 8),
-              Text('Cet espace est réservé aux comptes Entreprise et aux personnes invitées dans leur équipe. Si un collègue vous a invité, l’invitation vous attend dans « Mes entreprises ».', style: mst(13.5, c: kGrey).copyWith(height: 1.5), textAlign: TextAlign.center),
+              Text('Cet espace est réservé aux comptes Organisation et aux personnes invitées dans leur équipe. Si un collègue vous a invité, l’invitation vous attend dans « Mes organisations ».', style: mst(13.5, c: kGrey).copyWith(height: 1.5), textAlign: TextAlign.center),
               const SizedBox(height: 22),
-              mButton('Mes entreprises', () => context.push('/mes-entreprises'), icon: Icons.groups_2_outlined),
+              mButton('Mes organisations', () => context.push('/mes-entreprises'), icon: Icons.groups_2_outlined),
               const SizedBox(height: 10),
               mButton('Retour à l’accueil', () => context.go('/s/03'), dark: false),
             ]),
@@ -159,7 +159,7 @@ class _MembersState extends ConsumerState<CompanyMembersScreen> {
     final async = ref.watch(companyMembersProvider);
     final me = ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
     return MarchePage(
-      title: 'Équipe de l’entreprise',
+      title: 'Équipe de l’organisation',
       child: mAsync<Map<String, dynamic>>(async, (d) {
         final myRole = '${d['my_role']}';
         final canManage = roleCanManage(myRole);
@@ -168,7 +168,7 @@ class _MembersState extends ConsumerState<CompanyMembersScreen> {
         return ListView(padding: const EdgeInsets.only(bottom: 90), children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-            child: Text('Plusieurs personnes de l’entreprise partagent la même interface, avec des droits différents. Votre rôle : ${companyRoleLabels[myRole] ?? myRole}.', style: mst(13, c: kGrey).copyWith(height: 1.5)),
+            child: Text('Plusieurs personnes de l’organisation partagent la même interface, avec des droits différents. Votre rôle : ${companyRoleLabels[myRole] ?? myRole}.', style: mst(13, c: kGrey).copyWith(height: 1.5)),
           ),
           Container(
             margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
@@ -210,11 +210,11 @@ class _MembersState extends ConsumerState<CompanyMembersScreen> {
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(6), border: Border.all(color: kLine)),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Row(children: [const Icon(Icons.lock_outline, size: 18, color: kGrey), const SizedBox(width: 8), Expanded(child: Text('Inviter des collègues : réservé à l’offre Entreprise', style: mst(14, w: FontWeight.w800)))]),
+                Row(children: [const Icon(Icons.lock_outline, size: 18, color: kGrey), const SizedBox(width: 8), Expanded(child: Text('Inviter des collègues : réservé à l’offre Organisation', style: mst(14, w: FontWeight.w800)))]),
                 const SizedBox(height: 6),
-                Text('L’invitation de nouveaux membres demande l’abonnement Entreprise ou un forfait d’entreprise payant. Les membres déjà dans l’équipe gardent leur accès.', style: mst(12.5, c: kGrey).copyWith(height: 1.4)),
+                Text('L’invitation de nouveaux membres demande l’abonnement Organisation ou un forfait d’organisation payant. Les membres déjà dans l’équipe gardent leur accès.', style: mst(12.5, c: kGrey).copyWith(height: 1.4)),
                 const SizedBox(height: 10),
-                mButton('Voir les forfaits d’entreprise', () => showCompanyPlans(context, ref), icon: Icons.workspace_premium_outlined),
+                mButton('Voir les forfaits d’organisation', () => showCompanyPlans(context, ref), icon: Icons.workspace_premium_outlined),
                 const SizedBox(height: 8),
                 mButton('Voir les offres premium', () => context.push('/offres'), dark: false),
               ]),
@@ -224,7 +224,7 @@ class _MembersState extends ConsumerState<CompanyMembersScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                TextField(controller: _email, keyboardType: TextInputType.emailAddress, decoration: InputDecoration(labelText: 'E-mail du compte', hintText: 'collegue@entreprise.cm', filled: true, fillColor: Colors.white, border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)))),
+                TextField(controller: _email, keyboardType: TextInputType.emailAddress, decoration: InputDecoration(labelText: 'E-mail du compte', hintText: 'collegue@organisation.cm', filled: true, fillColor: Colors.white, border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)))),
                 const SizedBox(height: 10),
                 MDropdown(label: 'Rôle', value: assignableCompanyRoles(myRole).containsKey(_role) ? _role : 'viewer', items: assignableCompanyRoles(myRole), onChanged: (v) => setState(() => _role = v)),
                 Padding(padding: const EdgeInsets.only(top: 6), child: Text(companyRoleHelp[_role] ?? '', style: mst(12, c: kGrey))),
@@ -241,25 +241,25 @@ class _MembersState extends ConsumerState<CompanyMembersScreen> {
   }
 }
 
-/// « Mes entreprises » : invitations reçues et entreprises dont je suis membre.
+/// « Mes organisations » : invitations reçues et organisations dont je suis membre.
 class MyCompaniesScreen extends ConsumerWidget {
   const MyCompaniesScreen({super.key});
 
   Future<void> _respond(BuildContext context, WidgetRef ref, String owner, bool accept) async {
     final r = await marcheCall('company_member_respond', {'p_owner': owner, 'p_accept': accept});
     if (!context.mounted) return;
-    gToast(context, r.error != null ? Backend.userMessage('${r.error}') : (accept ? 'Vous avez rejoint l’entreprise.' : 'Invitation déclinée.'));
+    gToast(context, r.error != null ? Backend.userMessage('${r.error}') : (accept ? 'Vous avez rejoint l’organisation.' : 'Invitation déclinée.'));
     ref.invalidate(myCompaniesProvider);
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MarchePage(
-      title: 'Mes entreprises',
+      title: 'Mes organisations',
       child: mAsync<List<Map<String, dynamic>>>(
         ref.watch(myCompaniesProvider),
         (l) => l.isEmpty
-            ? mNote('Vous n’êtes membre d’aucune entreprise.\nQuand un collègue vous invite avec votre e-mail, l’invitation apparaît ici.')
+            ? mNote('Vous n’êtes membre d’aucune organisation.\nQuand un collègue vous invite avec votre e-mail, l’invitation apparaît ici.')
             : ListView(padding: const EdgeInsets.only(bottom: 90), children: [
                 for (final c in l)
                   Container(
@@ -280,7 +280,7 @@ class MyCompaniesScreen extends ConsumerWidget {
                           Expanded(child: mButton('Rejoindre', () => _respond(context, ref, '${c['owner_id']}', true))),
                         ])
                       else
-                        mButton('Ouvrir l’espace entreprise', () => context.push('/entreprise/espace/${c['owner_id']}'), icon: Icons.business_center_outlined),
+                        mButton('Ouvrir l’espace de l’organisation', () => context.push('/entreprise/espace/${c['owner_id']}'), icon: Icons.business_center_outlined),
                     ]),
                   ),
               ]),
@@ -289,7 +289,7 @@ class MyCompaniesScreen extends ConsumerWidget {
   }
 }
 
-/// Espace partagé d'une entreprise dont on est membre : même accueil, avec les droits du rôle.
+/// Espace partagé d'une organisation dont on est membre : même accueil, avec les droits du rôle.
 class CompanySpaceScreen extends ConsumerStatefulWidget {
   const CompanySpaceScreen({super.key, required this.owner});
   final String owner;

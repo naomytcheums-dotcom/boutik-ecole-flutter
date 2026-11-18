@@ -38,7 +38,7 @@ void main() {
 
   testWidgets('équipe (propriétaire) : membres, rôles, e-mails, invitation', (t) async {
     await _pump(t, const CompanyMembersScreen(), overrides: [companyMembersProvider.overrideWith((ref) async => _team('owner'))]);
-    expect(find.text('Équipe de l’entreprise'), findsOneWidget);
+    expect(find.text('Équipe de l’organisation'), findsOneWidget);
     expect(find.text('Orange C.'), findsOneWidget);
     expect(find.text('Alice A.'), findsOneWidget);
     expect(find.text('alice@orange.cm'), findsOneWidget);
@@ -65,14 +65,14 @@ void main() {
     expect(find.text('Orange Cameroun'), findsOneWidget);
     expect(find.text('Rejoindre'), findsOneWidget);
     expect(find.text('Décliner'), findsOneWidget);
-    expect(find.text('Ouvrir l’espace entreprise'), findsOneWidget);
+    expect(find.text('Ouvrir l’espace de l’organisation'), findsOneWidget);
     expect(find.text('Rôle : Administrateur'), findsOneWidget);
     expect(find.text('Rôle : Lecteur'), findsOneWidget);
   });
 
   testWidgets('mes entreprises : message clair quand il n’y en a aucune', (t) async {
     await _pump(t, const MyCompaniesScreen(), overrides: [myCompaniesProvider.overrideWith((ref) async => <Map<String, dynamic>>[])]);
-    expect(find.textContaining('Vous n’êtes membre d’aucune entreprise'), findsOneWidget);
+    expect(find.textContaining('Vous n’êtes membre d’aucune organisation'), findsOneWidget);
   });
 
   testWidgets('accueil partagé : rôle affiché, équipe visible, pas de publication', (t) async {
@@ -82,8 +82,8 @@ void main() {
             'needs_open': 2, 'proposals_new': 1, 'offers_active': 0, 'applications_new': 0, 'contests_active': 0, 'recruits': 0,
           }),
     ]);
-    expect(find.text('Vous êtes Lecteur de cette entreprise.'), findsOneWidget);
-    expect(find.text('Équipe de l’entreprise · 4 personnes'), findsOneWidget);
+    expect(find.text('Vous êtes Lecteur de cette organisation.'), findsOneWidget);
+    expect(find.text('Équipe de l’organisation · 4 personnes'), findsOneWidget);
     expect(find.text('Publier un besoin'), findsNothing);
     expect(find.text('Rechercher des talents'), findsNothing);
   });
@@ -95,7 +95,7 @@ void main() {
             'needs_open': 0, 'proposals_new': 0, 'offers_active': 0, 'applications_new': 0, 'contests_active': 0, 'recruits': 0,
           }),
     ]);
-    expect(find.text('Équipe de l’entreprise · 1 personne'), findsOneWidget);
+    expect(find.text('Équipe de l’organisation · 1 personne'), findsOneWidget);
     expect(find.text('Publier un besoin'), findsOneWidget);
   });
 }

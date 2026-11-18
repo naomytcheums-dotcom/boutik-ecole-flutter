@@ -8,7 +8,7 @@ class EspaceEntrepriseScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final d = ref.watch(sectionJDataProvider);
     return JRootPage(
-      title: 'Espace entreprise',
+      title: 'Espace organisation',
       subtitle: '${d.companyName} · ${d.companyStatus}',
       action: HeaderIcon(AppIcons.bell, label: 'Notifications', onTap: () => context.openScreen('50')),
       children: [

@@ -98,10 +98,10 @@ class DocBadge extends ConsumerWidget {
 void skipVerification(WidgetRef ref, BuildContext context) {
   final a = ref.read(authProvider).current;
   if (a != null && a.role == 1 && a.staff.isEmpty) {
-    gToast(context, 'Vous pourrez envoyer vos pièces plus tard, depuis « Validations » de votre espace vendeur.');
+    gToast(context, 'Vous pourrez envoyer vos pièces plus tard, depuis « Devenir vendeur » (conditions pour vendre).');
     gOpen(context, '175');
   } else {
-    gTab(context, homeScreenFor(a));
+    finishAuthFlow(ref, context, fallback: homeScreenFor(a));
   }
 }
 

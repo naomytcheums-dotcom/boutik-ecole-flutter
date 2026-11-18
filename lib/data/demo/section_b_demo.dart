@@ -21,8 +21,7 @@ class SectionBData {
   final roles = const [
     ('Client', 'Achetez des produits et services proposés par les étudiants.', 'assets/icons/shopping-bag.svg'),
     ('Étudiant vendeur', 'Publiez vos produits, services et projets sur la marketplace.', 'assets/icons/graduation-cap.svg'),
-    ('Entreprise', 'Découvrez des talents et lancez des collaborations.', 'assets/icons/briefcase.svg'),
-    ('Autre rôle autorisé', 'Enseignant, partenaire ou administration de l’IUT.', 'assets/icons/users.svg'),
+    ('Organisation', 'Entreprise, association, ONG, institution… : découvrez des talents et lancez des collaborations.', 'assets/icons/briefcase.svg'),
   ];
 
   final termsTabs = const ['Conditions', 'Confidentialité', 'Consentements'];

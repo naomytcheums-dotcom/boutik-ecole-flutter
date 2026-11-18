@@ -8,10 +8,11 @@ import '../../core/router/paths.dart';
 import 'audit.dart';
 import 'auth.dart';
 import 'backend.dart';
-
+import 'admin_access.dart';
+import 'seller_capability.dart' show SellerGate, isSellerScreenId;
 /// Contrôle d'accès par rôle : chaque écran réservé n'est visible que pour les rôles autorisés.
 ///
-/// Rôles : visitor (non connecté), client, student, company, other, dept, direction, finance, support, admin.
+/// Rôles : visitor (non connecté), client, student, company (Organisation, ex-Entreprise ; le rôle serveur « other » y est fusionné), dept, direction, finance, support, admin.
 String roleKey(Account? a) {
   if (a == null) return 'visitor';
   switch (a.staff) {
@@ -26,22 +27,25 @@ String roleKey(Account? a) {
     case 'Admin global':
       return 'admin';
   }
-  return const ['client', 'student', 'company', 'other'][a.role.clamp(0, 3)];
+  return const ['client', 'student', 'company', 'client'][a.role.clamp(0, 3)];
 }
 
-/// Compte entreprise ou organisation (rôles company et other, hors personnel de la plateforme) : mêmes écrans et menus entreprise (décision 2).
-bool isCompanyAccount(Account? a) => a != null && a.staff.isEmpty && (a.role == 2 || a.role == 3);
+/// Compte Organisation (hors personnel de la plateforme) : écrans et menus des organisations (décision 2).
+bool isCompanyAccount(Account? a) => a != null && a.staff.isEmpty && a.role == 2;
+
+/// Rôle serveur d'une organisation : « company », ou l'ancien « other » encore lu sur des profils hérités (fusionné dans Organisation).
+bool isOrgRole(String? r) => r == 'company' || r == 'other';
 
 const roleNames = {
-  'visitor': 'Visiteur',
+  'visitor': 'Non connecté',
   'client': 'Client',
   'student': 'Étudiant-vendeur',
-  'company': 'Entreprise',
-  'other': 'Autre rôle',
+  'company': 'Organisation',
+  'other': 'Organisation',
   'dept': 'Responsable de département',
   'direction': 'Direction',
-  'finance': 'Finance',
-  'support': 'Support',
+  'finance': 'Équipe Finance',
+  'support': 'Équipe Support',
   'admin': 'Administrateur global',
 };
 
@@ -52,19 +56,23 @@ Set<String>? allowedRoles(String id) {
   if (id == 'D1') return {'student', 'dept', admin};
   final n = int.tryParse(RegExp(r'^\d+').firstMatch(id)?.group(0) ?? '');
   if (n == null) return null;
-  // Demande de devis : tout compte connecté peut en adresser une à un prestataire (pas seulement les entreprises).
-  if (id == '95b') return {'client', 'student', 'company', 'other', 'dept', admin};
+  // Demande de devis : tout compte connecté peut en adresser une à un prestataire (pas seulement les organisations).
+  if (id == '95b') return {'client', 'student', 'company', 'dept', admin};
   if (n >= 57 && n <= 69) return {'student', admin}; // espace vendeur : étudiants-vendeurs ; l'administrateur peut le consulter (la création de boutique reste refusée aux autres rôles par le serveur)
-  if ((n >= 88 && n <= 99) || (n >= 187 && n <= 190)) return {'company', 'other', admin}; // décision 2 : l'organisation (rôle other) a les écrans entreprise ; le serveur applique la même porte de vérification
+  if ((n >= 88 && n <= 99) || (n >= 187 && n <= 190)) return {'company', admin}; // décision 2 : l'organisation (ex-entreprise, rôle other fusionné) a ces écrans ; le serveur applique la même porte de vérification
+  // Écrans du département : la direction n'en garde que la lecture (suivi) ; les validations (110, 111) et les encadreurs (114) restent au département (le serveur les refuse à la direction).
+  if (n == 110 || n == 111 || n == 114) return {'dept', admin};
   if (n >= 108 && n <= 116) return {'dept', 'direction', admin};
   if (n >= 117 && n <= 126) return {'direction', admin};
   if (n >= 127 && n <= 138) {
-    if (n >= 131 && n <= 133) return {'support', admin};
-    if (n == 134 || n == 135) return {'finance', admin};
+    // 127 à 129 : administrateur seul. 130 à 138 : outils des équipes internes, ouverts aux agents (rôles finance et support) selon leurs permissions (kScreenPermissions).
+    if (n >= 130) return {'finance', 'support', admin};
     return {admin};
   }
-  if (n >= 139 && n <= 144) return {'finance', 'direction', admin};
-  if (n >= 145 && n <= 147) return {'support', admin};
+  // Finance : la direction ne garde que la lecture consolidée (tableau de bord 139 et rapports par département 142) ; paiements, journal, versements et moyens de paiement sont à la finance.
+  if (n == 139 || n == 142) return {'finance', 'support', 'direction', admin};
+  if (n >= 139 && n <= 144) return {'finance', 'support', admin};
+  if (n >= 145 && n <= 147) return {'support', 'finance', admin};
   if (n == 167 || n == 168 || n == 169) return {'dept', admin};
   if (n >= 198 && n <= 200) return {'dept', admin};
   // Formulaire de projet : le serveur (project_save_full) refuse tout autre rôle ; mieux vaut ne pas l'ouvrir que le refuser à l'envoi.
@@ -74,7 +82,7 @@ Set<String>? allowedRoles(String id) {
   switch (n) {
     case 262:
     case 285:
-      return {'company', 'other', admin};
+      return {'company', admin};
     case 263:
     case 286:
     case 287:
@@ -85,18 +93,28 @@ Set<String>? allowedRoles(String id) {
     case 265:
     case 266:
     case 267:
+    case 280: // configuration, état technique et intégrations : équipe Technique (selon permissions) et administrateur
+      return {'support', 'finance', admin};
     case 269:
-    case 280:
     case 281:
     case 180:
     case 181:
       return {admin};
     case 268:
     case 277:
-    case 282: // QR de transfert / programmation des événements de borne : zone du support (la page se garde aussi elle-même)
-      return {'support', admin};
+    case 282: // QR de transfert / programmation des événements de borne : équipes Support et Technique (la page se garde aussi elle-même)
+      return {'support', 'finance', admin};
     case 284:
-      return {'finance', 'direction', admin};
+      return {'finance', 'support', 'direction', admin};
+    case 300: // centre d'administration et tableaux de bord des équipes (301 à 304), gestion des équipes (305), comptes suspects (306)
+    case 301:
+    case 302:
+    case 303:
+    case 304:
+    case 306:
+      return {'finance', 'support', admin};
+    case 305:
+      return {admin};
   }
   return null;
 }
@@ -124,7 +142,7 @@ const _hiddenInEspaceForClient = {
   'A1', 'A2', 'A3', 'P1', 'P2', 'P4', 'P5', 'V1', 'L1', '250b', 'S1',
 };
 
-/// Écrans qu'une entreprise ou organisation peut atteindre par une adresse directe mais que « Mes rubriques » ne lui propose pas (E6-9) :
+/// Écrans qu'une organisation peut atteindre par une adresse directe mais que « Mes rubriques » ne lui propose pas (E6-9) :
 /// ceux du Client, plus les outils d'étudiant (compte étudiant, matricule, candidatures et profil vendeur).
 const _hiddenInEspaceForCompany = {
   ..._hiddenInEspaceForClient,
@@ -136,12 +154,22 @@ const _hiddenInEspaceForCompany = {
 const _notYetAvailable = {'225', '226'};
 
 /// Écran proposé dans « Mes rubriques » : ouvert au rôle, et pertinent pour lui. [juror] : le compte est juré d'un concours (écran de notation 167).
-bool listedInEspace(Account? a, String id, {bool juror = false}) =>
+bool listedInEspace(Account? a, String id, {bool juror = false, AdminAccess? access}) =>
     !(Backend.ready && _notYetAvailable.contains(id)) &&
     (canOpen(a, id) || (juror && a != null && id == '167')) &&
+    screenAllowedByAccess(a, id, access) &&
     !((roleKey(a) == 'client' && _hiddenInEspaceForClient.contains(id) || isCompanyAccount(a) && _hiddenInEspaceForCompany.contains(id)) && !(juror && id == '167'));
 
-/// Enveloppe d'un écran : affiche l'écran si le rôle l'autorise, sinon « Accès réservé ».
+/// Écrans du parcours personnel (commandes, suivi, adresses, favoris, avis, messages, notifications, paramètres du compte) : réservés aux comptes connectés.
+/// Une personne non connectée y voit « Connexion requise » avec « Se connecter » (le retour à l'écran d'origine est automatique) ; le serveur refuse de toute façon
+/// ces lectures et écritures à l'anonyme. Hors connexion au serveur (aperçu, tests), les écrans restent ouverts.
+const loginRequiredScreens = {
+  '07', '08', '09', '18b', '18c', '25', '25b', '27', '28', '29', '30', '41', '42', '43', '44', '45', '46', '47', '48', '50', '51', '52', '53', '54',
+  '148-1', '148-2', '155', '156', '236', '241', '243', '257', '258', '259', '260', '261', '272', '273',
+};
+
+/// Enveloppe d'un écran : affiche l'écran si le rôle l'autorise, sinon « Accès réservé ». Les écrans vendeur (57 à 69) exigent en plus la capacité vendeur
+/// (sinon : écran des conditions) et ceux du parcours personnel ([loginRequiredScreens]) un compte connecté.
 class AccessGuard extends ConsumerWidget {
   const AccessGuard({super.key, required this.id, required this.child});
   final String id;
@@ -150,7 +178,16 @@ class AccessGuard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final account = ref.watch(authProvider).current;
-    if (canOpen(account, id)) return child;
+    if (Backend.ready && isSellerScreenId(id)) return SellerGate(child: child);
+    if (loginRequiredScreens.contains(id)) return LoginGuard(child: _roleChecked(ref, account));
+    return _roleChecked(ref, account);
+  }
+
+  Widget _roleChecked(WidgetRef ref, Account? account) {
+    if (canOpen(account, id)) {
+      final need = kScreenPermissions[id.replaceAll('_', '-')];
+      return need == null ? child : PermissionGate(name: id, perms: need, child: child);
+    }
     if (id == '167' && account != null && Backend.ready) {
       return ref.watch(jurorContestsProvider).when(
             loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
@@ -166,18 +203,52 @@ class AccessGuard extends ConsumerWidget {
 /// l'écran ; les autres reçoivent la même page neutre que [AccessGuard]. [debugOpen] l'ouvre aussi en mode debug (outils de revue).
 /// La vraie protection reste côté serveur : cette garde évite seulement d'exposer une interface qui ne peut rien faire.
 class RouteGuard extends ConsumerWidget {
-  const RouteGuard({super.key, required this.name, required this.roles, required this.child, this.debugOpen = false});
+  const RouteGuard({super.key, required this.name, required this.roles, required this.child, this.debugOpen = false, this.perms});
   final String name;
   final Set<String> roles;
   final bool debugOpen;
+
+  /// Permissions d'équipe : un agent finance ou support n'ouvre l'écran que s'il détient l'une d'elles (null = pas de condition).
+  final Set<String>? perms;
   final Widget child;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (debugOpen && kDebugMode) return child;
     final account = ref.watch(authProvider.select((s) => s.current));
-    if (roles.contains(roleKey(account))) return child;
+    if (roles.contains(roleKey(account))) return perms == null ? child : PermissionGate(name: name, perms: perms!, child: child);
     return AccessDenied(id: name);
+  }
+}
+
+/// Réserve un écran aux agents finance et support qui détiennent l'une des permissions [perms] (lues sur le serveur par `my_admin_access`) ;
+/// l'administrateur et les autres rôles ne sont pas concernés. Pendant la lecture, un indicateur ; en cas d'échec, un message avec « Réessayer ».
+class PermissionGate extends ConsumerWidget {
+  const PermissionGate({super.key, required this.name, required this.perms, required this.child});
+  final String name;
+  final Set<String> perms;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final account = ref.watch(authProvider.select((s) => s.current));
+    if (!isTeamAgent(account)) return child;
+    return ref.watch(adminAccessProvider).when(
+          loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+          error: (_, _) => Scaffold(
+            body: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(28),
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  const Text('Vos droits d’équipe n’ont pas pu être vérifiés.', textAlign: TextAlign.center),
+                  const SizedBox(height: 12),
+                  TextButton(onPressed: () => ref.invalidate(adminAccessProvider), child: const Text('Réessayer')),
+                ]),
+              ),
+            ),
+          ),
+          data: (a) => a.hasAny(perms) ? child : AccessDenied(id: name),
+        );
   }
 }
 
@@ -244,7 +315,7 @@ class _AccessDeniedState extends ConsumerState<AccessDenied> {
     Future.microtask(() {
       if (!mounted) return;
       final a = ref.read(authProvider).current;
-      ref.read(auditProvider.notifier).log(a?.name ?? 'Visiteur', 'Accès refusé', 'Écran ${widget.id}', 'Connexions', level: 'Sensible');
+      ref.read(auditProvider.notifier).log(a?.name ?? 'Non connecté', 'Accès refusé', 'Écran ${widget.id}', 'Connexions', level: 'Sensible');
     });
   }
 

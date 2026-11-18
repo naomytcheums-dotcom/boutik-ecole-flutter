@@ -94,11 +94,14 @@ void main() {
     final company = seedAccounts.firstWhere((a) => a.role == 2);
     expect(canOpen(company, '90'), isTrue);
     expect(canOpen(student, '90'), isFalse);
-    // organisation (rôle other) : mêmes écrans entreprise (décision 2) ; un Client ne les ouvre pas
-    const other = Account(name: 'ONG Verte', phone: '690000000', email: 'ong@t.cm', password: 'Boutik2026', role: 3);
-    expect(roleKey(other), 'other');
+    // organisation (rôle other fusionné dans Organisation, H1) : un profil serveur « other » devient un compte Organisation (role 2) ; role 3 sans rôle interne n'ouvre rien
+    const legacy = Account(name: 'ONG Verte', phone: '690000000', email: 'ong@t.cm', password: 'Boutik2026', role: 3);
+    expect(roleKey(legacy), 'client');
+    const org = Account(name: 'ONG Verte', phone: '690000000', email: 'ong@t.cm', password: 'Boutik2026', role: 2);
+    expect(roleKey(org), 'company');
     for (final id in ['88', '90', '93', '99', '187', '190', '262', '285']) {
-      expect(canOpen(other, id), isTrue, reason: 'other : écran $id');
+      expect(canOpen(org, id), isTrue, reason: 'organisation : écran $id');
+      expect(canOpen(legacy, id), isFalse, reason: 'ancien « autre » : écran $id');
       expect(canOpen(_client, id), isFalse, reason: 'client : écran $id');
     }
     // l'administrateur global ouvre tout

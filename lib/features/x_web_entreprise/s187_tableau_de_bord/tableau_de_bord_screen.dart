@@ -20,7 +20,7 @@ class TableauDeBordEntrepriseScreen extends ConsumerWidget {
         ),
     ];
     return WebShell(
-      title: 'Tableau de bord entreprise',
+      title: 'Tableau de bord organisation',
       subtitle: 'Vos besoins, propositions et collaborations avec l’IUT.',
       navItems: xDashboardNav,
       selected: 0,

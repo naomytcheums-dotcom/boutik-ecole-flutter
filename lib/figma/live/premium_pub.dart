@@ -42,7 +42,7 @@ const featureLabels = {
   'stats_avancees': 'Statistiques avancées par produit (espace vendeur)',
   'portfolio_enrichi': 'Portfolio étendu : 300 éléments au lieu de 100',
   'boost_campagnes': 'Campagnes sponsorisées',
-  'gestion_equipe': 'Équipe d’entreprise : invitation de collègues',
+  'gestion_equipe': 'Équipe d’organisation : invitation de collègues',
 };
 
 final plansProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('plans', 'code,name,audience,price_xaf,period_days,features,active,audience_roles,sellable', order: 'code', ascending: true));
@@ -199,7 +199,7 @@ class AdsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final rows = ref.watch(myAdsProvider);
-    final admin = ref.watch(authProvider.select((a) => const {'admin', 'direction'}.contains(roleKey(a.current))));
+    final admin = ref.watch(authProvider.select((a) => roleKey(a.current) == 'admin'));
     Widget body;
     if (_out(ref)) {
       body = _note('Connectez-vous pour gérer vos campagnes.');
@@ -290,7 +290,7 @@ class _OnOpenState extends State<_OnOpen> {
 
 Future<void> adDialog(BuildContext context, WidgetRef ref) async {
   if (!hasFeature(ref, 'boost_campagnes')) {
-    final go = await showDialog<bool>(context: context, builder: (d) => AlertDialog(title: const Text('Offre requise'), content: const Text('Les campagnes sponsorisées font partie des offres Vendeur professionnel et Entreprise.'), actions: [TextButton(onPressed: () => Navigator.pop(d, false), child: const Text('Fermer')), TextButton(onPressed: () => Navigator.pop(d, true), child: const Text('Voir les offres'))]));
+    final go = await showDialog<bool>(context: context, builder: (d) => AlertDialog(title: const Text('Offre requise'), content: const Text('Les campagnes sponsorisées font partie des offres Vendeur professionnel et Organisation.'), actions: [TextButton(onPressed: () => Navigator.pop(d, false), child: const Text('Fermer')), TextButton(onPressed: () => Navigator.pop(d, true), child: const Text('Voir les offres'))]));
     if (go == true && context.mounted) GoRouter.of(context).push('/offres');
     return;
   }

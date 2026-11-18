@@ -240,13 +240,13 @@ class _TalentSearchPanelState extends ConsumerState<TalentSearchPanel> {
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(color: const Color(0xFFFFF1D6), borderRadius: BorderRadius.circular(6)),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(children: [const Icon(Icons.lock_outline_rounded, color: Color(0xFF9A5B00)), const SizedBox(width: 8), Expanded(child: Text('Recherche de talents réservée aux entreprises vérifiées', style: mst(13.5, w: FontWeight.w800, c: const Color(0xFF9A5B00))))]),
+            Row(children: [const Icon(Icons.lock_outline_rounded, color: Color(0xFF9A5B00)), const SizedBox(width: 8), Expanded(child: Text('Recherche de talents réservée aux organisations vérifiées', style: mst(13.5, w: FontWeight.w800, c: const Color(0xFF9A5B00))))]),
             const SizedBox(height: 6),
-            Text(_reason ?? 'Votre entreprise doit être vérifiée avant de consulter les talents.', style: mst(12.5).copyWith(height: 1.4)),
+            Text(_reason ?? 'Votre organisation doit être vérifiée avant de consulter les talents.', style: mst(12.5).copyWith(height: 1.4)),
           ]),
         ),
         const SizedBox(height: 10),
-        mButton('Compléter la fiche entreprise', () => context.push('/entreprise/profil'), icon: Icons.business_outlined),
+        mButton('Compléter la fiche d’organisation', () => context.push('/entreprise/profil'), icon: Icons.business_outlined),
       ]);
     }
     final rows = inList ? _shownMembers : _items;

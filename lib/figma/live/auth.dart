@@ -15,6 +15,7 @@ import 'audit.dart';
 import 'backend.dart';
 import 'profile_data.dart' show saveAcademic;
 import 'lots.dart' show formDialog;
+import 'org_types.dart' show orgTypeByCode, orgTypes;
 import 'referral.dart' show applyPendingReferral;
 import 'drafts.dart';
 import 'native_push_stub.dart'
@@ -65,14 +66,14 @@ class Account {
 
   /// Le badge bleu n'existe que pour une certification réellement approuvée côté serveur.
   bool get certified => certification == 'approved';
-  final int role; // 0 client · 1 étudiant vendeur · 2 entreprise · 3 autre
+  final int role; // 0 client · 1 étudiant vendeur · 2 organisation (ex-entreprise ; le rôle serveur « other » y est fusionné) · 3 personnel de la plateforme (rôle interne dans [staff])
   final bool verified, suspended;
   final String
   staff; // rôle interne (Resp. département, Finance, Admin global…)
 
   String get roleLabel => staff.isNotEmpty
       ? staff
-      : const ['Client', 'Étudiant-vendeur', 'Entreprise', 'Autre rôle'][role
+      : const ['Client', 'Étudiant-vendeur', 'Organisation', 'Client'][role
             .clamp(0, 3)];
 
   String get firstName => name.split(' ').first;
@@ -399,7 +400,56 @@ Future<void> promptTermsUpdate(BuildContext context) async {
 /// Vrai quand l'écran de connexion a été ouvert depuis une action réservée : après connexion on revient où l'on était.
 final returnAfterAuthProvider = NotifierProvider<FlagOff, bool>(FlagOff.new);
 
-/// Écran d'accueil propre au rôle : un étudiant-vendeur arrive sur son profil, tous les autres comptes (client, entreprise, équipe) sur l'accueil.
+/// Écran d'origine de la personne qui se connecte ou crée un compte (adresse complète, avec ses paramètres) et son heure de mémorisation.
+typedef ReturnTarget = ({String location, DateTime at});
+
+class ReturnToNotifier extends Notifier<ReturnTarget?> {
+  @override
+  ReturnTarget? build() => null;
+  void set(ReturnTarget? v) => state = v;
+}
+
+/// Mémorise l'écran qui a demandé la connexion : après la connexion, ou à la fin de l'inscription (qui remplace la pile d'écrans), la personne y revient.
+final returnToProvider = NotifierProvider<ReturnToNotifier, ReturnTarget?>(ReturnToNotifier.new);
+
+/// Durée au-delà de laquelle un écran d'origine mémorisé est oublié (une connexion abandonnée ne doit pas détourner la suivante).
+const returnToLifetime = Duration(minutes: 30);
+
+/// Écrans du parcours de compte (connexion, inscription, vérification, récupération) : jamais une destination de retour.
+bool isAuthLocation(String location) {
+  final path = Uri.tryParse(location)?.path ?? location;
+  return RegExp(r'^/s/(11|12|13|14|15|16|17|18|18b|18c|150-1|150-2|150-3)$').hasMatch(path) || path == '/' || path.isEmpty;
+}
+
+/// Adresse de l'écran affiché, ou null si elle ne peut pas être lue ou ne convient pas comme destination de retour.
+String? currentReturnLocation(BuildContext context) {
+  try {
+    final loc = GoRouter.of(context).routeInformationProvider.value.uri.toString();
+    return loc.startsWith('/') && !isAuthLocation(loc) ? loc : null;
+  } catch (_) {
+    return null;
+  }
+}
+
+/// Destination de retour encore valable (et oubli immédiat) ; null s'il n'y en a pas ou si elle est périmée.
+String? takeReturnTo(WidgetRef ref, {DateTime? now}) {
+  final t = ref.read(returnToProvider);
+  ref.read(returnToProvider.notifier).set(null);
+  if (t == null || (now ?? DateTime.now()).difference(t.at) > returnToLifetime || isAuthLocation(t.location)) return null;
+  return t.location;
+}
+
+/// Fin d'un parcours de compte (connexion ou inscription terminée) : retour à l'écran d'origine s'il existe, sinon [fallback] (accueil du rôle par défaut).
+void finishAuthFlow(WidgetRef ref, BuildContext context, {String? fallback}) {
+  final to = takeReturnTo(ref);
+  if (to != null) {
+    GoRouter.of(context).go(to);
+  } else {
+    gTab(context, fallback ?? homeScreenFor(ref.read(authProvider).current));
+  }
+}
+
+/// Écran d'accueil propre au rôle : un étudiant-vendeur arrive sur son profil, tous les autres comptes (client, organisation, équipe) sur l'accueil.
 String homeScreenFor(Account? a) => a != null && a.role == 1 && a.staff.isEmpty ? '10' : '03';
 
 /// Destination « hors visite » d'un écran d'accueil : [preferred] si le rôle connecté peut l'ouvrir, sinon l'accueil de son rôle.
@@ -426,13 +476,29 @@ Future<void> markIntroSeen() async {
 }
 
 void _afterLogin(WidgetRef ref, BuildContext context) {
+  final to = takeReturnTo(ref);
   if (ref.read(returnAfterAuthProvider)) {
     ref.read(returnAfterAuthProvider.notifier).set(false);
-    gBack(context);
+    // la pile garde l'écran d'origine sous la connexion : on le retrouve tel quel ; sinon (écran ouvert par adresse directe) on y retourne par son adresse
+    if (GoRouter.of(context).canPop() || to == null) {
+      gBack(context);
+    } else {
+      GoRouter.of(context).go(to);
+    }
+  } else if (to != null) {
+    GoRouter.of(context).go(to);
   } else {
     // La pile est remplacée : « retour » depuis l'accueil ne ramène pas au formulaire de connexion.
     gTab(context, homeScreenFor(ref.read(authProvider).current));
   }
+}
+
+/// Ouvre la connexion (11) ou la création de compte (12) depuis l'écran courant : après la connexion ou l'inscription, la personne revient à cet écran.
+void openAuthFromHere(BuildContext context, WidgetRef ref, {bool signup = false}) {
+  ref.read(returnAfterAuthProvider.notifier).set(true);
+  final origin = currentReturnLocation(context);
+  ref.read(returnToProvider.notifier).set(origin == null ? null : (location: origin, at: DateTime.now()));
+  gOpen(context, signup ? '12' : '11');
 }
 
 /// Action réservée aux comptes. L'utilisateur explore librement : on ne lui demande de se connecter qu'au moment où l'action l'exige,
@@ -465,7 +531,7 @@ Future<bool> requireLogin(
         ),
       ),
       content: Text(
-        'Pour $pour, connectez-vous ou créez un compte gratuit.\n\nVous pouvez continuer à explorer sans compte.',
+        'Pour $pour, connectez-vous ou créez un compte gratuit : vous reviendrez ensuite à cet écran.\n\nVous pouvez continuer à explorer sans compte.',
         style: st,
       ),
       actionsOverflowAlignment: OverflowBarAlignment.end,
@@ -498,8 +564,9 @@ Future<bool> requireLogin(
     ),
   );
   if (choix == 'login' || choix == 'signup') {
-    ref.read(returnAfterAuthProvider.notifier).set(true);
-    if (context.mounted) gOpen(context, choix == 'login' ? '11' : '12');
+    if (context.mounted) openAuthFromHere(context, ref, signup: choix == 'signup');
+  } else {
+    ref.read(returnToProvider.notifier).set(null);
   }
   return false;
 }
@@ -518,9 +585,62 @@ class SignupRole extends IntState {
   int build() => Backend.ready ? -1 : 1;
 }
 
-/// Profils que le serveur accepte à l'inscription : client, étudiant-vendeur, entreprise et autre rôle. Les privilèges sensibles
-/// (boutique, entreprise, certification) restent soumis à une vérification par l'administration.
-const selfServiceRoles = 4;
+/// Profils que le serveur accepte à l'inscription : client, étudiant-vendeur et organisation (ex-entreprise, avec son type). Le rôle « autre » n'existe plus :
+/// il est fusionné dans Organisation (type « autre organisation reconnue »). Les privilèges sensibles (boutique, organisation, certification) restent soumis à une
+/// vérification par l'administration.
+const selfServiceRoles = 3;
+
+/// Type d'organisation choisi à l'écran 13 quand le profil « Organisation » est retenu (vide = pas encore choisi).
+final signupOrgTypeProvider = NotifierProvider<SignupOrgType, String>(SignupOrgType.new);
+
+class SignupOrgType extends Notifier<String> {
+  @override
+  String build() => '';
+  void set(String v) => state = v;
+}
+
+/// Choix du type d'organisation (écran 13) : les huit types, chacun avec sa description ; le type fixe la fiche et les pièces justificatives demandées.
+Future<void> pickOrgType(BuildContext context, WidgetRef ref) async {
+  final cur = ref.read(signupOrgTypeProvider);
+  final v = await showModalBottomSheet<String>(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.white,
+    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+    builder: (ctx) => SafeArea(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: MediaQuery.of(ctx).size.height * 0.85),
+        child: ListView(shrinkWrap: true, padding: const EdgeInsets.fromLTRB(20, 16, 20, 20), children: [
+          const Text('Type d’organisation', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Color(0xFF111015))),
+          const SizedBox(height: 4),
+          const Text('Le type fixe les informations et les pièces justificatives demandées pour vérifier votre organisation.', style: TextStyle(fontSize: 12.5, height: 1.4, color: Color(0xFF57545F))),
+          const SizedBox(height: 8),
+          for (final t in orgTypes)
+            InkWell(
+              onTap: () => Navigator.pop(ctx, t.code),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 56),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Icon(cur == t.code ? Icons.radio_button_checked : Icons.radio_button_unchecked, color: cur == t.code ? const Color(0xFF5A3FE0) : const Color(0xFF57545F)),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text(t.label, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xFF111015))),
+                        Text(t.description, style: const TextStyle(fontSize: 12.5, height: 1.35, color: Color(0xFF57545F))),
+                      ]),
+                    ),
+                  ]),
+                ),
+              ),
+            ),
+        ]),
+      ),
+    ),
+  );
+  if (v != null) ref.read(signupOrgTypeProvider.notifier).set(v);
+}
 final loginModeProvider = NotifierProvider<IntState, int>(IntState.new);
 
 // ------------------------------------------------------------------ validations
@@ -718,7 +838,7 @@ void submitLogin(WidgetRef ref, BuildContext context) {
     ref
         .read(auditProvider.notifier)
         .log(
-          'Visiteur',
+          'Non connecté',
           'Échec de connexion',
           id,
           'Connexions',
@@ -802,7 +922,7 @@ Future<void> _serverLoginRun(
     ref
         .read(auditProvider.notifier)
         .log(
-          'Visiteur',
+          'Non connecté',
           'Échec de connexion',
           id,
           'Connexions',
@@ -1067,6 +1187,11 @@ Future<void> submitRole(WidgetRef ref, BuildContext context) async {
     return;
   }
   final a = ref.read(authProvider).current;
+  final orgType = ref.read(signupOrgTypeProvider);
+  if (choix == 2 && !orgTypeByCode.containsKey(orgType)) {
+    gToast(context, 'Choisissez le type de votre organisation pour continuer.');
+    return;
+  }
   if (a != null) {
     var choisi = a.copyWith(role: choix);
     if (Backend.ready) {
@@ -1074,6 +1199,13 @@ Future<void> submitRole(WidgetRef ref, BuildContext context) async {
       if (r.error != null) {
         if (context.mounted) await gAlert(context, 'Profil non créé', r.error!);
         return;
+      }
+      // le type d'organisation est enregistré avec le profil (une fiche brouillon de ce type est créée côté serveur)
+      if (r.created && choix == 2) {
+        final t = await Backend.rpc('company_set_type', {'p_type': orgType});
+        if (t.error != null && context.mounted) {
+          await gAlert(context, 'Type d’organisation non enregistré', 'Votre profil est créé, mais le type « ${orgTypeByCode[orgType]!.label} » n’a pas pu être enregistré. Vous pourrez le choisir dans la fiche de l’organisation.');
+        }
       }
       // le serveur fait foi : le rôle affiché est celui du profil (existant ou tout juste créé)
       choisi = await Backend.restore() ?? choisi.copyWith(role: choix < selfServiceRoles ? choix : 0);
@@ -1188,7 +1320,7 @@ Future<void> submitProfile(WidgetRef ref, BuildContext context) async {
   if (maj.role == 1 && maj.staff.isEmpty) {
     gOpen(context, '18c');
   } else {
-    gTab(context, homeScreenFor(maj));
+    finishAuthFlow(ref, context, fallback: homeScreenFor(maj));
   }
 }
 
@@ -1633,13 +1765,13 @@ Future<bool> requireCertified(BuildContext context, WidgetRef ref, String action
   if (a == null) return false;
   const staff = {'Resp. département', 'Direction', 'Finance', 'Support', 'Admin global'};
   if (a.certified || staff.contains(a.staff)) return true;
-  // Entreprise ou organisation : la vérification de la fiche entreprise vaut certification (une seule vérification, par l'administrateur).
-  final org = a.staff.isEmpty && (a.role == 2 || a.role == 3);
+  // Organisation : la vérification de la fiche d'organisation vaut certification (une seule vérification, par l'administrateur).
+  final org = a.staff.isEmpty && a.role == 2;
   final state = org
       ? switch (a.certification) {
-          'pending' || 'review' => 'Votre fiche entreprise est en cours de vérification par l’administrateur.',
+          'pending' || 'review' => 'Votre fiche d’organisation est en cours de vérification par l’administrateur.',
           'rejected' || 'revoked' => 'La vérification de votre fiche a été refusée ou retirée : corrigez la fiche, puis renvoyez-la.',
-          _ => 'Votre fiche entreprise n’est pas encore vérifiée : complétez-la, ajoutez vos pièces justificatives et envoyez-la pour vérification.',
+          _ => 'Votre fiche d’organisation n’est pas encore vérifiée : complétez-la, ajoutez vos pièces justificatives et envoyez-la pour vérification.',
         }
       : switch (a.certification) {
           'pending' => 'Votre demande de certification est en attente d’examen.',
@@ -1654,11 +1786,11 @@ Future<bool> requireCertified(BuildContext context, WidgetRef ref, String action
     builder: (ctx) => AlertDialog(
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
-      title: Text(org ? 'Publication réservée aux entreprises vérifiées' : 'Publication réservée aux comptes certifiés', style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700, color: Color(0xFF111015))),
-      content: Text(org ? 'Pour $action, votre entreprise doit être vérifiée. $state\n\nVous pouvez continuer à parcourir, rechercher et acheter normalement.' : 'Pour $action, votre compte doit être certifié. $state\n\nVous pouvez continuer à parcourir, rechercher et acheter normalement.', style: const TextStyle(fontSize: 14, height: 1.45, color: Color(0xFF4A4854))),
+      title: Text(org ? 'Publication réservée aux organisations vérifiées' : 'Publication réservée aux comptes certifiés', style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700, color: Color(0xFF111015))),
+      content: Text(org ? 'Pour $action, votre organisation doit être vérifiée. $state\n\nVous pouvez continuer à parcourir, rechercher et acheter normalement.' : 'Pour $action, votre compte doit être certifié. $state\n\nVous pouvez continuer à parcourir, rechercher et acheter normalement.', style: const TextStyle(fontSize: 14, height: 1.45, color: Color(0xFF4A4854))),
       actions: [
         TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Plus tard', style: TextStyle(color: Color(0xFF57545F)))),
-        if (ask) TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(org ? 'Ouvrir la fiche entreprise' : 'Demander la certification', style: const TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF111015)))),
+        if (ask) TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(org ? 'Ouvrir la fiche d’organisation' : 'Demander la certification', style: const TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF111015)))),
       ],
     ),
   );
@@ -1690,8 +1822,8 @@ Future<void> requestCertificationFlow(
     await gAlert(context, 'Certification', 'La certification est réservée aux étudiants-vendeurs et aux comptes validés par l’établissement. Un compte Client peut acheter, commander et suivre ses commandes sans certification.');
     return;
   }
-  if (me != null && (me.role == 2 || me.role == 3) && me.staff.isEmpty) {
-    // une seule vérification : celle de la fiche entreprise (l'administrateur approuve la fiche = compte certifié)
+  if (me != null && me.role == 2 && me.staff.isEmpty) {
+    // une seule vérification : celle de la fiche d'organisation (l'administrateur approuve la fiche = compte certifié)
     GoRouter.of(context).push('/entreprise/profil');
     return;
   }
@@ -1932,7 +2064,7 @@ Future<void> editProfileDialog(BuildContext context, WidgetRef ref) async {
                         switch (visibility) {
                           'private' => 'Votre profil, votre portfolio et votre passport sont masqués aux autres. Un CV partagé par lien reste ouvert tant que vous ne le désactivez pas.',
                           'members' => 'Seuls les comptes connectés voient votre profil et votre portfolio.',
-                          _ => 'Votre profil et votre portfolio sont visibles de tous, visiteurs compris.',
+                          _ => 'Votre profil et votre portfolio sont visibles de tous, y compris des personnes non connectées.',
                         },
                         style: st.copyWith(fontSize: 11.5, color: const Color(0xFF57545F)),
                       ),
@@ -1942,7 +2074,7 @@ Future<void> editProfileDialog(BuildContext context, WidgetRef ref) async {
                           dense: true,
                           title: Text('Apparaître dans l’annuaire des talents', style: st.copyWith(fontWeight: FontWeight.w600)),
                           subtitle: Text(
-                            'Sinon, entreprises et clients ne vous trouvent pas dans « Talents à découvrir ».',
+                            'Sinon, organisations et clients ne vous trouvent pas dans « Talents à découvrir ».',
                             style: st.copyWith(fontSize: 11.5, color: const Color(0xFF57545F)),
                           ),
                           value: directory && visibility != 'private',

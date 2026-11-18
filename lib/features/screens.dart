@@ -31,6 +31,7 @@ import 'aa_borne/screens.dart';
 import 'x_web_entreprise/screens.dart';
 import 'ai_kela/screens.dart';
 import 'ref_echantillons/screens.dart';
+import 'admin_centre/screens.dart';
 
 /// Registre de tous les écrans codés, dans l'ordre du manifeste.
 final List<ScreenEntry> _baseScreens = [
@@ -64,6 +65,7 @@ final List<ScreenEntry> _baseScreens = [
   ...sectionXScreens,
   ...sectionAIScreens,
   ...sectionREFScreens,
+  ...sectionCentreScreens,
 ];
 
 /// Les écrans générés fidèlement depuis Figma (lib/figma/g) remplacent la version écrite à la main.

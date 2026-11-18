@@ -75,6 +75,7 @@ class CartNotifier extends Notifier<List<CartLine>> {
 
   Future<void> _load(String uid, List<CartLine> carry) async {
     var saved = <CartLine>[];
+    var carried = carry;
     try {
       final p = await SharedPreferences.getInstance();
       final raw = p.getString(_key(uid));
@@ -82,15 +83,27 @@ class CartNotifier extends Notifier<List<CartLine>> {
         final j = jsonDecode(raw);
         if (j is List) saved = [for (final x in j) ?CartLine.fromJson(x)];
       }
+      // le panier enregistré du visiteur (même appareil) suit le compte, même si l'application a été rechargée entre-temps (la copie en mémoire et la copie enregistrée sont la même)
+      if (uid.isNotEmpty) {
+        final guest = p.getString(_key(''));
+        if (guest != null) {
+          final j = jsonDecode(guest);
+          if (j is List) {
+            final lines = [for (final x in j) ?CartLine.fromJson(x)];
+            if (lines.isNotEmpty) carried = lines;
+          }
+          await p.remove(_key(''));
+        }
+      }
       if (carry.isNotEmpty) await p.remove(_key(''));
     } catch (_) {}
     if (!ref.mounted || _owner != uid) return;
     var merged = saved;
-    for (final l in [...state, ...carry]) {
+    for (final l in [...state, ...carried]) {
       merged = _merge(merged, l);
     }
     if (merged.length == saved.length && merged.isEmpty) return;
-    _set(merged, persist: carry.isNotEmpty || state.isNotEmpty);
+    _set(merged, persist: carried.isNotEmpty || state.isNotEmpty);
   }
 
   static List<CartLine> _merge(List<CartLine> into, CartLine line) {

@@ -10,6 +10,7 @@ import 'package:supabase_flutter/supabase_flutter.dart' show FactorStatus;
 import '../gen.dart';
 import '../nav.dart';
 import 'access.dart' show roleKey;
+import 'direction.dart' show exportDirectionRegister;
 import 'auth.dart';
 import 'backend.dart';
 import 'download_stub.dart' if (dart.library.js_interop) 'download_web.dart';
@@ -877,8 +878,11 @@ Future<void> _export(BuildContext context, WidgetRef ref, String table, List<Str
 }
 
 /// Écran 284 (finance, direction, administration) : commandes visibles par le rôle, avec montants et état de paiement.
-Future<void> exportFinancialRegister(BuildContext context, WidgetRef ref) =>
-    _export(context, ref, 'orders', const ['number', 'created_at', 'subtotal', 'fee', 'method', 'reference', 'paid', 'cancelled', 'status'], 'registre-financier.csv', 'exporter le registre financier');
+Future<void> exportFinancialRegister(BuildContext context, WidgetRef ref) {
+  // La direction n'exporte que des totaux consolidés ; les écritures détaillées restent à la finance.
+  if (roleKey(ref.read(authProvider).current) == 'direction') return exportDirectionRegister(context);
+  return _export(context, ref, 'orders', const ['number', 'created_at', 'subtotal', 'fee', 'method', 'reference', 'paid', 'cancelled', 'status'], 'registre-financier.csv', 'exporter le registre financier');
+}
 
 /// Écran 288 (département, administration) : fiches du catalogue visibles par le rôle.
 Future<void> exportCatalog(BuildContext context, WidgetRef ref) =>

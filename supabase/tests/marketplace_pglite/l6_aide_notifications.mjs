@@ -15,6 +15,8 @@ export async function run(db) {
   for (const [n, r] of Object.entries(roles)) {
     await db.exec(`insert into auth.users(id,email) values ('${U(n)}','l6u${n}@t.cm'); insert into profiles(id,name,role,email,phone) values ('${U(n)}','Profil L6 ${n}','${r}','l6u${n}@t.cm',${n === '21' ? "'677000021'" : 'null'})`);
   }
+  // Équipes internes (lot H4) : l'agent de support de ce scénario traite aussi les signalements (équipe Sécurité et modération, droit explicite).
+  await db.exec(`insert into admin_team_members (user_id, team_code, permissions) values ('${U(22)}', 'security', array['security.moderation', 'security.reports'])`);
 
   // 1. support : création, notification du support et de l'administration, lecture limitée, réponse
   await as(U(21));

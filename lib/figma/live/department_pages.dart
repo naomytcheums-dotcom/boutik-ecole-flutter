@@ -148,8 +148,8 @@ Widget departmentSheet({double width = 342, double height = 700}) => Consumer(bu
                 )
               else
                 GestureDetector(
-                  onTap: () => gToast(context, 'Seules les entreprises vérifiées peuvent déposer un brief.'),
-                  child: Text('Les entreprises vérifiées peuvent déposer un brief à ce département.', style: _st(12.5, c: _grey).copyWith(height: 1.5)),
+                  onTap: () => gToast(context, 'Seules les organisations vérifiées peuvent déposer un brief.'),
+                  child: Text('Les organisations vérifiées peuvent déposer un brief à ce département.', style: _st(12.5, c: _grey).copyWith(height: 1.5)),
                 ),
             ]),
           );

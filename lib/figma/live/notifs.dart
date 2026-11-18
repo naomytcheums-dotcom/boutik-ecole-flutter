@@ -291,18 +291,34 @@ bool openNotification(BuildContext context, WidgetRef? ref, NotificationItem n, 
         r.push('/evenements/mes');
       }
       return true;
+    case 'institution':
+      // Partenariats et validations institutionnelles : seuls la direction, les départements et l'administration ont l'écran (une organisation liée n'a que la notification).
+      if (const {'direction', 'dept', 'admin'}.contains(roleKey(account))) r.push(s('partnership').isNotEmpty ? '/direction/partenariats' : '/direction/validations');
+      return true;
+    case 'department':
+      if (const {'dept', 'admin'}.contains(roleKey(account))) r.push('/departement');
+      return true;
+    case 'partnership':
+      if (const {'direction', 'dept', 'admin'}.contains(roleKey(account))) r.push('/departement/partenariats');
+      return true;
     case 'project':
       final staff = const {'dept', 'admin'}.contains(roleKey(account));
       if (n.title.startsWith('Accompagnement') || n.title.startsWith('Demande d’accompagnement') || n.title.startsWith('Demande d\'accompagnement')) {
         r.push('/accompagnement');
       } else if (d['invitation'] == true || n.title.contains('équipe') || n.title.startsWith('Invitation')) {
         gOpen(context, '81');
+      } else if (staff) {
+        r.push('/departement/validations');
       } else {
-        gOpen(context, staff ? '108' : '205');
+        gOpen(context, '205');
       }
       return true;
     case 'campaign':
-      gOpen(context, const {'dept', 'admin'}.contains(roleKey(account)) ? '108' : '86');
+      if (const {'dept', 'admin'}.contains(roleKey(account))) {
+        r.push('/departement/validations');
+      } else {
+        gOpen(context, '86');
+      }
       return true;
     case 'sos':
       r.push('/innovations/sos');

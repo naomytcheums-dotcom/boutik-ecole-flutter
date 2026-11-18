@@ -146,7 +146,7 @@ Widget _thumb(BuildContext context, String path, String kind) {
   );
 }
 
-String _roleLabel(String r) => switch (r) { 'student' => 'Étudiant', 'client' => 'Client', 'company' => 'Entreprise', 'dept' => 'Département', 'admin' => 'Administration', 'support' => 'Support', _ => 'Membre' };
+String _roleLabel(String r) => switch (r) { 'student' => 'Étudiant', 'client' => 'Client', 'company' => 'Organisation', 'other' => 'Organisation', 'dept' => 'Département', 'admin' => 'Administration', 'support' => 'Support', _ => 'Membre' };
 
 // ------------------------------------------------------------------ publications
 

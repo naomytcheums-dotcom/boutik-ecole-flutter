@@ -39,7 +39,7 @@ const annDomains = {
   'scholarship': 'Bourse d’étude',
   'other': 'Autre',
 };
-const annOrganizers = {'university': 'Université', 'company': 'Entreprise', 'ngo': 'ONG', 'government': 'Gouvernement', 'other': 'Autre'};
+const annOrganizers = {'university': 'Université', 'company': 'Organisation', 'ngo': 'ONG', 'government': 'Gouvernement', 'other': 'Autre'};
 
 /// Type d'organisateur proposé par défaut selon le rôle (une entreprise ne se présente pas comme une université).
 String defaultOrganizerKind(String role) => switch (role) {
@@ -712,15 +712,15 @@ class _AnnEditState extends ConsumerState<AnnouncementEditScreen> {
   Widget build(BuildContext context) {
     final role = roleKey(ref.watch(authProvider).current);
     if (!_canPost(role)) {
-      return MarchePage(title: 'Publier une annonce', child: mNote('La publication d’annonces est réservée à l’équipe, aux départements, aux entreprises et aux ONG.\nVotre compte ne peut pas publier.'));
+      return MarchePage(title: 'Publier une annonce', child: mNote('La publication d’annonces est réservée à l’équipe, aux départements et aux organisations.\nVotre compte ne peut pas publier.'));
     }
     return MarchePage(
       title: 'Publier une annonce',
       child: ListView(padding: const EdgeInsets.fromLTRB(16, 4, 16, 90), children: [
-        Text('Réservé à l’équipe, aux départements, aux entreprises et aux ONG. L’annonce est relue avant d’être publiée.', style: mst(13, c: kGrey).copyWith(height: 1.5)),
+        Text('Réservé à l’équipe, aux départements et aux organisations. L’annonce est relue avant d’être publiée.', style: mst(13, c: kGrey).copyWith(height: 1.5)),
         const SizedBox(height: 12),
         _f('title', 'Titre', hint: 'Bourse Canada, Hackathon…'),
-        _f('organizer', 'Organisateur', hint: 'Université, entreprise, ONG…'),
+        _f('organizer', 'Organisateur', hint: 'Université, organisation, ONG…'),
         MDropdown(label: 'Type d’organisateur', value: _orgKind, items: annOrganizers, onChanged: (v) => setState(() => _orgKind = v)),
         const SizedBox(height: 10),
         MDropdown(label: 'Type', value: _kind, items: {for (final e in annKinds.entries) if (e.key.isNotEmpty) e.key: e.value}, onChanged: (v) => setState(() => _kind = v)),

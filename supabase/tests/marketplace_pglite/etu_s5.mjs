@@ -175,6 +175,11 @@ export async function run(db) {
   // ============================================================ S5-1 / 5 / 6 / 7 / 19 / 22 / 23 / 24 / 27 / 41 : projets et équipes
   await db.exec('reset role');
   await db.exec(`update profiles set department = 'Informatique' where id = '${U(10)}'; update profiles set department = 'Gestion' where id = '${U(14)}'`);
+  // H2 : un responsable est rattaché à UN département par l'administrateur ; le département d'un projet est celui de son porteur.
+  await db.exec(`insert into institutions (id, name, status) values ('00000000-0000-0000-0000-00000000f501', 'IUT S5', 'verified');
+    insert into departments (id, institution_id, name, status) values ('00000000-0000-0000-0000-00000000f5a1', '00000000-0000-0000-0000-00000000f501', 'Informatique', 'verified'), ('00000000-0000-0000-0000-00000000f5a2', '00000000-0000-0000-0000-00000000f501', 'Gestion', 'verified');
+    update profiles set department_id = '00000000-0000-0000-0000-00000000f5a1', institution_id = '00000000-0000-0000-0000-00000000f501', department = 'Informatique' where id = '${U(1)}';
+    insert into department_accounts (user_id, department_id) values ('${U(10)}', '00000000-0000-0000-0000-00000000f5a1'), ('${U(14)}', '00000000-0000-0000-0000-00000000f5a2')`);
   const det = (extra = {}) => JSON.stringify({ domain: 'Agritech', problem: 'Les serres sont chères', solution: 'Une serre pilotée par capteurs', progress: 'prototype', contact_email: 'a@b.cm', ...extra }).replace(/'/g, "''");
   const save = (u, dept, extra = {}, publish = true, id = 'null', vis = 'public') => `select project_save_full(${id}, 'projet', 'Serre connectée ${u}', 'Une serre qui arrose toute seule grâce à des capteurs d''humidité.', '${dept}', '${det(extra)}'::jsonb, '[]'::jsonb, '${vis}', ${publish}) id`;
   await as(U(1));
@@ -190,8 +195,10 @@ export async function run(db) {
   check('review_project : le responsable du département valide', (await qa(`select status from projects where id = '${P1}'`))[0].status === 'approved');
   await as(U(1));
   const P2 = (await q(save(1, 'Génie civil')))[0].id;
-  await as(U(14)); await q(`select review_project('${P2}', true, '')`);
-  check('review_project : sans responsable correspondant, tout responsable peut valider', (await qa(`select status from projects where id = '${P2}'`))[0].status === 'approved');
+  await as(U(14));
+  await fails('review_project : sans responsable du département du porteur, un autre responsable ne valide plus (H2)', `select review_project('${P2}', true, '')`, /autre département/);
+  await as(U(11)); await q(`select review_project('${P2}', true, '')`);
+  check('review_project : l\'administration valide un projet sans responsable correspondant', (await qa(`select status from projects where id = '${P2}'`))[0].status === 'approved');
 
   // équipe
   await as(U(1));
@@ -274,10 +281,12 @@ export async function run(db) {
   await as(U(1));
   const C1 = (await q(`select save_campaign(null, 'project', 'x', 50000, 7, '${CAMP}', '', true, '${P2}') id`))[0].id;
   await fails('S5-28 : une seule campagne active par projet', `select save_campaign(null, 'project', 'x', 60000, 7, '${CAMP}', '', true, '${P2}')`, /une seule campagne active/);
-  check('save_campaign : responsables prévenus (aucun responsable du département => tous)', (await notifs(U(10), 'campaign', 'Campagne à examiner')).length === 1 && (await notifs(U(14), 'campaign', 'Campagne à examiner')).length === 1);
+  check('save_campaign : le responsable du département du porteur et l\'administration sont prévenus, pas un autre département (H2)', (await notifs(U(10), 'campaign', 'Campagne à examiner')).length === 1 && (await notifs(U(14), 'campaign', 'Campagne à examiner')).length === 0 && (await notifs(U(11), 'campaign', 'Campagne à examiner')).length === 1);
   await as(U(1));
   await fails('review_campaign : un étudiant ne valide pas', `select review_campaign('${C1}', true, '')`, /Réservé/);
-  await as(U(14)); await q(`select review_campaign('${C1}', true, '')`);
+  await as(U(14));
+  await fails('review_campaign : un responsable d\'un autre département ne valide pas (H2)', `select review_campaign('${C1}', true, '')`, /autre département/);
+  await as(U(10)); await q(`select review_campaign('${C1}', true, '')`);
   check('review_campaign : campagne ouverte, échéance fixée', (await qa(`select status, ends_at > now() ok from campaigns where id = '${C1}'`))[0].ok === true);
   // contributions
   const contrib = async (u, amount, declare, confirm) => {

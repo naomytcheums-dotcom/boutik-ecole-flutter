@@ -50,7 +50,8 @@ class _PortalState extends ConsumerState<StaffPortalScreen> {
   }
 
   void _go(String staff) {
-    final id = staffConsoleFor(staff);
+    // Finance et Support sont des équipes internes : leur point d'arrivée est le centre d'administration, qui n'affiche que les équipes et outils autorisés.
+    final id = staff == 'Finance' || staff == 'Support' ? '300' : staffConsoleFor(staff);
     if (id != null && mounted) context.go('/s/$id');
   }
 

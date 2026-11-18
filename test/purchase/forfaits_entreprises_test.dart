@@ -43,7 +43,7 @@ void main() {
           }),
     ]);
     expect(find.text('Orange Cameroun'), findsOneWidget);
-    expect(find.text('Entreprise vérifiée'), findsOneWidget);
+    expect(find.text('Organisation vérifiée'), findsOneWidget);
     expect(find.text('Forfait Entreprise'), findsOneWidget);
     expect(find.text('Actif jusqu’au 14/12/2026'), findsOneWidget); // date lisible (et non plus la date ISO brute)
     expect(find.text('Propositions à traiter'), findsOneWidget);
@@ -70,7 +70,7 @@ void main() {
       companyPlansProvider.overrideWith((ref) async => [for (final p in _plans) Map<String, dynamic>.from(p)]),
       companyPlanStatusProvider.overrideWith((ref) async => {'plan': _plans[0], 'requested': 'pro', 'used_needs': 1, 'used_offers': 0, 'used_contests': 0}),
     ]);
-    expect(find.text('Forfaits entreprise'), findsOneWidget);
+    expect(find.text('Forfaits de l’organisation'), findsOneWidget);
     expect(find.text('Votre forfait actuel'), findsOneWidget);
     expect(find.textContaining('Demande envoyée'), findsOneWidget);
     expect(find.text('Payer par Mobile Money'), findsNWidgets(2), reason: 'Entreprise et Partenaire sont payables en ligne');

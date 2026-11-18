@@ -18,6 +18,11 @@ export async function run(db) {
     await db.exec(`insert into auth.users(id,email) values ('${U(n)}','s3${n}@t.cm'); insert into profiles(id,name,role,email) values ('${U(n)}','Vendeur ${n}','${r}','s3${n}@t.cm')`);
   }
   await db.exec(`update profiles set certification = 'approved' where id in ('${U(51)}', '${U(57)}')`);
+  // H2 : le vendeur 51 et le responsable 55 sont dans le même département
+  await db.exec(`insert into institutions (id, name, status) values ('00000000-0000-0000-0000-00000000f401', 'IUT S3', 'verified');
+    insert into departments (id, institution_id, name, status) values ('00000000-0000-0000-0000-00000000f4a1', '00000000-0000-0000-0000-00000000f401', 'Genie', 'verified');
+    update profiles set department_id = '00000000-0000-0000-0000-00000000f4a1', institution_id = '00000000-0000-0000-0000-00000000f401' where id = '${U(51)}';
+    insert into department_accounts (user_id, department_id) values ('${U(55)}', '00000000-0000-0000-0000-00000000f4a1')`);
 
   // --- S3-11 : service « Sur devis »
   await as(U(51));

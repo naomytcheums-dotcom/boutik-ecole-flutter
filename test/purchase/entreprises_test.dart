@@ -16,7 +16,7 @@ void main() {
   test('statuts de vérification en toutes lettres', () {
     expect(companyStatusLabel('draft'), contains('Brouillon'));
     expect(companyStatusLabel('pending'), contains('vérification par l’administrateur'));
-    expect(companyStatusLabel('approved'), 'Entreprise vérifiée');
+    expect(companyStatusLabel('approved'), 'Organisation vérifiée');
     expect(companyStatusLabel('rejected'), 'Vérification refusée');
   });
 
@@ -29,10 +29,10 @@ void main() {
 
   testWidgets('fiche vide : brouillon, champs, pièces, envoi pour vérification', (t) async {
     await _pump(t, const CompanyProfileScreen(showNav: false), overrides: [companyProvider.overrideWith((ref) async => null)]);
-    expect(find.text('Fiche entreprise'), findsOneWidget);
+    expect(find.text('Fiche de l’organisation'), findsOneWidget);
     expect(find.textContaining('Brouillon'), findsOneWidget);
     expect(find.text('Nom de l’entreprise'), findsOneWidget);
-    expect(find.text('Numéro d’immatriculation (RCCM)'), findsOneWidget);
+    expect(find.text('RCCM / numéro d’immatriculation (facultatif)'), findsOneWidget);
     expect(find.text('Pièces justificatives'), findsOneWidget);
     expect(find.text('Aucune pièce pour le moment.'), findsOneWidget);
     expect(find.text('Enregistrer et envoyer pour vérification'), findsOneWidget);
@@ -62,7 +62,7 @@ void main() {
     await _pump(t, const CompanyProfileScreen(showNav: false), overrides: [
       companyProvider.overrideWith((ref) async => {'company_name': 'Orange', 'status': 'approved', 'documents': []}),
     ]);
-    expect(find.text('Entreprise vérifiée'), findsOneWidget);
+    expect(find.text('Organisation vérifiée'), findsOneWidget);
     expect(find.text('Enregistrer et envoyer pour vérification'), findsNothing);
   });
 
@@ -96,6 +96,6 @@ void main() {
 
   testWidgets('administrateur : aucune demande en attente', (t) async {
     await _pump(t, const CompanyReviewScreen(), overrides: [companyQueueProvider.overrideWith((ref) async => <Map<String, dynamic>>[])]);
-    expect(find.textContaining('Aucune entreprise en attente'), findsOneWidget);
+    expect(find.textContaining('Aucune organisation en attente'), findsOneWidget);
   });
 }

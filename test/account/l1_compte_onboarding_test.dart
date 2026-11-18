@@ -21,8 +21,8 @@ void main() {
   });
 
   group('inscription', () {
-    test('les quatre profils restent proposés au choix', () {
-      expect(selfServiceRoles, 4);
+    test('les trois profils restent proposés au choix (Client, Étudiant, Organisation : plus de rôle « Autre »)', () {
+      expect(selfServiceRoles, 3);
     });
 
     test('la version des conditions enregistrée a un format valide pour le serveur', () {

@@ -43,7 +43,7 @@ class G_177 extends ConsumerWidget {
       gP(331.5, 19.5, 28, 17, gImg('assets/figma/v/6a818f3296df50.svg')),
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
-      gP(24, 70, 225, 26, gText('Bienvenue, entreprise', 21, Color(0xFF111015), weight: 700)),
+      gP(24, 70, 225, 26, gText('Bienvenue, organisation', 21, Color(0xFF111015), weight: 700)),
       gP(24, 120, 342, 210, gBox(image: 'assets/figma/img/e48f8827338ec470670d1109125a15b7d0f21476.png', fit: BoxFit.cover, radii: [24, 24, 24, 24])),
       gP(24, 120, 342, 210, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00111015), Color(0xC7111015)], stops: [0, 1]), radii: [24, 24, 24, 24])),
       gP(42, 268, 309, 23, gText('Recrutez les talents de demain', 18, Color(0xFFFFFFFF), weight: 700, wrap: true)),

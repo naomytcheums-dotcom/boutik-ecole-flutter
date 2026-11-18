@@ -20,6 +20,11 @@ export async function run(db) {
   }
   await db.exec(`update profiles set certification = 'approved' where id in ('${U(61)}', '${U(62)}');
                  update profiles set department = 'Genie' where id in ('${U(61)}', '${U(65)}'); update profiles set department = 'Gestion' where id = '${U(66)}'`);
+  // H2 : département des vendeurs par identifiant, comptes Département rattachés à UN département
+  await db.exec(`insert into institutions (id, name, status) values ('00000000-0000-0000-0000-00000000f201', 'IUT G2', 'verified');
+    insert into departments (id, institution_id, name, status) values ('00000000-0000-0000-0000-00000000f2a1', '00000000-0000-0000-0000-00000000f201', 'Genie', 'verified'), ('00000000-0000-0000-0000-00000000f2a2', '00000000-0000-0000-0000-00000000f201', 'Gestion', 'verified');
+    update profiles set department_id = '00000000-0000-0000-0000-00000000f2a1', institution_id = '00000000-0000-0000-0000-00000000f201' where id in ('${U(61)}', '${U(62)}');
+    insert into department_accounts (user_id, department_id) values ('${U(65)}', '00000000-0000-0000-0000-00000000f2a1'), ('${U(66)}', '00000000-0000-0000-0000-00000000f2a2')`);
 
   // --- photo obligatoire pour un produit envoyé en validation
   await as(U(61));
@@ -47,7 +52,7 @@ export async function run(db) {
   check('file : les brouillons n\'y figurent pas', !qd.some((x) => x.id === D1));
   await as(U(66));
   check('file : un autre département ne la voit pas', !(await q(`select listing_review_queue() r`))[0].r.some((x) => x.id === L1));
-  await fails('autre département : validation refusée', `update listings set status = 'approved' where id = '${L1}'`, /autre département/);
+  check('autre département : validation impossible (l\'annonce lui est invisible, H2)', (await q(`update listings set status = 'approved' where id = '${L1}' returning id`)).length === 0);
   await as(U(63)); await fails('client : file refusée', `select listing_review_queue()`, /Réservé/);
   await as(U(67)); await fails('entreprise : file refusée', `select listing_review_queue()`, /Réservé/);
   await as(null, 'anon'); await fails('anonyme : file refusée', `select listing_review_queue()`, /(Réservé|permission)/);
@@ -169,3 +174,4 @@ export async function run(db) {
   console.log(`\n${ok} OK, ${ko} ECHEC`);
   if (ko) process.exitCode = 1;
 }
+

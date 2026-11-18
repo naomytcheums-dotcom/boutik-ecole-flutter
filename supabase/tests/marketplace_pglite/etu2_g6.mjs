@@ -25,6 +25,8 @@ export async function run(db) {
   await mk(STU, 'Alice Dupont', 'student'); await mk(PUB, 'Paul Public', 'student'); await mk(MEM, 'Marc Membre', 'student', `profile_visibility = 'members'`);
   await mk(PRI, 'Patrick Prive', 'student', `profile_visibility = 'private'`); await mk(SUS, 'Sam Suspendu', 'student'); await mk(BLK, 'Bruno Bloque', 'student');
   await mk(CLI, 'Claire Client', 'client'); await mk(CMP, 'Cam Entreprise', 'company'); await mk(DEP, 'Daniel Dept', 'dept'); await mk(ADM, 'Admin Root', 'admin'); await mk(STU2, 'Eve Etudiante', 'student');
+  // H2 : tous les comptes sont dans le département « Génie » ; le responsable y est rattaché par l'administrateur
+  await db.exec(`insert into institutions (id, name, status) values ('00000000-0000-0000-0000-00000000f601', 'IUT G6', 'verified'); insert into departments (id, institution_id, name, status) values ('00000000-0000-0000-0000-00000000f6a1', '00000000-0000-0000-0000-00000000f601', 'Génie', 'verified'); update profiles set department_id = '00000000-0000-0000-0000-00000000f6a1', institution_id = '00000000-0000-0000-0000-00000000f601' where department = 'Génie' and role <> 'dept'; insert into department_accounts (user_id, department_id) values ('${DEP}', '00000000-0000-0000-0000-00000000f6a1')`);
   const post = async (id, author, caption) => db.exec(`insert into posts (id, author_id, kind, media_path, media_kind, caption, status, published_at) values ('${id}', '${author}', 'media', '${author}/p.jpg', 'image', '${caption}', 'published', now())`);
   const P = (n) => `00000000-0000-0000-0000-0000006a${String(n).padStart(4, '0')}`;
   await post(P(1), PUB, 'pub'); await post(P(2), MEM, 'mem'); await post(P(3), PRI, 'pri'); await post(P(4), SUS, 'sus'); await post(P(5), BLK, 'blk'); await post(P(6), STU, 'moi');
@@ -330,3 +332,4 @@ export async function run(db) {
 
   console.log(`\n${ok}/${ok + ko}`);
 }
+

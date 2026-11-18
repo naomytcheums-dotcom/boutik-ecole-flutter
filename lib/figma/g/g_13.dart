@@ -9,6 +9,7 @@ import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
 import '../live/auth.dart';
+import '../live/org_types.dart' show orgTypeByCode;
 import '../live/seller.dart';
 import '../live/review.dart';
 import '../live/audit.dart';
@@ -75,28 +76,21 @@ class G_13 extends ConsumerWidget {
       gP(276, 368, 74, 24, gBox(color: Color(0xFF111015), radii: [12, 12, 12, 12]), show: (ref.watch(signupRoleProvider) == 1)),
       gP(282, 373.5, 62, 13, gText('Sélectionné', 10.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center), show: (ref.watch(signupRoleProvider) == 1)),
       gP(24, 486, 342, 118, gBox(color: Color(0xFFFFFFFF), radii: [28.0, 28.0, 28.0, 28.0]), show: ref.watch(signupRoleProvider) != 2),
-      gP(24, 616, 342, 118, gBox(color: Color(0xFFFFFFFF), radii: [28.0, 28.0, 28.0, 28.0]), show: ref.watch(signupRoleProvider) != 3),
       gP(44, 517, 56, 56, gBox(color: Color(0xFFF1EEFB), radii: [18, 18, 18, 18])),
       gP(57.333, 536.167, 29.333, 22.333, gImg('assets/figma/v/ed6763c2b1ff1f.svg')),
       gP(64.333, 531.5, 15.333, 27, gImg('assets/figma/v/95747c6d5f85d5.svg')),
       gP(24, 486, 342, 118, gBox(color: Color(0xFFFFFDF7), border: Color(0xFFF5B730), bw: 2.5, radii: [24.0, 24.0, 24.0, 24.0]), show: ref.watch(signupRoleProvider) == 2),
-      gP(118, 513.5, 83, 21, gText('Entreprise', 16.5, Color(0xFF111015), weight: 600)),
+      gP(118, 513.5, 140, 21, gText('Organisation', 16.5, Color(0xFF111015), weight: 600)),
       gP(276, 498, 74, 24, gBox(color: Color(0xFF111015), radii: [12.0, 12.0, 12.0, 12.0]), show: ref.watch(signupRoleProvider) == 2),
       gP(282, 504, 62, 13, gText('Sélectionné', 10, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center, wrap: true), show: ref.watch(signupRoleProvider) == 2),
-      gP(118, 544, 186, 36, gText('Découvrez des talents et lancez\ndes collaborations.', 12.5, Color(0xFF57545F), lh: 18)),
+      gP(118, 544, 200, 54, gText('Entreprise, association, ONG,\ncoopérative, fondation, institution…', 12.5, Color(0xFF57545F), lh: 18, wrap: true)),
       gP(328, 500, 20, 20, gBox(border: Color(0xFF57545F), bw: 1.8, oval: true)),
-      gP(44, 647, 56, 56, gBox(color: Color(0xFFF1EEFB), radii: [18, 18, 18, 18])),
-      gP(57.333, 675.5, 22.333, 13, gImg('assets/figma/v/10c680750e7ca9.svg')),
-      gP(60.833, 661.5, 15.333, 15.333, gImg('assets/figma/v/87914a6b9ef7bc.svg')),
-      gP(77.167, 675.652, 9.5, 12.848, gImg('assets/figma/v/eb66e0814a913b.svg')),
-      gP(73.667, 661.652, 9.509, 15.042, gImg('assets/figma/v/d57d30d032eb7f.svg')),
-      gP(24, 616, 342, 118, gBox(color: Color(0xFFFFFDF7), border: Color(0xFFF5B730), bw: 2.5, radii: [24.0, 24.0, 24.0, 24.0]), show: ref.watch(signupRoleProvider) == 3),
-      gP(118, 643.5, 146, 21, gText('Autre rôle autorisé', 16.5, Color(0xFF111015), weight: 600)),
-      gP(276, 628, 74, 24, gBox(color: Color(0xFF111015), radii: [12.0, 12.0, 12.0, 12.0]), show: ref.watch(signupRoleProvider) == 3),
-      gP(282, 634, 62, 13, gText('Sélectionné', 10, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center, wrap: true), show: ref.watch(signupRoleProvider) == 3),
-      gP(118, 674, 151, 36, gText('Association, ONG ou autre\norganisation partenaire.', 12.5, Color(0xFF57545F), lh: 18)),
-      gP(328, 630, 20, 20, gBox(border: Color(0xFF57545F), bw: 1.8, oval: true)),
-      gP(24, 736, 342, 26, gText(switch (ref.watch(signupRoleProvider)) { 2 => 'Publication de besoins, d’offres et de concours : après vérification de la fiche de votre entreprise (pièces justificatives) par l’administrateur.', 3 => 'Association, ONG ou organisation : vérifiée comme une entreprise (fiche et pièces justificatives) avant de publier.', _ => 'Vente, annuaire des talents et invitations d’entreprises : après vérification de votre carte d’étudiant par l’équipe.' }, 11, Color(0xFF57545F), lh: 13, wrap: true), show: !demoContent),
+      gP(24, 616, 342, 86, gBox(color: Color(0xFFFFFDF7), border: Color(0xFFF5B730), bw: 2.5, radii: [24.0, 24.0, 24.0, 24.0]), show: ref.watch(signupRoleProvider) == 2),
+      gP(44, 630, 300, 18, gText('Type d’organisation', 12, Color(0xFF57545F), weight: 600), show: ref.watch(signupRoleProvider) == 2),
+      gP(44, 652, 270, 40, gText(orgTypeByCode[ref.watch(signupOrgTypeProvider)]?.label ?? 'Choisir le type…', 15.5, orgTypeByCode.containsKey(ref.watch(signupOrgTypeProvider)) ? Color(0xFF111015) : Color(0xFF5A3FE0), weight: 600, wrap: true), show: ref.watch(signupRoleProvider) == 2),
+      gP(318, 650, 30, 30, const Icon(Icons.expand_more_rounded, color: Color(0xFF57545F)), show: ref.watch(signupRoleProvider) == 2),
+      gP(24, 710, 342, 26, gText('Votre type fixe les pièces justificatives demandées.', 11, Color(0xFF57545F), lh: 13, wrap: true), show: ref.watch(signupRoleProvider) == 2),
+      gP(24, 736, 342, 26, gText(switch (ref.watch(signupRoleProvider)) { 2 => 'Publication de besoins, d’offres et de concours : après vérification de la fiche de votre organisation (pièces justificatives selon son type) par l’administrateur.', _ => 'Vente, annuaire des talents et invitations d’organisations : après vérification de votre carte d’étudiant par l’équipe.' }, 11, Color(0xFF57545F), lh: 13, wrap: true), show: !demoContent && ref.watch(signupRoleProvider) != 2),
       gP(24, 762, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x29122640), offset: Offset(0, 5), blurRadius: 12, spreadRadius: 0)], radii: [27, 27, 27, 27])),
       gP(142.5, 779, 77, 20, gText('Continuer', 16, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),
       gP(230.25, 786, 16.5, 6, gImg('assets/figma/v/2d30ecf6147fbb.svg')),
@@ -105,7 +99,7 @@ class G_13 extends ConsumerWidget {
       gTap(24, 226, 342, 118, () { ref.read(signupRoleProvider.notifier).set(0); }),
       gTap(24, 356, 342, 118, () { ref.read(signupRoleProvider.notifier).set(1); }),
       gTap(24, 486, 342, 118, () { ref.read(signupRoleProvider.notifier).set(2); }),
-      gTap(24, 616, 342, 118, () { ref.read(signupRoleProvider.notifier).set(3); }),
+      if (ref.watch(signupRoleProvider) == 2) gTap(24, 616, 342, 86, () { pickOrgType(context, ref); }),
       gTap(24, 762, 342, 54, () { submitRole(ref, context); }),
     ]);
   }

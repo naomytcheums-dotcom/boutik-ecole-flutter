@@ -102,14 +102,14 @@ void main() {
       await monter(t, const CompanyPublicPage(ownerId: 'o1'), h: 1800);
       expect(srv.of('company_public').single['p_owner'], 'o1');
       expect(find.text('Orange Cameroun'), findsWidgets);
-      expect(find.text('Entreprise vérifiée'), findsOneWidget);
+      expect(find.text('Organisation vérifiée'), findsOneWidget);
       expect(find.text('Offres ouvertes'), findsOneWidget);
       expect(find.text('Recrutés'), findsOneWidget);
       expect(find.text('Stage développeur'), findsOneWidget);
       expect(find.text('Défi Orange Digital'), findsOneWidget);
       expect(find.text('Refonte du site'), findsOneWidget);
       expect(find.text('Modifier la fiche'), findsNothing);
-      expect(find.byTooltip('Partager la page de l’entreprise'), findsOneWidget);
+      expect(find.byTooltip('Partager la page de l’organisation'), findsOneWidget);
       expect(t.takeException(), isNull);
     });
 
@@ -121,17 +121,17 @@ void main() {
       srv.handlers['company_public'] = (_) => null;
       await monter(t, const CompanyPublicPage(ownerId: 'o2'));
       expect(find.textContaining('n’a pas de fiche publique'), findsOneWidget);
-      expect(find.byTooltip('Partager la page de l’entreprise'), findsNothing);
-      expect(find.text('Entreprise vérifiée'), findsNothing);
+      expect(find.byTooltip('Partager la page de l’organisation'), findsNothing);
+      expect(find.text('Organisation vérifiée'), findsNothing);
     });
 
     testWidgets('fiche non approuvée vue par son propriétaire : statut réel, page non publique, accès à la modification', (t) async {
       srv.handlers['company_public'] = (_) => _fiche(verified: false, mine: true, status: 'pending');
       await monter(t, const CompanyPublicPage(ownerId: 'o1'));
-      expect(find.text('Entreprise vérifiée'), findsNothing);
+      expect(find.text('Organisation vérifiée'), findsNothing);
       expect(find.textContaining('En cours de vérification'), findsOneWidget);
       expect(find.textContaining('visible que de vous'), findsOneWidget);
-      expect(find.byTooltip('Partager la page de l’entreprise'), findsNothing);
+      expect(find.byTooltip('Partager la page de l’organisation'), findsNothing);
       await t.ensureVisible(find.text('Modifier la fiche'));
       await t.tap(find.text('Modifier la fiche'));
       await t.pumpAndSettle();
@@ -145,7 +145,7 @@ void main() {
       srv.handlers['company_public'] = (_) => _fiche();
       await t.tap(find.text('Réessayer'));
       await t.pumpAndSettle();
-      expect(find.text('Entreprise vérifiée'), findsOneWidget);
+      expect(find.text('Organisation vérifiée'), findsOneWidget);
       expect(srv.of('company_public').length, 2);
     });
 
@@ -180,7 +180,7 @@ void main() {
       serveur();
       srv.handlers['company_billing_context_set'] = (p) => p['p_owner'];
       await monter(t, const CompanyPurchasesScreen());
-      expect(find.textContaining('Aucune commande au nom de l’entreprise'), findsOneWidget);
+      expect(find.textContaining('Aucune commande au nom de l’organisation'), findsOneWidget);
       final sw = find.byType(Switch);
       expect(sw, findsOneWidget);
       expect(t.getSize(find.ancestor(of: sw, matching: find.byType(SizedBox)).first).height, greaterThanOrEqualTo(48));
@@ -385,10 +385,10 @@ void main() {
     testWidgets('entreprise non vérifiée : aucun talent, raison du serveur et lien vers la fiche ; erreur : Réessayer', (t) async {
       serveur(locked: true);
       await panneau(t);
-      expect(find.textContaining('réservée aux entreprises vérifiées'), findsOneWidget);
+      expect(find.textContaining('réservée aux organisations vérifiées'), findsOneWidget);
       expect(find.textContaining('doit être vérifiée par l’administrateur'), findsOneWidget);
       expect(find.byTooltip('Enregistrer dans une liste du vivier'), findsNothing);
-      await t.tap(find.text('Compléter la fiche entreprise'));
+      await t.tap(find.text('Compléter la fiche d’organisation'));
       await t.pumpAndSettle();
       expect(find.text('fiche entreprise'), findsOneWidget);
       srv.handlers['talents_search'] = (_) => throw 'Le service ne répond pas pour le moment.';

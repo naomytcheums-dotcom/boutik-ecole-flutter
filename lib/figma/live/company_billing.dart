@@ -74,13 +74,13 @@ class _BillingState extends ConsumerState<CompanyBillingCard> {
       mSectionTitle('Facturation des achats'),
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-        child: Text('Reprise automatiquement sur les commandes et factures passées au nom de l’entreprise. La raison sociale et le RCCM viennent de la fiche.', style: mst(12, c: kGrey).copyWith(height: 1.4)),
+        child: Text('Reprise automatiquement sur les commandes et factures passées au nom de l’organisation. La raison sociale et le RCCM viennent de la fiche.', style: mst(12, c: kGrey).copyWith(height: 1.4)),
       ),
       async.when(
         loading: () => const Padding(padding: EdgeInsets.all(24), child: Center(child: CircularProgressIndicator())),
         error: (e, _) => Padding(padding: const EdgeInsets.fromLTRB(16, 0, 16, 10), child: Text(e is MarcheException ? e.toString() : marcheErrorText('$e'), style: mst(12.5, c: kGrey))),
         data: (b) {
-          if (b == null) return Padding(padding: const EdgeInsets.fromLTRB(16, 0, 16, 10), child: Text('Enregistrez d’abord la fiche de l’entreprise pour renseigner sa facturation.', style: mst(12.5, c: kGrey)));
+          if (b == null) return Padding(padding: const EdgeInsets.fromLTRB(16, 0, 16, 10), child: Text('Enregistrez d’abord la fiche de l’organisation pour renseigner sa facturation.', style: mst(12.5, c: kGrey)));
           _fill(b);
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -89,7 +89,7 @@ class _BillingState extends ConsumerState<CompanyBillingCard> {
               Padding(padding: const EdgeInsets.only(bottom: 10), child: TextField(controller: _tax, maxLength: 40, decoration: _dec('NIU (numéro d’identifiant unique)'))),
               Padding(padding: const EdgeInsets.only(bottom: 10), child: TextField(controller: _addr, maxLength: 200, maxLines: 2, decoration: _dec('Adresse de facturation'))),
               Padding(padding: const EdgeInsets.only(bottom: 10), child: TextField(controller: _city, maxLength: 80, decoration: _dec('Ville'))),
-              Padding(padding: const EdgeInsets.only(bottom: 10), child: TextField(controller: _mail, maxLength: 120, keyboardType: TextInputType.emailAddress, decoration: _dec('E-mail de facturation', hint: 'comptabilite@entreprise.cm'))),
+              Padding(padding: const EdgeInsets.only(bottom: 10), child: TextField(controller: _mail, maxLength: 120, keyboardType: TextInputType.emailAddress, decoration: _dec('E-mail de facturation', hint: 'comptabilite@organisation.cm'))),
               mButton('Enregistrer la facturation', () => _save(owner), busy: _busy, icon: Icons.receipt_long_outlined),
             ]),
           );

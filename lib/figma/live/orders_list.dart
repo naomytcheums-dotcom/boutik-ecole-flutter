@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart' show GoRouter;
 
 import '../../data/demo/section_a_demo.dart' show CartLine;
 import '../../data/repositories/repositories.dart' show cartProvider;
 import '../gen.dart';
 import '../nav.dart';
+import 'client_space.dart' show clientSpaceProvider;
 import 'store.dart';
 
 /// Liste de « Mes commandes » (écrans 45 et 28) : toutes les commandes dans une zone défilante, avec recherche, filtre par état et tri réels.
@@ -143,11 +145,21 @@ class ClientSummary extends ConsumerWidget {
             ),
           ),
         );
-    Widget link(String label, VoidCallback onTap) => GestureDetector(
+    Widget link(String label, VoidCallback onTap, {String? count}) => GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: onTap,
-          child: Padding(padding: const EdgeInsets.symmetric(vertical: 10), child: Row(children: [Expanded(child: gText(label, 13, const Color(0xFF111015), weight: 600, wrap: true)), const Icon(Icons.chevron_right, size: 20, color: Color(0xFF57545F))])),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 48),
+            child: Row(children: [
+              Expanded(child: gText(label, 13, const Color(0xFF111015), weight: 600, wrap: true)),
+              if (count != null) Padding(padding: const EdgeInsets.only(right: 4), child: gText(count, 12.5, const Color(0xFF57545F), weight: 600)),
+              const Icon(Icons.chevron_right, size: 20, color: Color(0xFF57545F)),
+            ]),
+          ),
         );
+    final space = ref.watch(clientSpaceProvider).asData?.value;
+    String? n(String k) => space == null || space[k] == null ? null : '${space[k]}';
+    final openCases = space == null ? null : ((space['disputes_open'] as num? ?? 0) + (space['claims_open'] as num? ?? 0)).toInt();
     return SizedBox(
       width: width,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -168,8 +180,12 @@ class ClientSummary extends ConsumerWidget {
               gOpen(context, '09');
             }),
         const SizedBox(height: 6),
-        link('Voir toutes mes commandes', () => gOpen(context, '45')),
-        link('Mes adresses de livraison', () => gOpen(context, '27')),
+        link('Mes commandes et leur suivi', () => gOpen(context, '45')),
+        link('Mes favoris', () => gOpen(context, '25'), count: n('favorites')),
+        link('Mes adresses de livraison', () => gOpen(context, '27'), count: n('addresses')),
+        link('Mes avis', () => GoRouter.of(context).push('/mes-avis'), count: n('reviews')),
+        link('Mes litiges et réclamations', () => GoRouter.of(context).push('/litiges'), count: openCases == null ? null : '$openCases en cours'),
+        link('Mes informations personnelles', () => GoRouter.of(context).push('/parametres/informations')),
       ]),
     );
   }

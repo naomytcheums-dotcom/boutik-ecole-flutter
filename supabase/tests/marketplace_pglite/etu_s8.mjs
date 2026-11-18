@@ -311,9 +311,9 @@ export async function run(db) {
 
   // ============================================================ S8-24 : un client ne publie pas d'offre
   await as(U(16));
-  await fails('S8-24 : le rôle client ne publie pas d\'offre (SQL aligné sur Flutter)', post('Offre client', 'false'), /Réservé aux entreprises/);
+  await fails('S8-24 : le rôle client ne publie pas d\'offre (SQL aligné sur Flutter)', post('Offre client', 'false'), /Réservé aux (entreprises|organisations)/);
   await as(U(11));
-  await fails('S8-24 : ni l\'étudiant connecté', post('Offre étudiant', 'false'), /Réservé aux entreprises/);
+  await fails('S8-24 : ni l\'étudiant connecté', post('Offre étudiant', 'false'), /Réservé aux (entreprises|organisations)/);
 
   console.log(`\n${ok}/${ok + ko}`);
 }

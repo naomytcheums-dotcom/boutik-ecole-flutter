@@ -384,9 +384,9 @@ class AddToProfilePage extends ConsumerWidget {
         TpEmpty(
           title: 'Réservé aux étudiants',
           text: org
-              ? 'Les compétences, réalisations et documents de cette page alimentent la liste des talents, qui présente les étudiants. Pour une entreprise, c’est la fiche entreprise (secteur, présentation, logo, pièces) qui compte.'
+              ? 'Les compétences, réalisations et documents de cette page alimentent la liste des talents, qui présente les étudiants. Pour une organisation, c’est la fiche d’organisation (type, secteur, présentation, logo, pièces) qui compte.'
               : 'Les compétences, réalisations et documents de cette page alimentent la liste des talents, qui présente les étudiants. Votre profil n’y apparaît pas : complétez plutôt votre description et votre ville.',
-          action: org ? 'Compléter la fiche entreprise' : 'Modifier mon profil',
+          action: org ? 'Compléter la fiche d’organisation' : 'Modifier mon profil',
           onAction: () => org ? GoRouter.of(context).push('/entreprise/profil') : editProfileDialog(context, ref),
           icon: Icons.school_outlined,
         ),

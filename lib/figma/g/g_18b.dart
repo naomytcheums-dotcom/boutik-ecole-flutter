@@ -33,9 +33,9 @@ class G_18b extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Une entreprise ou une organisation n'a ni établissement, ni département, ni date de naissance à indiquer : son nom de société et ses pièces vont dans la fiche entreprise.
+    // Une organisation n'a ni établissement, ni département, ni date de naissance à indiquer : son nom, son type et ses pièces vont dans la fiche d'organisation.
     final acc = ref.watch(profileAccountProvider);
-    final co = !demoContent && acc.staff.isEmpty && (acc.role == 2 || acc.role == 3);
+    final co = !demoContent && acc.staff.isEmpty && acc.role == 2;
     return GScreen(w: 390, h: 900, radius: 34, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 147, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 624, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
@@ -80,7 +80,7 @@ class G_18b extends ConsumerWidget {
       gP(24, 426, 342, 52, GField(key: ValueKey('pf_city${ref.watch(cityDetectProvider)}'), hint: 'Votre ville', initial: ref.read(formProvider)['pf_city'] ?? ref.read(profileAccountProvider).city, size: 14.5, hintColor: Color(0xFF111015), weight: 500, padL: 52, onChanged: (v) { ref.read(formProvider.notifier).put('pf_city', v); })),
       gP(40.667, 441.083, 18.667, 21.833, gImg('assets/figma/v/ca6f47051d57ee.svg')),
       gP(44.625, 445.042, 10.75, 10.75, gImg('assets/figma/v/e4edba8fd4f28c.svg')),
-      gP(24, 486, 342, 90, gText('Le nom de votre société, son secteur, ses coordonnées et vos pièces justificatives se renseignent dans la fiche entreprise (menu du compte), que l’administrateur vérifie avant que vous puissiez publier. Aucune carte d’étudiant n’est demandée.', 13, Color(0xFF57545F), lh: 19, wrap: true), show: co),
+      gP(24, 486, 342, 90, gText('Le nom de votre organisation, son type, ses coordonnées et vos pièces justificatives se renseignent dans la fiche d’organisation (menu du compte), que l’administrateur vérifie avant que vous puissiez publier. Aucune carte d’étudiant n’est demandée.', 13, Color(0xFF57545F), lh: 19, wrap: true), show: co),
       gP(24, 486, 90, 16, gText('Établissement', 13, Color(0xFF111015), weight: 600), show: !co),
       gP(24, 510, 342, 52, demoContent ? GField(hint: '', initial: ref.read(profileAccountProvider).institution, size: 14.5, hintColor: Color(0xFF111015), weight: 500, padL: 52) : PickerField(nameKey: 'pf_inst_name', fallback: ref.read(profileAccountProvider).institution, placeholder: 'Sélectionnez votre établissement', onTap: () => chooseInstitution(context, ref)), show: !co),
       gP(39.875, 540.125, 20.25, 6, gImg('assets/figma/v/9fb7039520b7d8.svg'), show: !co),

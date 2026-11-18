@@ -262,13 +262,13 @@ class _CvSharePanelState extends ConsumerState<CvSharePanel> {
         Expanded(child: l10Btn('Partager', () => shareText(context, 'Mon CV sur Boutik-École : $url'), dark: false, compact: true)),
       ]),
       const SizedBox(height: 8),
-      l10Btn('Envoyer à une entreprise', () async {
-        final mail = await askText(context, title: 'Envoyer mon CV', body: 'Adresse e-mail du compte de l’entreprise sur Boutik-École. Elle reçoit une notification avec votre lien.', hint: 'contact@entreprise.cm', ok: 'Envoyer', min: 5);
+      l10Btn('Envoyer à une organisation', () async {
+        final mail = await askText(context, title: 'Envoyer mon CV', body: 'Adresse e-mail du compte de l’organisation sur Boutik-École. Elle reçoit une notification avec votre lien.', hint: 'contact@organisation.cm', ok: 'Envoyer', min: 5);
         if (mail == null || !mounted) return;
         final r = await Backend.rpc('send_cv_to_recruiter', {'p_email': mail, 'p_message': ''});
         if (!mounted) return;
         if (r.error != null) return gAlert(context, 'Envoi impossible', r.error!);
-        gToast(context, 'Demande enregistrée. Si cette adresse est celle d’un compte entreprise, votre CV lui est envoyé.');
+        gToast(context, 'Demande enregistrée. Si cette adresse est celle d’un compte organisation, votre CV lui est envoyé.');
       }, dark: false, width: w, compact: true),
       const SizedBox(height: 8),
       l10Btn('Télécharger en PDF', () => uiSoon(context, 'Télécharger le CV en PDF', 'Partagez le lien de votre CV : il s’ouvre dans tout navigateur et peut être imprimé.'), dark: false, width: w, compact: true),
@@ -335,14 +335,14 @@ class CvTalentScreen extends ConsumerWidget {
                       : ListView(padding: const EdgeInsets.only(bottom: 30), children: [
                           CvSections(cv: d),
                           const SizedBox(height: 20),
-                          if (!own && const {'company', 'client', 'other', 'dept', 'admin'}.contains(roleKey(ref.watch(authProvider).current))) ...[
+                          if (!own && const {'company', 'client', 'dept', 'admin'}.contains(roleKey(ref.watch(authProvider).current))) ...[
                             l10Btn('Proposer un stage', () => _contact(context, ref, user, 'internship_offer'), width: 342),
                             const SizedBox(height: 8),
                             l10Btn('Contacter', () => _contact(context, ref, user, 'contact'), dark: false, width: 342),
                             const SizedBox(height: 8),
-                            Text('Réservé aux entreprises, aux clients et au département. Dix demandes par jour au plus.', style: l10St(11, c: l10Grey)),
+                            Text('Réservé aux organisations, aux clients et au département. Dix demandes par jour au plus.', style: l10St(11, c: l10Grey)),
                           ] else if (!own)
-                            Text('Les propositions de stage et les demandes de contact sont réservées aux entreprises, aux clients et au département.', style: l10St(11, c: l10Grey))
+                            Text('Les propositions de stage et les demandes de contact sont réservées aux organisations, aux clients et au département.', style: l10St(11, c: l10Grey))
                           else
                             l10Btn('Partager mon CV', () => gOpen(context, '228'), width: 342),
                         ]),

@@ -17,6 +17,12 @@ export async function run(db) {
     await db.exec(`insert into auth.users(id,email) values ('${U(n)}','u${n}@t.cm'); insert into profiles(id,name,role,email) values ('${U(n)}','Profil Complet ${n}','${r}','u${n}@t.cm')`);
   }
 
+  // H2 : le responsable (15) est rattaché au département « Genie » par l'administrateur
+  await db.exec(`insert into institutions (id, name, status) values ('00000000-0000-0000-0000-00000000f301', 'IUT Visiteur', 'verified');
+    insert into departments (id, institution_id, name, status) values ('00000000-0000-0000-0000-00000000f3a1', '00000000-0000-0000-0000-00000000f301', 'Genie', 'verified');
+    insert into department_accounts (user_id, department_id) values ('${U(15)}', '00000000-0000-0000-0000-00000000f3a1');
+    update profiles set department_id = '00000000-0000-0000-0000-00000000f3a1', institution_id = '00000000-0000-0000-0000-00000000f301' where id = '${U(12)}'`);
+
   // 1. projets : un projet privé n'est pas servi aux visiteurs
   await db.exec(`insert into projects (id, owner_id, kind, title, summary, status, visibility) values
     ('00000000-0000-0000-0000-0000000000a1', '${U(11)}', 'projet', 'Projet public', 'x', 'approved', 'public'),

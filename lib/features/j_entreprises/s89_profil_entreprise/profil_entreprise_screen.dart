@@ -81,7 +81,7 @@ class _ProfilEntrepriseScreenState extends ConsumerState<ProfilEntrepriseScreen>
                       child: Semantics(
                         header: true,
                         child: Text(
-                          'Profil de l’entreprise',
+                          'Profil de l’organisation',
                           textAlign: TextAlign.center,
                           style: AppText.h3.copyWith(fontSize: 16, fontWeight: FontWeight.w600),
                         ),

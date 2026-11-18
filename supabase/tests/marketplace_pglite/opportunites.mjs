@@ -17,7 +17,7 @@ export async function run(db) {
   };
   // --- publication
   await as(A);
-  await fails('publication : reservee aux organisations', post('Moi', 'stage', 'Stage test'), /Réservé aux entreprises/);
+  await fails('publication : reservee aux organisations', post('Moi', 'stage', 'Stage test'), /Réservé aux organisations/);
   await as(B);
   await fails('publication : description trop courte', `select opp_save('Orange', 'stage', '', 'Stage dev', '', 'onsite', '', 'paid', 50000, '', null, array[]::text[], 'court', array[]::text[], '', '', '', array[]::text[], '', true, '', false)`, /20 caractères/);
   await fails('publication : un moyen de postuler obligatoire', post('Orange', 'stage', 'Stage dev', { app: 'false' }), /moyen de postuler/);

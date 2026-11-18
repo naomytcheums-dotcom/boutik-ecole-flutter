@@ -61,8 +61,8 @@ Future<_PublishInfo> _loadPublishInfo(WidgetRef ref) async {
   if (role == 2) {
     try {
       final c = await ref.read(companyProvider.future);
-      if (c == null) return const _PublishInfo(canPublish: false, message: 'Renseignez et faites vérifier la fiche de votre entreprise avant de publier un besoin (menu Espace entreprise › Fiche entreprise).');
-      if ('${c['status']}' != 'approved') return const _PublishInfo(canPublish: false, message: 'La fiche de votre entreprise n’est pas encore vérifiée : vous pouvez enregistrer des brouillons, la publication s’ouvre après la vérification.');
+      if (c == null) return const _PublishInfo(canPublish: false, message: 'Renseignez et faites vérifier la fiche de votre organisation avant de publier un besoin (menu Espace organisation › Fiche de l’organisation).');
+      if ('${c['status']}' != 'approved') return const _PublishInfo(canPublish: false, message: 'La fiche de votre organisation n’est pas encore vérifiée : vous pouvez enregistrer des brouillons, la publication s’ouvre après la vérification.');
     } catch (_) {}
   }
   return const _PublishInfo();

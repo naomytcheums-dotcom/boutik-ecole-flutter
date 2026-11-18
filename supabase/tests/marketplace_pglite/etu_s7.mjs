@@ -17,6 +17,10 @@ export async function run(db) {
   for (const [n, name, role, dep] of users) {
     await db.exec(`insert into auth.users(id,email) values ('${U(n)}','u${n}@t.cm'); insert into profiles(id,name,role,email,department) values ('${U(n)}','${name}','${role}','u${n}@t.cm','${dep}')`);
   }
+  // H2 : les étudiants sont rattachés à leur département par identifiant ; la responsable (5) l'est au département « GI » par l'administrateur.
+  await db.exec(`insert into institutions (id, name, status) values ('00000000-0000-0000-0000-00000000f701', 'IUT S7', 'verified'); insert into departments (id, institution_id, name, status) values ('00000000-0000-0000-0000-00000000f7a1', '00000000-0000-0000-0000-00000000f701', 'GI', 'verified'), ('00000000-0000-0000-0000-00000000f7a2', '00000000-0000-0000-0000-00000000f701', 'Gestion', 'verified'); update profiles set department_id = '00000000-0000-0000-0000-00000000f7a1' where role = 'student' and department = 'GI'; update profiles set department_id = '00000000-0000-0000-0000-00000000f7a2' where role = 'student' and department = 'Gestion'; insert into department_accounts (user_id, department_id) values ('${U(5)}', '00000000-0000-0000-0000-00000000f7a1')`);
+  // Équipes internes (lot H4) : l'agent de support de ce scénario modère aussi les contenus (équipe Sécurité et modération, droit explicite).
+  await db.exec(`insert into admin_team_members (user_id, team_code, permissions) values ('${U(6)}', 'security', array['security.moderation', 'security.reports'])`);
   const cid = '00000000-0000-0000-0000-0000000007c1', pubc = '00000000-0000-0000-0000-0000000007c2';
   await db.exec(`insert into communities (id, name, privacy, status, owner_id) values ('${cid}', 'Cercle privé GI', 'invite', 'active', '${U(1)}'), ('${pubc}', 'Club public', 'public', 'active', '${U(1)}')`);
   await db.exec(`insert into community_members (community_id, user_id, role, status) values
@@ -257,7 +261,7 @@ export async function run(db) {
   await db.exec(`insert into daily_checkins (user_id, day) select '${U(8)}', ((now() at time zone 'Africa/Douala')::date - g) from generate_series(0, 6) g`);
   await as(U(8));
   await fails('boost : message clair quand seules des publications attendent la validation', `select claim_streak_boost()`, /attend la validation du département/);
-  await as(U(5));
+  await as(U(4)); // H2 : les publications d'Éric (département Gestion) ne relèvent pas de la responsable GI : l'administration les valide
   for (const p of await q(`select (jsonb_array_elements(moderation_posts_list('pending'))->>'id') id`)) {
     await q(`select moderate_post('${p.id}', true, null)`);
   }
@@ -320,3 +324,4 @@ export async function run(db) {
 
   console.log(`\n${ok}/${ok + ko}`);
 }
+

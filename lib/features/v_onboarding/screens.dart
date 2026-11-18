@@ -12,7 +12,7 @@ const _s = 'V';
 final sectionVScreens = <ScreenEntry>[
   ScreenEntry('175', 'Bienvenue, étudiant', (_) => const BienvenueEtudiantScreen(), section: _s, node: '61:306'),
   ScreenEntry('176', 'Bienvenue', (_) => const BienvenueClientScreen(), section: _s, node: '61:360'),
-  ScreenEntry('177', 'Bienvenue, entreprise', (_) => const BienvenueEntrepriseScreen(), section: _s, node: '61:413'),
+  ScreenEntry('177', 'Bienvenue, organisation', (_) => const BienvenueEntrepriseScreen(), section: _s, node: '61:413'),
   ScreenEntry('178', 'Bienvenue, jury', (_) => const BienvenueJuryScreen(), section: _s, node: '61:466'),
   ScreenEntry('179', 'Guide d’utilisation', (_) => const GuideScreen(), section: _s, node: '61:516'),
   ScreenEntry(

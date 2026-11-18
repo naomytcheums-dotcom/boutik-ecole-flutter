@@ -6,6 +6,7 @@ import '../gen.dart';
 import '../nav.dart';
 import '../live/store.dart';
 import '../live/lot20.dart';
+import '../live/direction.dart';
 import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
@@ -65,7 +66,7 @@ class G_284 extends ConsumerWidget {
       gP(44, 568, 302, 20, gText(gm('70 / 20 / 10 par défaut · modifiable par l’administrateur global, avec historique.', ''), 11, Color(0xFF57545F)), show: demoContent),
       gP(24, 770, 342, 52, gBox(color: Color(0xFF111015), radii: [26, 26, 26, 26]), tap: () => exportFinancialRegister(context, ref)),
       gP(103.5, 788, 183, 19, gText('Exporter le registre (CSV)', 15, Color(0xFFFFFFFF), weight: 600)),
-      if (!demoContent) gP(24, 125, 342, 620, journalListing(height: 620)),
+      if (!demoContent) gP(24, 125, 342, 620, financialRegisterView(ref, height: 620)),
     ]);
   }
 }

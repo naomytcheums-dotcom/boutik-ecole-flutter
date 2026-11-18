@@ -6,8 +6,10 @@ import 'package:go_router/go_router.dart';
 import '../../core/router/paths.dart';
 import '../../features/screens.dart';
 import 'access.dart';
+import 'admin_access.dart';
 import 'auth.dart';
-
+import 'backend.dart';
+import 'seller_capability.dart' show isSellerScreenId, sellerCapabilityProvider;
 /// « Mes rubriques » : point d'entrée de toutes les sections de l'application, filtré par rôle.
 /// Chaque ligne ouvre l'écran correspondant ; les droits sont appliqués par le routeur (AccessGuard) comme pour tout accès.
 class Rubrique {
@@ -24,10 +26,10 @@ const rubriques = <Rubrique>[
   Rubrique('D', 'Fiches produits et services', 32, 39),
   Rubrique('E', 'Commandes et livraison', 40, 49),
   Rubrique('F', 'Messages et communication', 50, 56),
-  Rubrique('G', 'Espace étudiant-vendeur', 57, 69),
+  Rubrique('G', 'Espace vendeur', 57, 69),
   Rubrique('H', 'Talents étudiants', 70, 77),
   Rubrique('I', 'Projets et financement', 78, 87),
-  Rubrique('J', 'Espace entreprise', 88, 99),
+  Rubrique('J', 'Espace organisation', 88, 99),
   Rubrique('K', 'Événements et communautés', 100, 107),
   Rubrique('L', 'Département', 108, 116),
   Rubrique('M', 'Administration institutionnelle', 117, 126),
@@ -40,12 +42,13 @@ const rubriques = <Rubrique>[
   Rubrique('U', 'Confiance, sécurité et partage', 170, 174),
   Rubrique('V', 'Onboarding et rôles', 175, 181),
   Rubrique('W', 'Faible connexion et langues', 182, 186),
-  Rubrique('X', 'Web entreprise', 187, 190),
+  Rubrique('X', 'Web organisation', 187, 190),
   Rubrique('Y', 'Missions sur mesure', 191, 205),
   Rubrique('AA', 'Borne phygitale', 206, 210),
   Rubrique('AD', 'Innovations', 211, 229),
   Rubrique('AI', 'Kéla et canaux', 230, 237),
   Rubrique('AM', 'Cercle, parrainage et publication', 238, 255),
+  Rubrique('AC', 'Centre d’administration', 300, 309),
   Rubrique('Z', 'Services complémentaires', 256, 999),
 ];
 
@@ -72,12 +75,14 @@ int _cle(String id) {
   return m == null ? 100000 : int.parse(m.group(0)!);
 }
 
-/// Rubriques et écrans ouverts au compte (null = visiteur), triés par numéro.
-Map<Rubrique, List<(String, String)>> rubriquesPour(Account? a, {String filtre = '', bool juror = false}) {
+/// Rubriques et écrans ouverts au compte (null = personne non connectée), triés par numéro.
+/// [sellerOk] faux : les écrans vendeur (57 à 69) ne sont pas proposés (capacité vendeur non réunie : voir « Devenir vendeur »).
+Map<Rubrique, List<(String, String)>> rubriquesPour(Account? a, {String filtre = '', bool juror = false, bool sellerOk = true, AdminAccess? access}) {
   final q = filtre.trim().toLowerCase();
   final out = <Rubrique, List<(String, String)>>{};
   for (final s in allScreens) {
-    if (!listedInEspace(a, s.id, juror: juror)) continue;
+    if (!listedInEspace(a, s.id, juror: juror, access: access)) continue;
+    if (!sellerOk && isSellerScreenId(s.id)) continue;
     if (q.isNotEmpty && !s.title.toLowerCase().contains(q) && !s.id.toLowerCase().contains(q)) continue;
     out.putIfAbsent(rubriqueDe(s.id), () => []).add((s.id, s.title));
   }
@@ -102,9 +107,37 @@ class _EspaceScreenState extends ConsumerState<EspaceScreen> {
   @override
   Widget build(BuildContext context) {
     final account = ref.watch(authProvider).current;
-    final data = rubriquesPour(account, filtre: _q, juror: ref.watch(jurorContestsProvider).asData?.value.isNotEmpty ?? false);
+    final cap = Backend.ready && account != null ? ref.watch(sellerCapabilityProvider).asData?.value : null;
+    final data = rubriquesPour(account, filtre: _q, juror: ref.watch(jurorContestsProvider).asData?.value.isNotEmpty ?? false, sellerOk: cap == null || cap.canSell, access: isTeamAgent(account) ? ref.watch(adminAccessProvider).asData?.value : null);
     final order = [...rubriques, _autres];
     final total = data.values.fold<int>(0, (a, l) => a + l.length);
+    final role = roleKey(account);
+    Widget cta(String title, String body, List<(String, VoidCallback)> actions) => Padding(
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(color: const Color(0xB2FFFFFF), borderRadius: BorderRadius.circular(22), border: Border.all(color: Colors.white, width: 1.5)),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(title, style: _t(14.5, FontWeight.w700)),
+              const SizedBox(height: 4),
+              Text(body, style: _t(12.5, FontWeight.w500, const Color(0xFF57545F)).copyWith(height: 1.4)),
+              const SizedBox(height: 10),
+              Wrap(spacing: 8, runSpacing: 8, children: [
+                for (final (label, onTap) in actions)
+                  GestureDetector(
+                    onTap: onTap,
+                    child: Container(
+                      constraints: const BoxConstraints(minHeight: 48, minWidth: 48),
+                      padding: const EdgeInsets.symmetric(horizontal: 18),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(color: const Color(0xFF111015), borderRadius: BorderRadius.circular(24)),
+                      child: Text(label, style: _t(13, FontWeight.w600, Colors.white)),
+                    ),
+                  ),
+              ]),
+            ]),
+          ),
+        );
     return Scaffold(
       backgroundColor: const Color(0xFFF4EFE6),
       body: DecoratedBox(
@@ -136,10 +169,19 @@ class _EspaceScreenState extends ConsumerState<EspaceScreen> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
                   child: Text(
-                    '${roleNames[roleKey(account)] ?? 'Visiteur'} · $total écran${total > 1 ? 's' : ''} accessible${total > 1 ? 's' : ''}',
+                    '${roleNames[role] ?? 'Non connecté'} · $total écran${total > 1 ? 's' : ''} accessible${total > 1 ? 's' : ''}',
                     style: _t(12.5, FontWeight.w500, const Color(0xFF57545F)),
                   ),
                 ),
+                if (account == null)
+                  cta('Un seul compte pour tout', 'Consultez librement ; connectez-vous ou créez un compte pour acheter, suivre vos commandes et retrouver votre espace personnel.', [
+                    ('Se connecter', () => requireLogin(context, ref, 'ouvrir votre espace personnel')),
+                    ('Créer un compte', () => openAuthFromHere(context, ref, signup: true)),
+                  ]),
+                if (cap != null && !cap.canSell && (role == 'student' || role == 'client'))
+                  cta('Devenir vendeur', 'Vendre est une capacité de votre compte étudiant, pas un compte à part : voyez les conditions et ce qu’il vous reste à faire.', [
+                    ('Voir les conditions', () => context.push('/vendeur/conditions')),
+                  ]),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 12, 20, 6),
                   child: TextField(

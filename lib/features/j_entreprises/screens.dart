@@ -17,8 +17,8 @@ const _s = 'J';
 
 /// Section J · Entreprises et B2B (88–99).
 final sectionJScreens = <ScreenEntry>[
-  ScreenEntry('88', 'Espace entreprise', (_) => const EspaceEntrepriseScreen(), section: _s, node: '39:332'),
-  ScreenEntry('89', 'Profil de l’entreprise', (_) => const ProfilEntrepriseScreen(), section: _s, node: '54:366'),
+  ScreenEntry('88', 'Espace organisation', (_) => const EspaceEntrepriseScreen(), section: _s, node: '39:332'),
+  ScreenEntry('89', 'Profil de l’organisation', (_) => const ProfilEntrepriseScreen(), section: _s, node: '54:366'),
   ScreenEntry('90', 'Publier un besoin', (_) => const PublierBesoinScreen(), section: _s, node: '39:524'),
   ScreenEntry('91', 'Rechercher des talents', (_) => const RechercherTalentsScreen(), section: _s, node: '39:601'),
   ScreenEntry('93', 'Propositions reçues', (_) => const PropositionsRecuesScreen(), section: _s, node: '39:756'),

@@ -100,7 +100,7 @@ class G_262 extends ConsumerWidget {
       gP(1167.6, 318, 60.4, 22, gBox(color: Color(0xFFEEE9FF), radii: [11, 11, 11, 11]), show: demoContent),
       gP(1182.3, 322, 31, 13, gText('Ouvrir', 10.5, Color(0xFF5A3FE0), weight: 500, inter: true), show: demoContent),
       gP(268, 384, 234, 86, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26]), show: demoContent),
-      gP(284, 398, 101, 13, gText('Entreprises inscrites', 10.5, Color(0xFF57545F), inter: true), show: demoContent),
+      gP(284, 398, 101, 13, gText('Organisations inscrites', 10.5, Color(0xFF57545F), inter: true), show: demoContent),
       gP(284, 418, 41, 27, gText(demoContent ? '184' : '', 22, Color(0xFF18181B), weight: 700, inter: true), show: demoContent),
       gP(284, 448, 63, 13, gText(gm('+ 12 ce mois', ''), 10.5, Color(0xFF126B49), weight: 500, inter: true), show: demoContent),
       gP(518, 384, 234, 86, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26]), show: demoContent),

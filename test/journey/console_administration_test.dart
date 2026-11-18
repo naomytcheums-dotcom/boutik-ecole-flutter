@@ -8,6 +8,7 @@ import 'package:boutik_ecole/figma/gsound.dart';
 import 'package:boutik_ecole/figma/live/auth.dart';
 import 'package:boutik_ecole/figma/live/backend.dart';
 import 'package:boutik_ecole/figma/live/console.dart';
+import 'package:boutik_ecole/figma/live/direction.dart' show directionRpc;
 import 'package:boutik_ecole/figma/live/impact.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,14 +18,10 @@ import 'package:flutter_test/flutter_test.dart';
 import '../helpers/render.dart';
 
 class _Rows extends RpcRows {
-  _Rows(super.fn, this.v, {this.fail = false});
+  _Rows(super.fn, this.v);
   final List<Map<String, dynamic>>? v;
-  final bool fail;
   @override
-  List<Map<String, dynamic>>? build() {
-    error = fail;
-    return v;
-  }
+  List<Map<String, dynamic>>? build() => v;
 }
 
 class _Stats extends RpcMap {
@@ -65,47 +62,66 @@ void main() {
     expect(lastLoginLabel(DateTime(2026, 11, 4, 9, 12).toUtc().toIso8601String(), now), 'Hier 09:12');
   });
 
+  // Les écrans 119, 120 et 121 sont ceux de la direction : lecture seule par les fonctions direction_* (lot H3).
+  Future<void> avecServeur(Map<String, Object?> reponses, Future<void> Function() corps, {Map<String, String> erreurs = const {}}) async {
+    final original = directionRpc;
+    directionRpc = (fn, args) async => (data: reponses[fn], error: erreurs[fn]);
+    try {
+      await corps();
+    } finally {
+      directionRpc = original;
+    }
+  }
+
   testWidgets('119 connecté : départements réels, aucun département de maquette', (t) async {
-    await monter(t, const G_119(), connecte: true, login: true, overrides: [
-      adminDepartmentsProvider.overrideWith(() => _Rows('admin_departments', [{'name': 'Informatique', 'status': 'verified', 'students': 12, 'head': 'Dr Test'}]))
-    ]);
-    expect(find.text('Informatique'), findsOneWidget);
-    expect(find.text('12'), findsOneWidget);
-    expect(find.text('Actif'), findsOneWidget);
-    expect(find.text('Génie informatique'), findsNothing);
+    await avecServeur({
+      'direction_departments': [{'id': 'd1', 'name': 'Informatique', 'institution': 'IUT', 'status': 'verified', 'head': 'Dr Test', 'students': 14, 'students_verified': 12, 'projects': 3, 'innovations': 1, 'projects_pending': 0, 'listings': 2, 'sales': 0, 'partnerships': 1, 'dept_partnerships': 0}],
+    }, () async {
+      await monter(t, const G_119(), connecte: true, login: true);
+      expect(find.text('Informatique'), findsOneWidget);
+      expect(find.text('Responsable : Dr Test'), findsOneWidget);
+      expect(find.text('12/14'), findsOneWidget);
+      expect(find.text('Génie informatique'), findsNothing);
+    });
   });
 
   testWidgets('119 connecté sans département : état vide', (t) async {
-    await monter(t, const G_119(), connecte: true, login: true, overrides: [adminDepartmentsProvider.overrideWith(() => _Rows('admin_departments', const []))]);
-    expect(find.textContaining('Aucun département enregistré'), findsOneWidget);
+    await avecServeur({'direction_departments': const <Object>[]}, () async {
+      await monter(t, const G_119(), connecte: true, login: true);
+      expect(find.textContaining('Aucun département enregistré'), findsOneWidget);
+    });
   });
 
-  testWidgets('120 connecté : personnes réelles avec rôle, département et état', (t) async {
-    await monter(t, const G_120(), connecte: true, login: true, overrides: [
-      consoleUsersProvider.overrideWith(() => _Rows('admin_users', [{'name': 'Alice Test', 'role': 'student', 'department': 'Informatique', 'last_login': null, 'suspended': true, 'students': 0}]))
-    ]);
-    expect(find.text('Alice Test'), findsOneWidget);
-    expect(find.text('Étudiant'), findsOneWidget);
-    expect(find.text('Suspendu'), findsOneWidget);
-    expect(find.text('Jamais'), findsOneWidget);
-    expect(find.text('Mariam Essono'), findsNothing);
+  testWidgets('120 connecté : étudiants réels avec département et vérification, aucune action sur les comptes', (t) async {
+    await avecServeur({
+      'direction_people': [{'id': 'u1', 'name': 'Alice Test', 'department': 'Informatique', 'level': 'L2', 'verified': false, 'projects': 0}],
+    }, () async {
+      await monter(t, const G_120(), connecte: true, login: true);
+      expect(find.text('Alice Test'), findsOneWidget);
+      expect(find.text('Informatique · L2 · 0 projet validé'), findsOneWidget);
+      expect(find.text('Non vérifié'), findsOneWidget);
+      expect(find.text('Mariam Essono'), findsNothing);
+      expect(find.textContaining('Suspendre'), findsNothing);
+    });
   });
 
   testWidgets('120 connecté sans droit : message d’accès, aucune ligne de maquette', (t) async {
-    await monter(t, const G_120(), connecte: true, login: true, overrides: [consoleUsersProvider.overrideWith(() => _Rows('admin_users', const [], fail: true))]);
-    expect(find.textContaining('Accès réservé à la gestion'), findsOneWidget);
-    expect(find.text('Mariam Essono'), findsNothing);
+    await avecServeur({}, erreurs: {'direction_people': 'Réservé à la direction'}, () async {
+      await monter(t, const G_120(), connecte: true, login: true);
+      expect(find.textContaining('Accès réservé à la direction'), findsOneWidget);
+      expect(find.text('Mariam Essono'), findsNothing);
+    });
   });
 
   testWidgets('121 connecté : responsables réels', (t) async {
-    await monter(t, const G_121(), connecte: true, login: true, overrides: [
-      adminResponsablesProvider.overrideWith(() => _Rows('admin_users', [{'name': 'Dr Réel', 'role': 'dept', 'department': 'Génie civil', 'last_login': null, 'suspended': false, 'students': 7}]))
-    ]);
-    expect(find.text('Dr Réel'), findsOneWidget);
-    expect(find.text('Responsable'), findsWidgets);
-    expect(find.text('7 étudiants'), findsOneWidget);
+    await avecServeur({
+      'direction_people': [{'id': 'u2', 'name': 'Dr Réel', 'role': 'dept', 'department': 'Génie civil'}],
+    }, () async {
+      await monter(t, const G_121(), connecte: true, login: true);
+      expect(find.text('Dr Réel'), findsOneWidget);
+      expect(find.text('Génie civil'), findsOneWidget);
+    });
   });
-
   testWidgets('109 connecté : étudiants du département avec annonces, ventes et vérification', (t) async {
     await monter(t, const G_109(), connecte: true, login: true, overrides: [
       deptStudentsProvider.overrideWith(() => _Rows('dept_students', [{'name': 'Alice Test', 'department': 'Informatique', 'role': 'student', 'listings': 3, 'sales': 45000, 'verified': true}]))

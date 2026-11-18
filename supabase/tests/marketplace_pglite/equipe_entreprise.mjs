@@ -49,7 +49,7 @@ export async function run(db) {
   // administratrice
   await as(A);
   check('administratrice : modifie la fiche', (await q(`select company_save(jsonb_build_object('company_name','Orange Cameroun','sector','Telecoms et mobile','city','Douala','phone','699','contact_name','Mme N'), '${E}') r`))[0].r === 'approved');
-  await fails('administratrice : ne cree pas de fiche pour une autre entreprise', `select company_save(jsonb_build_object('company_name','X'), '${A}')`, /Réservé aux entreprises|Fiche introuvable/);
+  await fails('administratrice : ne cree pas de fiche pour une autre entreprise', `select company_save(jsonb_build_object('company_name','X'), '${A}')`, /Réservé aux organisations|Fiche introuvable/);
   check('administratrice : invite Xavier', (await q(`select company_invite('Xavier@t.cm', 'viewer', '${E}') r`))[0].r === 'invited');
   const ml2 = (await q(`select company_members_list('${E}') r`))[0].r;
   check('administratrice : voit les e-mails de l equipe', ml2.members.some(m => m.email === 'Fabrice@t.cm'));

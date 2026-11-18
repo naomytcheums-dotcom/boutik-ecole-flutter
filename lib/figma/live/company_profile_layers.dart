@@ -58,7 +58,7 @@ Widget companyNameLayer(CompanyProfileInfo i, double y) => gP(
       29,
       Center(
         child: Row(mainAxisSize: MainAxisSize.min, children: [
-          Flexible(child: Text(i.name.isEmpty ? 'Votre entreprise' : i.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: mst(22, w: FontWeight.w600, c: kInk))),
+          Flexible(child: Text(i.name.isEmpty ? 'Votre organisation' : i.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: mst(22, w: FontWeight.w600, c: kInk))),
           if (i.verified) const Padding(padding: EdgeInsets.only(left: 6), child: Icon(Icons.verified, size: 18, color: Color(0xFF2F7DF6))),
         ]),
       ),
@@ -71,9 +71,9 @@ Widget companyBioLayer(CompanyProfileInfo i, double y) => gP(
       y,
       333,
       34,
-      Text(i.description.isEmpty ? 'Ajoutez la présentation de votre entreprise : les étudiants la voient ici.' : i.description, textAlign: TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis, style: mst(11.5, c: const Color(0xFF6F6D77)).copyWith(height: 1.45)),
+      Text(i.description.isEmpty ? 'Ajoutez la présentation de votre organisation : les étudiants la voient ici.' : i.description, textAlign: TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis, style: mst(11.5, c: const Color(0xFF6F6D77)).copyWith(height: 1.45)),
     );
 
 Widget companyStatLayer(double x, String label, int count) => gP(x, 519, 104, 14, Center(child: Text('$count $label', style: mst(11.5, w: FontWeight.w500, c: kInk))));
 
-String companyPassportLabel(CompanyProfileInfo i) => i.verified ? 'Entreprise vérifiée · ${i.recruits} recruté${i.recruits > 1 ? 's' : ''}' : companyStatusLabel(i.status);
+String companyPassportLabel(CompanyProfileInfo i) => i.verified ? 'Organisation vérifiée · ${i.recruits} recruté${i.recruits > 1 ? 's' : ''}' : companyStatusLabel(i.status);

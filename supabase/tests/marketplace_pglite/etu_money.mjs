@@ -17,6 +17,8 @@ export async function run(db) {
     [M, 'Mod Admin', 'admin'], [F, 'Fin Finance', 'finance'], [SU, 'Sam Support', 'support'], [C, 'Ent Cliente', 'client'], [D, 'Dep Dept', 'dept']]) {
     await db.exec(`insert into auth.users(id,email) values ('${i}','${nm.split(' ')[0]}@t.cm'); insert into profiles(id,name,role,email) values ('${i}','${nm}','${role}','${nm.split(' ')[0]}@t.cm')`);
   }
+  // Équipes internes (lot H4) : l'agent de support de ce scénario décide aussi les remboursements (droit explicite).
+  await db.exec(`update admin_team_members set permissions = permissions || array['support.refunds'] where user_id = '${SU}' and team_code = 'support'`);
   await sup();
   await db.exec(`insert into listings (seller_id,title,department,category,price,stock,status,images) values
     ('${S1}','Lampe','Design','Maison',10000,50,'approved','{}'), ('${S2}','Table','Design','Maison',5000,50,'approved','{}'), ('${S2}','Bureau','Design','Maison',15000,50,'approved','{}')`);
@@ -377,7 +379,7 @@ export async function run(db) {
   check('K6 le client voit ses 3 besoins (table) ', (await q(`select count(*)::int n from missions`))[0].n === 3);
   check('K7 le client retrouve son propre brief dans la liste (own = true)', (await q(`select open_needs_list() r`))[0].r.some((x) => x.own === true && /Identite/.test(x.title)));
   await as(D);
-  check('K8 le departement lit tous les besoins (qualification)', (await q(`select count(*)::int n from missions`))[0].n === 3 && (await q(`select open_needs_list() r`))[0].r.length === 2);
+  check('K8 le département lit les besoins ouverts (qualification) mais plus les besoins fermés qui ne concernent pas ses étudiants (H2)', (await q(`select count(*)::int n from missions`))[0].n === 2 && (await q(`select open_needs_list() r`))[0].r.length === 2, JSON.stringify(await q(`select count(*)::int n from missions`)));
   await sup();
   await db.exec(`insert into mission_proposals (mission_id, author_id, amount, delay_days, status) values ('${mid1}', '${S1}', 40000, 10, 'accepted')`);
   await as(S1);
@@ -387,3 +389,4 @@ export async function run(db) {
 
   console.log(`\n${ok}/${ok + ko}`);
 }
+

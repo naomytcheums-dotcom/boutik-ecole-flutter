@@ -11,12 +11,13 @@ import 'backend.dart';
 import 'account_menu.dart' show accountMenu;
 import 'coequipiers_screens.dart' show MateNavPill;
 import 'company_screens.dart' show companyContextProvider, companyRoleLabels, companyStatusColor, companyStatusLabel;
+import 'org_types.dart' show orgTypeOf;
 import 'marche/marche_data.dart';
 import 'marche/marche_widgets.dart';
 import 'notifs.dart' show NotifBadge;
 import 'tara_payment.dart';
 
-/// Accueil et forfaits de l'entreprise. Tout vient du serveur (migration 20261114002600) ; les prix et quotas sont ceux que l'administrateur a définis.
+/// Accueil et forfaits de l'organisation. Tout vient du serveur (migrations 20261114002600 et 20261120010000) ; les prix et quotas sont ceux que l'administrateur a définis.
 
 final companyDashboardProvider = FutureProvider.autoDispose<Map<String, dynamic>>((ref) async {
   ref.watch(authProvider.select((a) => a.current?.serverId));
@@ -64,7 +65,7 @@ String quotaLabel(int used, int max) => max >= 999 ? '$used (illimité)' : '$use
 /// Quota d'un forfait tel qu'affiché sur sa carte : « 0 sur 10 » ou « illimité ».
 String planQuotaLabel(int max) => max >= 999 ? 'illimité' : quotaLabel(0, max);
 
-/// Paiement ou demande de forfait : propriétaire, administrateur ou finance de l'entreprise.
+/// Paiement ou demande de forfait : propriétaire, administrateur ou finance de l'organisation.
 bool roleCanPayHome(String role) => role == 'owner' || role == 'admin' || role == 'finance';
 
 /// « 2026-11-17T10:00:00+00:00 » -> « 17/11/2026 » (vide si la date est illisible).
@@ -75,10 +76,10 @@ String frDate(Object? iso) {
   return '${l.day.toString().padLeft(2, '0')}/${l.month.toString().padLeft(2, '0')}/${l.year}';
 }
 
-/// Message de l'accueil entreprise quand le chargement échoue (jamais le texte de la marketplace).
+/// Message de l'accueil de l'organisation quand le chargement échoue (jamais le texte de la marketplace).
 String companyLoadErrorText(Object e) {
   final code = e is MarcheException ? e.code : e;
-  if (code == 'offline' || code == 'missing') return 'L’espace entreprise n’est pas joignable pour le moment. Vérifiez votre connexion, puis réessayez.';
+  if (code == 'offline' || code == 'missing') return 'L’espace de l’organisation n’est pas joignable pour le moment. Vérifiez votre connexion, puis réessayez.';
   return Backend.userMessage('$code');
 }
 
@@ -95,7 +96,7 @@ String manualPlanPaymentMessage({required String planName, required String refer
 class CompanyHomeScreen extends ConsumerWidget {
   const CompanyHomeScreen({super.key, this.shared = false});
 
-  /// Espace partagé : on consulte l'entreprise dont on est membre (pas de publication au nom de l'entreprise pour l'instant).
+  /// Espace partagé : on consulte l'organisation dont on est membre (pas de publication au nom de l'organisation pour l'instant).
   final bool shared;
 
   Widget _tile(BuildContext context, IconData icon, String value, String label, String? route) => Expanded(
@@ -130,16 +131,16 @@ class CompanyHomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final d = ref.watch(companyDashboardProvider);
     final account = ref.watch(authProvider.select((a) => a.current));
-    final org = const {'company', 'other', 'admin'}.contains(roleKey(account)) && !shared;
+    final org = const {'company', 'admin'}.contains(roleKey(account)) && !shared;
     final open99 = canOpen(account, '99') && !shared;
     return Scaffold(
       backgroundColor: const Color(0xFFF7F4FA),
       body: SafeArea(
         child: Stack(children: [
           d.when(
-            loading: () => ListView(padding: const EdgeInsets.fromLTRB(11, 12, 11, 130), children: [_header(context, ref, 'Mon entreprise'), const Padding(padding: EdgeInsets.all(40), child: Center(child: CircularProgressIndicator()))]),
+            loading: () => ListView(padding: const EdgeInsets.fromLTRB(11, 12, 11, 130), children: [_header(context, ref, 'Mon organisation'), const Padding(padding: EdgeInsets.all(40), child: Center(child: CircularProgressIndicator()))]),
             error: (e, _) => ListView(padding: const EdgeInsets.fromLTRB(11, 12, 11, 130), children: [
-              _header(context, ref, 'Mon entreprise'),
+              _header(context, ref, 'Mon organisation'),
               mNote(companyLoadErrorText(e)),
               Padding(padding: const EdgeInsets.symmetric(horizontal: 5), child: mButton('Réessayer', () => ref.invalidate(companyDashboardProvider), icon: Icons.refresh)),
             ]),
@@ -148,9 +149,20 @@ class CompanyHomeScreen extends ConsumerWidget {
             int n(String k) => (x[k] as num?)?.toInt() ?? 0;
             final myRole = '${x['my_role'] ?? 'owner'}';
             return ListView(padding: const EdgeInsets.fromLTRB(11, 12, 11, 130), children: [
-              _header(context, ref, '${x['company_name'] ?? 'Mon entreprise'}'),
-              if (shared) Padding(padding: const EdgeInsets.fromLTRB(5, 0, 5, 8), child: Text('Vous êtes ${companyRoleLabels['${x['my_role']}'] ?? x['my_role']} de cette entreprise.', style: mst(12.5, w: FontWeight.w600, c: kViolet)))
+              _header(context, ref, '${x['company_name'] ?? 'Mon organisation'}'),
+              if (shared) Padding(padding: const EdgeInsets.fromLTRB(5, 0, 5, 8), child: Text('Vous êtes ${companyRoleLabels['${x['my_role']}'] ?? x['my_role']} de cette organisation.', style: mst(12.5, w: FontWeight.w600, c: kViolet)))
               else const SizedBox(height: 4),
+              if (x['org_type'] != null)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(5, 0, 5, 8),
+                  child: Wrap(spacing: 8, runSpacing: 4, children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(color: const Color(0xFFEFEBFA), borderRadius: BorderRadius.circular(12)),
+                      child: Text('${x['org_type_label'] ?? orgTypeOf('${x['org_type']}').label}', style: mst(12, w: FontWeight.w700, c: kViolet)),
+                    ),
+                  ]),
+                ),
               GestureDetector(
                 onTap: () => context.push('/entreprise/profil'),
                 child: Container(
@@ -160,7 +172,7 @@ class CompanyHomeScreen extends ConsumerWidget {
                   child: Row(children: [
                     Icon(status == 'approved' ? Icons.verified : Icons.info_outline, color: companyStatusColor(status)),
                     const SizedBox(width: 10),
-                    Expanded(child: Text(status == 'approved' ? 'Entreprise vérifiée' : companyStatusLabel(status), style: mst(13, w: FontWeight.w700, c: companyStatusColor(status)))),
+                    Expanded(child: Text(status == 'approved' ? 'Organisation vérifiée' : companyStatusLabel(status), style: mst(13, w: FontWeight.w700, c: companyStatusColor(status)))),
                     if (status == 'draft' || status == 'rejected') Text('Compléter', style: mst(12.5, w: FontWeight.w800, c: kViolet)),
                   ]),
                 ),
@@ -182,8 +194,8 @@ class CompanyHomeScreen extends ConsumerWidget {
                   ]),
                 ),
               ),
-              if (!roleCanPayHome(myRole)) Padding(padding: const EdgeInsets.fromLTRB(8, 0, 8, 10), child: Text('Seuls le propriétaire, les administrateurs et la finance de l’entreprise peuvent changer de forfait.', style: mst(12, c: kGrey))),
-              if (shared) Padding(padding: const EdgeInsets.fromLTRB(8, 0, 8, 10), child: Text('Les besoins, offres et concours se gèrent pour l’instant depuis le compte du propriétaire : les chiffres ci-dessous sont ceux de cette entreprise.', style: mst(12, c: kGrey))),
+              if (!roleCanPayHome(myRole)) Padding(padding: const EdgeInsets.fromLTRB(8, 0, 8, 10), child: Text('Seuls le propriétaire, les administrateurs et la finance de l’organisation peuvent changer de forfait.', style: mst(12, c: kGrey))),
+              if (shared) Padding(padding: const EdgeInsets.fromLTRB(8, 0, 8, 10), child: Text('Les besoins, offres et concours se gèrent pour l’instant depuis le compte du propriétaire : les chiffres ci-dessous sont ceux de cette organisation.', style: mst(12, c: kGrey))),
               Row(children: [
                 _tile(context, Icons.assignment_outlined, '${n('needs_open')}', 'Besoins ouverts', open99 ? '/s/99' : null),
                 _tile(context, Icons.mark_email_unread_outlined, '${n('proposals_new')}', 'Propositions à traiter', open99 ? '/s/93' : null),
@@ -196,7 +208,7 @@ class CompanyHomeScreen extends ConsumerWidget {
                 _tile(context, Icons.emoji_events_outlined, '${n('contests_active')}', 'Concours actifs', org ? '/concours/mes' : null),
                 _tile(context, Icons.celebration_outlined, '${n('recruits')}', 'Recrutés', org ? '/opportunites/mes' : null),
               ]),
-              Padding(padding: const EdgeInsets.fromLTRB(5, 6, 5, 0), child: mButton('Équipe de l’entreprise · ${n('members')} personne${n('members') > 1 ? 's' : ''}', () => context.push('/entreprise/equipe'), dark: false, icon: Icons.groups_2_outlined)),
+              Padding(padding: const EdgeInsets.fromLTRB(5, 6, 5, 0), child: mButton('Équipe de l’organisation · ${n('members')} personne${n('members') > 1 ? 's' : ''}', () => context.push('/entreprise/equipe'), dark: false, icon: Icons.groups_2_outlined)),
               if (!shared) ...[
               mSectionTitle('Actions rapides'),
               Padding(padding: const EdgeInsets.symmetric(horizontal: 5), child: mButton('Publier un besoin', () => context.push('/s/90'), icon: Icons.add)),
@@ -309,11 +321,11 @@ class CompanyPlansSheet extends ConsumerWidget {
     return ConstrainedBox(
       constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.85),
       child: ListView(padding: const EdgeInsets.all(20), shrinkWrap: true, children: [
-        Text('Forfaits entreprise', style: mst(18, w: FontWeight.w800)),
+        Text('Forfaits de l’organisation', style: mst(18, w: FontWeight.w800)),
         const SizedBox(height: 4),
         Text('Le forfait fixe le nombre de besoins, d’offres et de concours actifs en même temps.', style: mst(12.5, c: kGrey)),
         if (status != null) Padding(padding: const EdgeInsets.only(top: 8), child: Text('Utilisé : ${quotaLabel((status['used_needs'] as num?)?.toInt() ?? 0, (((status['plan'] as Map?)?['max_needs']) as num?)?.toInt() ?? 1)} besoin(s) · ${quotaLabel((status['used_offers'] as num?)?.toInt() ?? 0, (((status['plan'] as Map?)?['max_offers']) as num?)?.toInt() ?? 1)} offre(s) · ${quotaLabel((status['used_contests'] as num?)?.toInt() ?? 0, (((status['plan'] as Map?)?['max_contests']) as num?)?.toInt() ?? 0)} concours', style: mst(12.5, w: FontWeight.w600))),
-        if (status != null && !canPay) Padding(padding: const EdgeInsets.only(top: 6), child: Text('Seuls le propriétaire, les administrateurs et la finance de l’entreprise peuvent payer ou demander un forfait.', style: mst(12, c: kGrey))),
+        if (status != null && !canPay) Padding(padding: const EdgeInsets.only(top: 6), child: Text('Seuls le propriétaire, les administrateurs et la finance de l’organisation peuvent payer ou demander un forfait.', style: mst(12, c: kGrey))),
         const SizedBox(height: 10),
         mAsync<List<Map<String, dynamic>>>(
           plans,
@@ -326,6 +338,7 @@ class CompanyPlansSheet extends ConsumerWidget {
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Row(children: [Expanded(child: Text('${p['name']}', style: mst(15, w: FontWeight.w800))), Text(planPriceLabel(p), style: mst(13.5, w: FontWeight.w800, c: kViolet))]),
                   Text('${p['perks'] ?? ''}', style: mst(12.5, c: kGrey).copyWith(height: 1.4)),
+                  if (((p['audience_types'] as List?) ?? const []).isNotEmpty) Text('Pour : ${[for (final t in (p['audience_types'] as List)) orgTypeOf('$t').label].join(', ')}', style: mst(12, w: FontWeight.w600, c: kViolet)),
                   Text('Besoins : ${planQuotaLabel((p['max_needs'] as num).toInt())} · Offres : ${planQuotaLabel((p['max_offers'] as num).toInt())} · Concours : ${planQuotaLabel((p['max_contests'] as num).toInt())}', style: mst(12, c: kGrey)),
                   const SizedBox(height: 8),
                   if ('${p['code']}' == current) Text('Votre forfait actuel', style: mst(12.5, w: FontWeight.w800, c: kGreen))
@@ -371,7 +384,7 @@ class CompanyPlansAdminScreen extends ConsumerWidget {
       x = await marcheCall('company_subscription_activate', {'p_owner': r['owner_id'], 'p_plan': r['plan_code'], 'p_confirm_replace': true});
     }
     if (!context.mounted) return;
-    gToast(context, x.error != null ? Backend.userMessage('${x.error}') : 'Forfait activé. L’entreprise est prévenue.');
+    gToast(context, x.error != null ? Backend.userMessage('${x.error}') : 'Forfait activé. L’organisation est prévenue.');
     ref.invalidate(companyPendingPlansProvider);
   }
 
@@ -394,7 +407,7 @@ class CompanyPlansAdminScreen extends ConsumerWidget {
               TextField(controller: offers, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'Offres actives (999 = illimité)')),
               TextField(controller: contests, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'Concours actifs')),
               TextField(controller: perks, maxLines: 2, decoration: const InputDecoration(labelText: 'Description')),
-              Row(children: [Expanded(child: Text('Proposé aux entreprises', style: mst(13))), Switch(value: active, onChanged: (v) => setS(() => active = v))]),
+              Row(children: [Expanded(child: Text('Proposé aux organisations', style: mst(13))), Switch(value: active, onChanged: (v) => setS(() => active = v))]),
             ]),
           ),
           actions: [TextButton(onPressed: () => Navigator.pop(c, false), child: Text('Annuler')), TextButton(onPressed: () => Navigator.pop(c, true), child: Text('Enregistrer'))],
@@ -414,7 +427,7 @@ class CompanyPlansAdminScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MarchePage(
-      title: 'Forfaits des entreprises',
+      title: 'Forfaits des organisations',
       child: ListView(padding: const EdgeInsets.only(bottom: 90), children: [
         mSectionTitle('Demandes à activer'),
         mAsync<List<Map<String, dynamic>>>(
@@ -431,7 +444,7 @@ class CompanyPlansAdminScreen extends ConsumerWidget {
                         Text('${r['company_name']}', style: mst(15, w: FontWeight.w800)),
                         Text('Forfait « ${r['plan_name']} » · ${planPriceLabel({'price_fcfa': r['price_fcfa'], 'period_days': r['period_days']})}', style: mst(12.5, c: kGrey)),
                         Text('${r['phone'] ?? ''} · ${r['email'] ?? ''}', style: mst(12, c: kGrey)),
-                        if ('${r['payment_reference'] ?? ''}'.isNotEmpty) Text('Paiement ${r['payment_reference']} : ${switch ('${r['payment_status']}') { 'pending' => 'déclaré par l’entreprise${'${r['provider_ref'] ?? ''}'.isEmpty ? '' : ' (réf. ${r['provider_ref']})'}', 'created' => 'pas encore déclaré', 'confirmed' => 'confirmé', _ => '${r['payment_status']}' }}', style: mst(12, w: FontWeight.w600, c: kGrey)),
+                        if ('${r['payment_reference'] ?? ''}'.isNotEmpty) Text('Paiement ${r['payment_reference']} : ${switch ('${r['payment_status']}') { 'pending' => 'déclaré par l’organisation${'${r['provider_ref'] ?? ''}'.isEmpty ? '' : ' (réf. ${r['provider_ref']})'}', 'created' => 'pas encore déclaré', 'confirmed' => 'confirmé', _ => '${r['payment_status']}' }}', style: mst(12, w: FontWeight.w600, c: kGrey)),
                         const SizedBox(height: 8),
                         mButton('Paiement reçu : activer', () => _activate(context, ref, r)),
                       ]),

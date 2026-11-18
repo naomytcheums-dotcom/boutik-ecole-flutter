@@ -1011,7 +1011,7 @@ class CompanyProfileView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (ref.watch(authProvider.select((a) => a.current == null))) {
-      return const TpPage(title: 'Profil de l’entreprise', children: [TpEmpty(title: 'Connexion requise', text: 'Connectez-vous avec votre compte entreprise pour voir votre fiche.')]);
+      return const TpPage(title: 'Profil de l’organisation', children: [TpEmpty(title: 'Connexion requise', text: 'Connectez-vous avec votre compte organisation pour voir votre fiche.')]);
     }
     final company = ref.watch(companyProvider);
     final missions = ref.watch(companyMissionsProvider) ?? const <Map<String, dynamic>>[];
@@ -1036,14 +1036,14 @@ class CompanyProfileView extends ConsumerWidget {
           ),
         );
     return TpPage(
-      title: 'Profil de l’entreprise',
+      title: 'Profil de l’organisation',
       children: [
         company.when(
           loading: () => const Padding(padding: EdgeInsets.all(40), child: Center(child: CircularProgressIndicator())),
-          error: (_, _) => TpEmpty(title: 'Fiche indisponible', text: 'La fiche de votre entreprise ne peut pas être chargée pour le moment.', icon: Icons.cloud_off_rounded, action: 'Réessayer', onAction: () => ref.invalidate(companyProvider)),
+          error: (_, _) => TpEmpty(title: 'Fiche indisponible', text: 'La fiche de votre organisation ne peut pas être chargée pour le moment.', icon: Icons.cloud_off_rounded, action: 'Réessayer', onAction: () => ref.invalidate(companyProvider)),
           data: (f) {
             if (f == null) {
-              return TpEmpty(title: 'Aucune fiche entreprise', text: 'Renseignez la raison sociale, le secteur et les pièces justificatives : une fois la fiche vérifiée, vous pouvez publier des besoins, des offres et des défis.', icon: Icons.business_outlined, action: 'Compléter la fiche', onAction: () => GoRouter.of(context).push('/entreprise/profil'));
+              return TpEmpty(title: 'Aucune fiche d’organisation', text: 'Renseignez le nom, le type, le secteur et les pièces justificatives : une fois la fiche vérifiée, vous pouvez publier des besoins, des offres et des défis.', icon: Icons.business_outlined, action: 'Compléter la fiche', onAction: () => GoRouter.of(context).push('/entreprise/profil'));
             }
             final name = '${f['company_name'] ?? ''}'.trim();
             final status = '${f['status'] ?? ''}';
@@ -1059,7 +1059,7 @@ class CompanyProfileView extends ConsumerWidget {
               const SizedBox(height: 8),
               CircleAvatar(radius: 44, backgroundColor: const Color(0xFFEEE9FF), child: Text(name.isEmpty ? '?' : name.substring(0, 1).toUpperCase(), style: tpSt(34, w: FontWeight.w700, c: tpViolet))),
               const SizedBox(height: 12),
-              Text(name.isEmpty ? 'Entreprise' : name, textAlign: TextAlign.center, style: tpSt(22, w: FontWeight.w700)),
+              Text(name.isEmpty ? 'Organisation' : name, textAlign: TextAlign.center, style: tpSt(22, w: FontWeight.w700)),
               if (sub.isNotEmpty) Text(sub, textAlign: TextAlign.center, style: tpSt(12.5, c: tpGrey)),
               const SizedBox(height: 8),
               Container(
@@ -1078,7 +1078,7 @@ class CompanyProfileView extends ConsumerWidget {
               const SizedBox(height: 18),
               SizedBox(width: double.infinity, child: TpButton('Publier un besoin', () => openNeedForm(context), icon: Icons.add_rounded)),
               const SizedBox(height: 10),
-              if (approved) SizedBox(width: double.infinity, child: TpButton('Voir ma page publique', () => openCompanyPublic(context, '${f['owner_id']}'), dark: false, icon: Icons.public)) else tpNote('La page publique de l’entreprise est affichée après la vérification de la fiche.'),
+              if (approved) SizedBox(width: double.infinity, child: TpButton('Voir ma page publique', () => openCompanyPublic(context, '${f['owner_id']}'), dark: false, icon: Icons.public)) else tpNote('La page publique de l’organisation est affichée après la vérification de la fiche.'),
               const SizedBox(height: 10),
               SizedBox(width: double.infinity, child: TpButton('Modifier la fiche', () => GoRouter.of(context).push('/entreprise/profil'), dark: false, icon: Icons.edit_outlined)),
             ]);

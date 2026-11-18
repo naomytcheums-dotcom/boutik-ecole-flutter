@@ -85,7 +85,7 @@ class _PurchasesState extends ConsumerState<CompanyPurchasesScreen> {
     setState(() => _busy = false);
     if (r.error != null) return gToast(context, Backend.userMessage('${r.error}'));
     ref.invalidate(companyBuyingProvider);
-    gToast(context, on ? 'Vos prochains achats seront facturés à l’entreprise.' : 'Vos prochains achats redeviennent personnels.');
+    gToast(context, on ? 'Vos prochains achats seront facturés à l’organisation.' : 'Vos prochains achats redeviennent personnels.');
   }
 
   String _fcfa(num v) => '${v.toInt().toString().replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+$)'), (m) => '${m[1]} ')} FCFA';
@@ -100,7 +100,7 @@ class _PurchasesState extends ConsumerState<CompanyPurchasesScreen> {
     final ctx = ref.watch(companyContextProvider);
     final buying = ref.watch(companyBuyingProvider);
     return MarchePage(
-      title: 'Achats de l’entreprise',
+      title: 'Achats de l’organisation',
       child: RefreshIndicator(
         onRefresh: () async {
           ref.invalidate(companyBuyingProvider);
@@ -117,16 +117,16 @@ class _PurchasesState extends ConsumerState<CompanyPurchasesScreen> {
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(6), border: Border.all(color: kLine)),
                 child: forced
-                    ? Text('Les achats de ce compte sont facturés à ${b?['company_name'] ?? 'l’entreprise'} (raison sociale, NIU et adresse de la fiche).', style: mst(13, w: FontWeight.w600).copyWith(height: 1.4))
+                    ? Text('Les achats de ce compte sont facturés à ${b?['company_name'] ?? 'l’organisation'} (raison sociale, NIU et adresse de la fiche).', style: mst(13, w: FontWeight.w600).copyWith(height: 1.4))
                     : Row(children: [
-                        Expanded(child: Text(on ? 'Vos achats sont facturés à ${b['company_name']}.' : 'Acheter au nom de l’entreprise : vos achats personnels restent séparés.', style: mst(13, w: FontWeight.w600).copyWith(height: 1.4))),
+                        Expanded(child: Text(on ? 'Vos achats sont facturés à ${b['company_name']}.' : 'Acheter au nom de l’organisation : vos achats personnels restent séparés.', style: mst(13, w: FontWeight.w600).copyWith(height: 1.4))),
                         SizedBox(height: 48, child: Switch(value: on, onChanged: _busy ? null : (v) => _toggleBuying(v, ctx))),
                       ]),
               );
             },
           ),
           const CompanyBillingCard(),
-          mSectionTitle('Commandes de l’entreprise'),
+          mSectionTitle('Commandes de l’organisation'),
           if (_loading)
             const Padding(padding: EdgeInsets.all(30), child: Center(child: CircularProgressIndicator()))
           else if (_error != null)
@@ -137,7 +137,7 @@ class _PurchasesState extends ConsumerState<CompanyPurchasesScreen> {
             ])
           else if (_orders.isEmpty)
             Column(children: [
-              Text('Aucune commande au nom de l’entreprise pour le moment.\nActivez « acheter au nom de l’entreprise » ou commandez avec le compte Entreprise : la commande apparaît ici avec sa facture.', textAlign: TextAlign.center, style: mst(13.5, c: kGrey).copyWith(height: 1.5)),
+              Text('Aucune commande au nom de l’organisation pour le moment.\nActivez « acheter au nom de l’organisation » ou commandez avec le compte Organisation : la commande apparaît ici avec sa facture.', textAlign: TextAlign.center, style: mst(13.5, c: kGrey).copyWith(height: 1.5)),
               const SizedBox(height: 12),
               mButton('Parcourir la marketplace', () => context.push('/marche'), dark: false, icon: Icons.storefront_outlined),
             ])

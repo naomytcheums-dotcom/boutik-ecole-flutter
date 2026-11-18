@@ -6,7 +6,7 @@ import '../../data/demo/section_a_demo.dart';
 import '../../data/repositories/repositories.dart' show cartProvider, CartNotifier;
 import '../gen.dart';
 import '../nav.dart';
-import 'auth.dart' show demoContent;
+import 'auth.dart' show demoContent, requireLogin;
 import 'marche/marche_widgets.dart' show MarcheLink;
 import 'store.dart';
 
@@ -71,7 +71,12 @@ class _Cart extends StatelessWidget {
       gP(
         25.64, 748.421, 338.72, 46.692,
         gBox(color: _ink, shadows: const [BoxShadow(color: Color(0x29122640), offset: Offset(0, 5), blurRadius: 12)], radii: const [22.941, 22.941, 22.941, 22.941]),
-        tap: () => lines.isEmpty ? gToast(context, 'Ajoutez un article pour commander') : gOpen(context, '07'),
+        tap: () async {
+          if (lines.isEmpty) return gToast(context, 'Ajoutez un article pour commander');
+          // le panier du visiteur est conservé : après la connexion, retour ici puis suite de la commande
+          if (!await requireLogin(context, ref, 'passer votre commande') || !context.mounted) return;
+          gOpen(context, '07');
+        },
       ),
       gP(121.68, 764.605, 121, 15, gText('Passer la commande', 12.145, Colors.white, weight: 600, align: TextAlign.center)),
       gP(249.662, 769.105, 13.478, 6, gImg('$_v/120a13c718a727.svg')),

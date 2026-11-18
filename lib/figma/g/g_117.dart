@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/direction.dart';
 import '../live/store.dart';
 import '../live/impact.dart';
 import '../live/l06.dart';
@@ -66,7 +67,7 @@ class G_117 extends ConsumerWidget {
       gP(24.5, 259.5, 15, 15, const SizedBox.expand(), tap: () => gTab(context, '10')),
       gP(25.875, 258.375, 12.25, 12.25, gImg('assets/figma/v/24e83dedb394fa.svg')),
       gP(24, 264.625, 16, 11, gImg('assets/figma/v/4d0783d7dec623.svg')),
-      gP(52, 259, 64, 15, gText('Utilisateurs', 12, Color(0xFF55524C), inter: true)),
+      gP(52, 259, 150, 15, gText('Étudiants', 12, Color(0xFF55524C), inter: true)),
       gP(24.5, 299.5, 15, 15, const SizedBox.expand(), tap: () => gTab(context, '10')),
       gP(25.875, 298.375, 12.25, 12.25, gImg('assets/figma/v/24e83dedb394fa.svg')),
       gP(24, 304.625, 16, 11, gImg('assets/figma/v/4d0783d7dec623.svg')),
@@ -74,7 +75,7 @@ class G_117 extends ConsumerWidget {
       gP(22.75, 345.875, 14.75, 9.75, gImg('assets/figma/v/1782796e9e22c0.svg')),
       gP(24.625, 338.375, 11, 11, gImg('assets/figma/v/3bae74da037db6.svg')),
       gP(31.5, 338.438, 9.75, 17.188, gImg('assets/figma/v/220d9dfaf6b6b7.svg')),
-      gP(52, 339, 119, 15, gText('Circuits de validation', 12, Color(0xFF55524C), inter: true)),
+      gP(52, 339, 160, 15, gText('Validations institutionnelles', 12, Color(0xFF55524C), inter: true)),
       gP(20, 390, 24, 12, gText('Suivi', 10, Color(0xFF716D65), weight: 500, inter: true)),
       gP(24.5, 413.5, 15, 15, const SizedBox.expand(), tap: () => gTab(context, '53')),
       gP(22.75, 412.37, 17.88, 17.88, gImg('assets/figma/v/53b47db12afe77.svg')),
@@ -92,7 +93,7 @@ class G_117 extends ConsumerWidget {
       gP(52, 527, 52, 15, gText('Rapports', 12, Color(0xFF55524C), inter: true)),
       gP(22.75, 565.75, 18.5, 18.5, gImg('assets/figma/v/273a872595c6ee.svg')),
       gP(27.188, 568.922, 9.625, 12.203, gImg('assets/figma/v/1032e6b01eb553.svg')),
-      gP(52, 567, 83, 15, gText('Journal d’audit', 12, Color(0xFF55524C), inter: true)),
+      gP(52, 567, 160, 15, gText('Journal des décisions', 12, Color(0xFF55524C), inter: true)),
       gP(12, 692, 176, 56, gBox(color: Color(0xFFFFFFFF), radii: [14, 14, 14, 14])),
       gP(22, 702, 36, 36, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [18, 18, 18, 18])),
       gP(66, 707, 51, 14, gText('Direction', 11.5, Color(0xFF111015), weight: 600, inter: true)),
@@ -341,7 +342,7 @@ gP(-13, 165.451, 296, 34.583, gImg('assets/figma/v/5ffec176ca9577.svg'))
       gTap(980, 78, 142, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
       if (demoContent) gTap(1150, 148, 80, 26, () { uiFilters(context); }), // audit 01/11 : « Filtrer » n'avait aucun effet
       if (demoContent) gTap(760, 408, 80, 26, () { uiFilters(context); }), // audit 01/11 : « Filtrer » n'avait aucun effet
-      if (!demoContent) gP(250, 130, 960, 640, const PlatformImpactPanel(width: 960, height: 640)),
+      if (!demoContent) gP(268, 130, 984, 690, ColoredBox(color: Color(0xFFF7F6F4), child: DirectionDashboardPanel(width: 984, height: 690))),
     ]);
   }
 }

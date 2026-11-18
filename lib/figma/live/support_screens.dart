@@ -68,10 +68,10 @@ const helpTopics = <String, HelpArticle>{
   ),
   'vendeur': HelpArticle(
     'Comment devenir vendeur ?',
-    'La vente est réservée aux étudiants-vendeurs.',
+    'La vente est une capacité de votre compte étudiant, pas un compte à part.',
     [
-      ('Un compte Client ne vend pas', 'Avec un compte Client, vous achetez, discutez avec les vendeurs et suivez vos commandes ; la publication d’annonces n’est pas disponible.'),
-      ('Créer un compte étudiant-vendeur', 'Pour vendre vos créations, créez un compte avec le profil Étudiant-vendeur : l’espace vendeur (annonces, stock, commandes) y est réservé.'),
+      ('Un seul compte', 'Avec le même compte, vous consultez, achetez, suivez vos commandes et, si vous êtes étudiant, vendez : il n’y a pas de second compte à créer.'),
+      ('Les conditions pour vendre', 'Votre compte doit être celui d’un étudiant vérifié (carte d’étudiant ou certificat de scolarité validé, ou compte certifié), avec un numéro de téléphone vérifié, et ne pas être suspendu. Le détail et l’état de chaque condition sont dans « Devenir vendeur ».'),
       ('Besoin d’un produit sur mesure ?', 'Vous pouvez aussi déposer un besoin de mission : des étudiants vous répondent avec une proposition.'),
     ],
     actions: [('Déposer un besoin', '191')],

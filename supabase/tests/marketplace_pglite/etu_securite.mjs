@@ -22,6 +22,8 @@ export async function run(db) {
     await db.exec(`insert into auth.users(id,email) values ('${U(n)}','e${n}@t.cm'); insert into profiles(id,name,role,email,department,skills) values ('${U(n)}','Prénom${n} Nom${n}','${r}','e${n}@t.cm','Génie', 'soudure')`);
   }
   await db.exec(`update profiles set suspended = true where id = '${U(47)}'`);
+  // H2 : le vendeur 41 et le responsable 45 sont dans le même département, rattaché par l'administrateur
+  await db.exec(`insert into institutions (id, name, status) values ('00000000-0000-0000-0000-00000000f801', 'IUT Sec', 'verified'); insert into departments (id, institution_id, name, status) values ('00000000-0000-0000-0000-00000000f8a1', '00000000-0000-0000-0000-00000000f801', 'Génie', 'verified'); update profiles set department_id = '00000000-0000-0000-0000-00000000f8a1', institution_id = '00000000-0000-0000-0000-00000000f801' where id = '${U(41)}'; insert into department_accounts (user_id, department_id) values ('${U(45)}', '00000000-0000-0000-0000-00000000f8a1')`);
 
   // --- annonces : re-modération, colonnes figées, médias
   const L = '00000000-0000-0000-0000-0000000000f1';
@@ -119,3 +121,4 @@ export async function run(db) {
 
   console.log(`etu_securite: ${ok} OK, ${ko} KO`);
 }
+

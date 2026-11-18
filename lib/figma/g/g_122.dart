@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart';
 import '../nav.dart';
+import '../live/direction.dart';
 import '../live/store.dart';
 import '../live/modules.dart';
 import '../live/l06.dart';
@@ -100,7 +101,7 @@ class G_122 extends ConsumerWidget {
       gP(24.625, 226.375, 11, 11, gImg('assets/figma/v/3bae74da037db6.svg')),
       gP(33.375, 233.956, 7.875, 9.669, gImg('assets/figma/v/7b2b9c968238b1.svg')),
       gP(31.5, 226.456, 7.88, 10.844, gImg('assets/figma/v/7d1afd23f298a1.svg')),
-      gP(52, 227, 64, 15, gText('Utilisateurs', 12, Color(0xFF55524C), inter: true)),
+      gP(52, 227, 150, 15, gText('Étudiants', 12, Color(0xFF55524C), inter: true)),
       gP(20, 276, 37, 12, gText('Gestion', 10, Color(0xFF716D65), weight: 500, inter: true)),
       gP(25.25, 297.75, 13.5, 13.5, gImg('assets/figma/v/c741934f1ce95f.svg')),
       gP(25.875, 304.556, 12.25, 11.694, gImg('assets/figma/v/1fd18b4a4a1f32.svg')),
@@ -108,7 +109,7 @@ class G_122 extends ConsumerWidget {
       gP(12, 330, 216, 34, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x144D401A), offset: Offset(0, 2), blurRadius: 8, spreadRadius: 0)], radii: [10, 10, 10, 10])),
       gP(24, 337.75, 16, 18.502, gImg('assets/figma/v/eb1ca16ae0995f.svg')),
       gP(27.125, 342.75, 9.75, 8.5, gImg('assets/figma/v/67b1d949f5166f.svg')),
-      gP(52, 339, 123, 15, gText('Circuits de validation', 12, Color(0xFF111015), weight: 600, inter: true)),
+      gP(52, 339, 160, 15, gText('Validations institutionnelles', 12, Color(0xFF111015), weight: 600, inter: true)),
       gP(22.75, 380.875, 18.5, 12.25, gImg('assets/figma/v/b8aa2d550e4e95.svg')),
       gP(31.5, 380.875, 9.75, 9.75, gImg('assets/figma/v/bf4c9c3198e949.svg')),
       gP(52, 379, 99, 15, gText('Activité et ventes', 12, Color(0xFF55524C), inter: true)),
@@ -123,12 +124,12 @@ class G_122 extends ConsumerWidget {
       gP(23.375, 498.38, 17.25, 17.25, gImg('assets/figma/v/a50cd9410c0076.svg')),
       gP(23.375, 498.375, 9.125, 9.125, gImg('assets/figma/v/3ad9c2af89ef3b.svg')),
       gP(29, 500.875, 8.5, 10.375, gImg('assets/figma/v/23a92abb65788c.svg')),
-      gP(52, 499, 83, 15, gText('Journal d’audit', 12, Color(0xFF55524C), inter: true)),
+      gP(52, 499, 160, 15, gText('Journal des décisions', 12, Color(0xFF55524C), inter: true)),
       gP(12, 804, 216, 56, gBox(color: Color(0xFFFFFFFF), radii: [14, 14, 14, 14])),
       gP(22, 814, 36, 36, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, oval: true)),
       gP(66, 817, 51, 14, gText('Direction', 11.5, Color(0xFF111015), weight: 600, inter: true)),
       gP(66, 834, 64, 11, gText(gSelfInst(ref, 'IUT de Douala'), 9.5, Color(0xFF57545F), inter: true)),
-      gP(268, 76, 241, 29, gText('Circuits de validation', 24, Color(0xFF18181B), weight: 500, inter: true)),
+      gP(268, 76, 520, 29, gText('Validations institutionnelles', 24, Color(0xFF18181B), weight: 500, inter: true)),
       gP(268, 110, 226, 15, gText('Vue d’ensemble · mise à jour aujourd’hui', 12, Color(0xFF6D6A64), inter: true)),
       gP(954, 78, 110, 34, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E3DE), bw: 1, radii: [17, 17, 17, 17])),
       gP(967.125, 87.125, 15.75, 15.75, gImg('assets/figma/v/e1d0d9c2726ec6.svg')),
@@ -150,7 +151,7 @@ class G_122 extends ConsumerWidget {
       gTap(12, 488, 216, 36, () => gOpen(context, '126')),
       gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
       gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
-      if (!demoContent) gP(268, 150, 984, 640, const SettingsToggles(defs: settings122)),
+      if (!demoContent) gP(268, 130, 984, 690, ColoredBox(color: Color(0xFFF7F6F4), child: InstitutionalValidationsPanel(width: 984, height: 690))),
     ]);
   }
 }

@@ -188,19 +188,20 @@ class Backend {
   /// Identifiant de connexion côté serveur : l'e-mail, ou un e-mail dérivé du téléphone.
   static String loginOf(Account a) => a.email.isNotEmpty ? a.email : '${a.phone}@phone.boutik-ecole.cm';
 
-  static const _roles = ['client', 'student', 'company', 'other'];
+  // Rôles attribuables à l'inscription : client, étudiant, organisation. Le rôle serveur « other » (ancien « Autre rôle ») est fusionné dans Organisation.
+  static const _roles = ['client', 'student', 'company'];
   static const _staff = {'dept': 'Resp. département', 'direction': 'Direction', 'finance': 'Finance', 'support': 'Support', 'admin': 'Admin global'};
 
   /// Compte construit uniquement à partir de la ligne de profil du titulaire (aucune valeur empruntée à un autre compte).
   static Account _fromRow(Map<String, dynamic> r, String email) {
     final role = (r['role'] ?? 'client').toString();
-    final idx = _roles.indexOf(role);
+    final idx = role == 'other' ? 2 : _roles.indexOf(role);
     return Account(
       name: (r['name'] ?? '').toString(),
       phone: (r['phone'] ?? '').toString(),
       email: (r['email'] ?? email).toString(),
       password: '',
-      role: idx < 0 ? 3 : idx,
+      role: idx >= 0 ? idx : (_staff.containsKey(role) ? 3 : 0),
       staff: _staff[role] ?? '',
       verified: true,
       city: (r['city'] ?? '').toString(),
@@ -321,7 +322,7 @@ class Backend {
   static Future<String?> createProfile(Account a) async => (await createProfileChecked(a)).error;
 
   /// Comme [createProfile], en indiquant si le profil vient d'être créé ([created]) ou existait déjà (rôle alors inchangé).
-  /// Le serveur accepte à l'inscription les quatre profils (client, étudiant-vendeur, entreprise, autre rôle).
+  /// Le serveur accepte à l'inscription trois profils : client, étudiant-vendeur et organisation (le type d'organisation est enregistré ensuite).
   static Future<({bool created, String? error})> createProfileChecked(Account a) async {
     final c = _c;
     final uid = c?.auth.currentUser?.id;

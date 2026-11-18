@@ -399,7 +399,7 @@ class _OppsState extends ConsumerState<OpportunitiesScreen> {
           mAsync<List<Map<String, dynamic>>>(
             ref.watch(oppsProvider(const OppQuery())),
             (l) => l.isEmpty
-                ? mNote('Aucune opportunité publiée pour le moment.\nLes stages, emplois et missions proposés par les entreprises apparaîtront ici.')
+                ? mNote('Aucune opportunité publiée pour le moment.\nLes stages, emplois et missions proposés par les organisations apparaîtront ici.')
                 : Column(children: [for (final o in l) OpportunityCard(o: o, onTap: () => context.push('/opportunites/${o['id']}'), onSave: () => _save(o))]),
           ),
           mSectionTitle('Ils ont été recrutés'),
@@ -1017,12 +1017,12 @@ class _EditState extends ConsumerState<OpportunityEditScreen> {
     final account = ref.watch(authProvider).current;
     if (Backend.ready && account == null) return marcheLoginRequired(context, ref, title: 'Publier une offre', pour: 'publier une offre');
     if (Backend.ready && const ['student', 'client'].contains(roleKey(account))) {
-      return MarchePage(title: 'Publier une offre', child: mNote('Réservé aux entreprises, ONG, startups et à l’équipe de l’IUT.'));
+      return MarchePage(title: 'Publier une offre', child: mNote('Réservé aux organisations et à l’équipe de l’IUT.'));
     }
     return MarchePage(
       title: 'Publier une offre',
       child: ListView(padding: const EdgeInsets.fromLTRB(16, 4, 16, 90), children: [
-        Text('Réservé aux entreprises, ONG, startups et à l’équipe de l’IUT. Votre offre est relue avant d’être publiée.', style: mst(13, c: kGrey).copyWith(height: 1.5)),
+        Text('Réservé aux organisations et à l’équipe de l’IUT. Votre offre est relue avant d’être publiée.', style: mst(13, c: kGrey).copyWith(height: 1.5)),
         const SizedBox(height: 12),
         Padding(
           padding: const EdgeInsets.only(bottom: 10),

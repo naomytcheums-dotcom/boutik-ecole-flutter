@@ -408,9 +408,9 @@ class _DuelCreateFormState extends ConsumerState<DuelCreateForm> {
 
   @override
   Widget build(BuildContext context) {
-    if (_signedOut(ref)) return _note(widget.width, 'Connectez-vous avec un compte client ou entreprise pour lancer un duel.');
+    if (_signedOut(ref)) return _note(widget.width, 'Connectez-vous avec un compte client ou organisation pour lancer un duel.');
     if (!const {'client', 'company', 'dept', 'direction', 'admin'}.contains(roleKey(ref.watch(authProvider).current))) {
-      return _note(widget.width, 'Seuls les clients, les entreprises et le département peuvent lancer un duel. Les étudiants y participent depuis « Duels de talents ».');
+      return _note(widget.width, 'Seuls les clients, les organisations et le département peuvent lancer un duel. Les étudiants y participent depuis « Duels de talents ».');
     }
     return SizedBox(
       width: widget.width,

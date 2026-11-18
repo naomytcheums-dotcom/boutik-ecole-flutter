@@ -25,7 +25,7 @@ class EspaceClientScreen extends ConsumerWidget {
                 children: [
                   Text('Bonjour ${d.clientName}', style: AppText.secondary),
                   const SizedBox(height: 4),
-                  Semantics(header: true, child: Text('Mon espace client', style: AppText.h1.copyWith(fontWeight: FontWeight.w700))),
+                  Semantics(header: true, child: Text('Mon espace', style: AppText.h1.copyWith(fontWeight: FontWeight.w700))),
                 ],
               ),
             ),

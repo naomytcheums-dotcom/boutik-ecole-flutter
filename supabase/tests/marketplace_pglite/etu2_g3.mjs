@@ -14,7 +14,10 @@ export async function run(db) {
   for (const [id, role] of roles) {
     await db.exec(`insert into auth.users(id,email) values ('${id}','g3${id.slice(-2)}@t.cm'); insert into profiles(id,name,role,email) values ('${id}','Nom ${id.slice(-2)}','${role}','g3${id.slice(-2)}@t.cm')`);
   }
-  await db.exec(`update profiles set certification = 'approved' where role = 'student'`);
+  await db.exec(`update profiles set certification = 'approved', phone_verified = true where role = 'student'`);
+  // K1 : droits minimaux par défaut ; la finance et le support du scénario reçoivent explicitement leurs permissions.
+  await db.exec(`update admin_team_members set permissions = array['finance.read', 'finance.payments', 'finance.payouts', 'finance.refunds', 'finance.transfers'] where user_id = '${FIN}' and team_code = 'finance';
+    update admin_team_members set permissions = array['support.tickets', 'support.claims', 'support.disputes', 'support.orders', 'support.requests'] where user_id = '${SUP}' and team_code = 'support'`);
   await db.exec(`insert into company_profiles (owner_id, company_name, status) values ('${CO}', 'Approuvee', 'approved'), ('${COP}', 'En attente', 'pending') on conflict (owner_id) do update set status = excluded.status`);
   await sup();
   await db.exec(`insert into listings (seller_id,title,department,category,price,stock,status,images) values

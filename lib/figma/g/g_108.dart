@@ -24,6 +24,7 @@ import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/inert_actions.dart';
 import '../live/pay.dart';
+import '../live/dept_space.dart' show DeptConsoleOverview;
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_108 extends ConsumerWidget {
@@ -79,8 +80,8 @@ class G_108 extends ConsumerWidget {
       gP(24.5, 413.5, 15, 15, const SizedBox.expand(), tap: () => gTab(context, '53')),
       gP(22.75, 412.37, 17.88, 17.88, gImg('assets/figma/v/53b47db12afe77.svg')),
       gP(52, 413, 47, 15, gText('Mentors', 12, Color(0xFF55524C), inter: true)),
-      gP(156, 414, 22, 18, gBox(color: Color(0xFF111015), radii: [9, 9, 9, 9])),
-      gP(164, 417, 6, 11, gText('2', 9.5, Color(0xFFFFFFFF), weight: 700, inter: true, align: TextAlign.center)),
+      gP(156, 414, 22, 18, gBox(color: Color(0xFF111015), radii: [9, 9, 9, 9]), show: demoContent), // compteur de maquette : jamais présenté comme réel
+      gP(164, 417, 6, 11, gText('2', 9.5, Color(0xFFFFFFFF), weight: 700, inter: true, align: TextAlign.center), show: demoContent),
       gP(23.375, 452.375, 17.25, 17.25, gImg('assets/figma/v/0e8e9b6945f1c7.svg')),
       gP(32.75, 456.125, 6, 11, gImg('assets/figma/v/4b7c01062373f8.svg')),
       gP(29.625, 453.625, 6, 13.5, gImg('assets/figma/v/9e3bcb7e9c574c.svg')),
@@ -345,6 +346,7 @@ gP(-13, 165.451, 296, 34.583, gImg('assets/figma/v/5ffec176ca9577.svg'))
       gTap(980, 78, 142, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
       gTap(1150, 148, 80, 26, () { uiFilters(context); }), // audit 01/11 : « Filtrer » n'avait aucun effet
       gTap(760, 408, 80, 26, () { uiFilters(context); }), // audit 01/11 : « Filtrer » n'avait aucun effet
+      if (!demoContent) gP(204, 56, 1068, 704, const DeptConsoleOverview()), // connecté : mêmes lectures que la page mobile, aucune carte de maquette
     ]);
   }
 }

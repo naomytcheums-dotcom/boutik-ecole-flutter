@@ -31,7 +31,7 @@ export async function run(db) {
   await fails('elle ne lit pas la liste d une autre', `select talent_list_members_get('${fav}')`, /Liste introuvable/);
   await fails('elle ne modifie pas la liste d une autre', `select talent_list_add('${fav}', '${B}')`, /Liste introuvable/);
   await as(A);
-  await fails('un etudiant n a pas acces', `select talent_lists_get()`, /Réservé aux entreprises/);
+  await fails('un etudiant n a pas acces', `select talent_lists_get()`, /Réservé aux organisations/);
   await as(E);
   await q(`select talent_list_remove('${dev}', '${B}')`);
   check('retrait d un etudiant', (await q(`select talent_list_members_get('${dev}') r`))[0].r.length === 1);

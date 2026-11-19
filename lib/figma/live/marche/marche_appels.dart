@@ -13,7 +13,7 @@ import '../project_cards.dart' show showProjectSheet;
 import 'marche_data.dart';
 import 'marche_widgets.dart';
 
-/// Appel à entreprises et projets de l'IUT. Une entreprise publie « Je cherche une solution pour… » (écran 90, déjà existant) ;
+/// Appel aux organisations et projets de l'IUT. Une organisation publie « Je cherche une solution pour… » (écran 90, déjà existant) ;
 /// les étudiants répondent depuis cette page avec un montant, un délai et un message.
 
 /// Recherche, tri et filière mentionnée de la liste des appels (envoyés au serveur).
@@ -126,19 +126,19 @@ class AppelsScreen extends ConsumerWidget {
     int? digits(String s) => int.tryParse(s.replaceAll(RegExp(r'[^0-9]'), ''));
     final r = await marcheCall('propose_on_mission', {'p_mission': call['id'], 'p_amount': digits(amount.text), 'p_delay_days': digits(days.text), 'p_message': msg.text});
     if (!context.mounted) return;
-    gToast(context, r.error != null ? Backend.userMessage('${r.error}') : 'Proposition envoyée. L’entreprise vous répondra.');
+    gToast(context, r.error != null ? Backend.userMessage('${r.error}') : 'Proposition envoyée. L’organisation vous répondra.');
     ref.invalidate(marcheCallsProvider);
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (Backend.ready && ref.watch(authProvider.select((a) => a.current == null))) return marcheLoginRequired(context, ref, title: 'Appel à entreprises', pour: 'consulter les appels à entreprises');
+    if (Backend.ready && ref.watch(authProvider.select((a) => a.current == null))) return marcheLoginRequired(context, ref, title: 'Appel aux organisations', pour: 'consulter les appels aux organisations');
     return MarchePage(
-      title: 'Appel à entreprises',
+      title: 'Appel aux organisations',
       child: ListView(padding: const EdgeInsets.only(bottom: 90), children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-          child: Text('Une entreprise publie « Je cherche une solution pour… » ; les étudiants répondent avec un prix, un délai et leur solution.', style: mst(13, c: kGrey).copyWith(height: 1.5)),
+          child: Text('Une organisation publie « Je cherche une solution pour… » ; les étudiants répondent avec un prix, un délai et leur solution.', style: mst(13, c: kGrey).copyWith(height: 1.5)),
         ),
         Padding(padding: const EdgeInsets.fromLTRB(16, 4, 16, 8), child: mButton('Publier mon besoin', () => context.push('/s/191'), icon: Icons.add)),
         Padding(
@@ -160,7 +160,7 @@ class AppelsScreen extends ConsumerWidget {
         mAsync<List<Map<String, dynamic>>>(
           ref.watch(marcheCallsProvider),
           (l) => l.isEmpty
-              ? mNote(ref.watch(callsQueryProvider).q.isEmpty && ref.watch(callsQueryProvider).dept.isEmpty ? 'Aucun appel publié pour le moment.\nLes besoins des entreprises apparaîtront ici dès leur publication.' : 'Aucun besoin ne correspond à cette recherche.')
+              ? mNote(ref.watch(callsQueryProvider).q.isEmpty && ref.watch(callsQueryProvider).dept.isEmpty ? 'Aucun appel publié pour le moment.\nLes besoins des organisations apparaîtront ici dès leur publication.' : 'Aucun besoin ne correspond à cette recherche.')
               : Column(children: [
                   for (final c in l)
                     Container(

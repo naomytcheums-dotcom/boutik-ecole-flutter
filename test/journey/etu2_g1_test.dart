@@ -82,7 +82,7 @@ void main() {
         'rejected_documents': [{'kind': 'student_card', 'note': 'Photo illisible'}],
       });
       expect(find.text('Vérification à compléter'), findsOneWidget);
-      expect(find.textContaining('annuaire des talents, les invitations d’entreprises'), findsOneWidget);
+      expect(find.textContaining('annuaire des talents, les invitations d’organisations'), findsOneWidget);
       expect(find.textContaining('Choisissez votre établissement et votre département'), findsOneWidget);
       expect(find.textContaining('Photo illisible'), findsOneWidget);
       expect(find.textContaining('Vérifiez votre numéro de téléphone'), findsOneWidget);

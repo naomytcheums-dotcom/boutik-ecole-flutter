@@ -9,6 +9,8 @@ export async function run(db) {
   for (const [id, nm, role] of [[A, 'Awa Atelier', 'student'], [B, 'Paul Buyer', 'client'], [C, 'Cora Buyer', 'client'], [D, 'Dan Direct', 'student'], [M, 'Mod Admin', 'admin']]) {
     await db.exec(`insert into auth.users(id,email) values ('${id}','${nm.split(' ')[0]}@t.cm'); insert into profiles(id,name,role,email) values ('${id}','${nm}','${role}','${nm.split(' ')[0]}@t.cm')`);
   }
+  // K2 : les vendeurs (A, D) sont éligibles (pièce d'étudiant validée, téléphone vérifié)
+  for (const s of [A, D]) await db.exec(`update profiles set phone_verified = true where id = '${s}'; insert into user_documents (owner_id, kind, name, path, mime, size_bytes, status) values ('${s}', 'student_card', 'c.pdf', '${s}/c/c.pdf', 'application/pdf', 10, 'verified')`);
   await as(A);
   let r = (await q(`select shop_save('{"name":"Atelier Awa","description":"Bois recycle","logo_url":"https://abcdefgh.supabase.co/storage/v1/object/public/listing-images/u/boutique/l.png","categories":["Maison"]}'::jsonb) s`))[0].s;
   check('creation boutique en brouillon, adresse derivee du nom', r.status === 'draft' && r.slug === 'atelier-awa', JSON.stringify(r));

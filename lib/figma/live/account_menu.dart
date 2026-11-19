@@ -32,6 +32,7 @@ Future<void> _mentors(BuildContext context, WidgetRef ref) async => GoRouter.of(
 Future<void> _litiges(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/litiges');
 Future<void> _ficheEntreprise(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/entreprise/profil');
 Future<void> _equipeEntreprise(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/entreprise/equipe');
+Future<void> _partenariatsOrganisation(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/entreprise/partenariats');
 Future<void> _forfaitsDeLEntreprise(BuildContext context, WidgetRef ref) => showCompanyPlans(context, ref);
 Future<void> _publierOffre(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/opportunites/publier');
 Future<void> _mesOffres(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/opportunites/mes');
@@ -172,6 +173,7 @@ final _groups = <_Group>[
   const _Group('Espace organisation', [
     _Entry('Fiche de l’organisation et vérification', action: _ficheEntreprise, roles: {'company', 'admin'}),
     _Entry('Équipe de l’organisation', action: _equipeEntreprise, roles: {'company', 'admin'}),
+    _Entry('Partenariats avec l’établissement', action: _partenariatsOrganisation, roles: {'company', 'admin'}),
     _Entry('Forfaits de l’organisation', action: _forfaitsDeLEntreprise, roles: {'company', 'admin'}),
     _Entry('Mes organisations (invitations et espaces partagés)', action: _mesEntreprises, roles: {'company', 'admin'}),
     _Entry('Tableau de bord de l’organisation', screen: '187', roles: {'company', 'admin'}),

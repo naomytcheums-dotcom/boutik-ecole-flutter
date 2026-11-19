@@ -109,11 +109,11 @@ void main() {
     expect(find.text('Lecture seule'), findsNothing);
   });
 
-  testWidgets('compte non rattaché : message clair, aucune donnée', (t) async {
+  testWidgets('compte non rattaché : écran d’attente explicatif, aucune donnée', (t) async {
     await monter(t, const DepartmentHubScreen(), [
       _calls({...base, 'my_department': (_) => _me(attached: false)}),
     ]);
-    expect(find.text('Compte non rattaché'), findsOneWidget);
+    expect(find.text('En attente de rattachement'), findsOneWidget);
     expect(find.text('42'), findsNothing);
   });
 
@@ -309,6 +309,7 @@ void main() {
     await monter(t, const DepartmentAttachScreen(), [
       _calls({
         ...base,
+        'admin_dept_unassigned_accounts': (_) => [],
         'admin_dept_accounts': (_) => [
               {'id': 'c1', 'name': 'Dr Mbarga', 'attached': true, 'department': 'Génie logiciel', 'institution': 'IUT test', 'suspended': false},
               {'id': 'c2', 'name': 'Mme Ndongo', 'attached': false, 'suspended': false},

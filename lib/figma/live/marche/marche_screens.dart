@@ -109,7 +109,7 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
           child: Row(children: [
-            Expanded(child: mButton('Appel à entreprises', () => context.push('/marche/appels'), dark: false, icon: Icons.campaign_outlined)),
+            Expanded(child: mButton('Appel aux organisations', () => context.push('/marche/appels'), dark: false, icon: Icons.campaign_outlined)),
             const SizedBox(width: 10),
             Expanded(child: mButton('Projets de l’IUT', () => context.push('/marche/projets'), dark: false, icon: Icons.verified_outlined)),
           ]),

@@ -22,11 +22,14 @@ export async function run(db) {
     await db.exec(`insert into auth.users(id,email) values ('${U(id)}','h3u${id}@t.cm'); insert into profiles(id,name,role,email) values ('${U(id)}','${nm}','${role}','h3u${id}@t.cm')`);
   }
   const I1 = '00000000-0000-0000-0000-00000000a301', D1 = '00000000-0000-0000-0000-00000000a311', D2 = '00000000-0000-0000-0000-00000000a312';
+  // K1 : droits minimaux par défaut ; la finance (9) et le support (10) du scénario reçoivent explicitement leurs permissions.
+  await db.exec(`update admin_team_members set permissions = array['finance.read', 'finance.payments', 'finance.payouts'] where user_id = '${U(9)}' and team_code = 'finance';
+    update admin_team_members set permissions = array['support.requests'] where user_id = '${U(10)}' and team_code = 'support'`);
   await db.exec(`insert into institutions (id, name, status) values ('${I1}', 'IUT test H3', 'verified');
     insert into departments (id, institution_id, name, status) values ('${D1}', '${I1}', 'Informatique', 'verified'), ('${D2}', '${I1}', 'Gestion', 'verified');
     update profiles set department_id = '${D1}', department = 'Informatique' where id in ('${U(3)}', '${U(5)}');
     update profiles set department_id = '${D2}', department = 'Gestion' where id in ('${U(4)}', '${U(11)}');
-    update profiles set certification = 'approved' where role = 'student';
+    update profiles set certification = 'approved', phone_verified = true where role = 'student';
     insert into department_accounts (user_id, department_id) values ('${U(3)}', '${D1}'), ('${U(4)}', '${D2}');
     insert into department_partnerships (department_id, partner_name, kind, status) values ('${D1}', 'Camtel Stages', 'stage', 'actif'), ('${D2}', 'Banque Locale', 'convention', 'prospect');
     insert into sponsors (id, name, owner_id) values ('00000000-0000-0000-0000-0000000030a1', 'Orange Cameroun', '${U(7)}');

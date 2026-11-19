@@ -17,8 +17,14 @@ export async function run(db) {
     [M, 'Mod Admin', 'admin'], [F, 'Fin Finance', 'finance'], [SU, 'Sam Support', 'support'], [C, 'Ent Cliente', 'client'], [D, 'Dep Dept', 'dept']]) {
     await db.exec(`insert into auth.users(id,email) values ('${i}','${nm.split(' ')[0]}@t.cm'); insert into profiles(id,name,role,email) values ('${i}','${nm}','${role}','${nm.split(' ')[0]}@t.cm')`);
   }
+  // Rattachement du compte département (lot H2/K3) : un compte non rattaché ne voit et ne reçoit aucune donnée départementale.
+  await db.exec(`insert into institutions (id, name, status) values ('00000000-0000-0000-0000-00000000c4a0', 'IUT Test', 'verified') on conflict (id) do nothing; insert into departments (id, institution_id, name, status) values ('00000000-0000-0000-0000-00000000c4a1', '00000000-0000-0000-0000-00000000c4a0', 'Génie logiciel', 'verified') on conflict (id) do nothing; insert into department_accounts (user_id, department_id) values ('${D}', '00000000-0000-0000-0000-00000000c4a1') on conflict (user_id) do update set department_id = excluded.department_id; update profiles set department_id = '00000000-0000-0000-0000-00000000c4a1' where id = '${C}'`);
+  // K2 : les vendeurs (S1, S2) sont éligibles (pièce d'étudiant validée, téléphone vérifié)
+  for (const s of [S1, S2]) await db.exec(`update profiles set phone_verified = true where id = '${s}'; insert into user_documents (owner_id, kind, name, path, mime, size_bytes, status) values ('${s}', 'student_card', 'c.pdf', '${s}/c/c.pdf', 'application/pdf', 10, 'verified')`);
   // Équipes internes (lot H4) : l'agent de support de ce scénario décide aussi les remboursements (droit explicite).
-  await db.exec(`update admin_team_members set permissions = permissions || array['support.refunds'] where user_id = '${SU}' and team_code = 'support'`);
+  // K1 : droits minimaux par défaut ; la finance et le support du scénario reçoivent explicitement les permissions dont il a besoin.
+  await db.exec(`update admin_team_members set permissions = array['support.tickets', 'support.claims', 'support.disputes', 'support.orders', 'support.requests', 'support.refunds'] where user_id = '${SU}' and team_code = 'support';
+    update admin_team_members set permissions = array['finance.read', 'finance.payments', 'finance.payouts', 'finance.refunds', 'finance.transfers'] where user_id = '${F}' and team_code = 'finance'`);
   await sup();
   await db.exec(`insert into listings (seller_id,title,department,category,price,stock,status,images) values
     ('${S1}','Lampe','Design','Maison',10000,50,'approved','{}'), ('${S2}','Table','Design','Maison',5000,50,'approved','{}'), ('${S2}','Bureau','Design','Maison',15000,50,'approved','{}')`);
@@ -172,7 +178,7 @@ export async function run(db) {
   check('D26 une demande de remboursement tracee est creee (approuvee, 10000 FCFA)', rf6.status === 'approved' && rf6.amount === 10000 && rf6.claim_id === c6);
   check('D27 le stock est remis', (await q(`select stock from listings where id='${lamp}'`))[0].stock >= 1);
   await as(SU);
-  await fails('D28 le support n inscrit pas le versement (finance seulement)', `select order_refund_set_paid('${rf6.id}', 'MP123456')`, /Réservé à la finance/);
+  await fails('D28 le support n inscrit pas le versement (finance seulement)', `select order_refund_set_paid('${rf6.id}', 'MP123456')`, /Réservé à l.équipe Finance/);
   await as(F);
   await fails('D29 la finance doit donner une reference', `select order_refund_set_paid('${rf6.id}', '')`, /référence/);
   check('D30 la finance inscrit le remboursement verse', (await q(`select order_refund_set_paid('${rf6.id}', 'MP123456') r`))[0].r === 'refunded');

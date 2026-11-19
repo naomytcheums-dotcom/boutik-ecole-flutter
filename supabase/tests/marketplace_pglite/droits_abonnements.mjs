@@ -24,6 +24,10 @@ export async function run(db) {
     await db.exec(`insert into auth.users(id,email) values ('${U(n)}','d${n}@t.cm'); insert into profiles(id,name,role,email) values ('${U(n)}','Compte ${n}','${r}','d${n}@t.cm')`);
   }
   await db.exec(`update profiles set is_test = true where id = '${U(35)}'`);
+  // K2 : les vendeurs (étudiants) sont éligibles : pièce d'étudiant validée et téléphone vérifié
+  for (const n of [31, 32, 33, 35, 36, 37, 38]) {
+    await db.exec(`update profiles set phone_verified = true where id = '${U(n)}'; insert into user_documents (owner_id, kind, name, path, mime, size_bytes, status) values ('${U(n)}', 'student_card', 'c.pdf', '${U(n)}/c/c.pdf', 'application/pdf', 10, 'verified')`);
+  }
 
   // --- promesses des plans
   const feats = async (code) => (await q(`select features f, sellable s from plans where code = '${code}'`))[0];

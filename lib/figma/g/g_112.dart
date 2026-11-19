@@ -24,6 +24,7 @@ import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/inert_actions.dart';
 import '../live/pay.dart';
+import '../live/dept_space.dart' show DeptConsolePage;
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_112 extends ConsumerWidget {
@@ -178,7 +179,7 @@ class G_112 extends ConsumerWidget {
       gTap(12, 448, 216, 36, () => gOpen(context, '116')),
       gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
       gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
-      if (!demoContent) gP(268, 170, 960, 600, const DeptStatsPanel(width: 960, height: 600)),
+      if (!demoContent) gP(240, 56, 1040, 834, const DeptConsolePage('112')), // connecté : la page réelle « Statistiques »
     ]);
   }
 }

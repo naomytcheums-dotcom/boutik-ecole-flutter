@@ -16,6 +16,8 @@ export async function run(db) {
   for (const [n, r] of Object.entries(roles)) {
     await db.exec(`insert into auth.users(id,email) values ('${U(n)}','u${n}@t.cm'); insert into profiles(id,name,role,email) values ('${U(n)}','Profil Complet ${n}','${r}','u${n}@t.cm')`);
   }
+  // K1 : droits minimaux par défaut ; la finance du scénario reçoit explicitement la validation des paiements.
+  await db.exec(`update admin_team_members set permissions = array['finance.read', 'finance.payments'] where user_id = '${U(14)}' and team_code = 'finance'`);
 
   // H2 : le responsable (15) est rattaché au département « Genie » par l'administrateur
   await db.exec(`insert into institutions (id, name, status) values ('00000000-0000-0000-0000-00000000f301', 'IUT Visiteur', 'verified');

@@ -9,27 +9,13 @@ import 'package:boutik_ecole/figma/live/auth.dart';
 import 'package:boutik_ecole/figma/live/backend.dart';
 import 'package:boutik_ecole/figma/live/console.dart';
 import 'package:boutik_ecole/figma/live/direction.dart' show directionRpc;
-import 'package:boutik_ecole/figma/live/impact.dart';
+import 'package:boutik_ecole/figma/live/dept_space.dart' show deptCallProvider;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 
 import '../helpers/render.dart';
-
-class _Rows extends RpcRows {
-  _Rows(super.fn, this.v);
-  final List<Map<String, dynamic>>? v;
-  @override
-  List<Map<String, dynamic>>? build() => v;
-}
-
-class _Stats extends RpcMap {
-  _Stats(super.fn, this.v);
-  final Map<String, dynamic>? v;
-  @override
-  Map<String, dynamic>? build() => v;
-}
 
 void main() {
   setUpAll(loadAppFonts);
@@ -122,24 +108,51 @@ void main() {
       expect(find.text('Génie civil'), findsOneWidget);
     });
   });
-  testWidgets('109 connecté : étudiants du département avec annonces, ventes et vérification', (t) async {
-    await monter(t, const G_109(), connecte: true, login: true, overrides: [
-      deptStudentsProvider.overrideWith(() => _Rows('dept_students', [{'name': 'Alice Test', 'department': 'Informatique', 'role': 'student', 'listings': 3, 'sales': 45000, 'verified': true}]))
-    ]);
+  // K3 : en connecté, les toiles 109 à 115 incrustent la page mobile réelle (mêmes lectures `deptCallProvider`) ; les anciens tableaux de toile n'existent plus en connecté.
+  Override deptReads(Map<String, Object? Function()> m) => deptCallProvider.overrideWith((ref, c) async {
+        final f = m[c.fn];
+        if (f == null) throw 'Fonction inattendue : ${c.fn}';
+        return f();
+      });
+  final chefAccount = demoAccount.copyWith(staff: 'Resp. département');
+  Map<String, Object? Function()> chef(Map<String, Object? Function()> extra) => {
+        'my_department': () => {'role': 'dept', 'attached': true, 'department': 'Informatique', 'institution': 'IUT'},
+        ...extra,
+      };
+  Future<void> monterChef(WidgetTester t, Widget ecran, Map<String, Object? Function()> reads) async {
+    Backend.ready = true;
+    GAnim.enabled = false;
+    t.view.physicalSize = const Size(1280, 890);
+    t.view.devicePixelRatio = 1;
+    addTearDown(t.view.reset);
+    await t.pumpWidget(ProviderScope(overrides: [initialAccountProvider.overrideWithValue(chefAccount), deptReads(chef(reads))], child: MaterialApp(home: ecran)));
+    await t.pumpAndSettle();
+  }
+
+  testWidgets('109 connecté : étudiants du département (page réelle), aucun étudiant de maquette', (t) async {
+    await monterChef(t, const G_109(), {
+      'dept_students_list': () => {'total': 1, 'rows': [{'id': 'u1', 'name': 'Alice Test', 'level': 'L2', 'verified_student': true, 'projects': 3, 'skills': 2}]},
+    });
     expect(find.text('Alice Test'), findsOneWidget);
     expect(find.text('Vérifié'), findsOneWidget);
-    expect(find.text('3'), findsOneWidget);
     expect(find.text('Yannick Mouanga'), findsNothing);
+    expect(find.byTooltip('Retour'), findsNothing);
   });
 
   testWidgets('109 connecté sans étudiant : état vide', (t) async {
-    await monter(t, const G_109(), connecte: true, login: true, overrides: [deptStudentsProvider.overrideWith(() => _Rows('dept_students', const []))]);
-    expect(find.textContaining('Aucun étudiant dans votre département'), findsOneWidget);
+    await monterChef(t, const G_109(), {'dept_students_list': () => {'total': 0, 'rows': const []}});
+    expect(find.text('Aucun étudiant'), findsOneWidget);
+  });
+
+  testWidgets('109 connecté lecture en échec : message et « Réessayer »', (t) async {
+    await monterChef(t, const G_109(), {});
+    expect(find.text('Lecture impossible'), findsOneWidget);
+    expect(find.text('Réessayer'), findsOneWidget);
   });
 
   testWidgets('112 connecté : chiffres réels du département, aucun chiffre de maquette', (t) async {
     final d = <String, dynamic>{'revenue': 170000, 'orders': 9, 'avg_basket': 18888, 'services_revenue': 17000, 'weeks': [{'week': '2026-11-02', 'revenue': 90000}]};
-    await monter(t, const G_112(), connecte: true, login: true, overrides: [deptStatsProvider.overrideWith(() => _Stats('dept_stats', d))]);
+    await monterChef(t, const G_112(), {'dept_stats': () => d});
     expect(find.text('9'), findsOneWidget);
     expect(find.text('10 %'), findsOneWidget);
     expect(find.text('4,7 / 5'), findsNothing);

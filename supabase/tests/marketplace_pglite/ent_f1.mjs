@@ -97,7 +97,7 @@ export async function run(db) {
   await as(OTU);
   await fails('vivier : organisation non approuvée refusée', `select talent_lists_get()`, /vérifiée/);
   await as(CLI);
-  await fails('vivier : un client n\'a pas accès', `select talent_lists_get()`, /Réservé aux entreprises/);
+  await fails('vivier : un client n\'a pas accès', `select talent_lists_get()`, /Réservé aux organisations/);
   await as(COA);
   const fav = (await one(`select talent_lists_get() r`))[0].id;
   await works('vivier : entreprise approuvée ajoute un étudiant visible', `select talent_list_add('${fav}', '${S5}')`);
@@ -322,7 +322,7 @@ export async function run(db) {
   await as(null, 'anon');
   await fails('contact : anonyme refusé', contact(S1), /permission denied/);
   await as(CLI);
-  await fails('E6-8 contact : un client ne fait pas de proposition de stage', contact(S1, 'internship_offer', 'Un stage de six mois'), /réservée aux entreprises vérifiées/);
+  await fails('E6-8 contact : un client ne fait pas de proposition de stage', contact(S1, 'internship_offer', 'Un stage de six mois'), /réservée aux organisations vérifiées/);
   await works('contact : un client peut adresser une demande de contact', contact(S1, 'contact', 'Bonjour'));
   await as(COA);
   await fails('contact : proposition de stage sans texte utile refusée', contact(S1, 'internship_offer', 'Stage'), /10 caractères/);

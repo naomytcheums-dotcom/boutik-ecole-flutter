@@ -113,7 +113,7 @@ Future<void> withdrawLatestApplication(BuildContext context, WidgetRef ref) asyn
     return;
   }
   final a = apps.first;
-  final go = await _confirm(context, 'Retirer ma candidature ?', 'Candidature envoyée le ${engagementDate(a['created_at'])}. L’entreprise ne la verra plus ; vous pourrez postuler de nouveau.', 'Annuler', 'Retirer');
+  final go = await _confirm(context, 'Retirer ma candidature ?', 'Candidature envoyée le ${engagementDate(a['created_at'])}. L’organisation ne la verra plus ; vous pourrez postuler de nouveau.', 'Annuler', 'Retirer');
   if (go != true) return;
   final err = await Backend.cancelEngagement('application', '${a['ref']}');
   if (!context.mounted) return;

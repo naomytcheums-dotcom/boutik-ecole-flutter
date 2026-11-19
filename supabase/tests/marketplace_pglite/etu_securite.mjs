@@ -22,6 +22,8 @@ export async function run(db) {
     await db.exec(`insert into auth.users(id,email) values ('${U(n)}','e${n}@t.cm'); insert into profiles(id,name,role,email,department,skills) values ('${U(n)}','Prénom${n} Nom${n}','${r}','e${n}@t.cm','Génie', 'soudure')`);
   }
   await db.exec(`update profiles set suspended = true where id = '${U(47)}'`);
+  // K2 : le vendeur 41 est éligible (pièce d'étudiant validée, téléphone vérifié)
+  await db.exec(`update profiles set phone_verified = true where id = '${U(41)}'; insert into user_documents (owner_id, kind, name, path, mime, size_bytes, status) values ('${U(41)}', 'student_card', 'c.pdf', '${U(41)}/c/c.pdf', 'application/pdf', 10, 'verified')`);
   // H2 : le vendeur 41 et le responsable 45 sont dans le même département, rattaché par l'administrateur
   await db.exec(`insert into institutions (id, name, status) values ('00000000-0000-0000-0000-00000000f801', 'IUT Sec', 'verified'); insert into departments (id, institution_id, name, status) values ('00000000-0000-0000-0000-00000000f8a1', '00000000-0000-0000-0000-00000000f801', 'Génie', 'verified'); update profiles set department_id = '00000000-0000-0000-0000-00000000f8a1', institution_id = '00000000-0000-0000-0000-00000000f801' where id = '${U(41)}'; insert into department_accounts (user_id, department_id) values ('${U(45)}', '00000000-0000-0000-0000-00000000f8a1')`);
 
@@ -74,7 +76,7 @@ export async function run(db) {
   await as(U(44));
   check('talents_list : une entreprise approuvée voit le nom complet (étudiant vérifié, CV publié)', (await q(`select talents_list('', 10) r`))[0].r.some((t) => t.name === 'Prénom41 Nom41'));
   await db.exec('reset role');
-  await db.exec(`update profiles set certification = 'none' where id = '${U(41)}'`);
+  await db.exec(`update profiles set certification = 'none' where id = '${U(41)}'; delete from user_documents where owner_id = '${U(41)}'`);
   await as(U(44));
   check('talents_list : un étudiant non vérifié n\'est pas listé', !(await q(`select talents_list('', 10) r`))[0].r.some((t) => t.id === U(41)));
   await as(U(41));
@@ -102,7 +104,7 @@ export async function run(db) {
 
   // --- MoMo
   await as(U(41));
-  await fails('momo : un virement est refusé à un étudiant', `select momo_prepare_transfer('${U(41)}', '237690000000', 1000, 'x', 'cle-unique-1')`, /réservés à la finance/);
+  await fails('momo : un virement est refusé à un étudiant', `select momo_prepare_transfer('${U(41)}', '237690000000', 1000, 'x', 'cle-unique-1')`, /réservés à l.équipe Finance/);
 
   // --- création de profil : l'e-mail est celui du compte
   await as(U(41));

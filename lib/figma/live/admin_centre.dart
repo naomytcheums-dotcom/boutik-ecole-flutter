@@ -207,13 +207,16 @@ class AdminCentreScreen extends ConsumerWidget {
           return [
             tpNote(a.isAdmin
                 ? 'Vous êtes administrateur global : vous gardez tous les droits. Chaque équipe a son tableau de bord et des permissions que vous attribuez ou retirez.'
-                : 'Vous voyez les équipes dont l’administrateur global vous a attribué des permissions. Les outils des autres équipes ne vous sont pas proposés.'),
+                : 'Vous voyez les équipes dont vous faites partie ; seules les permissions attribuées explicitement par l’administrateur global ouvrent des outils. Les outils des autres équipes ne vous sont pas proposés.'),
             if (teams.isEmpty)
               const TpEmpty(
                 title: 'Aucune équipe',
                 text: 'L’administrateur global ne vous a encore attribué aucune permission. Demandez-lui de vous ajouter à l’équipe qui correspond à votre mission.',
                 icon: Icons.lock_outline_rounded,
               ),
+            if (a.isMinimal)
+              tpNote('Droits minimaux : vous pouvez consulter le tableau de bord de votre équipe, mais aucune opération (paiement, retrait, remboursement, modération, configuration…) n’est ouverte '
+                  'tant que l’administrateur global ne vous a pas attribué de permission.'),
             if (teams.isNotEmpty) tpSection('Équipes', hint: a.isAdmin ? 'Quatre équipes internes, chacune avec son tableau de bord.' : 'Vos équipes.'),
             for (final t in teams)
               _tile(
@@ -281,7 +284,10 @@ class AdminTeamScreen extends ConsumerWidget {
             for (final t in tools) _tile(icon: Icons.build_outlined, title: t.label, body: t.hint, onTap: () => t.open(context, ref)),
             if (!a.isAdmin) ...[
               tpSection('Vos permissions'),
-              _chips((a.teams[team] ?? <String>{}).toList()..sort()),
+              if ((a.teams[team] ?? <String>{}).isEmpty)
+                tpNote('Aucune permission attribuée dans cette équipe (droits minimaux) : demandez à l’administrateur global les permissions nécessaires à votre mission.')
+              else
+                _chips((a.teams[team] ?? <String>{}).toList()..sort()),
             ],
           ];
         },

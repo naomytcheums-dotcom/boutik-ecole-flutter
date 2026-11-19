@@ -30,6 +30,9 @@ export async function run(db) {
   for (const [id, nm, role] of users) {
     await db.exec(`insert into auth.users(id,email) values ('${id}','${nm.split(' ')[0]}@t.cm'); insert into profiles(id,name,role,email) values ('${id}','${nm}','${role}','${nm.split(' ')[0]}@t.cm')`);
   }
+  // K1 : un compte finance / support n'a plus que des droits minimaux ; le scénario lui attribue explicitement les permissions dont il a besoin.
+  await db.exec(`update admin_team_members set permissions = array['finance.read', 'finance.payments', 'finance.payouts', 'finance.refunds', 'finance.transfers'] where user_id = '${FIN}' and team_code = 'finance';
+    update admin_team_members set permissions = array['support.tickets', 'support.claims', 'support.disputes', 'support.orders', 'support.requests'] where user_id = '${S}' and team_code = 'support'`);
 
   // ============================================================ E4-1 : fiche -> pièce -> envoi -> file admin -> décision -> publication
   await as(E);

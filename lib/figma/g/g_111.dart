@@ -23,6 +23,7 @@ import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/inert_actions.dart';
 import '../live/pay.dart';
+import '../live/dept_space.dart' show DeptConsolePage;
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_111 extends ConsumerWidget {
@@ -33,14 +34,14 @@ class G_111 extends ConsumerWidget {
     return GScreen(w: 1280, h: 890, radius: 16, color: Color(0xFFF7F6F4), children: [
       gP(268, 134, 238.5, 92, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
       gP(282, 146, 81, 14, gText('Projets soumis', 11.5, Color(0xFF57545F), weight: 500, inter: true)),
-      gP(282, 166, 23, 24, Consumer(builder: (context, ref, _) => gText('${21 + ref.watch(projectsProvider).where((p) => p.review != 'Validé').length}', 20, Color(0xFF111015), weight: 700, inter: true))),
+      gP(282, 166, 23, 24, Consumer(builder: (context, ref, _) => gText('${(demoContent ? 21 : 0) + ref.watch(projectsProvider).where((p) => p.review != 'Validé').length}', 20, Color(0xFF111015), weight: 700, inter: true))),
       gP(466.5, 146, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),
       gP(473.75, 150.75, 13.5, 13.5, gImg('assets/figma/v/65989fe2e01297.svg')),
       gP(475.625, 160.75, 9.75, 6, gImg('assets/figma/v/afdc2a5ea7a188.svg')),
       gP(476.25, 163.25, 8.5, 6, gImg('assets/figma/v/bf7bd5fd2d14a6.svg')),
       gP(516.5, 134, 238.5, 92, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
       gP(530.5, 146, 49, 14, gText('À valider', 11.5, Color(0xFF57545F), weight: 500, inter: true)),
-      gP(530.5, 166, 13, 24, Consumer(builder: (context, ref, _) => gText('${5 + ref.watch(projectsProvider).where((p) => p.review == 'À valider').length}', 20, Color(0xFF111015), weight: 700, inter: true))),
+      gP(530.5, 166, 13, 24, Consumer(builder: (context, ref, _) => gText('${(demoContent ? 5 : 0) + ref.watch(projectsProvider).where((p) => p.review == 'À valider').length}', 20, Color(0xFF111015), weight: 700, inter: true))),
       gP(715, 146, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),
       gP(719.743, 150.753, 18.504, 18.499, gImg('assets/figma/v/7b9c7b2f5cee13.svg')),
       gP(724.125, 155.75, 9.75, 8.5, gImg('assets/figma/v/67b1d949f5166f.svg')),
@@ -51,7 +52,7 @@ class G_111 extends ConsumerWidget {
       gP(969.5, 153.25, 16, 12.875, gImg('assets/figma/v/633fba394a419f.svg')),
       gP(1013.5, 134, 238.5, 92, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFEEECE8), bw: 1, radii: [26, 26, 26, 26])),
       gP(1027.5, 146, 45, 14, gText('Refusés', 11.5, Color(0xFF57545F), weight: 500, inter: true)),
-      gP(1027.5, 166, 14, 24, Consumer(builder: (context, ref, _) => gText('${3 + ref.watch(projectsProvider).where((p) => p.review == 'À corriger').length}', 20, Color(0xFF111015), weight: 700, inter: true))),
+      gP(1027.5, 166, 14, 24, Consumer(builder: (context, ref, _) => gText('${(demoContent ? 3 : 0) + ref.watch(projectsProvider).where((p) => p.review == 'À corriger').length}', 20, Color(0xFF111015), weight: 700, inter: true))),
       gP(1212, 146, 28, 28, gBox(color: Color(0xFFF1EEFB), radii: [9, 9, 9, 9])),
       gP(1219.25, 153.25, 13.5, 13.5, gImg('assets/figma/v/8ca5bf288e293b.svg')),
       gP(1219.25, 153.25, 13.5, 13.5, gImg('assets/figma/v/d9d26aa83768ed.svg')),
@@ -172,6 +173,7 @@ class G_111 extends ConsumerWidget {
       gTap(12, 408, 216, 36, () => gOpen(context, '115')),
       gTap(12, 448, 216, 36, () => gOpen(context, '116')),
       gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
+      if (!demoContent) gP(240, 56, 1040, 834, const DeptConsolePage('111')), // connecté : la page réelle « Projets »
     ]);
   }
 }

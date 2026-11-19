@@ -38,6 +38,7 @@ import '../../figma/live/company_screens.dart';
 import '../../figma/live/company_team.dart';
 import '../../figma/live/company_public_page.dart' show CompanyPublicPage;
 import '../../figma/live/company_purchases.dart' show CompanyPurchasesScreen;
+import '../../figma/live/org_partnerships.dart' show OrgPartnershipsScreen;
 import '../../figma/live/student_profile.dart';
 import '../../figma/live/litiges_screens.dart';
 import '../../figma/live/money_admin.dart';
@@ -98,6 +99,10 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/departement/validations', builder: (_, _) => const RouteGuard(name: '/departement/validations', roles: {'dept', 'direction', 'admin'}, child: DepartmentValidationsScreen())),
     GoRoute(path: '/departement/rapports', builder: (_, _) => const RouteGuard(name: '/departement/rapports', roles: {'dept', 'direction', 'admin'}, child: DepartmentReportsScreen())),
     GoRoute(path: '/departement/rattachements', builder: (_, _) => const RouteGuard(name: '/departement/rattachements', roles: {'admin'}, child: DepartmentAttachScreen())),
+    GoRoute(path: '/departement/statistiques', builder: (_, _) => const RouteGuard(name: '/departement/statistiques', roles: {'dept', 'direction', 'admin'}, child: DepartmentStatsScreen())),
+    GoRoute(path: '/departement/annonces', builder: (_, _) => const RouteGuard(name: '/departement/annonces', roles: {'dept', 'admin'}, child: DepartmentListingsScreen())),
+    GoRoute(path: '/departement/productions', builder: (_, _) => const RouteGuard(name: '/departement/productions', roles: {'dept', 'direction', 'admin'}, child: DepartmentProductionsScreen())),
+    GoRoute(path: '/departement/mentors', builder: (_, _) => const RouteGuard(name: '/departement/mentors', roles: {'dept', 'direction', 'admin'}, child: DepartmentMentorsScreen())),
     GoRoute(path: '/communaute', builder: (_, _) => const CommunityScreen()),
     GoRoute(path: '/communaute/:id', builder: (_, s) => CommunityScreen(id: s.pathParameters['id'] ?? '')),
     GoRoute(path: '/marche', builder: (_, _) => const MarketplaceScreen()),
@@ -119,6 +124,7 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/entreprise/espace/:owner', builder: (_, s) => CompanyGuard(owner: s.pathParameters['owner'] ?? '', child: CompanySpaceScreen(owner: s.pathParameters['owner'] ?? ''))),
     GoRoute(path: '/entreprise/fiche/:owner', builder: (_, s) => CompanyPublicPage(ownerId: s.pathParameters['owner'] ?? '')),
     GoRoute(path: '/entreprise/achats', builder: (_, _) => const CompanyGuard(useContext: true, child: CompanyPurchasesScreen())),
+    GoRoute(path: '/entreprise/partenariats', builder: (_, _) => const CompanyGuard(useContext: true, child: OrgPartnershipsScreen())),
     GoRoute(path: '/comptes-test', builder: (_, _) => const RouteGuard(name: '/comptes-test', roles: {'admin'}, child: TestAccountsScreen())),
     GoRoute(path: '/equipe/:key', builder: (_, s) => StaffPortalScreen(portalKey: s.pathParameters['key'] ?? '')),
     GoRoute(path: '/concours/publier', builder: (_, _) => const AnnouncementEditScreen()),

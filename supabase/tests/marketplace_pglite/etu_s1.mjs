@@ -23,6 +23,8 @@ export async function run(db) {
   await db.exec(`update profiles set institution_id='${I1}', department_id='${D1}', skills='Flutter' where id in ('${U(41)}','${U(42)}','${U(44)}')`);
   await db.exec(`update profiles set institution_id='${I1}', department_id='${D2}', skills='Compta' where id in ('${U(45)}','${U(49)}')`);
   await db.exec(`update profiles set institution_id='${I2}' where id = '${U(50)}'`);
+  // K1 : droits minimaux par défaut ; le support du scénario reçoit explicitement la permission d'examiner les demandes des utilisateurs.
+  await db.exec(`update admin_team_members set permissions = array['support.requests'] where user_id = '${U(46)}' and team_code = 'support'`);
   // H2 : les comptes Département sont rattachés à UN département (44 : D1 ; 45 : D2) ; 50 reste non rattaché.
   await db.exec(`insert into department_accounts (user_id, department_id) values ('${U(44)}', '${D1}'), ('${U(45)}', '${D2}')`);
 
@@ -196,6 +198,8 @@ export async function run(db) {
 
   // --- suppression de compte : commandes en cours puis anonymisation
   await as(null, null);
+  // K2 : le vendeur de cette section est éligible (certifié, téléphone vérifié) : seuls des vendeurs éligibles reçoivent des commandes
+  await db.exec(`update profiles set phone_verified = true, certification = 'approved' where id = '${U(42)}'`);
   await db.exec(`insert into listings (id, seller_id, title, department, price, status, stock) values ('00000000-0000-0000-0000-00000000c101', '${U(42)}', 'Lampe', 'Genie', 5000, 'approved', 3)`);
   await db.exec(`insert into orders (id, number, buyer_id, subtotal, method, paid) values ('00000000-0000-0000-0000-00000000d101', 'BE-S1-1', '${U(47)}', 5000, 'cod', true);
                  insert into order_lines (order_id, listing_id, title, unit_price, qty, fulfillment) values ('00000000-0000-0000-0000-00000000d101', '00000000-0000-0000-0000-00000000c101', 'Lampe', 5000, 1, 1)`);

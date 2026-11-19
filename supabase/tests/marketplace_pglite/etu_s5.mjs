@@ -21,6 +21,14 @@ export async function run(db) {
   for (const [n, r] of Object.entries(roles)) {
     await db.exec(`insert into auth.users(id,email) values ('${U(n)}','s5_${n}@t.cm'); insert into profiles(id,name,role,email) values ('${U(n)}','Personne ${n}','${r}','s5_${n}@t.cm')`);
   }
+  // K1 : droits minimaux par défaut ; la finance (12) du scénario reçoit explicitement ses permissions.
+  await db.exec(`update admin_team_members set permissions = array['finance.read', 'finance.payments', 'finance.payouts', 'finance.refunds', 'finance.transfers'] where user_id = '${U(12)}' and team_code = 'finance'`);
+  // K3 : les comptes Département de la fixture sont rattachés à un département vérifié (un compte non rattaché ne crée plus d'événement)
+  await db.exec(`insert into institutions (id, name, status) values ('00000000-0000-0000-0000-00000000a5a1', 'IUT fixture S5', 'verified');
+    insert into departments (id, institution_id, name, status) values ('00000000-0000-0000-0000-00000000a5b1', '00000000-0000-0000-0000-00000000a5a1', 'Département fixture S5', 'verified');
+    insert into department_accounts (user_id, department_id) values ('${U(10)}', '00000000-0000-0000-0000-00000000a5b1'), ('${U(14)}', '00000000-0000-0000-0000-00000000a5b1')`);
+  // K2 : les vendeurs (1 à 4) sont éligibles (pièce d'étudiant validée, téléphone vérifié)
+  for (const n of [1, 2, 3, 4]) await db.exec(`update profiles set phone_verified = true where id = '${U(n)}'; insert into user_documents (owner_id, kind, name, path, mime, size_bytes, status) values ('${U(n)}', 'student_card', 'c.pdf', '${U(n)}/c/c.pdf', 'application/pdf', 10, 'verified')`);
 
   // ============================================================ S5-49 / 52 / 51 / 50 / 56 : cycle de vie d'un événement
   const mk = (title, price = 0, cap = 'null', days = 10) => `select event_create('${title}', 'Description', 'atelier', now() + interval '${days} days', now() + interval '${days} days 2 hours', 'Salle B2', ${price}, ${cap}) id`;
@@ -179,7 +187,8 @@ export async function run(db) {
   await db.exec(`insert into institutions (id, name, status) values ('00000000-0000-0000-0000-00000000f501', 'IUT S5', 'verified');
     insert into departments (id, institution_id, name, status) values ('00000000-0000-0000-0000-00000000f5a1', '00000000-0000-0000-0000-00000000f501', 'Informatique', 'verified'), ('00000000-0000-0000-0000-00000000f5a2', '00000000-0000-0000-0000-00000000f501', 'Gestion', 'verified');
     update profiles set department_id = '00000000-0000-0000-0000-00000000f5a1', institution_id = '00000000-0000-0000-0000-00000000f501', department = 'Informatique' where id = '${U(1)}';
-    insert into department_accounts (user_id, department_id) values ('${U(10)}', '00000000-0000-0000-0000-00000000f5a1'), ('${U(14)}', '00000000-0000-0000-0000-00000000f5a2')`);
+    insert into department_accounts (user_id, department_id) values ('${U(10)}', '00000000-0000-0000-0000-00000000f5a1'), ('${U(14)}', '00000000-0000-0000-0000-00000000f5a2')
+    on conflict (user_id) do update set department_id = excluded.department_id`);
   const det = (extra = {}) => JSON.stringify({ domain: 'Agritech', problem: 'Les serres sont chères', solution: 'Une serre pilotée par capteurs', progress: 'prototype', contact_email: 'a@b.cm', ...extra }).replace(/'/g, "''");
   const save = (u, dept, extra = {}, publish = true, id = 'null', vis = 'public') => `select project_save_full(${id}, 'projet', 'Serre connectée ${u}', 'Une serre qui arrose toute seule grâce à des capteurs d''humidité.', '${dept}', '${det(extra)}'::jsonb, '[]'::jsonb, '${vis}', ${publish}) id`;
   await as(U(1));

@@ -12,6 +12,7 @@ import 'account_menu.dart' show accountMenu;
 import 'coequipiers_screens.dart' show MateNavPill;
 import 'company_screens.dart' show companyContextProvider, companyRoleLabels, companyStatusColor, companyStatusLabel;
 import 'org_types.dart' show orgTypeOf;
+import 'org_partnerships.dart' show orgPartnershipsPendingProvider;
 import 'marche/marche_data.dart';
 import 'marche/marche_widgets.dart';
 import 'notifs.dart' show NotifBadge;
@@ -29,7 +30,8 @@ final companyDashboardProvider = FutureProvider.autoDispose<Map<String, dynamic>
 
 final companyPlansProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
   ref.watch(authProvider.select((a) => a.current?.serverId));
-  final r = await marcheCall('company_plans_list', const {});
+  final ctx = ref.watch(companyContextProvider);
+  final r = await marcheCall('company_plans_list', {'p_owner': ?ctx});
   if (r.error != null) throw MarcheException(r.error);
   return [for (final x in (r.data as List? ?? const [])) Map<String, dynamic>.from(x as Map)];
 });
@@ -209,6 +211,10 @@ class CompanyHomeScreen extends ConsumerWidget {
                 _tile(context, Icons.celebration_outlined, '${n('recruits')}', 'Recrutés', org ? '/opportunites/mes' : null),
               ]),
               Padding(padding: const EdgeInsets.fromLTRB(5, 6, 5, 0), child: mButton('Équipe de l’organisation · ${n('members')} personne${n('members') > 1 ? 's' : ''}', () => context.push('/entreprise/equipe'), dark: false, icon: Icons.groups_2_outlined)),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(5, 8, 5, 0),
+                child: mButton('Partenariats avec l’établissement${ref.watch(orgPartnershipsPendingProvider) > 0 ? ' · ${ref.watch(orgPartnershipsPendingProvider)} à confirmer' : ''}', () => context.push('/entreprise/partenariats'), dark: false, icon: Icons.handshake_outlined),
+              ),
               if (!shared) ...[
               mSectionTitle('Actions rapides'),
               Padding(padding: const EdgeInsets.symmetric(horizontal: 5), child: mButton('Publier un besoin', () => context.push('/s/90'), icon: Icons.add)),

@@ -5,13 +5,17 @@ import '../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../gen.dart' show gAlert, gConfirm, gToast;
+import '../gen.dart' show GScreen, gAlert, gConfirm, gToast;
 import '../nav.dart' show gOpen;
 import 'auth.dart';
 import 'backend.dart';
 import 'access.dart' show roleKey;
 import 'download_stub.dart' if (dart.library.js_interop) 'download_web.dart';
+import 'encadrement.dart' show addMentorDialog, productionStatus;
+import 'evenements_gestion.dart' show EventsManageScreen;
 import 'lots.dart' show issueCertificateDialog, reviewCampaignsDialog, reviewMilestonesDialog, reviewProjectsDialog, reviewWishesDialog, revokeCertificateDialog;
+import 'review.dart' show ReviewItem, reviewDialog, reviewQueueProvider;
+import 'partnership_org_picker.dart';
 import 'store.dart' show StrV, fcfa;
 import 'tp_ui.dart';
 import 'verification_equipe.dart' show certificationQueueDialog, documentReviewDialog;
@@ -108,15 +112,7 @@ class DeptShell extends ConsumerWidget {
       data: (d) {
         final m = deptMap(d);
         final attached = m['attached'] == true;
-        if (role == 'dept' && !attached) {
-          return TpPage(title: title, children: const [
-            TpEmpty(
-              title: 'Compte non rattaché',
-              text: 'Votre compte n’est rattaché à aucun département : l’administrateur doit le faire avant que vous puissiez suivre vos étudiants. Aucune donnée n’est affichée en attendant.',
-              icon: Icons.link_off_rounded,
-            ),
-          ]);
-        }
+        if (role == 'dept' && !attached) return DeptWaitingView(title: title, reason: '${m['reason'] ?? ''}');
         final target = ref.watch(deptTargetProvider);
         final c = DeptCtx(role: role, target: role == 'dept' ? '' : target, name: '${m['department'] ?? ''}', attached: attached);
         final sub = role == 'dept' ? '${m['department'] ?? ''}' : null;
@@ -134,6 +130,24 @@ class DeptShell extends ConsumerWidget {
       },
     );
   }
+}
+
+/// Écran d'attente d'un compte Département sans rattachement valide : explication claire (jamais une erreur technique), aucune donnée.
+class DeptWaitingView extends ConsumerWidget {
+  const DeptWaitingView({super.key, this.title = 'Mon département', this.reason = ''});
+  final String title, reason;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => TpPage(title: title, children: [
+        TpEmpty(
+          title: 'En attente de rattachement',
+          text: 'Votre compte Département est bien créé : l’administrateur doit maintenant le rattacher à votre département. Aucune donnée n’est affichée en attendant, et vous serez prévenu(e) par notification dès que ce sera fait.'
+              '${reason.isEmpty ? '' : '\n\n$reason'}',
+          icon: Icons.hourglass_top_rounded,
+          action: 'Actualiser',
+          onAction: () => ref.invalidate(deptCallProvider),
+        ),
+        _tile(Icons.support_agent_outlined, 'Contacter l’aide', 'Une question sur votre rattachement ?', () => _go(context, '/aide/contact')),
+      ]);
 }
 
 /// Choix du département pour la direction et l'administrateur (liste serveur, jamais de nom inventé).
@@ -209,9 +223,11 @@ void _go(BuildContext context, String path) => GoRouter.of(context).push(path);
 class DepartmentHubScreen extends ConsumerWidget {
   const DepartmentHubScreen({super.key});
   @override
-  Widget build(BuildContext context, WidgetRef ref) => DeptShell(
-        title: 'Mon département',
-        builder: (context, c) => [
+  Widget build(BuildContext context, WidgetRef ref) => DeptShell(title: 'Mon département', builder: (context, c) => deptHubChildren(context, c));
+}
+
+/// Contenu du tableau de bord : partagé par la page mobile et par la toile de l'écran 108 (mêmes lectures serveur, mêmes liens).
+List<Widget> deptHubChildren(BuildContext context, DeptCtx c, {bool console = true}) => [
           DeptData(DeptCall('dept_overview', c.a()), (d) {
             final o = deptMap(d);
             final pending = deptInt(deptMap(o['validations'])['total']);
@@ -248,9 +264,14 @@ class DepartmentHubScreen extends ConsumerWidget {
               _tile(Icons.handshake_outlined, 'Partenariats', 'Conventions, stages, sponsoring', () => _go(context, '/departement/partenariats')),
               _tile(Icons.fact_check_outlined, 'Validations', 'Ce qui relève de votre département', () => _go(context, '/departement/validations'), badge: pending > 0 ? '$pending' : null),
               _tile(Icons.description_outlined, 'Rapports et exports', 'Synthèse, étudiants, projets, ventes (CSV)', () => _go(context, '/departement/rapports')),
-              if (c.role == 'admin') _tile(Icons.link_rounded, 'Rattachement des comptes', 'Définir le département de chaque compte Département', () => _go(context, '/departement/rattachements')),
-              tpSection('Outils détaillés'),
-              _tile(Icons.dashboard_outlined, 'Console du département', 'Ventes, validations d’annonces, productions', () => gOpen(context, '108')),
+              if (c.role == 'admin') const _AttachTile(),
+              tpSection('Suivi détaillé'),
+              _tile(Icons.query_stats_rounded, 'Statistiques', 'Ventes, commandes et panier moyen du département', () => _go(context, '/departement/statistiques')),
+              _tile(Icons.storefront_outlined, 'Annonces à valider', 'Produits et services de vos vendeurs', () => _go(context, '/departement/annonces')),
+              _tile(Icons.layers_outlined, 'Suivi des productions', 'Équipes, encadreurs et avancement', () => _go(context, '/departement/productions')),
+              _tile(Icons.school_outlined, 'Mentors et encadreurs', 'Qui encadre les productions', () => _go(context, '/departement/mentors')),
+              _tile(Icons.event_outlined, 'Événements et initiatives', 'Événements créés pour les étudiants', () => _go(context, '/evenements/gerer')),
+              if (console && MediaQuery.sizeOf(context).width >= 700) _tile(Icons.dashboard_outlined, 'Console du département', 'Vue d’ensemble sur grand écran', () => gOpen(context, '108')),
               tpSection('Activité récente'),
               DeptData(DeptCall('dept_activity', c.a({'p_limit': 12})), (d) {
                 final rows = deptList(d);
@@ -272,8 +293,43 @@ class DepartmentHubScreen extends ConsumerWidget {
               }),
             ]);
           }),
-        ],
-      );
+        ];
+
+/// Toile de l'écran 108 en mode connecté : les mêmes lectures que la page mobile du tableau de bord remplacent les cartes de maquette (graphique, objectifs, textes figés).
+class DeptConsoleOverview extends ConsumerWidget {
+  const DeptConsoleOverview({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final role = roleKey(ref.watch(authProvider.select((s) => s.current)));
+    final me = ref.watch(deptCallProvider(const DeptCall('my_department')));
+    final target = ref.watch(deptTargetProvider);
+    return ColoredBox(
+      color: const Color(0xFFF7F6F4),
+      child: me.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (e, _) => TpEmpty(title: 'Lecture impossible', text: deptErrorText(e), icon: Icons.cloud_off_rounded, action: 'Réessayer', onAction: () => ref.invalidate(deptCallProvider)),
+        data: (d) {
+          final m = deptMap(d);
+          if (role == 'dept' && m['attached'] != true) return const TpEmpty(title: 'En attente de rattachement', text: 'L’administrateur doit rattacher votre compte à un département.', icon: Icons.hourglass_top_rounded);
+          final c = DeptCtx(role: role, target: role == 'dept' ? '' : target, name: '${m['department'] ?? ''}', attached: m['attached'] == true);
+          return ListView(padding: const EdgeInsets.fromLTRB(16, 20, 16, 28), children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 820),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text('Tableau de bord du département', style: tpSt(24, w: FontWeight.w600)),
+                  const SizedBox(height: 10),
+                  if (role != 'dept') const _DeptPicker(allowAll: true),
+                  ...deptHubChildren(context, c, console: false),
+                ]),
+              ),
+            ),
+          ]);
+        },
+      ),
+    );
+  }
 }
 
 // ============================================================ Identité ============================================================
@@ -696,7 +752,9 @@ class DepartmentPartnershipsScreen extends ConsumerWidget {
                       const SizedBox(width: 8),
                       _chip(_pStatus['${p['status']}'] ?? '${p['status']}', c: p['status'] == 'actif' ? tpGreen : tpGrey),
                     ]),
-                    Text('${_pKinds['${p['kind']}'] ?? p['kind']}${deptInt(p['students']) > 0 ? ' · ${deptInt(p['students'])} étudiant(s)' : ''}${deptInt(p['amount']) > 0 ? ' · ${fcfa(deptInt(p['amount']))}' : ''}', style: tpSt(12, c: tpGrey)),
+                    Text('${_pKinds['${p['kind']}'] ?? p['kind']}${deptInt(p['students']) > 0 ? ' · ${deptInt(p['students'])} étudiant(s)' : ''}${deptInt(p['amount']) > 0 ? ' · ${fcfa(deptInt(p['amount']))}' : ''}${p['organization_registered'] == true ? ' · Organisation inscrite' : ' · Organisation non inscrite'}', style: tpSt(12, c: tpGrey)),
+                    if (orgResponseLabel(p['org_response']).isNotEmpty)
+                      Padding(padding: const EdgeInsets.only(top: 4), child: Text('${orgResponseLabel(p['org_response'])}${'${p['org_response_note'] ?? ''}'.isEmpty ? '' : ' : ${p['org_response_note']}'}', style: tpSt(12, w: FontWeight.w600, c: p['org_response'] == 'contested' ? const Color(0xFFB3261E) : tpGrey))),
                     if ('${p['description'] ?? ''}'.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 6), child: Text('${p['description']}', maxLines: 3, overflow: TextOverflow.ellipsis, style: tpSt(12.5, h: 1.4))),
                   ]),
                 ),
@@ -738,6 +796,8 @@ class _PartnershipFormState extends ConsumerState<_PartnershipForm> {
   late final students = TextEditingController(text: '${deptInt(widget.p?['students'])}');
   late String kind = '${widget.p?['kind'] ?? 'convention'}';
   late String status = '${widget.p?['status'] ?? 'prospect'}';
+  late bool registered = widget.p == null ? true : (widget.p!['organization_registered'] == true || '${widget.p!['organization_id'] ?? ''}'.isNotEmpty);
+  late OrgChoice? org = registered && widget.p != null ? OrgChoice(id: '${widget.p!['organization_id']}', name: '${widget.p!['organization_name'] ?? widget.p!['partner_name'] ?? ''}') : null;
   bool busy = false;
 
   @override
@@ -749,12 +809,14 @@ class _PartnershipFormState extends ConsumerState<_PartnershipForm> {
   }
 
   Future<void> save() async {
-    if (name.text.trim().length < 2) return gAlert(context, 'Nom manquant', 'Indiquez le nom du partenaire (2 caractères au moins).');
+    if (registered && org == null) return gAlert(context, 'Organisation manquante', 'Choisissez une organisation inscrite, ou passez à « Organisation non inscrite ».');
+    if (!registered && name.text.trim().length < 2) return gAlert(context, 'Nom manquant', 'Indiquez le nom du partenaire (2 caractères au moins).');
     setState(() => busy = true);
     final r = await Backend.rpc('dept_partnership_save', {
       'p': {
         if (widget.p != null) 'id': widget.p!['id'],
-        'partner_name': name.text.trim(),
+        'partner_name': registered ? org!.name : name.text.trim(),
+        'organization_id': registered ? org!.id : null,
         'kind': kind,
         'status': status,
         'contact_name': contact.text.trim(),
@@ -795,7 +857,15 @@ class _PartnershipFormState extends ConsumerState<_PartnershipForm> {
             child: ListView(padding: const EdgeInsets.fromLTRB(20, 20, 20, 20), shrinkWrap: true, children: [
               Text(widget.p == null ? 'Nouveau partenariat' : 'Modifier le partenariat', style: tpSt(18, w: FontWeight.w700)),
               const SizedBox(height: 14),
-              TpField('Partenaire', name, required: true, maxLength: 120),
+              PartnershipOrgPicker(
+                registered: registered,
+                selected: org,
+                search: (q) => Backend.rpc('partnership_org_search', {'p_q': q, 'p_limit': 20}),
+                onMode: (v) => setState(() => registered = v),
+                onSelect: (c) => setState(() => org = c),
+              ),
+              const SizedBox(height: 10),
+              if (!registered) TpField('Partenaire', name, required: true, maxLength: 120),
               TpChoice('Type', _pKinds, kind, (v) => setState(() => kind = v)),
               TpChoice('Statut', _pStatus, status, (v) => setState(() => status = v)),
               TpField('Interlocuteur', contact, maxLength: 120),
@@ -834,7 +904,7 @@ class DepartmentValidationsScreen extends ConsumerWidget {
             return Column(children: [
               row(Icons.verified_user_outlined, 'certifications', 'Certifications', 'Dossiers étudiants à examiner', w ? () => certificationQueueDialog(context, ref) : null),
               row(Icons.badge_outlined, 'documents', 'Pièces d’étudiant', 'Cartes et certificats de scolarité', w ? () => documentReviewDialog(context, ref) : null),
-              row(Icons.storefront_outlined, 'listings', 'Annonces de vos vendeurs', 'Produits et services à valider', w ? () => gOpen(context, '110') : null),
+              row(Icons.storefront_outlined, 'listings', 'Annonces de vos vendeurs', 'Produits et services à valider', w ? () => _go(context, '/departement/annonces') : null),
               row(Icons.lightbulb_outline_rounded, 'projects', 'Projets soumis', 'Projets et innovations à valider', w ? () => reviewProjectsDialog(context, ref) : null),
               row(Icons.campaign_outlined, 'campaigns', 'Campagnes de financement', 'Campagnes à valider', w ? () => reviewCampaignsDialog(context, ref) : null),
               row(Icons.flag_outlined, 'milestones', 'Jalons de campagne', 'Jalons déclarés atteints, à valider sur preuve', w ? () => reviewMilestonesDialog(context, ref) : null),
@@ -1076,6 +1146,14 @@ class DepartmentAttachScreen extends ConsumerWidget {
     gToast(context, '${a['name']} est rattaché à ${hit['name']}.');
   }
 
+  Future<void> confirmAttach(BuildContext context, WidgetRef ref, Json a) async {
+    final r = await Backend.rpc('admin_dept_assign', {'p_user': a['id'], 'p_department': a['department_id'], 'p_title': a['title'] ?? 'Responsable'});
+    if (!context.mounted) return;
+    if (r.error != null) return gAlert(context, 'Confirmation impossible', r.error!);
+    ref.invalidate(deptCallProvider);
+    gToast(context, 'Rattachement de ${a['name']} confirmé.');
+  }
+
   Future<void> detach(BuildContext context, WidgetRef ref, Json a) async {
     if (!await gConfirm(context, 'Retirer le rattachement ?', '${a['name']} ne verra plus aucune donnée de département.', yes: 'Retirer')) return;
     final r = await Backend.rpc('admin_dept_unassign', {'p_user': a['id']});
@@ -1093,41 +1171,255 @@ class DepartmentAttachScreen extends ConsumerWidget {
       title: 'Rattachement des comptes',
       subtitle: 'Un compte Département appartient à un seul département',
       children: [
-        DeptData(const DeptCall('admin_dept_accounts'), (d) {
-          final rows = deptList(d);
-          if (rows.isEmpty) return const TpEmpty(title: 'Aucun compte Département', text: 'Attribuez d’abord le rôle Département à un compte depuis la gestion des utilisateurs.', icon: Icons.person_off_outlined);
-          return Column(children: [
-            for (final a in rows)
+        DeptData(const DeptCall('admin_dept_unassigned_accounts'), (u) {
+          final suggestions = {for (final x in deptList(u)) '${x['id']}': x};
+          return DeptData(const DeptCall('admin_dept_accounts'), (d) {
+            final rows = deptList(d);
+            if (rows.isEmpty) return const TpEmpty(title: 'Aucun compte Département', text: 'Attribuez d’abord le rôle Département à un compte depuis la gestion des utilisateurs.', icon: Icons.person_off_outlined);
+            final waiting = rows.where((a) => a['attached'] != true && a['suspended'] != true).length;
+            final review = rows.where((a) => a['to_review'] == true).length;
+            return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               TpCard(
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Row(children: [
-                    Expanded(child: Text('${a['name']}', maxLines: 1, overflow: TextOverflow.ellipsis, style: tpSt(14.5, w: FontWeight.w700))),
-                    _chip(a['attached'] == true ? 'Rattaché' : 'Non rattaché', c: a['attached'] == true ? tpGreen : tpRed),
-                  ]),
-                  if (a['attached'] == true) Text('${a['department']} · ${a['institution']}', style: tpSt(12, c: tpGrey)),
-                  if (a['suspended'] == true) Text('Compte suspendu', style: tpSt(12, c: tpRed)),
-                  const SizedBox(height: 10),
-                  Row(children: [
-                    Expanded(child: TpButton(a['attached'] == true ? 'Changer' : 'Rattacher', () => attach(context, ref, a))),
-                    if (a['attached'] == true) ...[const SizedBox(width: 10), Expanded(child: TpButton('Retirer', () => detach(context, ref, a), danger: true))],
-                  ]),
+                child: Row(children: [
+                  Icon(waiting > 0 ? Icons.hourglass_top_rounded : Icons.check_circle_outline_rounded, color: waiting > 0 ? tpRed : tpGreen),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      waiting > 0
+                          ? '$waiting compte${waiting > 1 ? 's' : ''} en attente de rattachement : ${waiting > 1 ? 'ils ne voient' : 'il ne voit'} aucune donnée tant que vous ne ${waiting > 1 ? 'les' : 'le'} rattachez pas.'
+                          : 'Tous les comptes Département actifs sont rattachés à un département.',
+                      style: tpSt(13, w: FontWeight.w600),
+                    ),
+                  ),
                 ]),
               ),
-          ]);
+              if (review > 0) tpNote('$review rattachement${review > 1 ? 's' : ''} repris automatiquement par le système : à confirmer.'),
+              for (final a in rows)
+                TpCard(
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Row(children: [
+                      Expanded(child: Text('${a['name']}', maxLines: 1, overflow: TextOverflow.ellipsis, style: tpSt(14.5, w: FontWeight.w700))),
+                      _chip(
+                        a['attached'] == true ? 'Rattaché' : switch ('${a['state']}') { 'unverified' => 'Département non vérifié', 'ambiguous' => 'Nom ambigu', _ => 'Non rattaché' },
+                        c: a['attached'] == true ? tpGreen : tpRed,
+                      ),
+                    ]),
+                    if (a['department'] != null) Text('${a['department']} · ${a['institution'] ?? ''}', style: tpSt(12, c: tpGrey)),
+                    if (a['suspended'] == true) Text('Compte suspendu', style: tpSt(12, c: tpRed)),
+                    if (a['to_review'] == true) Padding(padding: const EdgeInsets.only(top: 6), child: _chip('À confirmer', c: tpViolet)),
+                    if (a['attached'] != true && deptList(suggestions['${a['id']}']?['candidates']).length == 1)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 6),
+                        child: Text('Suggestion (à valider par vous) : ${deptList(suggestions['${a['id']}']?['candidates']).first['name']} · ${deptList(suggestions['${a['id']}']?['candidates']).first['institution']}', style: tpSt(12, c: tpGrey, h: 1.4)),
+                      ),
+                    const SizedBox(height: 10),
+                    Row(children: [
+                      Expanded(child: TpButton(a['attached'] == true ? 'Changer' : 'Rattacher', () => attach(context, ref, a))),
+                      if (a['to_review'] == true) ...[const SizedBox(width: 10), Expanded(child: TpButton('Confirmer', () => confirmAttach(context, ref, a), dark: false))],
+                      if (a['attached'] == true) ...[const SizedBox(width: 10), Expanded(child: TpButton('Retirer', () => detach(context, ref, a), danger: true))],
+                    ]),
+                  ]),
+                ),
+            ]);
+          });
         }),
       ],
     );
   }
 }
 
+/// Entrée « Rattachement des comptes » du tableau de bord (administrateur) avec le compteur des comptes en attente.
+class _AttachTile extends ConsumerWidget {
+  const _AttachTile();
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final n = ref.watch(deptCallProvider(const DeptCall('admin_dept_unassigned_count'))).maybeWhen(data: deptInt, orElse: () => 0);
+    return _tile(Icons.link_rounded, 'Rattachement des comptes', n > 0 ? '$n compte${n > 1 ? 's' : ''} en attente de rattachement' : 'Définir le département de chaque compte Département', () => _go(context, '/departement/rattachements'), badge: n > 0 ? '$n' : null);
+  }
+}
+
+// ============================================================ Pages mobiles des écrans 110 à 115 ============================================================
+
+/// Annonces des vendeurs du département à valider (écran 110).
+class DepartmentListingsScreen extends ConsumerWidget {
+  const DepartmentListingsScreen({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => DeptShell(
+        title: 'Annonces à valider',
+        builder: (context, c) {
+          final rows = [for (final r in ref.watch(reviewQueueProvider)) if (r.status == 'pending') r];
+          return [
+            tpNote('Seules les annonces des vendeurs de votre département sont proposées.'),
+            if (rows.isEmpty)
+              const TpEmpty(title: 'Rien à valider', text: 'Aucune annonce n’attend votre décision.', icon: Icons.storefront_outlined)
+            else
+              for (final ReviewItem r in rows)
+                _tile(Icons.storefront_outlined, r.title, '${r.seller} · ${fcfa(r.price)}${r.department.isEmpty ? '' : ' · ${r.department}'}', c.canWrite ? () => reviewDialog(context, ref, r) : () => gToast(context, 'Lecture seule : la décision revient au département.')),
+          ];
+        },
+      );
+}
+
+/// Statistiques du département (écran 112) : mêmes chiffres que le tableau de bord, ventes par semaine en plus.
+class DepartmentStatsScreen extends ConsumerWidget {
+  const DepartmentStatsScreen({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => DeptShell(
+        title: 'Statistiques',
+        builder: (context, c) => [
+          DeptData(const DeptCall('dept_stats'), (d) {
+            final s = deptMap(d);
+            final weeks = deptList(s['weeks']);
+            final revenue = deptInt(s['revenue']);
+            final services = deptInt(s['services_revenue']);
+            final maxRev = weeks.fold<int>(0, (a, w) => deptInt(w['revenue']) > a ? deptInt(w['revenue']) : a);
+            return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Wrap(spacing: 12, runSpacing: 12, children: [
+                _stat('Chiffre d’affaires', fcfa(revenue)),
+                _stat('Commandes', '${deptInt(s['orders'])}'),
+                _stat('Panier moyen', fcfa(deptInt(s['avg_basket']))),
+                _stat('Part des services', '${revenue == 0 ? 0 : (services * 100 / revenue).round()} %'),
+              ]),
+              tpSection('Ventes par semaine (FCFA)'),
+              if (weeks.isEmpty || maxRev == 0)
+                tpNote('Aucune vente payée sur les huit dernières semaines.')
+              else
+                for (final w in weeks)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Row(children: [
+                      SizedBox(width: 56, child: Text('${w['week']}'.length >= 10 ? '${w['week']}'.substring(5, 10) : '${w['week']}', style: tpSt(12, c: tpGrey))),
+                      Expanded(child: ClipRRect(borderRadius: BorderRadius.circular(6), child: LinearProgressIndicator(value: deptInt(w['revenue']) / maxRev, minHeight: 12, color: tpViolet, backgroundColor: tpViolet.withValues(alpha: .1)))),
+                      const SizedBox(width: 8),
+                      Text(fcfa(deptInt(w['revenue'])), style: tpSt(11.5, w: FontWeight.w600)),
+                    ]),
+                  ),
+            ]);
+          }),
+        ],
+      );
+}
+
+/// Suivi des productions du département (écran 113).
+class DepartmentProductionsScreen extends ConsumerWidget {
+  const DepartmentProductionsScreen({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => DeptShell(
+        title: 'Suivi des productions',
+        builder: (context, c) => [
+          DeptData(const DeptCall('staff_productions'), (d) {
+            final rows = deptList(d);
+            if (rows.isEmpty) return const TpEmpty(title: 'Aucune production', text: 'Aucune production enregistrée pour le moment.', icon: Icons.layers_outlined);
+            return Column(children: [
+              for (final r in rows)
+                TpCard(
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Row(children: [
+                      Expanded(child: Text('${r['title']}', maxLines: 2, overflow: TextOverflow.ellipsis, style: tpSt(14.5, w: FontWeight.w700))),
+                      const SizedBox(width: 8),
+                      _chip(productionStatus(r['status']), c: r['status'] == 'terminee' ? tpGreen : (r['status'] == 'en_retard' ? tpRed : tpGrey)),
+                    ]),
+                    Text([if ('${r['team'] ?? ''}'.isNotEmpty) '${r['team']}', if ('${r['mentor'] ?? ''}'.isNotEmpty) 'Encadreur : ${r['mentor']}'].join(' · '), style: tpSt(12, c: tpGrey)),
+                    const SizedBox(height: 8),
+                    ClipRRect(borderRadius: BorderRadius.circular(6), child: LinearProgressIndicator(value: deptInt(r['progress']) / 100, minHeight: 8, color: tpViolet, backgroundColor: tpViolet.withValues(alpha: .1))),
+                    Padding(padding: const EdgeInsets.only(top: 4), child: Text('${deptInt(r['progress'])} %', style: tpSt(11.5, c: tpGrey))),
+                  ]),
+                ),
+            ]);
+          }),
+        ],
+      );
+}
+
+/// Mentors et encadreurs du département (écran 114).
+class DepartmentMentorsScreen extends ConsumerWidget {
+  const DepartmentMentorsScreen({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => DeptShell(
+        title: 'Mentors et encadreurs',
+        builder: (context, c) => [
+          if (c.canWrite)
+            TpButton('Ajouter un mentor', () async {
+              await addMentorDialog(context, ref);
+              ref.invalidate(deptCallProvider);
+            }, icon: Icons.person_add_alt_1_rounded),
+          const SizedBox(height: 12),
+          DeptData(const DeptCall('staff_mentors'), (d) {
+            final rows = deptList(d);
+            if (rows.isEmpty) return const TpEmpty(title: 'Aucun mentor', text: 'Aucun mentor ni encadreur enregistré pour le moment.', icon: Icons.school_outlined);
+            return Column(children: [
+              for (final r in rows)
+                TpCard(
+                  child: Row(children: [
+                    Expanded(
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text('${r['name']}', maxLines: 1, overflow: TextOverflow.ellipsis, style: tpSt(14.5, w: FontWeight.w700)),
+                        Text([if ('${r['role'] ?? ''}'.isNotEmpty) '${r['role']}', if ('${r['specialty'] ?? ''}'.isNotEmpty) '${r['specialty']}'].join(' · '), style: tpSt(12, c: tpGrey)),
+                        Text('${deptInt(r['productions'])} production(s) en cours', style: tpSt(12, c: tpGrey)),
+                      ]),
+                    ),
+                    _chip(r['active'] == true ? 'Actif' : 'Inactif', c: r['active'] == true ? tpGreen : tpGrey),
+                  ]),
+                ),
+            ]);
+          }),
+        ],
+      );
+}
+
 /// Écran du registre dont la version « connectée » est une page réelle de l'espace du département : hors connexion (démonstration), la maquette reste affichée.
 /// 116 (rapports et exports) et 169 (modération des concours et des offres) deviennent les pages réelles correspondantes.
+/// 108 à 115 : compte Département sans rattachement valide = écran d'attente ; moins de 700 px = page mobile réelle ; sinon la toile, alimentée par les mêmes lectures serveur.
 Widget deptLiveScreen(String id, Widget mock) => switch (id) {
+      '108' || '109' || '110' || '111' || '112' || '113' || '114' || '115' => DeptDesktopGate(id: id, canvas: mock),
       '116' => DeptConnectedSwap(real: const DepartmentReportsScreen(), mock: mock),
       '169' => DeptConnectedSwap(real: const DepartmentValidationsScreen(), mock: mock),
       '213' || '283' => DeptConnectedSwap(real: const DepartmentCertificatesScreen(), mock: mock),
       _ => mock,
     };
+
+/// Page mobile réelle correspondant à un écran de console (108 à 115).
+Widget deptMobilePage(String id) => switch (id) {
+      '109' => const DepartmentStudentsScreen(),
+      '110' => const DepartmentListingsScreen(),
+      '111' => const DepartmentProjectsScreen(),
+      '112' => const DepartmentStatsScreen(),
+      '113' => const DepartmentProductionsScreen(),
+      '114' => const DepartmentMentorsScreen(),
+      '115' => const EventsManageScreen(),
+      _ => const DepartmentHubScreen(),
+    };
+
+/// Page mobile réelle incrustée dans la toile d'un écran de console connecté : mêmes lectures serveur, même cloisonnement, mêmes états et mêmes liens que la page mobile.
+class DeptConsolePage extends StatelessWidget {
+  const DeptConsolePage(this.id, {super.key});
+  final String id;
+  @override
+  Widget build(BuildContext context) => ClipRect(child: TpEmbedded(child: deptMobilePage(id)));
+}
+
+class DeptDesktopGate extends ConsumerWidget {
+  const DeptDesktopGate({super.key, required this.id, required this.canvas});
+  final String id;
+  final Widget canvas;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final account = ref.watch(authProvider.select((s) => s.current));
+    final role = roleKey(account);
+    if (!Backend.ready || account == null || !const {'dept', 'direction', 'admin'}.contains(role)) return canvas;
+    final phone = !GScreen.mockupFrame && MediaQuery.sizeOf(context).width < 700;
+    if (role != 'dept') return phone ? deptMobilePage(id) : canvas;
+    return ref.watch(deptCallProvider(const DeptCall('my_department'))).when(
+          loading: () => const TpPage(title: 'Mon département', children: [Padding(padding: EdgeInsets.symmetric(vertical: 60), child: Center(child: CircularProgressIndicator()))]),
+          error: (e, _) => TpPage(title: 'Mon département', children: [TpEmpty(title: 'Lecture impossible', text: deptErrorText(e), icon: Icons.cloud_off_rounded, action: 'Réessayer', onAction: () => ref.invalidate(deptCallProvider))]),
+          data: (d) {
+            final m = deptMap(d);
+            if (m['attached'] != true) return DeptWaitingView(reason: '${m['reason'] ?? ''}');
+            return phone ? deptMobilePage(id) : canvas;
+          },
+        );
+  }
+}
 
 class DeptConnectedSwap extends ConsumerWidget {
   const DeptConnectedSwap({super.key, required this.real, required this.mock});

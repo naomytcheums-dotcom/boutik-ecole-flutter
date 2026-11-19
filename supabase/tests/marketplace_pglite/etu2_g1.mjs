@@ -17,6 +17,8 @@ export async function run(db) {
   for (const [n, r] of Object.entries(roles)) {
     await db.exec(`insert into auth.users(id,email) values ('${U(n)}','g1_${n}@t.cm'); insert into profiles(id,name,role,email) values ('${U(n)}','Personne ${n}','${r}','g1_${n}@t.cm')`);
   }
+  // K2 : les vendeurs (61, 68) sont éligibles (pièce d'étudiant validée, téléphone vérifié)
+  for (const n of [61, 68]) await db.exec(`update profiles set phone_verified = true where id = '${U(n)}'; insert into user_documents (owner_id, kind, name, path, mime, size_bytes, status) values ('${U(n)}', 'student_card', 'c.pdf', '${U(n)}/c/c.pdf', 'application/pdf', 10, 'verified')`);
   const entry = (n, status, amt) => db.exec(`insert into money_entries (kind, ref, gross, beneficiary_id, beneficiary_amount, institution_amount, platform_amount, status)
     values ('other', 'G1-${n}', ${amt}, '${U(n)}', ${amt}, 0, 0, '${status}')`);
   await entry(62, 'held', 7000);

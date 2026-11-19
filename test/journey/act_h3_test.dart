@@ -244,6 +244,8 @@ void main() {
     expect(find.text('Aucun partenariat pour le moment.'), findsOneWidget);
     await t.tap(find.text('Nouveau partenariat'));
     await t.pumpAndSettle();
+    await t.tap(find.text('Organisation non inscrite'));
+    await t.pumpAndSettle();
     await t.tap(find.text('Enregistrer'));
     await t.pumpAndSettle();
     expect(find.text('Indiquez le nom du partenaire.'), findsOneWidget);

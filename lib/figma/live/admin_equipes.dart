@@ -43,13 +43,21 @@ final adminTeamHistoryProvider = FutureProvider.autoDispose<List<Map<String, dyn
   return _list(await _call('admin_team_history_list', const {'p_limit': 60}));
 }, retry: (_, _) => null);
 
+/// Comptes Finance / Support dont les droits n'ont jamais été attribués explicitement (droits minimaux, à réviser par l'administrateur global).
+final adminTeamsReviewProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
+  ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
+  if (!Backend.ready) return const [];
+  return _list(await _call('admin_team_accounts_review', const {}));
+}, retry: (_, _) => null);
+
 const _actionLabels = {
   'grant': 'Agent ajouté',
   'update': 'Permissions modifiées',
   'revoke': 'Agent retiré',
-  'auto_enroll': 'Inscription automatique',
+  'auto_enroll': 'Inscription automatique (sans permission)',
   'auto_revoke': 'Retrait automatique',
   'migration': 'Migration des comptes existants',
+  'reduce': 'Droits hérités réduits au minimum',
 };
 
 class AdminTeamsScreen extends ConsumerStatefulWidget {
@@ -67,6 +75,65 @@ class _AdminTeamsScreenState extends ConsumerState<AdminTeamsScreen> {
     ref.invalidate(adminTeamsOverviewProvider);
     ref.invalidate(adminTeamMembersProvider(_team));
     ref.invalidate(adminTeamHistoryProvider);
+    ref.invalidate(adminTeamsReviewProvider);
+  }
+
+  /// Compte à réviser : l'administrateur choisit, en connaissance de cause, les permissions de l'équipe du rôle ; rien n'est coché d'office (les droits d'avant ne sont affichés que pour information).
+  Future<void> _assignFromReview(List<Map<String, dynamic>> teams, Map<String, dynamic> r) async {
+    final code = '${r['role']}';
+    final team = teams.where((t) => t['code'] == code);
+    if (team.isEmpty) return;
+    final perms = await _pickPermissions(team.first, '${r['name']}', <String>{});
+    if (perms == null || !mounted) return;
+    setState(() => _team = code);
+    await _save(team.first, '${r['user_id']}', '${r['name']}', perms, isNew: true);
+  }
+
+  Widget _reviewSection(List<Map<String, dynamic>> teams) {
+    final review = ref.watch(adminTeamsReviewProvider);
+    return review.when(
+      loading: () => const Padding(padding: EdgeInsets.all(24), child: Center(child: CircularProgressIndicator())),
+      error: (e, _) => Column(children: [
+        tpNote(_msg(e), c: tpRed),
+        TpButton('Réessayer', () => ref.invalidate(adminTeamsReviewProvider), dark: false),
+      ]),
+      data: (rows) {
+        final todo = [for (final r in rows) if (r['needs_review'] == true) r];
+        return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          tpSection('Comptes à réviser', hint: 'Comptes Finance ou Support sans permission attribuée par vos soins : droits minimaux (tableau de bord seulement) tant que vous ne leur en attribuez pas.'),
+          if (todo.isEmpty)
+            tpNote('Aucun compte à réviser : chaque compte Finance ou Support a reçu ses permissions de votre part.')
+          else
+            for (final r in todo)
+              TpCard(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Row(children: [
+                    Expanded(child: Text('${r['name']}', maxLines: 1, overflow: TextOverflow.ellipsis, style: tpSt(14.5, w: FontWeight.w700))),
+                    if (r['suspended'] == true) Text('Suspendu', style: tpSt(11.5, w: FontWeight.w700, c: tpRed)),
+                  ]),
+                  Text('${r['email'] ?? ''} · rôle ${r['role'] == 'finance' ? 'Finance' : 'Support'}', maxLines: 1, overflow: TextOverflow.ellipsis, style: tpSt(12, c: tpGrey)),
+                  const SizedBox(height: 6),
+                  Text('Droits minimaux : aucune opération sensible.', style: tpSt(12, c: tpGrey, h: 1.4)),
+                  if (_list(r['previous']).isNotEmpty) ...[
+                    const SizedBox(height: 6),
+                    Text('Droits hérités avant la réduction :', style: tpSt(11.5, w: FontWeight.w700)),
+                    const SizedBox(height: 4),
+                    Wrap(spacing: 6, runSpacing: 6, children: [
+                      for (final p in _list(r['previous']).expand((x) => (x['permissions'] is List ? x['permissions'] as List : const [])).toSet())
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(color: const Color(0xFFF1F1F4), borderRadius: BorderRadius.circular(100)),
+                          child: Text(kPermissionLabels['$p'] ?? '$p', style: tpSt(11.5, w: FontWeight.w600, c: tpGrey)),
+                        ),
+                    ]),
+                  ],
+                  const SizedBox(height: 10),
+                  TpButton('Attribuer des permissions', (_busy || r['suspended'] == true) ? null : () => _assignFromReview(teams, r), compact: true),
+                ]),
+              ),
+        ]);
+      },
+    );
   }
 
   Future<void> _save(Map<String, dynamic> team, String userId, String name, Set<String> perms, {required bool isNew}) async {
@@ -267,6 +334,7 @@ class _AdminTeamsScreenState extends ConsumerState<AdminTeamsScreen> {
                               ]),
                               Text('${m['email'] ?? ''} · rôle ${m['role'] == 'finance' ? 'Finance' : 'Support'}', maxLines: 1, overflow: TextOverflow.ellipsis, style: tpSt(12, c: tpGrey)),
                               const SizedBox(height: 8),
+                              if (m['permissions'] is List && (m['permissions'] as List).isEmpty) Text('Aucune permission : droits minimaux (tableau de bord seulement).', style: tpSt(12, c: tpGrey, h: 1.4)),
                               Wrap(spacing: 6, runSpacing: 6, children: [
                                 for (final p in (m['permissions'] is List ? m['permissions'] as List : const []))
                                   Container(
@@ -293,6 +361,8 @@ class _AdminTeamsScreenState extends ConsumerState<AdminTeamsScreen> {
                         TpButton('Ajouter un agent', _busy ? null : () => _add(team), icon: Icons.person_add_alt_1_outlined),
                       ]),
               ),
+              const SizedBox(height: 18),
+              _reviewSection(teams),
               const SizedBox(height: 18),
               TpButton('Comptes, rôles et permissions', () => gOpen(context, '128'), dark: false, icon: Icons.manage_accounts_outlined),
             ]);

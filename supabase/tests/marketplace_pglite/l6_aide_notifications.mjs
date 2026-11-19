@@ -16,6 +16,8 @@ export async function run(db) {
     await db.exec(`insert into auth.users(id,email) values ('${U(n)}','l6u${n}@t.cm'); insert into profiles(id,name,role,email,phone) values ('${U(n)}','Profil L6 ${n}','${r}','l6u${n}@t.cm',${n === '21' ? "'677000021'" : 'null'})`);
   }
   // Équipes internes (lot H4) : l'agent de support de ce scénario traite aussi les signalements (équipe Sécurité et modération, droit explicite).
+  // K1 : droits minimaux par défaut ; ses permissions de support sont attribuées explicitement.
+  await db.exec(`update admin_team_members set permissions = array['support.tickets', 'support.claims'] where user_id = '${U(22)}' and team_code = 'support'`);
   await db.exec(`insert into admin_team_members (user_id, team_code, permissions) values ('${U(22)}', 'security', array['security.moderation', 'security.reports'])`);
 
   // 1. support : création, notification du support et de l'administration, lecture limitée, réponse

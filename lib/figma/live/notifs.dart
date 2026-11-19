@@ -296,7 +296,11 @@ bool openNotification(BuildContext context, WidgetRef? ref, NotificationItem n, 
       if (const {'direction', 'dept', 'admin'}.contains(roleKey(account))) r.push(s('partnership').isNotEmpty ? '/direction/partenariats' : '/direction/validations');
       return true;
     case 'department':
-      if (const {'dept', 'admin'}.contains(roleKey(account))) r.push('/departement');
+      if (roleKey(account) == 'admin' && (d['type'] == 'unassigned' || d['type'] == 'unassigned_summary')) {
+        r.push('/departement/rattachements');
+      } else if (const {'dept', 'admin'}.contains(roleKey(account))) {
+        r.push('/departement');
+      }
       return true;
     case 'partnership':
       if (const {'direction', 'dept', 'admin'}.contains(roleKey(account))) r.push('/departement/partenariats');
@@ -354,8 +358,12 @@ bool openNotification(BuildContext context, WidgetRef? ref, NotificationItem n, 
       r.push(d['invitation'] == true || n.title.startsWith('Invitation à rejoindre') ? '/mes-entreprises' : '/entreprise/equipe');
       return true;
     case 'company_review':
-      // administrateur : file de vérification ; entreprise : sa fiche (statut, motif)
+      // administrateur : file de vérification ; organisation : sa fiche (statut, motif)
       r.push(roleKey(account) == 'admin' && s('owner').isNotEmpty && s('status').isEmpty ? '/admin/entreprises' : '/entreprise/profil');
+      return true;
+    case 'org_partnership':
+      // partenariat décidé avec l'établissement : le titulaire l'accepte ou le conteste ; un administrateur d'équipe passe par l'espace partagé de l'organisation
+      r.push(s('owner').isNotEmpty && s('owner') != (account?.serverId ?? '') ? '/entreprise/espace/${s('owner')}' : '/entreprise/partenariats');
       return true;
     case 'talent_contact':
       final from = first(['from']);

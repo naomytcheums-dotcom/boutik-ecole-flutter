@@ -659,14 +659,18 @@ final cmsPagesProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(
 /// Page de texte fixe modifiable : si un contenu actif de type « page » porte ce titre (créé depuis la gestion des contenus, écran 264),
 /// il remplace le texte de la maquette ; sinon le texte d'origine reste affiché.
 class CmsPageOverlay extends ConsumerWidget {
-  const CmsPageOverlay({super.key, required this.title, this.width = 390, this.height = 700});
+  const CmsPageOverlay({super.key, required this.title, this.width = 390, this.height = 700, this.legacyTitle});
   final String title;
+
+  /// Ancien titre de la page éditoriale (compatibilité des pages déjà créées par l'administrateur après un changement de libellé).
+  final String? legacyTitle;
   final double width, height;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final all = ref.watch(cmsPagesProvider);
-    final hit = all?.where((r) => '${r['kind']}' == 'page' && r['active'] == true && '${r['title']}'.trim().toLowerCase() == title.toLowerCase()).toList() ?? const [];
+    final titles = {title.toLowerCase(), if (legacyTitle != null) legacyTitle!.toLowerCase()};
+    final hit = all?.where((r) => '${r['kind']}' == 'page' && r['active'] == true && titles.contains('${r['title']}'.trim().toLowerCase())).toList() ?? const [];
     if (hit.isEmpty) return const SizedBox.shrink();
     final r = hit.first;
     return Container(

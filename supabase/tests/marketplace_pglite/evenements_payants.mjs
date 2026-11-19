@@ -20,6 +20,8 @@ export async function run(db) {
     await db.exec(`insert into auth.users(id,email) values ('${U(n)}','e${n}@t.cm'); insert into profiles(id,name,role,email) values ('${U(n)}','Personne ${n}','${r}','e${n}@t.cm')`);
   }
   await db.exec(`update profiles set suspended = true where id = '${U(36)}'`);
+  // K1 : droits minimaux par défaut ; la finance du scénario reçoit explicitement ses permissions.
+  await db.exec(`update admin_team_members set permissions = array['finance.read', 'finance.payments', 'finance.payouts', 'finance.refunds', 'finance.transfers'] where user_id = '${U(35)}' and team_code = 'finance'`);
   const ins = (n, title, price, cap, when = `now() + interval '10 days'`) => db.exec(
     `insert into events (id, title, kind, starts_at, place, price, capacity, status, created_by) values ('${E(n)}', '${title}', 'atelier', ${when}, 'Salle B2', ${price}, ${cap}, 'published', '${U(37)}')`);
   await ins(1, 'Atelier payant', 5000, 2);

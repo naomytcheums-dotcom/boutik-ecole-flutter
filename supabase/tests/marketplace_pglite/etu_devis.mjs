@@ -17,6 +17,10 @@ export async function run(db) {
   for (const [n, r] of Object.entries(roles)) {
     await db.exec(`insert into auth.users(id,email) values ('${U(n)}','u${n}@t.cm'); insert into profiles(id,name,role,email) values ('${U(n)}','Profil Complet ${n}','${r}','u${n}@t.cm')`);
   }
+  // K2 : les prestataires (12, 17, 18) sont des vendeurs éligibles : étudiant vérifié (pièce validée) et téléphone vérifié
+  for (const n of [12, 17, 18]) {
+    await db.exec(`update profiles set phone_verified = true where id = '${U(n)}'; insert into user_documents (owner_id, kind, name, path, mime, size_bytes, status) values ('${U(n)}', 'student_card', 'c.pdf', '${U(n)}/c/c.pdf', 'application/pdf', 10, 'verified')`);
+  }
   // H2 : le département (13) est rattaché à « Design » ; les prestataires 12 et 17 en sont étudiants (l'attribution reste dans le département)
   await db.exec(`insert into institutions (id, name, status) values ('00000000-0000-0000-0000-00000000f901', 'IUT Devis', 'verified'); insert into departments (id, institution_id, name, status) values ('00000000-0000-0000-0000-00000000f9a1', '00000000-0000-0000-0000-00000000f901', 'Design', 'verified'); update profiles set department_id = '00000000-0000-0000-0000-00000000f9a1', institution_id = '00000000-0000-0000-0000-00000000f901' where id in ('${U(12)}', '${U(17)}', '${U(18)}'); insert into department_accounts (user_id, department_id) values ('${U(13)}', '00000000-0000-0000-0000-00000000f9a1')`);
   await db.exec(`insert into listings (seller_id,title,department,category,price,stock,status,images) values
@@ -320,6 +324,8 @@ export async function run(db) {
   // ====================================================== S4-121 et SQL1G2-1 : répartition de l'argent d'une commande
   await db.exec('reset role');
   for (const n of [41, 42]) await db.exec(`insert into auth.users(id,email) values ('${U(n)}','u${n}@t.cm'); insert into profiles(id,name,role,email) values ('${U(n)}','Vendeur ${n}','student','u${n}@t.cm')`);
+  // K2 : vendeurs éligibles (pièce d'étudiant validée, téléphone vérifié)
+  for (const n of [41, 42]) await db.exec(`update profiles set phone_verified = true where id = '${U(n)}'; insert into user_documents (owner_id, kind, name, path, mime, size_bytes, status) values ('${U(n)}', 'student_card', 'c.pdf', '${U(n)}/c/c.pdf', 'application/pdf', 10, 'verified')`);
   await as(U(41));
   await q(`select shop_save('{"name":"Boutique Quarante","description":"Bois","logo_url":"https://abcdefgh.supabase.co/storage/v1/object/public/listing-images/u/boutique/logo.png","categories":["Maison"]}'::jsonb) s`);
   await q(`select shop_submit()`);

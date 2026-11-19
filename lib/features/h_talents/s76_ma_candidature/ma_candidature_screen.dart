@@ -16,7 +16,7 @@ class _MaCandidatureScreenState extends ConsumerState<MaCandidatureScreen> {
       context: context,
       builder: (c) => AlertDialog(
         title: Text('Retirer la candidature ?', style: AppText.h3),
-        content: Text('L’entreprise ne pourra plus consulter votre dossier.', style: AppText.secondary),
+        content: Text('L’organisation ne pourra plus consulter votre dossier.', style: AppText.secondary),
         actions: [
           TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('Annuler')),
           TextButton(onPressed: () => Navigator.pop(c, true), child: const Text('Retirer')),

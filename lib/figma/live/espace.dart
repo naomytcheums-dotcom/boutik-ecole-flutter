@@ -178,6 +178,10 @@ class _EspaceScreenState extends ConsumerState<EspaceScreen> {
                     ('Se connecter', () => requireLogin(context, ref, 'ouvrir votre espace personnel')),
                     ('Créer un compte', () => openAuthFromHere(context, ref, signup: true)),
                   ]),
+                if (cap != null && cap.canSell && cap.paused && role == 'student')
+                  cta('Boutique en pause', 'Vos annonces sont masquées et vous ne recevez pas de nouvelle commande ; vos commandes en cours se poursuivent.', [
+                    ('Reprendre mes ventes', () => context.push('/vendeur/conditions')),
+                  ]),
                 if (cap != null && !cap.canSell && (role == 'student' || role == 'client'))
                   cta('Devenir vendeur', 'Vendre est une capacité de votre compte étudiant, pas un compte à part : voyez les conditions et ce qu’il vous reste à faire.', [
                     ('Voir les conditions', () => context.push('/vendeur/conditions')),

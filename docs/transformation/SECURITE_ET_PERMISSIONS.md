@@ -12,7 +12,7 @@ Les audits des 29 au 31/10/2026 (`docs/audit-boutik-ecole/06_SECURITE_ET_PERMISS
 
 ## Rôles demandés et existants
 
-Existants côté serveur (`app_role`) : 10 valeurs dont student, client, company, dept, finance, support, direction, admin. Demandés et absents : modérateur, professionnel, administrateur de communauté (rôle **par communauté**, pas global : table `community_members`). Les droits premium se lisent dans `subscriptions`, pas dans `profiles.role`.
+Existants côté serveur (`app_role`, valeurs techniques conservées) : student, client, company (= **Organisation**, ex-Entreprise ; la valeur historique `other` est fusionnée avec elle : aucune nouvelle inscription, aucun libellé « Autre » dans l'interface), dept (**Département**, cloisonné et rattaché par `department_accounts`), direction (autorité institutionnelle sans pouvoir technique), admin (administrateur global), finance et support (**équipes internes de l'administrateur**, pas des acteurs autonomes : leurs droits viennent des permissions d'équipe, `admin_teams` / `admin_permissions` / `has_admin_permission`). Le **Visiteur** n'est pas un compte : c'est une personne non connectée (rôle `anon`). Demandés et absents : modérateur, professionnel, administrateur de communauté (rôle **par communauté**, pas global : table `community_members`). Les droits premium se lisent dans `subscriptions`, pas dans `profiles.role`.
 
 ## Règles à respecter pour les extensions
 

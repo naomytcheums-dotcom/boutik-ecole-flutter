@@ -32,6 +32,8 @@ export async function run(db) {
 
   // --- profils publics
   await db.exec('reset role');
+  // K2 : le vendeur 23 est éligible (pièce d'étudiant validée, téléphone vérifié)
+  await db.exec(`update profiles set phone_verified = true where id = '${U(23)}'; insert into user_documents (owner_id, kind, name, path, mime, size_bytes, status) values ('${U(23)}', 'student_card', 'c.pdf', '${U(23)}/c/c.pdf', 'application/pdf', 10, 'verified')`);
   await db.exec(`insert into listings (id, seller_id, title, department, price, status) values ('00000000-0000-0000-0000-0000000000e1', '${U(23)}', 'Lampe test', 'Genie', 5000, 'approved')`);
   await as(null, 'anon');
   check('public_profile : le profil d\'un étudiant reste public', (await q(`select public_profile('${U(23)}') p`))[0].p?.id === U(23));

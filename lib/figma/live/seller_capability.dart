@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../gen.dart' show gToast;
 import '../i18n.dart' show Text;
 import '../nav.dart';
 import 'auth.dart';
@@ -14,9 +15,12 @@ import 'verification.dart' show StudentVerificationCard;
 /// Capacité commerciale du compte connecté (fonction serveur `my_seller_capability`). Le vendeur n'est PAS un compte distinct : c'est ce que peut
 /// faire un étudiant vérifié, dont le téléphone est vérifié et dont le compte n'est pas suspendu. Les autres comptes ne vendent pas.
 class SellerCapability {
-  const SellerCapability({required this.canSell, required this.canPublish, required this.role, required this.conditions});
+  const SellerCapability({required this.canSell, required this.canPublish, required this.role, required this.conditions, this.paused = false});
 
   final bool canSell, canPublish;
+
+  /// Boutique mise en pause par son titulaire (`seller_pause`) : annonces masquées, aucune nouvelle commande ni publication ; les commandes en cours continuent.
+  final bool paused;
   final String? role;
 
   /// Conditions dans l'ordre d'affichage : (clé, libellé, remplie).
@@ -28,6 +32,7 @@ class SellerCapability {
         canSell: j['can_sell'] == true,
         canPublish: j['can_publish'] == true,
         role: j['role'] as String?,
+        paused: j['paused'] == true,
         conditions: [
           for (final c in (j['conditions'] as List? ?? const []))
             if (c is Map) (key: '${c['key']}', label: '${c['label']}', ok: c['ok'] == true),
@@ -79,6 +84,67 @@ class SellerGate extends ConsumerWidget {
           ),
           data: (c) => c != null && c.canSell ? child : const SellerConditionsScreen(),
         );
+  }
+}
+
+/// Pause / reprise de la boutique (fonctions serveur `seller_pause` et `seller_resume`). Aucun message de succès sans réponse du serveur.
+class SellerPauseCard extends ConsumerStatefulWidget {
+  const SellerPauseCard({super.key, required this.paused});
+  final bool paused;
+
+  @override
+  ConsumerState<SellerPauseCard> createState() => _SellerPauseCardState();
+}
+
+class _SellerPauseCardState extends ConsumerState<SellerPauseCard> {
+  bool _busy = false;
+
+  Future<void> _toggle() async {
+    if (!widget.paused) {
+      final ok = await showDialog<bool>(
+        context: context,
+        builder: (c) => AlertDialog(
+          title: Text('Mettre la boutique en pause ?'),
+          content: Text('Vos annonces publiées seront masquées et personne ne pourra vous passer de nouvelle commande. Vos commandes en cours, vos retraits et vos messages continuent normalement. Vous les rétablissez quand vous voulez, sans nouvelle validation.'),
+          actions: [
+            TextButton(style: TextButton.styleFrom(minimumSize: const Size(48, 48)), onPressed: () => Navigator.pop(c, false), child: Text('Annuler')),
+            TextButton(style: TextButton.styleFrom(minimumSize: const Size(48, 48)), onPressed: () => Navigator.pop(c, true), child: Text('Mettre en pause')),
+          ],
+        ),
+      );
+      if (ok != true || !mounted) return;
+    }
+    setState(() => _busy = true);
+    final r = await Backend.rpc(widget.paused ? 'seller_resume' : 'seller_pause', widget.paused ? const {} : const {'p_reason': null});
+    if (!mounted) return;
+    setState(() => _busy = false);
+    if (r.error != null) {
+      gToast(context, Backend.userMessage('${r.error}'));
+      return;
+    }
+    ref.invalidate(sellerCapabilityProvider);
+    gToast(context, widget.paused ? 'Boutique reprise : vos annonces sont de nouveau visibles.' : 'Boutique en pause : vos annonces sont masquées.');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8), border: Border.all(color: widget.paused ? kRed : kLine)),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(widget.paused ? 'Votre boutique est en pause' : 'Boutique ouverte', style: mst(14.5, w: FontWeight.w700)),
+        const SizedBox(height: 6),
+        Text(
+          widget.paused
+              ? 'Vos annonces sont masquées et vous ne recevez pas de nouvelle commande. Vos commandes en cours se poursuivent.'
+              : 'Besoin de souffler ? La pause masque vos annonces et suspend les nouvelles commandes, sans toucher à vos commandes en cours.',
+          style: mst(13, c: kGrey).copyWith(height: 1.45),
+        ),
+        const SizedBox(height: 10),
+        mButton(widget.paused ? 'Reprendre mes ventes' : 'Mettre ma boutique en pause', _busy ? null : _toggle, dark: widget.paused),
+      ]),
+    );
   }
 }
 
@@ -166,6 +232,7 @@ class SellerConditionsScreen extends ConsumerWidget {
                       ],
                     ]),
                   ),
+                if (c.canSell) SellerPauseCard(paused: c.paused),
                 if (c.role == 'student') const Padding(padding: EdgeInsets.only(top: 6), child: StudentVerificationCard(width: double.infinity)),
                 const SizedBox(height: 14),
                 if (c.canSell) mButton('Ouvrir mon espace vendeur', () => gOpen(context, '57')) else mButton('Actualiser', () => ref.invalidate(sellerCapabilityProvider), dark: false),

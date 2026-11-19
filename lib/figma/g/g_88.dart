@@ -44,7 +44,7 @@ class G_88 extends ConsumerWidget {
       gP(331.5, 19.5, 28, 17, gImg('assets/figma/v/6a818f3296df50.svg')),
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
-      gP(24, 70, 185, 26, gText('Espace entreprise', 21, Color(0xFF111015), weight: 700)),
+      gP(24, 70, 220, 26, gText('Espace organisation', 21, Color(0xFF111015), weight: 700)),
       gP(331.5, 61.5, 40, 40, const SizedBox.expand(), tap: () => gOpen(context, '50')),
       gP(340.75, 69.833, 22.5, 19.75, gImg('assets/figma/v/c416ae6fb27d36.svg')),
       gP(347.442, 87.25, 9.117, 6.922, gImg('assets/figma/v/76ffe03c455014.svg')),

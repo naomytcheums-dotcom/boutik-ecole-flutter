@@ -10,6 +10,10 @@ export async function run(db) {
   for (const [id, nm, role] of [[S1, 'Awa Vendeuse', 'student'], [S2, 'Boris Vendeur', 'student'], [B, 'Cora Cliente', 'client'], [M, 'Mod Admin', 'admin'], [F, 'Fin Finance', 'finance']]) {
     await db.exec(`insert into auth.users(id,email) values ('${id}','${nm.split(' ')[0]}@t.cm'); insert into profiles(id,name,role,email) values ('${id}','${nm}','${role}','${nm.split(' ')[0]}@t.cm')`);
   }
+  // K2 : les vendeurs (S1, S2) sont éligibles (pièce d'étudiant validée, téléphone vérifié)
+  for (const s of [S1, S2]) await db.exec(`update profiles set phone_verified = true where id = '${s}'; insert into user_documents (owner_id, kind, name, path, mime, size_bytes, status) values ('${s}', 'student_card', 'c.pdf', '${s}/c/c.pdf', 'application/pdf', 10, 'verified')`);
+  // K1 : droits minimaux par défaut ; la finance du scénario reçoit explicitement ses permissions (sans finance.split : le blocage reste refusé).
+  await db.exec(`update admin_team_members set permissions = array['finance.read', 'finance.payments', 'finance.payouts', 'finance.refunds', 'finance.transfers'] where user_id = '${F}' and team_code = 'finance'`);
   await sup();
   await db.exec(`insert into listings (seller_id,title,department,category,price,stock,status,images) values
     ('${S1}','Lampe','Design','Maison',10000,5,'approved','{}'), ('${S2}','Table','Design','Maison',5000,5,'approved','{}'), (null,'Cahier campus','Design','Papeterie',2000,50,'approved','{}')`);

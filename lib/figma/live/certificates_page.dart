@@ -52,7 +52,7 @@ class _CertificatesPageState extends ConsumerState<CertificatesPage> {
             Text('Qu’est-ce qu’un certificat ?', style: tpSt(14.5, w: FontWeight.w800)),
             const SizedBox(height: 6),
             Text('C’est un document officiel émis par le département de l’IUT de Douala pour attester une réalisation : un projet validé, une formation, une distinction. '
-                'Il porte un code unique, de la forme BE-CERT-1A2B3C4D5E6F7A8B. Toute personne (recruteur, entreprise, école) peut saisir ce code dans « Vérifier un certificat » '
+                'Il porte un code unique, de la forme BE-CERT-1A2B3C4D5E6F7A8B. Toute personne (recruteur, organisation, école) peut saisir ce code dans « Vérifier un certificat » '
                 'pour constater qu’il est authentique et qu’il n’a pas été révoqué.', style: tpSt(13, c: tpGrey, h: 1.5)),
           ]),
         ),

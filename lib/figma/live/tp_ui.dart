@@ -50,6 +50,14 @@ class TpFrame extends StatelessWidget {
       });
 }
 
+/// Indique qu'une page « réelle » est incrustée dans la toile d'un écran large (consoles 109 à 115) : la flèche retour n'y a pas lieu.
+class TpEmbedded extends InheritedWidget {
+  const TpEmbedded({super.key, required super.child});
+  static bool of(BuildContext context) => context.getInheritedWidgetOfExactType<TpEmbedded>() != null;
+  @override
+  bool updateShouldNotify(TpEmbedded oldWidget) => false;
+}
+
 /// Page plein écran : fond du site, flèche retour fonctionnelle, titre, contenu défilant et barre d'action fixe optionnelle.
 class TpPage extends StatelessWidget {
   const TpPage({super.key, required this.title, required this.children, this.bottom, this.actions = const [], this.subtitle});
@@ -72,8 +80,7 @@ class TpPage extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),
                   child: Row(children: [
-                    TpRound(icon: Icons.arrow_back, label: 'Retour', onTap: () => Navigator.of(context).maybePop()),
-                    const SizedBox(width: 12),
+                    if (!TpEmbedded.of(context)) ...[TpRound(icon: Icons.arrow_back, label: 'Retour', onTap: () => Navigator.of(context).maybePop()), const SizedBox(width: 12)],
                     Expanded(
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         Text(title, maxLines: 1, overflow: TextOverflow.ellipsis, style: tpSt(20, w: FontWeight.w700)),

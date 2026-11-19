@@ -231,4 +231,4 @@ Color mHex(Object? raw, Color fallback) {
   return s.length == 6 && v != null ? Color(0xFF000000 | v) : fallback;
 }
 
-const shopStatusLabels = {'draft': 'Brouillon', 'pending': 'En validation', 'active': 'Active', 'suspended': 'Suspendue', 'closed': 'Fermée'};
+const shopStatusLabels = {'draft': 'Brouillon', 'pending': 'En validation', 'active': 'Active', 'suspended': 'Suspendue', 'closed': 'Fermée', 'paused': 'En pause'};

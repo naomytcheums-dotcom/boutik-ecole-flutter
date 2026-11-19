@@ -15,6 +15,8 @@ export async function run(db) {
   for (const [n, r] of Object.entries(roles)) {
     await db.exec(`insert into auth.users(id,email) values ('${U(n)}','u${n}@t.cm'); insert into profiles(id,name,role,email) values ('${U(n)}','Profil Complet ${n}','${r}','u${n}@t.cm')`);
   }
+  // Rattachement du compte département (lot H2/K3) : un compte non rattaché n'est ni notifié ni autorisé à voir les besoins départementaux.
+  await db.exec(`insert into institutions (id, name, status) values ('00000000-0000-0000-0000-00000000c4a0', 'IUT Test', 'verified') on conflict (id) do nothing; insert into departments (id, institution_id, name, status) values ('00000000-0000-0000-0000-00000000c4a1', '00000000-0000-0000-0000-00000000c4a0', 'Génie logiciel', 'verified') on conflict (id) do nothing; insert into department_accounts (user_id, department_id) values ('${U(13)}', '00000000-0000-0000-0000-00000000c4a1') on conflict (user_id) do update set department_id = excluded.department_id; update profiles set department_id = '00000000-0000-0000-0000-00000000c4a1' where id = '${U(11)}'`);
 
   // 1. publication d'un besoin : le département et l'administration sont prévenus, plafond de 5 par jour
   await as(U(11));
@@ -94,7 +96,7 @@ export async function run(db) {
 
   // 5. campagnes : droit exigé côté serveur, erreurs lisibles, annulation
   await as(U(11));
-  await fails('campagne : droit requis pour un client', `select ad_campaign_save(null, 'Ma campagne', 'x', null, null, 5000, null, null, null)`, /Vendeur professionnel et Entreprise/);
+  await fails('campagne : droit requis pour un client', `select ad_campaign_save(null, 'Ma campagne', 'x', null, null, 5000, null, null, null)`, /Vendeur professionnel et Organisation/);
   await db.exec('reset role');
   await db.exec(`insert into subscriptions (user_id, plan_code, status, started_at, current_period_end) values ('${U(17)}', 'vendeur_pro', 'active', now(), now() + interval '30 days')`);
   await db.exec(`insert into posts (id, author_id, media_path, media_kind, status) values ('00000000-0000-0000-0000-0000000000b1', '${U(17)}', '${U(17)}/a.jpg', 'image', 'published')`);

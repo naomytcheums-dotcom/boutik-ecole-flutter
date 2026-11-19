@@ -64,7 +64,7 @@ class G_159 extends ConsumerWidget {
       gP(40, 422, 33, 16, gText('Offre', 12.5, Color(0xFF57545F))),
       gP(205, 422, 145, 16, gText(gm('Technicien électronique', ''), 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right)),
       gP(40, 447, 310, 1, gBox(color: Color(0xFFF2EFF6))),
-      gP(40, 456, 62, 16, gText('Entreprise', 12.5, Color(0xFF57545F))),
+      gP(40, 456, 100, 16, gText('Organisation', 12.5, Color(0xFF57545F))),
       gP(244, 456, 106, 16, gText(gm('Camlight · Douala', ''), 12.5, Color(0xFF111015), weight: 600, align: TextAlign.right), show: demoContent),
       gP(40, 481, 310, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 490, 64, 16, gText('Envoyée le', 12.5, Color(0xFF57545F))),

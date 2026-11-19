@@ -8,7 +8,7 @@ import 'backend.dart';
 import 'marche/marche_data.dart';
 import 'marche/marche_widgets.dart';
 
-/// Disponibilités (stage, mission, job…) et langues d'un profil, visibles par les entreprises. Se placent en tête du portfolio (migration 20261114003000).
+/// Disponibilités (stage, mission, job…) et langues d'un profil, visibles par les organisations. Se placent en tête du portfolio (migration 20261114003000).
 
 const availabilityKinds = {'internship': 'Stage', 'vacation': 'Stage de vacances', 'mission': 'Mission', 'job': 'Job étudiant ou emploi', 'volunteer': 'Bénévolat'};
 const languageLevels = {'basic': 'Notions', 'intermediate': 'Intermédiaire', 'advanced': 'Avancé', 'native': 'Langue maternelle'};
@@ -119,7 +119,7 @@ class ProfileExtrasCard extends ConsumerWidget {
               Expanded(child: Text('Disponibilités', style: mst(14, w: FontWeight.w800))),
               if (mine) TextButton(onPressed: () => _editAvailability(context, ref, avail), child: Text(summary.isEmpty ? 'Renseigner' : 'Modifier')),
             ]),
-            Text(summary.isEmpty ? (mine ? 'Indiquez si vous cherchez un stage, une mission ou un job : les entreprises le voient.' : '') : summary, style: mst(13, c: summary.isEmpty ? kGrey : kInk)),
+            Text(summary.isEmpty ? (mine ? 'Indiquez si vous cherchez un stage, une mission ou un job : les organisations le voient.' : '') : summary, style: mst(13, c: summary.isEmpty ? kGrey : kInk)),
             if ('${avail?['note'] ?? ''}'.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 4), child: Text('${avail!['note']}', style: mst(12.5, c: kGrey))),
             const SizedBox(height: 12),
             Row(children: [

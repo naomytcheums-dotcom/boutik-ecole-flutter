@@ -17,7 +17,11 @@ export async function run(db) {
   for (const [n, r] of Object.entries(roles)) {
     await db.exec(`insert into auth.users(id,email) values ('${U(n)}','s3${n}@t.cm'); insert into profiles(id,name,role,email) values ('${U(n)}','Vendeur ${n}','${r}','s3${n}@t.cm')`);
   }
-  await db.exec(`update profiles set certification = 'approved' where id in ('${U(51)}', '${U(57)}')`);
+  // K1 : droits minimaux par défaut ; la finance du scénario reçoit explicitement ses permissions.
+  await db.exec(`update admin_team_members set permissions = array['finance.read', 'finance.payments', 'finance.payouts', 'finance.refunds', 'finance.transfers'] where user_id = '${U(56)}' and team_code = 'finance'`);
+  await db.exec(`update profiles set certification = 'approved', phone_verified = true where id in ('${U(51)}', '${U(57)}')`);
+  // K2 : le vendeur 52 est lui aussi éligible (pièce d'étudiant validée, téléphone vérifié)
+  await db.exec(`update profiles set phone_verified = true where id = '${U(52)}'; insert into user_documents (owner_id, kind, name, path, mime, size_bytes, status) values ('${U(52)}', 'student_card', 'c.pdf', '${U(52)}/c/c.pdf', 'application/pdf', 10, 'verified')`);
   // H2 : le vendeur 51 et le responsable 55 sont dans le même département
   await db.exec(`insert into institutions (id, name, status) values ('00000000-0000-0000-0000-00000000f401', 'IUT S3', 'verified');
     insert into departments (id, institution_id, name, status) values ('00000000-0000-0000-0000-00000000f4a1', '00000000-0000-0000-0000-00000000f401', 'Genie', 'verified');

@@ -235,7 +235,7 @@ final myStudentStatusProvider = FutureProvider.autoDispose<Map<String, dynamic>?
 
 /// Carte « Étudiant vérifié » des écrans 18 et 69 : statut réel, état de la certification, et les deux démarches (pièces, certification).
 /// « Vérifié » = une carte d'étudiant ou un certificat de scolarité validé par l'équipe, ou une certification approuvée : le serveur n'ouvre
-/// l'annuaire des talents, les invitations d'entreprises et le vivier qu'aux étudiants vérifiés.
+/// l'annuaire des talents, les invitations d'organisations et le vivier qu'aux étudiants vérifiés.
 class StudentVerificationCard extends ConsumerWidget {
   const StudentVerificationCard({super.key, this.width = 342});
   final double width;
@@ -267,10 +267,10 @@ class StudentVerificationCard extends ConsumerWidget {
         };
         final title = verified ? 'Étudiant vérifié' : (hasDoc ? 'Vérification en cours' : 'Vérification à compléter');
         final body = verified
-            ? 'Votre carte d’étudiant a été validée par l’équipe : vous apparaissez dans l’annuaire des talents et pouvez recevoir des invitations d’entreprises.'
+            ? 'Votre carte d’étudiant a été validée par l’équipe : vous apparaissez dans l’annuaire des talents et pouvez recevoir des invitations d’organisations.'
             : (hasDoc
                 ? 'Votre pièce est en attente de décision de l’équipe de votre département. Vous serez notifié du résultat.'
-                : 'Déposez votre carte d’étudiant ou votre certificat de scolarité : l’annuaire des talents et les invitations d’entreprises ne s’ouvrent qu’après leur validation.');
+                : 'Déposez votre carte d’étudiant ou votre certificat de scolarité : l’annuaire des talents et les invitations d’organisations ne s’ouvrent qu’après leur validation.');
         final phoneOk = s['phone_verified'] == true;
         final hasPhone = s['has_phone'] == true;
         final hasDept = s['has_department'] != false;
@@ -302,7 +302,7 @@ class StudentVerificationCard extends ConsumerWidget {
             Text(certLabel[cert] ?? 'Certification', style: const TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 12.5, fontWeight: FontWeight.w600, color: _grey)),
             if (!verified) ...[
               const SizedBox(height: 8),
-              const Text('Tant que vous n’êtes pas vérifié : vous pouvez parcourir, acheter et préparer vos annonces, mais l’annuaire des talents, les invitations d’entreprises et les offres réservées aux étudiants vérifiés restent fermés. Publier une annonce demande en plus la certification du compte.', style: TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 12, height: 1.5, color: _grey)),
+              const Text('Tant que vous n’êtes pas vérifié : vous pouvez parcourir, acheter et préparer vos annonces, mais l’annuaire des talents, les invitations d’organisations et les offres réservées aux étudiants vérifiés restent fermés. Publier une annonce demande en plus la certification du compte.', style: TextStyle(fontFamily: 'PlusJakartaSans', fontSize: 12, height: 1.5, color: _grey)),
             ],
             for (final t in todo) Padding(
               padding: const EdgeInsets.only(top: 6),

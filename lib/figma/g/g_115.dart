@@ -24,6 +24,7 @@ import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/inert_actions.dart';
 import '../live/pay.dart';
+import '../live/dept_space.dart' show DeptConsolePage;
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_115 extends ConsumerWidget {
@@ -175,7 +176,7 @@ class G_115 extends ConsumerWidget {
       if (demoContent) gTap(268, 346, 224, 50, () { uiSoon(context, 'Créer un événement', 'Les événements sont publiés par l’équipe Boutik-École sur demande du département.'); }), // audit 01/11 : « Créer un événement » n'avait aucun effet
       gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
       gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
-      if (!demoContent) gP(268, 140, 984, 400, const AdminEventsTable(width: 984, height: 400)),
+      if (!demoContent) gP(240, 56, 1040, 834, const DeptConsolePage('115')), // connecté : la page réelle « Événements et initiatives »
     ]);
   }
 }

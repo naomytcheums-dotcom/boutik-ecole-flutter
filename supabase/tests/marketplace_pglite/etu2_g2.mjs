@@ -18,7 +18,7 @@ export async function run(db) {
   for (const [n, r] of Object.entries(roles)) {
     await db.exec(`insert into auth.users(id,email) values ('${U(n)}','g2${n}@t.cm'); insert into profiles(id,name,role,email) values ('${U(n)}','Compte ${n}','${r}','g2${n}@t.cm')`);
   }
-  await db.exec(`update profiles set certification = 'approved' where id in ('${U(61)}', '${U(62)}');
+  await db.exec(`update profiles set certification = 'approved', phone_verified = true where id in ('${U(61)}', '${U(62)}');
                  update profiles set department = 'Genie' where id in ('${U(61)}', '${U(65)}'); update profiles set department = 'Gestion' where id = '${U(66)}'`);
   // H2 : département des vendeurs par identifiant, comptes Département rattachés à UN département
   await db.exec(`insert into institutions (id, name, status) values ('00000000-0000-0000-0000-00000000f201', 'IUT G2', 'verified');

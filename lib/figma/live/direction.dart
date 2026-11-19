@@ -14,6 +14,7 @@ import 'entreprise.dart' show dateCourte;
 import 'impact.dart' show SponsorReportPanel;
 import 'lot20.dart' show journalListing;
 import 'lots.dart' show toCsv;
+import 'partnership_org_picker.dart';
 import 'store.dart' show fcfa;
 
 /// Espace de la direction (lot H3) : autorité institutionnelle, distincte de l'administrateur global.
@@ -39,7 +40,7 @@ String _s(Object? v) => v == null ? '' : '$v';
 String _day(DateTime d) => '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
 
 const partnerKinds = {
-  'entreprise': 'Entreprise',
+  'entreprise': 'Entreprise commerciale',
   'association': 'Association',
   'ong': 'ONG',
   'institution': 'Institution',
@@ -972,6 +973,8 @@ class _PartnershipsState extends ConsumerState<PartnershipsPanel> {
     final starts = TextEditingController(text: _s(p?['starts_on'])), ends = TextEditingController(text: _s(p?['ends_on']));
     var kind = partnerKinds.containsKey(p?['kind']) ? _s(p?['kind']) : 'entreprise';
     String? dept = deps.any((d) => d['id'] == p?['department_id']) ? _s(p?['department_id']) : null;
+    var registered = p == null ? true : (p['organization_registered'] == true || _s(p['organization_id']).isNotEmpty);
+    OrgChoice? org = registered && p != null ? OrgChoice(id: _s(p['organization_id']), name: _s(p['organization_name']).isEmpty ? _s(p['name']) : _s(p['organization_name'])) : null;
     String? error;
     final ok = await gDialog<bool>(
       context: context,
@@ -985,15 +988,32 @@ class _PartnershipsState extends ConsumerState<PartnershipsPanel> {
               width: 360,
               child: SingleChildScrollView(
                 child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  TextField(controller: name, maxLength: 160, decoration: const InputDecoration(labelText: 'Nom du partenaire', border: OutlineInputBorder())),
-                  const SizedBox(height: 6),
-                  DropdownButtonFormField<String>(
-                    initialValue: kind,
-                    isExpanded: true,
-                    decoration: const InputDecoration(labelText: 'Type', border: OutlineInputBorder()),
-                    items: [for (final e in partnerKinds.entries) DropdownMenuItem(value: e.key, child: Text(e.value))],
-                    onChanged: (v) => set(() => kind = v ?? kind),
+                  PartnershipOrgPicker(
+                    registered: registered,
+                    selected: org,
+                    search: (q) => directionRpc('partnership_org_search', {'p_q': q, 'p_limit': 20}),
+                    onMode: (v) => set(() {
+                      registered = v;
+                      error = null;
+                    }),
+                    onSelect: (c) => set(() {
+                      org = c;
+                      error = null;
+                    }),
                   ),
+                  const SizedBox(height: 10),
+                  if (!registered) ...[
+                    TextField(controller: name, maxLength: 160, decoration: const InputDecoration(labelText: 'Nom du partenaire', border: OutlineInputBorder())),
+                    const SizedBox(height: 6),
+                    DropdownButtonFormField<String>(
+                      initialValue: kind,
+                      isExpanded: true,
+                      decoration: const InputDecoration(labelText: 'Type', border: OutlineInputBorder()),
+                      items: [for (final e in partnerKinds.entries) DropdownMenuItem(value: e.key, child: Text(e.value))],
+                      onChanged: (v) => set(() => kind = v ?? kind),
+                    ),
+                  ] else
+                    Text('Le nom et le type du partenaire sont repris de la fiche de l’organisation.', style: _st(11.5, c: _grey)),
                   if (_decider) ...[
                     const SizedBox(height: 10),
                     DropdownButtonFormField<String?>(
@@ -1027,7 +1047,8 @@ class _PartnershipsState extends ConsumerState<PartnershipsPanel> {
               TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuler')),
               FilledButton(
                 onPressed: () {
-                  if (name.text.trim().length < 2) return set(() => error = 'Indiquez le nom du partenaire.');
+                  if (registered && org == null) return set(() => error = 'Choisissez une organisation inscrite, ou passez à « Organisation non inscrite ».');
+                  if (!registered && name.text.trim().length < 2) return set(() => error = 'Indiquez le nom du partenaire.');
                   if (badDate(starts.text) || badDate(ends.text)) return set(() => error = 'Les dates doivent être au format AAAA-MM-JJ.');
                   Navigator.pop(ctx, true);
                 },
@@ -1044,10 +1065,10 @@ class _PartnershipsState extends ConsumerState<PartnershipsPanel> {
       'partnership_save',
       {
         'p_id': p?['id'],
-        'p_name': name.text.trim(),
+        'p_name': registered ? org!.name : name.text.trim(),
         'p_kind': kind,
         'p_department': dept,
-        'p_company_owner': p?['company_owner_id'],
+        'p_company_owner': registered ? org!.id : null,
         'p_contact_name': cname.text.trim(),
         'p_contact_email': cmail.text.trim(),
         'p_contact_phone': cphone.text.trim(),
@@ -1077,7 +1098,12 @@ class _PartnershipsState extends ConsumerState<PartnershipsPanel> {
               Wrap(spacing: 8, runSpacing: 6, children: [_pill(partnerStatuses[status] ?? status), _pill(partnerKinds[p['kind']] ?? _s(p['kind']), bg: const Color(0xFFF2EFF6), fg: _grey)]),
               const SizedBox(height: 10),
               Text(_s(p['department']).isEmpty ? 'Tout l’établissement' : 'Département : ${_s(p['department'])}', style: _st(12.5)),
-              if (_s(p['company']).isNotEmpty) Text('Organisation liée : ${_s(p['company'])}', style: _st(12.5)),
+              if (_s(p['organization_registered']) == 'true' || p['organization_registered'] == true)
+                Text('Organisation inscrite : ${_s(p['company']).isEmpty ? _s(p['organization_name']) : _s(p['company'])}', style: _st(12.5))
+              else
+                Text('Organisation non inscrite sur Boutik-École : ${_s(p['organization_name']).isEmpty ? _s(p['name']) : _s(p['organization_name'])}', style: _st(12.5)),
+              if (orgResponseLabel(p['org_response']).isNotEmpty)
+                Text('${orgResponseLabel(p['org_response'])}${_s(p['org_response_note']).isEmpty ? '' : ' : ${_s(p['org_response_note'])}'}', style: _st(12.5, w: FontWeight.w600, c: p['org_response'] == 'contested' ? const Color(0xFFB3261E) : _ink)),
               if (_s(p['proposer']).isNotEmpty) Text('Proposé par : ${_s(p['proposer'])}', style: _st(12.5)),
               if (p['starts_on'] != null || p['ends_on'] != null) Text('Période : ${p['starts_on'] == null ? '—' : dateCourte(p['starts_on'])} → ${p['ends_on'] == null ? '—' : dateCourte(p['ends_on'])}', style: _st(12.5)),
               if (_s(p['objective']).isNotEmpty) Padding(padding: const EdgeInsets.only(top: 8), child: Text(_s(p['objective']), style: _st(12.5))),
@@ -1155,7 +1181,7 @@ class _PartnershipsState extends ConsumerState<PartnershipsPanel> {
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         Text(_s(p['name']), maxLines: 2, overflow: TextOverflow.ellipsis, style: _st(14, w: FontWeight.w700)),
                         const SizedBox(height: 3),
-                        Text('${partnerKinds[p['kind']] ?? _s(p['kind'])} · ${_s(p['department']).isEmpty ? 'Tout l’établissement' : _s(p['department'])}${p['ends_on'] == null ? '' : ' · jusqu’au ${dateCourte(p['ends_on'])}'}', maxLines: 2, overflow: TextOverflow.ellipsis, style: _st(11.5, c: _grey)),
+                        Text('${partnerKinds[p['kind']] ?? _s(p['kind'])} · ${_s(p['department']).isEmpty ? 'Tout l’établissement' : _s(p['department'])}${p['organization_registered'] == true ? ' · Organisation inscrite' : ''}${orgResponseLabel(p['org_response']).isEmpty ? '' : ' · ${orgResponseLabel(p['org_response'])}'}${p['ends_on'] == null ? '' : ' · jusqu’au ${dateCourte(p['ends_on'])}'}', maxLines: 3, overflow: TextOverflow.ellipsis, style: _st(11.5, c: _grey)),
                       ]),
                     ),
                     const SizedBox(width: 8),
@@ -1190,7 +1216,7 @@ class _PartnershipsState extends ConsumerState<PartnershipsPanel> {
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                           Text(_s(p['partner']), maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(13.5, w: FontWeight.w600)),
-                          Text('${_s(p['department'])} · ${_n(p['students'])} étudiant${_n(p['students']) > 1 ? 's' : ''}${_n(p['amount']) > 0 ? ' · ${fcfa(_n(p['amount']))}' : ''}', maxLines: 2, overflow: TextOverflow.ellipsis, style: _st(11.5, c: _grey)),
+                          Text('${_s(p['department'])} · ${_n(p['students'])} étudiant${_n(p['students']) > 1 ? 's' : ''}${_n(p['amount']) > 0 ? ' · ${fcfa(_n(p['amount']))}' : ''}${p['organization_registered'] == true ? ' · Organisation inscrite' : ''}${orgResponseLabel(p['org_response']).isEmpty ? '' : ' · ${orgResponseLabel(p['org_response'])}'}', maxLines: 3, overflow: TextOverflow.ellipsis, style: _st(11.5, c: _grey)),
                         ]),
                       ),
                     ),

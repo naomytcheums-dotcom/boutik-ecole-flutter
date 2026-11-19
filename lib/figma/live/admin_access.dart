@@ -26,7 +26,8 @@ const kTeamIcons = {
   'tech': Icons.settings_suggest_outlined,
 };
 
-/// Droits de base d'un nouvel agent (identiques à `_admin_team_defaults` côté serveur).
+/// Permissions d'aperçu (maquette hors connexion au serveur) : connecté, un compte Finance ou Support n'a AUCUNE permission tant que l'administrateur global
+/// ne lui en a pas attribué explicitement (migration 20261121010200) ; l'accès réel est toujours celui renvoyé par `my_admin_access`.
 const kTeamDefaults = <String, List<String>>{
   'finance': ['finance.read', 'finance.payments', 'finance.payouts', 'finance.refunds', 'finance.transfers'],
   'support': ['support.tickets', 'support.claims', 'support.disputes', 'support.orders', 'support.requests'],
@@ -118,7 +119,11 @@ class AdminAccess {
 
   bool hasAny(Iterable<String> perms) => isAdmin || perms.any(permissions.contains);
 
-  bool inTeam(String team) => isAdmin || (teams[team]?.isNotEmpty ?? false);
+  /// Un agent sans aucune permission reste membre de son équipe (droits minimaux : lecture de son tableau de bord) ; il n'ouvre aucun outil.
+  bool inTeam(String team) => isAdmin || teams.containsKey(team);
+
+  /// Compte d'équipe interne (hors administrateur) sans aucune permission attribuée.
+  bool get isMinimal => !isAdmin && teams.isNotEmpty && permissions.isEmpty;
 
   List<String> get myTeams => [for (final t in kTeamOrder) if (inTeam(t)) t];
 }

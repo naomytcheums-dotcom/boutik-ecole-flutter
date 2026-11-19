@@ -9,6 +9,8 @@ export async function run(db) {
   for (const [id, nm, role] of [[A, 'Awa Prestataire', 'student'], [B, 'Boris Client', 'student'], [C, 'Cora Autre', 'student'], [M, 'Mod Admin', 'admin']]) {
     await db.exec(`insert into auth.users(id,email) values ('${id}','${nm.split(' ')[0]}@t.cm'); insert into profiles(id,name,role,email) values ('${id}','${nm}','${role}','${nm.split(' ')[0]}@t.cm')`);
   }
+  // K2 : le prestataire doit être un vendeur éligible (étudiant vérifié, téléphone vérifié)
+  await db.exec(`update profiles set phone_verified = true where id = '${A}'; insert into user_documents (owner_id, kind, name, path, mime, size_bytes, status) values ('${A}', 'student_card', 'c.pdf', '${A}/c/c.pdf', 'application/pdf', 10, 'verified')`);
   await db.exec(`insert into listings (seller_id,title,department,category,price,stock,status,images) values
     ('${A}','Creation de logo','Design','Services',20000,99,'approved','{}'),
     ('${A}','Lampe en bois','Genie civil','Maison',25000,5,'approved','{a,b,c}')`);

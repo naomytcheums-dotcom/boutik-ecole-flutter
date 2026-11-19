@@ -23,6 +23,7 @@ import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/inert_actions.dart';
 import '../live/pay.dart';
+import '../live/dept_space.dart' show DeptConsolePage;
 import '../live/lots.dart' show exportCatalog;
 import '../../data/repositories/repositories.dart' show cartProvider;
 
@@ -91,10 +92,10 @@ class G_110 extends ConsumerWidget {
       gP(692, 500, 45, 15, gText(gm('1,4 jour', ''), 12.5, Color(0xFF111015), weight: 600, inter: true, align: TextAlign.right)),
       gP(284, 525, 453, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(284, 534, 111, 15, gText('Taux d’acceptation', 12.5, Color(0xFF57545F), inter: true)),
-      gP(567, 534, 170, 15, Consumer(builder: (context, ref, _) => gText('${((23 + reviewCount(ref.watch(reviewDecisionsProvider), 1)) * 100 / (25 + reviewCount(ref.watch(reviewDecisionsProvider), 1) + reviewCount(ref.watch(reviewDecisionsProvider), 2))).round()} %', 12.5, Color(0xFF111015), weight: 600, inter: true, wrap: true, align: TextAlign.right))),
+      gP(567, 534, 170, 15, Consumer(builder: (context, ref, _) { final d = ref.watch(reviewDecisionsProvider); final v = reviewCount(d, 1), x = reviewCount(d, 2); final base = demoContent; return gText(!base && v + x == 0 ? '—' : '${(((base ? 23 : 0) + v) * 100 / ((base ? 25 : 0) + v + x)).round()} %', 12.5, Color(0xFF111015), weight: 600, inter: true, wrap: true, align: TextAlign.right); })),
       gP(284, 559, 453, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(284, 568, 149, 15, gText('Annonces refusées (30 j)', 12.5, Color(0xFF57545F), inter: true)),
-      gP(589, 568, 148, 15, Consumer(builder: (context, ref, _) => gText('${7 + reviewCount(ref.watch(reviewDecisionsProvider), 2)}', 12.5, Color(0xFF111015), weight: 600, inter: true, wrap: true, align: TextAlign.right))),
+      gP(589, 568, 148, 15, Consumer(builder: (context, ref, _) => gText('${(demoContent ? 7 : 0) + reviewCount(ref.watch(reviewDecisionsProvider), 2)}', 12.5, Color(0xFF111015), weight: 600, inter: true, wrap: true, align: TextAlign.right))),
       gP(767, 452, 485, 62, gBox(color: Color(0xFFF2EFF6), radii: [20, 20, 20, 20])),
       gP(779, 467, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(784.917, 472.917, 20.167, 20.167, gImg('assets/figma/v/48fd286aff90cc.svg')),
@@ -188,6 +189,7 @@ class G_110 extends ConsumerWidget {
       gTap(12, 448, 216, 36, () => gOpen(context, '116')),
       gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
       gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
+      if (!demoContent) gP(240, 56, 1040, 834, const DeptConsolePage('110')), // connecté : la page réelle « Annonces à valider »
     ]);
   }
 }

@@ -59,7 +59,7 @@ export async function run(db) {
   const pr = (await sudo(`select department_id, department, institution_id from profiles where id = '${U(71)}'`))[0];
   check('rattachement : le profil suit (département, établissement)', pr.department_id === DX && pr.department === 'Génie logiciel' && pr.institution_id === I1);
   check('rattachement : audit journalisé', (await sudo(`select count(*)::int n from audit_log where action = 'Rattachement au département'`))[0].n === 3);
-  check('rattachement : le chef est notifié', (await sudo(`select count(*)::int n from notifications where user_id = '${U(71)}' and kind = 'department'`))[0].n === 1);
+  check('rattachement : le chef est notifié', (await sudo(`select count(*)::int n from notifications where user_id = '${U(71)}' and kind = 'department' and data->>'type' = 'attached'`))[0].n === 1);
   await as(U(71));
   const md = (await q(`select my_department() d`))[0].d;
   check('my_department : rattaché au bon département', md.attached === true && md.department_id === DX && md.title === 'Chef de département', JSON.stringify(md));
@@ -92,6 +92,9 @@ export async function run(db) {
       ('${L(14)}', '${U(77)}', 'Innovation Y', 'Une innovation du département Gestion pour les marchés de proximité locaux.', 'innovation', 'approved', 'public', 'Gestion');
     insert into talent_skills (owner_id, domain, skill, level) values ('${U(76)}', 'Développement', 'Flutter', 'avance'), ('${U(76)}', 'Développement', 'SQL', 'intermediaire'), ('${U(82)}', 'Développement', 'Flutter', 'debutant'), ('${U(77)}', 'Gestion', 'Comptabilité', 'expert');
     update profiles set certification = 'pending' where id in ('${U(76)}', '${U(77)}');
+    update profiles set phone_verified = true where id in ('${U(76)}', '${U(77)}');
+    insert into user_documents (owner_id, kind, name, path, mime, size_bytes, status) values
+      ('${U(76)}', 'student_card', 'c.pdf', '${U(76)}/c/c.pdf', 'application/pdf', 10, 'verified'), ('${U(77)}', 'student_card', 'c.pdf', '${U(77)}/c/c.pdf', 'application/pdf', 10, 'verified');
     insert into opportunities (id, poster_id, org_name, kind, title, description, department_target, status) values
       ('${L(21)}', '${U(81)}', 'Entreprise Z', 'stage', 'Stage développeur mobile', 'Stage de six mois en développement mobile Flutter pour étudiants.', 'Génie logiciel', 'pending'),
       ('${L(22)}', '${U(81)}', 'Entreprise Z', 'stage', 'Stage général', 'Stage ouvert à tous les départements, sans cible particulière aujourd''hui.', '', 'pending'),

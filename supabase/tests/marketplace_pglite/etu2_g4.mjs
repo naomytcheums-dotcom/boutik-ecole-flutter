@@ -18,8 +18,12 @@ export async function run(db) {
     await db.exec(`insert into auth.users(id,email) values ('${i}','${nm.split(' ')[0]}@t.cm'); insert into profiles(id,name,role,email) values ('${i}','${nm}','${role}','${nm.split(' ')[0]}@t.cm')`);
   }
   // Équipes internes (lot H4) : l'agent de support de ce scénario décide aussi les remboursements (droit explicite).
-  await db.exec(`update admin_team_members set permissions = permissions || array['support.refunds'] where user_id = '${SU}' and team_code = 'support'`);
+  // K1 : droits minimaux par défaut ; la finance et le support du scénario reçoivent explicitement les permissions dont il a besoin.
+  await db.exec(`update admin_team_members set permissions = array['support.tickets', 'support.claims', 'support.disputes', 'support.orders', 'support.requests', 'support.refunds'] where user_id = '${SU}' and team_code = 'support';
+    update admin_team_members set permissions = array['finance.read', 'finance.payments', 'finance.payouts', 'finance.refunds', 'finance.transfers'] where user_id = '${F}' and team_code = 'finance'`);
   await sup();
+  // K2 : les vendeurs (S1, S2, S3) sont éligibles dès le départ (certifiés, téléphone vérifié) : ils reçoivent des commandes
+  await db.exec(`update profiles set phone_verified = true, certification = 'approved' where id in ('${S1}', '${S2}', '${S3}')`);
   await db.exec(`insert into listings (seller_id,title,department,category,price,stock,status,images) values
     ('${S1}','Lampe','Design','Maison',10000,500,'approved','{}'), ('${S2}','Table','Design','Maison',5000,500,'approved','{}'), ('${S3}','Chaise','Design','Maison',1000,500,'approved','{}'),
     ('${S1}','Lampe fine','Design','Maison',1001,500,'approved','{}'), ('${S2}','Table fine','Design','Maison',1000,500,'approved','{}'), ('${S3}','Chaise fine','Design','Maison',1000,500,'approved','{}')`);
@@ -186,12 +190,12 @@ export async function run(db) {
   await as(X);
   await fails('D2 etudiant NON verifie (ni piece ni certification) : retrait refuse', `select request_seller_payout(2000)`, /statut d'étudiant n'est pas vérifié/);
   await as(B);
-  await fails('D3 client sans telephone verifie : refuse', `select request_seller_payout(2000)`, /téléphone vérifié/);
+  await fails('D3 client sans telephone verifie : refuse',   `select request_seller_payout(2000)`, /téléphone vérifié|réservés aux comptes étudiants/);
   await sup(); await db.exec(`update profiles set phone_verified = true where id in ('${B}', '${CO}', '${D}')`);
   await as(B);
-  await fails('D4 client avec telephone verifie mais sans solde : refuse (aucun pouvoir cree)', `select request_seller_payout(2000)`, /Enregistrez d'abord|solde disponible/);
+  await fails('D4 client avec telephone verifie mais sans solde : refuse (aucun pouvoir cree)', `select request_seller_payout(2000)`, /Enregistrez d'abord|solde disponible|réservés aux comptes étudiants/);
   await as(D);
-  await fails('D5 departement : meme refus', `select request_seller_payout(2000)`, /Enregistrez d'abord|solde disponible/);
+  await fails('D5 departement : meme refus', `select request_seller_payout(2000)`, /Enregistrez d'abord|solde disponible|réservés aux comptes étudiants/);
   await as(null, 'anon');
   await fails('D6 anonyme : aucun acces', `select request_seller_payout(2000)`, /permission denied|Connexion/);
   await as(S1);

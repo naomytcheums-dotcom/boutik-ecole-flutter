@@ -30,7 +30,7 @@ Source : `etat_ecrans.csv` (une ligne par écran, calculée **depuis le code**).
 ## Ce qui reste pour que chaque écran soit réellement « corrigé »
 
 - **Formats web (64), borne (5) et tablette (1)** : ils restent des toiles à positions absolues mises à l'échelle (agrandissables au pincement sur petit écran). Une vraie composition adaptative demande de les recomposer famille par famille : **non fait**.
-- **116 écrans à données de maquette** (tableaux de bord département, direction, finance, administration, espaces entreprise) : les chiffres fictifs sont masqués hors démonstration, mais les sources de données n'existent pas : **bloqués** par l'absence de tables et de règles métier.
+- **116 écrans à données de maquette** (tableaux de bord département, direction, finance, administration, espaces organisation) : les chiffres fictifs sont masqués hors démonstration, mais les sources de données n'existent pas : **bloqués** par l'absence de tables et de règles métier.
 - **Textes fictifs non numériques** (noms de personnes, intitulés, adresses) : non traités automatiquement ; seuls ceux des écrans individuels ci-dessus ont été retirés.
 - **Formulaires, validations, états de chargement/vide/erreur** : traités seulement sur les écrans individuels ci-dessus et sur ceux qui l'étaient déjà.
 - **Clavier (D-085)** : l'anneau de focus existe sur les zones cliquables ; les listes déroulantes de la recherche avancée (21) n'ont pas été corrigées.

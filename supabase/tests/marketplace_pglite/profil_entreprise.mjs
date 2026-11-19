@@ -9,6 +9,8 @@ export async function run(db) {
   for (const [id, nm, role] of [[E, 'Orange Cameroun', 'company'], [S, 'Sara Etudiante', 'student'], [C, 'Carl Client', 'client']]) {
     await db.exec(`insert into auth.users(id,email) values ('${id}','${nm.split(' ')[0]}@t.cm'); insert into profiles(id,name,role,email) values ('${id}','${nm}','${role}','${nm.split(' ')[0]}@t.cm')`);
   }
+  // K2 : l'étudiante qui crée une boutique est éligible (pièce d'étudiant validée, téléphone vérifié)
+  await db.exec(`update profiles set phone_verified = true where id = '${S}'; insert into user_documents (owner_id, kind, name, path, mime, size_bytes, status) values ('${S}', 'student_card', 'c.pdf', '${S}/c/c.pdf', 'application/pdf', 10, 'verified')`);
   await db.exec(`insert into company_profiles (owner_id, company_name, status, sector, city, description) values ('${E}', 'Orange Cameroun', 'approved', 'Telecoms', 'Douala', 'Operateur')`);
   await db.exec(`insert into opportunities (poster_id, org_name, kind, title, status) values ('${E}', 'Orange Cameroun', 'stage', 'Stage developpeur', 'published'), ('${E}', 'Orange Cameroun', 'emploi', 'Brouillon cache', 'pending')`);
   // couverture

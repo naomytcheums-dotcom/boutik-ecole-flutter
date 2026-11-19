@@ -24,6 +24,7 @@ import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/inert_actions.dart';
 import '../live/pay.dart';
+import '../live/dept_space.dart' show DeptConsolePage;
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_109 extends ConsumerWidget {
@@ -186,7 +187,7 @@ class G_109 extends ConsumerWidget {
       if (demoContent) gTap(276, 380, 96, 32, () { gOpen(context, 'p3'); }), // parcours 109 -> p3
       gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
       gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
-      if (!demoContent) gP(268, 296, 940, 520, ConsoleTable(provider: deptStudentsProvider, columns: [ConsoleColumn(16, 210, (r) => '${r['name']}', bold: true), ConsoleColumn(244.48, 180, (r) => '${r['department']}'.isEmpty ? '' : '${r['department']}'), ConsoleColumn(434.88, 110, (r) => roleLabel(r['role'])), ConsoleColumn(568.16, 90, (r) => '${r['listings']}'), ConsoleColumn(682.4, 140, (r) => fcfa((r['sales'] as num).toInt())), ConsoleColumn(834.72, 110, (r) => r['verified'] == true ? 'Vérifié' : 'Non vérifié')], emptyText: 'Aucun étudiant dans votre département.', width: 940, height: 520)),
+      if (!demoContent) gP(240, 56, 1040, 834, const DeptConsolePage('109')), // connecté : la page réelle « Étudiants » (mêmes lectures et mêmes filtres que le mobile)
     ]);
   }
 }

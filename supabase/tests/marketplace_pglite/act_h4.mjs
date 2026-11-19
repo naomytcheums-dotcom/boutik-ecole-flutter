@@ -32,6 +32,9 @@ export async function run(db) {
   await sup();
   await db.exec(section);
   await db.exec(section);
+  // K1 : les droits de base ne sont plus « larges » ; on simule l'état de PRODUCTION d'avant K1 (droits hérités de H4 : finance = 5 permissions, support = tickets… + remboursements)
+  await db.exec(`update admin_team_members set permissions = array['finance.read', 'finance.payments', 'finance.payouts', 'finance.refunds', 'finance.transfers'] where user_id = '${LEG_F}' and team_code = 'finance';
+    update admin_team_members set permissions = array['support.tickets', 'support.claims', 'support.disputes', 'support.orders', 'support.requests', 'support.refunds'] where user_id = '${LEG_S}' and team_code = 'support'`);
   const replayRows = (await q(`select count(*)::int n from admin_team_members where user_id in ('${LEG_F}', '${LEG_S}')`))[0].n;
   for (const [i, nm, role] of [[A, 'Ada Admin', 'admin'], [A2, 'Bob Admin', 'admin'], [F1, 'Fina Finance', 'finance'], [F2, 'Fred Finance', 'finance'], [S1, 'Sam Support', 'support'], [S2, 'Suzy Support', 'support'],
     [SEC, 'Sec Securite', 'support'], [TECH, 'Tech Technique', 'support'], [C, 'Cora Cliente', 'client'], [D, 'Dep Dept', 'dept'], [DIR, 'Dir Direction', 'direction'], [ST, 'Etu Etudiant', 'student'], [SUSP, 'Sus Pendu', 'support']]) {
@@ -45,7 +48,7 @@ export async function run(db) {
   const auto = await qs(`select user_id, team_code, permissions from admin_team_members where user_id in ('${F1}', '${S1}', '${SEC}') order by user_id`);
   check('A3 un compte finance / support créé après la migration est inscrit dans son équipe avec les droits de base', auto.length === 3 && auto.find((r) => r.user_id === F1).team_code === 'finance'
     && auto.find((r) => r.user_id === S1).team_code === 'support' && !auto.find((r) => r.user_id === S1).permissions.includes('support.refunds'), JSON.stringify(auto));
-  check('A4 droits de base finance : aucune permission de répartition (finance.split)', !(auto.find((r) => r.user_id === F1).permissions.includes('finance.split')) && auto.find((r) => r.user_id === F1).permissions.includes('finance.payments'));
+  check('A4 droits de base finance (K1) : aucune permission, ni répartition ni paiements (droits minimaux)', auto.find((r) => r.user_id === F1).permissions.length === 0);
   check('A5 l\'inscription automatique est historisée', (await qs(`select count(*)::int n from admin_team_history where user_id = '${F1}' and action = 'auto_enroll'`))[0].n === 1);
   check('A6 un client, un étudiant, un département ou la direction n\'ont aucune ligne d\'équipe', (await qs(`select count(*)::int n from admin_team_members where user_id in ('${C}', '${ST}', '${D}', '${DIR}', '${A}')`))[0].n === 0);
 
@@ -59,6 +62,9 @@ export async function run(db) {
     && legS.find((r) => r.team_code === 'security').permissions.includes('security.accounts'), JSON.stringify(legS));
   check('A10 la migration est rejouable sans doublon', replayRows === 3);
   check('A11 la migration est historisée', (await qs(`select count(*)::int n from admin_team_history where user_id = '${LEG_S}' and action = 'migration'`))[0].n === 2);
+  // K1 : rattrapage des comptes hérités (voir fin_k1.mjs pour la preuve détaillée)
+  await sup();
+  await db.exec(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..', 'migrations', '20261121010200_k1_droits_minimaux_heritage.sql'), 'utf8'));
 
   // ============================================================ B. attribution / retrait par l'administrateur global
   await grant(S1, 'support', ['support.tickets', 'support.claims', 'support.disputes', 'support.orders', 'support.requests']);
@@ -103,7 +109,7 @@ export async function run(db) {
   await fails('B21 anonyme : has_admin_permission refusé', `select has_admin_permission('finance.read')`, /permission denied/);
   await as(A);
   const ov = (await q(`select admin_teams_overview() r`))[0].r;
-  check('B22 vue d\'ensemble : 4 équipes, permissions et droits de base', ov.length === 4 && ov[0].code === 'finance' && ov[0].permissions.length === 6 && ov[1].defaults.length === 5 && ov[0].members >= 3, JSON.stringify(ov.map((t) => [t.code, t.members])));
+  check('B22 vue d\'ensemble : 4 équipes, permissions et droits de base', ov.length === 4 && ov[0].code === 'finance' && ov[0].permissions.length === 6 && ov[1].defaults.length === 0 && ov[0].members >= 3, JSON.stringify(ov.map((t) => [t.code, t.members])));
   check('B23 liste des agents d\'une équipe (noms, rôles, permissions)', (await q(`select admin_team_members_list('support') r`))[0].r.some((m) => m.user_id === S2 && m.role === 'support' && m.permissions.includes('support.claims')));
   const cand = (await q(`select admin_team_candidates('sam') r`))[0].r;
   check('B24 recherche d\'agents recrutables : seulement finance / support', cand.length === 1 && cand[0].id === S1 && cand[0].teams.includes('support'), JSON.stringify(cand));
@@ -121,7 +127,7 @@ export async function run(db) {
   check('B28 un compte qui n\'a plus de rôle d\'équipe interne perd ses lignes d\'équipe (auto_revoke)', (await qs(`select count(*)::int n from admin_team_members where user_id = '${S2}'`))[0].n === 0
     && (await qs(`select count(*)::int n from admin_team_history where user_id = '${S2}' and action = 'auto_revoke'`))[0].n === 1);
   await as(A); await q(`select admin_set_account('${S2}', 'support', false)`);
-  check('B29 un compte repromu support est réinscrit avec les droits de base', JSON.stringify((await qs(`select permissions from admin_team_members where user_id = '${S2}'`))[0].permissions) === JSON.stringify(['support.tickets', 'support.claims', 'support.disputes', 'support.orders', 'support.requests']));
+  check('B29 un compte repromu support est réinscrit SANS permission (droits minimaux, K1)', JSON.stringify((await qs(`select permissions from admin_team_members where user_id = '${S2}'`))[0].permissions) === JSON.stringify([]));
   await grant(S2, 'support', ['support.tickets']);
 
   // ============================================================ C. fonctions de permission
@@ -280,12 +286,12 @@ export async function run(db) {
   await guardDenied('F10 support sans équipe sécurité : modération refusée', `select moderation_posts_list('pending', 10)`);
   await guardDenied('F11 support sans équipe sécurité : signalements refusés', `select comment_reports_list(10)`);
   await as(LEG_S);
-  await guardPassed('F12 compte support d\'avant (migré) : modération conservée', `select moderation_posts_list('pending', 10)`);
-  await guardPassed('F13 compte support d\'avant (migré) : tickets conservés', `select support_ticket_reply('${tk}', 'Merci')`);
-  await guardPassed('F14 compte support d\'avant (migré) : remboursements conservés (garde franchie)', `select order_refund_decide('${tk}', 'reject', 'refus motivé')`);
+  await guardDenied('F12 compte support d\'avant (migré), réduit par K1 : modération refusée', `select moderation_posts_list('pending', 10)`);
+  await guardDenied('F13 compte support d\'avant (migré), réduit par K1 : tickets refusés', `select support_ticket_reply('${tk}', 'Merci')`);
+  await guardDenied('F14 compte support d\'avant (migré), réduit par K1 : remboursements refusés', `select order_refund_decide('${tk}', 'reject', 'refus motivé')`);
   await as(LEG_F);
-  await guardPassed('F15 compte finance d\'avant (migré) : paiements conservés', `select payments_to_verify()`);
-  await guardPassed('F16 compte finance d\'avant (migré) : retraits conservés (garde franchie)', `select payout_create('${ST}', 1000)`);
+  await guardDenied('F15 compte finance d\'avant (migré), réduit par K1 : paiements refusés', `select payments_to_verify()`);
+  await guardDenied('F16 compte finance d\'avant (migré), réduit par K1 : retraits refusés', `select payout_create('${ST}', 1000)`);
 
   // comptes suspects
   await as(SEC);

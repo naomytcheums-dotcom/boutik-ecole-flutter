@@ -33,5 +33,5 @@ Isolation vérifiée par lecture des politiques : `profiles` (select réservé a
 ## Limites connues
 
 - Les intitulés de départements des universités sont des filières génériques ; la liste officielle des IPES du MINESUP (PDF) reste à importer par l'équipe.
-- Les tableaux de bord des consoles (département, direction, finance, administration) n'ont pas encore de source de données : connectés, leurs textes d'exemple sont masqués (« — » / vide) mais les graphiques en barres décoratifs restent dessinés.
+- Les tableaux de bord des consoles (département, direction, équipes Finance et Support de l'administration, administration) n'ont pas encore de source de données : connectés, leurs textes d'exemple sont masqués (« — » / vide) mais les graphiques en barres décoratifs restent dessinés.
 - Localisation automatique : web uniquement (position du navigateur après autorisation + géocodage inverse OpenStreetMap) ; sur Android, la saisie manuelle reste proposée.

@@ -10,7 +10,7 @@ Trois types : **publique** (rejoindre directement), **privée sur approbation** 
 
 ## Offres premium
 
-Plans visés : gratuit, créateur ou professionnel, vendeur professionnel, entreprise, administrateur de communauté. **Les prix ne sont pas décidés** : la table `plans` les porte (`price_fcfa` nul tant qu'il n'est pas fixé).
+Plans visés : gratuit, créateur ou professionnel, vendeur professionnel, organisation (code technique `entreprise`, public « Organisations et partenaires »), administrateur de communauté. **Les prix ne sont pas décidés** : la table `plans` les porte (`price_fcfa` nul tant qu'il n'est pas fixé).
 
 Modèle : `plans`, `plan_features`, `subscriptions` (statut, période, renouvellement, annulation en fin de période, historique), factures reliées à `payment_transactions`. Un droit n'est accordé que si l'abonnement est en vigueur **et** son paiement validé par le serveur (`Entitlements.allows`). Testé : sans abonnement aucun droit ; paiement non validé aucun droit ; annulé en fin de période, droits jusqu'à l'échéance ; expiré ou suspendu, aucun droit.
 

@@ -71,7 +71,7 @@ export async function run(db) {
 
   // ============================================================ B. achats B2B
   await db.exec('reset role');
-  await db.exec(`update profiles set certification = 'approved' where id = '${PRV}'`);
+  await db.exec(`update profiles set certification = 'approved', phone_verified = true where id = '${PRV}'`);
   await db.exec(`insert into subscriptions (user_id, plan_code, status, started_at, current_period_end) values ('${E}', 'entreprise', 'active', now(), now() + interval '30 days')`);
   await as(E);
   await q(`select company_invite('Alice@t.cm', 'admin')`);

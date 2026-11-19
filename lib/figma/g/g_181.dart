@@ -35,7 +35,7 @@ class G_181 extends ConsumerWidget {
       gP(269, 135, 982, 39, gBox(color: Color(0xFFF4F1F8), radii: [15, 15, 15, 15])),
       gP(284, 147, 59, 13, gText('Permission', 11, Color(0xFF57545F), weight: 600, inter: true)),
       gP(569.6, 147, 45, 13, gText('Étudiant', 11, Color(0xFF57545F), weight: 600, inter: true)),
-      gP(683.84, 147, 55, 13, gText('Entreprise', 11, Color(0xFF57545F), weight: 600, inter: true)),
+      gP(683.84, 147, 80, 13, gText('Organisation', 11, Color(0xFF57545F), weight: 600, inter: true)),
       gP(798.08, 147, 24, 13, gText('Jury', 11, Color(0xFF57545F), weight: 600, inter: true)),
       gP(893.28, 147, 70, 13, gText('Organisateur', 11, Color(0xFF57545F), weight: 600, inter: true)),
       gP(1026.56, 147, 56, 13, gText('Resp. dép.', 11, Color(0xFF57545F), weight: 600, inter: true)),

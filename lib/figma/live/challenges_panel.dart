@@ -79,7 +79,19 @@ class ChallengesPanel extends ConsumerWidget {
       );
     }
     final c = ref.watch(challengesProvider);
-    if (c == null) return const Center(child: CircularProgressIndicator());
+    if (c == null) {
+      if (!ref.watch(challengesFailedProvider)) return const Center(child: CircularProgressIndicator());
+      return Padding(
+        padding: const EdgeInsets.all(24),
+        child: Center(
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            Text('Vos défis ne peuvent pas être chargés pour le moment.', textAlign: TextAlign.center, style: _st(13.5, c: _grey)),
+            const SizedBox(height: 12),
+            _button('Réessayer', () => ref.read(challengesProvider.notifier).refresh()),
+          ]),
+        ),
+      );
+    }
     if (badgesOnly) return ListView(padding: const EdgeInsets.fromLTRB(24, 6, 24, 20), children: [_badgesCard(c)]);
     const days = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
     final marks = c.weekMarks.length == 7 ? c.weekMarks : List<bool>.filled(7, false);

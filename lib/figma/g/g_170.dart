@@ -50,7 +50,7 @@ class G_170 extends ConsumerWidget {
       gP(76, 70, 218, 26, gText('Signaler une annonce', 21, Color(0xFF111015), weight: 700)),
       gP(36, 128, 50, 50, Consumer(builder: (context, ref, _) => gBox(image: ref.watch(selectedProductProvider).image, fit: BoxFit.cover, radii: [12, 12, 12, 12]))),
       gP(98, 132, 145, 17, Consumer(builder: (context, ref, _) => gText(ref.watch(selectedProductProvider).title, 13.5, Color(0xFF111015), weight: 600))),
-      gP(98, 154, 196, 14, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(selectedProductProvider).price) + ' · Vendeur : ' + ref.watch(selectedProductProvider).seller, 11.5, Color(0xFF57545F)))),
+      gP(98, 154, 196, 14, Consumer(builder: (context, ref, _) => gText(ref.watch(selectedProductProvider).isNone ? '' : fcfa(ref.watch(selectedProductProvider).price) + ' · Vendeur : ' + ref.watch(selectedProductProvider).seller, 11.5, Color(0xFF57545F)))),
       gP(24, 200, 154, 19, gText('Motif du signalement', 15, Color(0xFF111015), weight: 700)),
       gP(24, 238, 20, 20, reasonBox(reportReasonProvider, 0)),
       gP(54, 239, 315, 18, gText('Annonce frauduleuse ou trompeuse', 12.5, Color(0xFF4A4854), lh: 18, wrap: true)),

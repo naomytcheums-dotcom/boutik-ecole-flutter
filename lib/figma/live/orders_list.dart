@@ -6,6 +6,7 @@ import '../../data/demo/section_a_demo.dart' show CartLine;
 import '../../data/repositories/repositories.dart' show cartProvider;
 import '../gen.dart';
 import '../nav.dart';
+import 'backend.dart' show Backend;
 import 'client_space.dart' show clientSpaceProvider;
 import 'store.dart';
 
@@ -47,6 +48,18 @@ class OrdersListView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final all = ref.watch(ordersAllProvider);
+    if (Backend.ready && all.isEmpty && !ref.watch(ordersLoadedProvider)) {
+      final failed = ref.watch(ordersFailedProvider);
+      return SizedBox(
+        width: width,
+        height: height,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: failed ? () => ref.read(ordersProvider.notifier).refresh() : null,
+          child: gText(failed ? 'Vos commandes ne peuvent pas être chargées pour le moment. Vérifiez votre connexion puis touchez ici pour réessayer.' : 'Chargement de vos commandes…', 13.5, const Color(0xFF57545F), lh: 20, wrap: true),
+        ),
+      );
+    }
     final list = filterOrders(all, query: ref.watch(ordersQueryProvider), filter: ref.watch(ordersFilterProvider), sort: ref.watch(ordersSortProvider));
     if (list.isEmpty) {
       final none = all.isEmpty;
@@ -125,6 +138,7 @@ class ClientSummary extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final orders = ref.watch(ordersProvider);
     final cart = ref.watch(cartProvider);
+    final unknown = Backend.ready && !ref.watch(ordersLoadedProvider);
     final active = orders.where((o) => !o.cancelled && !o.awaitingPayment && o.status < 3).length;
     final toPay = orders.where((o) => o.awaitingPayment).length;
     final recent = orders.take(3).toList();
@@ -164,14 +178,16 @@ class ClientSummary extends ConsumerWidget {
       width: width,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          tile('$active', 'Commandes en cours', () => gOpen(context, '45')),
-          tile('$toPay', 'À payer', () => gOpen(context, '45')),
+          tile(unknown ? '—' : '$active', 'Commandes en cours', () => gOpen(context, '45')),
+          tile(unknown ? '—' : '$toPay', 'À payer', () => gOpen(context, '45')),
           tile('${cart.fold<int>(0, (a, l) => a + l.qty)}', 'Dans le panier', () => gOpen(context, '06')),
         ]),
         const SizedBox(height: 18),
         gText('Commandes récentes', 15, const Color(0xFF111015), weight: 600, wrap: true),
         const SizedBox(height: 8),
-        if (recent.isEmpty)
+        if (unknown)
+          gText(ref.watch(ordersFailedProvider) ? 'Vos commandes ne peuvent pas être chargées pour le moment.' : 'Chargement de vos commandes…', 12.5, const Color(0xFF57545F), wrap: true)
+        else if (recent.isEmpty)
           gText('Aucune commande pour le moment. Vos achats apparaîtront ici avec leur suivi.', 12.5, const Color(0xFF57545F), wrap: true)
         else
           for (final o in recent)

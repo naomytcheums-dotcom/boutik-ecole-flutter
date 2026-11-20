@@ -21,6 +21,7 @@ class IntegrationsState {
     this.catalogKnown = false,
     this.loading = false,
     this.loaded = false,
+    this.itemsFailed = false,
     this.error,
   });
 
@@ -34,6 +35,9 @@ class IntegrationsState {
   final Map<String, bool> ready;
   final ({bool mtn, bool orange, bool sms}) momoReady;
   final bool encryption, catalogKnown, loading, loaded;
+
+  /// Vrai quand la lecture des contenus importés a échoué : leur nombre est alors inconnu (jamais « 0 importé »).
+  final bool itemsFailed;
   final String? error;
 
   List<IntConnection> connectionsOf(String provider) => [for (final c in connections) if (c.provider == provider) c];
@@ -58,6 +62,7 @@ class IntegrationsState {
     bool? catalogKnown,
     bool? loading,
     bool? loaded,
+    bool? itemsFailed,
     String? error,
     bool clearError = false,
   }) =>
@@ -73,6 +78,7 @@ class IntegrationsState {
         catalogKnown: catalogKnown ?? this.catalogKnown,
         loading: loading ?? this.loading,
         loaded: loaded ?? this.loaded,
+        itemsFailed: itemsFailed ?? this.itemsFailed,
         error: clearError ? null : (error ?? this.error),
       );
 }
@@ -136,6 +142,7 @@ class IntNotifier extends Notifier<IntegrationsState> {
       catalogKnown: cat.error == null,
       loading: false,
       loaded: true,
+      itemsFailed: items.error != null,
       error: conns.error,
     );
   }

@@ -107,7 +107,7 @@ class _PortalState extends ConsumerState<StaffPortalScreen> {
               child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text('Espace équipe', style: mst(24, w: FontWeight.w800)),
                 const SizedBox(height: 4),
-                Text('Boutik-École · IUT de Douala', style: mst(13, c: kGrey)),
+                Text('Boutik-École', style: mst(13, c: kGrey)),
                 const SizedBox(height: 20),
                 if (already) ...[
                   Text('Vous êtes connecté en tant que ${current.name} (${current.roleLabel}).', style: mst(13.5)),

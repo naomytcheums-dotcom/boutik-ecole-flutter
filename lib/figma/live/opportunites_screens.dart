@@ -1031,7 +1031,7 @@ class _EditState extends ConsumerState<OpportunityEditScreen> {
             if (_media != null) IconButton(tooltip: 'Retirer', onPressed: () => setState(() => _media = null), icon: const Icon(Icons.close, size: 18)),
           ]),
         ),
-        _f('org', 'Organisation', hint: 'Orange Cameroun, ONG, startup…'),
+        _f('org', 'Organisation', hint: 'Ex. ONG, startup, entreprise…'),
         MDropdown(label: 'Type', value: _kind, items: {for (final e in oppKinds.entries) if (e.key.isNotEmpty) e.key: e.value}, onChanged: (v) => setState(() => _kind = v)),
         const SizedBox(height: 10),
         _f('contract', 'Précision (facultatif)', hint: 'Académique, vacances, CDD, CDI, temps partiel, job étudiant'),
@@ -1039,10 +1039,10 @@ class _EditState extends ConsumerState<OpportunityEditScreen> {
         _f('location', 'Lieu', hint: 'Douala, Yaoundé…'),
         MDropdown(label: 'Mode', value: _mode, items: {for (final e in oppModes.entries) if (e.key.isNotEmpty) e.key: e.value}, onChanged: (v) => setState(() => _mode = v)),
         const SizedBox(height: 10),
-        _f('duration', 'Durée', hint: '2 mois, 6 mois, mission de 2 semaines'),
+        _f('duration', 'Durée', hint: 'Ex. 2 mois, 6 mois, mission de 2 semaines'),
         MDropdown(label: 'Rémunération', value: _pay, items: const {'paid': 'Rémunéré', 'unpaid': 'Non rémunéré', 'negotiable': 'À négocier'}, onChanged: (v) => setState(() => _pay = v)),
         const SizedBox(height: 10),
-        if (_pay == 'paid') _f('amount', 'Montant par mois (FCFA)', hint: '50000', number: true),
+        if (_pay == 'paid') _f('amount', 'Montant par mois (FCFA)', hint: 'Ex. 50 000', number: true),
         _f('payNote', 'Précision sur la rémunération', hint: 'Ex. attestation de stage'),
         mButton(_deadline == null ? 'Choisir la date limite' : 'Date limite : ${_deadline!.day}/${_deadline!.month}/${_deadline!.year}', () async {
           final d = await pickDate(context: context, initialDate: DateTime.now().add(const Duration(days: 14)), firstDate: DateTime.now(), lastDate: DateTime.now().add(const Duration(days: 730)));

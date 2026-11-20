@@ -397,8 +397,13 @@ class ServerSellerOrders extends Notifier<List<SellerOrder>> {
   }
 
   Future<void> refresh() async {
-    final rows = await Backend.sellerOrders();
+    final rows = await Backend.sellerOrdersOrNull();
     if (!ref.mounted) return;
+    if (rows == null) {
+      if (ref.read(sellerOrdersLoadProvider) != 'ok') ref.read(sellerOrdersLoadProvider.notifier).set('error'); // la dernière liste connue reste affichée
+      return;
+    }
+    ref.read(sellerOrdersLoadProvider.notifier).set('ok');
     state = [
       for (final r in rows)
         SellerOrder(
@@ -419,6 +424,9 @@ class ServerSellerOrders extends Notifier<List<SellerOrder>> {
 }
 
 final serverSellerOrdersProvider = NotifierProvider<ServerSellerOrders, List<SellerOrder>>(ServerSellerOrders.new);
+
+/// Lecture des commandes reçues du vendeur : '' = en cours, 'ok', 'error' (échec : les écrans ne comptent pas « 0 commande »).
+final sellerOrdersLoadProvider = NotifierProvider<StrV, String>(StrV.new);
 
 const _seedOrders = [
   SellerOrder('#BE-2026-0142', 'Lampe en bois recyclé', 'Yannick M.', 25000, 1),

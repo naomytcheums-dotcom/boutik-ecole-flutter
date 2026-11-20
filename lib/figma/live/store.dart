@@ -40,8 +40,13 @@ class LiveProduct {
   /// Produit d'exemple (fictif) : visible pour montrer le rendu, jamais vendu (refus côté serveur, 20261101000800).
   final bool showcase;
 
+  /// Fiche neutre « aucun produit choisi » (ouverture directe d'un écran produit) : ni prix, ni vendeur à afficher.
+  bool get isNone => title == noProductTitle && price == 0 && seller.isEmpty;
+
   CartLine toLine() => CartLine(title, 'Département : $department', price, image);
 }
+
+const noProductTitle = 'Aucun produit choisi';
 
 const liveCatalog = <LiveProduct>[
   LiveProduct('Lampe en bois recyclé', 'Génie civil', 25000, 'Mouanga Yannick',
@@ -83,6 +88,7 @@ LiveProduct productByTitle(String t) => [...extraProducts, ...platformProducts, 
 
 /// « 25 000 FCFA · Yannick M. » : prix et vendeur abrégé (nom enregistré « Nom Prénom »).
 String productPriceAndSeller(LiveProduct p) {
+  if (p.isNone) return '';
   final parts = p.seller.trim().split(RegExp(r'\s+'));
   final who = parts.length >= 2 && !RegExp(r'^\S\.$').hasMatch(parts.last) ? '${parts.last} ${parts.first[0]}.' : p.seller.trim();
   final price = fcfa(p.price).replaceAll('\u202f', ' '); // espace simple, comme sur la maquette
@@ -95,7 +101,7 @@ class SelectedProduct extends Notifier<LiveProduct> {
 
   @override
   LiveProduct build() => Backend.ready
-      ? (platformProducts.isNotEmpty && !identical(platformProducts, liveCatalog) ? platformProducts.first : const LiveProduct('Aucun produit choisi', '', 0, '', 'Choisissez un produit dans le catalogue.', neutralProductImage))
+      ? (platformProducts.isNotEmpty && !identical(platformProducts, liveCatalog) ? platformProducts.first : const LiveProduct(noProductTitle, '', 0, '', 'Choisissez un produit dans le catalogue.', neutralProductImage))
       : liveCatalog.first;
   void select(String title) {
     ref.read(sellerFocusProvider.notifier).set('');
@@ -245,10 +251,16 @@ class Orders extends Notifier<List<Order>> {
   /// Relit les commandes du compte connecté sur le serveur (état de préparation, paiement, annulation).
   Future<void> refresh() async {
     final rows = await Backend.myOrders();
-    if (!ref.mounted || rows == null) return; // lecture échouée : la dernière liste connue reste affichée
+    if (!ref.mounted) return;
+    if (rows == null) {
+      // lecture échouée : la dernière liste connue reste affichée ; sans aucune lecture réussie, l'écran dit que la lecture a échoué (jamais « aucune commande »)
+      if (!ref.read(ordersLoadedProvider)) ref.read(ordersFailedProvider.notifier).set(true);
+      return;
+    }
     final server = [for (final r in rows) _fromServer(r)];
     final ids = {for (final o in server) o.id};
     state = [for (final o in state) if (!ids.contains(o.id) && !o.paid && !o.cancelled) o, ...server];
+    ref.read(ordersFailedProvider.notifier).set(false);
     ref.read(ordersLoadedProvider.notifier).set(true);
     ref.read(lastSyncProvider.notifier).set(DateTime.now());
   }
@@ -343,6 +355,19 @@ class OrdersLoaded extends Notifier<bool> {
 
 /// Vrai dès qu'une lecture des commandes sur le serveur a réussi (une liste vide signifie alors « aucune commande »).
 final ordersLoadedProvider = NotifierProvider<OrdersLoaded, bool>(OrdersLoaded.new);
+
+class OrdersFailed extends Notifier<bool> {
+  @override
+  bool build() {
+    ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
+    return false;
+  }
+
+  void set(bool v) => state = v;
+}
+
+/// Vrai quand la dernière lecture des commandes a échoué et qu'aucune n'a jamais réussi : l'écran affiche l'erreur, jamais « aucune commande » ni un zéro.
+final ordersFailedProvider = NotifierProvider<OrdersFailed, bool>(OrdersFailed.new);
 
 class _When extends Notifier<DateTime?> {
   @override
@@ -486,8 +511,14 @@ class Favorites extends Notifier<List<String>> {
   }
 
   Future<void> _load() async {
-    final l = await Backend.loadFavorites();
-    if (ref.mounted) state = l;
+    final l = await Backend.loadFavoritesOrNull();
+    if (!ref.mounted) return;
+    if (l == null) {
+      ref.read(favoritesLoadedProvider.notifier).set('error');
+      return;
+    }
+    state = l;
+    ref.read(favoritesLoadedProvider.notifier).set('ok');
   }
 
   bool has(String title) => state.contains(title);
@@ -505,6 +536,9 @@ class Favorites extends Notifier<List<String>> {
 }
 
 final favoritesProvider = NotifierProvider<Favorites, List<String>>(Favorites.new);
+
+/// Lecture des favoris : '' = en cours, 'ok', 'error' (échec : un compteur de favoris ne montre alors pas zéro).
+final favoritesLoadedProvider = NotifierProvider<StrV, String>(StrV.new);
 
 final favoriteProductsProvider = Provider<List<LiveProduct>>((ref) => [for (final t in ref.watch(favoritesProvider)) productByTitle(t)]);
 

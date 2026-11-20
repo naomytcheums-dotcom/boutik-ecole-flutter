@@ -12,6 +12,7 @@ import '../live/l06.dart';
 import '../live/l09.dart';
 import '../live/lfav.dart';
 import '../live/auth.dart';
+import '../live/console.dart' show rowsCount;
 import '../live/seller.dart';
 import '../live/review.dart';
 import '../live/audit.dart';
@@ -93,11 +94,11 @@ class G_10 extends ConsumerWidget {
       if (co != null) companyLineLayer(co.tags.join(' '), 446, color: const Color(0xFF5A3FE0), h: 16) else profileSkillsOrCert(446, allowAsk: !isClient),
       if (co != null) companyBioLayer(co, 470) else profileBio(470),
       gP(34, 512, 104, 30, gBox(color: Color(0xFFF4F3F6), radii: [15, 15, 15, 15])),
-      if (isView) companyStatLayer(34, 'Publications', viewProfile!.postsCount) else if (co != null) companyStatLayer(34, 'Offres', co.offers) else if (isClient) profileStat(34, 'Commandes', (ref) => ref.watch(ordersProvider).length) else profileStat(34, 'Produits', (ref) => ref.watch(listingsProvider).where((l) => l.published).length),
+      if (isView) companyStatLayer(34, 'Publications', viewProfile!.postsCount) else if (co != null) companyStatLayer(34, 'Offres', co.offers) else if (isClient) profileStat(34, 'Commandes', (ref) => ref.watch(ordersLoadedProvider) ? ref.watch(ordersProvider).length : null) else profileStat(34, 'Produits', (ref) => ref.watch(listingsLoadProvider) == 'ok' ? ref.watch(listingsProvider).where((l) => l.published).length : null),
       gP(143, 512, 104, 30, gBox(color: Color(0xFFF4F3F6), radii: [15, 15, 15, 15])),
-      if (isView) companyStatLayer(143, 'Abonnés', viewProfile!.followersCount) else if (co != null) companyStatLayer(143, 'Concours', co.contests) else if (isClient) profileStat(143, 'Favoris', (ref) => ref.watch(favoritesProvider).length) else profileStat(143, 'Services', (ref) => ref.watch(listingsProvider).where((l) => l.published && l.category == 'Services').length),
+      if (isView) companyStatLayer(143, 'Abonnés', viewProfile!.followersCount) else if (co != null) companyStatLayer(143, 'Concours', co.contests) else if (isClient) profileStat(143, 'Favoris', (ref) => ref.watch(favoritesLoadedProvider) == 'ok' ? ref.watch(favoritesProvider).length : null) else profileStat(143, 'Services', (ref) => ref.watch(listingsLoadProvider) == 'ok' ? ref.watch(listingsProvider).where((l) => l.published && l.category == 'Services').length : null),
       gP(252, 512, 104, 30, gBox(color: Color(0xFFF4F3F6), radii: [15, 15, 15, 15])),
-      if (isView) companyStatLayer(252, 'Suivis', viewProfile!.followingCount) else if (co != null) companyStatLayer(252, 'Besoins', co.needs) else if (isClient) profileStat(252, 'Abonnements', (ref) => ref.watch(followingIdsProvider)?.length ?? 0) else profileStat(252, 'Projets', (ref) => ref.watch(myProjectsProvider)?.length ?? 0),
+      if (isView) companyStatLayer(252, 'Suivis', viewProfile!.followingCount) else if (co != null) companyStatLayer(252, 'Besoins', co.needs) else if (isClient) profileStat(252, 'Abonnements', (ref) => ref.watch(followingIdsProvider)?.length) else profileStat(252, 'Projets', (ref) => rowsCount(ref, myProjectsProvider)),
       gP(24, 562, 29, 14, gText('Liens', 11.5, Color(0xFF57545F), weight: 500)),
       gP(89, 553, 32, 32, gImg('assets/figma/v/cdc43165645969.svg'), show: !hideLinks),
       gP(94.417, 563.292, 9.033, 15.75, gImg('assets/figma/v/ae94c8691f4b0c.svg'), show: !hideLinks),

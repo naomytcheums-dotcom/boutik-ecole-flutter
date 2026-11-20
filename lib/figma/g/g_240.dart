@@ -83,7 +83,7 @@ class G_240 extends ConsumerWidget {
       gP(317.5, 514, 43, 12, gText('Contacts', 9.5, Color(0xFF111015), weight: 500)),
       gP(44, 558, 102, 19, gText(demoContent ? 'Niveau Argent' : referralTierText(ref), 15, Color(0xFF111015), weight: 600)),
       gP(280, 554, 66, 26, gBox(color: Color(0xFFEEE9FF), radii: [100, 100, 100, 100])),
-      gP(292, 560, 42, 14, gText(demoContent ? '7 filleuls' : '${(ref.watch(referralProvider) ?? const ReferralSummary()).active} actifs', 11, Color(0xFF5A3FE0), weight: 600)),
+      gP(292, 560, 42, 14, gText(demoContent ? '7 filleuls' : refStat(ref.watch(referralProvider), (s) => s.active, ' actifs'), 11, Color(0xFF5A3FE0), weight: 600)),
       gP(44, 584, 178, 14, gText(demoContent ? 'Plus que 13 filleuls pour passer Or' : referralNextText(ref), 11.5, Color(0xFF57545F))),
       gP(44, 606, 302, 118, const ReferralTiers(), show: !demoContent),
       gP(44, 606, 302, 10, gBox(color: Color(0xFFECE8F6), radii: [5, 5, 5, 5]), show: demoContent),

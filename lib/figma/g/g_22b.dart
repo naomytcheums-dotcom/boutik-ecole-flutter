@@ -89,7 +89,7 @@ class G_22b extends ConsumerWidget {
       gP(42, 704, 149, 28, gBox(color: Color(0xFFFFFFFF), radii: [14, 14, 14, 14])),
       gTap(24, 612, 342, 132, () { askGeneralQuoteFromList(context, ref); }),
       gP(63.5, 710, 106, 14, gText('Demander un devis', 11.5, Color(0xFF120F14), weight: 600, align: TextAlign.center)),
-      gP(24, 168, 200, 19, Consumer(builder: (context, ref, _) { final n = ref.watch(filteredServicesProvider).length; return gText('$n service${n > 1 ? 's' : ''}', 15, Color(0xFF111015), weight: 700); }), show: !demoContent),
+      gP(24, 168, 200, 19, Consumer(builder: (context, ref, _) { final n = ref.watch(filteredServicesProvider).length; if (n == 0 && ref.watch(servicesProvider).isEmpty && ref.watch(servicesReadProvider).asData?.value != 0) return const SizedBox.shrink(); return gText('$n service${n > 1 ? 's' : ''}', 15, Color(0xFF111015), weight: 700); }), show: !demoContent),
       gP(24, 204, 342, 396, const ServicesList(width: 342, height: 396), show: !demoContent),
       gP(300, 170, 66, 15, gText('Mes devis', 12, Color(0xFF5A3FE0), weight: 600, align: TextAlign.right), show: !demoContent),
       gTap(290, 164, 80, 28, () { quotesDialog(context, ref); }),

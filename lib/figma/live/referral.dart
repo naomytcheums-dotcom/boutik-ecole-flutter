@@ -328,6 +328,12 @@ String referralGainsText(WidgetRef ref) {
   return s.unavailable ? 'Mes gains · indisponibles' : 'Mes gains · ${fcfa(s.total)}';
 }
 
+/// Synthèse du parrainage réellement lue (ni en cours de lecture, ni indisponible).
+bool refKnown(ReferralSummary? s) => s != null && !s.unavailable;
+
+/// Compteur du parrainage : « — » tant que la synthèse n'est pas lue ou si la lecture a échoué (jamais un zéro pour une erreur).
+String refStat(ReferralSummary? s, int Function(ReferralSummary s) pick, [String suffix = '']) => refKnown(s) ? '${pick(s!)}$suffix' : '—';
+
 /// 243 : solde disponible, jamais « 0 » tant que la synthèse n'est pas lue.
 String referralBalanceText(WidgetRef ref) {
   final s = ref.watch(referralProvider);

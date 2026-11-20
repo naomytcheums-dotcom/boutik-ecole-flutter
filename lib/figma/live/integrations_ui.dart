@@ -162,7 +162,7 @@ class _HubState extends ConsumerState<IntegrationsHubScreen> {
   List<Widget> _shortcuts(IntegrationsState st, bool signedIn) => [
         IntrinsicHeight(
           child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            Expanded(child: _Shortcut(Icons.collections_bookmark_outlined, 'Mes contenus connectés', '${st.items.length} importé${st.items.length > 1 ? 's' : ''}', () => _push(context, const ConnectedContentScreen()))),
+            Expanded(child: _Shortcut(Icons.collections_bookmark_outlined, 'Mes contenus connectés', (st.loaded && !st.itemsFailed ? '${st.items.length} importé${st.items.length > 1 ? 's' : ''}' : 'Contenus importés de vos comptes'), () => _push(context, const ConnectedContentScreen()))),
             const SizedBox(width: 10),
             Expanded(child: _Shortcut(Icons.campaign_outlined, 'Publier sur mes réseaux', 'Texte adapté à chaque plateforme', () => _push(context, const PublishScreen()))),
           ]),

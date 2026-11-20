@@ -382,7 +382,7 @@ Future<void> commissionDialog(BuildContext context, WidgetRef ref) {
                       }
                       await ref.read(rulesConfigProvider.notifier).refresh();
                       if (ctx.mounted) Navigator.of(ctx).pop();
-                      if (context.mounted) gToast(context, 'Règles enregistrées et journalisées');
+                      if (context.mounted) gToast(context, 'Enregistré et journalisé. Le seuil de paiement est appliqué ; les taux ne modifient pas encore les calculs (décision du propriétaire en attente).');
                       return;
                     }
                     final now = auditNow().split(' ').take(2).join(' ');

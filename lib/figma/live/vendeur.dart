@@ -60,6 +60,7 @@ List<Map<String, dynamic>> _list(Object? v) => [for (final x in (v as List? ?? c
 Widget? _gate(WidgetRef ref, Map<String, dynamic>? d, double width) {
   if (ref.watch(authProvider.select((a) => a.current == null))) return _note(width, 'Connectez-vous pour voir vos chiffres.');
   if (d == null) return _note(width, 'Chargement…');
+  if (ref.read(sellerRevenueProvider.notifier).error) return _note(width, 'Vos chiffres ne peuvent pas être lus pour le moment. Vérifiez votre connexion puis revenez sur cet écran.');
   return null;
 }
 
@@ -149,6 +150,12 @@ class ValidationsPanel extends ConsumerWidget {
     final docs = ref.watch(myDocsProvider);
     final a = ref.watch(profileAccountProvider);
     if (docs == null) return SizedBox(width: width, child: _note(width, 'Chargement…'));
+    if (ref.watch(docsErrorProvider) && docs.isEmpty) {
+      return SizedBox(width: width, child: Column(mainAxisSize: MainAxisSize.min, children: [
+        _note(width, 'Vos pièces ne peuvent pas être lues pour le moment : leur état n’est pas affiché pour ne pas vous faire croire qu’elles manquent.', h: 110),
+        TextButton(onPressed: () => ref.read(myDocsProvider.notifier).refresh(), child: Text('Réessayer', style: _st(13, w: FontWeight.w700, c: const Color(0xFF5A3FE0)))),
+      ]));
+    }
     const kinds = [('student_card', 'Carte d’étudiant'), ('enrollment_certificate', 'Certificat de scolarité'), ('diploma', 'Diplôme')];
     final rows = <(String, String, String)>[
       for (final k in kinds)

@@ -6,7 +6,7 @@ import 'package:boutik_ecole/figma/gen.dart';
 import 'package:boutik_ecole/figma/gsound.dart';
 import 'package:boutik_ecole/figma/live/backend.dart';
 import 'package:boutik_ecole/figma/live/produits_liste.dart';
-import 'package:boutik_ecole/figma/live/seller.dart' show allProductsProvider;
+import 'package:boutik_ecole/figma/live/seller.dart' show allProductsProvider, Listing, PlatformListings, platformListingsProvider;
 import 'package:boutik_ecole/figma/live/store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,6 +25,14 @@ class _Membres extends TalentsNotifier {
   List<LiveTalent>? build() => v;
 }
 
+/// Première lecture des produits de la plateforme réussie (liste vide) ou jamais aboutie (null).
+class _Lecture extends PlatformListings {
+  _Lecture(this.v);
+  final List<Listing>? v;
+  @override
+  List<Listing>? build() => v;
+}
+
 void main() {
   setUpAll(loadAppFonts);
   setUp(() => GScreen.mockupFrame = false);
@@ -33,7 +41,7 @@ void main() {
     Backend.ready = false;
   });
 
-  Future<void> monter(WidgetTester t, Widget ecran, {required bool connecte, List<LiveProduct> produits = const [], List<String> alHonneur = const [], Set<String> recycles = const {}}) async {
+  Future<void> monter(WidgetTester t, Widget ecran, {required bool connecte, List<LiveProduct> produits = const [], List<String> alHonneur = const [], Set<String> recycles = const {}, bool lecture = true}) async {
     Backend.ready = connecte;
     GAnim.enabled = false;
     t.view.physicalSize = const Size(393, 852);
@@ -42,6 +50,7 @@ void main() {
     await t.pumpWidget(ProviderScope(
       overrides: [
         allProductsProvider.overrideWithValue(produits),
+        platformListingsProvider.overrideWith(() => _Lecture(lecture ? const <Listing>[] : null)),
         showcaseIdsProvider.overrideWith((ref) async => alHonneur),
         recycledIdsProvider.overrideWith((ref) async => recycles),
       ],
@@ -87,6 +96,12 @@ void main() {
     await monter(t, const G_102(), connecte: true);
     expect(find.textContaining('Aucune pièce à l’honneur'), findsOneWidget);
     expect(find.text('0'), findsNWidgets(3));
+  });
+
+  testWidgets('102 connecté, lecture des produits non aboutie : « — » et jamais 0', (t) async {
+    await monter(t, const G_102(), connecte: true, lecture: false);
+    expect(find.text('0'), findsNothing);
+    expect(find.text('—'), findsNWidgets(3));
   });
 
   testWidgets('102 et 106 hors connexion : la démonstration reste affichée', (t) async {

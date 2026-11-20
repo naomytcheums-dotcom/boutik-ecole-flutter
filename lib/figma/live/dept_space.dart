@@ -1329,7 +1329,7 @@ class DepartmentStatsScreen extends ConsumerWidget {
                 _stat('Chiffre d’affaires', fcfa(revenue)),
                 _stat('Commandes', '${deptInt(s['orders'])}'),
                 _stat('Panier moyen', fcfa(deptInt(s['avg_basket']))),
-                _stat('Part des services', '${revenue == 0 ? 0 : (services * 100 / revenue).round()} %'),
+                _stat('Part des services', revenue == 0 ? '—' : '${(services * 100 / revenue).round()} %'),
               ]),
               tpSection('Ventes par semaine (FCFA)'),
               if (weeks.isEmpty || maxRev == 0)

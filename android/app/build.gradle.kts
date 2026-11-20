@@ -11,7 +11,7 @@ plugins {
 
 // Signature de production : lue dans android/key.properties (fichier JAMAIS versionné, créé par le propriétaire avec sa propre clé).
 // Sans ce fichier, la version « release » est produite NON SIGNÉE : elle ne peut être ni installée en production ni publiée, et elle n'est plus signée
-// avec la clé de débogage. Modèle : android/key.properties.example. Procédure : docs/transformation/PUBLICATION_ANDROID.md.
+// avec la clé de débogage. Modèle : android/key.properties.example. Procédure : docs/transformation/H7_MOBILE.md.
 val keystoreProperties = Properties().apply {
     val f = rootProject.file("key.properties")
     if (f.exists()) f.inputStream().use { load(it) }
@@ -19,7 +19,8 @@ val keystoreProperties = Properties().apply {
 
 android {
     namespace = "cm.iutdouala.boutik_ecole"
-    compileSdk = flutter.compileSdkVersion
+    // permission_handler_android 13 exige une compilation contre l'API 37 au moins (le compileSdk du SDK Flutter est 36) ; targetSdk n'est pas modifié.
+    compileSdk = maxOf(flutter.compileSdkVersion, 37)
     // Aucun code natif propre à l'application : on n'impose pas de NDK (évite un téléchargement de plusieurs Go).
     // ndkVersion = flutter.ndkVersion
 

@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../nav.dart';
 import 'product_card.dart';
 import 'backend.dart';
-import 'seller.dart' show allProductsProvider;
+import 'seller.dart' show allProductsProvider, platformListingsProvider;
 import 'store.dart';
 
 /// Cartes de produits réels (écrans 102 Vitrine, 106 Économie circulaire…) : les produits publiés sur le serveur, deux par ligne,
@@ -114,6 +114,7 @@ class VitrineCount extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final all = ref.watch(allProductsProvider);
+    if (Backend.ready && ref.watch(platformListingsProvider) == null) return Text('—', textAlign: TextAlign.center, style: _st(20, w: FontWeight.w800));
     final n = switch (kind) {
       'pieces' => all.length,
       'creators' => {for (final p in all) p.seller}.where((s) => s.isNotEmpty).length,

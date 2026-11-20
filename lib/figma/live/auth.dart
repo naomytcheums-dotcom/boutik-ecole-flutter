@@ -18,6 +18,7 @@ import 'lots.dart' show formDialog;
 import 'org_types.dart' show orgTypeByCode, orgTypes;
 import 'referral.dart' show applyPendingReferral;
 import 'drafts.dart';
+import 'account_reset.dart' show resetAccountScopedState;
 import 'native_push_stub.dart'
     if (dart.library.io) 'native_push.dart'
     as native_push;
@@ -245,6 +246,10 @@ class AuthNotifier extends Notifier<AuthState> {
     gSelfAvatarUrl = a.avatarUrl;
     gSelfInstitution = a.institution;
     state = state.copy(current: a);
+    unawaited(Drafts.adoptOwner(a.serverId).then((cleared) {
+      if (cleared && ref.mounted) ref.invalidate(formProvider);
+    }));
+    unawaited(native_push.syncNativePushForCurrentUser());
     unawaited(native_push.syncNativePushForCurrentUser());
     unawaited(applyPendingReferral());
   }
@@ -255,6 +260,7 @@ class AuthNotifier extends Notifier<AuthState> {
     Backend.signOut(before: unregisterThisDevice); // l'appareil ne reçoit plus les notifications de ce compte
     gSelfAvatarUrl = '';
     gSelfInstitution = '';
+    resetAccountScopedState();
     state = state.copy(clearCurrent: true);
     appReset?.call(); // aucun état du compte précédent ne survit (formulaires, annonces, panier, commandes…)
   }
@@ -1875,7 +1881,8 @@ Widget profileBio(double y) => gP(
   ),
 );
 
-Widget profileStat(double x, String label, int Function(WidgetRef ref) count) =>
+/// Compteur du profil : [count] renvoie null tant que la valeur est inconnue (lecture en cours ou échouée) — « — » s'affiche alors, jamais un zéro.
+Widget profileStat(double x, String label, int? Function(WidgetRef ref) count) =>
     gP(
       x,
       519,
@@ -1884,7 +1891,7 @@ Widget profileStat(double x, String label, int Function(WidgetRef ref) count) =>
       Consumer(
         builder: (context, ref, _) => Center(
           child: Text(
-            '${count(ref)} $label',
+            '${count(ref) ?? '—'} $label',
             style: _pt(11.5, const Color(0xFF111015), FontWeight.w500),
           ),
         ),

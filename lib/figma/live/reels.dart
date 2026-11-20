@@ -282,8 +282,8 @@ class FollowingIdsNotifier extends Notifier<Set<String>?> {
   }
 
   Future<void> refresh() async {
-    final rows = await Backend.myEngagements(kind: 'follow');
-    if (!ref.mounted) return;
+    final rows = await Backend.myEngagementsOrNull(kind: 'follow');
+    if (!ref.mounted || rows == null) return; // lecture échouée : l'inconnu reste inconnu (jamais « aucun abonnement » à tort)
     state = {for (final e in rows) if (e['status'] == 'active') '${e['ref']}'};
   }
 }
@@ -543,9 +543,18 @@ class ChallengesNotifier extends Notifier<Challenges?> {
   /// Lecture seule : la présence du jour se pointe explicitement avec [dailyCheckIn].
   Future<void> refresh() async {
     final r = await Backend.rpc('my_challenges', const {});
-    if (r.error == null && r.data is Map && ref.mounted) state = Challenges.fromJson(Map<String, dynamic>.from(r.data as Map));
+    if (!ref.mounted) return;
+    if (r.error == null && r.data is Map) {
+      state = Challenges.fromJson(Map<String, dynamic>.from(r.data as Map));
+      ref.read(challengesFailedProvider.notifier).set(false);
+    } else if (state == null) {
+      ref.read(challengesFailedProvider.notifier).set(true);
+    }
   }
 }
+
+/// Vrai quand la lecture des défis a échoué sans jamais réussir : l'écran le dit au lieu d'attendre ou d'afficher des zéros.
+final challengesFailedProvider = NotifierProvider<FlagOff, bool>(FlagOff.new);
 
 final challengesProvider = NotifierProvider<ChallengesNotifier, Challenges?>(ChallengesNotifier.new);
 

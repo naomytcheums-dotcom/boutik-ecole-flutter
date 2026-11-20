@@ -34,6 +34,7 @@ class G_275 extends ConsumerWidget {
     final errs = ref.watch(errorsProvider);
     final f = ref.watch(formProvider);
     final real = newProductErrorKeys.any(errs.containsKey);
+    if (!demoContent && !real) return const GRedirect('/s/58'); // sans erreur réelle, l'écran n'a rien à montrer : le formulaire réel
     return GScreen(w: 390, h: 844, radius: 46, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 140, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 580, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),

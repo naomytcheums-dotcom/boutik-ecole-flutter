@@ -9,6 +9,7 @@ import 'audit.dart';
 import 'auth.dart';
 import 'backend.dart';
 import 'admin_access.dart';
+import 'order_guard.dart';
 import 'seller_capability.dart' show SellerGate, isSellerScreenId;
 /// Contrôle d'accès par rôle : chaque écran réservé n'est visible que pour les rôles autorisés.
 ///
@@ -58,6 +59,7 @@ Set<String>? allowedRoles(String id) {
   if (n == null) return null;
   // Demande de devis : tout compte connecté peut en adresser une à un prestataire (pas seulement les organisations).
   if (id == '95b') return {'client', 'student', 'company', 'dept', admin};
+  if (id == '275') return {'student', admin}; // récapitulatif des erreurs du formulaire de produit (58, espace vendeur)
   if (n >= 57 && n <= 69) return {'student', admin}; // espace vendeur : étudiants-vendeurs ; l'administrateur peut le consulter (la création de boutique reste refusée aux autres rôles par le serveur)
   if ((n >= 88 && n <= 99) || (n >= 187 && n <= 190)) return {'company', admin}; // décision 2 : l'organisation (ex-entreprise, rôle other fusionné) a ces écrans ; le serveur applique la même porte de vérification
   // Écrans du département : la direction n'en garde que la lecture (suivi) ; les validations (110, 111) et les encadreurs (114) restent au département (le serveur les refuse à la direction).
@@ -229,11 +231,14 @@ class AccessGuard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final account = ref.watch(authProvider).current;
     if (Backend.ready && isSellerScreenId(id)) return SellerGate(child: child);
-    if (loginRequiredScreens.contains(id)) return LoginGuard(child: _roleChecked(ref, account));
-    return _roleChecked(ref, account);
+    final guarded = Backend.ready && orderBoundScreens.contains(id.replaceAll('_', '-'))
+        ? OrderGuard(child: child)
+        : (Backend.ready && missionBoundScreens.contains(id) ? MissionGuard(id: id, child: child) : child);
+    if (loginRequiredScreens.contains(id)) return LoginGuard(child: _roleChecked(ref, account, guarded));
+    return _roleChecked(ref, account, guarded);
   }
 
-  Widget _roleChecked(WidgetRef ref, Account? account) {
+  Widget _roleChecked(WidgetRef ref, Account? account, Widget child) {
     if (canOpen(account, id)) {
       final need = kScreenPermissions[id.replaceAll('_', '-')];
       final shown = need == null ? child : PermissionGate(name: id, perms: need, child: child);

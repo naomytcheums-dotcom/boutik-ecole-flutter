@@ -386,10 +386,13 @@ class Backend {
   }
 
   /// Favoris de l'utilisateur connecté : titres des annonces (la politique RLS ne renvoie que ses propres lignes).
-  static Future<List<String>> loadFavorites() async {
+  static Future<List<String>> loadFavorites() async => await loadFavoritesOrNull() ?? const [];
+
+  /// Comme [loadFavorites], mais null quand la lecture échoue : une panne n'est jamais présentée comme « aucun favori ».
+  static Future<List<String>?> loadFavoritesOrNull() async {
     final c = _c;
     final uid = c?.auth.currentUser?.id;
-    if (c == null || uid == null) return const [];
+    if (c == null || uid == null) return null;
     try {
       final rows = await c.from('favorites').select('listing_id, listings(title)').eq('user_id', uid);
       return [
@@ -397,7 +400,7 @@ class Backend {
           if (((r['listings'] as Map?)?['title'] ?? '').toString().isNotEmpty) (r['listings'] as Map)['title'].toString(),
       ];
     } catch (_) {
-      return const [];
+      return null;
     }
   }
 
@@ -600,14 +603,17 @@ class Backend {
 
   // ---------------------------------------------------------------- commandes reçues par le vendeur
 
-  static Future<List<Map<String, dynamic>>> sellerOrders() async {
+  static Future<List<Map<String, dynamic>>> sellerOrders() async => await sellerOrdersOrNull() ?? const [];
+
+  /// Comme [sellerOrders], mais null quand la lecture échoue (jamais « aucune commande » à tort).
+  static Future<List<Map<String, dynamic>>?> sellerOrdersOrNull() async {
     final c = _c;
-    if (c == null || c.auth.currentUser == null) return const [];
+    if (c == null || c.auth.currentUser == null) return null;
     try {
       final rows = await c.rpc('seller_orders') as List;
       return [for (final r in rows) Map<String, dynamic>.from(r as Map)];
     } catch (_) {
-      return const [];
+      return null;
     }
   }
 
@@ -659,16 +665,19 @@ class Backend {
   static Future<String?> cancelEngagement(String kind, String ref) => _call('cancel_engagement', {'p_kind': kind, 'p_ref': ref});
 
   /// Engagements de la personne connectée (isolés par le serveur), éventuellement filtrés par type ; les plus récents d'abord.
-  static Future<List<Map<String, dynamic>>> myEngagements({String? kind}) async {
+  static Future<List<Map<String, dynamic>>> myEngagements({String? kind}) async => await myEngagementsOrNull(kind: kind) ?? const [];
+
+  /// Comme [myEngagements], mais null quand la lecture échoue (jamais « aucun » à tort).
+  static Future<List<Map<String, dynamic>>?> myEngagementsOrNull({String? kind}) async {
     final c = _c;
-    if (c == null || c.auth.currentUser == null) return const [];
+    if (c == null || c.auth.currentUser == null) return null;
     try {
       var q = c.from('engagements').select('kind,ref,data,status,created_at,updated_at');
       if (kind != null) q = q.eq('kind', kind);
       final r = await q.order('updated_at', ascending: false);
       return [for (final x in r) Map<String, dynamic>.from(x as Map)];
     } catch (_) {
-      return const [];
+      return null;
     }
   }
 

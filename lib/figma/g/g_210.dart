@@ -48,7 +48,7 @@ class G_210 extends ConsumerWidget {
       if (!demoContent) gP(146, 546, 108, 108, Consumer(builder: (context, ref, _) => gBox(image: kioskView(ref).image, fit: BoxFit.cover, radii: [30, 30, 30, 30]))),
       gP(274, 556, 313, 35, Consumer(builder: (context, ref, _) => gText(kioskView(ref).title, 28, Color(0xFF111015), weight: 600, wrap: true))),
       gP(274, 612, 313, 23, Consumer(builder: (context, ref, _) => gText('${kioskView(ref).department}${demoContent ? " · IUT de Douala" : ""}', 18, Color(0xFF57545F), wrap: true))),
-      gP(274, 646, 164, 33, Consumer(builder: (context, ref, _) => gText(fcfa(kioskView(ref).price), 26, Color(0xFF5A3FE0), weight: 700))),
+      gP(274, 646, 164, 33, Consumer(builder: (context, ref, _) => gText(kioskView(ref).title == 'Aucun article disponible' ? '' : fcfa(kioskView(ref).price), 26, Color(0xFF5A3FE0), weight: 700))),
       gP(146, 696, 35, 19, gText('Date', 15, Color(0xFF57545F))),
       gP(146, 720, 115, 24, Consumer(builder: (context, ref, _) => gText('${ref.watch(nowProvider).day} ${const ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."][ref.watch(nowProvider).month - 1]} ${ref.watch(nowProvider).year}', 19, Color(0xFF111015), weight: 600))),
       gP(298, 696, 44, 19, gText('Heure', 15, Color(0xFF57545F))),

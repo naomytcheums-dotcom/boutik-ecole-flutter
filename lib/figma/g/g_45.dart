@@ -62,7 +62,7 @@ class G_45 extends ConsumerWidget {
       gP(333.833, 139.417, 6, 9.167, gImg('assets/figma/v/3221f2f163c9f7.svg')),
       gP(340.167, 145.75, 6, 9.167, gImg('assets/figma/v/3221f2f163c9f7.svg')),
       Positioned.fill(child: GChoiceGroup(key: ValueKey('f45${ref.watch(ordersFilterProvider)}'), onChanged: (v) { ref.read(ordersFilterProvider.notifier).set(v); }, chips: [GChip(24, 182, 70.4, 34, 'Toutes', 12.5, 600), GChip(102.4, 182, 85.2, 34, 'En cours', 12.5, 500), GChip(195.6, 182, 77.8, 34, 'Livrées', 12.5, 500), GChip(281.4, 182, 85.2, 34, 'Annulées', 12.5, 500)], selected: ref.watch(ordersFilterProvider), selFill: Color(0xFF111015), unselFill: Color(0xFFF2EFF6), selText: Color(0xFFFFFFFF), unselText: Color(0xFF57545F), radius: 17)),
-      gP(24, 230, 109, 19, Consumer(builder: (context, ref, _) => gText('${ref.watch(ordersAllProvider).length + (demoContent ? 8 : 0)} commande${(ref.watch(ordersAllProvider).length + (demoContent ? 8 : 0)) > 1 ? 's' : ''}', 15, Color(0xFF111015), weight: 700))),
+      gP(24, 230, 109, 19, Consumer(builder: (context, ref, _) => gText((!demoContent && !ref.watch(ordersLoadedProvider) && ref.watch(ordersAllProvider).isEmpty) ? '' : '${ref.watch(ordersAllProvider).length + (demoContent ? 8 : 0)} commande${(ref.watch(ordersAllProvider).length + (demoContent ? 8 : 0)) > 1 ? 's' : ''}', 15, Color(0xFF111015), weight: 700))),
       gP(260, 232, 90, 15, Consumer(builder: (context, ref, _) => gText(demoContent ? 'Trier' : 'Trier : ${ordersSortLabel(ref.watch(ordersSortProvider))}', 12, Color(0xFF5A3FE0), weight: 500, align: TextAlign.right, wrap: true))),
       gP(352.5, 237, 13, 6, gImg('assets/figma/v/4159f10924eea0.svg')),
       gP(356, 233.5, 9.5, 13, gImg('assets/figma/v/a365eb17b7a19f.svg')),

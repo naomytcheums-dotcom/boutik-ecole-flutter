@@ -133,11 +133,14 @@ Map<String, dynamic> companySavePayload({
 class CompanyContext extends Notifier<String?> {
   @override
   String? build() => null;
-  void set(String? v) => state = v;
+  void set(String? v) {
+    if (ref.mounted) state = v;
+  }
 
   /// Referme l'espace [owner] seulement s'il est toujours le contexte courant (passage d'un espace à un autre sans écraser le nouveau).
+  /// Sans effet si l'application est déjà démontée (la fermeture de l'écran arrive après la libération des fournisseurs).
   void clearIf(String owner) {
-    if (state == owner) state = null;
+    if (ref.mounted && state == owner) state = null;
   }
 }
 

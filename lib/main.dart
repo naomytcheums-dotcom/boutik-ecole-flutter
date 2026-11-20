@@ -7,6 +7,7 @@ import 'app.dart';
 import 'figma/gdata.dart' show GData;
 import 'figma/i18n.dart' show I18n;
 import 'figma/live/auth.dart';
+import 'figma/live/account_reset.dart' show resetAccountScopedState;
 import 'figma/live/backend.dart';
 import 'figma/live/drafts.dart';
 import 'figma/live/referral.dart' show capturePendingReferral;
@@ -94,6 +95,7 @@ class _AppRootState extends State<AppRoot> {
     };
     appSessionExpired = () {
       if (!mounted) return;
+      resetAccountScopedState();
       setState(() {
         _generation++;
         _loggedOut = true;

@@ -7,7 +7,11 @@ import 'marche/marche_data.dart' show marcheCall;
 /// Code promo saisi par le client (appliqué par le serveur à la création de la commande).
 class PromoCodeNotifier extends Notifier<String> {
   @override
-  String build() => '';
+  String build() {
+    Backend.promoCode = ''; // un autre compte ne reprend jamais le code promo du précédent
+    return '';
+  }
+
   void set(String v) {
     state = v.trim();
     Backend.promoCode = state;

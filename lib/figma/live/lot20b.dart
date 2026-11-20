@@ -54,7 +54,7 @@ class ProductLine extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final p = ref.watch(selectedProductProvider);
-    return SizedBox(width: width, child: SingleChildScrollView(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(p.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(15, w: FontWeight.w700)), const SizedBox(height: 4), Text(fcfa(p.price), style: _st(12.5, c: _grey))])));
+    return SizedBox(width: width, child: SingleChildScrollView(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(p.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(15, w: FontWeight.w700)), if (!p.isNone) ...[const SizedBox(height: 4), Text(fcfa(p.price), style: _st(12.5, c: _grey))]])));
   }
 }
 

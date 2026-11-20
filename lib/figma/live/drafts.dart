@@ -54,7 +54,31 @@ class Drafts {
       for (final k in p.getKeys().where((k) => k.startsWith(_prefix)).toList()) {
         await p.remove(k);
       }
+      await p.remove(_ownerKey);
     } catch (_) {}
+  }
+
+  static const _ownerKey = 'boutik.draft_owner';
+
+  /// Les brouillons de l'appareil appartiennent à UN compte : quand une autre personne se connecte (session expirée puis autre compte, par exemple),
+  /// ceux du compte précédent sont effacés avant qu'elle ne les voie. Renvoie vrai si des brouillons ont été effacés.
+  static Future<bool> adoptOwner(String uid) async {
+    if (uid.isEmpty) return false;
+    try {
+      final p = await SharedPreferences.getInstance();
+      final owner = p.getString(_ownerKey);
+      if (owner == uid) return false;
+      if (owner == null) {
+        await p.setString(_ownerKey, uid); // brouillons sans propriétaire connu (visiteur ou version précédente) : adoptés par le compte qui se connecte
+        return false;
+      }
+      final had = values.isNotEmpty || p.getKeys().any((k) => k.startsWith(_prefix));
+      if (had) await clearAll();
+      await p.setString(_ownerKey, uid);
+      return had;
+    } catch (_) {
+      return false;
+    }
   }
 }
 

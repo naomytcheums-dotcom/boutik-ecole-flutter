@@ -98,7 +98,7 @@ class _SkillsPageState extends ConsumerState<SkillsPage> {
     final l = items;
     return TpPage(
       title: 'Mes compétences',
-      subtitle: l == null ? null : '${l.length} compétence${l.length > 1 ? 's' : ''}',
+      subtitle: l == null || error != null ? null : '${l.length} compétence${l.length > 1 ? 's' : ''}',
       bottom: TpButton('Ajouter une compétence', () => _edit(), icon: Icons.add_rounded),
       children: [
         if (l == null) const Padding(padding: EdgeInsets.all(40), child: Center(child: CircularProgressIndicator()))

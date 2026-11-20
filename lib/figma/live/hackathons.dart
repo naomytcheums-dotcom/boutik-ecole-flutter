@@ -318,7 +318,7 @@ void submitDeposit(WidgetRef ref, BuildContext context) {
 
 class Scores extends Notifier<List<int>> {
   @override
-  List<int> build() => const [8, 7, 9, 6];
+  List<int> build() => Backend.ready ? const [0, 0, 0, 0] : const [8, 7, 9, 6]; // connecté, le jury part de zéro : aucune note de maquette
   void bump(int i) => state = [for (var k = 0; k < state.length; k++) k == i ? (state[k] + 1) % 11 : state[k]];
 }
 

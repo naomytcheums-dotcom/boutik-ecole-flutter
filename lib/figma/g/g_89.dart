@@ -40,7 +40,7 @@ class G_89 extends ConsumerWidget {
       gP(140, 92, 124, 244, gBox(image: 'assets/figma/img/1574e42a325d3a4ac509841e7a5eb5a285a3d991.png', fit: BoxFit.cover, radii: [26, 26, 26, 26])),
       gP(272, 92, 114, 244, gBox(image: 'assets/figma/img/d5a96228e65dc2920e40cfac9b1205c2faee3caf.png', fit: BoxFit.cover, radii: [26, 26, 26, 26])),
       gP(0, 92, 390, 250, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0x00F2EBF0), Color(0x00F2EBF0), Color(0xD9F2EBF0)], stops: [0, 0.78, 1]))),
-      gP(30, 14, 28, 18, gText('9:41', 14, Color(0xFF111015), weight: 600)),
+      gP(30, 14, 28, 18, gText('9:41', 14, Color(0xFF111015), weight: 600), show: demoContent),
       gP(140, 10, 110, 30, gBox(color: Color(0xFF000000), radii: [15, 15, 15, 15])),
       gP(22, 38, 34, 32, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(30, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], backBlur: 20, oval: true), tap: () => gBack(context)),

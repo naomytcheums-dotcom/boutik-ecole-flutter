@@ -143,9 +143,10 @@ class StartupSupport extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final rows = ref.watch(projectsCatalogProvider);
-    final n = rows?.where((r) => '${r['status']}' == 'approved').length;
+    final failed = rows != null && ref.read(projectsCatalogProvider.notifier).error;
+    final n = rows == null || failed ? null : rows.where((r) => '${r['status']}' == 'approved').length;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(n == null ? 'Projets validés : …' : 'Projets validés : $n', style: _st(16, w: FontWeight.w700)),
+      Text(n == null ? (failed ? 'Projets validés : indisponible' : 'Projets validés : …') : 'Projets validés : $n', style: _st(16, w: FontWeight.w700)),
       const SizedBox(height: 6),
       _intro(width, 'Demandez un accompagnement (mentor, financement, matériel, compétences) pour l’un de vos projets : le département répond et vous suivez l’état de chaque demande. Aucun financement n’est promis.'),
       const SizedBox(height: 10),

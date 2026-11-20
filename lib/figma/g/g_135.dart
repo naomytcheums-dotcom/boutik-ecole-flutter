@@ -53,7 +53,7 @@ class G_135 extends ConsumerWidget {
       gP(789.333, 157.333, 10.167, 10.167, gImg('assets/figma/v/5857530a2c5105.svg')),
       gP(798.5, 166.5, 10.167, 10.167, gImg('assets/figma/v/5857530a2c5105.svg')),
       gP(831, 146, 167, 16, gText('Modifier les commissions', 13.5, Color(0xFF111015), weight: 600, inter: true)),
-      gP(831, 168, 150, 14, gText(demoContent ? 'Effet à la prochaine période' : 'Enregistré et journalisé', 11.5, Color(0xFF57545F), inter: true)),
+      gP(831, 168, 330, 14, gText(demoContent ? 'Effet à la prochaine période' : 'Seuil appliqué · taux journalisés, non appliqués', 11.5, Color(0xFF57545F), inter: true)),
       gP(1166.8, 156, 71.2, 22, gBox(color: Color(0xFFEFEBFA), radii: [11, 11, 11, 11])),
       gP(1179.9, 160, 45, 13, gText('Modifier', 11, Color(0xFF5A3FE0), weight: 600, inter: true, align: TextAlign.center)),
       gP(831, 200, 409, 1, gBox(color: Color(0xFFF2EFF6))),

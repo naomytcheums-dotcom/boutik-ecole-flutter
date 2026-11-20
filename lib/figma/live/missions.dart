@@ -139,7 +139,7 @@ final kioskServicesProvider = FutureProvider<List<LiveProduct>>((ref) async {
 }, retry: (_, _) => null);
 
 /// Prix affiché à la borne : un service sans tarif est « sur devis », sinon « à partir de ».
-String kioskPrice(LiveProduct p) => !kioskIsService(p) ? fcfa(p.price) : (p.price <= 0 ? 'Sur devis' : 'Dès ${fcfa(p.price)}');
+String kioskPrice(LiveProduct p) => p.title == 'Aucun article disponible' && p.price == 0 ? '' : (!kioskIsService(p) ? fcfa(p.price) : (p.price <= 0 ? 'Sur devis' : 'Dès ${fcfa(p.price)}'));
 
 /// Tous les résultats de la recherche (filtre et texte), avant découpage en pages.
 final kioskMatchesProvider = Provider<List<LiveProduct>>((ref) {
@@ -546,7 +546,12 @@ class MissionNotifier extends Notifier<Mission> {
       return;
     }
     final r = await Backend.currentMission();
-    if (!ref.mounted || r == null) return;
+    if (!ref.mounted) return;
+    if (r == null) {
+      if (!ref.read(missionLoadedProvider)) ref.read(missionFailedProvider.notifier).set(true);
+      return;
+    }
+    ref.read(missionFailedProvider.notifier).set(false);
     state = r.mission == null ? Mission.none : Mission.fromServer(r.mission!, r.accepted, r.milestones);
     ref.read(missionLoadedProvider.notifier).set(true);
   }
@@ -613,6 +618,19 @@ class _MissionLoaded extends Notifier<bool> {
 
 /// Vrai dès qu'une lecture de la mission a réussi (Mission.none signifie alors « aucune mission »).
 final missionLoadedProvider = NotifierProvider<_MissionLoaded, bool>(_MissionLoaded.new);
+
+class _MissionFailed extends Notifier<bool> {
+  @override
+  bool build() {
+    ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
+    return false;
+  }
+
+  void set(bool v) => state = v;
+}
+
+/// Vrai quand la lecture de la mission a échoué sans jamais réussir : les écrans de suivi le disent au lieu d'afficher des zéros.
+final missionFailedProvider = NotifierProvider<_MissionFailed, bool>(_MissionFailed.new);
 
 /// Écrans du suivi d'une mission : sans mission réelle, ils ne montrent pas la mission d'exemple.
 const missionScreens = {'192', '193', '194', '195', '196', '197', '201'};

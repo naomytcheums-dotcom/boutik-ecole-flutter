@@ -193,10 +193,13 @@ class _ProposalsPanelState extends ConsumerState<ProposalsPanel> {
 
   @override
   Widget build(BuildContext context) {
-    final all = ref.watch(companyProposalsProvider) ?? const <Map<String, dynamic>>[];
+    final loaded = ref.watch(companyProposalsProvider);
+    final all = loaded ?? const <Map<String, dynamic>>[];
     final sel = ref.watch(proposalSelectionProvider);
     int n(int c) => all.where((r) => _match(c, r)).length;
-    final labels = ['Toutes (${n(0)})', 'Reçues (${n(1)})', 'Acceptées (${n(2)})', 'Refusées (${n(3)})'];
+    // Un compteur n'existe que si la lecture a réussi : une erreur ou un chargement ne s'affichent jamais comme « 0 ».
+    final known = loaded != null && !ref.read(companyProposalsProvider.notifier).error;
+    final labels = known ? ['Toutes (${n(0)})', 'Reçues (${n(1)})', 'Acceptées (${n(2)})', 'Refusées (${n(3)})'] : const ['Toutes', 'Reçues', 'Acceptées', 'Refusées'];
     return SizedBox(
       width: widget.width,
       height: widget.height,
@@ -644,11 +647,12 @@ class DefisBanner extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final rows = ref.watch(defisListProvider);
+    final failed = rows != null && ref.read(defisListProvider.notifier).error;
     final open = rows?.where((r) => '${r['phase']}' == 'open').length ?? 0, soon = rows?.where((r) => '${r['phase']}' == 'upcoming').length ?? 0;
     return Column(mainAxisAlignment: MainAxisAlignment.end, crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text('Concours et hackathons', style: _st(18, w: FontWeight.w700, c: Colors.white)),
       const SizedBox(height: 4),
-      Text(rows == null ? 'Chargement…' : '$open ouvert${open > 1 ? 's' : ''} · $soon à venir', style: _st(12, c: const Color(0xFFE3ECF7))),
+      Text(rows == null ? 'Chargement…' : failed ? 'Liste indisponible pour le moment' : '$open ouvert${open > 1 ? 's' : ''} · $soon à venir', style: _st(12, c: const Color(0xFFE3ECF7))),
     ]);
   }
 }
@@ -790,13 +794,15 @@ class _CollabPanelState extends ConsumerState<CollabPanel> {
 
   @override
   Widget build(BuildContext context) {
-    final all = ref.watch(companyMissionsProvider) ?? const <Map<String, dynamic>>[];
+    final loaded = ref.watch(companyMissionsProvider);
+    final all = loaded ?? const <Map<String, dynamic>>[];
     int n(int c) => all.where((r) => _match(c, r)).length;
+    final known = loaded != null && !ref.read(companyMissionsProvider.notifier).error;
     return SizedBox(
       width: widget.width,
       height: widget.height,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        EntChips(labels: ['En cours (${n(0)})', 'Livrées (${n(1)})', 'Terminées'], selected: chip, onChanged: (i) => setState(() => chip = i), width: widget.width),
+        EntChips(labels: known ? ['En cours (${n(0)})', 'Livrées (${n(1)})', 'Terminées'] : const ['En cours', 'Livrées', 'Terminées'], selected: chip, onChanged: (i) => setState(() => chip = i), width: widget.width),
         MobileList(
           provider: companyMissionsProvider,
           width: widget.width,
@@ -826,14 +832,16 @@ class _HistoryPanelState extends ConsumerState<HistoryPanel> {
 
   @override
   Widget build(BuildContext context) {
-    final missions = ref.watch(companyMissionsProvider) ?? const <Map<String, dynamic>>[];
-    final props = ref.watch(companyProposalsProvider) ?? const <Map<String, dynamic>>[];
+    final loadedMissions = ref.watch(companyMissionsProvider), loadedProps = ref.watch(companyProposalsProvider);
+    final missions = loadedMissions ?? const <Map<String, dynamic>>[];
+    final props = loadedProps ?? const <Map<String, dynamic>>[];
+    final known = loadedMissions != null && loadedProps != null && !ref.read(companyMissionsProvider.notifier).error && !ref.read(companyProposalsProvider.notifier).error;
     final c = companyCounters(missions, props, DateTime.now());
     final w = widget.width;
     const dossier = {'assigned', 'in_progress', 'delivered', 'closed', 'completed', 'released'};
     final summary = Padding(
       padding: const EdgeInsets.only(bottom: 6),
-      child: Text('${c.needs} besoin${c.needs > 1 ? 's' : ''} publié${c.needs > 1 ? 's' : ''} · ${missions.where((m) => dossier.contains('${m['status']}')).length} mission${missions.where((m) => dossier.contains('${m['status']}')).length > 1 ? 's' : ''} · ${c.deadlines} échéance${c.deadlines > 1 ? 's' : ''} sous 7 jours', style: _st(12, c: _grey)),
+      child: !known ? Text(loadedMissions == null || loadedProps == null ? 'Chargement…' : 'Résumé indisponible pour le moment.', style: _st(12, c: _grey)) : Text('${c.needs} besoin${c.needs > 1 ? 's' : ''} publié${c.needs > 1 ? 's' : ''} · ${missions.where((m) => dossier.contains('${m['status']}')).length} mission${missions.where((m) => dossier.contains('${m['status']}')).length > 1 ? 's' : ''} · ${c.deadlines} échéance${c.deadlines > 1 ? 's' : ''} sous 7 jours', style: _st(12, c: _grey)),
     );
     final Widget list = switch (chip) {
       1 => MobileList(

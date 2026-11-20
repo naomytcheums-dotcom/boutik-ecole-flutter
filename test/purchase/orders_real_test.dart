@@ -22,12 +22,18 @@ class _OneOrder extends Orders {
       ];
 }
 
+/// Le serveur a répondu (liste vide ou non) : sans cette lecture réussie, l'écran ne prétend pas « aucune commande » (voir ordersFailedProvider).
+class _Loaded extends OrdersLoaded {
+  @override
+  bool build() => true;
+}
+
 Future<void> _pump(WidgetTester tester, Widget screen, Orders Function() orders) async {
   GAnim.enabled = false;
   tester.view.physicalSize = const Size(390, 900);
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
-  await tester.pumpWidget(ProviderScope(overrides: [ordersProvider.overrideWith(orders)], child: MaterialApp(home: Scaffold(body: screen))));
+  await tester.pumpWidget(ProviderScope(overrides: [ordersProvider.overrideWith(orders), ordersLoadedProvider.overrideWith(_Loaded.new)], child: MaterialApp(home: Scaffold(body: screen))));
   await tester.pump();
 }
 

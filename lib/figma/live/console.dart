@@ -45,6 +45,13 @@ class RpcRows extends Notifier<List<Map<String, dynamic>>?> {
   }
 }
 
+/// Nombre de lignes lues, ou null tant que la lecture est en cours ou si elle a échoué : un compteur n'affiche jamais zéro pour une erreur.
+int? rowsCount(WidgetRef ref, NotifierProvider<RpcRows, List<Map<String, dynamic>>?> provider) {
+  final rows = ref.watch(provider);
+  if (rows == null || ref.read(provider.notifier).error) return null;
+  return rows.length;
+}
+
 final deptStudentsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => RpcRows('dept_students', const {'p_limit': 200}));
 final adminDepartmentsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => RpcRows('admin_departments'));
 final consoleUsersProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => RpcRows('admin_users', const {'p_limit': 200}));

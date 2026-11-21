@@ -18,7 +18,7 @@ export async function run(db) {
 
   await db.exec('reset role');
   for (const [id, nm, role] of [[E, 'Orange', 'company'], [X, 'Xena', 'company'], [P, 'Pending', 'company'], [S, 'Alice', 'student'], [C, 'Carl', 'client'], [T, 'Team', 'client'], [ADM, 'Admin', 'admin'], [SUS, 'Suspendu', 'company']]) {
-    await db.exec(`insert into auth.users(id,email) values ('${id}','${nm}@t.cm'); insert into profiles(id,name,role,email) values ('${id}','${nm}','${role}','${nm}@t.cm')`);
+    await db.exec(`insert into auth.users(id,email) values ('${id}','${nm}@t.cm'); insert into profiles(id,name,role,email) values ('${id}','${nm}','${role}','${nm}@t.cm') on conflict (id) do update set name = excluded.name, role = excluded.role, email = excluded.email`);
   }
   await db.exec(`update profiles set suspended = true where id = '${SUS}'`);
   for (const [id, nm, st] of [[E, 'Orange', 'approved'], [X, 'Xena', 'approved'], [P, 'Pending', 'draft'], [SUS, 'Suspendu', 'approved']]) {
@@ -95,8 +95,9 @@ export async function run(db) {
 
   // ---- 5. Équipe : ce qu'un membre peut faire sur les offres de son entreprise (20261118000100)
   const FIN = U('b2'), VIE = U('b3');
+  await db.exec("reset role; select set_config('request.jwt.claim.sub', '', false)"); // les triggers de profiles lisent auth.uid() : aucune session pendant la creation des fixtures
   await db.exec('reset role');
-  for (const [id, nm, role] of [[FIN, 'Fin', 'client'], [VIE, 'Vie', 'client']]) await db.exec(`insert into auth.users(id,email) values ('${id}','${nm}@t.cm'); insert into profiles(id,name,role,email) values ('${id}','${nm}','${role}','${nm}@t.cm')`);
+  for (const [id, nm, role] of [[FIN, 'Mfinance', 'client'], [VIE, 'Mlecteur', 'client']]) { await db.exec(`insert into auth.users(id,email) values ('${id}','${nm}@t.cm'); insert into profiles(id,name,role,email) values ('${id}','${nm}','${role}','${nm}@t.cm') on conflict (id) do update set name = excluded.name, role = excluded.role, email = excluded.email`); }
   await db.exec(`insert into company_members (owner_id, user_id, role, status) values ('${E}', '${FIN}', 'finance', 'active'), ('${E}', '${VIE}', 'viewer', 'active')`);
   await as(T);
   await allowed('membre admin : candidatures de l offre', `select * from opp_applications_for('${O1}')`);

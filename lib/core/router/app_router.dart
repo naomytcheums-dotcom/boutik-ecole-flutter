@@ -48,6 +48,7 @@ import '../../figma/live/innovations_screens.dart';
 import '../../figma/live/marche/marche_appels.dart';
 import '../../figma/live/opportunites_screens.dart';
 import '../../figma/live/menu_global.dart' show MenuModalObserver;
+import '../../figma/live/dept_invite.dart' show DeptInviteScreen;
 import '../../figma/live/mentors_screens.dart';
 import '../../figma/live/marche/marche_compare.dart';
 import '../../figma/live/marche/marche_livraison.dart';
@@ -171,6 +172,7 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/notif', builder: (_, state) => NotificationLauncher(id: state.uri.queryParameters['n'] ?? '')),
     GoRoute(path: '/integrations/api', builder: (_, _) => const RouteGuard(name: '/integrations/api', roles: {'admin', 'support', 'finance'}, perms: {'tech.integrations'}, child: G_280())),
     GoRoute(path: '/design', builder: (_, _) => const RouteGuard(name: '/design', roles: {'admin'}, debugOpen: true, child: DesignLabScreen())),
+    GoRoute(path: '/invitation/:token', builder: (_, state) => DeptInviteScreen(token: state.pathParameters['token'] ?? '')),
     GoRoute(path: '/cv/:token', builder: (_, state) => SharedCvScreen(token: state.pathParameters['token'] ?? '')),
     GoRoute(
       path: '/s/:id',

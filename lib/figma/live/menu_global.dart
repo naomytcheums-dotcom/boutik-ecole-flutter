@@ -44,7 +44,7 @@ class SharedBottomMenu extends ConsumerStatefulWidget {
 
   /// Les pages `/s/...` ont leur propre menu ; ces routes n'en veulent pas (paiement, partage de CV public, outils internes).
   static bool eligible(String path) {
-    if (path == '/' || path.startsWith('/s/') || path.startsWith('/cv/')) return false;
+    if (path == '/' || path.startsWith('/s/') || path.startsWith('/cv/') || path.startsWith('/invitation/')) return false;
     const exclues = {'/paiement', '/catalogue', '/design', '/integrations/api', '/comptes-test'};
     return !exclues.contains(path);
   }

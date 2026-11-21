@@ -16,6 +16,7 @@ import 'evenements_gestion.dart' show EventsManageScreen;
 import 'lots.dart' show issueCertificateDialog, reviewCampaignsDialog, reviewMilestonesDialog, reviewProjectsDialog, reviewWishesDialog, revokeCertificateDialog;
 import 'review.dart' show ReviewItem, reviewDialog, reviewQueueProvider;
 import 'partnership_org_picker.dart';
+import 'dept_invite.dart' show inviteDepartmentLeader;
 import 'store.dart' show StrV, fcfa;
 import 'tp_ui.dart';
 import 'verification_equipe.dart' show certificationQueueDialog, documentReviewDialog;
@@ -1217,7 +1218,7 @@ class DepartmentAttachScreen extends ConsumerWidget {
     return TpPage(
       title: 'Rattachement des comptes',
       subtitle: 'Un compte Département appartient à un seul département',
-      actions: [TpRound(icon: Icons.history_rounded, label: 'Historique', onTap: () => history(context))],
+      actions: [TpRound(icon: Icons.link_rounded, label: 'Inviter un responsable', onTap: () => inviteDepartmentLeader(context, ref)), TpRound(icon: Icons.history_rounded, label: 'Historique', onTap: () => history(context))],
       children: [
         DeptData(const DeptCall('admin_dept_unassigned_accounts'), (u) {
           final suggestions = {for (final x in deptList(u)) '${x['id']}': x};

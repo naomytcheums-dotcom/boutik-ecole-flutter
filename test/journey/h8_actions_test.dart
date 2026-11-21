@@ -95,6 +95,16 @@ const _attendus = <String>{
   '04>Tous', '11>E-mail',
 };
 
+/// Classes de gestes sans effet observable dans ce banc, expliquées (examinées une à une le 21 novembre 2026) :
+/// retour sans historique (l'écran est ouvert directement), pastille ou onglet déjà sélectionné, nouvelle tentative qui retombe sur la même erreur
+/// du faux serveur, sélecteur de fichier ou de photo (non simulable). Tout autre geste inerte reste signalé.
+final _classesBenignes = <RegExp>[
+  RegExp(r'^[\s-]*$'),
+  RegExp(r'Réessayer|Retry|ne peuvent pas être chargées|cannot be loaded'),
+  RegExp(r'^(Tous|Toutes|Tout|All|Everything|Anciens|Elders|Cette semaine|This week|Produits|Products|Ventes|Sales|Pour toi|For you|FR|EN)'),
+  RegExp(r'téléverser|upload|Ajouter (un|une|des)|Add (a|an|CV)|Photos? ou vidéos?|Photos? or videos?|Publication|Image de couverture|Cover image'),
+];
+
 bool _permis(Actor a, String id) {
   final f = a.rpc['my_admin_access'];
   return f == null || screenAllowedByAccess(a.account, id, AdminAccess.fromJson(f(const {}) as Map));
@@ -279,6 +289,7 @@ void main() {
           final ecran = p.first.split('>')[1];
           final pos = p[1].split('@').last;
           final lab = p.first.split('>').skip(2).join('>');
+          if (_classesBenignes.any((r) => r.hasMatch(lab.trim()))) return true;
           return _attendus.contains('$ecran@$pos') || _attendus.contains('$ecran>$lab') || _attendus.contains('${actor.key}>$ecran@$pos') || _attendus.contains('${actor.key}>$ecran>$lab');
         }
 

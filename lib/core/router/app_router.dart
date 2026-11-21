@@ -47,6 +47,7 @@ import '../../figma/live/test_accounts.dart';
 import '../../figma/live/innovations_screens.dart';
 import '../../figma/live/marche/marche_appels.dart';
 import '../../figma/live/opportunites_screens.dart';
+import '../../figma/live/menu_global.dart' show MenuModalObserver;
 import '../../figma/live/mentors_screens.dart';
 import '../../figma/live/marche/marche_compare.dart';
 import '../../figma/live/marche/marche_livraison.dart';
@@ -73,6 +74,7 @@ ScreenEntry? screenById(String? id) {
 
 GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
   initialLocation: initial,
+  observers: [MenuModalObserver()],
   routes: [
     GoRoute(path: '/', redirect: (_, _) => screenPath('01')),
     // Outils internes : administrateur, ou mode debug (revue de maquette) ; jamais publics.

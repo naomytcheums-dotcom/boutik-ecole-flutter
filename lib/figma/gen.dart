@@ -546,6 +546,7 @@ class GScreen extends StatelessWidget {
         bottom: pad.bottom,
         backing: backing,
         backingHeight: backingH,
+        hideOnScroll: swapped.isNotEmpty,
       ),
     );
   }
@@ -557,7 +558,11 @@ const gMenuKey = ValueKey<String>('menu-bas-reconstruit');
 /// Corps d'un écran de téléphone : contenu défilant plein écran et menu du bas fixe. Un glissement vertical démarré sur le
 /// menu fait défiler le contenu (le menu ne « mange » pas le geste), les appuis sur ses boutons restent des appuis.
 class _PhoneBody extends StatefulWidget {
-  const _PhoneBody({required this.padding, required this.content, required this.fixed, required this.bottom, this.backing, this.backingHeight = 0});
+  const _PhoneBody({required this.padding, required this.content, required this.fixed, required this.bottom, this.backing, this.backingHeight = 0, this.hideOnScroll = false});
+
+  /// Vrai quand [fixed] est le menu du bas : il se masque quand on fait défiler vers le bas et réapparaît dès qu'on remonte
+  /// (comme Facebook). Les barres d'actions (Continuer, Payer…) restent toujours visibles.
+  final bool hideOnScroll;
   final Decoration? backing;
   final double backingHeight;
   final EdgeInsets padding;
@@ -571,6 +576,16 @@ class _PhoneBody extends StatefulWidget {
 
 class _PhoneBodyState extends State<_PhoneBody> {
   final _controller = ScrollController();
+  bool _menuShown = true;
+
+  bool _onScroll(ScrollNotification n) {
+    if (!widget.hideOnScroll || n.depth != 0 || n is! ScrollUpdateNotification) return false;
+    final d = n.scrollDelta ?? 0;
+    // visible en haut de page, en remontant, et tout en bas (fin de page atteinte) ; masqué en descendant
+    final shown = n.metrics.pixels <= 24 || d < -6 || n.metrics.extentAfter <= 2 ? true : (d > 6 ? false : _menuShown);
+    if (shown != _menuShown) setState(() => _menuShown = shown);
+    return false;
+  }
 
   @override
   void dispose() {
@@ -587,10 +602,28 @@ class _PhoneBodyState extends State<_PhoneBody> {
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
-      Positioned.fill(child: SingleChildScrollView(controller: _controller, padding: widget.padding, child: Align(alignment: Alignment.topCenter, child: widget.content))),
+      Positioned.fill(
+        child: NotificationListener<ScrollNotification>(
+          onNotification: _onScroll,
+          child: SingleChildScrollView(controller: _controller, padding: widget.padding, child: Align(alignment: Alignment.topCenter, child: widget.content)),
+        ),
+      ),
       if (widget.backing != null) Positioned(left: 0, right: 0, bottom: 0, height: widget.backingHeight, child: IgnorePointer(child: DecoratedBox(decoration: widget.backing!))),
       if (widget.fixed != null)
-        Positioned(left: 0, right: 0, bottom: widget.bottom, child: Center(child: GestureDetector(onVerticalDragUpdate: _drag, child: widget.fixed))),
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: widget.bottom,
+          child: IgnorePointer(
+            ignoring: widget.hideOnScroll && !_menuShown,
+            child: AnimatedSlide(
+              offset: widget.hideOnScroll && !_menuShown ? const Offset(0, 1.4) : Offset.zero,
+              duration: GAnim.enabled ? const Duration(milliseconds: 220) : Duration.zero,
+              curve: Curves.easeOut,
+              child: Center(child: GestureDetector(onVerticalDragUpdate: _drag, child: widget.fixed)),
+            ),
+          ),
+        ),
     ]);
   }
 }

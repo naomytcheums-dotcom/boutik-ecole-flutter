@@ -13,6 +13,7 @@ import 'figma/i18n.dart' show I18n, I18nScope;
 import 'figma/live/auth.dart' show appSessionExpired, authProvider, promptTermsUpdate, requireLogin, termsNeedAcceptance;
 import 'figma/live/access.dart' show roleKey;
 import 'figma/live/kiosk_mode.dart' show KioskIdleGuard, KioskTerminal;
+import 'figma/live/menu_global.dart' show SharedBottomMenu;
 import 'figma/live/qr.dart' show handleQrToken, pendingQrToken;
 import 'figma/live/test_accounts.dart' show TestAccountBanner;
 import 'figma/gdata.dart';
@@ -213,7 +214,7 @@ class _BoutikEcoleAppState extends ConsumerState<BoutikEcoleApp> {
               highContrast: mq.highContrast || settings.highContrast || accContrast,
               disableAnimations: mq.disableAnimations || settings.reduceMotion || accMotion,
             ),
-            child: TestAccountBanner(child: KioskTerminal.active ? KioskIdleGuard(child: child!) : child!),
+            child: TestAccountBanner(child: SharedBottomMenu(router: _router, child: KioskTerminal.active ? KioskIdleGuard(child: child!) : child!)),
           ),
         ),
         );

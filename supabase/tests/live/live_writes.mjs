@@ -70,7 +70,10 @@ const empty = x => Array.isArray(x.b) && x.b.length === 0;
     const id = x.b;
     T('etudiant : creer un live', true);
     x = await rpc(t, 'start_live', { p_live: id });
-    T('etudiant : demarrer le live', x.s < 300, msg(x));
+    const cooldown = x.s >= 400 && /15 minutes/.test(msg(x));
+    if (cooldown) { I('live : demarrage refuse par le delai de 15 minutes entre deux directs (regle du serveur) ; suite du scenario ignoree', msg(x)); await rpc(t, 'end_live', { p_live: id }); }
+    else T('etudiant : demarrer le live', x.s < 300, msg(x));
+    if (!cooldown) {
     let y = await F(url + '/functions/v1/live-token', { method: 'POST', headers: H(t), body: JSON.stringify({ live_id: id }) });
     let j = await y.json();
     T('live : jeton LiveKit de l hote', y.status === 200 && j.role === 'host' && !!j.token, y.status + ' ' + (j.error || ''));
@@ -85,6 +88,7 @@ const empty = x => Array.isArray(x.b) && x.b.length === 0;
     T('isolation : le client ne termine pas le live d un autre', x.s >= 400, msg(x));
     x = await rpc(t, 'end_live', { p_live: id });
     T('etudiant : terminer son live', x.s < 300, msg(x));
+    }
   } else T('etudiant : creer un live', false, msg(x));
 }
 // 5. entreprise : besoin et offre
@@ -123,6 +127,29 @@ const empty = x => Array.isArray(x.b) && x.b.length === 0;
   T('departement : pas d acces a la finance', x.s >= 400, msg(x));
   x = await rpc(S.support.tok, 'finance_overview', {});
   I('support : finance_overview', x.s + ' ' + msg(x));
+}
+// 7. invitations de responsables de departement (creation, lecture publique, revocation ; l acceptation change un role : prouvee en SQL, pas ici)
+{
+  const dep = '956bb7cd-1289-40e5-b985-ec4f16200f6c';
+  let x = await rpc(S.client.tok, 'dept_invite_create', { p_department: dep });
+  T('invitation : un client ne cree pas de lien', x.s >= 400, msg(x));
+  x = await rpc(S.admin.tok, 'dept_invite_create', { p_department: dep, p_email: null, p_title: '[TEST ECRITURE] Responsable', p_days: 1 });
+  if (x.s === 200 && x.b && x.b.token) {
+    T('invitation : l administrateur cree un lien', true);
+    const tok = x.b.token, id = x.b.id;
+    const info = async () => (await (await F(url + '/rest/v1/rpc/dept_invite_info', { method: 'POST', headers: { apikey: key, Authorization: 'Bearer ' + key, 'Content-Type': 'application/json' }, body: JSON.stringify({ p_token: tok }) })).json());
+    const j = await info();
+    T('invitation : un visiteur voit le departement et la validite', j.valid === true && !!j.department, JSON.stringify(j).slice(0, 80));
+    const l = await rpc(S.admin.tok, 'dept_invites_list', {});
+    T('invitation : la liste n expose pas le jeton', l.s === 200 && !JSON.stringify(l.b).includes(tok));
+    const bad = await rpc(S.student.tok, 'dept_invite_accept', { p_token: tok });
+    T('invitation : un etudiant ne peut pas accepter', bad.s >= 400, msg(bad));
+    const rv = await rpc(S.client.tok, 'dept_invite_revoke', { p_id: id });
+    T('invitation : un client ne revoque pas', rv.s >= 400, msg(rv));
+    const ok2 = await rpc(S.admin.tok, 'dept_invite_revoke', { p_id: id });
+    T('invitation : l administrateur revoque son lien de test', ok2.s < 300, msg(ok2));
+    T('invitation : le lien revoque est refuse', (await info()).state === 'revoked');
+  } else T('invitation : l administrateur cree un lien', false, msg(x));
 }
 console.log(out.join('\n'));
 console.log(`\n${out.filter(l => l.startsWith('OK')).length} OK, ${out.filter(l => l.startsWith('ECHEC')).length} ECHEC`);

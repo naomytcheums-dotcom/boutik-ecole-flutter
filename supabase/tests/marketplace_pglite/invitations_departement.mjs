@@ -29,7 +29,7 @@ export async function run(db) {
   await fails('durée hors limites refusée', `select dept_invite_create('${D1}', null, 'Responsable', 90)`, /1 à 30 jours/);
   await fails('adresse invalide refusée', `select dept_invite_create('${D1}', 'pas-une-adresse')`, /invalide/);
   const inv = (await q(`select dept_invite_create('${D1}', null, 'Chef de département', 7) r`))[0].r;
-  check('l administrateur reçoit un lien (jeton de 48 caractères) une seule fois', typeof inv.token === 'string' && inv.token.length === 48 && inv.department === 'Génie logiciel', JSON.stringify(inv));
+  check('l administrateur reçoit un lien (jeton de 64 caractères) une seule fois', typeof inv.token === 'string' && inv.token.length === 64 && inv.department === 'Génie logiciel', JSON.stringify(inv));
   const list = (await q(`select dept_invites_list() r`))[0].r;
   check('la liste n expose jamais le jeton', list.length === 1 && !JSON.stringify(list).includes(inv.token) && list[0].state === 'valid');
   await db.exec('reset role');

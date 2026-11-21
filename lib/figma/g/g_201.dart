@@ -46,7 +46,7 @@ class G_201 extends ConsumerWidget {
       if (demoContent) ...[
       gP(74.5, 134, 13, 25, gText(demoContent ? '3' : (ref.watch(missionProvider).real ? '1' : '0'), 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
       gP(57.5, 164, 47, 14, gText('En cours', 11.5, Color(0xFF57545F), align: TextAlign.center)),
-      gP(168.5, 134, 53, 25, Consumer(builder: (context, ref, _) => gText((demoContent ? '${(245000 + ref.watch(missionProvider).studentEarned) ~/ 1000} k' : '${ref.watch(missionProvider).studentEarned ~/ 1000} k'), 20, Color(0xFF111015), weight: 800, align: TextAlign.center))),
+      gP(168.5, 134, 53, 25, Consumer(builder: (context, ref, _) => gText((demoContent ? '${(245000 + (ref.watch(missionProvider).studentEarned ?? 0)) ~/ 1000} k' : '—'), 20, Color(0xFF111015), weight: 800, align: TextAlign.center))),
       gP(173, 164, 44, 14, gText('Gagnés', 11.5, Color(0xFF57545F), align: TextAlign.center)),
       gP(138, 134, 1, 48, gBox(color: Color(0xFFF2EFF6))),
       gP(292, 134, 34, 25, gText(demoContent ? '4,9' : '–', 20, Color(0xFF111015), weight: 800, align: TextAlign.center)),
@@ -72,7 +72,7 @@ class G_201 extends ConsumerWidget {
       gP(295.6, 416, 48, 14, gText('Nouveau', 11, Color(0xFF0F7A52), weight: 600, align: TextAlign.center), show: demoContent),
       gP(40, 484, 85, 18, gText('Mes revenus', 14, Color(0xFF111015), weight: 700)),
       gP(40, 518, 146, 16, gText('Disponible au versement', 12.5, Color(0xFF57545F))),
-      gP(130, 518, 220, 16, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(missionProvider).studentEarned), 12.5, Color(0xFF111015), weight: 700, wrap: true, align: TextAlign.right))),
+      gP(130, 518, 220, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(missionProvider).studentEarned == null ? '—' : fcfa(ref.watch(missionProvider).studentEarned!), 12.5, Color(0xFF111015), weight: 700, wrap: true, align: TextAlign.right))),
       gP(40, 543, 310, 1, gBox(color: Color(0xFFF2EFF6))),
       gP(40, 552, 139, 16, gText('En attente de validation', 12.5, Color(0xFF57545F))),
       gP(132, 552, 218, 16, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(missionProvider).pendingAmount), 12.5, Color(0xFF111015), weight: 600, wrap: true, align: TextAlign.right))),

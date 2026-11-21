@@ -487,10 +487,8 @@ class OpportunityDetailScreen extends ConsumerWidget {
           gOpen(context, '159');
           return;
         }
-        final message = Backend.userMessage('${r.error}');
-        // lettre ou lien refusés : la saisie est conservée et la feuille se rouvre ; les autres refus (offre close, déjà postulé…) sont définitifs
-        if (!message.contains('lettre de motivation') && !message.contains('lien du CV')) return gToast(context, message);
-        error = message;
+        // toute erreur rouvre la feuille avec la saisie conservée et le message du serveur ; « Annuler » abandonne
+        error = Backend.userMessage('${r.error}');
       }
     } finally {
       msg.dispose();

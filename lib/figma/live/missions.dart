@@ -462,10 +462,19 @@ class Mission {
 
   static const shares = [30, 40, 30];
   int amountOf(int i) => milestoneAmounts.isNotEmpty ? milestoneAmounts[i.clamp(0, milestoneAmounts.length - 1)] : total * shares[i.clamp(0, 2)] ~/ 100;
-  int get fee => total ~/ 10;
+
+  /// Montant du jalon i seulement s'il est connu : pour une mission du serveur sans jalon, aucun 30/40/30 n'est inventé.
+  int? knownAmountOf(int i) => (milestoneAmounts.isNotEmpty || !real) ? amountOf(i) : null;
+
+  /// Montant affichable du jalon i : « — » s'il n'est pas connu.
+  String amountLabel(int i) => knownAmountOf(i) == null ? '—' : fcfa(knownAmountOf(i)!);
+
+  /// Commission et gain étudiant : estimations de l'aperçu hors connexion uniquement. Le serveur n'écrit aucune ligne « mission »
+  /// dans le séquestre ; pour une mission réelle ils sont indisponibles (null), calculés à l'encaissement.
+  int? get fee => real ? null : total ~/ 10;
   int get releasedAmount => [for (var i = 0; i < released; i++) amountOf(i)].fold(0, (a, b) => a + b);
-  int get studentEarned => releasedAmount * 70 ~/ 100;
-  int get pendingAmount => proof > released ? amountOf(released) : 0;
+  int? get studentEarned => real ? null : releasedAmount * 70 ~/ 100;
+  int get pendingAmount => proof > released ? (knownAmountOf(released) ?? 0) : 0;
 
   /// Montants réels d'une mission du serveur (aucun séquestre) : jalons dont le règlement est confirmé par le prestataire,
   /// jalons validés mais pas encore réglés, jalons livrés en attente de validation du client.

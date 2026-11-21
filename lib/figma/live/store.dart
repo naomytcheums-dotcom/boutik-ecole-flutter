@@ -83,7 +83,7 @@ List<LiveProduct> platformProducts = liveCatalog;
 const neutralProductImage = 'assets/figma/img/neutre.png';
 
 /// Produit du catalogue par son titre ; un titre inconnu (annonce récente, produit retiré) donne une fiche neutre, pas un autre produit.
-LiveProduct productByTitle(String t) => [...extraProducts, ...platformProducts, ...liveCatalog]
+LiveProduct productByTitle(String t) => [...extraProducts, ...platformProducts, if (!Backend.ready) ...liveCatalog]
     .firstWhere((p) => p.title == t, orElse: () => LiveProduct(t, '', 0, '', 'Les détails de ce produit ne sont pas disponibles pour le moment.', neutralProductImage));
 
 /// « 25 000 FCFA · Yannick M. » : prix et vendeur abrégé (nom enregistré « Nom Prénom »).

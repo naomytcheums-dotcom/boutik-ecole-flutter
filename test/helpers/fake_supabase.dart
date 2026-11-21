@@ -37,6 +37,10 @@ class FakeSupabase {
   /// Vrai : toute fonction ou table non déclarée répond 404 (serveur muet : aucune donnée) au lieu d'une liste vide.
   bool unknownIsError = false;
 
+  /// Panne serveur (HTTP 500) : sur toute écriture de table si [failWrites], et sur les fonctions listées dans [failRpc].
+  bool failWrites = false;
+  final Set<String> failRpc = {};
+
   static const userId = '11111111-1111-4111-8111-111111111111';
 
   static Future<FakeSupabase> start() async {
@@ -64,7 +68,10 @@ class FakeSupabase {
         final args = decoded is Map ? Map<String, dynamic>.from(decoded) : <String, dynamic>{};
         calls.add(FakeCall('rpc', fn, args));
         final h = rpc[fn];
-        if (h == null) {
+        if (failRpc.contains(fn)) {
+          res.statusCode = 500;
+          res.write(jsonEncode({'message': 'panne simulée'}));
+        } else if (h == null) {
           if (unknownIsError) {
             res.statusCode = 404;
             res.write(jsonEncode({'code': 'PGRST202', 'message': 'Could not find the function public.$fn'}));
@@ -83,7 +90,10 @@ class FakeSupabase {
         final table = path.substring('/rest/v1/'.length);
         final write = req.method != 'GET' && req.method != 'HEAD';
         calls.add(FakeCall(write ? 'write' : 'table', table, body.isEmpty ? {} : (jsonDecode(body) is Map ? Map<String, dynamic>.from(jsonDecode(body) as Map) : {}), req.uri.queryParameters));
-        if (!write && unknownIsError && !tables.containsKey(table)) {
+        if (write && failWrites) {
+          res.statusCode = 500;
+          res.write(jsonEncode({'message': 'panne simulée'}));
+        } else if (!write && unknownIsError && !tables.containsKey(table)) {
           res.statusCode = 404;
           res.write(jsonEncode({'code': 'PGRST205', 'message': 'Could not find the table public.$table'}));
         } else {

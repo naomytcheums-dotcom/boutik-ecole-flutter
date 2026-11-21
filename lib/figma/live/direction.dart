@@ -232,7 +232,7 @@ Future<bool> _call(BuildContext context, String fn, Map<String, dynamic> args, S
   final r = await directionRpc(fn, args);
   if (!context.mounted) return false;
   if (r.error != null) {
-    await gAlert(context, 'Action refusée', r.error!);
+    await gAlert(context, 'Action refusée', Backend.userMessage(r.error!));
     return false;
   }
   gToast(context, ok);
@@ -1336,7 +1336,7 @@ Widget financialRegisterView(WidgetRef ref, {double width = 342, double height =
 Future<void> exportDirectionRegister(BuildContext context) async {
   final r = await directionRpc('direction_finance_summary', const {'p_months': 36});
   if (!context.mounted) return;
-  if (r.error != null) return gAlert(context, 'Export impossible', r.error!);
+  if (r.error != null) return gAlert(context, 'Export impossible', Backend.userMessage(r.error!));
   final rows = [for (final m in _list(_map(r.data)['months'])) {'Mois': m['month'], 'Commandes payées': m['orders_paid'], 'Montant encaissé': m['collected'], 'Frais': m['fees']}];
   if (rows.isEmpty) return gAlert(context, 'Rien à exporter', 'Aucune donnée consolidée à exporter.');
   final saved = await saveTextFile('registre-consolide.csv', toCsv(const ['Mois', 'Commandes payées', 'Montant encaissé', 'Frais'], rows), 'text/csv');

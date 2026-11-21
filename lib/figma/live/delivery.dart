@@ -291,8 +291,8 @@ Future<void> homeDeliverySettingsDialog(BuildContext context, WidgetRef ref) asy
   final s = ref.read(deliverySettingsProvider);
   final v = await formDialog(context, 'Livraison à domicile', [
     ('Proposée aux clients (oui / non)', s?.enabled == true ? 'oui' : 'non'),
-    ('Ville desservie', s?.city ?? 'Douala'),
-    ('Frais de livraison (FCFA)', '${s?.fee ?? 5000}'),
+    ('Ville desservie', s?.city ?? ''),
+    ('Frais de livraison (FCFA)', s == null ? '' : '${s.fee}'),
   ], intro: 'Actuellement : ${s?.enabled == true ? 'proposée' : 'non proposée'}.');
   if (v == null || !context.mounted) return;
   final on = v[0].trim().toLowerCase().startsWith('o');

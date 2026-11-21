@@ -349,11 +349,12 @@ final rankingProvider = Provider<List<Ranked>>((ref) {
 });
 
 int provisionalRank(List<int> scores) {
+  if (Backend.ready) return 0; // aucune équipe d'exemple : le rang réel n'existe qu'une fois les notes publiées
   final mine = (scores.fold(0, (a, b) => a + b) * 100 / 40).round();
   return 1 + _seedRanking.where((r) => r.pts > mine).length;
 }
 
-String ordinal(int n) => n == 1 ? '1er' : '${n}e';
+String ordinal(int n) => n <= 0 ? '—' : (n == 1 ? '1er' : '${n}e');
 
 void validateJury(WidgetRef ref, BuildContext context) {
   if (Backend.ready) {

@@ -355,7 +355,7 @@ const opportunities = <Opportunity>[
 
 class Applications extends Notifier<Map<String, String>> {
   @override
-  Map<String, String> build() => const {'Technicien électronique': 'Candidature envoyée'};
+  Map<String, String> build() => Backend.ready ? const {} : const {'Technicien électronique': 'Candidature envoyée'};
   void apply(String title, String motivation) => state = {...state, title: motivation};
 }
 

@@ -53,7 +53,7 @@ String moneyStatusLabel(String s) => switch (s) {
       _ => s,
     };
 
-String moneyFcfa(Object? v) => '${((v as num?) ?? 0).toInt().toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (m) => ' ')} FCFA';
+String moneyFcfa(Object? v) => v is! num ? '—' : '${v.toInt().toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (m) => ' ')} FCFA';
 
 class MoneyAdminScreen extends ConsumerStatefulWidget {
   const MoneyAdminScreen({super.key});
@@ -119,13 +119,17 @@ class _MoneyState extends ConsumerState<MoneyAdminScreen> {
         actions: [TextButton(onPressed: () => Navigator.pop(c, false), child: Text('Annuler')), TextButton(onPressed: () => Navigator.pop(c, true), child: Text('Enregistrer'))],
       ),
     );
-    int n(TextEditingController c) => int.tryParse(c.text.trim()) ?? 0;
+    int? n(TextEditingController c) => int.tryParse(c.text.trim());
     final vals = [n(b), n(i), n(p)];
     final why = note.text;
     for (final c in [b, i, p, note]) {
       c.dispose();
     }
     if (ok == true && mounted) {
+      if (vals.any((v) => v == null)) {
+        gToast(context, 'Chaque part doit être un nombre entier.');
+        return;
+      }
       await _act('money_split_set', {'p_beneficiary': vals[0], 'p_institution': vals[1], 'p_platform': vals[2], 'p_note': why}, 'Règle enregistrée.');
       ref.invalidate(moneyRuleProvider);
     }

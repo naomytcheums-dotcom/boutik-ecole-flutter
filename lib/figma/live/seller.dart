@@ -282,7 +282,7 @@ final platformListingsProvider = NotifierProvider<PlatformListings, List<Listing
 
 /// Fiche acheteur d'un produit de la plateforme : valeurs du serveur, photo du stockage ou visuel d'origine du catalogue.
 LiveProduct platformProduct(Listing l) {
-  final orig = liveCatalog.where((p) => p.title == l.title);
+  final orig = Backend.ready ? const <LiveProduct>[] : liveCatalog.where((p) => p.title == l.title);
   final image = l.images.isNotEmpty ? _photoOf(l) : (orig.isEmpty ? 'placeholder' : orig.first.image);
   return LiveProduct(l.title, l.department.isEmpty ? 'IUT de Douala' : l.department, l.price, l.showcase ? '$platformSeller · exemple' : platformSeller,
       l.description.isEmpty ? (orig.isEmpty ? '' : orig.first.description) : l.description, image,

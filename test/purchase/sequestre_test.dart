@@ -16,7 +16,7 @@ void main() {
   test('montants et états lisibles', () {
     expect(moneyFcfa(7000), '7 000 FCFA');
     expect(moneyFcfa(1250000), '1 250 000 FCFA');
-    expect(moneyFcfa(null), '0 FCFA');
+    expect(moneyFcfa(null), '—');
     expect(moneyStatusLabel('held'), 'En séquestre');
     expect(moneyStatusLabel('frozen'), 'Bloqué');
     expect(moneyStatusLabel('cod_due'), 'À recouvrer');

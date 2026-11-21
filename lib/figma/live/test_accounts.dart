@@ -47,6 +47,9 @@ final isTestAccountProvider = FutureProvider.autoDispose<bool>((ref) async {
 /// Session de l'administrateur, gardée en mémoire seulement (jamais écrite sur l'appareil) pour pouvoir y revenir.
 String? _adminRefreshToken;
 
+/// Oublie la session administrateur gardée pour « Revenir à mon compte » : déconnexion ou session expirée, aucun autre compte ne peut la reprendre.
+void clearAdminReturnToken() => _adminRefreshToken = null;
+
 String testAccountLabel(Map<String, dynamic> a) => testRoleLabels['${a['role']}'] ?? '${a['role']}';
 
 Future<({Map<String, dynamic>? data, String? error})> _fn(Map<String, dynamic> body) async {

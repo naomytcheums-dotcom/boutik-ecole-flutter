@@ -1,7 +1,10 @@
+import '../gen.dart' show gSelfAvatarUrl;
+import 'auth.dart' show gSelfInstitution;
 import 'backend.dart';
 import 'hackathons.dart' show contestTeamsReadable;
 import 'seller.dart' show Listing;
 import 'store.dart' as store;
+import 'test_accounts.dart' show clearAdminReturnToken;
 
 /// Remet à zéro les états qui vivent HORS de l'arbre de providers (statiques et globaux) et qui, sans cela, survivraient à la déconnexion :
 /// code promo et packs du panier du compte précédent, annonces vendeur en mémoire, seuil de stock du vendeur précédent, état du profil.
@@ -14,4 +17,7 @@ void resetAccountScopedState() {
   store.platformProducts = store.liveCatalog;
   Listing.lowStock = 30;
   contestTeamsReadable = true;
+  gSelfAvatarUrl = '';
+  gSelfInstitution = '';
+  clearAdminReturnToken();
 }

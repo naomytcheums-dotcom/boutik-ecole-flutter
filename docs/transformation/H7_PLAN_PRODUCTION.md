@@ -4,6 +4,29 @@
 (même en lecture) n'a eu lieu pour l'écrire. Tout ce qui suit vient de la lecture des fichiers de `supabase/migrations/` ; les requêtes SQL ci-dessous ont été relues mais **pas exécutées** (pas de base
 disponible pour ce lot) : leurs résultats de référence doivent d'abord être établis sur la répétition générale (§5), puis comparés à la production.
 
+## 0. Mise à jour H8 (21 novembre 2026) : liste exacte actuelle
+
+**37 migrations en attente** (versions > `20261119070000`, de `20261120010000` à `20261124040000`), au-dessus des **201** déjà appliquées ; le dossier contient 238 fichiers `.sql` (201 + 37). Aucune version dupliquée, aucune version en production absente du dépôt (recomptées par script ; l'ordre lexical des noms de fichiers est l'ordre d'application). Les fichiers 1 à 34 sont ceux de la liste figée du §1.1 (commits `ef48863c`, `853b6158`, `a5a9dff0`). Les trois derniers s'y ajoutent :
+
+| N° | Fichier | Taille (octets) | SHA-256 (12 premiers) | Commit |
+|---|---|---|---|---|
+| 35 | 20261123010000_h7_seuil_paiement_commission_reglages.sql | 3 831 | 0b4ceaa69bca | H7 |
+| 36 | 20261123030000_h7_lectures_personnel_par_permission.sql | 4 727 | 93f470783da7 | H7 |
+| 37 | 20261124040000_h8_commission_previsualisation.sql | voir manifeste | à recalculer le jour J | H8 |
+
+Les tailles et empreintes du fichier 37 (modifié pendant H8) doivent être recalculées sur le commit final (`Get-FileHash`), comme celles de toute la liste (§1.2). **Toute référence « 34 » plus bas se lit désormais « 37 ».**
+
+Dépendances des trois fichiers (toutes déjà présentes : en production ou plus tôt dans la liste) :
+- **35** (`_payout_limit`, déclencheur `trg_h7_commission_settings` sur `platform_settings`) : recrée `_payout_limit(text, integer)` de `20261117040300` (production) ; aucune dépendance vers la liste. Effet : le réglage `commission.payout_threshold` devient le retrait minimum ; sans valeur enregistrée, comportement inchangé. Les valeurs `commission.*` déjà enregistrées hors bornes (entier 0 à 30, seuil 0 à 100 000 000) ne sont pas réécrites : seules les écritures futures sont contrôlées.
+- **36** (`is_platform_staff()` et politiques de lecture des pièces, demandes d'aide, suppressions de compte, conditions acceptées, inscriptions aux événements, sponsors) : exige `_admin_perm_check` (fichier 15, `20261120040000`) ; **doit donc passer après lui**, ce que l'ordre lexical garantit. Effet visible : un agent « Technique » (`tech.maintenance`) ou un agent limité aux demandes d'aide ne lit plus les pièces d'identité ; chaque lecture exige sa permission (`support.requests`, `security.accounts`, `support.tickets`, `support.orders`, `finance.read`). Les équipes qui comptaient sur l'ancien accès élargi le perdent : à annoncer aux agents avant l'application.
+- **37** (`commission_rate_for`, `commission_preview`, `commission_engine_get/set`, `_commission_engine_enabled`, déclencheur `trg_h8_commission_engine`, ligne `commission.engine_enabled = false`) : exige `_staff_perm` (fichier 22, `20261121010300`), `_require_staff_aal2` (production, `20261117010100`), `money_split_amounts` et `money_split_rules` (production, `20261114002800`), `current_role_name`, `audit_log`. **Aucun calcul réel ne lit l'interrupteur** : appliquer ce fichier ne modifie ni séquestre, ni retrait, ni forfait (prouvé par `h8_commissions.mjs`, 90 contrôles). Il insère une ligne dans `platform_settings` (`on conflict do nothing`).
+
+Retour arrière des trois fichiers : (35) `drop trigger trg_h7_commission_settings on platform_settings ; drop function _h7_commission_settings_check()` et recréer `_payout_limit` depuis `20261117040300` ; (36) recréer les politiques et `is_platform_staff()` depuis les fichiers cités dans l'en-tête de `20261123030000` ; (37) `drop trigger trg_h8_commission_engine on platform_settings ; drop function _h8_commission_engine_guard(), commission_engine_set(boolean), commission_engine_get(), _commission_engine_enabled(), commission_preview(integer, text, text, numeric), commission_rate_for(text) ; delete from platform_settings where key = 'commission.engine_enabled'`. Aucun des trois ne modifie de ligne existante, sauf l'insertion de `commission.engine_enabled`.
+
+Vérifications supplémentaires après application : `select count(*) from supabase_migrations.schema_migrations where version > '20261119070000'` doit donner **37** ; `select value from platform_settings where key = 'commission.engine_enabled'` doit donner `false` ; un compte Technique sans autre permission doit obtenir 0 ligne sur `user_documents`.
+
+Validations locales de cette liste (H8, 21 novembre 2026) : les 238 fichiers se rejouent sur une base PGlite vierge (« fichiers appliqués : 239/239 » avec le banc de test, sans échec) ; 76 scénarios SQL rejoués, 0 échec avant les derniers correctifs de H8, puis `h8_commissions.mjs` 90/90 après correctif. Ce n'est pas une validation sur une copie restaurée de la production (§5, toujours obligatoire).
+
 ## 1. Périmètre exact
 
 Règle donnée par le propriétaire : sont appliquées en production les 201 migrations dont la version est **≤ 20261119070000** (recompté : 201 fichiers, dossier de 235 fichiers `.sql`, aucun autre type de fichier).

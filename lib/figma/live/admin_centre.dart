@@ -70,7 +70,7 @@ final kTeamTools = <String, List<TeamTool>>{
     TeamTool('Versements et retraits', 'Retraits des vendeurs et versements.', {'finance.payouts', 'finance.read'}, screen: '143'),
     TeamTool('Journal financier', 'Mouvements financiers enregistrés.', {'finance.read'}, screen: '141'),
     TeamTool('Rapports financiers', 'Rapports par département et par période.', {'finance.read'}, screen: '142'),
-    TeamTool('Commissions et règles économiques', 'Règles de répartition appliquées.', {'finance.read'}, screen: '135'),
+    TeamTool('Commissions et règles économiques', 'Seuil de paiement appliqué ; taux enregistrés, non appliqués aux calculs.', {'finance.read'}, screen: '135'),
     TeamTool('Moyens de paiement et règles', 'Moyens de paiement acceptés.', {'finance.read'}, screen: '144'),
     TeamTool('Séquestre et répartition', 'Montants en séquestre, blocage et déblocage.', {'finance.read', 'finance.split'}, route: '/admin/sequestre'),
     TeamTool('Registre financier', 'Registre des mouvements.', {'finance.read'}, screen: '284'),

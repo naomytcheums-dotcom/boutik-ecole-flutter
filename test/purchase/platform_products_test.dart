@@ -65,7 +65,8 @@ void main() {
     expect(conf.department, 'Laboratoire de transformation');
     expect(conf.description, 'Pot de 250 g.');
     expect(conf.seller, platformSeller);
-    expect(conf.image, liveCatalog.firstWhere((p) => p.title == 'Confiture artisanale').image);
+    // H8 : en connecté, un produit sans photo enregistrée n'emprunte plus le visuel du catalogue de maquette (aucune image fictive)
+    expect(conf.image, 'placeholder');
     // ordre du catalogue d'origine conservé (Confiture avant Jus de bissap), aucun vendeur fictif
     expect([for (final p in all) p.title], ['Confiture artisanale', 'Jus de bissap']);
     expect(all.any((p) => p.seller == 'Ngono Aminata'), isFalse);

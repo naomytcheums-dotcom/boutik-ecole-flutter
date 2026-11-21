@@ -93,7 +93,7 @@ export async function run(db) {
   await info('entreprise suspendue : publier une offre', `select opp_save('Suspendu','stage','','Stage test','Douala','onsite','1 mois','unpaid',0,'',null::date,array['a']::text[],'Une description assez longue pour passer les controles.',array['m']::text[],'','','',array[]::text[],'',true,'',false)`);
   await info('entreprise suspendue : fermer une offre', `select opp_close('${O1}')`);
 
-  // ---- 5. Équipe : ce qu'un membre peut faire sur les offres de son entreprise (20261118000100)
+  // ---- 5. Équipe : ce qu'un membre peut faire sur les offres de son entreprise (20261124050000)
   const FIN = U('b2'), VIE = U('b3');
   await db.exec("reset role; select set_config('request.jwt.claim.sub', '', false)"); // les triggers de profiles lisent auth.uid() : aucune session pendant la creation des fixtures
   await db.exec('reset role');

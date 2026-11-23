@@ -37,6 +37,7 @@ export async function run(db) {
   }
   await db.exec(`insert into company_profiles(owner_id, company_name, status) values ('${COU}', 'Faux Entrepreneur SARL', 'pending'), ('${OTU}', 'Asso Fantome', 'draft'), ('${SUS}', 'Suspendu Corp', 'approved')`);
   await db.exec(`insert into user_documents (owner_id, kind, name, path, mime, size_bytes, status) select id, 'student_card', 'c', id || '/c.pdf', 'application/pdf', 10, 'verified' from profiles where id in ('${S1}', '${S2}', '${S4}', '${S5}')`);
+  await db.exec(`update profiles set phone = '690010001', phone_verified = true where id = '${S1}'`);   // L4 : proposer un devis exige un étudiant éligible (vérifié + téléphone vérifié)
   await db.exec(`insert into student_talent_prefs(user_id, visible_to_recruiters) values ('${S2}', false)`);
   // H2 : le responsable DEP est rattaché au département « Réseaux » (celui d'Éric) : il ne cherche des talents que dans son département
   await db.exec(`insert into institutions (id, name, status) values ('00000000-0000-0000-0000-00000000fa01', 'IUT F1', 'verified');

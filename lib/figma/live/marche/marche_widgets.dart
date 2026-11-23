@@ -20,7 +20,7 @@ import 'marche_data.dart';
 /// Délai de défilement automatique des photos d'un produit.
 const kCarouselInterval = Duration(seconds: 3);
 
-Widget mButton(String label, VoidCallback? onTap, {bool dark = true, bool busy = false, double? width, IconData? icon}) {
+Widget mButton(String label, VoidCallback? onTap, {bool dark = true, bool busy = false, double? width, IconData? icon, Widget? leading}) {
   final fg = dark ? Colors.white : kInk;
   return Semantics(
     button: true,
@@ -37,7 +37,7 @@ Widget mButton(String label, VoidCallback? onTap, {bool dark = true, bool busy =
         alignment: Alignment.center,
         decoration: BoxDecoration(color: onTap == null ? const Color(0xFFB9B4C7) : (dark ? kInk : Colors.white), borderRadius: BorderRadius.circular(4), border: dark ? null : Border.all(color: kLine)),
         child: Row(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, children: [
-          if (icon != null) ...[Icon(icon, size: 18, color: fg), const SizedBox(width: 8)],
+          if (leading != null) ...[leading, const SizedBox(width: 8)] else if (icon != null) ...[Icon(icon, size: 18, color: fg), const SizedBox(width: 8)],
           Flexible(child: Text(busy ? 'Un instant…' : label, textAlign: TextAlign.center, style: mst(14, w: FontWeight.w700, c: fg))),
         ]),
       ),

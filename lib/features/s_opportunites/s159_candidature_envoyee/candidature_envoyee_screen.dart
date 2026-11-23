@@ -36,7 +36,7 @@ class CandidatureEnvoyeeScreen extends ConsumerWidget {
         gap16,
         KeyValueCard(title: 'Récapitulatif', rowGap: 14, rows: [for (final s in d.sentSummary) KV(s.$1, s.$2)]),
         gap12,
-        SAiCard(title: 'Conseil de l’IA', text: d.sentAdvice),
+        SAiCard(title: 'Conseil pour votre dossier', text: d.sentAdvice),
       ],
     );
   }

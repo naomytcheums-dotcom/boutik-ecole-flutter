@@ -6,11 +6,10 @@ import '../gen.dart' show gToast;
 import 'access.dart' show roleKey;
 import 'auth.dart';
 import 'backend.dart';
+import 'lot20.dart' show kiosksProvider;
 import 'missions.dart' show countdown, kioskSessionProvider;
 import 'qr.dart' show QrView, qrPayload;
 import 'tp_ui.dart';
-
-const _kiosks = {'borne-1': 'Borne 1', 'borne-2': 'Borne 2', 'borne-3': 'Borne 3', 'borne-4': 'Borne 4'};
 
 String _stamp(DateTime? d) => d == null ? 'À choisir' : '${tpDate(d.toIso8601String())} à ${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}';
 
@@ -22,10 +21,13 @@ class KioskTransferPage extends ConsumerStatefulWidget {
 }
 
 class _KioskTransferState extends ConsumerState<KioskTransferPage> {
-  String kiosk = 'borne-1';
+  String kiosk = '';
   final title = TextEditingController();
   DateTime? start, end;
   bool busy = false;
+
+  /// Bornes réellement enregistrées sur le serveur (identifiant → nom) ; la borne choisie est toujours l'une d'elles.
+  Map<String, String> _options(List<Map<String, dynamic>> rows) => {for (final r in rows) '${r['id']}': '${r['name'] ?? r['id']}'};
 
   @override
   void dispose() {
@@ -42,18 +44,20 @@ class _KioskTransferState extends ConsumerState<KioskTransferPage> {
     return DateTime(d.year, d.month, d.day, t.hour, t.minute);
   }
 
-  Future<void> _schedule() async {
+  Future<void> _schedule(Map<String, String> kiosks) async {
     final s = start, e = end;
+    final id = kiosks.containsKey(kiosk) ? kiosk : (kiosks.isEmpty ? '' : kiosks.keys.first);
+    if (id.isEmpty) return gToast(context, 'Aucune borne enregistrée : rien à programmer.');
     if (title.text.trim().length < 3) return gToast(context, 'Donnez un nom à l’événement (3 caractères au moins).');
     if (s == null || e == null) return gToast(context, 'Choisissez le début et la fin de l’événement.');
     if (!e.isAfter(s)) return gToast(context, 'La fin doit suivre le début.');
     if (s.isBefore(DateTime.now())) return gToast(context, 'L’événement ne peut pas commencer dans le passé.');
     setState(() => busy = true);
-    final r = await Backend.rpc('schedule_kiosk_event', {'p_kiosk': kiosk, 'p_title': title.text.trim(), 'p_starts': s.toUtc().toIso8601String(), 'p_ends': e.toUtc().toIso8601String()});
+    final r = await Backend.rpc('schedule_kiosk_event', {'p_kiosk': id, 'p_title': title.text.trim(), 'p_starts': s.toUtc().toIso8601String(), 'p_ends': e.toUtc().toIso8601String()});
     if (!mounted) return;
     setState(() => busy = false);
     if (r.error != null) return gToast(context, Backend.userMessage(r.error!));
-    gToast(context, 'Événement programmé sur ${_kiosks[kiosk]}.');
+    gToast(context, 'Événement programmé sur ${kiosks[id]}.');
     setState(() {
       title.clear();
       start = null;
@@ -76,17 +80,23 @@ class _KioskTransferState extends ConsumerState<KioskTransferPage> {
     }
     final s = ref.watch(kioskSessionProvider);
     final live = s != null && s.server && !s.expired && !s.used;
+    final rows = ref.watch(kiosksProvider);
+    final kiosks = rows == null ? <String, String>{} : _options(rows);
+    final chosen = kiosks.containsKey(kiosk) ? kiosk : (kiosks.isEmpty ? '' : kiosks.keys.first);
     return TpPage(
       title: 'QR de transfert',
       subtitle: 'Borne',
-      bottom: TpButton(busy ? 'Programmation…' : 'Programmer l’événement', busy ? null : _schedule, busy: busy),
+      bottom: TpButton(busy ? 'Programmation…' : 'Programmer l’événement', busy ? null : () => _schedule(kiosks), busy: busy),
       children: [
         Center(child: live ? QrView(data: qrPayload(s.token), size: 160) : Text('Aucun code actif', style: tpSt(13, c: tpGrey))),
         const SizedBox(height: 8),
         Center(child: Text(live ? 'Expire dans ${countdown(ref)}' : 'Le code se génère depuis la fiche d’un produit de la borne.', textAlign: TextAlign.center, style: tpSt(live ? 16 : 12.5, w: live ? FontWeight.w700 : FontWeight.w500, c: live ? tpInk : tpGrey))),
         if (live) tpNote('Code créé par le serveur : aléatoire, valable 5 minutes, à usage unique.'),
         tpSection('Programmer un événement', hint: 'Pendant l’événement, la borne passe en mode événement sur le créneau choisi.'),
-        TpChoice('Borne', _kiosks, kiosk, (v) => setState(() => kiosk = v), required: true),
+        if (kiosks.isEmpty)
+          tpNote(rows == null ? 'Chargement des bornes…' : 'Aucune borne enregistrée pour le moment : rien à programmer.')
+        else
+          TpChoice('Borne', kiosks, chosen, (v) => setState(() => kiosk = v), required: true),
         TpField('Nom de l’événement', title, maxLength: 80, required: true),
         TpButton('Début : ${_stamp(start)}', () async {
           final d = await _pick(start);

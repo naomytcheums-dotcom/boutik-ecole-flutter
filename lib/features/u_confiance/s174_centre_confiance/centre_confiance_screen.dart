@@ -24,13 +24,7 @@ class CentreConfianceScreen extends ConsumerWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    width: 32,
-                    height: 32,
-                    alignment: Alignment.center,
-                    decoration: const BoxDecoration(color: AppColors.ink, shape: BoxShape.circle),
-                    child: const AppIcon(AppIcons.sparkles, size: 16, color: Colors.white),
-                  ),
+                  ClipOval(child: Image.asset('assets/figma/img/2b51b5d6469cca917952ac344a2ddf9cc1440830.png', width: 32, height: 32, fit: BoxFit.cover)),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(

@@ -26,8 +26,9 @@ const kTeamIcons = {
   'tech': Icons.settings_suggest_outlined,
 };
 
-/// Permissions d'aperçu (maquette hors connexion au serveur) : connecté, un compte Finance ou Support n'a AUCUNE permission tant que l'administrateur global
-/// ne lui en a pas attribué explicitement (migration 20261121010200) ; l'accès réel est toujours celui renvoyé par `my_admin_access`.
+/// Permissions d'APERÇU (maquette hors connexion au serveur) : elles sont plus larges que le réel et ne décrivent aucun compte. Connecté, un compte Finance ou Support
+/// n'a AUCUNE permission tant que l'administrateur global ne lui en a pas attribué explicitement (migration 20261121010200) ; l'accès réel est toujours celui
+/// renvoyé par `my_admin_access`. Tout écran qui les affiche hors connexion porte le bandeau « Aperçu de démonstration » (`DemoPreview`, access.dart) et [AdminAccess.preview] est vrai.
 const kTeamDefaults = <String, List<String>>{
   'finance': ['finance.read', 'finance.payments', 'finance.payouts', 'finance.refunds', 'finance.transfers'],
   'support': ['support.tickets', 'support.claims', 'support.disputes', 'support.orders', 'support.requests'],
@@ -76,11 +77,14 @@ const kScreenPermissions = <String, Set<String>>{
 
 /// Équipes, permissions et statut de la personne connectée.
 class AdminAccess {
-  const AdminAccess({this.role = '', this.isAdmin = false, this.teams = const {}});
+  const AdminAccess({this.role = '', this.isAdmin = false, this.teams = const {}, this.preview = false});
 
   final String role;
   final bool isAdmin;
   final Map<String, Set<String>> teams;
+
+  /// Vrai quand ces droits ne viennent pas du serveur (aperçu hors connexion) : à ne jamais présenter comme les droits réels du compte.
+  final bool preview;
 
   static const none = AdminAccess();
 
@@ -97,15 +101,16 @@ class AdminAccess {
     );
   }
 
-  /// Hors connexion au serveur (aperçu, tests) : droits de base de l'équipe du compte, comme après la migration.
+  /// Hors connexion au serveur (aperçu, tests) : droits d'EXEMPLE de l'équipe du compte (voir [kTeamDefaults]), marqués [preview] ; le réel d'un compte Finance ou Support
+  /// neuf est « aucune permission ».
   factory AdminAccess.fromAccount(Account? a) {
     switch (a?.staff) {
       case 'Admin global':
-        return AdminAccess(role: 'admin', isAdmin: true, teams: {for (final t in kTeamOrder) t: {...kTeamDefaults[t]!}});
+        return AdminAccess(role: 'admin', isAdmin: true, preview: true, teams: {for (final t in kTeamOrder) t: {...kTeamDefaults[t]!}});
       case 'Finance':
-        return AdminAccess(role: 'finance', teams: {'finance': {...kTeamDefaults['finance']!}});
+        return AdminAccess(role: 'finance', preview: true, teams: {'finance': {...kTeamDefaults['finance']!}});
       case 'Support':
-        return AdminAccess(role: 'support', teams: {
+        return AdminAccess(role: 'support', preview: true, teams: {
           'support': {...kTeamDefaults['support']!, 'support.refunds'},
           'security': {'security.moderation', 'security.reports', 'security.accounts', 'security.audit'},
         });

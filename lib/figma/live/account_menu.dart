@@ -163,7 +163,7 @@ final _groups = <_Group>[
     _Entry('Publier un vœu', screen: '218', roles: {'client', 'student', 'dept', 'admin'}),
     _Entry('Registre des innovations', screen: '87', roles: {'student', 'dept', 'admin'}),
     _Entry('Kit à partager', screen: '242', roles: {'student', 'dept', 'admin'}),
-    _Entry('Besoins à pourvoir', action: openNeedsDialog, roles: {'student', 'dept', 'admin'}),
+    _Entry('Besoins à pourvoir', action: openNeedsDialog, roles: {'student'}),
     _Entry('Mes missions et jalons', action: myMissionsDialog, roles: {'student', 'dept', 'admin'}),
     _Entry('Mes vœux', action: myWishesDialog, roles: {'client', 'student', 'dept', 'admin'}),
     _Entry('Soumettre mon projet', screen: '205', roles: {'student', 'dept', 'admin'}),

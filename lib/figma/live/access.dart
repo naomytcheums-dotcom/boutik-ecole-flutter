@@ -168,6 +168,56 @@ const loginRequiredScreens = {
   '148-1', '148-2', '155', '156', '236', '241', '243', '257', '258', '259', '260', '261', '272', '273',
 };
 
+/// Écrans du personnel de la plateforme (département, direction, équipes internes, administrateur) : ceux dont la maquette, hors connexion au serveur, montre des données
+/// et des droits FICTIFS. Les écrans partagés avec les étudiants, clients ou organisations (espace vendeur, D1, 205…) n'en font pas partie.
+bool isStaffScreenId(String id) {
+  final r = allowedRoles(id);
+  return r != null && r.every(const {'dept', 'direction', 'finance', 'support', 'admin'}.contains);
+}
+
+/// Clé du bandeau « Aperçu de démonstration » (tests).
+const demoPreviewBannerKey = ValueKey('demo-preview-banner');
+
+/// Hors connexion au serveur, un écran du personnel est un APERÇU : données, compteurs et permissions affichés sont ceux de la maquette, jamais ceux du compte.
+/// Le bandeau le dit en toutes lettres au-dessus de l'écran (connecté, il n'apparaît jamais).
+///
+/// Superposé (comme [TestAccountBanner]), jamais inséré dans une colonne : un écran du personnel se dessine à partir de coordonnées de maquette exactes (console
+/// web 1272 px) et réduire sa hauteur disponible le ferait réduire à l'échelle entière par `GScreen` (texte, zones tactiles et boutons décalés de leur place
+/// réelle — « Actualiser », « Exporter »… devenaient injoignables). Le bandeau reste fin et placé tout en haut, au-dessus du logo (jamais d'un bouton).
+class DemoPreview extends StatelessWidget {
+  const DemoPreview({super.key, required this.child});
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Stack(children: [
+        child,
+        Positioned(
+          left: 0,
+          right: 0,
+          top: 0,
+          child: IgnorePointer(
+              child: Material(
+            key: demoPreviewBannerKey,
+            color: const Color(0xFFFFF3C4),
+            child: SafeArea(
+              bottom: false,
+              child: Container(
+                width: double.infinity,
+                constraints: const BoxConstraints(minHeight: 28),
+                alignment: Alignment.center,
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                child: const Text(
+                  'Aperçu de démonstration : données et droits fictifs, sans lien avec votre compte',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(inherit: false, fontFamily: 'PlusJakartaSans', fontSize: 11.5, fontWeight: FontWeight.w700, color: Color(0xFF7A4B00), textBaseline: TextBaseline.alphabetic),
+                ),
+              ),
+            ),
+          )),
+        ),
+      ]);
+}
+
 /// Enveloppe d'un écran : affiche l'écran si le rôle l'autorise, sinon « Accès réservé ». Les écrans vendeur (57 à 69) exigent en plus la capacité vendeur
 /// (sinon : écran des conditions) et ceux du parcours personnel ([loginRequiredScreens]) un compte connecté.
 class AccessGuard extends ConsumerWidget {
@@ -186,7 +236,8 @@ class AccessGuard extends ConsumerWidget {
   Widget _roleChecked(WidgetRef ref, Account? account) {
     if (canOpen(account, id)) {
       final need = kScreenPermissions[id.replaceAll('_', '-')];
-      return need == null ? child : PermissionGate(name: id, perms: need, child: child);
+      final shown = need == null ? child : PermissionGate(name: id, perms: need, child: child);
+      return !Backend.ready && isStaffScreenId(id) ? DemoPreview(child: shown) : shown;
     }
     if (id == '167' && account != null && Backend.ready) {
       return ref.watch(jurorContestsProvider).when(

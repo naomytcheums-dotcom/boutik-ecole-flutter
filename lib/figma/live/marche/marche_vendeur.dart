@@ -66,7 +66,7 @@ Widget kelaButton(BuildContext context, {required String prompt, required TextEd
         target.text = text.length > 1000 ? text.substring(0, 1000) : text;
         if (context.mounted) gToast(context, 'Texte inséré : relisez-le puis enregistrez.');
       }
-    }, dark: false, icon: Icons.auto_awesome_outlined);
+    }, dark: false, leading: const SizedBox(width: 22, height: 22, child: ClipOval(child: Image(image: AssetImage('assets/figma/img/2b51b5d6469cca917952ac344a2ddf9cc1440830.png'), fit: BoxFit.cover))));
 
 // ------------------------------------------------------------------ ma boutique
 

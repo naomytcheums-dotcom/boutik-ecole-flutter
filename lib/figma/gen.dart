@@ -413,7 +413,7 @@ class GScreen extends StatelessWidget {
       final nav = r.width >= 330 && r.width <= 360 && r.height >= 54 && r.height <= 74 && r.left >= 8 && r.left <= 36 && r.top > h * 0.8 && (r.height >= 58 || r.top > h * 0.85);
       final bar = r.left <= 1 && r.width >= w - 2 && r.bottom >= h - 2 && r.height >= 40 && r.height <= 160;
       if (!nav && !bar) continue;
-      if (nav) pill ??= r;
+      if (nav && (pill == null || r.top > pill.top)) pill = r;
       if (bar) hasBar = true;
       final zone = nav ? Rect.fromLTRB(r.left - 4, r.top - 24, r.right + 4, r.bottom + 8) : Rect.fromLTRB(-1, r.top - 2, w + 1, h + 1);
       for (var j = i; j < children.length; j++) {
@@ -542,7 +542,7 @@ class GScreen extends StatelessWidget {
       child: _PhoneBody(
         padding: EdgeInsets.only(top: pad.top, bottom: pad.bottom + bandH + keyboard),
         content: layer(content, contentFrom, contentTo, clip: single ? Clip.none : Clip.hardEdge),
-        fixed: band.isEmpty ? null : layer(fixed, bandTop, bandBottom),
+        fixed: band.isEmpty ? null : (swapped.isEmpty ? layer(fixed, bandTop, bandBottom) : KeyedSubtree(key: gMenuKey, child: layer(fixed, bandTop, bandBottom))),
         bottom: pad.bottom,
         backing: backing,
         backingHeight: backingH,
@@ -550,6 +550,9 @@ class GScreen extends StatelessWidget {
     );
   }
 }
+
+/// Repère du menu du bas reconstruit (cinq onglets) dans l'arbre de widgets ; sert aux tests de parcours.
+const gMenuKey = ValueKey<String>('menu-bas-reconstruit');
 
 /// Corps d'un écran de téléphone : contenu défilant plein écran et menu du bas fixe. Un glissement vertical démarré sur le
 /// menu fait défiler le contenu (le menu ne « mange » pas le geste), les appuis sur ses boutons restent des appuis.

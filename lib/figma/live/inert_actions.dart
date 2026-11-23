@@ -3,13 +3,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gen.dart' show gAlert, gToast;
 import 'admin.dart' show serverAccountsProvider;
+import 'admin_consoles.dart' show adminOrdersProvider, auditServerProvider;
 import 'backend.dart';
+import 'console.dart' show consoleUsersProvider;
 import 'contests.dart' show serverContestsProvider;
 import 'entreprise.dart' show refreshCompanyData;
+import 'lot20.dart' show kioskIncidentsProvider, kiosksProvider;
 import 'lots.dart' show copyText;
+import 'modules.dart' show cmsItemsProvider, settingsProvider;
 import 'notifs.dart' show notifsProvider;
-import 'ops.dart' show serverReportsProvider;
+import 'ops.dart' show rulesConfigProvider, serverReportsProvider;
 import 'reels.dart' show followingIdsProvider;
+import 'reseau.dart' show claimsListProvider, institutionsProvider;
 import 'review.dart' show reviewQueueProvider;
 import 'seller.dart' show platformListingsProvider, serverSellerOrdersProvider;
 import 'auth.dart' show authProvider, requireLogin;
@@ -21,6 +26,20 @@ import 'store.dart' show ordersProvider;
 /// Règle : une vraie action quand elle existe ; sinon un message explicite, jamais un faux succès.
 
 String _hm(DateTime t) => '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}';
+
+/// Listes de l'administration déjà ouvertes dans la session (aucune lecture réservée n'est lancée pour les autres rôles).
+List<Future<Object?>> _adminLists(WidgetRef ref) => [
+      if (ref.exists(adminOrdersProvider)) ref.read(adminOrdersProvider.notifier).refresh(),
+      if (ref.exists(auditServerProvider)) ref.read(auditServerProvider.notifier).refresh(),
+      if (ref.exists(rulesConfigProvider)) ref.read(rulesConfigProvider.notifier).refresh(),
+      if (ref.exists(settingsProvider)) ref.read(settingsProvider.notifier).refresh(),
+      if (ref.exists(cmsItemsProvider)) ref.read(cmsItemsProvider.notifier).refresh(),
+      if (ref.exists(kiosksProvider)) ref.read(kiosksProvider.notifier).refresh(),
+      if (ref.exists(kioskIncidentsProvider)) ref.read(kioskIncidentsProvider.notifier).refresh(),
+      if (ref.exists(institutionsProvider)) ref.read(institutionsProvider.notifier).refresh(),
+      if (ref.exists(claimsListProvider)) ref.read(claimsListProvider.notifier).refresh(),
+      if (ref.exists(consoleUsersProvider)) ref.read(consoleUsersProvider.notifier).refresh(),
+    ];
 
 /// « Actualiser » des tableaux de bord : relit réellement les données du serveur ; sinon le dit.
 Future<void> uiRefresh(BuildContext context, WidgetRef ref) async {
@@ -39,6 +58,8 @@ Future<void> uiRefresh(BuildContext context, WidgetRef ref) async {
     return;
   }
   try {
+    // Listes de l'administration déjà ouvertes dans la session : relues avec le reste (aucune lecture réservée n'est lancée pour les autres rôles).
+    final admin = _adminLists(ref);
     final results = await Future.wait<Object?>([
       ref.read(serverAccountsProvider.notifier).refresh(),
       ref.read(serverReportsProvider.notifier).refresh(),
@@ -49,10 +70,11 @@ Future<void> uiRefresh(BuildContext context, WidgetRef ref) async {
       ref.read(platformListingsProvider.notifier).refresh(),
       ref.read(notifsProvider.notifier).refresh(),
       refreshCompanyData(container),
+      ...admin,
     ]);
     if (!context.mounted) return;
     // « Données relues » seulement si les besoins, propositions, devis et défis de l'entreprise ont réellement été relus.
-    if (results.last == true) {
+    if (results[results.length - 1 - admin.length] == true) {
       gToast(context, 'Données relues sur le serveur à ${_hm(DateTime.now())}');
     } else {
       gToast(context, 'Actualisation incomplète : certaines listes n’ont pas pu être relues. Réessayez dans un instant.');

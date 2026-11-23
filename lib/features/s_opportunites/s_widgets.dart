@@ -37,13 +37,7 @@ class SAiCard extends StatelessWidget {
               if (avatar != null)
                 CircleAvatar(radius: 12, backgroundImage: AssetImage(avatar!))
               else
-                Container(
-                  width: 26,
-                  height: 26,
-                  decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                  alignment: Alignment.center,
-                  child: const AppIcon(AppIcons.sparkles, size: 14),
-                ),
+                ClipOval(child: Image.asset('assets/figma/img/2b51b5d6469cca917952ac344a2ddf9cc1440830.png', width: 26, height: 26, fit: BoxFit.cover)),
               const SizedBox(width: 10),
               Expanded(child: Text(title, style: AppText.bodyStrong.copyWith(color: Colors.white))),
             ],

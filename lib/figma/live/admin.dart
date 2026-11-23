@@ -20,6 +20,9 @@ const staffRoleKeys = ['client', 'student', 'company', 'dept', 'direction', 'fin
 
 /// Comptes du serveur, lus par l'administrateur (RLS) ; rechargés après chaque modification confirmée.
 class ServerAccounts extends Notifier<List<Account>> {
+  /// `loaded` : la liste a été lue ; `failed` : le serveur a refusé ou n'a pas répondu (aucune liste vide trompeuse).
+  bool loaded = false, failed = false;
+
   @override
   List<Account> build() {
     if (Backend.ready) Future.microtask(refresh);
@@ -28,7 +31,14 @@ class ServerAccounts extends Notifier<List<Account>> {
 
   Future<void> refresh() async {
     final l = await Backend.adminAccounts();
-    if (l != null) state = l;
+    if (!ref.mounted) return;
+    failed = l == null;
+    if (l != null) {
+      loaded = true;
+      state = [...l];
+    } else {
+      state = [...state];
+    }
   }
 }
 

@@ -104,6 +104,7 @@ class CmsPanel extends ConsumerWidget {
     if (_signedOut(ref)) return _note(width, 'Connectez-vous avec un compte de gestion pour voir ces contenus.');
     final all = ref.watch(cmsItemsProvider);
     if (all == null) return _note(width, 'Chargement…');
+    if (ref.read(cmsItemsProvider.notifier).error) return _note(width, 'Contenus indisponibles pour le moment.');
     final rows = [for (final r in all) if (kinds.contains('${r['kind']}')) r];
     return SizedBox(
       width: width,

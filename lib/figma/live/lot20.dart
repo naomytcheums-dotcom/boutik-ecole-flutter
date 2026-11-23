@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../gen.dart' show gDialog, gToast;
 import 'auth.dart';
 import 'backend.dart';
 import 'console.dart';
@@ -81,9 +82,46 @@ Widget incidentsListing({bool open = true, double width = 984, double height = 6
       subtitle: (r) => '${r['kiosk_id']} · ${incidentKind(r['kind'])} · ${dateCourte(r['created_at'])}',
       trailing: (r) => open ? 'Ouvert' : 'Résolu',
       emptyText: open ? 'Aucun incident ouvert.' : 'Aucun incident résolu pour le moment.',
+      onRow: open ? resolveIncidentDialog : null,
       width: width,
       height: height,
     );
+
+/// Incident ouvert touché dans la liste : le marquer résolu (et, au choix, remettre la borne en ligne). La fonction serveur `kiosk_incident_resolve`
+/// exige la permission « commandes et bornes » ou « maintenance » (l'administrateur global les a toutes) : un refus est annoncé tel quel.
+Future<void> resolveIncidentDialog(BuildContext context, WidgetRef ref, Map<String, dynamic> r) async {
+  final id = r['id'];
+  if (id == null) return;
+  Future<void> resolve(String? status) async {
+    final res = await Backend.rpc('kiosk_incident_resolve', {'p_id': id, 'p_status': status});
+    if (!context.mounted) return;
+    if (res.error != null) {
+      gToast(context, res.error!);
+      return;
+    }
+    gToast(context, status == 'online' ? 'Incident résolu : la borne est remise en ligne.' : 'Incident marqué comme résolu.');
+    await Future.wait([ref.read(kioskIncidentsProvider.notifier).refresh(), ref.read(kiosksProvider.notifier).refresh()]);
+  }
+
+  await gDialog<void>(
+    context: context,
+    builder: (ctx) => SimpleDialog(title: Text('${r['message']}'), children: [
+      SimpleDialogOption(
+          onPressed: () {
+            Navigator.pop(ctx);
+            resolve('online');
+          },
+          child: const Text('Résolu : remettre la borne en ligne')),
+      SimpleDialogOption(
+          onPressed: () {
+            Navigator.pop(ctx);
+            resolve(null);
+          },
+          child: const Text('Résolu : ne pas changer l’état de la borne')),
+      SimpleDialogOption(onPressed: () => Navigator.pop(ctx), child: const Text('Annuler')),
+    ]),
+  );
+}
 
 Widget listingsListing({double width = 984, double height = 600, bool onlyPending = false}) => MobileList(
       provider: listingsAdminProvider,
@@ -194,6 +232,7 @@ class KioskKpis extends ConsumerWidget {
     final ks = ref.watch(kiosksProvider);
     final inc = ref.watch(kioskIncidentsProvider);
     if (ks == null || inc == null) return _note(width, 'Chargement…');
+    if (ref.read(kiosksProvider.notifier).error || ref.read(kioskIncidentsProvider.notifier).error) return _note(width, 'Compteurs indisponibles pour le moment.', h: 90);
     int n(String s) => ks.where((k) => kioskLiveStatus(k) == s).length;
     final open = inc.where((r) => r['resolved_at'] == null).length;
     final items = [('En ligne', '${n('online')}'), ('Hors ligne, secours ou sans signal', '${n('offline') + n('fallback') + n('unknown')}'), ('En maintenance', '${n('maintenance')}'), ('Incidents ouverts', '$open')];

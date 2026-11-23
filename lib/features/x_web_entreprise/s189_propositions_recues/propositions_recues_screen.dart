@@ -94,13 +94,7 @@ class _AiAnalysisCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 32,
-                height: 32,
-                decoration: const BoxDecoration(color: AppColors.ink, shape: BoxShape.circle),
-                alignment: Alignment.center,
-                child: const AppIcon(AppIcons.sparkles, size: 17, color: Colors.white),
-              ),
+              ClipOval(child: Image.asset('assets/figma/img/2b51b5d6469cca917952ac344a2ddf9cc1440830.png', width: 32, height: 32, fit: BoxFit.cover)),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(

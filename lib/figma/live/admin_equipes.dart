@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gen.dart' show gAlert, gConfirm, gToast;
 import '../i18n.dart' show Text;
 import '../nav.dart';
+import 'access.dart' show roleKey;
 import 'admin_centre.dart' show kPermissionLabels;
 import 'auth.dart';
 import 'backend.dart';
@@ -43,6 +44,13 @@ final adminTeamHistoryProvider = FutureProvider.autoDispose<List<Map<String, dyn
   return _list(await _call('admin_team_history_list', const {'p_limit': 60}));
 }, retry: (_, _) => null);
 
+/// Historique des attributions d'un seul compte (clé = identifiant du compte).
+final adminTeamUserHistoryProvider = FutureProvider.autoDispose.family<List<Map<String, dynamic>>, String>((ref, user) async {
+  ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
+  if (!Backend.ready) return const [];
+  return _list(await _call('admin_team_history_list', {'p_user': user, 'p_limit': 60}));
+}, retry: (_, _) => null);
+
 /// Comptes Finance / Support dont les droits n'ont jamais été attribués explicitement (droits minimaux, à réviser par l'administrateur global).
 final adminTeamsReviewProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
   ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
@@ -58,6 +66,7 @@ const _actionLabels = {
   'auto_revoke': 'Retrait automatique',
   'migration': 'Migration des comptes existants',
   'reduce': 'Droits hérités réduits au minimum',
+  'keep_minimal': 'Droits minimaux confirmés',
 };
 
 class AdminTeamsScreen extends ConsumerStatefulWidget {
@@ -75,7 +84,32 @@ class _AdminTeamsScreenState extends ConsumerState<AdminTeamsScreen> {
     ref.invalidate(adminTeamsOverviewProvider);
     ref.invalidate(adminTeamMembersProvider(_team));
     ref.invalidate(adminTeamHistoryProvider);
+    ref.invalidate(adminTeamUserHistoryProvider);
     ref.invalidate(adminTeamsReviewProvider);
+  }
+
+  /// L'administrateur confirme, avec un motif, que le compte doit garder les droits minimaux : il sort de la liste à réviser (événement historisé et audité côté serveur).
+  Future<void> _keepMinimal(Map<String, dynamic> r) async {
+    final note = await askText(
+      context,
+      title: 'Droits minimaux voulus pour ${r['name']} ?',
+      body: 'Le compte garde le tableau de bord seulement, sans aucune opération sensible. Votre motif est inscrit dans l’historique du compte.',
+      hint: 'Motif (5 caractères au moins)',
+      ok: 'Confirmer',
+      min: 5,
+    );
+    if (note == null || !mounted) return;
+    setState(() => _busy = true);
+    try {
+      await _call('admin_team_account_keep_minimal', {'p_user': r['user_id'], 'p_note': note.trim()});
+      if (!mounted) return;
+      gToast(context, 'Droits minimaux de ${r['name']} confirmés.');
+      _refresh();
+    } catch (e) {
+      if (mounted) await gAlert(context, 'Confirmation impossible', _msg(e));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
   }
 
   /// Compte à réviser : l'administrateur choisit, en connaissance de cause, les permissions de l'équipe du rôle ; rien n'est coché d'office (les droits d'avant ne sont affichés que pour information).
@@ -102,7 +136,7 @@ class _AdminTeamsScreenState extends ConsumerState<AdminTeamsScreen> {
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           tpSection('Comptes à réviser', hint: 'Comptes Finance ou Support sans permission attribuée par vos soins : droits minimaux (tableau de bord seulement) tant que vous ne leur en attribuez pas.'),
           if (todo.isEmpty)
-            tpNote('Aucun compte à réviser : chaque compte Finance ou Support a reçu ses permissions de votre part.')
+            tpNote('Aucun compte à réviser : chaque compte Finance ou Support a reçu ses permissions de votre part ou la confirmation explicite de ses droits minimaux.')
           else
             for (final r in todo)
               TpCard(
@@ -129,6 +163,24 @@ class _AdminTeamsScreenState extends ConsumerState<AdminTeamsScreen> {
                   ],
                   const SizedBox(height: 10),
                   TpButton('Attribuer des permissions', (_busy || r['suspended'] == true) ? null : () => _assignFromReview(teams, r), compact: true),
+                  const SizedBox(height: 8),
+                  Row(children: [
+                    Expanded(child: TpButton('Droits minimaux voulus', (_busy || r['suspended'] == true) ? null : () => _keepMinimal(r), dark: false, compact: true)),
+                    const SizedBox(width: 10),
+                    Expanded(child: TpButton('Historique', () => _history(account: r), dark: false, compact: true, icon: Icons.history_rounded)),
+                  ]),
+                ]),
+              ),
+          for (final r in rows)
+            if (r['needs_review'] != true && r['minimal_confirmed'] == true)
+              TpCard(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text('${r['name']}', maxLines: 1, overflow: TextOverflow.ellipsis, style: tpSt(14.5, w: FontWeight.w700)),
+                  Text('${r['email'] ?? ''} · rôle ${r['role'] == 'finance' ? 'Finance' : 'Support'}', maxLines: 1, overflow: TextOverflow.ellipsis, style: tpSt(12, c: tpGrey)),
+                  const SizedBox(height: 6),
+                  Text('Droits minimaux confirmés par l’administrateur.', style: tpSt(12, c: tpGreen, w: FontWeight.w600)),
+                  const SizedBox(height: 8),
+                  TpButton('Historique', () => _history(account: r), dark: false, compact: true, icon: Icons.history_rounded),
                 ]),
               ),
         ]);
@@ -239,8 +291,9 @@ class _AdminTeamsScreenState extends ConsumerState<AdminTeamsScreen> {
     await _save(team, '${picked['id']}', '${picked['name']}', perms, isNew: true);
   }
 
-  Future<void> _history() async {
+  Future<void> _history({Map<String, dynamic>? account}) async {
     ref.invalidate(adminTeamHistoryProvider);
+    ref.invalidate(adminTeamUserHistoryProvider);
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -249,12 +302,12 @@ class _AdminTeamsScreenState extends ConsumerState<AdminTeamsScreen> {
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(26))),
       builder: (ctx) => Consumer(
         builder: (ctx, ref, _) {
-          final h = ref.watch(adminTeamHistoryProvider);
+          final h = account == null ? ref.watch(adminTeamHistoryProvider) : ref.watch(adminTeamUserHistoryProvider('${account['user_id']}'));
           return SafeArea(
             child: ConstrainedBox(
               constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(ctx).height * 0.8),
               child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Padding(padding: const EdgeInsets.fromLTRB(20, 18, 20, 8), child: Text('Historique des attributions', style: tpSt(17, w: FontWeight.w700))),
+                Padding(padding: const EdgeInsets.fromLTRB(20, 18, 20, 8), child: Text(account == null ? 'Historique des attributions' : 'Historique de ${account['name']}', style: tpSt(17, w: FontWeight.w700))),
                 Flexible(
                   child: h.when(
                     loading: () => const Padding(padding: EdgeInsets.all(32), child: Center(child: CircularProgressIndicator())),
@@ -470,7 +523,7 @@ final securityFlagsProvider = FutureProvider.autoDispose.family<List<Map<String,
   return _list(await _call('security_flags_list', {'p_status': status}));
 }, retry: (_, _) => null);
 
-const _flagStatus = {'open': 'À examiner', 'escalated': 'Transmis', 'cleared': 'Hors de cause'};
+const _flagStatus = {'open': 'À examiner', 'escalated': 'Transmis', 'cleared': 'Hors de cause', 'suspended': 'Suspendus'};
 
 class SecurityFlagsScreen extends ConsumerStatefulWidget {
   const SecurityFlagsScreen({super.key});
@@ -491,11 +544,32 @@ class _SecurityFlagsScreenState extends ConsumerState<SecurityFlagsScreen> {
       gToast(context, done);
       ref.invalidate(securityFlagsProvider(_status));
       ref.invalidate(securityFlagsProvider('open'));
+      ref.invalidate(securityFlagsProvider('escalated'));
+      ref.invalidate(securityFlagsProvider('suspended'));
+      ref.invalidate(securityFlagsProvider('cleared'));
     } catch (e) {
       if (mounted) await gAlert(context, 'Action impossible', _msg(e));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
+  }
+
+  /// Décision de l'administrateur global : suspension réelle du compte (connexion bloquée) ou classement motivé.
+  Future<void> _resolve(Map<String, dynamic> f, String decision) async {
+    final suspend = decision == 'suspend';
+    if (suspend && !await gConfirm(context, 'Suspendre ${f['name']} ?', 'Sa connexion est bloquée et ses sessions sont fermées. L’action est journalisée et l’auteur du signalement est prévenu.', yes: 'Suspendre')) return;
+    if (!mounted) return;
+    final note = await askText(
+      context,
+      title: suspend ? 'Motif de la suspension' : 'Classer le signalement',
+      body: suspend ? 'Facultatif : inscrit dans la décision.' : 'Indiquez pourquoi ce compte n’est pas suspendu.',
+      hint: suspend ? 'Motif' : 'Motif (5 caractères au moins)',
+      ok: suspend ? 'Suspendre' : 'Classer',
+      min: suspend ? 0 : 5,
+    );
+    if (note == null || !mounted) return;
+    await _run(() => _call('security_flag_resolve', {'p_id': f['id'], 'p_decision': decision, if (note.trim().isNotEmpty) 'p_note': note.trim()}),
+        suspend ? '${f['name']} est suspendu.' : 'Signalement classé.');
   }
 
   Future<void> _decide(Map<String, dynamic> f, String decision) async {
@@ -530,11 +604,14 @@ class _SecurityFlagsScreenState extends ConsumerState<SecurityFlagsScreen> {
   @override
   Widget build(BuildContext context) {
     final flags = ref.watch(securityFlagsProvider(_status));
+    final isAdmin = roleKey(ref.watch(authProvider.select((a) => a.current))) == 'admin';
     return TpPage(
       title: 'Comptes suspects',
       subtitle: 'Sécurité et modération',
       children: [
-        tpNote('Signalez un compte qui semble frauduleux ou abusif : l’administrateur global est prévenu et reste seul à suspendre un compte.'),
+        tpNote(isAdmin
+            ? 'Vous tranchez les comptes signalés : la suspension bloque réellement la connexion du compte ; le classement exige un motif. L’auteur du signalement est prévenu.'
+            : 'Signalez un compte qui semble frauduleux ou abusif : l’administrateur global est prévenu et reste seul à suspendre un compte.'),
         TpButton('Signaler un compte', _busy ? null : _flag, icon: Icons.flag_outlined),
         const SizedBox(height: 14),
         TpChoice('Afficher', _flagStatus, _status, (v) => setState(() => _status = v)),
@@ -556,7 +633,7 @@ class _SecurityFlagsScreenState extends ConsumerState<SecurityFlagsScreen> {
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         Row(children: [
                           Expanded(child: Text('${f['name']}', maxLines: 1, overflow: TextOverflow.ellipsis, style: tpSt(14.5, w: FontWeight.w700))),
-                          Text(_flagStatus['${f['status']}'] ?? '${f['status']}', style: tpSt(11.5, w: FontWeight.w700, c: f['status'] == 'open' ? tpRed : tpGreen)),
+                          Text(_flagStatus['${f['status']}'] ?? '${f['status']}', style: tpSt(11.5, w: FontWeight.w700, c: (f['status'] == 'open' || f['status'] == 'suspended') ? tpRed : tpGreen)),
                         ]),
                         Text('${f['email'] ?? ''} · ${f['role']}${f['suspended'] == true ? ' · suspendu' : ''}', maxLines: 1, overflow: TextOverflow.ellipsis, style: tpSt(12, c: tpGrey)),
                         const SizedBox(height: 8),
@@ -564,12 +641,20 @@ class _SecurityFlagsScreenState extends ConsumerState<SecurityFlagsScreen> {
                         const SizedBox(height: 6),
                         Text('Signalé par ${f['flagged_by'] ?? '—'} · ${tpDate(f['created_at'])}', style: tpSt(11.5, c: tpGrey)),
                         if ('${f['decision_note'] ?? ''}'.isNotEmpty) Text('Décision : ${f['decision_note']}', style: tpSt(11.5, c: tpGrey, h: 1.4)),
-                        if (f['status'] == 'open') ...[
+                        if (f['status'] == 'open' && !isAdmin) ...[
                           const SizedBox(height: 10),
                           Row(children: [
                             Expanded(child: TpButton('Hors de cause', _busy ? null : () => _decide(f, 'clear'), dark: false, compact: true)),
                             const SizedBox(width: 10),
                             Expanded(child: TpButton('Transmettre', _busy ? null : () => _decide(f, 'escalate'), compact: true)),
+                          ]),
+                        ],
+                        if (isAdmin && (f['status'] == 'open' || f['status'] == 'escalated')) ...[
+                          const SizedBox(height: 10),
+                          Row(children: [
+                            Expanded(child: TpButton('Classer', _busy ? null : () => _resolve(f, 'dismiss'), dark: false, compact: true)),
+                            const SizedBox(width: 10),
+                            Expanded(child: TpButton('Suspendre', (_busy || f['suspended'] == true) ? null : () => _resolve(f, 'suspend'), danger: true, compact: true)),
                           ]),
                         ],
                       ]),

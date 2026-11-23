@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../gen.dart' show gDialog, gToast;
+import 'backend.dart';
 import 'console.dart';
 import 'entreprise.dart';
 import 'feedback.dart' show claimReasonLabels, claimReasons;
 import 'finance.dart' show financePaymentsProvider, paymentState;
+import 'money_lot.dart' show claimThreadDialog;
 import 'store.dart' show fcfa;
 
 /// Réseau d'établissements, vœux, lives, litiges et paiements déclarés : listes lues sur le serveur, chargement, état vide et erreur
@@ -12,7 +15,7 @@ import 'store.dart' show fcfa;
 
 final institutionsProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('institutions', 'name,short_name,kind,city,status', order: 'created_at'));
 final departmentsListProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('departments', 'name,status,institutions(name)', order: 'name', ascending: true, eq: {'status': 'verified'}, limit: 500, publicRead: true));
-final claimsListProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('claims', 'reason,details,status,created_at', order: 'created_at'));
+final claimsListProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => TableRows('claims', 'id,reason,details,status,created_at', order: 'created_at'));
 
 String institutionStatus(Object? s) => switch ('$s') { 'verified' => 'Vérifié', 'rejected' => 'Refusé', _ => 'Proposé' };
 String institutionKind(Object? s) => switch ('$s') { 'universite_etat' => 'Université d’État', 'institut' => 'Institut', 'ecole' => 'École', 'prive' => 'Privé', _ => 'Autre' };
@@ -48,9 +51,60 @@ Widget claimsTable({double width = 984, double height = 640}) => MobileList(
       subtitle: (r) => '${r['details']} · ${dateCourte(r['created_at'])}',
       trailing: (r) => claimStatus(r['status']),
       emptyText: 'Aucune réclamation pour le moment.',
+      onRow: claimStaffDialog,
       width: width,
       height: height,
     );
+
+/// Réclamation touchée dans la liste de la gestion : lire le fil et répondre, rejeter ou rembourser l'acheteur.
+/// Les gardes sont celles du serveur (permission « réclamations » ; la décision de remboursement exige en plus le droit de rembourser) : un refus est annoncé tel quel.
+Future<void> claimStaffDialog(BuildContext context, WidgetRef ref, Map<String, dynamic> r) async {
+  final id = '${r['id'] ?? ''}';
+  if (id.isEmpty) return;
+  final closed = '${r['status']}' == 'closed';
+  Future<void> decide(String decision, String note) async {
+    final res = await Backend.rpc('claim_decide', {'p_id': id, 'p_decision': decision, 'p_note': note});
+    if (!context.mounted) return;
+    gToast(context, res.error != null ? Backend.userMessage('${res.error}') : (decision == 'refund' ? 'Acheteur remboursé : commande annulée.' : 'Réclamation non retenue : l’argent du vendeur suit son cours.'));
+    if (res.error == null) await ref.read(claimsListProvider.notifier).refresh();
+  }
+
+  await gDialog<void>(
+    context: context,
+    builder: (ctx) => SimpleDialog(title: Text(claimReason(r['reason'])), children: [
+      SimpleDialogOption(
+          onPressed: () {
+            Navigator.pop(ctx);
+            claimThreadDialog(context, id);
+          },
+          child: const Text('Voir le fil et répondre')),
+      if (!closed)
+        SimpleDialogOption(
+            onPressed: () {
+              Navigator.pop(ctx);
+              decide('release', '');
+            },
+            child: const Text('Rejeter la réclamation')),
+      if (!closed)
+        SimpleDialogOption(
+            onPressed: () async {
+              Navigator.pop(ctx);
+              final c = TextEditingController();
+              final ok = await showDialog<bool>(
+                  context: context,
+                  builder: (x) => AlertDialog(
+                        title: const Text('Motif du remboursement'),
+                        content: TextField(controller: c, maxLines: 3, decoration: const InputDecoration(hintText: 'Motif (obligatoire)')),
+                        actions: [TextButton(onPressed: () => Navigator.pop(x, false), child: const Text('Annuler')), TextButton(onPressed: () => Navigator.pop(x, true), child: const Text('Rembourser'))],
+                      ));
+              final note = c.text;
+              c.dispose();
+              if (ok == true) await decide('refund', note);
+            },
+            child: const Text('Rembourser l’acheteur')),
+    ]),
+  );
+}
 
 Widget declaredPayments({double width = 984, double height = 640}) => MobileList(
       provider: financePaymentsProvider,

@@ -1163,6 +1163,53 @@ class DepartmentAttachScreen extends ConsumerWidget {
     gToast(context, 'Rattachement retiré.');
   }
 
+  static const _historyLabels = {
+    'assign': 'Rattaché',
+    'change': 'Département changé',
+    'confirm': 'Rattachement confirmé',
+    'unassign': 'Rattachement retiré',
+    'existing': 'Rattachement antérieur au suivi',
+  };
+
+  /// Historique des rattachements : d'un compte ([a]) ou de tous les comptes Département.
+  Future<void> history(BuildContext context, {Json? a}) => showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.white,
+        constraints: const BoxConstraints(maxWidth: 420),
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(26))),
+        builder: (ctx) => SafeArea(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(ctx).height * 0.8),
+            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Padding(padding: const EdgeInsets.fromLTRB(20, 18, 20, 8), child: Text(a == null ? 'Historique des rattachements' : 'Historique de ${a['name']}', style: tpSt(17, w: FontWeight.w700))),
+              Flexible(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                  child: DeptData(DeptCall('admin_dept_assignments_history', {if (a != null) 'p_user': a['id'], 'p_limit': 60}), (d) {
+                    final rows = deptList(d);
+                    if (rows.isEmpty) return Padding(padding: const EdgeInsets.symmetric(vertical: 12), child: Text('Aucun rattachement enregistré.', style: tpSt(13, c: tpGrey)));
+                    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      for (final r in rows)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 14),
+                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            Text('${_historyLabels['${r['action']}'] ?? r['action']}${a == null ? ' · ${r['user']}' : ''}', style: tpSt(13.5, w: FontWeight.w700)),
+                            if ('${r['department'] ?? ''}'.isNotEmpty)
+                              Text('${r['department']}${'${r['institution'] ?? ''}'.isEmpty ? '' : ' · ${r['institution']}'}${'${r['previous'] ?? ''}'.isNotEmpty && r['action'] == 'change' ? ' (avant : ${r['previous']})' : ''}', style: tpSt(12.5, h: 1.4)),
+                            Text('${tpDate(r['at'])} · ${'${r['title'] ?? ''}'.isEmpty ? '' : '${r['title']} · '}par ${r['actor'] ?? 'le système'}', style: tpSt(11.5, c: tpGrey, h: 1.4)),
+                            if ('${r['note'] ?? ''}'.isNotEmpty) Text('« ${r['note']} »', style: tpSt(11.5, c: tpGrey, h: 1.4)),
+                          ]),
+                        ),
+                    ]);
+                  }),
+                ),
+              ),
+            ]),
+          ),
+        ),
+      );
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final account = ref.watch(authProvider.select((s) => s.current));
@@ -1170,6 +1217,7 @@ class DepartmentAttachScreen extends ConsumerWidget {
     return TpPage(
       title: 'Rattachement des comptes',
       subtitle: 'Un compte Département appartient à un seul département',
+      actions: [TpRound(icon: Icons.history_rounded, label: 'Historique', onTap: () => history(context))],
       children: [
         DeptData(const DeptCall('admin_dept_unassigned_accounts'), (u) {
           final suggestions = {for (final x in deptList(u)) '${x['id']}': x};
@@ -1204,6 +1252,7 @@ class DepartmentAttachScreen extends ConsumerWidget {
                         c: a['attached'] == true ? tpGreen : tpRed,
                       ),
                     ]),
+                    if ('${a['email'] ?? ''}'.isNotEmpty) Text('${a['email']}', maxLines: 1, overflow: TextOverflow.ellipsis, style: tpSt(12, c: tpGrey)),
                     if (a['department'] != null) Text('${a['department']} · ${a['institution'] ?? ''}', style: tpSt(12, c: tpGrey)),
                     if (a['suspended'] == true) Text('Compte suspendu', style: tpSt(12, c: tpRed)),
                     if (a['to_review'] == true) Padding(padding: const EdgeInsets.only(top: 6), child: _chip('À confirmer', c: tpViolet)),
@@ -1218,6 +1267,8 @@ class DepartmentAttachScreen extends ConsumerWidget {
                       if (a['to_review'] == true) ...[const SizedBox(width: 10), Expanded(child: TpButton('Confirmer', () => confirmAttach(context, ref, a), dark: false))],
                       if (a['attached'] == true) ...[const SizedBox(width: 10), Expanded(child: TpButton('Retirer', () => detach(context, ref, a), danger: true))],
                     ]),
+                    const SizedBox(height: 8),
+                    TpButton('Historique', () => history(context, a: a), dark: false, compact: true, icon: Icons.history_rounded),
                   ]),
                 ),
             ]);
@@ -1365,6 +1416,14 @@ class DepartmentMentorsScreen extends ConsumerWidget {
           }),
         ],
       );
+}
+
+/// Pied de page des toiles Département (108 à 116) : le département RATTACHÉ, tel que le renvoie `my_department` ; jamais le texte libre du profil
+/// (par défaut « Génie informatique ») ni un nom de maquette. Vide tant que la lecture n'a pas abouti ou si le compte n'est pas rattaché.
+String deptFooterText(WidgetRef ref) {
+  final m = deptMap(ref.watch(deptCallProvider(const DeptCall('my_department'))).asData?.value);
+  final name = '${m['department'] ?? ''}'.trim();
+  return m['attached'] == true && name.isNotEmpty ? 'Dép. $name' : '';
 }
 
 /// Écran du registre dont la version « connectée » est une page réelle de l'espace du département : hors connexion (démonstration), la maquette reste affichée.

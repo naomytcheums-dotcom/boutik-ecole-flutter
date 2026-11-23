@@ -36,7 +36,7 @@ class MonDossierScreen extends ConsumerWidget {
         const GSectionTitle('Checklist'),
         SItemList(d.checklist),
         gap12,
-        SAiCard(title: 'Conseil de l’IA', text: d.dossierAdvice),
+        SAiCard(title: 'Conseil pour votre dossier', text: d.dossierAdvice),
       ],
     );
   }

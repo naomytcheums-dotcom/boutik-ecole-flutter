@@ -34,7 +34,7 @@ class G_280 extends ConsumerWidget {
     return GScreen(w: 390, h: 844, radius: 46, bg: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFF4EFE6), Color(0xFFEEE8F3), Color(0xFFF7E6D6)], stops: [0, 0.5, 1]), children: [
       gP(200, 140, 300, 300, gBox(color: Color(0x8CCDB2F2), layerBlur: 120, oval: true), fx: 'halo'),
       gP(-110, 580, 300, 300, gBox(color: Color(0x80FFC38A), layerBlur: 120, oval: true), fx: 'halo'),
-      gP(30, 14, 28, 18, gText('9:41', 14, Color(0xFF111015), weight: 600)),
+      gP(30, 14, 28, 18, gText('9:41', 14, Color(0xFF111015), weight: 600), show: demoContent),
       gP(140, 10, 110, 30, gBox(color: Color(0xFF000000), radii: [15, 15, 15, 15])),
       gP(22, 38, 34, 32, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(30, 70, 44, 44, gBox(color: Color(0x8CFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, backBlur: 20, oval: true), tap: () => gBack(context)),
@@ -49,7 +49,7 @@ class G_280 extends ConsumerWidget {
       gP(44, 268, 80, 15, gText('Version active', 12, Color(0xFF57545F))),
       gP(189, 268, 157, 15, gText(gm('v2 (v1 retirée le 31/12/2026)', ''), 12, Color(0xFF111015), weight: 600)),
       gP(44, 294, 35, 15, gText('Limite', 12, Color(0xFF57545F))),
-      gP(217, 294, 129, 15, gText('600 requêtes / minute', 12, Color(0xFF111015), weight: 600)),
+      gP(217, 294, 129, 15, gText('600 requêtes / minute', 12, Color(0xFF111015), weight: 600), show: demoContent),
       gP(44, 320, 90, 15, gText('Documentation', 12, Color(0xFF57545F))),
       gP(179, 320, 167, 15, gText('api.boutik-ecole.cm/docs ↗', 12, Color(0xFF5A3FE0), weight: 600)),
       gP(44, 384, 121, 18, gText('Clés d’intégration', 14, Color(0xFF111015), weight: 600)),

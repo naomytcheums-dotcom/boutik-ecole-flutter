@@ -24,7 +24,7 @@ import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/inert_actions.dart';
 import '../live/pay.dart';
-import '../live/dept_space.dart' show DeptConsoleOverview;
+import '../live/dept_space.dart' show DeptConsoleOverview, deptFooterText;
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_108 extends ConsumerWidget {
@@ -97,9 +97,9 @@ class G_108 extends ConsumerWidget {
       gP(12, 692, 176, 56, gBox(color: Color(0xFFFFFFFF), radii: [14, 14, 14, 14])),
       gP(22, 702, 36, 36, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [18, 18, 18, 18])),
       gP(66, 707, 59, 14, Consumer(builder: (context, ref, _) { final a = ref.watch(profileAccountProvider); return gText(demoContent ? 'Dr Mbarga' : a.name, 11.5, Color(0xFF111015), weight: 600, inter: true); })),
-      gP(66, 724, 109, 11, Consumer(builder: (context, ref, _) { final a = ref.watch(profileAccountProvider); return gText(demoContent ? 'Dép. Génie informatique' : 'Dép. ${a.department}', 9.5, Color(0xFF57545F), inter: true); })),
+      gP(66, 724, 109, 11, Consumer(builder: (context, ref, _) { return gText(demoContent ? 'Dép. Génie informatique' : deptFooterText(ref), 9.5, Color(0xFF57545F), inter: true); })),
       gP(220, 76, 377, 29, gText('Tableau de bord du département', 24, Color(0xFF18181B), weight: 500, inter: true)),
-      gP(220, 110, 393, 15, gText('Étudiants, productions et ventes du département Génie informatique.', 12, Color(0xFF6D6A64), inter: true)),
+      gP(220, 110, 393, 15, gText('Étudiants, productions et ventes du département Génie informatique.', 12, Color(0xFF6D6A64), inter: true), show: demoContent),
       gP(860, 78, 110, 34, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E3DE), bw: 1, radii: [17, 17, 17, 17])),
       gP(874.125, 87.125, 15.75, 15.75, gImg('assets/figma/v/e1d0d9c2726ec6.svg')),
       gP(898, 87, 56, 14, gText('Actualiser', 11.5, Color(0xFF111015), weight: 500, inter: true)),

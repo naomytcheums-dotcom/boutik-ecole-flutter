@@ -17,6 +17,8 @@ export async function run(db) {
     await db.exec(`insert into auth.users(id,email) values ('${U(n)}','f3b${n}@t.cm'); insert into profiles(id,name,role,email) values ('${U(n)}','${nm}','${r}','f3b${n}@t.cm')`);
   }
   await db.exec(`update profiles set certification = 'approved' where id = '${U(22)}'`);
+  await db.exec(`update profiles set phone = '69032' || right(id::text, 4), phone_verified = true where id in ('${U(22)}', '${U(23)}')`);   // L4 : proposer un devis exige un étudiant éligible
+  await db.exec(`insert into user_documents (owner_id, kind, name, path, mime, size_bytes, status) values ('${U(23)}', 'student_card', 'c.pdf', '${U(23)}/c.pdf', 'application/pdf', 10, 'verified')`);   // vérifié par une pièce, SANS certification
   await db.exec(`insert into projects (owner_id, title, status, visibility) values ('${U(22)}', 'Projet public A', 'approved', 'public'), ('${U(22)}', 'Projet public B', 'approved', 'public'), ('${U(22)}', 'Projet prive', 'approved', 'private'), ('${U(22)}', 'Projet brouillon', 'draft', 'public')`);
 
   // 1. date réelle de l'échéance, calculée depuis le texte libre

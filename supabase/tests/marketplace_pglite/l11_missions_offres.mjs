@@ -15,6 +15,8 @@ export async function run(db) {
   for (const [n, r] of Object.entries(roles)) {
     await db.exec(`insert into auth.users(id,email) values ('${U(n)}','u${n}@t.cm'); insert into profiles(id,name,role,email) values ('${U(n)}','Profil Complet ${n}','${r}','u${n}@t.cm')`);
   }
+  // Lot L4 : proposer un devis est une prestation de service, réservée aux étudiants éligibles (vérifié + téléphone vérifié) : les deux talents de ce scénario le sont.
+  await db.exec(`update profiles set phone = '69011' || right(id::text, 4), phone_verified = true, certification = 'approved' where id in ('${U(12)}', '${U(17)}')`);
   // Rattachement du compte département (lot H2/K3) : un compte non rattaché n'est ni notifié ni autorisé à voir les besoins départementaux.
   await db.exec(`insert into institutions (id, name, status) values ('00000000-0000-0000-0000-00000000c4a0', 'IUT Test', 'verified') on conflict (id) do nothing; insert into departments (id, institution_id, name, status) values ('00000000-0000-0000-0000-00000000c4a1', '00000000-0000-0000-0000-00000000c4a0', 'Génie logiciel', 'verified') on conflict (id) do nothing; insert into department_accounts (user_id, department_id) values ('${U(13)}', '00000000-0000-0000-0000-00000000c4a1') on conflict (user_id) do update set department_id = excluded.department_id; update profiles set department_id = '00000000-0000-0000-0000-00000000c4a1' where id = '${U(11)}'`);
 

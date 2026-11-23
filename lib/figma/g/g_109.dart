@@ -24,7 +24,7 @@ import '../live/chat.dart';
 import '../live/share.dart';
 import '../live/inert_actions.dart';
 import '../live/pay.dart';
-import '../live/dept_space.dart' show DeptConsolePage;
+import '../live/dept_space.dart' show DeptConsolePage, deptFooterText;
 import '../../data/repositories/repositories.dart' show cartProvider;
 
 class G_109 extends ConsumerWidget {
@@ -164,7 +164,7 @@ class G_109 extends ConsumerWidget {
       gP(12, 814, 216, 56, gBox(color: Color(0xFFFFFFFF), radii: [14, 14, 14, 14])),
       gP(22, 824, 36, 36, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, oval: true)),
       gP(66, 827, 59, 14, Consumer(builder: (context, ref, _) { final a = ref.watch(profileAccountProvider); return gText(demoContent ? 'Dr Mbarga' : a.name, 11.5, Color(0xFF111015), weight: 600, inter: true); })),
-      gP(66, 844, 109, 11, Consumer(builder: (context, ref, _) { final a = ref.watch(profileAccountProvider); return gText(demoContent ? 'Dép. Génie informatique' : 'Dép. ${a.department}', 9.5, Color(0xFF57545F), inter: true); })),
+      gP(66, 844, 109, 11, Consumer(builder: (context, ref, _) { return gText(demoContent ? 'Dép. Génie informatique' : deptFooterText(ref), 9.5, Color(0xFF57545F), inter: true); })),
       gP(268, 76, 252, 29, gText('Étudiants et vendeurs', 24, Color(0xFF18181B), weight: 500, inter: true)),
       gP(268, 110, 226, 15, gText('Vue d’ensemble · mise à jour aujourd’hui', 12, Color(0xFF6D6A64), inter: true)),
       gP(954, 78, 110, 34, gBox(color: Color(0xFFFFFFFF), border: Color(0xFFE6E3DE), bw: 1, radii: [17, 17, 17, 17])),

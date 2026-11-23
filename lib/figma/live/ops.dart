@@ -7,6 +7,7 @@ import '../nav.dart';
 import 'audit.dart';
 import 'auth.dart';
 import 'backend.dart';
+import 'entreprise.dart' show dateCourte;
 import 'feedback.dart';
 import 'seller.dart';
 import 'store.dart';
@@ -46,6 +47,9 @@ String _received(String iso) {
 
 /// Signalements réels lus par la modération (support, département, administration).
 class ServerReports extends Notifier<List<Report>> {
+  /// Vrai après une lecture réussie : avant cela (ou si le serveur ne répond pas) les compteurs n'affichent pas de zéro trompeur.
+  bool loaded = false;
+
   @override
   List<Report> build() {
     if (Backend.ready) Future.microtask(refresh);
@@ -55,6 +59,7 @@ class ServerReports extends Notifier<List<Report>> {
   Future<void> refresh() async {
     final rows = await Backend.moderationReports();
     if (rows == null) return;
+    loaded = true;
     state = [
       for (final r in rows)
         Report(
@@ -120,6 +125,14 @@ int _count(List<Report> l, String s) => l.where((r) => r.status == s || (s == 'O
     work: 11 + _count(all, 'En traitement') - _count(base, 'En traitement'),
     done: 142 + _count(all, 'Résolu'),
   );
+}
+
+/// Compteur de l'écran 131 (0 ouverts, 1 en traitement, 2 résolus) : « — » tant que le serveur n'a pas répondu.
+String reportCount(WidgetRef ref, int which) {
+  final all = ref.watch(allReportsProvider);
+  if (Backend.ready && !ref.watch(serverReportsProvider.notifier).loaded) return '—';
+  final c = reportCounters(all);
+  return '${[c.open, c.work, c.done][which]}';
 }
 
 Color reportFill(String s) => switch (s) {
@@ -260,26 +273,62 @@ Future<void> reportDialog(BuildContext context, WidgetRef ref, Report r) {
 // ------------------------------------------------------------------ commissions (135)
 
 class Rules {
-  const Rules({this.product = 5, this.service = 7, this.financing = 4, this.threshold = 10000, this.updated = '01 sept. 2026'});
+  const Rules({this.product = 5, this.service = 7, this.financing = 4, this.threshold = 10000, this.updated = '01 sept. 2026', this.configured = true});
   final int product, service, financing, threshold;
   final String updated;
+
+  /// Faux tant que le serveur n'a enregistré aucune règle (ou n'a pas répondu) : l'écran affiche « — » et non les valeurs de la maquette.
+  final bool configured;
 }
 
+const _ruleKeys = {'product': 'commission.product', 'service': 'commission.service', 'financing': 'commission.financing', 'threshold': 'commission.payout_threshold', 'updated': 'commission.updated_at'};
+
+/// Hors connexion : valeurs de la maquette. Connecté : règles lues dans les réglages du serveur (`settings_all`), jamais de valeur inventée.
 class RulesNotifier extends Notifier<Rules> {
   @override
-  Rules build() => const Rules();
+  Rules build() {
+    if (!Backend.ready) return const Rules();
+    Future.microtask(refresh);
+    return const Rules(configured: false, updated: '');
+  }
+
   void set(Rules r) => state = r;
+
+  Future<void> refresh() async {
+    final r = await Backend.rpc('settings_all', const {});
+    if (!ref.mounted || r.error != null || r.data is! Map) return;
+    final m = r.data as Map;
+    int? n(String k) => (m[_ruleKeys[k]] as num?)?.toInt();
+    final p = n('product'), s = n('service'), f = n('financing'), t = n('threshold');
+    final at = DateTime.tryParse('${m[_ruleKeys['updated']] ?? ''}')?.toLocal();
+    state = Rules(product: p ?? 0, service: s ?? 0, financing: f ?? 0, threshold: t ?? 0, configured: p != null || s != null || f != null || t != null, updated: at == null ? '' : dateCourte(at.toIso8601String()));
+  }
 }
 
 final rulesConfigProvider = NotifierProvider<RulesNotifier, Rules>(RulesNotifier.new);
 
+/// Valeur d'une règle de l'écran 135 : « — » tant que le serveur n'en a enregistré aucune.
+String ruleText(WidgetRef ref, String which) {
+  final r = ref.watch(rulesConfigProvider);
+  if (!r.configured) return '—';
+  return switch (which) { 'product' => '${r.product} %', 'service' => '${r.service} %', 'financing' => '${r.financing} %', _ => fcfa(r.threshold) };
+}
+
+String ruleUpdatedText(WidgetRef ref) {
+  final r = ref.watch(rulesConfigProvider);
+  if (!Backend.ready) return 'Dernier : ${r.updated}';
+  return r.updated.isEmpty ? 'Aucune modification enregistrée' : 'Dernier : ${r.updated}';
+}
+
 Future<void> commissionDialog(BuildContext context, WidgetRef ref) {
   final r = ref.read(rulesConfigProvider);
-  final c1 = TextEditingController(text: '${r.product}');
-  final c2 = TextEditingController(text: '${r.service}');
-  final c3 = TextEditingController(text: '${r.financing}');
-  final c4 = TextEditingController(text: '${r.threshold}');
+  String init(int v) => Backend.ready && !r.configured ? '' : '$v';
+  final c1 = TextEditingController(text: init(r.product));
+  final c2 = TextEditingController(text: init(r.service));
+  final c3 = TextEditingController(text: init(r.financing));
+  final c4 = TextEditingController(text: init(r.threshold));
   String? error;
+  var busy = false;
   Widget field(String label, TextEditingController c) => Padding(
         padding: const EdgeInsets.only(bottom: 8),
         child: TextField(controller: c, keyboardType: TextInputType.number, style: _st, decoration: InputDecoration(labelText: label, border: const OutlineInputBorder(), isDense: true)),
@@ -303,18 +352,45 @@ Future<void> commissionDialog(BuildContext context, WidgetRef ref) {
         actions: [
           TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text('Annuler', style: _st)),
           TextButton(
-            onPressed: () {
-              final p = int.tryParse(c1.text), s = int.tryParse(c2.text), f = int.tryParse(c3.text), t = int.tryParse(c4.text);
-              if ([p, s, f].any((v) => v == null || v < 0 || v > 30) || t == null || t < 0) {
-                set(() => error = 'Taux entre 0 et 30 %, seuil positif.');
-                return;
-              }
-              final now = auditNow().split(' ').take(2).join(' ');
-              ref.read(rulesConfigProvider.notifier).set(Rules(product: p!, service: s!, financing: f!, threshold: t, updated: '$now 2026'));
-              ref.read(auditProvider.notifier).log('Super admin', 'Commission modifiée', 'Produits $p %', 'Paramètres', level: 'Critique');
-              Navigator.of(ctx).pop();
-              gToast(context, 'Règles enregistrées : effet immédiat sur les nouvelles factures');
-            },
+            onPressed: busy
+                ? null
+                : () async {
+                    final p = int.tryParse(c1.text), s = int.tryParse(c2.text), f = int.tryParse(c3.text), t = int.tryParse(c4.text);
+                    if ([p, s, f].any((v) => v == null || v < 0 || v > 30) || t == null || t < 0) {
+                      set(() => error = 'Taux entre 0 et 30 %, seuil positif.');
+                      return;
+                    }
+                    if (Backend.ready) {
+                      // Chaque règle est enregistrée (et journalisée) par le serveur ; rien n'est annoncé sans sa confirmation.
+                      set(() {
+                        busy = true;
+                        error = null;
+                      });
+                      final values = {'product': p, 'service': s, 'financing': f, 'threshold': t, 'updated': DateTime.now().toUtc().toIso8601String()};
+                      for (final e in values.entries) {
+                        final res = await Backend.rpc('setting_set', {'p_key': _ruleKeys[e.key], 'p_value': e.value});
+                        if (res.error != null) {
+                          if (ctx.mounted) {
+                            set(() {
+                              busy = false;
+                              error = '${res.error}';
+                            });
+                          }
+                          await ref.read(rulesConfigProvider.notifier).refresh();
+                          return;
+                        }
+                      }
+                      await ref.read(rulesConfigProvider.notifier).refresh();
+                      if (ctx.mounted) Navigator.of(ctx).pop();
+                      if (context.mounted) gToast(context, 'Règles enregistrées et journalisées');
+                      return;
+                    }
+                    final now = auditNow().split(' ').take(2).join(' ');
+                    ref.read(rulesConfigProvider.notifier).set(Rules(product: p!, service: s!, financing: f!, threshold: t, updated: '$now 2026'));
+                    ref.read(auditProvider.notifier).log('Super admin', 'Commission modifiée', 'Produits $p %', 'Paramètres', level: 'Critique');
+                    Navigator.of(ctx).pop();
+                    gToast(context, 'Règles enregistrées : effet immédiat sur les nouvelles factures');
+                  },
             child: Text('Enregistrer', style: _st.copyWith(color: const Color(0xFF5A3FE0), fontWeight: FontWeight.w700)),
           ),
         ],
@@ -340,9 +416,11 @@ const _seedOrderRows = [
 ];
 
 final orderRowsProvider = Provider<List<OrderRow>>((ref) {
+  // Connecté : la supervision lit les commandes de toute la plateforme (admin_orders, live/admin_consoles.dart), jamais les achats du compte.
+  if (Backend.ready) return const [];
   return [
     for (final o in ref.watch(ordersProvider)) OrderRow(o.id, 'M. Essono', 'Vendeurs', o.total, statusLabel(o.status), real: true),
-    if (!Backend.ready) ..._seedOrderRows,
+    ..._seedOrderRows,
   ];
 });
 

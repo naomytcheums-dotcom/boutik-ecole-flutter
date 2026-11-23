@@ -58,9 +58,9 @@ final marcheIutProjectsProvider = FutureProvider.autoDispose<List<Map<String, dy
   return [for (final x in (r.data as List? ?? const [])) Map<String, dynamic>.from(x as Map)];
 }, retry: (_, _) => null);
 
-/// Rôles qui peuvent répondre à un besoin : la règle de `propose_on_mission` (étudiants, responsables de département, administrateurs).
-/// Un visiteur voit le bouton : il est invité à se connecter au toucher.
-bool canProposeOnMission(Account? a) => a == null || const {'student', 'dept', 'admin'}.contains(roleKey(a));
+/// Rôles qui peuvent répondre à un besoin : les étudiants (proposer un devis est une prestation de service ; le serveur exige en plus la capacité vendeur, `propose_on_mission`).
+/// Le département et l'administrateur attribuent un besoin mais ne proposent pas de devis. Un visiteur voit le bouton : il est invité à se connecter au toucher.
+bool canProposeOnMission(Account? a) => a == null || roleKey(a) == 'student';
 
 String _budget(Map<String, dynamic> c) {
   final a = c['budget_min'], b = c['budget_max'];

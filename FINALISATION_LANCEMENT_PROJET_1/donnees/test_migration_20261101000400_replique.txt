@@ -1,0 +1,107 @@
+BEGIN
+CREATE TABLE
+CREATE TABLE
+CREATE INDEX
+CREATE TABLE
+CREATE INDEX
+CREATE INDEX
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+REVOKE
+GRANT
+DROP POLICY
+NOTICE:  policy "code : titulaire" for relation "referral_codes" does not exist, skipping
+CREATE POLICY
+NOTICE:  policy "parrainage : parrain ou filleul" for relation "referrals" does not exist, skipping
+DROP POLICY
+NOTICE:  policy "gains : titulaire et finance" for relation "earnings" does not exist, skipping
+CREATE POLICY
+DROP POLICY
+CREATE POLICY
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+NOTICE:  trigger "trg_order_paid_referral" for relation "orders" does not exist, skipping
+DROP TRIGGER
+CREATE TRIGGER
+CREATE FUNCTION
+DROP TRIGGER
+NOTICE:  trigger "trg_order_cancelled_referral" for relation "orders" does not exist, skipping
+CREATE TRIGGER
+CREATE FUNCTION
+REVOKE
+GRANT
+REVOKE
+CREATE TABLE
+GRANT
+CREATE FUNCTION
+UPDATE 2
+UPDATE 2
+{"sub" : "37d0d172-5d38-49e3-ab4a-8175997fe8b2", "role" : "authenticated"}
+SET
+DO
+NOTICE:  RESULT|R1 code personnel stable (8 caractères)|PASS|NDDASWHF
+DO
+NOTICE:  RESULT|R2 auto-parrainage refusé|PASS|Vous ne pouvez pas vous parrainer vous-même
+RESET
+{"sub" : "41c9e35e-cdee-4c1f-8068-817dccd55867", "role" : "authenticated"}
+SET
+NOTICE:  RESULT|R3a code inconnu refusé|PASS|Code de parrainage inconnu
+DO
+NOTICE:  RESULT|R3 filleul enregistré (en attente)|PASS|pending
+DO
+DO
+NOTICE:  RESULT|R3b second parrain refusé|PASS|Un parrain est déjà enregistré pour votre compte
+RESET
+{"sub" : "fbee9999-a07e-4700-be3f-caf5977b77a5", "role" : "authenticated"}
+SET
+NOTICE:  RESULT|R4 personnel exclu|PASS|Les comptes du personnel ne participent pas au parrainage
+DO
+RESET
+{"sub" : "41c9e35e-cdee-4c1f-8068-817dccd55867", "role" : "authenticated"}
+SET
+NOTICE:  RESULT|R5a commandes du filleul créées|PASS|
+DO
+RESET
+UPDATE 1
+RESULT|R5 commande payée de 6 000 F : filleul toujours en attente, aucun gain|PASS|pending
+UPDATE 1
+RESULT|R6 activation et prime Bronze 500 F (14 jours d'attente)|PASS|referral_bonus:500
+UPDATE 1
+RESULT|R7 une seule prime par filleul|PASS|
+{"sub" : "37d0d172-5d38-49e3-ab4a-8175997fe8b2", "role" : "authenticated"}
+SET
+NOTICE:  RESULT|R8 synthèse : Bronze, 1 actif, 500 F en attente, 0 disponible, filleul abrégé|PASS|{"tier": "Bronze", "bonus": 500, "active": 1, "waiting": 500, "referees": [{"name": "fa", "earned": 500, "status": "active"}], "available": 0, "share_pct": 0, "this_month": 500, "pending_referrals": 0}
+DO
+RESET
+{"sub" : "41c9e35e-cdee-4c1f-8068-817dccd55867", "role" : "authenticated"}
+SET
+NOTICE:  RESULT|R11 gains du parrain invisibles au filleul|PASS|0
+DO
+NOTICE:  RESULT|R11b écriture directe refusée|PASS|permission denied for table earnings
+DO
+RESET
+{"role":"anon"}
+SET
+DO
+NOTICE:  RESULT|R11c anonyme refusé|PASS|permission denied for function my_referral_code
+RESET
+UPDATE 1
+RESULT|R9 annulation de la commande : prime annulée|PASS|
+INSERT 0 4
+UPDATE 1
+RESULT|R10 palier Argent : part de 2 % (18 000 F → 360 F)|PASS|360
+UPDATE 1
+{"sub" : "37d0d172-5d38-49e3-ab4a-8175997fe8b2", "role" : "authenticated"}
+SET
+NOTICE:  RESULT|R12 Argent, 5 actifs, 360 F disponibles, prime annulée exclue|PASS|{"tier": "Argent", "bonus": 750, "active": 5, "waiting": 0, "available": 360, "share_pct": 0.02, "this_month": 360, "pending_referrals": 0}
+DO
+RESET
+UPDATE 1
+UPDATE 1
+UPDATE 1
+RESULT|R13 parrainage expiré après 90 jours|PASS|
+ROLLBACK
+RESULT|R14 réplique inchangée après ROLLBACK|PASS|

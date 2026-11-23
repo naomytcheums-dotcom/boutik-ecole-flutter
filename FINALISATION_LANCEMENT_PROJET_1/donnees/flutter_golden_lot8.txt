@@ -1,0 +1,345 @@
+Resolving dependencies...
+Downloading packages...
+  archive 4.5.2 (4.6.0 available)
+  code_assets 1.2.1 (2.1.0 available)
+  cross_file 0.3.5+5 (0.4.0 available)
+  cupertino_ui 1.1.4 (1.1.5 available)
+  flutter_svg 2.3.0 (2.3.2 available)
+  go_router 18.1.1 (18.1.2 available)
+  hooks 2.0.2 (2.2.0 available)
+  image_picker_ios 0.8.13+13 (0.8.13+14 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  material_ui 1.8.0 (1.9.0 available)
+  meta 1.18.3 (1.19.0 available)
+  objective_c 9.5.0 (9.6.2 available)
+  petitparser 7.0.2 (7.1.0 available)
+  qr 3.0.2 (4.0.1 available)
+  record_use 0.6.0 (1.1.1 available)
+  shared_preferences_foundation 2.5.7 (2.6.1 available)
+  test_api 0.7.12 (0.7.15 available)
+  vector_graphics 1.2.4 (1.2.5 available)
+  vector_graphics_compiler 1.3.3 (1.3.4 available)
+  vector_math 2.4.0 (2.4.4 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+21 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart
+00:00 +0: (setUpAll)
+00:00 +0: golden 255 · Suivi de publication
+00:02 +1: golden 256 · Contrôles de la fiche
+00:03 +2: golden 257 · Paiement en attente de confirmation
+00:03 +3: golden 258 · Paiement échoué
+00:04 +4: golden 259 · Reçu
+00:04 +5: golden 260 · Facture
+00:04 +6: golden 261 · Mon espace client
+00:05 +7: golden 270 · Showroom national
+00:05 +8: golden 271 · Mes liens et réseaux
+00:06 +9: golden 272 · Vérification en 2 étapes
+00:07 +10: golden 273 · Mes données
+00:07 +11: golden 274 · Conditions générales
+00:07 +12: golden 275 · Déposer un produit (erreurs)
+00:08 +13: golden 276 · Borne hors ligne
+00:08 +14: golden 277 · Supervision des bornes
+00:09 +15: golden 278 · Fiche projet · liens et PI
+00:09 +16: golden 279 · Ajouter des fichiers
+00:09 +17: golden 280 · Intégrations
+00:10 +18: golden 281 · Rôles et périmètres
+00:10 +19: golden 282 · QR de transfert
+00:10 +20: golden 283 · Registre des certificats
+00:11 +21: golden 284 · Registre financier
+00:11 +22: golden 285 · Espace projet
+00:11 +23: golden 286 · Soumissions et équipe
+00:12 +24: golden 74 · Talent Passport
+00:12 +25: golden 287 · Catalogue département (tablette)
+00:13 +26: golden 262 · Accueil B2B
+00:13 +27: golden 263 · Médiathèque
+00:14 +28: golden 264 · Pages éditoriales
+00:14 +29: golden 265 · Modèles de notifications
+00:15 +30: golden 266 · État technique
+00:15 +31: golden 267 · Boutik-École Network
+00:15 +32: golden 268 · Analytics de la borne
+00:16 +33: golden 269 · Innovation Radar
+00:17 +34: golden 288 · Catalogue département (web)
+00:17 +35: golden 250b · Nouvelle publication
+00:18 +36: golden 01 · Bienvenue
+00:19 +37: golden 02 · Bienvenue (variante)
+00:19 +38: golden 03 · Accueil
+00:20 +39: golden 04 · Explorer
+00:21 +40: golden 05 · Fiche produit
+00:22 +41: golden 06 · Mon panier
+00:22 +42: golden 07 · Livraison
+00:23 +43: golden 08 · Paiement
+00:24 +44: golden 09 · Ma commande
+00:24 +45: golden 10 · Profil étudiant
+00:25 +46: golden 11 · Connexion
+00:26 +47: golden 12 · Créer un compte
+00:26 +48: golden 13 · Choix du profil
+00:27 +49: golden 14 · Vérification du compte
+00:27 +50: golden 15 · Mot de passe oublié
+00:28 +51: golden 16 · Nouveau mot de passe
+00:28 +52: golden 17 · Conditions et confidentialité
+00:29 +53: golden 18 · État de validation
+00:29 +54: golden 18b · Compléter mon profil
+00:30 +55: golden 18c · Vérification étudiant
+00:30 +56: golden 19 · Découvrir
+00:31 +57: golden 20 · Résultats de recherche
+00:32 +58: golden 21 · Recherche avancée
+00:33 +59: golden 22 · Catalogue de produits
+00:33 +60: golden 22b · Services et prestations
+00:34 +61: golden 22c · Tendances et nouveautés
+00:34 +62: golden 22d · Pour vous
+00:35 +63: golden 23 · Filtres
+00:35 +64: golden 24 · Profil vendeur
+00:36 +65: golden 25 · Mes favoris
+00:36 +66: golden 25b · Mes collections
+00:37 +67: golden 26 · Comparer des offres
+00:37 +68: golden 27 · Mes adresses
+00:37 +69: golden 28 · Mes commandes
+00:38 +70: golden 29 · Détail de la commande
+00:38 +71: golden 30 · Commande reçue
+00:39 +72: golden 31 · Avis et évaluations
+00:39 +73: golden 127 · Tableau de bord de la plateforme
+00:42 +74: golden 128 · Comptes, rôles et permissions
+00:43 +75: golden 129 · Institutions
+00:43 +76: golden 130 · Modération
+00:44 +77: golden 131 · Signalements
+00:44 +78: golden 132 · Commandes et incidents
+00:44 +79: golden 133 · Litiges et remboursements
+00:45 +80: golden 134 · Transactions et rapprochements
+00:45 +81: golden 135 · Commissions et règles économiques
+00:46 +82: golden 136 · Sécurité et accès
+00:46 +83: golden 137 · Journal d’audit global
+00:46 +84: golden 138 · Configuration générale
+00:47 +85: golden 139 · Tableau de bord financier
+00:48 +86: golden 140 · Paiements déclarés
+00:48 +87: golden 141 · Journal financier
+00:48 +88: golden 142 · Rapports financiers
+00:49 +89: golden 143 · Versements et montants dus
+00:49 +90: golden 144 · Moyens de paiement et règles
+00:49 +91: golden 145 · Points de retrait et kiosques
+00:50 +92: golden 146-1 · Kiosque (gestionnaire)
+00:50 +93: golden 146-2 · Remise d’une commande
+00:51 +94: golden 147-1 · Incidents et maintenance
+00:51 +95: golden 147-2 · Tickets de support
+00:51 +96: golden 147-3 · Interventions et résolutions
+00:52 +97: golden 148-1 · Paramètres
+00:52 +98: golden 148-2 · Centre de sécurité
+00:53 +99: golden 149 · Langue et affichage
+00:53 +100: golden 150-1 · Synchronisation
+00:55 +101: golden 150-2 · Session expirée
+00:55 +102: golden 150-3 · Connexion impossible
+00:55 +103: golden 150-4 · Mes commandes (vide)
+00:55 +104: golden 151 · Opportunités
+00:56 +105: golden 152 · Kéla te recommande
+00:56 +106: golden 153 · Pourquoi cette offre ?
+00:57 +107: golden 154 · Mon dossier
+00:57 +108: golden 155 · Alertes
+00:58 +109: golden 156 · Préférences d’alertes
+00:58 +110: golden 157 · Résumé de Kéla
+00:58 +111: golden 158 · Candidatures classées
+00:59 +112: golden 159 · Candidature envoyée
+00:59 +113: golden 160 · Hackathons et concours
+00:59 +114: golden 161 · Hackathon
+01:00 +115: golden 162 · Inscription
+01:00 +116: golden 163 · Trouver des coéquipiers
+01:01 +117: golden 164 · Espace d’équipe
+01:01 +118: golden 165 · Dépôt du projet
+01:02 +119: golden 166 · Résultats
+01:02 +120: golden 167 · Noter un projet
+01:02 +121: golden 168 · Publier un concours
+01:03 +122: golden 169 · Modération des concours
+01:03 +123: golden 170 · Signaler une annonce
+01:03 +124: golden 171 · Paiement sécurisé
+01:04 +125: golden 172 · Confiance du vendeur
+01:04 +126: golden 173 · Partager
+01:05 +127: golden 174 · Centre de confiance
+01:05 +128: golden 211 · Passeport du produit
+01:05 +129: golden 212 · Vérifier un certificat
+01:06 +130: golden 213 · Registre des certificats
+01:06 +131: golden 175 · Bienvenue, étudiant
+01:07 +132: golden 176 · Bienvenue
+01:07 +133: golden 177 · Bienvenue, entreprise
+01:07 +134: golden 178 · Bienvenue, jury
+01:07 +135: golden 179 · Guide d’utilisation
+01:08 +136: golden 180 · Rôles et permissions
+01:08 +137: golden 181 · Matrice des permissions
+01:08 +138: golden 182 · Explorer (chargement)
+01:09 +139: golden 183 · Mes commandes (hors ligne)
+01:09 +140: golden 184 · Économie de données
+01:09 +141: golden 185 · Language
+01:09 +142: golden 186 · Accessibilité
+01:10 +143: golden 41 · Adresse de livraison
+01:10 +144: golden 42 · Récapitulatif
+01:11 +145: golden 43 · Instructions de paiement
+01:11 +146: golden 44 · Commande confirmée
+01:12 +147: golden 45 · Mes commandes
+01:12 +148: golden 46 · Suivi de livraison
+01:12 +149: golden 47 · Annuler la commande
+01:13 +150: golden 48 · Réclamation
+01:13 +151: golden 49 · Aide et support
+01:13 +152: golden 50 · Notifications
+01:14 +153: golden 51 · Détail d’une notification
+01:14 +154: golden 52 · Messages
+01:14 +155: golden 53 · Conversation
+01:15 +156: golden 54 · Conversation commande
+01:15 +157: golden 55 · Conversation entreprise
+01:15 +158: golden 56 · Notifications et confidentialité
+01:16 +159: golden 57 · Tableau de bord vendeur
+01:16 +160: golden 58 · Nouveau produit
+01:17 +161: golden 59 · Nouveau service
+01:17 +162: golden 60 · Modifier l’annonce
+01:17 +163: golden 61 · Mon catalogue
+01:18 +164: golden 62 · Stocks
+01:18 +165: golden 63 · Commandes reçues
+01:18 +166: golden 64 · Préparer une commande
+01:19 +167: golden 65 · Détail d’une vente
+01:19 +168: golden 66 · Revenus
+01:19 +169: golden 67 · Statistiques
+01:20 +170: golden 69 · Validations
+01:20 +171: golden 70 · Talents étudiants
+01:20 +172: golden 72 · Ajouter à mon profil
+01:21 +173: golden 73 · Mes documents
+01:21 +174: golden 75 · Opportunités
+01:22 +175: golden 76 · Ma candidature
+01:22 +176: golden 77 · Profil de mentor
+01:22 +177: golden 78 · Projets innovants
+01:23 +178: golden 79 · Projet
+01:23 +179: golden 80 · Soumettre un projet
+01:23 +180: golden 81 · Équipe du projet
+01:24 +181: golden 82 · Journal du projet
+01:24 +182: golden 83 · Médias et preuves
+01:24 +183: golden 84 · Nouvelle campagne
+01:25 +184: golden 84b · Financement
+01:25 +185: golden 85 · Objectifs et jalons
+01:26 +186: golden 86 · Résultats de campagne
+01:26 +187: golden 87 · Registre des innovations
+01:26 +188: golden 100 · Événements
+01:27 +189: golden 101 · Événement
+01:27 +190: golden 102 · Vitrine
+01:27 +191: golden 103 · Communauté
+01:28 +192: golden 104 · Carte de l’innovation
+01:28 +193: golden 105 · Inter-établissements
+01:28 +194: golden 106 · Économie circulaire
+01:29 +195: golden 107 · Mon impact
+01:29 +196: golden 237 · Impact par territoire
+01:30 +197: golden 238 · Impact de Boutik-École
+01:30 +198: golden 239 · Rapport sponsors
+01:31 +199: golden 108 · Tableau de bord du département
+01:31 +200: golden 109 · Étudiants et vendeurs
+01:32 +201: golden 110 · Validation des annonces
+01:32 +202: golden 111 · Validation des projets
+01:32 +203: golden 112 · Statistiques du département
+01:33 +204: golden 113 · Suivi des productions
+01:33 +205: golden 114 · Mentors et encadreurs
+01:33 +206: golden 115 · Événements et initiatives
+01:34 +207: golden 116 · Rapports et exports
+01:34 +208: golden 214 · Départements
+01:35 +209: golden 215 · Fiche département
+01:35 +210: golden 117 · Tableau de bord institutionnel
+01:36 +211: golden 118 · Établissement et identité visuelle
+01:36 +212: golden 119 · Départements et filières
+01:36 +213: golden 120 · Utilisateurs et affectations
+01:37 +214: golden 121 · Responsables et encadreurs
+01:37 +215: golden 122 · Circuits de validation
+01:37 +216: golden 123 · Ventes et activité
+01:38 +217: golden 124 · Événements et campagnes
+01:38 +218: golden 125 · Rapports consolidés
+01:38 +219: golden 126 · Journal d’audit
+01:38 +220: golden 32 · Détail du produit
+01:39 +221: golden 33 · Histoire du produit
+01:39 +222: golden 34 · Galerie
+01:39 +223: golden 35 · Disponibilité
+01:40 +224: golden 36 · Détail du service
+01:40 +225: golden 38 · Réputation
+01:41 +226: golden 39 · Demande de renseignements
+01:41 +227: golden 40 · Demande de devis
+01:42 +228: golden 88 · Espace entreprise
+01:42 +229: golden 89 · Profil de l’entreprise
+01:42 +230: golden 90 · Publier un besoin
+01:43 +231: golden 91 · Rechercher des talents
+01:43 +232: golden 93 · Propositions reçues
+01:43 +233: golden 93b · Proposition
+01:44 +234: golden 94 · Comparer les propositions
+01:44 +235: golden 95 · Devis et négociations
+01:44 +236: golden 95b · Demande de devis
+01:45 +237: golden 96 · Défis d’innovation
+01:45 +238: golden 97 · Recrutement
+01:45 +239: golden 98 · Collaborations
+01:46 +240: golden 99 · Historique
+01:46 +241: golden 240 · Parrainer et gagner
+01:47 +242: golden 241 · Mes contacts
+01:47 +243: golden 242 · Kit à partager
+01:48 +244: golden 243 · Mes gains
+01:48 +245: golden 244 · Cercle
+01:48 +246: golden 244b · Cercle · publication aimée
+01:49 +247: golden 245 · Reels
+01:50 +248: golden 246 · Lives
+01:50 +249: golden 247 · Profil créateur
+01:51 +250: golden 248 · Boutique du créateur
+01:51 +251: golden 249 · Créer
+01:52 +252: golden 250 · Nouvelle publication
+01:52 +253: golden 251 · Découvrir
+01:52 +254: golden 252 · Commentaires et avis
+01:53 +255: golden 253 · Défis et récompenses
+01:53 +256: golden 253b · Défis · récompense récupérée
+01:54 +257: golden 254 · Activité
+01:54 +258: golden 216 · Marché des vœux
+01:54 +259: golden 217 · Fiche d’un vœu
+01:55 +260: golden 218 · Publier un vœu
+01:55 +261: golden 219 · Nouveau duel
+01:56 +262: golden 220 · Duel de talents
+01:56 +263: golden 221 · Résultat du duel
+01:56 +264: golden 222 · Atelier en direct
+01:57 +265: golden 223 · Ateliers en direct
+01:57 +266: golden 224 · Validation des vœux
+01:57 +267: golden 225 · Jumeau 3D
+01:58 +268: golden 226 · Modération des duels
+01:58 +269: golden 227 · Régie des ateliers en direct
+01:58 +270: golden 228 · Partager mon CV
+01:58 +271: golden 229 · CV vivant
+01:58 +272: golden 191 · Votre besoin
+01:59 +273: golden 192 · Votre devis
+01:59 +274: golden 193 · Paiement sécurisé
+01:59 +275: golden 194 · Ma mission
+02:00 +276: golden 195 · Ajouter une preuve
+02:00 +277: golden 196 · Dossier
+02:00 +278: golden 197 · Valider le jalon
+02:00 +279: golden 198 · Briefs reçus
+02:00 +280: golden 199 · Attribuer
+02:00 +281: golden 200 · Missions et encaissement
+02:01 +282: golden 201 · Mes missions
+02:01 +283: golden 202 · Pack Lancement de marque
+02:01 +284: golden 203 · Mes compétences
+02:02 +285: golden 204 · Coup de pouce startup
+02:02 +286: golden 205 · Soumettre mon projet
+02:03 +287: golden 206 · Borne · Accueil
+02:03 +288: golden 207 · Borne · Explorer
+02:04 +289: golden 208 · Borne · Fiche article
+02:05 +290: golden 209 · Borne · QR téléphone
+02:06 +291: golden 210 · Borne · C’est envoyé
+02:06 +292: golden 187 · Tableau de bord entreprise
+02:07 +293: golden 188 · Recherche de talents et d’équipes
+02:07 +294: golden 189 · Propositions reçues
+02:08 +295: golden 190 · Devis et négociations
+02:08 +296: golden 230 · Assistante vocale Kéla
+02:08 +297: golden 231 · Accueil Kéla
+02:09 +298: golden 232 · Voix en texte
+02:09 +299: golden 233 · WhatsApp · suivi de mission
+02:10 +300: golden 234 · WhatsApp · validation de jalon
+02:10 +301: golden 235 · WhatsApp · paiement sécurisé
+02:10 +302: golden 236 · Canaux et notifications
+02:10 +303: golden A1 · Assistante vocale Kéla
+02:11 +304: golden A2 · Accueil Kéla
+02:11 +305: golden A3 · Voix en texte
+02:11 +306: golden P1 · Profil talent
+02:11 +307: golden P2 · Profil talent · abonnement
+02:12 +308: golden P3 · Avis et outils connectés
+02:12 +309: golden P4 · Nouvelle publication
+02:13 +310: golden V1 · Vitrine
+02:14 +311: golden P5 · Connecter mes outils
+02:14 +312: golden L1 · Aller en direct
+02:15 +313: golden S1 · Démarrage animé
+02:15 +314: golden D1 · Tableau de bord du studio
+02:16 +315: (tearDownAll)
+02:16 +315: All tests passed!

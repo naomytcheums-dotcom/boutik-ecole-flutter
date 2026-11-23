@@ -1,0 +1,998 @@
+{
+ "comptes": [
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 12:43:44.557326+00",
+   "email": "zz-test-eng-a-994cdc91@example.com",
+   "facteurs_mfa": 0,
+   "id8": "1d6f4947",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 12:43:44.606418+00",
+   "name": "Test eng-a",
+   "role": "student",
+   "sessions": 1
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 12:43:45.95353+00",
+   "email": "zz-test-eng-b-d4cdabe5@example.com",
+   "facteurs_mfa": 0,
+   "id8": "ae712502",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 12:43:45.980165+00",
+   "name": "Test eng-b",
+   "role": "client",
+   "sessions": 1
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 14:04:18.232125+00",
+   "email": "zz-test-par-a39adca8@example.com",
+   "facteurs_mfa": 0,
+   "id8": "14086010",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 14:06:08.009107+00",
+   "name": "Test Parcours",
+   "role": "client",
+   "sessions": 5
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 14:04:19.738713+00",
+   "email": "zz-test-par-d6063908@example.com",
+   "facteurs_mfa": 0,
+   "id8": "f5f349a4",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 14:06:42.987086+00",
+   "name": "Test Parcours",
+   "role": "student",
+   "sessions": 2
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 14:07:21.533203+00",
+   "email": "zz-test-par-03c1110a@example.com",
+   "facteurs_mfa": 0,
+   "id8": "82872259",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 14:07:21.553484+00",
+   "name": "Test Parcours",
+   "role": "client",
+   "sessions": 1
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 14:07:22.676083+00",
+   "email": "zz-test-par-7cf0bbe0@example.com",
+   "facteurs_mfa": 0,
+   "id8": "288ba180",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 14:08:18.055041+00",
+   "name": "Test Parcours",
+   "role": "student",
+   "sessions": 2
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 14:08:41.034205+00",
+   "email": "zz-test-par-261ab45c@example.com",
+   "facteurs_mfa": 0,
+   "id8": "f827f111",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 14:08:41.046155+00",
+   "name": "Test Parcours",
+   "role": "client",
+   "sessions": 1
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 14:08:43.138839+00",
+   "email": "zz-test-par-949691a8@example.com",
+   "facteurs_mfa": 0,
+   "id8": "cefabc2c",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 14:09:07.43715+00",
+   "name": "Test Parcours",
+   "role": "student",
+   "sessions": 2
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 14:10:17.369477+00",
+   "email": "zz-test-par-98984f23@example.com",
+   "facteurs_mfa": 0,
+   "id8": "1cef2aab",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 14:10:17.402121+00",
+   "name": "Test Parcours",
+   "role": "client",
+   "sessions": 1
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 14:10:21.696301+00",
+   "email": "zz-test-par-3f12338b@example.com",
+   "facteurs_mfa": 0,
+   "id8": "de24bdf8",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 14:10:21.746954+00",
+   "name": "Test Parcours",
+   "role": "student",
+   "sessions": 1
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 14:11:12.980066+00",
+   "email": "zz-test-par-24ee68e7@example.com",
+   "facteurs_mfa": 0,
+   "id8": "f9636272",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 14:12:22.328779+00",
+   "name": "Test Parcours",
+   "role": "client",
+   "sessions": 2
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 14:11:14.545542+00",
+   "email": "zz-test-par-50e92f0b@example.com",
+   "facteurs_mfa": 0,
+   "id8": "b5b395c5",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 14:11:14.554851+00",
+   "name": "Test Parcours",
+   "role": "student",
+   "sessions": 1
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 14:13:01.149761+00",
+   "email": "zz-test-par-2e6bfabc@example.com",
+   "facteurs_mfa": 0,
+   "id8": "80461f8c",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 14:13:54.191989+00",
+   "name": "Test Parcours",
+   "role": "client",
+   "sessions": 2
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 14:13:03.77441+00",
+   "email": "zz-test-par-0c3cbdc0@example.com",
+   "facteurs_mfa": 0,
+   "id8": "be75e122",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 14:13:03.782236+00",
+   "name": "Test Parcours",
+   "role": "student",
+   "sessions": 1
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 14:34:41.525825+00",
+   "email": "zz-test-par-098839de@example.com",
+   "facteurs_mfa": 0,
+   "id8": "4666eb90",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 14:34:41.56438+00",
+   "name": "Test Parcours",
+   "role": "client",
+   "sessions": 1
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 14:34:49.783316+00",
+   "email": "zz-test-par-e8bf04a3@example.com",
+   "facteurs_mfa": 0,
+   "id8": "df382ca9",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 14:34:49.790581+00",
+   "name": "Test Parcours",
+   "role": "student",
+   "sessions": 1
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 14:36:29.548512+00",
+   "email": "zz-test-par-2d68e00f@example.com",
+   "facteurs_mfa": 0,
+   "id8": "19406309",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 14:36:29.561855+00",
+   "name": "Test Parcours",
+   "role": "client",
+   "sessions": 1
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 14:36:33.951905+00",
+   "email": "zz-test-par-c695dcd6@example.com",
+   "facteurs_mfa": 0,
+   "id8": "bcb6eb36",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 14:36:33.968915+00",
+   "name": "Test Parcours",
+   "role": "student",
+   "sessions": 1
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 17:56:11.652099+00",
+   "email": "zz-test-par-46bccbb5@example.com",
+   "facteurs_mfa": 0,
+   "id8": "5df53b9d",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 17:56:11.729365+00",
+   "name": "Test Parcours",
+   "role": "client",
+   "sessions": 1
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 17:56:12.872624+00",
+   "email": "zz-test-par-fa744918@example.com",
+   "facteurs_mfa": 0,
+   "id8": "918d6aaf",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 17:56:12.880826+00",
+   "name": "Test Parcours",
+   "role": "student",
+   "sessions": 1
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 17:56:14.932375+00",
+   "email": "zz-test-par-0fa308af@example.com",
+   "facteurs_mfa": 0,
+   "id8": "10703adb",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 17:56:14.939726+00",
+   "name": "Test Parcours",
+   "role": "client",
+   "sessions": 1
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 17:56:15.916221+00",
+   "email": "zz-test-par-9e5d6494@example.com",
+   "facteurs_mfa": 0,
+   "id8": "dfe5d2b5",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 17:56:15.926231+00",
+   "name": "Test Parcours",
+   "role": "student",
+   "sessions": 1
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 18:03:24.501997+00",
+   "email": "zz-test-par-377b57c1@example.com",
+   "facteurs_mfa": 0,
+   "id8": "791df937",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 18:05:47.229867+00",
+   "name": "Test Parcours",
+   "role": "client",
+   "sessions": 6
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 18:03:25.60614+00",
+   "email": "zz-test-par-9f8ef9f2@example.com",
+   "facteurs_mfa": 0,
+   "id8": "733d9473",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 18:05:15.765486+00",
+   "name": "Test Parcours",
+   "role": "student",
+   "sessions": 2
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 18:57:42.501869+00",
+   "email": "zz-test-eng-378f1ccf@example.com",
+   "facteurs_mfa": 0,
+   "id8": "1ec5e515",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 19:00:59.774964+00",
+   "name": "Test Engagements",
+   "role": "client",
+   "sessions": 7
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 18:57:43.716964+00",
+   "email": "zz-test-eng-97931259@example.com",
+   "facteurs_mfa": 0,
+   "id8": "b8400aff",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 18:59:01.611463+00",
+   "name": "Test Engagements",
+   "role": "student",
+   "sessions": 4
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 19:01:11.01349+00",
+   "email": "zz-test-par-80e9e779@example.com",
+   "facteurs_mfa": 0,
+   "id8": "974724c3",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 19:03:57.7074+00",
+   "name": "Test Parcours",
+   "role": "client",
+   "sessions": 6
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 19:01:11.588728+00",
+   "email": "zz-test-par-d005f2c2@example.com",
+   "facteurs_mfa": 0,
+   "id8": "1ebdf285",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 19:03:28.694735+00",
+   "name": "Test Parcours",
+   "role": "student",
+   "sessions": 2
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 19:04:29.850413+00",
+   "email": "zz-test-eng-ab1babdc@example.com",
+   "facteurs_mfa": 0,
+   "id8": "960a3fcd",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 19:04:57.998883+00",
+   "name": "Test Engagements",
+   "role": "client",
+   "sessions": 2
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 19:04:30.950457+00",
+   "email": "zz-test-eng-df936e37@example.com",
+   "facteurs_mfa": 0,
+   "id8": "c2295660",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 19:04:30.957206+00",
+   "name": "Test Engagements",
+   "role": "student",
+   "sessions": 1
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 22:00:39.254056+00",
+   "email": "zz-test-eng-9a856328@example.com",
+   "facteurs_mfa": 0,
+   "id8": "29e58d62",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 22:03:48.794124+00",
+   "name": "Test Engagements",
+   "role": "client",
+   "sessions": 7
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 22:00:40.793+00",
+   "email": "zz-test-eng-82a21ca9@example.com",
+   "facteurs_mfa": 0,
+   "id8": "44e53787",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 22:01:55.420135+00",
+   "name": "Test Engagements",
+   "role": "student",
+   "sessions": 4
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 22:03:59.998418+00",
+   "email": "zz-test-par-87cecb67@example.com",
+   "facteurs_mfa": 0,
+   "id8": "3800d21a",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 22:06:03.251021+00",
+   "name": "Test Parcours",
+   "role": "client",
+   "sessions": 6
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 22:04:00.697212+00",
+   "email": "zz-test-par-51c8883a@example.com",
+   "facteurs_mfa": 0,
+   "id8": "ce7728af",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 22:05:35.61838+00",
+   "name": "Test Parcours",
+   "role": "student",
+   "sessions": 2
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-30 22:06:12.685226+00",
+   "email": "zz-test-prod-ec9590ac@example.com",
+   "facteurs_mfa": 0,
+   "id8": "50cfdab1",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-30 22:06:34.316418+00",
+   "name": "Test Prod",
+   "role": "student",
+   "sessions": 2
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-31 04:23:42.351277+00",
+   "email": "zz-test-mfa-cf360c3e@example.com",
+   "facteurs_mfa": 1,
+   "id8": "70ec4cfc",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-31 04:23:42.421437+00",
+   "name": null,
+   "role": null,
+   "sessions": 1
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-31 05:39:21.980596+00",
+   "email": "zz-test-eng-b9ea2619@example.com",
+   "facteurs_mfa": 0,
+   "id8": "6b0bcd49",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-31 05:41:50.132759+00",
+   "name": "Test Engagements",
+   "role": "client",
+   "sessions": 7
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-31 05:39:22.838381+00",
+   "email": "zz-test-eng-15a30883@example.com",
+   "facteurs_mfa": 0,
+   "id8": "db2587b9",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-31 05:40:19.408579+00",
+   "name": "Test Engagements",
+   "role": "student",
+   "sessions": 4
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-31 05:41:57.566044+00",
+   "email": "zz-test-mfa-1beab796@example.com",
+   "facteurs_mfa": 1,
+   "id8": "9d597185",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-31 05:42:24.973649+00",
+   "name": "Test MFA",
+   "role": "client",
+   "sessions": 2
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-31 05:42:26.342733+00",
+   "email": "zz-test-par-0bbf9624@example.com",
+   "facteurs_mfa": 0,
+   "id8": "ae878deb",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-31 05:44:19.02201+00",
+   "name": "Test Parcours",
+   "role": "client",
+   "sessions": 6
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-31 05:42:26.861521+00",
+   "email": "zz-test-par-ee6b96ab@example.com",
+   "facteurs_mfa": 0,
+   "id8": "b7da824a",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-31 05:43:54.459499+00",
+   "name": "Test Parcours",
+   "role": "student",
+   "sessions": 2
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-31 05:44:26.141836+00",
+   "email": "zz-test-prod-b2c8e0e3@example.com",
+   "facteurs_mfa": 0,
+   "id8": "d03f4a8d",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-31 05:44:26.165763+00",
+   "name": "Test Prod",
+   "role": "student",
+   "sessions": 1
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-31 05:50:05.954253+00",
+   "email": "zz-test-prod-eb4a696d@example.com",
+   "facteurs_mfa": 0,
+   "id8": "4137b16b",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-31 05:50:26.961363+00",
+   "name": "Test Prod",
+   "role": "student",
+   "sessions": 2
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-31 05:50:59.102441+00",
+   "email": "zz-test-prod-507583e9@example.com",
+   "facteurs_mfa": 0,
+   "id8": "0221312a",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-31 05:51:25.159141+00",
+   "name": "Test Prod",
+   "role": "student",
+   "sessions": 2
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-31 08:31:28.967815+00",
+   "email": "zz-test-prod-38089860@example.com",
+   "facteurs_mfa": 0,
+   "id8": "32ae9277",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-31 08:31:54.826601+00",
+   "name": "Test Prod",
+   "role": "student",
+   "sessions": 2
+  },
+  {
+   "confirme": true,
+   "created_at": "2026-10-31 08:32:26.377621+00",
+   "email": "zz-test-prod-40992478@example.com",
+   "facteurs_mfa": 0,
+   "id8": "0c185200",
+   "identites": 1,
+   "last_sign_in_at": "2026-10-31 08:32:47.71773+00",
+   "name": "Test Prod",
+   "role": "student",
+   "sessions": 2
+  }
+ ],
+ "totaux": [
+  {
+   "comptes_example_com": 46,
+   "comptes_total": 55,
+   "comptes_zz": 46,
+   "profils_total": 54
+  }
+ ],
+ "dependances": [
+  {
+   "a_la_suppression": "cascade",
+   "cible": "users",
+   "col": "user_id",
+   "lignes_zz": 113,
+   "sch": "auth",
+   "tab": "sessions"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "users",
+   "col": "user_id",
+   "lignes_zz": 46,
+   "sch": "auth",
+   "tab": "identities"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "users",
+   "col": "id",
+   "lignes_zz": 45,
+   "sch": "public",
+   "tab": "profiles"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "profiles",
+   "col": "user_id",
+   "lignes_zz": 18,
+   "sch": "public",
+   "tab": "engagements"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "users",
+   "col": "user_id",
+   "lignes_zz": 2,
+   "sch": "auth",
+   "tab": "mfa_factors"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "users",
+   "col": "user_id",
+   "lignes_zz": 0,
+   "sch": "auth",
+   "tab": "mfa_recovery_code_sets"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "users",
+   "col": "user_id",
+   "lignes_zz": 0,
+   "sch": "auth",
+   "tab": "oauth_authorizations"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "users",
+   "col": "user_id",
+   "lignes_zz": 0,
+   "sch": "auth",
+   "tab": "oauth_consents"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "users",
+   "col": "user_id",
+   "lignes_zz": 0,
+   "sch": "auth",
+   "tab": "one_time_tokens"
+  },
+  {
+   "a_la_suppression": "set null",
+   "cible": "users",
+   "col": "user_id",
+   "lignes_zz": 0,
+   "sch": "auth",
+   "tab": "scim_users"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "users",
+   "col": "user_id",
+   "lignes_zz": 0,
+   "sch": "auth",
+   "tab": "webauthn_challenges"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "users",
+   "col": "user_id",
+   "lignes_zz": 0,
+   "sch": "auth",
+   "tab": "webauthn_credentials"
+  },
+  {
+   "a_la_suppression": "set null",
+   "cible": "profiles",
+   "col": "created_by",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "api_keys"
+  },
+  {
+   "a_la_suppression": "aucune action",
+   "cible": "profiles",
+   "col": "reviewed_by",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "campaigns"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "profiles",
+   "col": "owner_id",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "campaigns"
+  },
+  {
+   "a_la_suppression": "set null",
+   "cible": "profiles",
+   "col": "holder_id",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "certificates"
+  },
+  {
+   "a_la_suppression": "aucune action",
+   "cible": "profiles",
+   "col": "issued_by",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "certificates"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "profiles",
+   "col": "claimant_id",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "claims"
+  },
+  {
+   "a_la_suppression": "set null",
+   "cible": "profiles",
+   "col": "answered_by",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "claims"
+  },
+  {
+   "a_la_suppression": "set null",
+   "cible": "profiles",
+   "col": "seller_id",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "claims"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "profiles",
+   "col": "user_id",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "conversation_participants"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "profiles",
+   "col": "created_by",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "conversations"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "profiles",
+   "col": "owner_id",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "cv_links"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "profiles",
+   "col": "invited_by",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "department_invitations"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "profiles",
+   "col": "user_id",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "favorites"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "profiles",
+   "col": "owner_id",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "files"
+  },
+  {
+   "a_la_suppression": "aucune action",
+   "cible": "profiles",
+   "col": "owner_id",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "hackathon_teams"
+  },
+  {
+   "a_la_suppression": "set null",
+   "cible": "profiles",
+   "col": "updated_by",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "institution_settings"
+  },
+  {
+   "a_la_suppression": "aucune action",
+   "cible": "profiles",
+   "col": "created_by",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "kiosk_events"
+  },
+  {
+   "a_la_suppression": "aucune action",
+   "cible": "profiles",
+   "col": "reported_by",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "kiosk_incidents"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "profiles",
+   "col": "reporter_id",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "listing_reports"
+  },
+  {
+   "a_la_suppression": "aucune action",
+   "cible": "profiles",
+   "col": "seller_id",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "listings"
+  },
+  {
+   "a_la_suppression": "aucune action",
+   "cible": "profiles",
+   "col": "reviewed_by",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "listings"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "profiles",
+   "col": "sender_id",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "messages"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "profiles",
+   "col": "sender_id",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "mission_messages"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "profiles",
+   "col": "author_id",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "mission_proposals"
+  },
+  {
+   "a_la_suppression": "aucune action",
+   "cible": "profiles",
+   "col": "client_id",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "missions"
+  },
+  {
+   "a_la_suppression": "aucune action",
+   "cible": "profiles",
+   "col": "assigned_by",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "missions"
+  },
+  {
+   "a_la_suppression": "set null",
+   "cible": "profiles",
+   "col": "updated_by",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "notification_templates"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "profiles",
+   "col": "user_id",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "notifications"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "profiles",
+   "col": "user_id",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "order_cancellations"
+  },
+  {
+   "a_la_suppression": "aucune action",
+   "cible": "profiles",
+   "col": "buyer_id",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "orders"
+  },
+  {
+   "a_la_suppression": "aucune action",
+   "cible": "profiles",
+   "col": "certification_decided_by",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "profiles"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "profiles",
+   "col": "owner_id",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "projects"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "profiles",
+   "col": "provider_id",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "quote_requests"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "profiles",
+   "col": "requester_id",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "quote_requests"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "profiles",
+   "col": "reviewer_id",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "reviews"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "profiles",
+   "col": "host_id",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "scheduled_lives"
+  },
+  {
+   "a_la_suppression": "aucune action",
+   "cible": "profiles",
+   "col": "reviewed_by",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "wishes"
+  },
+  {
+   "a_la_suppression": "cascade",
+   "cible": "profiles",
+   "col": "author_id",
+   "lignes_zz": 0,
+   "sch": "public",
+   "tab": "wishes"
+  }
+ ],
+ "commandes": [],
+ "annonces": [],
+ "lignes_reelles_sur_annonces_zz": [
+  {
+   "n": 0
+  }
+ ],
+ "fichiers": [],
+ "fichiers_sans_proprietaire": [],
+ "buckets": [
+  {
+   "file_size_limit": 10485760,
+   "id": "chat-files",
+   "objets": 0,
+   "octets": "0",
+   "public": false
+  },
+  {
+   "file_size_limit": 5242880,
+   "id": "listing-images",
+   "objets": 0,
+   "octets": "0",
+   "public": true
+  },
+  {
+   "file_size_limit": 52428800,
+   "id": "project-files",
+   "objets": 0,
+   "octets": "0",
+   "public": false
+  }
+ ]
+}

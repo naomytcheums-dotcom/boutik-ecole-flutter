@@ -1,0 +1,547 @@
+Resolving dependencies...
+Downloading packages...
+  archive 4.5.2 (4.6.0 available)
+  code_assets 1.2.1 (2.1.0 available)
+  cross_file 0.3.5+5 (0.4.0 available)
+  cupertino_ui 1.1.4 (1.1.5 available)
+  flutter_svg 2.3.0 (2.3.2 available)
+  go_router 18.1.1 (18.1.2 available)
+  hooks 2.0.2 (2.2.0 available)
+  image_picker_ios 0.8.13+13 (0.8.13+14 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  material_ui 1.8.0 (1.9.0 available)
+  meta 1.18.3 (1.19.0 available)
+  objective_c 9.5.0 (9.6.2 available)
+  petitparser 7.0.2 (7.1.0 available)
+  qr 3.0.2 (4.0.1 available)
+  record_use 0.6.0 (1.1.1 available)
+  shared_preferences_foundation 2.5.7 (2.6.1 available)
+  test_api 0.7.12 (0.7.15 available)
+  vector_graphics 1.2.4 (1.2.5 available)
+  vector_graphics_compiler 1.3.3 (1.3.4 available)
+  vector_math 2.4.0 (2.4.4 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+21 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/account_test.dart
+00:00 +0: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/account_test.dart: validations des formulaires
+00:00 +1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/account_test.dart: inscription, vérification et mise à jour du profil
+00:03 +2: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/form_dialog_test.dart: double clic sur « Confirmer » : une seule valeur, l’écran du kiosque reste affiché
+00:06 +3: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/guest_mode_test.dart: visiteur : la demande est proposée avec la possibilité de renoncer, rien n'est imposé
+00:06 +4: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/guest_mode_test.dart: visiteur : la demande est proposée avec la possibilité de renoncer, rien n'est imposé
+00:07 +5: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/guest_mode_test.dart: compte connecté : l'action passe sans aucune demande
+00:07 +6: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/guest_mode_test.dart: hors connexion serveur (aperçu, tests) : jamais de blocage
+00:08 +7: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/identity_test.dart: connecté au serveur : un profil sans compte est vierge, jamais le compte de démonstration
+00:08 +8: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/identity_test.dart: un nouveau compte n'hérite ni du nom, ni de la description, ni de la photo, ni du badge d'un autre
+00:08 +9: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/identity_test.dart: le badge bleu n'existe que pour une certification approuvée
+00:08 +10: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/identity_test.dart: la déconnexion jette tout l'état de l'application
+00:08 +11: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/identity_test.dart: connecté au serveur : le vendeur démarre sans annonce d'exemple
+00:11 +12: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/profile_edit_test.dart: modifier mon profil : description, compétences et ville enregistrées sur le compte connecté, sans toucher à la certification
+00:13 +13: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/profile_edit_test.dart: annuler ne change rien
+00:17 +14: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: (setUpAll)
+00:17 +14: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 255 · Suivi de publication
+00:19 +15: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 256 · Contrôles de la fiche
+00:20 +16: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 257 · Paiement en attente de confirmation
+00:20 +17: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 258 · Paiement échoué
+00:20 +18: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 259 · Reçu
+00:20 +19: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 260 · Facture
+00:21 +20: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 261 · Mon espace client
+00:21 +21: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/decisions_a2_s1_test.dart: S1 : écran de lancement, puis l’accueil 01 s’ouvre seul
+00:21 +22: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/decisions_a2_s1_test.dart: S1 : écran de lancement, puis l’accueil 01 s’ouvre seul
+00:22 +23: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/decisions_a2_s1_test.dart: S1 : écran de lancement, puis l’accueil 01 s’ouvre seul
+00:22 +24: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/decisions_a2_s1_test.dart: S1 : écran de lancement, puis l’accueil 01 s’ouvre seul
+00:22 +25: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/decisions_a2_s1_test.dart: S1 : écran de lancement, puis l’accueil 01 s’ouvre seul
+00:22 +26: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/decisions_a2_s1_test.dart: S1 : écran de lancement, puis l’accueil 01 s’ouvre seul
+00:23 +27: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/decisions_a2_s1_test.dart: S1 : écran de lancement, puis l’accueil 01 s’ouvre seul
+00:23 +28: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/decisions_a2_s1_test.dart: S1 : écran de lancement, puis l’accueil 01 s’ouvre seul
+00:23 +29: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 277 · Supervision des bornes
+00:23 +30: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 277 · Supervision des bornes
+00:23 +31: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 277 · Supervision des bornes
+00:23 +32: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 278 · Fiche projet · liens et PI
+00:23 +33: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 279 · Ajouter des fichiers
+00:24 +34: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 280 · Intégrations
+00:24 +35: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 281 · Rôles et périmètres
+00:24 +36: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 282 · QR de transfert
+00:24 +37: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 283 · Registre des certificats
+00:25 +38: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 284 · Registre financier
+00:25 +39: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 285 · Espace projet
+00:25 +40: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 286 · Soumissions et équipe
+00:25 +41: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 74 · Talent Passport
+00:25 +42: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 287 · Catalogue département (tablette)
+00:25 +43: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 262 · Accueil B2B
+00:26 +44: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 263 · Médiathèque
+00:26 +45: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 264 · Pages éditoriales
+00:26 +46: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 265 · Modèles de notifications
+00:27 +47: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 266 · État technique
+00:27 +48: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 267 · Boutik-École Network
+00:27 +49: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 268 · Analytics de la borne
+00:28 +50: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 269 · Innovation Radar
+00:29 +51: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 288 · Catalogue département (web)
+00:29 +52: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 250b · Nouvelle publication
+00:29 +53: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 01 · Bienvenue
+00:30 +54: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 02 · Bienvenue (variante)
+00:30 +55: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:31 +56: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:31 +57: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:31 +58: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:32 +59: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:32 +60: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:33 +61: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:33 +62: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:33 +63: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:34 +64: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:34 +65: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:35 +66: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:35 +67: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:35 +68: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:35 +69: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:35 +70: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:36 +71: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:36 +72: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:37 +73: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:37 +74: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:37 +75: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:38 +76: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:38 +77: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:39 +78: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:39 +79: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:39 +80: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:39 +81: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:40 +82: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:40 +83: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:40 +84: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:40 +85: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:41 +86: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:41 +87: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:42 +88: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:42 +89: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:42 +90: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:44 +91: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:45 +92: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:45 +93: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:46 +94: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:46 +95: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:46 +96: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:46 +97: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:47 +98: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:47 +99: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:47 +100: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:47 +101: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:47 +102: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:48 +103: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:48 +104: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:48 +105: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:49 +106: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:49 +107: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:49 +108: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:49 +109: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:49 +110: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:49 +111: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:50 +112: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:50 +113: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:50 +114: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:50 +115: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:51 +116: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:51 +117: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:53 +118: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:53 +119: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+00:53 +120: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 150-3 · Connexion impossible
+00:53 +121: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 150-4 · Mes commandes (vide)
+00:53 +122: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 151 · Opportunités
+00:54 +123: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 152 · Kéla te recommande
+00:54 +124: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 153 · Pourquoi cette offre ?
+00:54 +125: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 154 · Mon dossier
+00:55 +126: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 155 · Alertes
+00:55 +127: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 156 · Préférences d’alertes
+00:55 +128: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 157 · Résumé de Kéla
+00:56 +129: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 158 · Candidatures classées
+00:56 +130: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 159 · Candidature envoyée
+00:56 +131: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 160 · Hackathons et concours
+00:56 +132: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 161 · Hackathon
+00:56 +133: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 161 · Hackathon
+00:56 +134: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/navigation/links_test.dart: chaque lien gOpen/gTab des écrans désigne un écran existant
+00:57 +135: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 162 · Inscription
+00:57 +136: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 162 · Inscription
+00:57 +137: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/navigation/links_test.dart: le menu du compte ne propose à chaque rôle que des écrans qu’il peut ouvrir
+00:57 +138: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 163 · Trouver des coéquipiers
+00:57 +139: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 163 · Trouver des coéquipiers
+00:57 +140: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 164 · Espace d’équipe
+00:57 +141: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 165 · Dépôt du projet
+00:57 +142: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 166 · Résultats
+00:57 +143: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 167 · Noter un projet
+00:58 +144: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 168 · Publier un concours
+00:58 +145: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 169 · Modération des concours
+00:58 +146: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 170 · Signaler une annonce
+00:59 +147: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 171 · Paiement sécurisé
+00:59 +148: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 172 · Confiance du vendeur
+00:59 +149: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 173 · Partager
+00:59 +150: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 174 · Centre de confiance
+01:00 +151: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 211 · Passeport du produit
+01:00 +152: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 212 · Vérifier un certificat
+01:00 +153: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 212 · Vérifier un certificat
+01:00 +154: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/navigation/rubriques_test.dart: un visiteur ne voit que les écrans ouverts à tous
+01:00 +155: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 213 · Registre des certificats
+01:00 +156: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 213 · Registre des certificats
+01:00 +157: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 213 · Registre des certificats
+01:00 +158: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 175 · Bienvenue, étudiant
+01:01 +159: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 176 · Bienvenue
+01:01 +160: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 177 · Bienvenue, entreprise
+01:01 +161: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 178 · Bienvenue, jury
+01:01 +162: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 179 · Guide d’utilisation
+01:01 +163: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 180 · Rôles et permissions
+01:01 +164: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 181 · Matrice des permissions
+01:02 +165: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 182 · Explorer (chargement)
+01:02 +166: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 183 · Mes commandes (hors ligne)
+01:02 +167: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 184 · Économie de données
+01:03 +168: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 185 · Language
+01:03 +169: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 186 · Accessibilité
+01:03 +170: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 41 · Adresse de livraison
+01:03 +171: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/access_test.dart: chaque rôle n'ouvre que ses écrans
+01:03 +172: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 42 · Récapitulatif
+01:04 +173: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 43 · Instructions de paiement
+01:04 +174: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 44 · Commande confirmée
+01:04 +175: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 45 · Mes commandes
+01:04 +176: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 46 · Suivi de livraison
+01:04 +177: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 47 · Annuler la commande
+01:04 +178: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 48 · Réclamation
+01:05 +179: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 49 · Aide et support
+01:05 +180: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 50 · Notifications
+01:05 +181: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 51 · Détail d’une notification
+01:05 +182: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 52 · Messages
+01:05 +183: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 53 · Conversation
+01:06 +184: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 54 · Conversation commande
+01:06 +185: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 55 · Conversation entreprise
+01:06 +186: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 55 · Conversation entreprise
+01:06 +187: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 55 · Conversation entreprise
+01:06 +188: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 56 · Notifications et confidentialité
+01:06 +189: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 57 · Tableau de bord vendeur
+01:06 +190: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 58 · Nouveau produit
+01:07 +191: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 59 · Nouveau service
+01:07 +192: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 60 · Modifier l’annonce
+01:07 +193: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 61 · Mon catalogue
+01:07 +194: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 62 · Stocks
+01:08 +195: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 62 · Stocks
+01:08 +196: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 62 · Stocks
+01:08 +197: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/chat_server_test.dart: sans conversation choisie : message d'orientation, aucune saisie possible
+01:08 +198: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/chat_server_test.dart: sans conversation choisie : message d'orientation, aucune saisie possible
+01:08 +199: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/chat_server_test.dart: sans conversation choisie : message d'orientation, aucune saisie possible
+01:09 +200: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/chat_server_test.dart: sans conversation choisie : message d'orientation, aucune saisie possible
+01:09 +201: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 66 · Revenus
+01:09 +202: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 67 · Statistiques
+01:09 +203: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 69 · Validations
+01:10 +204: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 70 · Talents étudiants
+01:10 +205: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 72 · Ajouter à mon profil
+01:10 +206: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 73 · Mes documents
+01:11 +207: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 75 · Opportunités
+01:11 +208: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 76 · Ma candidature
+01:11 +209: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 77 · Profil de mentor
+01:11 +210: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 78 · Projets innovants
+01:12 +211: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 79 · Projet
+01:12 +212: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 80 · Soumettre un projet
+01:12 +213: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 81 · Équipe du projet
+01:12 +214: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 82 · Journal du projet
+01:13 +215: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 83 · Médias et preuves
+01:13 +216: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 84 · Nouvelle campagne
+01:13 +217: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 84b · Financement
+01:13 +218: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 85 · Objectifs et jalons
+01:14 +219: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 86 · Résultats de campagne
+01:14 +220: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 87 · Registre des innovations
+01:14 +221: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 100 · Événements
+01:14 +222: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/engagements_test.dart: hors connexion : aucun engagement lu ni inventé
+01:15 +223: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 101 · Événement
+01:15 +224: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 101 · Événement
+01:15 +225: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 101 · Événement
+01:15 +226: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/engagements_test.dart: événement 101 : le bouton reflète l’inscription enregistrée sur le serveur
+01:15 +227: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/engagements_test.dart: événement 101 : le bouton reflète l’inscription enregistrée sur le serveur
+01:15 +228: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/engagements_test.dart: événement 101 : le bouton reflète l’inscription enregistrée sur le serveur
+01:15 +229: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/engagements_test.dart: événement 101 : le bouton reflète l’inscription enregistrée sur le serveur
+01:15 +230: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/engagements_test.dart: événement 101 : le bouton reflète l’inscription enregistrée sur le serveur
+01:15 +231: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/engagements_test.dart: événement 101 : le bouton reflète l’inscription enregistrée sur le serveur
+01:16 +232: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 107 · Mon impact
+01:16 +233: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/engagements_test.dart: événement 101 : une inscription annulée n’apparaît plus comme active
+01:16 +234: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 237 · Impact par territoire
+01:16 +235: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/engagements_test.dart: préférences d’alertes 156 : les interrupteurs alimentent l’état enregistré
+01:16 +236: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/engagements_test.dart: préférences d’alertes 156 : les interrupteurs alimentent l’état enregistré
+01:16 +237: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 239 · Rapport sponsors
+01:17 +238: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/engagements_test.dart: canaux 236 : chaque canal s’active ou se désactive, l’enregistrement hors connexion ne simule rien
+01:17 +239: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 108 · Tableau de bord du département
+01:17 +240: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 109 · Étudiants et vendeurs
+01:17 +241: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 110 · Validation des annonces
+01:18 +242: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 111 · Validation des projets
+01:18 +243: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 112 · Statistiques du département
+01:18 +244: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 113 · Suivi des productions
+01:18 +245: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 114 · Mentors et encadreurs
+01:18 +246: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 115 · Événements et initiatives
+01:19 +247: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 116 · Rapports et exports
+01:19 +248: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 214 · Départements
+01:19 +249: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 215 · Fiche département
+01:19 +250: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 215 · Fiche département
+01:19 +251: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 215 · Fiche département
+01:19 +252: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 215 · Fiche département
+01:19 +253: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 215 · Fiche département
+01:19 +254: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 215 · Fiche département
+01:20 +255: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 117 · Tableau de bord institutionnel
+01:20 +256: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 118 · Établissement et identité visuelle
+01:20 +257: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 119 · Départements et filières
+01:20 +258: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 120 · Utilisateurs et affectations
+01:21 +259: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 121 · Responsables et encadreurs
+01:21 +260: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 122 · Circuits de validation
+01:21 +261: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 123 · Ventes et activité
+01:21 +262: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 124 · Événements et campagnes
+01:21 +263: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 125 · Rapports consolidés
+01:21 +264: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 126 · Journal d’audit
+01:22 +265: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 32 · Détail du produit
+01:22 +266: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 33 · Histoire du produit
+01:22 +267: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 34 · Galerie
+01:22 +268: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 35 · Disponibilité
+01:22 +269: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 36 · Détail du service
+01:23 +270: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 38 · Réputation
+01:23 +271: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 39 · Demande de renseignements
+01:23 +272: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 40 · Demande de devis
+01:23 +273: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 88 · Espace entreprise
+01:24 +274: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 89 · Profil de l’entreprise
+01:24 +275: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 90 · Publier un besoin
+01:24 +276: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 91 · Rechercher des talents
+01:24 +277: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 91 · Rechercher des talents
+01:24 +278: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 91 · Rechercher des talents
+01:24 +279: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: brouillons sur l’appareil écran 165 : « Enregistrer » enregistre vraiment le brouillon sur l’appareil
+01:24 +280: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: brouillons sur l’appareil écran 165 : « Enregistrer » enregistre vraiment le brouillon sur l’appareil
+01:24 +281: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: brouillons sur l’appareil écran 165 : « Enregistrer » enregistre vraiment le brouillon sur l’appareil
+01:25 +282: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: brouillons sur l’appareil écran 165 : « Enregistrer » enregistre vraiment le brouillon sur l’appareil
+01:25 +283: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: brouillons sur l’appareil écran 165 : « Enregistrer » enregistre vraiment le brouillon sur l’appareil
+01:25 +284: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: brouillons sur l’appareil écran 165 : « Enregistrer » enregistre vraiment le brouillon sur l’appareil
+01:25 +285: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: brouillons sur l’appareil écran 165 : « Enregistrer » enregistre vraiment le brouillon sur l’appareil
+01:25 +286: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: brouillons sur l’appareil écran 165 : « Enregistrer » enregistre vraiment le brouillon sur l’appareil
+01:26 +287: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: brouillons sur l’appareil écran 165 : « Enregistrer » enregistre vraiment le brouillon sur l’appareil
+01:26 +288: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 99 · Historique
+01:26 +289: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: brouillons sur l’appareil écran 165 : sans saisie, rien n’est annoncé comme enregistré
+01:26 +290: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 240 · Parrainer et gagner
+01:26 +291: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 240 · Parrainer et gagner
+01:26 +292: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: plus de faux succès écran 164 : aucun « Message envoyé au mentor »
+01:27 +293: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 241 · Mes contacts
+01:27 +294: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: plus de faux succès écran 192 : « Poser une question » ouvre la vraie messagerie de mission (hors connexion : expliqué)
+01:27 +295: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 242 · Kit à partager
+01:27 +296: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 242 · Kit à partager
+01:27 +297: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: plus de faux succès écran 110 : « Exporter » lance le vrai export (hors connexion : expliqué)
+01:27 +298: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: plus de faux succès écran 110 : « Exporter » lance le vrai export (hors connexion : expliqué)
+01:27 +299: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 244 · Cercle
+01:27 +300: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 244 · Cercle
+01:28 +301: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: serveur joignable : rien n’est simulé concours : dépôt incomplet refusé, aucun envoi simulé
+01:28 +302: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 244b · Cercle · publication aimée
+01:28 +303: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 244b · Cercle · publication aimée
+01:28 +304: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 244b · Cercle · publication aimée
+01:28 +305: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 244b · Cercle · publication aimée
+01:28 +306: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 244b · Cercle · publication aimée
+01:28 +307: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: serveur joignable : rien n’est simulé nouveau mot de passe : refusé sans lien de réinitialisation ouvert, jamais « modifié »
+01:28 +308: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 245 · Reels
+01:28 +309: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 246 · Lives
+01:28 +310: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 247 · Profil créateur
+01:29 +311: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 248 · Boutique du créateur
+01:29 +312: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 249 · Créer
+01:29 +313: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 250 · Nouvelle publication
+01:30 +314: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 251 · Découvrir
+01:30 +315: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/hackathon_test.dart: agenda : filtres par ville et gratuité, places restantes
+01:30 +316: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 252 · Commentaires et avis
+01:30 +317: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 252 · Commentaires et avis
+01:30 +318: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 252 · Commentaires et avis
+01:30 +319: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 253 · Défis et récompenses
+01:31 +320: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 253b · Défis · récompense récupérée
+01:31 +321: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 254 · Activité
+01:31 +322: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 216 · Marché des vœux
+01:31 +323: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 217 · Fiche d’un vœu
+01:32 +324: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 218 · Publier un vœu
+01:32 +325: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 219 · Nouveau duel
+01:32 +326: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 220 · Duel de talents
+01:33 +327: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 221 · Résultat du duel
+01:33 +328: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 222 · Atelier en direct
+01:33 +329: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 223 · Ateliers en direct
+01:33 +330: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 224 · Validation des vœux
+01:34 +331: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 225 · Jumeau 3D
+01:34 +332: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 226 · Modération des duels
+01:34 +333: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 227 · Régie des ateliers en direct
+01:34 +334: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/kiosk_missions_test.dart: borne : code signé, 5 minutes, usage unique
+01:34 +335: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 228 · Partager mon CV
+01:34 +336: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 228 · Partager mon CV
+01:35 +337: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 229 · CV vivant
+01:35 +338: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 191 · Votre besoin
+01:35 +339: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 192 · Votre devis
+01:35 +340: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 193 · Paiement sécurisé
+01:36 +341: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 194 · Ma mission
+01:36 +342: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 195 · Ajouter une preuve
+01:36 +343: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 196 · Dossier
+01:36 +344: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 197 · Valider le jalon
+01:36 +345: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 197 · Valider le jalon
+01:36 +346: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 197 · Valider le jalon
+01:36 +347: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 197 · Valider le jalon
+01:36 +348: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 197 · Valider le jalon
+01:36 +349: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/listings_server_test.dart: file de validation serveur : les décisions viennent du statut enregistré
+01:36 +350: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 198 · Briefs reçus
+01:36 +351: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 198 · Briefs reçus
+01:37 +352: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 199 · Attribuer
+01:37 +353: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 200 · Missions et encaissement
+01:37 +354: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 201 · Mes missions
+01:37 +355: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 202 · Pack Lancement de marque
+01:38 +356: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 203 · Mes compétences
+01:38 +357: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 204 · Coup de pouce startup
+01:38 +358: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 205 · Soumettre mon projet
+01:38 +359: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 206 · Borne · Accueil
+01:39 +360: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 206 · Borne · Accueil
+01:39 +361: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 206 · Borne · Accueil
+01:39 +362: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot1_etats_test.dart: 275 « Déposer un produit (erreurs) » erreurs réelles de 58 : valeurs saisies, messages réels, aucun faux « brouillon enregistré »
+01:39 +363: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot1_etats_test.dart: 275 « Déposer un produit (erreurs) » erreurs réelles de 58 : valeurs saisies, messages réels, aucun faux « brouillon enregistré »
+01:39 +364: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot1_etats_test.dart: 275 « Déposer un produit (erreurs) » erreurs réelles de 58 : valeurs saisies, messages réels, aucun faux « brouillon enregistré »
+01:40 +365: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot1_etats_test.dart: 275 « Déposer un produit (erreurs) » erreurs réelles de 58 : valeurs saisies, messages réels, aucun faux « brouillon enregistré »
+01:40 +366: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 210 · Borne · C’est envoyé
+01:40 +367: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot1_etats_test.dart: 275 « Déposer un produit (erreurs) » sans erreur réelle : la maquette (catalogue des écrans, golden image)
+01:40 +368: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 187 · Tableau de bord entreprise
+01:40 +369: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 187 · Tableau de bord entreprise
+01:40 +370: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot1_etats_test.dart: 150-1 « Synchronisation » connecté : résultat réel de la resynchronisation, jamais « 72 % » ni « 10:24 »
+01:40 +371: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot1_etats_test.dart: 150-1 « Synchronisation » connecté : résultat réel de la resynchronisation, jamais « 72 % » ni « 10:24 »
+01:40 +372: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot1_etats_test.dart: 150-1 « Synchronisation » connecté : résultat réel de la resynchronisation, jamais « 72 % » ni « 10:24 »
+01:41 +373: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 190 · Devis et négociations
+01:41 +374: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot1_etats_test.dart: 150-1 « Synchronisation » hors serveur : la maquette
+01:41 +375: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 230 · Assistante vocale Kéla
+01:41 +376: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 230 · Assistante vocale Kéla
+01:41 +377: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 230 · Assistante vocale Kéla
+01:41 +378: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 231 · Accueil Kéla
+01:41 +379: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 232 · Voix en texte
+01:41 +380: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 233 · WhatsApp · suivi de mission
+01:42 +381: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 234 · WhatsApp · validation de jalon
+01:42 +382: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 235 · WhatsApp · paiement sécurisé
+01:42 +383: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden 236 · Canaux et notifications
+01:42 +384: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden A1 · Assistante vocale Kéla
+01:43 +385: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden A2 · Accueil Kéla
+01:43 +386: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden A3 · Voix en texte
+01:43 +387: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden P1 · Profil talent
+01:43 +388: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden P2 · Profil talent · abonnement
+01:43 +389: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden P3 · Avis et outils connectés
+01:44 +390: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden P3 · Avis et outils connectés
+01:44 +391: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden P3 · Avis et outils connectés
+01:44 +392: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden P3 · Avis et outils connectés
+01:44 +393: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot2_formulaires_test.dart: journaux d’audit 126 et 137 avec le serveur, aucune entrée fictive n’est présentée comme le journal réel
+01:44 +394: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden P4 · Nouvelle publication
+01:44 +395: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot2_formulaires_test.dart: 40 « Demande de devis » hors serveur : maquette et lien du prototype 40 → 06, sans aucun message de succès
+01:45 +396: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot2_formulaires_test.dart: 40 « Demande de devis » hors serveur : maquette et lien du prototype 40 → 06, sans aucun message de succès
+01:45 +397: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot2_formulaires_test.dart: 40 « Demande de devis » hors serveur : maquette et lien du prototype 40 → 06, sans aucun message de succès
+01:45 +398: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot2_formulaires_test.dart: 40 « Demande de devis » hors serveur : maquette et lien du prototype 40 → 06, sans aucun message de succès
+01:46 +399: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden S1 · Démarrage animé
+01:46 +400: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot2_formulaires_test.dart: 40 « Demande de devis » connecté : aucune valeur d’exemple pré-remplie ; la saisie est enregistrée dans le formulaire
+01:46 +401: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: golden D1 · Tableau de bord du studio
+01:46 +402: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart: (tearDownAll)
+01:48 +402: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot3_missions_test.dart: (setUpAll)
+01:48 +402: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot3_missions_test.dart: mission serveur : numéro, titre, montant accepté, jalons réels, rien de « financé »
+01:48 +403: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot3_missions_test.dart: sans mission réelle : les écrans de suivi renvoient vers « Votre besoin »
+01:48 +404: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot3_missions_test.dart: hors serveur : la mission d’exemple de la maquette ; connecté : jamais
+01:48 +405: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot3_missions_test.dart: 201 connecté : la vraie mission, sans mission inventée, note ni gains gonflés
+01:49 +406: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot3_missions_test.dart: 201 connecté : la vraie mission, sans mission inventée, note ni gains gonflés
+01:49 +407: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot3_missions_test.dart: 201 connecté : la vraie mission, sans mission inventée, note ni gains gonflés
+01:49 +408: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot3_missions_test.dart: 201 connecté : la vraie mission, sans mission inventée, note ni gains gonflés
+01:49 +409: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot3_missions_test.dart: 201 connecté : la vraie mission, sans mission inventée, note ni gains gonflés
+01:49 +410: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot3_missions_test.dart: 201 connecté : la vraie mission, sans mission inventée, note ni gains gonflés
+01:49 +411: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot3_missions_test.dart: 192 connecté : statut, date et équipe réels
+01:50 +412: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot3_missions_test.dart: (tearDownAll)
+01:53 +412: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot5_livraison_test.dart: (setUpAll)
+01:53 +412: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot5_livraison_test.dart: frais : maquette 5 000 ; connecté, ceux du réglage, et rien si le domicile n’est pas proposé
+01:53 +413: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot5_livraison_test.dart: connecté, domicile non activé : refusé avec explication, la commande reste en retrait sur campus
+01:55 +414: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot5_livraison_test.dart: connecté, domicile non activé : refusé avec explication, la commande reste en retrait sur campus
+01:55 +415: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot6_parrainage_test.dart: 243 connecté : solde réel, aucun filleul ni montant fictif
+01:55 +416: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot6_parrainage_test.dart: 243 connecté : solde réel, aucun filleul ni montant fictif
+01:56 +417: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot6_parrainage_test.dart: 243 connecté : solde réel, aucun filleul ni montant fictif
+01:56 +418: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot6_parrainage_test.dart: (tearDownAll)
+01:59 +418: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot7_reels_recherches_test.dart: (setUpAll)
+01:59 +418: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot7_reels_recherches_test.dart: défis : libellés réels
+01:59 +419: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot7_reels_recherches_test.dart: 253 connecté : série et progression réelles, pas les chiffres de la maquette
+01:59 +420: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot7_reels_recherches_test.dart: 253 connecté : série et progression réelles, pas les chiffres de la maquette
+01:59 +421: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot7_reels_recherches_test.dart: 253 connecté : série et progression réelles, pas les chiffres de la maquette
+01:59 +422: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot7_reels_recherches_test.dart: 253 connecté : série et progression réelles, pas les chiffres de la maquette
+01:59 +423: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot7_reels_recherches_test.dart: 253 connecté : série et progression réelles, pas les chiffres de la maquette
+02:00 +424: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lots_test.dart: écran 90 : « Publier » sans serveur l’explique au lieu de simuler
+02:00 +425: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lots_test.dart: écran 90 : « Publier » sans serveur l’explique au lieu de simuler
+02:00 +425: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot7_reels_recherches_test.dart: page de design : bannières et pieds de page proposés
+══╡ EXCEPTION CAUGHT BY RENDERING LIBRARY ╞═════════════════════════════════════════════════════════
+The following assertion was thrown during layout:
+A RenderFlex overflowed by 48 pixels on the right.
+
+The relevant error-causing widget was:
+  Row
+  Row:file:///C:/Users/NITROV15/Downloads/boutik_ecole_flutter/lib/features/design_lab/design_lab_screen.dart:173:26
+
+The overflowing RenderFlex has an orientation of Axis.horizontal.
+The edge of the RenderFlex that is overflowing has been marked in the rendering with a yellow and
+black striped pattern. This is usually caused by the contents being too big for the RenderFlex.
+Consider applying a flex factor (e.g. using an Expanded widget) to force the children of the
+RenderFlex to fit within the available space instead of being sized to their natural size.
+This is considered an error condition because it indicates that there is content that cannot be
+seen. If the content is legitimately bigger than the available space, consider clipping it with a
+ClipRect widget before putting it in the flex, or using a scrollable container rather than a Flex,
+like a ListView.
+The specific RenderFlex in question is: RenderFlex#ce014 relayoutBoundary=up7 OVERFLOWING:
+  creator: Row ← Padding ← DecoratedBox ← Container ← Listener ← _GestureSemantics ←
+    RawGestureDetector ← GestureDetector ← Column ← Padding ← Stack ← SizedBox ← ⋯
+  parentData: offset=Offset(18.0, 11.0) (can use size)
+  constraints: BoxConstraints(0.0<=w<=306.0, 0.0<=h<=Infinity)
+  size: Size(306.0, 20.0)
+  direction: horizontal
+  mainAxisAlignment: start
+  mainAxisSize: min
+  crossAxisAlignment: center
+  textDirection: ltr
+  verticalDirection: down
+  spacing: 0.0
+◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤
+════════════════════════════════════════════════════════════════════════════════════════════════════
+02:00 +425 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lots_test.dart: écran 90 : « Publier » sans serveur l’explique au lieu de simuler
+02:00 +425 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot7_reels_recherches_test.dart: page de design : bannières et pieds de page proposés [E]
+  Test failed. See exception logs above.
+  The test description was: page de design : bannières et pieds de page proposés
+  
+02:00 +425 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lots_test.dart: écran 90 : « Publier » sans serveur l’explique au lieu de simuler
+02:01 +426 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lots_test.dart: écran 47 : le motif choisi est mémorisé
+02:01 +427 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lots_test.dart: borne (207) : le filtre Produits / Services s’applique au catalogue réel
+02:01 +428 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lots_test.dart: fichiers : seuls JPG, PNG, WebP, PDF, MP4 et ZIP sont acceptés avant tout envoi
+02:01 +429 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lots_test.dart: copie dans le presse-papiers : jamais bloquante
+02:01 +430 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lots_test.dart: (tearDownAll)
+02:02 +430 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/messages_test.dart: une ligne serveur devient une conversation avec ses non-lus
+02:02 +431 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/messages_test.dart: valeurs absentes : repli neutre, jamais d'erreur
+02:02 +432 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/messages_test.dart: la conversation ouverte est celle qui a été choisie
+02:03 +433 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/messages_test.dart: hors connexion : aucune conversation
+02:04 +434 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/notifs_test.dart: une ligne serveur devient une notification, lue ou non
+02:04 +435 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/notifs_test.dart: hors connexion : aucune notification ni compteur, filtre « toutes » par défaut
+02:04 +436 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/ops_test.dart: signalements : création, compteurs, traitement
+02:04 +437 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/ops_test.dart: commissions : règles modifiables
+02:04 +438 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/ops_test.dart: supervision des commandes et validation des projets
+02:08 +439 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/orders_real_test.dart: (setUpAll)
+02:08 +439 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/orders_real_test.dart: compte réel sans commande : message clair, pas de « 8 commandes » ni de lignes fictives
+02:08 +440 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/orders_real_test.dart: compte réel sans commande : message clair, pas de « 8 commandes » ni de lignes fictives
+02:08 +441 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/orders_real_test.dart: compte réel sans commande : message clair, pas de « 8 commandes » ni de lignes fictives
+02:09 +442 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/orders_real_test.dart: compte réel sans commande : message clair, pas de « 8 commandes » ni de lignes fictives
+02:09 +443 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/platform_products_test.dart: hors connexion au serveur : catalogue d'exemple inchangé (maquettes et golden images)
+02:09 +444 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/orders_real_test.dart: compte réel avec une commande : liste et détail montrent les données du serveur
+02:09 +445 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/orders_real_test.dart: compte réel avec une commande : liste et détail montrent les données du serveur
+02:09 +446 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/orders_real_test.dart: compte réel avec une commande : liste et détail montrent les données du serveur
+02:09 +447 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/orders_real_test.dart: compte réel avec une commande : liste et détail montrent les données du serveur
+02:09 +448 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/orders_real_test.dart: compte réel avec une commande : liste et détail montrent les données du serveur
+02:09 +449 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/orders_real_test.dart: compte réel avec une commande : liste et détail montrent les données du serveur
+02:10 +450 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/orders_real_test.dart: (tearDownAll)
+02:10 +450 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/purchase_flow_test.dart: le panier, les totaux et la commande restent cohérents
+02:12 +451 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/review_finance_test.dart: une annonce soumise passe par la validation du département
+02:12 +452 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/review_finance_test.dart: les paiements des commandes alimentent les flux financiers
+02:13 +453 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/search_favorites_test.dart: la recherche et les catégories filtrent le catalogue
+02:14 +454 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/search_favorites_test.dart: les favoris sont partagés et ajoutés en tête
+02:14 +455 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/seller_dashboard_empty_test.dart: (setUpAll)
+02:14 +455 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/seller_dashboard_empty_test.dart: tableau de bord vendeur : un compte sans aucune commande ne plante pas
+02:15 +456 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/seller_dashboard_empty_test.dart: tableau de bord vendeur : un compte sans aucune commande ne plante pas
+02:15 +457 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/seller_dashboard_empty_test.dart: tableau de bord vendeur : un compte sans aucune commande ne plante pas
+02:15 +458 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/seller_dashboard_empty_test.dart: tableau de bord vendeur : un compte sans aucune commande ne plante pas
+02:15 +459 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/seller_dashboard_empty_test.dart: tableau de bord vendeur : un compte sans aucune commande ne plante pas
+02:16 +460 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/seller_dashboard_empty_test.dart: (tearDownAll)
+02:17 +460 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/seller_test.dart: annonces : états, filtres et diffusion dans le catalogue acheteur
+02:17 +461 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/seller_test.dart: commandes reçues : onglets et préparation
+02:19 +462 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/talents_test.dart: talents : filtre par domaine et recherche
+02:19 +463 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/talents_test.dart: projets : filtre par étape et ajout
+02:19 +464 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/talents_test.dart: opportunités : onglets et candidatures
+02:19 +465 -1: Some tests failed.
+
+Failing tests:
+  C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot7_reels_recherches_test.dart: page de design : bannières et pieds de page proposés

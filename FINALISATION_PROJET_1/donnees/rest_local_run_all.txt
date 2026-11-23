@@ -1,0 +1,15 @@
+lots_rest.py                 77/77
+lots2_rest.py                59/59
+security_31_rest.py          24/24
+engagements_rest.py          18/18
+favorites_rest.py            9/9
+mfa_rest.py                  8/8
+quotes_rest.py               31/31
+listings_stock_rest.py       40/40
+conversations_list_rest.py   9/9
+chat_attachments_rest.py     30/30
+messaging_rest.py            31/31
+seller_orders_rest.py        18/18
+feedback_rest.py             32/32
+
+TOTAL 386/386

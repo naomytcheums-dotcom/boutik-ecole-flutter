@@ -1,0 +1,74 @@
+Resolving dependencies...
+Downloading packages...
+  archive 4.5.2 (4.6.0 available)
+  code_assets 1.2.1 (2.1.0 available)
+  cross_file 0.3.5+5 (0.4.0 available)
+  cupertino_ui 1.1.4 (1.1.5 available)
+  flutter_svg 2.3.0 (2.3.2 available)
+  go_router 18.1.1 (18.1.2 available)
+  hooks 2.0.2 (2.2.0 available)
+  image_picker_ios 0.8.13+13 (0.8.13+14 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  material_ui 1.8.0 (1.9.0 available)
+  meta 1.18.3 (1.19.0 available)
+  objective_c 9.5.0 (9.6.2 available)
+  petitparser 7.0.2 (7.1.0 available)
+  qr 3.0.2 (4.0.1 available)
+  record_use 0.6.0 (1.1.1 available)
+  shared_preferences_foundation 2.5.7 (2.6.1 available)
+  test_api 0.7.12 (0.7.15 available)
+  vector_graphics 1.2.4 (1.2.5 available)
+  vector_graphics_compiler 1.3.3 (1.3.4 available)
+  vector_math 2.4.0 (2.4.4 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+21 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot7_reels_recherches_test.dart
+00:00 +0: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot7_reels_recherches_test.dart: (setUpAll)
+00:00 +0: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot7_reels_recherches_test.dart: défis : libellés réels
+00:00 +1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot7_reels_recherches_test.dart: 253 connecté : série et progression réelles, pas les chiffres de la maquette
+00:02 +2: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot7_reels_recherches_test.dart: aide : les articles trouvés ouvrent un écran réel
+00:02 +3: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot7_reels_recherches_test.dart: page de design : bannières et pieds de page proposés
+00:02 +4: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot7_reels_recherches_test.dart: (tearDownAll)
+00:02 +4: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lots_test.dart
+00:07 +4: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lots_test.dart: (setUpAll)
+00:07 +4: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lots_test.dart: montants et durées lus dans les champs préremplis de la maquette
+00:07 +5: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lots_test.dart: export CSV : séparateur « ; », guillemets et retours à la ligne protégés
+00:07 +6: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lots_test.dart: hors connexion : aucune fonction serveur n’est simulée
+00:07 +7: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lots_test.dart: motifs d’annulation identiques aux valeurs acceptées par le serveur
+00:07 +8: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lots_test.dart: écran 90 : « Publier » sans serveur l’explique au lieu de simuler
+00:09 +9: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lots_test.dart: écran 47 : le motif choisi est mémorisé
+00:10 +10: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lots_test.dart: borne (207) : le filtre Produits / Services s’applique au catalogue réel
+00:10 +11: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lots_test.dart: fichiers : seuls JPG, PNG, WebP, PDF, MP4 et ZIP sont acceptés avant tout envoi
+00:10 +12: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lots_test.dart: copie dans le presse-papiers : jamais bloquante
+00:10 +13: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lots_test.dart: (tearDownAll)
+00:10 +13: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/messages_test.dart
+00:12 +13: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/messages_test.dart: une ligne serveur devient une conversation avec ses non-lus
+00:12 +14: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/messages_test.dart: valeurs absentes : repli neutre, jamais d'erreur
+00:12 +15: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/messages_test.dart: la conversation ouverte est celle qui a été choisie
+00:13 +16: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/messages_test.dart: hors connexion : aucune conversation
+00:13 +17: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/notifs_test.dart
+00:15 +17: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/notifs_test.dart: une ligne serveur devient une notification, lue ou non
+00:15 +18: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/notifs_test.dart: hors connexion : aucune notification ni compteur, filtre « toutes » par défaut
+00:15 +19: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/ops_test.dart
+00:18 +19: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/ops_test.dart: signalements : création, compteurs, traitement
+00:18 +20: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/ops_test.dart: commissions : règles modifiables
+00:18 +21: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/ops_test.dart: supervision des commandes et validation des projets
+00:19 +22: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/order_actions_test.dart
+00:23 +22: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/order_actions_test.dart: annuler une commande la marque annulée sans toucher aux autres, et son badge l'indique
+00:23 +23: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/order_actions_test.dart: payer puis annuler : le paiement reste enregistré, l'annulation ne le modifie pas
+00:23 +24: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/orders_real_test.dart
+00:25 +24: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/orders_real_test.dart: (setUpAll)
+00:25 +24: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/orders_real_test.dart: compte réel sans commande : message clair, pas de « 8 commandes » ni de lignes fictives
+00:26 +25: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/orders_real_test.dart: compte réel avec une commande : liste et détail montrent les données du serveur
+00:27 +26: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/orders_real_test.dart: (tearDownAll)
+00:27 +26: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/platform_products_test.dart
+00:29 +26: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/platform_products_test.dart: ligne serveur sans vendeur : produit de la plateforme
+00:29 +27: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/platform_products_test.dart: hors connexion au serveur : catalogue d'exemple inchangé (maquettes et golden images)
+00:30 +28: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/platform_products_test.dart: connecté : prix, stock, département et description viennent du serveur ; vendeur = plateforme
+00:30 +29: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/platform_products_test.dart: connecté : un produit épuisé ou retiré n'est pas proposé à l'achat
+00:30 +30: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/platform_products_test.dart: connecté, première lecture pas encore aboutie : aucun produit d'exemple présenté comme réel
+00:30 +31: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/platform_products_test.dart: département : un produit de la plateforme géré n'apparaît pas en double comme annonce d'étudiant
+00:30 +32: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/platform_products_test.dart: gestionnaires du catalogue de la plateforme : département et administrateur uniquement
+00:30 +33: All tests passed!

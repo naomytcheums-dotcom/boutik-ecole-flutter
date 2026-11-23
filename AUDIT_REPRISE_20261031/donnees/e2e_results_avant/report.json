@@ -1,0 +1,93 @@
+{
+  "config": {
+    "configFile": "C:\\Users\\NITROV15\\Downloads\\boutik_ecole_flutter\\e2e\\playwright.config.ts",
+    "rootDir": "C:/Users/NITROV15/Downloads/boutik_ecole_flutter/e2e/tests",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {},
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "results/report.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 15000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "C:/Users/NITROV15/Downloads/boutik_ecole_flutter/e2e/results/artefacts",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {},
+        "id": "",
+        "name": "",
+        "testDir": "C:/Users/NITROV15/Downloads/boutik_ecole_flutter/e2e/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "version": "1.49.1",
+    "workers": 2,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "retrait.spec.ts",
+      "file": "retrait.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "écran de retrait (146-2) : seule la réponse « delivered » affiche « Remise confirmée »",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 420000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "09af3614bb43fbf2c8e3-4bea0e62df3ccb55447f",
+          "file": "retrait.spec.ts",
+          "line": 89,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-31T15:46:46.712Z",
+    "duration": 195.8929999999998,
+    "expected": 0,
+    "skipped": 1,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

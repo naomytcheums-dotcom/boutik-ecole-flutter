@@ -1,0 +1,296 @@
+{
+ "tables_sans_rls": [],
+ "definer_sans_search_path": [],
+ "executables_par_anon": [
+  {
+   "definer": true,
+   "proname": "chat_file_allowed"
+  },
+  {
+   "definer": true,
+   "proname": "current_role_name"
+  },
+  {
+   "definer": true,
+   "proname": "is_mission_participant"
+  },
+  {
+   "definer": true,
+   "proname": "is_participant"
+  },
+  {
+   "definer": true,
+   "proname": "listing_rating"
+  },
+  {
+   "definer": true,
+   "proname": "rls_auto_enable"
+  },
+  {
+   "definer": true,
+   "proname": "shared_cv"
+  },
+  {
+   "definer": true,
+   "proname": "verify_certificate"
+  }
+ ],
+ "nb_fonctions_public": [
+  {
+   "definer": 72,
+   "n": 73
+  }
+ ],
+ "politiques_par_table": [
+  {
+   "politiques": 1,
+   "tablename": "api_keys"
+  },
+  {
+   "politiques": 1,
+   "tablename": "audit_log"
+  },
+  {
+   "politiques": 1,
+   "tablename": "campaigns"
+  },
+  {
+   "politiques": 1,
+   "tablename": "certificates"
+  },
+  {
+   "politiques": 1,
+   "tablename": "claims"
+  },
+  {
+   "politiques": 2,
+   "tablename": "conversation_participants"
+  },
+  {
+   "politiques": 1,
+   "tablename": "conversations"
+  },
+  {
+   "politiques": 1,
+   "tablename": "cv_links"
+  },
+  {
+   "politiques": 1,
+   "tablename": "department_invitations"
+  },
+  {
+   "politiques": 1,
+   "tablename": "engagements"
+  },
+  {
+   "politiques": 1,
+   "tablename": "favorites"
+  },
+  {
+   "politiques": 1,
+   "tablename": "files"
+  },
+  {
+   "politiques": 2,
+   "tablename": "hackathon_teams"
+  },
+  {
+   "politiques": 1,
+   "tablename": "institution_settings"
+  },
+  {
+   "politiques": 1,
+   "tablename": "kiosk_events"
+  },
+  {
+   "politiques": 1,
+   "tablename": "kiosk_incidents"
+  },
+  {
+   "politiques": 3,
+   "tablename": "kiosk_sessions"
+  },
+  {
+   "politiques": 1,
+   "tablename": "kiosks"
+  },
+  {
+   "politiques": 1,
+   "tablename": "listing_history"
+  },
+  {
+   "politiques": 1,
+   "tablename": "listing_reports"
+  },
+  {
+   "politiques": 3,
+   "tablename": "listings"
+  },
+  {
+   "politiques": 2,
+   "tablename": "messages"
+  },
+  {
+   "politiques": 1,
+   "tablename": "mission_messages"
+  },
+  {
+   "politiques": 1,
+   "tablename": "mission_milestones"
+  },
+  {
+   "politiques": 1,
+   "tablename": "mission_proposals"
+  },
+  {
+   "politiques": 1,
+   "tablename": "missions"
+  },
+  {
+   "politiques": 1,
+   "tablename": "notification_templates"
+  },
+  {
+   "politiques": 2,
+   "tablename": "notifications"
+  },
+  {
+   "politiques": 1,
+   "tablename": "order_cancellations"
+  },
+  {
+   "politiques": 1,
+   "tablename": "order_lines"
+  },
+  {
+   "politiques": 1,
+   "tablename": "orders"
+  },
+  {
+   "politiques": 3,
+   "tablename": "profiles"
+  },
+  {
+   "politiques": 1,
+   "tablename": "project_steps"
+  },
+  {
+   "politiques": 1,
+   "tablename": "projects"
+  },
+  {
+   "politiques": 1,
+   "tablename": "quote_requests"
+  },
+  {
+   "politiques": 1,
+   "tablename": "reviews"
+  },
+  {
+   "politiques": 1,
+   "tablename": "scheduled_lives"
+  },
+  {
+   "politiques": 1,
+   "tablename": "stock_movements"
+  },
+  {
+   "politiques": 1,
+   "tablename": "wishes"
+  }
+ ],
+ "buckets": [
+  {
+   "allowed_mime_types": [
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "application/pdf",
+    "text/plain",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "audio/mp4",
+    "audio/m4a",
+    "audio/x-m4a",
+    "audio/mpeg",
+    "audio/ogg",
+    "audio/webm",
+    "audio/aac",
+    "audio/wav"
+   ],
+   "file_size_limit": 10485760,
+   "id": "chat-files",
+   "public": false
+  },
+  {
+   "allowed_mime_types": [
+    "image/jpeg",
+    "image/png",
+    "image/webp"
+   ],
+   "file_size_limit": 5242880,
+   "id": "listing-images",
+   "public": true
+  },
+  {
+   "allowed_mime_types": [
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "application/pdf",
+    "video/mp4",
+    "application/zip"
+   ],
+   "file_size_limit": 52428800,
+   "id": "project-files",
+   "public": false
+  }
+ ],
+ "politiques_storage": [
+  {
+   "cmd": "INSERT",
+   "policyname": "chat : depot par les participants"
+  },
+  {
+   "cmd": "SELECT",
+   "policyname": "chat : lecture par les participants"
+  },
+  {
+   "cmd": "DELETE",
+   "policyname": "chat : suppression par l'expediteur"
+  },
+  {
+   "cmd": "INSERT",
+   "policyname": "fichiers projet : dépôt dans son dossier"
+  },
+  {
+   "cmd": "SELECT",
+   "policyname": "fichiers projet : lecture autorisée"
+  },
+  {
+   "cmd": "DELETE",
+   "policyname": "fichiers projet : suppression par le propriétaire"
+  },
+  {
+   "cmd": "INSERT",
+   "policyname": "images annonces : depot dans son dossier"
+  },
+  {
+   "cmd": "SELECT",
+   "policyname": "images annonces : lecture"
+  },
+  {
+   "cmd": "UPDATE",
+   "policyname": "images annonces : modification dans son dossier"
+  },
+  {
+   "cmd": "DELETE",
+   "policyname": "images annonces : suppression dans son dossier"
+  }
+ ],
+ "nouvelles_fonctions_absentes_prod": [
+  {
+   "n": 0
+  }
+ ]
+}

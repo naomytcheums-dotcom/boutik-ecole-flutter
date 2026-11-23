@@ -1,0 +1,106 @@
+BEGIN
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+CREATE FUNCTION
+CREATE TABLE
+CREATE INDEX
+ALTER TABLE
+REVOKE
+GRANT
+DROP POLICY
+NOTICE:  policy "adresses : titulaire" for relation "addresses" does not exist, skipping
+CREATE POLICY
+CREATE FUNCTION
+CREATE FUNCTION
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+REVOKE
+GRANT
+CREATE TABLE
+GRANT
+CREATE FUNCTION
+{"sub" : "37d0d172-5d38-49e3-ab4a-8175997fe8b2", "role" : "authenticated"}
+SET
+DO
+NOTICE:  RESULT|L1 retrait sur campus (ancienne signature)|PASS|{"fee": 0, "number": "#BE-2026-0184", "subtotal": 1500}
+NOTICE:  RESULT|L2 domicile désactivé refusé|PASS|Livraison à domicile non proposée pour le moment : choisissez le retrait sur campus
+DO
+DO
+NOTICE:  RESULT|L3 client ne règle pas la livraison|PASS|Réservé à l'administrateur
+DO
+NOTICE:  RESULT|L4c adresse invalide refusée|PASS|new row for relation "addresses" violates check constraint "addresses_line_check"
+DO
+NOTICE:  RESULT|L4 cinq adresses enregistrées|PASS|
+NOTICE:  RESULT|L4b sixième adresse refusée|PASS|Carnet complet : 5 adresses au maximum
+DO
+RESET
+{"sub" : "41c9e35e-cdee-4c1f-8068-817dccd55867", "role" : "authenticated"}
+SET
+DO
+NOTICE:  RESULT|L5 adresses d'autrui invisibles|PASS|0
+RESET
+{"sub" : "c8332c75-ae70-4685-8589-d6ab77667e16", "role" : "authenticated"}
+SET
+NOTICE:  RESULT|L3b administrateur active la livraison|PASS|enabled
+DO
+RESET
+{"sub" : "41c9e35e-cdee-4c1f-8068-817dccd55867", "role" : "authenticated"}
+SET
+DO
+RESET
+NOTICE:  RESULT|L5b adresse d'autrui refusée|PASS|Choisissez une adresse de livraison
+{"sub" : "37d0d172-5d38-49e3-ab4a-8175997fe8b2", "role" : "authenticated"}
+SET
+DO
+NOTICE:  RESULT|L6 commande à domicile (frais 5 000)|PASS|{"fee": 5000, "number": "#BE-2026-0185", "subtotal": 6000}
+DO
+NOTICE:  RESULT|L7 ville non desservie refusée|PASS|Livraison à domicile proposée seulement à Douala
+RESET
+RESULT|L6b adresse figée sur la commande (Douala, même après modification du carnet)|PASS|
+UPDATE 1
+{"sub" : "fbee9999-a07e-4700-be3f-caf5977b77a5", "role" : "authenticated"}
+SET
+DO
+NOTICE:  RESULT|L8 départ refusé tant que non prête|PASS|La commande n'est pas encore prête
+RESET
+UPDATE 1
+{"sub" : "37d0d172-5d38-49e3-ab4a-8175997fe8b2", "role" : "authenticated"}
+SET
+DO
+NOTICE:  RESULT|L8b client ne déclenche pas la livraison|PASS|Réservé à l'équipe logistique
+RESET
+{"sub" : "fbee9999-a07e-4700-be3f-caf5977b77a5", "role" : "authenticated"}
+SET
+DO
+NOTICE:  RESULT|L8c logistique lance la livraison et lit l'adresse|PASS|out_for_delivery adresse=1
+DO
+NOTICE:  RESULT|L9 motif obligatoire|PASS|Motif obligatoire
+DO
+NOTICE:  RESULT|L9b report puis retour au kiosque|PASS|rescheduled puis returned_to_kiosk
+RESET
+{"sub" : "37d0d172-5d38-49e3-ab4a-8175997fe8b2", "role" : "authenticated"}
+SET
+NOTICE:  RESULT|L10 code de retrait délivré|PASS|
+DO
+RESET
+{"sub" : "fbee9999-a07e-4700-be3f-caf5977b77a5", "role" : "authenticated"}
+SET
+DO
+RESET
+NOTICE:  RESULT|L10b remise confirmée par le code|PASS|delivered
+{"sub" : "37d0d172-5d38-49e3-ab4a-8175997fe8b2", "role" : "authenticated"}
+SET
+NOTICE:  RESULT|L11 adresse supprimée|PASS|deleted
+DO
+NOTICE:  RESULT|L12 écriture directe refusée|PASS|permission denied for table addresses
+DO
+RESET
+ROLLBACK
+RESULT|L13 réplique inchangée après ROLLBACK|PASS|

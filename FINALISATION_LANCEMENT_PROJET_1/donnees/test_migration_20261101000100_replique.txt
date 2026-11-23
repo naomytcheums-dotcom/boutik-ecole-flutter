@@ -1,0 +1,94 @@
+BEGIN
+CREATE FUNCTION
+REVOKE
+GRANT
+CREATE FUNCTION
+REVOKE
+GRANT
+CREATE FUNCTION
+REVOKE
+GRANT
+CREATE FUNCTION
+REVOKE
+CREATE TABLE
+INSERT 0 1
+GRANT
+{"sub" : "37d0d172-5d38-49e3-ab4a-8175997fe8b2", "role" : "authenticated"}
+SET
+DO
+NOTICE:  RESULT|T1 commande mixte créée (prix serveur)|PASS|{"fee": 0, "number": "#BE-2026-0181", "subtotal": 16000}
+DO
+NOTICE:  RESULT|T2 client refusé (préparation)|PASS|Commande introuvable ou non payée
+RESET
+RESULT|T1b stock plateforme décrémenté de 2|PASS|
+UPDATE 1
+{"sub" : "612763ab-8c63-432b-a6b5-2b23ab7d5590", "role" : "authenticated"}
+SET
+DO
+NOTICE:  RESULT|T3 département voit les lignes plateforme|PASS|total=6000 qté=2
+NOTICE:  RESULT|T3b département gestionnaire plateforme|PASS|t
+DO
+NOTICE:  RESULT|T4 département accepte|PASS|1
+DO
+DO
+NOTICE:  RESULT|T5 double avancement refusé|PASS|Ce statut est déjà atteint ou dépassé
+DO
+NOTICE:  RESULT|T6 département ajuste le stock plateforme|PASS|lignes=1
+DO
+DO
+NOTICE:  RESULT|T7 prix < 500 refusé|PASS|new row for relation "listings" violates check constraint "listings_price_min"
+RESET
+RESULT|T6b vendeur inchangé (plateforme)|PASS|
+RESULT|T6c mouvement de stock journalisé (ajustement, acteur département)|PASS|
+RESULT|T4b seules les lignes plateforme avancent|PASS|false:0,true:1
+RESULT|T4c acheteur notifié|PASS|
+{"sub" : "c8332c75-ae70-4685-8589-d6ab77667e16", "role" : "authenticated"}
+SET
+DO
+NOTICE:  RESULT|T8 administrateur voit les lignes plateforme|PASS|6000
+RESET
+{"sub" : "fbee9999-a07e-4700-be3f-caf5977b77a5", "role" : "authenticated"}
+SET
+NOTICE:  RESULT|T9 support ne voit pas la commande|PASS|0
+DO
+DO
+NOTICE:  RESULT|T9b support refusé (préparation)|PASS|Commande introuvable ou non payée
+RESET
+{"sub" : "74197c6c-3b42-48b1-b1e7-fe21b9d2b651", "role" : "authenticated"}
+SET
+DO
+NOTICE:  RESULT|T10 étudiant tiers ne voit pas la commande|PASS|0
+DO
+NOTICE:  RESULT|T10b étudiant non gestionnaire|PASS|f
+NOTICE:  RESULT|T10c étudiant ne modifie pas le stock plateforme|PASS|lignes=0
+DO
+RESET
+{"sub" : "e44c56a3-377c-4c29-b052-8944f93eeaf3", "role" : "authenticated"}
+SET
+NOTICE:  RESULT|T11 vendeur voit sa seule ligne|PASS|10000
+DO
+NOTICE:  RESULT|T11b vendeur marque prête|PASS|3
+DO
+NOTICE:  RESULT|T11c vendeur ajuste son stock|PASS|lignes=1
+DO
+RESET
+RESULT|T11d lignes : plateforme 1, vendeur 3|PASS|
+{"role":"anon"}
+SET
+NOTICE:  RESULT|T12 anonyme refusé (commandes)|PASS|permission denied for function seller_orders
+DO
+NOTICE:  RESULT|T12b anonyme refusé (gestionnaire)|PASS|permission denied for function is_platform_manager
+DO
+RESET
+{"sub" : "37d0d172-5d38-49e3-ab4a-8175997fe8b2", "role" : "authenticated"}
+SET
+NOTICE:  RESULT|T13 code de retrait délivré|PASS|6 chiffres=t
+DO
+RESET
+{"sub" : "fbee9999-a07e-4700-be3f-caf5977b77a5", "role" : "authenticated"}
+SET
+DO
+NOTICE:  RESULT|T13b remise au kiosque|PASS|delivered
+RESET
+ROLLBACK
+RESULT|T14 réplique inchangée après ROLLBACK|PASS|

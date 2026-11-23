@@ -1,0 +1,280 @@
+{
+ "autres_comptes": [
+  {
+   "banni": true,
+   "confirme": true,
+   "cree": "2026-10-29",
+   "derniere_connexion": "2026-10-29",
+   "personnel": null,
+   "role": "client"
+  },
+  {
+   "banni": true,
+   "confirme": true,
+   "cree": "2026-10-29",
+   "derniere_connexion": "2026-10-29",
+   "personnel": null,
+   "role": "client"
+  },
+  {
+   "banni": true,
+   "confirme": true,
+   "cree": "2026-10-29",
+   "derniere_connexion": "2026-10-29",
+   "personnel": null,
+   "role": "client"
+  },
+  {
+   "banni": true,
+   "confirme": true,
+   "cree": "2026-10-29",
+   "derniere_connexion": "2026-10-29",
+   "personnel": null,
+   "role": "client"
+  },
+  {
+   "banni": true,
+   "confirme": true,
+   "cree": "2026-10-29",
+   "derniere_connexion": "2026-10-29",
+   "personnel": null,
+   "role": "client"
+  },
+  {
+   "banni": true,
+   "confirme": true,
+   "cree": "2026-10-29",
+   "derniere_connexion": "2026-10-29",
+   "personnel": null,
+   "role": "client"
+  },
+  {
+   "banni": true,
+   "confirme": true,
+   "cree": "2026-10-29",
+   "derniere_connexion": "2026-10-29",
+   "personnel": null,
+   "role": "client"
+  },
+  {
+   "banni": true,
+   "confirme": true,
+   "cree": "2026-10-29",
+   "derniere_connexion": "2026-10-29",
+   "personnel": null,
+   "role": "client"
+  },
+  {
+   "banni": false,
+   "confirme": true,
+   "cree": "2026-10-30",
+   "derniere_connexion": "2026-10-30",
+   "personnel": null,
+   "role": "student"
+  }
+ ],
+ "volumes": [
+  {
+   "lignes_estimees": 86,
+   "t": "audit_log"
+  },
+  {
+   "lignes_estimees": 54,
+   "t": "profiles"
+  },
+  {
+   "lignes_estimees": 18,
+   "t": "engagements"
+  },
+  {
+   "lignes_estimees": 11,
+   "t": "listings"
+  },
+  {
+   "lignes_estimees": 4,
+   "t": "kiosks"
+  },
+  {
+   "lignes_estimees": 4,
+   "t": "notification_templates"
+  },
+  {
+   "lignes_estimees": 1,
+   "t": "institution_settings"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "api_keys"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "campaigns"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "certificates"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "claims"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "conversation_participants"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "conversations"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "cv_links"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "department_invitations"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "favorites"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "files"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "hackathon_teams"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "kiosk_events"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "kiosk_incidents"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "kiosk_sessions"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "listing_history"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "listing_reports"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "messages"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "mission_messages"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "mission_milestones"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "mission_proposals"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "missions"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "notifications"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "order_cancellations"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "order_lines"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "orders"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "payment_events"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "project_steps"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "projects"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "quote_requests"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "reviews"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "scheduled_lives"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "stock_movements"
+  },
+  {
+   "lignes_estimees": 0,
+   "t": "wishes"
+  }
+ ],
+ "zz_sans_profil": [
+  {
+   "email": "zz-test-mfa-cf360c3e@example.com",
+   "id8": "70ec4cfc"
+  }
+ ],
+ "engagements_zz": [
+  {
+   "kind": "event_registration",
+   "n": 9
+  },
+  {
+   "kind": "channel_prefs",
+   "n": 3
+  },
+  {
+   "kind": "application",
+   "n": 3
+  },
+  {
+   "kind": "data_export_request",
+   "n": 1
+  },
+  {
+   "kind": "vote",
+   "n": 1
+  },
+  {
+   "kind": "alert_prefs",
+   "n": 1
+  }
+ ],
+ "comptages_exacts": [
+  {
+   "engagements": 18,
+   "listings": 11,
+   "messages": 0,
+   "notifications": 0,
+   "orders": 0,
+   "payment_events": 0
+  }
+ ]
+}

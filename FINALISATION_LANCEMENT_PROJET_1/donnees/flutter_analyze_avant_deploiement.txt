@@ -1,0 +1,51 @@
+Resolving dependencies...
+Downloading packages...
+  archive 4.5.2 (4.6.0 available)
+  code_assets 1.2.1 (2.1.0 available)
+  cross_file 0.3.5+5 (0.4.0 available)
+  cupertino_ui 1.1.4 (1.1.5 available)
+  flutter_svg 2.3.0 (2.3.2 available)
+  go_router 18.1.1 (18.1.2 available)
+  hooks 2.0.2 (2.2.0 available)
+  image_picker_ios 0.8.13+13 (0.8.13+14 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  material_ui 1.8.0 (1.9.0 available)
+  meta 1.18.3 (1.19.0 available)
+  objective_c 9.5.0 (9.6.2 available)
+  petitparser 7.0.2 (7.1.0 available)
+  qr 3.0.2 (4.0.1 available)
+  record_use 0.6.0 (1.1.1 available)
+  shared_preferences_foundation 2.5.7 (2.6.1 available)
+  test_api 0.7.12 (0.7.15 available)
+  vector_graphics 1.2.4 (1.2.5 available)
+  vector_graphics_compiler 1.3.3 (1.3.4 available)
+  vector_math 2.4.0 (2.4.4 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+21 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Analyzing boutik_ecole_flutter...                               
+
+   info - Unnecessary use of multiple underscores. Try using '_' - lib\figma\live\auth.dart:618:123 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores. Try using '_' - lib\figma\live\auth.dart:618:127 - unnecessary_underscores
+   info - Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check - lib\figma\live\chat_server.dart:172:53 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check - lib\figma\live\chat_server.dart:185:39 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check - lib\figma\live\feedback.dart:98:38 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check - lib\figma\live\feedback.dart:102:14 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check - lib\figma\live\feedback.dart:164:49 - use_build_context_synchronously
+   info - Use the null-aware marker '?' rather than a null check via an 'if'. Try using '?' - lib\figma\live\lots.dart:38:9 - use_null_aware_elements
+   info - Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check - lib\figma\live\lots.dart:183:39 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check - lib\figma\live\lots.dart:232:30 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check - lib\figma\live\lots.dart:526:39 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check - lib\figma\live\lots.dart:527:51 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check - lib\figma\live\lots.dart:906:27 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check - lib\figma\live\lots.dart:932:29 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check - lib\figma\live\lots.dart:1121:30 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check - lib\figma\live\pay.dart:116:12 - use_build_context_synchronously
+   info - Angle brackets will be interpreted as HTML. Try using backticks around the content with angle brackets, or try replacing `<` with `&lt;` and `>` with `&gt;` - lib\figma\live\seller.dart:30:68 - unintended_html_in_doc_comment
+   info - Angle brackets will be interpreted as HTML. Try using backticks around the content with angle brackets, or try replacing `<` with `&lt;` and `>` with `&gt;` - lib\figma\live\seller.dart:30:78 - unintended_html_in_doc_comment
+   info - Angle brackets will be interpreted as HTML. Try using backticks around the content with angle brackets, or try replacing `<` with `&lt;` and `>` with `&gt;` - lib\figma\live\seller.dart:30:88 - unintended_html_in_doc_comment
+   info - Statements in an if should be enclosed in a block. Try wrapping the statement in a block - lib\figma\live\seller_edit.dart:140:28 - curly_braces_in_flow_control_structures
+   info - Statements in an if should be enclosed in a block. Try wrapping the statement in a block - lib\figma\live\seller_edit.dart:164:28 - curly_braces_in_flow_control_structures
+
+21 issues found. (ran in 215.5s)

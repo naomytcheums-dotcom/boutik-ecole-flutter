@@ -1,0 +1,26 @@
+[!] Flutter (Channel stable, 3.47.8, on Microsoft Windows [Version 10.0.26300.9818], locale en-US) [653ms]
+    • Flutter version 3.47.8 on channel stable at C:\Users\NITROV15\dev\flutter
+    ! The flutter binary is not on your path. Consider adding C:\Users\NITROV15\dev\flutter\bin to your path.
+    ! The dart binary is not on your path. Consider adding C:\Users\NITROV15\dev\flutter\bin to your path.
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 737ba8f885 (9 days ago), 2026-10-22 21:37:31 -0700
+    • Engine revision cf636b1dfb
+    • Dart version 3.13.7
+    • DevTools version 2.60.0
+    • Feature flags: enable-web, enable-linux-desktop, enable-macos-desktop, no-enable-windows-desktop, no-enable-android, enable-ios, cli-animations, enable-native-assets, enable-record-use, enable-swift-package-manager, omit-legacy-version-file, enable-lldb-debugging, enable-uiscene-migration
+    • If those were intentional, you can disregard the above warnings; however it is recommended to use "git" directly to perform update checks and upgrades.
+
+[√] Windows Version (Windows 11 or higher, 26H2, 2009) [1,831ms]
+
+[√] Chrome - develop for the web [18ms]
+    • Chrome at C:\Program Files\Google\Chrome\Application\chrome.exe
+
+[√] Connected device (2 available) [425ms]
+    • Chrome (web) • chrome • web-javascript • Google Chrome 156.0.8078.48
+    • Edge (web)   • edge   • web-javascript • Microsoft Edge 156.0.4314.50
+
+[√] Network resources [1,337ms]
+    • All expected network resources are available.
+
+! Doctor found issues in 1 category.
+

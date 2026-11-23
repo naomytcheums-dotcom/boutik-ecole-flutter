@@ -1,0 +1,24 @@
+00:00 +0: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart
+00:00 +0: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: (setUpAll)
+00:00 +0: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: brouillons sur l’appareil enregistrés, rechargés au démarrage, repris par le formulaire puis effacés
+00:00 +1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: brouillons sur l’appareil effacés à la déconnexion : l’utilisateur suivant ne les voit pas
+00:00 +2: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: brouillons sur l’appareil écran 165 : « Enregistrer » enregistre vraiment le brouillon sur l’appareil
+00:02 +3: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: brouillons sur l’appareil écran 165 : sans saisie, rien n’est annoncé comme enregistré
+00:03 +4: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: plus de faux succès écran 167 : les notes ne sont pas présentées comme enregistrées
+00:03 +5: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: plus de faux succès écran 164 : aucun « Message envoyé au mentor »
+00:03 +6: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: plus de faux succès écran 192 : « Poser une question » ouvre la vraie messagerie de mission (hors connexion : expliqué)
+00:03 +7: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: plus de faux succès écran 64 : « Signaler un souci » écrit à l’acheteur (hors connexion : expliqué)
+00:03 +8: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: plus de faux succès écran 110 : « Exporter » lance le vrai export (hors connexion : expliqué)
+00:04 +9: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: serveur joignable : rien n’est simulé jalon de mission : aucun paiement « bloqué en séquestre » sans paiement réel
+00:04 +10: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: serveur joignable : rien n’est simulé concours : dépôt et notation expliqués, aucun envoi simulé
+00:04 +11: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: serveur joignable : rien n’est simulé jury : aucune note annoncée comme enregistrée
+00:04 +12: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: serveur joignable : rien n’est simulé classement : aucune équipe fictive quand le serveur est joignable
+00:04 +13: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: serveur joignable : rien n’est simulé signalements : compteurs exacts, sans les chiffres de la maquette
+00:04 +14: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: serveur joignable : rien n’est simulé mot de passe oublié : un numéro de téléphone est refusé (réinitialisation par e-mail uniquement)
+00:05 +15: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: serveur joignable : rien n’est simulé nouveau mot de passe : refusé sans lien de réinitialisation ouvert, jamais « modifié »
+00:05 +16: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: (tearDownAll)
+00:05 +16: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/hackathon_test.dart
+00:08 +16: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/hackathon_test.dart: agenda : filtres par ville et gratuité, places restantes
+00:08 +17: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/hackathon_test.dart: équipe : invitations, acceptation et limite de taille
+00:08 +18: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/hackathon_test.dart: jury et classement : la note d'un projet déposé change le classement
+00:08 +19: All tests passed!

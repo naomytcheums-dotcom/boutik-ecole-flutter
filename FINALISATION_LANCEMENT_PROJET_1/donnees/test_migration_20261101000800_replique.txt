@@ -1,0 +1,36 @@
+BEGIN
+ALTER TABLE
+UPDATE 11
+CREATE FUNCTION
+DROP TRIGGER
+NOTICE:  trigger "trg_refuse_showcase_order_line" for relation "order_lines" does not exist, skipping
+CREATE TRIGGER
+REVOKE
+CREATE FUNCTION
+REVOKE
+GRANT
+RESULT|E1 exactement les 11 produits fictifs deviennent des exemples|PASS|11
+{"sub" : "37d0d172-5d38-49e3-ab4a-8175997fe8b2", "role" : "authenticated"}
+SET
+DO
+NOTICE:  RESULT|E2 produit d'exemple : commande refusée|PASS|Produit d'exemple : non disponible à la vente
+DO
+NOTICE:  RESULT|E3 exemple toujours visible au catalogue|PASS|1
+DO
+NOTICE:  RESULT|E4 vrai produit d'étudiant : commande acceptée|PASS|#BE-2026-0222
+DO
+NOTICE:  RESULT|E5 client ne change pas le statut d'exemple|PASS|Réservé au département ou à l'administrateur
+RESET
+RESULT|E2b stock de l'exemple inchangé après le refus|PASS|
+{"sub" : "612763ab-8c63-432b-a6b5-2b23ab7d5590", "role" : "authenticated"}
+SET
+NOTICE:  RESULT|E6 département passe un exemple en vente réelle|PASS|f
+DO
+RESET
+{"sub" : "37d0d172-5d38-49e3-ab4a-8175997fe8b2", "role" : "authenticated"}
+SET
+NOTICE:  RESULT|E7 produit devenu réel : commande acceptée|PASS|#BE-2026-0223
+DO
+RESET
+ROLLBACK
+RESULT|E8 réplique inchangée après ROLLBACK|PASS|

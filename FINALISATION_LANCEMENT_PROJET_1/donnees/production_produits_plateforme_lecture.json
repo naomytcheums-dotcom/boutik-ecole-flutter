@@ -1,0 +1,102 @@
+[
+{
+"category": "Alimentation",
+"department": "Agronomie",
+"photos": 0,
+"price": 3000,
+"status": "approved",
+"stock": 100,
+"title": "Confiture artisanale"
+},
+{
+"category": "Tech",
+"department": "Informatique",
+"photos": 0,
+"price": 10000,
+"status": "approved",
+"stock": 100,
+"title": "Cours de soutien en maths"
+},
+{
+"category": "Tech",
+"department": "G�nie �lectrique",
+"photos": 0,
+"price": 150000,
+"status": "approved",
+"stock": 100,
+"title": "Drone �ducatif"
+},
+{
+"category": "Alimentation",
+"department": "Agronomie",
+"photos": 0,
+"price": 1500,
+"status": "approved",
+"stock": 100,
+"title": "Jus de bissap"
+},
+{
+"category": "Maison",
+"department": "G�nie civil",
+"photos": 0,
+"price": 25000,
+"status": "approved",
+"stock": 100,
+"title": "Lampe en bois recycl�"
+},
+{
+"category": "Art",
+"department": "MMI",
+"photos": 0,
+"price": 50000,
+"status": "approved",
+"stock": 100,
+"title": "Logo et identit� visuelle"
+},
+{
+"category": "Tech",
+"department": "Informatique",
+"photos": 0,
+"price": 250000,
+"status": "approved",
+"stock": 100,
+"title": "Ordinateur portable prototype"
+},
+{
+"category": "Maison",
+"department": "Agronomie",
+"photos": 0,
+"price": 15000,
+"status": "approved",
+"stock": 100,
+"title": "Pots connect�s"
+},
+{
+"category": "Mode",
+"department": "Design � MMI",
+"photos": 0,
+"price": 25000,
+"status": "approved",
+"stock": 100,
+"title": "Sac � dos design"
+},
+{
+"category": "Tech",
+"department": "G�nie industriel",
+"photos": 0,
+"price": 8000,
+"status": "approved",
+"stock": 100,
+"title": "Support t�l�phone"
+},
+{
+"category": "Art",
+"department": "Arts � G�nie civil",
+"photos": 0,
+"price": 18000,
+"status": "approved",
+"stock": 100,
+"title": "Tableau d�coratif"
+}
+]
+[{"gestionnaires_reels": 0, "lignes_cmd_plateforme": 0, "mouvements": 0}]

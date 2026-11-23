@@ -1,0 +1,223 @@
+﻿ecran,titre,niveau_historique,demos_historiques,liens_entrants_aujourdhui,profondeur,categorie_actuelle,roles
+01,Bienvenue,navigation seule,0,0,0,1 · direct (démarrage/accueil),tous
+13,Choix du profil,données + actions,0,1,5,2 · indirect,tous
+14,Vérification du compte,données + actions,0,1,4,2 · indirect,tous
+16,Nouveau mot de passe,actions sans lecture,1,1,5,2 · indirect,tous
+17,Conditions et confidentialité,saisie/bascules locales,1,1,4,2 · indirect,tous
+18,État de validation,boutons simulés,2,1,4,2 · indirect,tous
+18b,Compléter mon profil,actions sans lecture,0,1,6,2 · indirect,tous
+18c,Vérification étudiant,saisie/bascules locales,2,3,4,2 · indirect,tous
+20,Résultats de recherche,saisie/bascules locales,0,1,3,2 · indirect,tous
+22b,Services et prestations,saisie/bascules locales,0,2,3,1 · direct (démarrage/accueil),tous
+22c,Tendances et nouveautés,saisie/bascules locales,0,2,5,2 · indirect,tous
+22d,Pour vous,navigation seule,0,1,4,2 · indirect,tous
+23,Filtres,saisie/bascules locales,3,1,4,2 · indirect,tous
+24,Profil vendeur,saisie/bascules locales,0,1,5,2 · indirect,tous
+25,Mes favoris,données + actions,0,2,3,2 · indirect,tous
+25b,Mes collections,saisie/bascules locales,0,1,3,2 · indirect,tous
+26,Comparer des offres,boutons simulés,1,1,3,2 · indirect,tous
+27,Mes adresses,navigation seule,0,2,3,2 · indirect,tous
+28,Mes commandes,données + actions,0,1,4,2 · indirect,tous
+29,Détail de la commande,boutons simulés,2,2,5,2 · indirect,tous
+30,Commande reçue,boutons simulés,3,2,4,2 · indirect,tous
+31,Avis et évaluations,navigation seule,0,1,5,2 · indirect,tous
+32,Détail du produit,saisie/bascules locales,1,1,4,2 · indirect,tous
+34,Galerie,statique,0,1,5,2 · indirect,tous
+35,Disponibilité,boutons simulés,2,1,4,2 · indirect,tous
+36,Détail du service,boutons simulés,2,1,4,2 · indirect,tous
+38,Réputation,statique,0,2,5,2 · indirect,tous
+39,Demande de renseignements,saisie/bascules locales,1,1,5,2 · indirect,tous
+41,Adresse de livraison,saisie/bascules locales,1,1,2,2 · indirect,tous
+42,Récapitulatif,boutons simulés,1,2,3,2 · indirect,tous
+43,Instructions de paiement,boutons simulés,2,1,3,2 · indirect,tous
+45,Mes commandes,données + actions,0,2,3,2 · indirect,tous
+46,Suivi de livraison,boutons simulés,2,2,5,2 · indirect,tous
+47,Annuler la commande,boutons simulés,2,1,6,2 · indirect,tous
+48,Réclamation,saisie/bascules locales,1,1,5,2 · indirect,tous
+49,Aide et support,saisie/bascules locales,0,4,3,2 · indirect,tous
+50,Notifications,saisie/bascules locales,0,1,3,2 · indirect,tous
+51,Détail d’une notification,boutons simulés,2,1,4,2 · indirect,tous
+52,Messages,saisie/bascules locales,0,2,3,2 · indirect,tous
+54,Conversation commande,actions sans lecture,0,4,4,2 · indirect,tous
+55,Conversation entreprise,saisie/bascules locales,2,1,6,2 · indirect,tous
+56,Notifications et confidentialité,saisie/bascules locales,0,1,4,2 · indirect,tous
+57,Tableau de bord vendeur,lecture de données,0,2,3,3 · conditionnel (rôle),"admin,dept,student"
+59,Nouveau service,saisie/bascules locales,2,1,3,3 · conditionnel (rôle),"admin,dept,student"
+60,Modifier l’annonce,boutons simulés,2,1,4,3 · conditionnel (rôle),"admin,dept,student"
+61,Mon catalogue,données + actions,0,32,3,3 · conditionnel (rôle),"admin,dept,student"
+62,Stocks,données + actions,0,1,3,3 · conditionnel (rôle),"admin,dept,student"
+65,Détail d’une vente,boutons simulés,1,1,5,3 · conditionnel (rôle),"admin,dept,student"
+66,Revenus,navigation seule,0,1,3,3 · conditionnel (rôle),"admin,dept,student"
+67,Statistiques,saisie/bascules locales,0,1,3,3 · conditionnel (rôle),"admin,dept,student"
+69,Validations,boutons simulés,1,1,3,3 · conditionnel (rôle),"admin,dept,student"
+70,Talents étudiants,données + actions,0,1,3,1 · direct (démarrage/accueil),tous
+72,Ajouter à mon profil,saisie/bascules locales,1,1,4,2 · indirect,tous
+73,Mes documents,saisie/bascules locales,0,1,3,2 · indirect,tous
+75,Opportunités,données + actions,0,1,3,2 · indirect,tous
+76,Ma candidature,boutons simulés,2,1,5,2 · indirect,tous
+77,Profil de mentor,saisie/bascules locales,1,1,5,2 · indirect,tous
+78,Projets innovants,données + actions,0,3,3,1 · direct (démarrage/accueil),tous
+81,Équipe du projet,statique,0,1,5,2 · indirect,tous
+82,Journal du projet,boutons simulés,1,2,3,2 · indirect,tous
+83,Médias et preuves,boutons simulés,1,1,5,2 · indirect,tous
+84,Nouvelle campagne,saisie/bascules locales,2,1,3,2 · indirect,tous
+84b,Financement,boutons simulés,1,1,5,2 · indirect,tous
+85,Objectifs et jalons,statique,0,1,5,2 · indirect,tous
+86,Résultats de campagne,statique,0,1,5,2 · indirect,tous
+87,Registre des innovations,saisie/bascules locales,1,2,3,2 · indirect,tous
+88,Espace entreprise,navigation seule,0,1,4,3 · conditionnel (rôle),"admin,company"
+89,Profil de l’entreprise,saisie/bascules locales,1,1,5,3 · conditionnel (rôle),"admin,company"
+90,Publier un besoin,saisie/bascules locales,2,3,3,3 · conditionnel (rôle),"admin,company"
+91,Rechercher des talents,saisie/bascules locales,0,1,3,3 · conditionnel (rôle),"admin,company"
+93,Propositions reçues,saisie/bascules locales,1,1,3,3 · conditionnel (rôle),"admin,company"
+93b,Proposition,boutons simulés,2,1,5,3 · conditionnel (rôle),"admin,company"
+94,Comparer les propositions,saisie/bascules locales,1,3,4,3 · conditionnel (rôle),"admin,company"
+95,Devis et négociations,boutons simulés,2,1,4,3 · conditionnel (rôle),"admin,company"
+95b,Demande de devis,saisie/bascules locales,1,1,5,3 · conditionnel (rôle),"admin,client,company,dept,other,student"
+96,Défis d’innovation,saisie/bascules locales,0,2,3,3 · conditionnel (rôle),"admin,company"
+97,Recrutement,saisie/bascules locales,0,1,4,3 · conditionnel (rôle),"admin,company"
+98,Collaborations,navigation seule,0,1,6,3 · conditionnel (rôle),"admin,company"
+99,Historique,saisie/bascules locales,0,2,3,3 · conditionnel (rôle),"admin,company"
+100,Événements,saisie/bascules locales,0,1,3,2 · indirect,tous
+101,Événement,boutons simulés,1,1,4,2 · indirect,tous
+102,Vitrine,boutons simulés,1,1,6,2 · indirect,tous
+103,Communauté,saisie/bascules locales,0,1,3,2 · indirect,tous
+104,Carte de l’innovation,saisie/bascules locales,0,1,5,2 · indirect,tous
+105,Inter-établissements,saisie/bascules locales,0,1,4,2 · indirect,tous
+106,Économie circulaire,saisie/bascules locales,0,1,4,2 · indirect,tous
+107,Mon impact,navigation seule,0,1,10,2 · indirect,tous
+139,Tableau de bord financier,données + actions,0,11,3,3 · conditionnel (rôle),"admin,direction,finance"
+140,Paiements déclarés,saisie/bascules locales,0,9,4,3 · conditionnel (rôle),"admin,direction,finance"
+141,Journal financier,saisie/bascules locales,0,9,4,3 · conditionnel (rôle),"admin,direction,finance"
+142,Rapports financiers,saisie/bascules locales,0,9,4,3 · conditionnel (rôle),"admin,direction,finance"
+143,Versements et montants dus,saisie/bascules locales,0,1,4,3 · conditionnel (rôle),"admin,direction,finance"
+144,Moyens de paiement et règles,saisie/bascules locales,0,1,4,3 · conditionnel (rôle),"admin,direction,finance"
+145,Points de retrait et kiosques,saisie/bascules locales,0,11,3,3 · conditionnel (rôle),"admin,support"
+146_1,Kiosque (gestionnaire),navigation seule,0,1,4,3 · conditionnel (rôle),"admin,support"
+146_2,Remise d’une commande,navigation seule,0,1,5,3 · conditionnel (rôle),"admin,support"
+147_1,Incidents et maintenance,saisie/bascules locales,0,9,4,3 · conditionnel (rôle),"admin,support"
+147_2,Tickets de support,saisie/bascules locales,0,9,4,3 · conditionnel (rôle),"admin,support"
+147_3,Interventions et résolutions,saisie/bascules locales,0,9,4,3 · conditionnel (rôle),"admin,support"
+148_1,Paramètres,navigation seule,0,2,3,2 · indirect,tous
+148_2,Centre de sécurité,saisie/bascules locales,1,1,3,2 · indirect,tous
+149,Langue et affichage,saisie/bascules locales,0,1,4,2 · indirect,tous
+150_1,Synchronisation,saisie/bascules locales,0,0,,4 · sans lien contextuel (URL /s/ et index « Mes rubriques » uniquement),tous
+150_2,Session expirée,boutons simulés,1,0,,4 · sans lien contextuel (URL /s/ et index « Mes rubriques » uniquement),tous
+150_3,Connexion impossible,boutons simulés,2,0,,4 · sans lien contextuel (URL /s/ et index « Mes rubriques » uniquement),tous
+150_4,Mes commandes (vide),saisie/bascules locales,1,0,,4 · sans lien contextuel (URL /s/ et index « Mes rubriques » uniquement),tous
+151,Opportunités,données + actions,0,2,3,2 · indirect,tous
+152,Kéla te recommande,saisie/bascules locales,0,2,4,2 · indirect,tous
+153,Pourquoi cette offre ?,boutons simulés,2,1,4,2 · indirect,tous
+154,Mon dossier,boutons simulés,1,2,4,2 · indirect,tous
+155,Alertes,saisie/bascules locales,0,1,3,2 · indirect,tous
+156,Préférences d’alertes,saisie/bascules locales,1,1,3,2 · indirect,tous
+157,Résumé de Kéla,navigation seule,0,1,4,2 · indirect,tous
+158,Candidatures classées,saisie/bascules locales,1,1,5,2 · indirect,tous
+159,Candidature envoyée,boutons simulés,2,2,4,2 · indirect,tous
+160,Hackathons et concours,données + actions,0,2,3,2 · indirect,tous
+166,Résultats,lecture de données,1,2,5,2 · indirect,tous
+167,Noter un projet,données + actions,2,1,4,3 · conditionnel (rôle),"admin,dept"
+168,Publier un concours,saisie/bascules locales,0,1,4,3 · conditionnel (rôle),"admin,dept"
+169,Modération des concours,saisie/bascules locales,0,1,5,3 · conditionnel (rôle),"admin,dept"
+170,Signaler une annonce,données + actions,2,1,4,2 · indirect,tous
+171,Paiement sécurisé,boutons simulés,2,1,5,2 · indirect,tous
+172,Confiance du vendeur,statique,0,1,4,2 · indirect,tous
+173,Partager,boutons simulés,1,1,4,2 · indirect,tous
+174,Centre de confiance,navigation seule,0,1,3,2 · indirect,tous
+175,"Bienvenue, étudiant",boutons simulés,2,1,5,2 · indirect,tous
+176,Bienvenue,boutons simulés,2,0,,4 · sans lien contextuel (URL /s/ et index « Mes rubriques » uniquement),tous
+177,"Bienvenue, entreprise",boutons simulés,2,1,3,1 · direct (démarrage/accueil),tous
+178,"Bienvenue, jury",boutons simulés,2,1,3,2 · indirect,tous
+179,Guide d’utilisation,saisie/bascules locales,0,1,3,2 · indirect,tous
+180,Rôles et permissions,saisie/bascules locales,0,2,3,3 · conditionnel (rôle),admin
+181,Matrice des permissions,saisie/bascules locales,0,1,5,3 · conditionnel (rôle),admin
+182,Explorer (chargement),saisie/bascules locales,0,1,,4 · sans lien contextuel (URL /s/ et index « Mes rubriques » uniquement),tous
+183,Mes commandes (hors ligne),navigation seule,0,0,,4 · sans lien contextuel (URL /s/ et index « Mes rubriques » uniquement),tous
+184,Économie de données,saisie/bascules locales,0,1,3,2 · indirect,tous
+185,Language,navigation seule,0,1,5,2 · indirect,tous
+186,Accessibilité,saisie/bascules locales,0,1,5,2 · indirect,tous
+187,Tableau de bord entreprise,saisie/bascules locales,0,1,3,3 · conditionnel (rôle),"admin,company"
+188,Recherche de talents et d’équipes,saisie/bascules locales,0,1,4,3 · conditionnel (rôle),"admin,company"
+189,Propositions reçues,saisie/bascules locales,1,2,4,3 · conditionnel (rôle),"admin,company"
+190,Devis et négociations,saisie/bascules locales,0,1,5,3 · conditionnel (rôle),"admin,company"
+191,Votre besoin,actions sans lecture,1,2,3,2 · indirect,tous
+192,Votre devis,lecture de données,2,2,4,2 · indirect,tous
+193,Paiement sécurisé,lecture de données,1,2,5,2 · indirect,tous
+194,Ma mission,lecture de données,2,32,3,2 · indirect,tous
+196,Dossier,saisie/bascules locales,5,2,4,2 · indirect,tous
+198,Briefs reçus,saisie/bascules locales,4,1,6,3 · conditionnel (rôle),"admin,dept"
+199,Attribuer,saisie/bascules locales,1,1,7,3 · conditionnel (rôle),"admin,dept"
+200,Missions et encaissement,saisie/bascules locales,0,1,7,3 · conditionnel (rôle),"admin,dept"
+201,Mes missions,lecture de données,0,2,7,2 · indirect,tous
+202,Pack Lancement de marque,boutons simulés,2,1,8,2 · indirect,tous
+203,Mes compétences,navigation seule,0,1,4,2 · indirect,tous
+204,Coup de pouce startup,navigation seule,0,1,5,2 · indirect,tous
+205,Soumettre mon projet,saisie/bascules locales,2,2,3,2 · indirect,tous
+211,Passeport du produit,boutons simulés,1,2,4,2 · indirect,tous
+214,Départements,saisie/bascules locales,0,1,3,2 · indirect,tous
+215,Fiche département,boutons simulés,1,1,4,2 · indirect,tous
+216,Marché des vœux,saisie/bascules locales,0,1,3,2 · indirect,tous
+217,Fiche d’un vœu,boutons simulés,1,1,4,2 · indirect,tous
+218,Publier un vœu,saisie/bascules locales,2,1,3,2 · indirect,tous
+219,Nouveau duel,saisie/bascules locales,1,1,8,2 · indirect,tous
+220,Duel de talents,boutons simulés,2,1,9,2 · indirect,tous
+221,Résultat du duel,boutons simulés,1,1,10,2 · indirect,tous
+223,Ateliers en direct,saisie/bascules locales,0,1,3,2 · indirect,tous
+224,Validation des vœux,saisie/bascules locales,2,2,3,2 · indirect,tous
+225,Jumeau 3D,statique,0,1,5,2 · indirect,tous
+226,Modération des duels,statique,0,1,6,2 · indirect,tous
+227,Régie des ateliers en direct,navigation seule,0,1,3,2 · indirect,tous
+228,Partager mon CV,boutons simulés,1,1,5,2 · indirect,tous
+229,CV vivant,boutons simulés,2,1,4,2 · indirect,tous
+232,Voix en texte,lecture de données,0,2,3,2 · indirect,tous
+233,WhatsApp · suivi de mission,saisie/bascules locales,2,1,4,2 · indirect,tous
+234,WhatsApp · validation de jalon,saisie/bascules locales,2,1,6,2 · indirect,tous
+235,WhatsApp · paiement sécurisé,saisie/bascules locales,0,1,6,2 · indirect,tous
+236,Canaux et notifications,saisie/bascules locales,1,1,3,2 · indirect,tous
+238,Impact de Boutik-École,navigation seule,0,2,3,2 · indirect,tous
+239,Rapport sponsors,saisie/bascules locales,0,1,3,3 · conditionnel (rôle),"admin,dept,direction"
+240,Parrainer et gagner,saisie/bascules locales,0,1,3,2 · indirect,tous
+241,Mes contacts,saisie/bascules locales,2,1,4,2 · indirect,tous
+242,Kit à partager,saisie/bascules locales,0,1,3,2 · indirect,tous
+243,Mes gains,boutons simulés,1,1,4,2 · indirect,tous
+250b,Nouvelle publication,saisie/bascules locales,1,0,,4 · sans lien contextuel (URL /s/ et index « Mes rubriques » uniquement),tous
+259,Reçu,données + actions,0,30,3,2 · indirect,tous
+261,Mon espace client,navigation seule,0,1,3,2 · indirect,tous
+262,Accueil B2B,saisie/bascules locales,0,2,3,3 · conditionnel (rôle),"admin,company"
+263,Médiathèque,saisie/bascules locales,1,1,4,3 · conditionnel (rôle),"admin,dept"
+264,Pages éditoriales,saisie/bascules locales,1,1,3,3 · conditionnel (rôle),admin
+265,Modèles de notifications,saisie/bascules locales,1,2,3,3 · conditionnel (rôle),admin
+266,État technique,saisie/bascules locales,0,1,6,3 · conditionnel (rôle),admin
+267,Boutik-École Network,saisie/bascules locales,0,1,4,3 · conditionnel (rôle),admin
+268,Analytics de la borne,saisie/bascules locales,0,1,4,3 · conditionnel (rôle),"admin,support"
+269,Innovation Radar,saisie/bascules locales,0,1,3,3 · conditionnel (rôle),admin
+270,Showroom national,saisie/bascules locales,0,1,5,2 · indirect,tous
+272,Vérification en 2 étapes,boutons simulés,1,1,3,2 · indirect,tous
+273,Mes données,boutons simulés,2,2,3,2 · indirect,tous
+274,Conditions générales,boutons simulés,1,1,3,2 · indirect,tous
+275,Déposer un produit (erreurs),saisie/bascules locales,1,0,,4 · sans lien contextuel (URL /s/ et index « Mes rubriques » uniquement),tous
+276,Borne hors ligne,boutons simulés,1,1,4,2 · indirect,tous
+277,Supervision des bornes,boutons simulés,1,2,3,3 · conditionnel (rôle),"admin,support"
+278,Fiche projet · liens et PI,boutons simulés,1,1,4,2 · indirect,tous
+279,Ajouter des fichiers,boutons simulés,1,1,4,2 · indirect,tous
+280,Intégrations,boutons simulés,1,2,3,3 · conditionnel (rôle),admin
+281,Rôles et périmètres,statique,0,2,3,3 · conditionnel (rôle),admin
+282,QR de transfert,boutons simulés,1,1,6,2 · indirect,tous
+283,Registre des certificats,boutons simulés,1,2,3,3 · conditionnel (rôle),"admin,dept"
+284,Registre financier,boutons simulés,1,2,3,3 · conditionnel (rôle),"admin,direction,finance"
+285,Espace projet,boutons simulés,1,1,3,3 · conditionnel (rôle),"admin,company"
+286,Soumissions et équipe,saisie/bascules locales,1,1,5,3 · conditionnel (rôle),"admin,dept"
+287,Catalogue département (tablette),saisie/bascules locales,1,1,6,3 · conditionnel (rôle),"admin,dept"
+288,Catalogue département (web),saisie/bascules locales,2,2,3,3 · conditionnel (rôle),"admin,dept"
+a1,Assistante vocale Kéla,actions sans lecture,0,3,4,2 · indirect,tous
+a2,Accueil Kéla,saisie/bascules locales,1,0,,4 · sans lien contextuel (URL /s/ et index « Mes rubriques » uniquement),tous
+a3,Voix en texte,saisie/bascules locales,0,1,4,2 · indirect,tous
+d1,Tableau de bord du studio,saisie/bascules locales,0,2,3,2 · indirect,tous
+l1,Aller en direct,boutons simulés,2,2,3,2 · indirect,tous
+p1,Profil talent,navigation seule,0,1,4,2 · indirect,tous
+p2,Profil talent · abonnement,saisie/bascules locales,0,1,5,2 · indirect,tous
+p3,Avis et outils connectés,navigation seule,0,4,5,2 · indirect,tous
+p4,Nouvelle publication,saisie/bascules locales,0,0,,4 · sans lien contextuel (URL /s/ et index « Mes rubriques » uniquement),tous
+p5,Connecter mes outils,saisie/bascules locales,1,2,3,2 · indirect,tous
+s1,Démarrage animé,statique,0,0,,4 · sans lien contextuel (URL /s/ et index « Mes rubriques » uniquement),tous
+v1,Vitrine,saisie/bascules locales,0,1,7,2 · indirect,tous

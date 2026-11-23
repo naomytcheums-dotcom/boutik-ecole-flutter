@@ -1,0 +1,58 @@
+Resolving dependencies...
+Downloading packages...
+  archive 4.5.2 (4.6.0 available)
+  code_assets 1.2.1 (2.1.0 available)
+  cross_file 0.3.5+5 (0.4.0 available)
+  cupertino_ui 1.1.4 (1.1.5 available)
+  flutter_svg 2.3.0 (2.3.2 available)
+  go_router 18.1.1 (18.1.2 available)
+  hooks 2.0.2 (2.2.0 available)
+  image_picker_ios 0.8.13+13 (0.8.13+14 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  material_ui 1.8.0 (1.9.0 available)
+  meta 1.18.3 (1.19.0 available)
+  objective_c 9.5.0 (9.6.2 available)
+  petitparser 7.0.2 (7.1.0 available)
+  qr 3.0.2 (4.0.1 available)
+  record_use 0.6.0 (1.1.1 available)
+  shared_preferences_foundation 2.5.7 (2.6.1 available)
+  test_api 0.7.12 (0.7.15 available)
+  vector_graphics 1.2.4 (1.2.5 available)
+  vector_graphics_compiler 1.3.3 (1.3.4 available)
+  vector_math 2.4.0 (2.4.4 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+21 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/account_test.dart
+00:00 +0: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/account_test.dart: validations des formulaires
+00:00 +1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/account_test.dart: inscription, vérification et mise à jour du profil
+00:00 +2: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/form_dialog_test.dart
+00:02 +2: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/form_dialog_test.dart: double clic sur « Confirmer » : une seule valeur, l’écran du kiosque reste affiché
+00:04 +3: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/form_dialog_test.dart: double clic sur « Annuler » : rien n’est renvoyé, l’écran du kiosque reste affiché
+00:05 +4: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/guest_mode_test.dart
+00:07 +4: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/guest_mode_test.dart: visiteur : la demande est proposée avec la possibilité de renoncer, rien n'est imposé
+00:09 +5: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/guest_mode_test.dart: compte connecté : l'action passe sans aucune demande
+00:09 +6: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/guest_mode_test.dart: hors connexion serveur (aperçu, tests) : jamais de blocage
+00:09 +7: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/identity_test.dart
+00:10 +7: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/identity_test.dart: connecté au serveur : un profil sans compte est vierge, jamais le compte de démonstration
+00:11 +8: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/identity_test.dart: un nouveau compte n'hérite ni du nom, ni de la description, ni de la photo, ni du badge d'un autre
+00:11 +9: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/identity_test.dart: le badge bleu n'existe que pour une certification approuvée
+00:11 +10: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/identity_test.dart: la déconnexion jette tout l'état de l'application
+00:11 +11: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/identity_test.dart: connecté au serveur : le vendeur démarre sans annonce d'exemple
+00:11 +12: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/profile_edit_test.dart
+00:14 +12: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/profile_edit_test.dart: modifier mon profil : description, compétences et ville enregistrées sur le compte connecté, sans toucher à la certification
+00:17 +13: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/profile_edit_test.dart: annuler ne change rien
+00:17 +14: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/decisions_a2_s1_test.dart
+00:21 +14: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/decisions_a2_s1_test.dart: S1 : écran de lancement, puis l’accueil 01 s’ouvre seul
+00:25 +15: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/decisions_a2_s1_test.dart: S1 sans animation (rendus de référence) : aucun minuteur, l’écran reste affiché
+00:25 +16: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/decisions_a2_s1_test.dart: A2 a les mêmes destinations que 231 (dont « Voix en texte » → a3)
+00:25 +17: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart
+00:29 +17: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/demo_journey_test.dart: Parcours de démonstration de bout en bout (liens Figma)
+01:29 +18: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/navigation/links_test.dart
+01:31 +18: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/navigation/links_test.dart: les identifiants du studio créateur s'ouvrent quelle que soit la casse
+01:31 +19: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/navigation/links_test.dart: chaque lien gOpen/gTab des écrans désigne un écran existant
+01:32 +20: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/navigation/links_test.dart: les liens métier ajoutés à la reprise sont présents et ciblent des écrans existants
+01:32 +21: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/navigation/links_test.dart: le menu du compte ne propose à chaque rôle que des écrans qu’il peut ouvrir
+01:32 +22: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/navigation/links_test.dart: la gestion des rôles (180, 181) est réservée à l’administration
+01:32 +23: All tests passed!

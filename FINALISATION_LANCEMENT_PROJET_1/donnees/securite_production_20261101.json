@@ -1,0 +1,97 @@
+{
+ "tables_publiques_sans_RLS": [],
+ "secdef_sans_search_path": [],
+ "fonctions_executables_par_anon": [
+  {
+   "proname": "chat_file_allowed"
+  },
+  {
+   "proname": "current_role_name"
+  },
+  {
+   "proname": "is_contest_staff"
+  },
+  {
+   "proname": "is_mission_participant"
+  },
+  {
+   "proname": "is_participant"
+  },
+  {
+   "proname": "listing_rating"
+  },
+  {
+   "proname": "rls_auto_enable"
+  },
+  {
+   "proname": "shared_cv"
+  },
+  {
+   "proname": "verify_certificate"
+  }
+ ],
+ "tables_avec_droit_ecriture_anon": [
+  {
+   "table_name": "audit_log"
+  },
+  {
+   "table_name": "favorites"
+  },
+  {
+   "table_name": "hackathon_teams"
+  },
+  {
+   "table_name": "kiosk_sessions"
+  },
+  {
+   "table_name": "listings"
+  },
+  {
+   "table_name": "order_lines"
+  },
+  {
+   "table_name": "orders"
+  },
+  {
+   "table_name": "profiles"
+  }
+ ],
+ "politiques_using_true_ecriture": [],
+ "compartiments": [
+  {
+   "?column?": "chat-files:public=false"
+  },
+  {
+   "?column?": "listing-images:public=true"
+  },
+  {
+   "?column?": "project-files:public=false"
+  }
+ ],
+ "comptes_par_role": [
+  {
+   "?column?": "admin=1"
+  },
+  {
+   "?column?": "client=28"
+  },
+  {
+   "?column?": "student=26"
+  }
+ ],
+ "comptes_zz_test": [
+  {
+   "count": 46
+  }
+ ],
+ "mfa_facteurs": [
+  {
+   "count": 2
+  }
+ ],
+ "historique_migrations": [
+  {
+   "count": 20
+  }
+ ]
+}

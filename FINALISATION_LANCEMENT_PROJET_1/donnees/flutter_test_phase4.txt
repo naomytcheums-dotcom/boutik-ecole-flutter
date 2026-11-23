@@ -1,0 +1,86 @@
+Resolving dependencies...
+Downloading packages...
+  archive 4.5.2 (4.6.0 available)
+  code_assets 1.2.1 (2.1.0 available)
+  cross_file 0.3.5+5 (0.4.0 available)
+  cupertino_ui 1.1.4 (1.1.5 available)
+  flutter_svg 2.3.0 (2.3.2 available)
+  go_router 18.1.1 (18.1.2 available)
+  hooks 2.0.2 (2.2.0 available)
+  image_picker_ios 0.8.13+13 (0.8.13+14 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  material_ui 1.8.0 (1.9.0 available)
+  meta 1.18.3 (1.19.0 available)
+  objective_c 9.5.0 (9.6.2 available)
+  petitparser 7.0.2 (7.1.0 available)
+  qr 3.0.2 (4.0.1 available)
+  record_use 0.6.0 (1.1.1 available)
+  shared_preferences_foundation 2.5.7 (2.6.1 available)
+  test_api 0.7.12 (0.7.15 available)
+  vector_graphics 1.2.4 (1.2.5 available)
+  vector_graphics_compiler 1.3.3 (1.3.4 available)
+  vector_math 2.4.0 (2.4.4 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+21 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot2_formulaires_test.dart
+00:00 +0: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot2_formulaires_test.dart: (setUpAll)
+00:00 +0: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot2_formulaires_test.dart: recherche d’en-tête du back-office (63 écrans) pages autorisées au rôle uniquement
+00:00 +0 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot2_formulaires_test.dart: recherche d’en-tête du back-office (63 écrans) pages autorisées au rôle uniquement [E]
+  Expected: empty
+    Actual: [Instance of 'ScreenEntry']
+  un client ne découvre pas les pages réservées
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\purchase\lot2_formulaires_test.dart 28:7       main.<fn>.<fn>
+  
+00:00 +0 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot2_formulaires_test.dart: recherche d’en-tête du back-office (63 écrans) le générateur produit la même liaison que les écrans modifiés
+00:00 +1 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot2_formulaires_test.dart: journaux d’audit 126 et 137 la recherche filtre réellement ; sans serveur, les exemples de la maquette
+00:00 +2 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot2_formulaires_test.dart: journaux d’audit 126 et 137 avec le serveur, aucune entrée fictive n’est présentée comme le journal réel
+00:00 +3 -1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot2_formulaires_test.dart: 40 « Demande de devis » hors serveur : maquette, et l’envoi n’annonce aucun succès
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TextWidgetFinder:<Found 0 widgets with text "Hors connexion": []>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot2_formulaires_test.dart:78:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1953:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot2_formulaires_test.dart line 78
+The test description was:
+  hors serveur : maquette, et l’envoi n’annonce aucun succès
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:02 +3 -2: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot2_formulaires_test.dart: 40 « Demande de devis » hors serveur : maquette, et l’envoi n’annonce aucun succès [E]
+  Test failed. See exception logs above.
+  The test description was: hors serveur : maquette, et l’envoi n’annonce aucun succès
+  
+00:02 +3 -2: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot2_formulaires_test.dart: 40 « Demande de devis » connecté : aucune valeur d’exemple pré-remplie ; la saisie est enregistrée dans le formulaire
+00:02 +4 -2: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot2_formulaires_test.dart: (tearDownAll)
+00:03 +4 -2: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot1_etats_test.dart
+00:11 +4 -2: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot1_etats_test.dart: (setUpAll)
+00:11 +4 -2: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot1_etats_test.dart: 150-4 « Mes commandes (vide) » affiché seulement si le serveur a répondu et qu'il n'y a réellement aucune commande
+00:11 +5 -2: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot1_etats_test.dart: 150-4 « Mes commandes (vide) » une lecture impossible n'est jamais confondue avec « aucune commande »
+00:11 +6 -2: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot1_etats_test.dart: 275 « Déposer un produit (erreurs) » erreurs réelles de 58 : valeurs saisies, messages réels, aucun faux « brouillon enregistré »
+00:13 +7 -2: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot1_etats_test.dart: 275 « Déposer un produit (erreurs) » sans erreur réelle : la maquette (catalogue des écrans, golden image)
+00:13 +8 -2: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot1_etats_test.dart: 275 « Déposer un produit (erreurs) » récapitulatif : nombre réel de champs en erreur
+00:13 +9 -2: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot1_etats_test.dart: 150-1 « Synchronisation » connecté : résultat réel de la resynchronisation, jamais « 72 % » ni « 10:24 »
+00:13 +10 -2: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot1_etats_test.dart: 150-1 « Synchronisation » hors serveur : la maquette
+00:14 +11 -2: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot1_etats_test.dart: 150-1 « Synchronisation » sans serveur, la resynchronisation n'annonce aucun succès
+00:14 +12 -2: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot1_etats_test.dart: 150-1 « Synchronisation » heure de dernière synchronisation
+00:14 +13 -2: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot1_etats_test.dart: (tearDownAll)
+00:14 +13 -2: Some tests failed.
+
+Failing tests:
+  C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot2_formulaires_test.dart: 40 « Demande de devis » hors serveur : maquette, et l’envoi n’annonce aucun succès
+  C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/lot2_formulaires_test.dart: recherche d’en-tête du back-office (63 écrans) pages autorisées au rôle uniquement

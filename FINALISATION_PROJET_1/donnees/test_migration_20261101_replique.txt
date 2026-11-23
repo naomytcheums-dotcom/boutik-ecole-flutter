@@ -1,0 +1,76 @@
+                                 set_config                                 
+----------------------------------------------------------------------------
+ {"sub" : "37d0d172-5d38-49e3-ab4a-8175997fe8b2", "role" : "authenticated"}
+(1 row)
+
+NOTICE:  RESULT|T1 client refusé|PASS|Réservé à l'administrateur global
+NOTICE:  RESULT|T10b RLS client : 1 profil visible|PASS|1
+NOTICE:  RESULT|T9a client refusé (signalement)|PASS|Réservé au support, au département ou à l'administration
+                                 set_config                                 
+----------------------------------------------------------------------------
+ {"sub" : "c8332c75-ae70-4685-8589-d6ab77667e16", "role" : "authenticated"}
+(1 row)
+
+NOTICE:  RESULT|T10a RLS admin : tous les profils visibles|PASS|84
+NOTICE:  RESULT|T2 admin change le rôle|PASS|{"role": "student", "changed": true, "suspended": false}
+NOTICE:  RESULT|T3 admin suspend (appel)|PASS|{"role": "student", "changed": true, "suspended": true}
+NOTICE:  RESULT|T5 modification de soi refusée|PASS|Vous ne pouvez pas modifier votre propre rôle ou statut
+NOTICE:  RESULT|T6 rôle visitor refusé|PASS|Rôle invalide
+                                             ?column?                                             
+--------------------------------------------------------------------------------------------------
+ RESULT|T3 suspension effective|PASS|suspendu=true banned_until=2999-01-01 00:00:00+00 sessions=0
+(1 row)
+
+                           ?column?                            
+---------------------------------------------------------------
+ RESULT|T2b journal d'audit|PASS|Rôle modifié, Compte suspendu
+(1 row)
+
+                                 set_config                                 
+----------------------------------------------------------------------------
+ {"sub" : "c8332c75-ae70-4685-8589-d6ab77667e16", "role" : "authenticated"}
+(1 row)
+
+                           ?column?                            
+---------------------------------------------------------------
+ RESULT|T4 réactivation lève le blocage|PASS|banned_until=null
+(1 row)
+
+                                 set_config                                 
+----------------------------------------------------------------------------
+ {"sub" : "c8332c75-ae70-4685-8589-d6ab77667e16", "role" : "authenticated"}
+(1 row)
+
+NOTICE:  RESULT|T7 dernier admin actif protégé|PASS|Impossible de retirer le dernier administrateur actif
+   set_config    
+-----------------
+ {"role":"anon"}
+(1 row)
+
+NOTICE:  RESULT|T8 anonyme refusé|PASS|permission denied for function admin_set_account
+NOTICE:  RESULT|T8b anonyme refusé (signalement)|PASS|permission denied for function set_report_status
+                                 set_config                                 
+----------------------------------------------------------------------------
+ {"sub" : "fbee9999-a07e-4700-be3f-caf5977b77a5", "role" : "authenticated"}
+(1 row)
+
+NOTICE:  RESULT|T9b support lit le signalement (RLS)|PASS|1
+NOTICE:  RESULT|T9c support passe en traitement|PASS|reviewing
+NOTICE:  RESULT|T9d statut invalide refusé|PASS|Statut invalide
+                     ?column?                     
+--------------------------------------------------
+ RESULT|T9e statut enregistré et journalisé|PASS|
+(1 row)
+
+                                 set_config                                 
+----------------------------------------------------------------------------
+ {"sub" : "612763ab-8c63-432b-a6b5-2b23ab7d5590", "role" : "authenticated"}
+(1 row)
+
+NOTICE:  RESULT|T11 département refusé (comptes)|PASS|Réservé à l'administrateur global
+                      ?column?                      
+----------------------------------------------------
+ RESULT|T12 réplique inchangée après ROLLBACK|PASS|
+(1 row)
+
+

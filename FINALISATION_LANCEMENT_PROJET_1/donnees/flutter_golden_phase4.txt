@@ -1,0 +1,96 @@
+Resolving dependencies...
+Downloading packages...
+  archive 4.5.2 (4.6.0 available)
+  code_assets 1.2.1 (2.1.0 available)
+  cross_file 0.3.5+5 (0.4.0 available)
+  cupertino_ui 1.1.4 (1.1.5 available)
+  flutter_svg 2.3.0 (2.3.2 available)
+  go_router 18.1.1 (18.1.2 available)
+  hooks 2.0.2 (2.2.0 available)
+  image_picker_ios 0.8.13+13 (0.8.13+14 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  material_ui 1.8.0 (1.9.0 available)
+  meta 1.18.3 (1.19.0 available)
+  objective_c 9.5.0 (9.6.2 available)
+  petitparser 7.0.2 (7.1.0 available)
+  qr 3.0.2 (4.0.1 available)
+  record_use 0.6.0 (1.1.1 available)
+  shared_preferences_foundation 2.5.7 (2.6.1 available)
+  test_api 0.7.12 (0.7.15 available)
+  vector_graphics 1.2.4 (1.2.5 available)
+  vector_graphics_compiler 1.3.3 (1.3.4 available)
+  vector_math 2.4.0 (2.4.4 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+21 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/golden/screens_golden_test.dart
+00:00 +0: (setUpAll)
+00:00 +0: golden 262 · Accueil B2B
+00:03 +1: golden 263 · Médiathèque
+00:04 +2: golden 264 · Pages éditoriales
+00:04 +3: golden 265 · Modèles de notifications
+00:04 +4: golden 266 · État technique
+00:05 +5: golden 267 · Boutik-École Network
+00:05 +6: golden 268 · Analytics de la borne
+00:06 +7: golden 269 · Innovation Radar
+00:07 +8: golden 127 · Tableau de bord de la plateforme
+00:08 +9: golden 128 · Comptes, rôles et permissions
+00:09 +10: golden 129 · Institutions
+00:09 +11: golden 130 · Modération
+00:09 +12: golden 131 · Signalements
+00:10 +13: golden 132 · Commandes et incidents
+00:10 +14: golden 133 · Litiges et remboursements
+00:10 +15: golden 134 · Transactions et rapprochements
+00:11 +16: golden 135 · Commissions et règles économiques
+00:11 +17: golden 136 · Sécurité et accès
+00:11 +18: golden 137 · Journal d’audit global
+00:11 +19: golden 138 · Configuration générale
+00:12 +20: golden 139 · Tableau de bord financier
+00:13 +21: golden 140 · Paiements déclarés
+00:13 +22: golden 141 · Journal financier
+00:13 +23: golden 142 · Rapports financiers
+00:13 +24: golden 143 · Versements et montants dus
+00:14 +25: golden 144 · Moyens de paiement et règles
+00:14 +26: golden 145 · Points de retrait et kiosques
+00:14 +27: golden 147-1 · Incidents et maintenance
+00:15 +28: golden 147-2 · Tickets de support
+00:15 +29: golden 147-3 · Interventions et résolutions
+00:15 +30: golden 168 · Publier un concours
+00:16 +31: golden 169 · Modération des concours
+00:16 +32: golden 213 · Registre des certificats
+00:16 +33: golden 180 · Rôles et permissions
+00:16 +34: golden 181 · Matrice des permissions
+00:17 +35: golden 182 · Explorer (chargement)
+00:17 +36: golden 239 · Rapport sponsors
+00:18 +37: golden 108 · Tableau de bord du département
+00:18 +38: golden 109 · Étudiants et vendeurs
+00:18 +39: golden 110 · Validation des annonces
+00:19 +40: golden 111 · Validation des projets
+00:19 +41: golden 112 · Statistiques du département
+00:19 +42: golden 113 · Suivi des productions
+00:19 +43: golden 114 · Mentors et encadreurs
+00:20 +44: golden 115 · Événements et initiatives
+00:20 +45: golden 116 · Rapports et exports
+00:20 +46: golden 117 · Tableau de bord institutionnel
+00:21 +47: golden 118 · Établissement et identité visuelle
+00:21 +48: golden 119 · Départements et filières
+00:22 +49: golden 120 · Utilisateurs et affectations
+00:22 +50: golden 121 · Responsables et encadreurs
+00:22 +51: golden 122 · Circuits de validation
+00:22 +52: golden 123 · Ventes et activité
+00:22 +53: golden 124 · Événements et campagnes
+00:23 +54: golden 125 · Rapports consolidés
+00:23 +55: golden 126 · Journal d’audit
+00:23 +56: golden 40 · Demande de devis
+00:23 +57: golden 251 · Découvrir
+00:24 +58: golden 198 · Briefs reçus
+00:24 +59: golden 199 · Attribuer
+00:24 +60: golden 200 · Missions et encaissement
+00:24 +61: golden 187 · Tableau de bord entreprise
+00:25 +62: golden 188 · Recherche de talents et d’équipes
+00:25 +63: golden 189 · Propositions reçues
+00:26 +64: golden 190 · Devis et négociations
+00:26 +65: golden D1 · Tableau de bord du studio
+00:26 +66: (tearDownAll)
+00:26 +66: All tests passed!

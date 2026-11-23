@@ -1,0 +1,80 @@
+Resolving dependencies...
+Downloading packages...
+  archive 4.5.2 (4.6.0 available)
+  code_assets 1.2.1 (2.1.0 available)
+  cross_file 0.3.5+5 (0.4.0 available)
+  cupertino_ui 1.1.4 (1.1.5 available)
+  flutter_svg 2.3.0 (2.3.2 available)
+  go_router 18.1.1 (18.1.2 available)
+  hooks 2.0.2 (2.2.0 available)
+  image_picker_ios 0.8.13+13 (0.8.13+14 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  material_ui 1.8.0 (1.9.0 available)
+  meta 1.18.3 (1.19.0 available)
+  objective_c 9.5.0 (9.6.2 available)
+  petitparser 7.0.2 (7.1.0 available)
+  qr 3.0.2 (4.0.1 available)
+  record_use 0.6.0 (1.1.1 available)
+  shared_preferences_foundation 2.5.7 (2.6.1 available)
+  test_api 0.7.12 (0.7.15 available)
+  vector_graphics 1.2.4 (1.2.5 available)
+  vector_graphics_compiler 1.3.3 (1.3.4 available)
+  vector_math 2.4.0 (2.4.4 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+21 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/navigation/rubriques_test.dart
+00:00 +0: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/navigation/rubriques_test.dart: chaque écran est rattaché à exactement une rubrique
+00:00 +1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/navigation/rubriques_test.dart: un visiteur ne voit que les écrans ouverts à tous
+00:00 +2: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/navigation/rubriques_test.dart: chaque rôle voit exactement les écrans que le routeur lui autorise
+00:00 +3: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/navigation/rubriques_test.dart: la recherche filtre par titre ou numéro
+00:00 +4: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/access_test.dart
+00:05 +4: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/access_test.dart: chaque rôle n'ouvre que ses écrans
+00:06 +5: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/admin_audit_test.dart
+00:10 +5: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/admin_audit_test.dart: le journal d'audit garde les actions et se filtre par onglet et recherche
+00:10 +6: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/admin_audit_test.dart: administration des comptes : suspension, rôle, ordre d'affichage
+00:10 +7: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/chat_server_test.dart
+00:15 +7: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/chat_server_test.dart: types de pièces jointes acceptés : images, PDF, Word, Excel, texte ; le reste est refusé côté application aussi
+00:15 +8: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/chat_server_test.dart: une conversation de commande garde son numéro de commande
+00:15 +9: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/chat_server_test.dart: sans conversation choisie : message d'orientation, aucune saisie possible
+00:16 +10: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/engagements_test.dart
+00:26 +10: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/engagements_test.dart: (setUpAll)
+00:26 +10: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/engagements_test.dart: hors connexion : aucun engagement lu ni inventé
+00:26 +11: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/engagements_test.dart: date d’enregistrement lisible
+00:26 +12: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/engagements_test.dart: prix et vendeur du produit consulté (écran 39)
+00:26 +13: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/engagements_test.dart: événement 101 : le bouton reflète l’inscription enregistrée sur le serveur
+00:28 +14: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/engagements_test.dart: événement 101 : une inscription annulée n’apparaît plus comme active
+00:28 +15: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/engagements_test.dart: préférences d’alertes 156 : les interrupteurs alimentent l’état enregistré
+00:29 +16: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/engagements_test.dart: canaux 236 : chaque canal s’active ou se désactive, l’enregistrement hors connexion ne simule rien
+00:30 +17: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/engagements_test.dart: (tearDownAll)
+00:30 +17: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/feedback_test.dart
+00:32 +17: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/feedback_test.dart: les motifs de réclamation correspondent aux valeurs acceptées par le serveur
+00:32 +18: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/feedback_test.dart: les motifs de signalement correspondent aux valeurs acceptées par le serveur
+00:32 +19: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/feedback_test.dart: le motif choisi est mémorisé
+00:32 +20: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/feedback_test.dart: hors connexion : aucun envoi, message clair
+00:32 +21: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/feedback_test.dart: engagements hors connexion : aucun enregistrement fictif
+00:32 +22: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart
+00:39 +22: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: (setUpAll)
+00:39 +22: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: brouillons sur l’appareil enregistrés, rechargés au démarrage, repris par le formulaire puis effacés
+00:39 +23: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: brouillons sur l’appareil effacés à la déconnexion : l’utilisateur suivant ne les voit pas
+00:39 +24: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: brouillons sur l’appareil écran 165 : « Enregistrer » enregistre vraiment le brouillon sur l’appareil
+00:41 +25: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: brouillons sur l’appareil écran 165 : sans saisie, rien n’est annoncé comme enregistré
+00:41 +26: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: plus de faux succès écran 167 : les notes ne sont pas présentées comme enregistrées
+00:41 +27: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: plus de faux succès écran 164 : aucun « Message envoyé au mentor »
+00:41 +28: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: plus de faux succès écran 192 : « Poser une question » ouvre la vraie messagerie de mission (hors connexion : expliqué)
+00:42 +29: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: plus de faux succès écran 64 : « Signaler un souci » écrit à l’acheteur (hors connexion : expliqué)
+00:42 +30: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: plus de faux succès écran 110 : « Exporter » lance le vrai export (hors connexion : expliqué)
+00:42 +31: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: serveur joignable : rien n’est simulé jalon de mission : aucun paiement « bloqué en séquestre » sans paiement réel
+00:42 +32: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: serveur joignable : rien n’est simulé concours : dépôt incomplet refusé, aucun envoi simulé
+00:42 +33: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: serveur joignable : rien n’est simulé jury : aucune note annoncée comme enregistrée sans réponse du serveur
+00:42 +34: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: serveur joignable : rien n’est simulé classement : aucune équipe fictive quand le serveur est joignable
+00:42 +35: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: serveur joignable : rien n’est simulé signalements : compteurs exacts, sans les chiffres de la maquette
+00:42 +36: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: serveur joignable : rien n’est simulé mot de passe oublié : un numéro de téléphone est refusé (réinitialisation par e-mail uniquement)
+00:42 +37: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: serveur joignable : rien n’est simulé nouveau mot de passe : refusé sans lien de réinitialisation ouvert, jamais « modifié »
+00:42 +38: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/finalisation_20261101_test.dart: (tearDownAll)
+00:43 +38: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/hackathon_test.dart
+00:44 +38: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/hackathon_test.dart: agenda : filtres par ville et gratuité, places restantes
+00:45 +39: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/hackathon_test.dart: équipe : invitations, acceptation et limite de taille
+00:45 +40: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/purchase/hackathon_test.dart: jury et classement : la note d'un projet déposé change le classement
+00:45 +41: All tests passed!

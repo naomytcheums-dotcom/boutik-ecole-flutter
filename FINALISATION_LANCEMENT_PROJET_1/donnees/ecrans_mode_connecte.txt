@@ -1,0 +1,345 @@
+Resolving dependencies...
+Downloading packages...
+  archive 4.5.2 (4.6.0 available)
+  code_assets 1.2.1 (2.1.0 available)
+  cross_file 0.3.5+5 (0.4.0 available)
+  cupertino_ui 1.1.4 (1.1.5 available)
+  flutter_svg 2.3.0 (2.3.2 available)
+  go_router 18.1.1 (18.1.2 available)
+  hooks 2.0.2 (2.2.0 available)
+  image_picker_ios 0.8.13+13 (0.8.13+14 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  material_ui 1.8.0 (1.9.0 available)
+  meta 1.18.3 (1.19.0 available)
+  objective_c 9.5.0 (9.6.2 available)
+  petitparser 7.0.2 (7.1.0 available)
+  qr 3.0.2 (4.0.1 available)
+  record_use 0.6.0 (1.1.1 available)
+  shared_preferences_foundation 2.5.7 (2.6.1 available)
+  test_api 0.7.12 (0.7.15 available)
+  vector_graphics 1.2.4 (1.2.5 available)
+  vector_graphics_compiler 1.3.3 (1.3.4 available)
+  vector_math 2.4.0 (2.4.4 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+21 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/journey/ecrans_mode_connecte_test.dart
+00:00 +0: (setUpAll)
+00:00 +0: écran 255 · Suivi de publication : ouverture en mode connecté sans erreur
+00:04 +1: écran 256 · Contrôles de la fiche : ouverture en mode connecté sans erreur
+00:04 +2: écran 257 · Paiement en attente de confirmation : ouverture en mode connecté sans erreur
+00:04 +3: écran 258 · Paiement échoué : ouverture en mode connecté sans erreur
+00:05 +4: écran 259 · Reçu : ouverture en mode connecté sans erreur
+00:05 +5: écran 260 · Facture : ouverture en mode connecté sans erreur
+00:05 +6: écran 261 · Mon espace client : ouverture en mode connecté sans erreur
+00:05 +7: écran 270 · Showroom national : ouverture en mode connecté sans erreur
+00:06 +8: écran 271 · Mes liens et réseaux : ouverture en mode connecté sans erreur
+00:06 +9: écran 272 · Vérification en 2 étapes : ouverture en mode connecté sans erreur
+00:06 +10: écran 273 · Mes données : ouverture en mode connecté sans erreur
+00:06 +11: écran 274 · Conditions générales : ouverture en mode connecté sans erreur
+00:06 +12: écran 275 · Déposer un produit (erreurs) : ouverture en mode connecté sans erreur
+00:07 +13: écran 276 · Borne hors ligne : ouverture en mode connecté sans erreur
+00:07 +14: écran 277 · Supervision des bornes : ouverture en mode connecté sans erreur
+00:07 +15: écran 278 · Fiche projet · liens et PI : ouverture en mode connecté sans erreur
+00:07 +16: écran 279 · Ajouter des fichiers : ouverture en mode connecté sans erreur
+00:07 +17: écran 280 · Intégrations : ouverture en mode connecté sans erreur
+00:08 +18: écran 281 · Rôles et périmètres : ouverture en mode connecté sans erreur
+00:08 +19: écran 282 · QR de transfert : ouverture en mode connecté sans erreur
+00:08 +20: écran 283 · Registre des certificats : ouverture en mode connecté sans erreur
+00:08 +21: écran 284 · Registre financier : ouverture en mode connecté sans erreur
+00:08 +22: écran 285 · Espace projet : ouverture en mode connecté sans erreur
+00:08 +23: écran 286 · Soumissions et équipe : ouverture en mode connecté sans erreur
+00:08 +24: écran 74 · Talent Passport : ouverture en mode connecté sans erreur
+00:09 +25: écran 287 · Catalogue département (tablette) : ouverture en mode connecté sans erreur
+00:09 +26: écran 262 · Accueil B2B : ouverture en mode connecté sans erreur
+00:09 +27: écran 263 · Médiathèque : ouverture en mode connecté sans erreur
+00:10 +28: écran 264 · Pages éditoriales : ouverture en mode connecté sans erreur
+00:10 +29: écran 265 · Modèles de notifications : ouverture en mode connecté sans erreur
+00:10 +30: écran 266 · État technique : ouverture en mode connecté sans erreur
+00:10 +31: écran 267 · Boutik-École Network : ouverture en mode connecté sans erreur
+00:10 +32: écran 268 · Analytics de la borne : ouverture en mode connecté sans erreur
+00:11 +33: écran 269 · Innovation Radar : ouverture en mode connecté sans erreur
+00:11 +34: écran 288 · Catalogue département (web) : ouverture en mode connecté sans erreur
+00:11 +35: écran 250b · Nouvelle publication : ouverture en mode connecté sans erreur
+00:11 +36: écran 01 · Bienvenue : ouverture en mode connecté sans erreur
+00:12 +37: écran 02 · Bienvenue (variante) : ouverture en mode connecté sans erreur
+00:12 +38: écran 03 · Accueil : ouverture en mode connecté sans erreur
+00:12 +39: écran 04 · Explorer : ouverture en mode connecté sans erreur
+00:12 +40: écran 05 · Fiche produit : ouverture en mode connecté sans erreur
+00:13 +41: écran 06 · Mon panier : ouverture en mode connecté sans erreur
+00:13 +42: écran 07 · Livraison : ouverture en mode connecté sans erreur
+00:13 +43: écran 08 · Paiement : ouverture en mode connecté sans erreur
+00:14 +44: écran 09 · Ma commande : ouverture en mode connecté sans erreur
+00:14 +45: écran 10 · Profil étudiant : ouverture en mode connecté sans erreur
+00:14 +46: écran 11 · Connexion : ouverture en mode connecté sans erreur
+00:15 +47: écran 12 · Créer un compte : ouverture en mode connecté sans erreur
+00:15 +48: écran 13 · Choix du profil : ouverture en mode connecté sans erreur
+00:15 +49: écran 14 · Vérification du compte : ouverture en mode connecté sans erreur
+00:15 +50: écran 15 · Mot de passe oublié : ouverture en mode connecté sans erreur
+00:15 +51: écran 16 · Nouveau mot de passe : ouverture en mode connecté sans erreur
+00:16 +52: écran 17 · Conditions et confidentialité : ouverture en mode connecté sans erreur
+00:16 +53: écran 18 · État de validation : ouverture en mode connecté sans erreur
+00:16 +54: écran 18b · Compléter mon profil : ouverture en mode connecté sans erreur
+00:16 +55: écran 18c · Vérification étudiant : ouverture en mode connecté sans erreur
+00:16 +56: écran 19 · Découvrir : ouverture en mode connecté sans erreur
+00:17 +57: écran 20 · Résultats de recherche : ouverture en mode connecté sans erreur
+00:17 +58: écran 21 · Recherche avancée : ouverture en mode connecté sans erreur
+00:17 +59: écran 22 · Catalogue de produits : ouverture en mode connecté sans erreur
+00:17 +60: écran 22b · Services et prestations : ouverture en mode connecté sans erreur
+00:18 +61: écran 22c · Tendances et nouveautés : ouverture en mode connecté sans erreur
+00:18 +62: écran 22d · Pour vous : ouverture en mode connecté sans erreur
+00:18 +63: écran 23 · Filtres : ouverture en mode connecté sans erreur
+00:18 +64: écran 24 · Profil vendeur : ouverture en mode connecté sans erreur
+00:18 +65: écran 25 · Mes favoris : ouverture en mode connecté sans erreur
+00:18 +66: écran 25b · Mes collections : ouverture en mode connecté sans erreur
+00:18 +67: écran 26 · Comparer des offres : ouverture en mode connecté sans erreur
+00:19 +68: écran 27 · Mes adresses : ouverture en mode connecté sans erreur
+00:19 +69: écran 28 · Mes commandes : ouverture en mode connecté sans erreur
+00:19 +70: écran 29 · Détail de la commande : ouverture en mode connecté sans erreur
+00:19 +71: écran 30 · Commande reçue : ouverture en mode connecté sans erreur
+00:19 +72: écran 31 · Avis et évaluations : ouverture en mode connecté sans erreur
+00:19 +73: écran 127 · Tableau de bord de la plateforme : ouverture en mode connecté sans erreur
+00:20 +74: écran 128 · Comptes, rôles et permissions : ouverture en mode connecté sans erreur
+00:21 +75: écran 129 · Institutions : ouverture en mode connecté sans erreur
+00:21 +76: écran 130 · Modération : ouverture en mode connecté sans erreur
+00:21 +77: écran 131 · Signalements : ouverture en mode connecté sans erreur
+00:21 +78: écran 132 · Commandes et incidents : ouverture en mode connecté sans erreur
+00:21 +79: écran 133 · Litiges et remboursements : ouverture en mode connecté sans erreur
+00:22 +80: écran 134 · Transactions et rapprochements : ouverture en mode connecté sans erreur
+00:22 +81: écran 135 · Commissions et règles économiques : ouverture en mode connecté sans erreur
+00:22 +82: écran 136 · Sécurité et accès : ouverture en mode connecté sans erreur
+00:22 +83: écran 137 · Journal d’audit global : ouverture en mode connecté sans erreur
+00:22 +84: écran 138 · Configuration générale : ouverture en mode connecté sans erreur
+00:23 +85: écran 139 · Tableau de bord financier : ouverture en mode connecté sans erreur
+00:23 +86: écran 140 · Paiements déclarés : ouverture en mode connecté sans erreur
+00:24 +87: écran 141 · Journal financier : ouverture en mode connecté sans erreur
+00:24 +88: écran 142 · Rapports financiers : ouverture en mode connecté sans erreur
+00:24 +89: écran 143 · Versements et montants dus : ouverture en mode connecté sans erreur
+00:24 +90: écran 144 · Moyens de paiement et règles : ouverture en mode connecté sans erreur
+00:24 +91: écran 145 · Points de retrait et kiosques : ouverture en mode connecté sans erreur
+00:24 +92: écran 146-1 · Kiosque (gestionnaire) : ouverture en mode connecté sans erreur
+00:25 +93: écran 146-2 · Remise d’une commande : ouverture en mode connecté sans erreur
+00:25 +94: écran 147-1 · Incidents et maintenance : ouverture en mode connecté sans erreur
+00:25 +95: écran 147-2 · Tickets de support : ouverture en mode connecté sans erreur
+00:25 +96: écran 147-3 · Interventions et résolutions : ouverture en mode connecté sans erreur
+00:25 +97: écran 148-1 · Paramètres : ouverture en mode connecté sans erreur
+00:26 +98: écran 148-2 · Centre de sécurité : ouverture en mode connecté sans erreur
+00:26 +99: écran 149 · Langue et affichage : ouverture en mode connecté sans erreur
+00:26 +100: écran 150-1 · Synchronisation : ouverture en mode connecté sans erreur
+00:26 +101: écran 150-2 · Session expirée : ouverture en mode connecté sans erreur
+00:26 +102: écran 150-3 · Connexion impossible : ouverture en mode connecté sans erreur
+00:26 +103: écran 150-4 · Mes commandes (vide) : ouverture en mode connecté sans erreur
+00:26 +104: écran 151 · Opportunités : ouverture en mode connecté sans erreur
+00:27 +105: écran 152 · Kéla te recommande : ouverture en mode connecté sans erreur
+00:27 +106: écran 153 · Pourquoi cette offre ? : ouverture en mode connecté sans erreur
+00:27 +107: écran 154 · Mon dossier : ouverture en mode connecté sans erreur
+00:27 +108: écran 155 · Alertes : ouverture en mode connecté sans erreur
+00:28 +109: écran 156 · Préférences d’alertes : ouverture en mode connecté sans erreur
+00:28 +110: écran 157 · Résumé de Kéla : ouverture en mode connecté sans erreur
+00:28 +111: écran 158 · Candidatures classées : ouverture en mode connecté sans erreur
+00:28 +112: écran 159 · Candidature envoyée : ouverture en mode connecté sans erreur
+00:28 +113: écran 160 · Hackathons et concours : ouverture en mode connecté sans erreur
+00:28 +114: écran 161 · Hackathon : ouverture en mode connecté sans erreur
+00:28 +115: écran 162 · Inscription : ouverture en mode connecté sans erreur
+00:29 +116: écran 163 · Trouver des coéquipiers : ouverture en mode connecté sans erreur
+00:29 +117: écran 164 · Espace d’équipe : ouverture en mode connecté sans erreur
+00:29 +118: écran 165 · Dépôt du projet : ouverture en mode connecté sans erreur
+00:29 +119: écran 166 · Résultats : ouverture en mode connecté sans erreur
+00:29 +120: écran 167 · Noter un projet : ouverture en mode connecté sans erreur
+00:29 +121: écran 168 · Publier un concours : ouverture en mode connecté sans erreur
+00:30 +122: écran 169 · Modération des concours : ouverture en mode connecté sans erreur
+00:30 +123: écran 170 · Signaler une annonce : ouverture en mode connecté sans erreur
+00:30 +124: écran 171 · Paiement sécurisé : ouverture en mode connecté sans erreur
+00:30 +125: écran 172 · Confiance du vendeur : ouverture en mode connecté sans erreur
+00:30 +126: écran 173 · Partager : ouverture en mode connecté sans erreur
+00:30 +127: écran 174 · Centre de confiance : ouverture en mode connecté sans erreur
+00:31 +128: écran 211 · Passeport du produit : ouverture en mode connecté sans erreur
+00:31 +129: écran 212 · Vérifier un certificat : ouverture en mode connecté sans erreur
+00:31 +130: écran 213 · Registre des certificats : ouverture en mode connecté sans erreur
+00:31 +131: écran 175 · Bienvenue, étudiant : ouverture en mode connecté sans erreur
+00:31 +132: écran 176 · Bienvenue : ouverture en mode connecté sans erreur
+00:31 +133: écran 177 · Bienvenue, entreprise : ouverture en mode connecté sans erreur
+00:31 +134: écran 178 · Bienvenue, jury : ouverture en mode connecté sans erreur
+00:31 +135: écran 179 · Guide d’utilisation : ouverture en mode connecté sans erreur
+00:31 +136: écran 180 · Rôles et permissions : ouverture en mode connecté sans erreur
+00:31 +137: écran 181 · Matrice des permissions : ouverture en mode connecté sans erreur
+00:31 +138: écran 182 · Explorer (chargement) : ouverture en mode connecté sans erreur
+00:31 +139: écran 183 · Mes commandes (hors ligne) : ouverture en mode connecté sans erreur
+00:31 +140: écran 184 · Économie de données : ouverture en mode connecté sans erreur
+00:31 +141: écran 185 · Language : ouverture en mode connecté sans erreur
+00:31 +142: écran 186 · Accessibilité : ouverture en mode connecté sans erreur
+00:31 +143: écran 41 · Adresse de livraison : ouverture en mode connecté sans erreur
+00:31 +144: écran 42 · Récapitulatif : ouverture en mode connecté sans erreur
+00:32 +145: écran 43 · Instructions de paiement : ouverture en mode connecté sans erreur
+00:32 +146: écran 44 · Commande confirmée : ouverture en mode connecté sans erreur
+00:32 +147: écran 45 · Mes commandes : ouverture en mode connecté sans erreur
+00:32 +148: écran 46 · Suivi de livraison : ouverture en mode connecté sans erreur
+00:32 +149: écran 47 · Annuler la commande : ouverture en mode connecté sans erreur
+00:32 +150: écran 48 · Réclamation : ouverture en mode connecté sans erreur
+00:32 +151: écran 49 · Aide et support : ouverture en mode connecté sans erreur
+00:32 +152: écran 50 · Notifications : ouverture en mode connecté sans erreur
+00:32 +153: écran 51 · Détail d’une notification : ouverture en mode connecté sans erreur
+00:32 +154: écran 52 · Messages : ouverture en mode connecté sans erreur
+00:32 +155: écran 53 · Conversation : ouverture en mode connecté sans erreur
+00:33 +156: écran 54 · Conversation commande : ouverture en mode connecté sans erreur
+00:33 +157: écran 55 · Conversation entreprise : ouverture en mode connecté sans erreur
+00:33 +158: écran 56 · Notifications et confidentialité : ouverture en mode connecté sans erreur
+00:33 +159: écran 57 · Tableau de bord vendeur : ouverture en mode connecté sans erreur
+00:33 +160: écran 58 · Nouveau produit : ouverture en mode connecté sans erreur
+00:33 +161: écran 59 · Nouveau service : ouverture en mode connecté sans erreur
+00:33 +162: écran 60 · Modifier l’annonce : ouverture en mode connecté sans erreur
+00:34 +163: écran 61 · Mon catalogue : ouverture en mode connecté sans erreur
+00:34 +164: écran 62 · Stocks : ouverture en mode connecté sans erreur
+00:34 +165: écran 63 · Commandes reçues : ouverture en mode connecté sans erreur
+00:34 +166: écran 64 · Préparer une commande : ouverture en mode connecté sans erreur
+00:34 +167: écran 65 · Détail d’une vente : ouverture en mode connecté sans erreur
+00:34 +168: écran 66 · Revenus : ouverture en mode connecté sans erreur
+00:34 +169: écran 67 · Statistiques : ouverture en mode connecté sans erreur
+00:34 +170: écran 69 · Validations : ouverture en mode connecté sans erreur
+00:34 +171: écran 70 · Talents étudiants : ouverture en mode connecté sans erreur
+00:34 +172: écran 72 · Ajouter à mon profil : ouverture en mode connecté sans erreur
+00:34 +173: écran 73 · Mes documents : ouverture en mode connecté sans erreur
+00:35 +174: écran 75 · Opportunités : ouverture en mode connecté sans erreur
+00:35 +175: écran 76 · Ma candidature : ouverture en mode connecté sans erreur
+00:35 +176: écran 77 · Profil de mentor : ouverture en mode connecté sans erreur
+00:35 +177: écran 78 · Projets innovants : ouverture en mode connecté sans erreur
+00:35 +178: écran 79 · Projet : ouverture en mode connecté sans erreur
+00:35 +179: écran 80 · Soumettre un projet : ouverture en mode connecté sans erreur
+00:35 +180: écran 81 · Équipe du projet : ouverture en mode connecté sans erreur
+00:35 +181: écran 82 · Journal du projet : ouverture en mode connecté sans erreur
+00:35 +182: écran 83 · Médias et preuves : ouverture en mode connecté sans erreur
+00:35 +183: écran 84 · Nouvelle campagne : ouverture en mode connecté sans erreur
+00:35 +184: écran 84b · Financement : ouverture en mode connecté sans erreur
+00:35 +185: écran 85 · Objectifs et jalons : ouverture en mode connecté sans erreur
+00:36 +186: écran 86 · Résultats de campagne : ouverture en mode connecté sans erreur
+00:36 +187: écran 87 · Registre des innovations : ouverture en mode connecté sans erreur
+00:36 +188: écran 100 · Événements : ouverture en mode connecté sans erreur
+00:36 +189: écran 101 · Événement : ouverture en mode connecté sans erreur
+00:36 +190: écran 102 · Vitrine : ouverture en mode connecté sans erreur
+00:36 +191: écran 103 · Communauté : ouverture en mode connecté sans erreur
+00:36 +192: écran 104 · Carte de l’innovation : ouverture en mode connecté sans erreur
+00:36 +193: écran 105 · Inter-établissements : ouverture en mode connecté sans erreur
+00:36 +194: écran 106 · Économie circulaire : ouverture en mode connecté sans erreur
+00:37 +195: écran 107 · Mon impact : ouverture en mode connecté sans erreur
+00:37 +196: écran 237 · Impact par territoire : ouverture en mode connecté sans erreur
+00:37 +197: écran 238 · Impact de Boutik-École : ouverture en mode connecté sans erreur
+00:37 +198: écran 239 · Rapport sponsors : ouverture en mode connecté sans erreur
+00:37 +199: écran 108 · Tableau de bord du département : ouverture en mode connecté sans erreur
+00:37 +200: écran 109 · Étudiants et vendeurs : ouverture en mode connecté sans erreur
+00:38 +201: écran 110 · Validation des annonces : ouverture en mode connecté sans erreur
+00:38 +202: écran 111 · Validation des projets : ouverture en mode connecté sans erreur
+00:38 +203: écran 112 · Statistiques du département : ouverture en mode connecté sans erreur
+00:38 +204: écran 113 · Suivi des productions : ouverture en mode connecté sans erreur
+00:38 +205: écran 114 · Mentors et encadreurs : ouverture en mode connecté sans erreur
+00:38 +206: écran 115 · Événements et initiatives : ouverture en mode connecté sans erreur
+00:38 +207: écran 116 · Rapports et exports : ouverture en mode connecté sans erreur
+00:38 +208: écran 214 · Départements : ouverture en mode connecté sans erreur
+00:39 +209: écran 215 · Fiche département : ouverture en mode connecté sans erreur
+00:39 +210: écran 117 · Tableau de bord institutionnel : ouverture en mode connecté sans erreur
+00:39 +211: écran 118 · Établissement et identité visuelle : ouverture en mode connecté sans erreur
+00:39 +212: écran 119 · Départements et filières : ouverture en mode connecté sans erreur
+00:39 +213: écran 120 · Utilisateurs et affectations : ouverture en mode connecté sans erreur
+00:39 +214: écran 121 · Responsables et encadreurs : ouverture en mode connecté sans erreur
+00:39 +215: écran 122 · Circuits de validation : ouverture en mode connecté sans erreur
+00:39 +216: écran 123 · Ventes et activité : ouverture en mode connecté sans erreur
+00:39 +217: écran 124 · Événements et campagnes : ouverture en mode connecté sans erreur
+00:39 +218: écran 125 · Rapports consolidés : ouverture en mode connecté sans erreur
+00:40 +219: écran 126 · Journal d’audit : ouverture en mode connecté sans erreur
+00:40 +220: écran 32 · Détail du produit : ouverture en mode connecté sans erreur
+00:40 +221: écran 33 · Histoire du produit : ouverture en mode connecté sans erreur
+00:40 +222: écran 34 · Galerie : ouverture en mode connecté sans erreur
+00:40 +223: écran 35 · Disponibilité : ouverture en mode connecté sans erreur
+00:40 +224: écran 36 · Détail du service : ouverture en mode connecté sans erreur
+00:40 +225: écran 38 · Réputation : ouverture en mode connecté sans erreur
+00:40 +226: écran 39 · Demande de renseignements : ouverture en mode connecté sans erreur
+00:40 +227: écran 40 · Demande de devis : ouverture en mode connecté sans erreur
+00:40 +228: écran 88 · Espace entreprise : ouverture en mode connecté sans erreur
+00:40 +229: écran 89 · Profil de l’entreprise : ouverture en mode connecté sans erreur
+00:40 +230: écran 90 · Publier un besoin : ouverture en mode connecté sans erreur
+00:40 +231: écran 91 · Rechercher des talents : ouverture en mode connecté sans erreur
+00:40 +232: écran 93 · Propositions reçues : ouverture en mode connecté sans erreur
+00:40 +233: écran 93b · Proposition : ouverture en mode connecté sans erreur
+00:40 +234: écran 94 · Comparer les propositions : ouverture en mode connecté sans erreur
+00:40 +235: écran 95 · Devis et négociations : ouverture en mode connecté sans erreur
+00:40 +236: écran 95b · Demande de devis : ouverture en mode connecté sans erreur
+00:41 +237: écran 96 · Défis d’innovation : ouverture en mode connecté sans erreur
+00:41 +238: écran 97 · Recrutement : ouverture en mode connecté sans erreur
+00:41 +239: écran 98 · Collaborations : ouverture en mode connecté sans erreur
+00:41 +240: écran 99 · Historique : ouverture en mode connecté sans erreur
+00:41 +241: écran 240 · Parrainer et gagner : ouverture en mode connecté sans erreur
+00:41 +242: écran 241 · Mes contacts : ouverture en mode connecté sans erreur
+00:41 +243: écran 242 · Kit à partager : ouverture en mode connecté sans erreur
+00:42 +244: écran 243 · Mes gains : ouverture en mode connecté sans erreur
+00:42 +245: écran 244 · Cercle : ouverture en mode connecté sans erreur
+00:42 +246: écran 244b · Cercle · publication aimée : ouverture en mode connecté sans erreur
+00:42 +247: écran 245 · Reels : ouverture en mode connecté sans erreur
+00:42 +248: écran 246 · Lives : ouverture en mode connecté sans erreur
+00:42 +249: écran 247 · Profil créateur : ouverture en mode connecté sans erreur
+00:42 +250: écran 248 · Boutique du créateur : ouverture en mode connecté sans erreur
+00:42 +251: écran 249 · Créer : ouverture en mode connecté sans erreur
+00:43 +252: écran 250 · Nouvelle publication : ouverture en mode connecté sans erreur
+00:43 +253: écran 251 · Découvrir : ouverture en mode connecté sans erreur
+00:43 +254: écran 252 · Commentaires et avis : ouverture en mode connecté sans erreur
+00:43 +255: écran 253 · Défis et récompenses : ouverture en mode connecté sans erreur
+00:43 +256: écran 253b · Défis · récompense récupérée : ouverture en mode connecté sans erreur
+00:44 +257: écran 254 · Activité : ouverture en mode connecté sans erreur
+00:44 +258: écran 216 · Marché des vœux : ouverture en mode connecté sans erreur
+00:44 +259: écran 217 · Fiche d’un vœu : ouverture en mode connecté sans erreur
+00:44 +260: écran 218 · Publier un vœu : ouverture en mode connecté sans erreur
+00:45 +261: écran 219 · Nouveau duel : ouverture en mode connecté sans erreur
+00:45 +262: écran 220 · Duel de talents : ouverture en mode connecté sans erreur
+00:45 +263: écran 221 · Résultat du duel : ouverture en mode connecté sans erreur
+00:45 +264: écran 222 · Atelier en direct : ouverture en mode connecté sans erreur
+00:45 +265: écran 223 · Ateliers en direct : ouverture en mode connecté sans erreur
+00:45 +266: écran 224 · Validation des vœux : ouverture en mode connecté sans erreur
+00:45 +267: écran 225 · Jumeau 3D : ouverture en mode connecté sans erreur
+00:46 +268: écran 226 · Modération des duels : ouverture en mode connecté sans erreur
+00:46 +269: écran 227 · Régie des ateliers en direct : ouverture en mode connecté sans erreur
+00:46 +270: écran 228 · Partager mon CV : ouverture en mode connecté sans erreur
+00:46 +271: écran 229 · CV vivant : ouverture en mode connecté sans erreur
+00:46 +272: écran 191 · Votre besoin : ouverture en mode connecté sans erreur
+00:46 +273: écran 192 · Votre devis : ouverture en mode connecté sans erreur
+00:46 +274: écran 193 · Paiement sécurisé : ouverture en mode connecté sans erreur
+00:46 +275: écran 194 · Ma mission : ouverture en mode connecté sans erreur
+00:47 +276: écran 195 · Ajouter une preuve : ouverture en mode connecté sans erreur
+00:47 +277: écran 196 · Dossier : ouverture en mode connecté sans erreur
+00:47 +278: écran 197 · Valider le jalon : ouverture en mode connecté sans erreur
+00:47 +279: écran 198 · Briefs reçus : ouverture en mode connecté sans erreur
+00:47 +280: écran 199 · Attribuer : ouverture en mode connecté sans erreur
+00:47 +281: écran 200 · Missions et encaissement : ouverture en mode connecté sans erreur
+00:47 +282: écran 201 · Mes missions : ouverture en mode connecté sans erreur
+00:47 +283: écran 202 · Pack Lancement de marque : ouverture en mode connecté sans erreur
+00:47 +284: écran 203 · Mes compétences : ouverture en mode connecté sans erreur
+00:48 +285: écran 204 · Coup de pouce startup : ouverture en mode connecté sans erreur
+00:48 +286: écran 205 · Soumettre mon projet : ouverture en mode connecté sans erreur
+00:48 +287: écran 206 · Borne · Accueil : ouverture en mode connecté sans erreur
+00:48 +288: écran 207 · Borne · Explorer : ouverture en mode connecté sans erreur
+00:48 +289: écran 208 · Borne · Fiche article : ouverture en mode connecté sans erreur
+00:48 +290: écran 209 · Borne · QR téléphone : ouverture en mode connecté sans erreur
+00:48 +291: écran 210 · Borne · C’est envoyé : ouverture en mode connecté sans erreur
+00:48 +292: écran 187 · Tableau de bord entreprise : ouverture en mode connecté sans erreur
+00:48 +293: écran 188 · Recherche de talents et d’équipes : ouverture en mode connecté sans erreur
+00:48 +294: écran 189 · Propositions reçues : ouverture en mode connecté sans erreur
+00:49 +295: écran 190 · Devis et négociations : ouverture en mode connecté sans erreur
+00:49 +296: écran 230 · Assistante vocale Kéla : ouverture en mode connecté sans erreur
+00:49 +297: écran 231 · Accueil Kéla : ouverture en mode connecté sans erreur
+00:49 +298: écran 232 · Voix en texte : ouverture en mode connecté sans erreur
+00:49 +299: écran 233 · WhatsApp · suivi de mission : ouverture en mode connecté sans erreur
+00:49 +300: écran 234 · WhatsApp · validation de jalon : ouverture en mode connecté sans erreur
+00:49 +301: écran 235 · WhatsApp · paiement sécurisé : ouverture en mode connecté sans erreur
+00:49 +302: écran 236 · Canaux et notifications : ouverture en mode connecté sans erreur
+00:49 +303: écran A1 · Assistante vocale Kéla : ouverture en mode connecté sans erreur
+00:49 +304: écran A2 · Accueil Kéla : ouverture en mode connecté sans erreur
+00:49 +305: écran A3 · Voix en texte : ouverture en mode connecté sans erreur
+00:49 +306: écran P1 · Profil talent : ouverture en mode connecté sans erreur
+00:50 +307: écran P2 · Profil talent · abonnement : ouverture en mode connecté sans erreur
+00:50 +308: écran P3 · Avis et outils connectés : ouverture en mode connecté sans erreur
+00:50 +309: écran P4 · Nouvelle publication : ouverture en mode connecté sans erreur
+00:50 +310: écran V1 · Vitrine : ouverture en mode connecté sans erreur
+00:50 +311: écran P5 · Connecter mes outils : ouverture en mode connecté sans erreur
+00:50 +312: écran L1 · Aller en direct : ouverture en mode connecté sans erreur
+00:50 +313: écran S1 · Démarrage animé : ouverture en mode connecté sans erreur
+00:50 +314: écran D1 · Tableau de bord du studio : ouverture en mode connecté sans erreur
+00:51 +315: (tearDownAll)
+00:51 +315: All tests passed!

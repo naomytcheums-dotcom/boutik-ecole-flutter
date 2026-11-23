@@ -1,0 +1,20 @@
+00:00 +0: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/account_test.dart
+00:00 +0: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/account_test.dart: validations des formulaires
+00:00 +1: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/account_test.dart: inscription, vérification et mise à jour du profil
+00:00 +2: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/form_dialog_test.dart
+00:05 +2: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/form_dialog_test.dart: double clic sur « Confirmer » : une seule valeur, l’écran du kiosque reste affiché
+00:07 +3: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/form_dialog_test.dart: double clic sur « Annuler » : rien n’est renvoyé, l’écran du kiosque reste affiché
+00:07 +4: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/guest_mode_test.dart
+00:11 +4: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/guest_mode_test.dart: visiteur : la demande est proposée avec la possibilité de renoncer, rien n'est imposé
+00:13 +5: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/guest_mode_test.dart: compte connecté : l'action passe sans aucune demande
+00:13 +6: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/guest_mode_test.dart: hors connexion serveur (aperçu, tests) : jamais de blocage
+00:13 +7: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/identity_test.dart
+00:18 +7: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/identity_test.dart: connecté au serveur : un profil sans compte est vierge, jamais le compte de démonstration
+00:18 +8: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/identity_test.dart: un nouveau compte n'hérite ni du nom, ni de la description, ni de la photo, ni du badge d'un autre
+00:18 +9: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/identity_test.dart: le badge bleu n'existe que pour une certification approuvée
+00:18 +10: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/identity_test.dart: la déconnexion jette tout l'état de l'application
+00:18 +11: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/identity_test.dart: connecté au serveur : le vendeur démarre sans annonce d'exemple
+00:18 +12: loading C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/profile_edit_test.dart
+00:22 +12: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/profile_edit_test.dart: modifier mon profil : description, compétences et ville enregistrées sur le compte connecté, sans toucher à la certification
+00:24 +13: C:/Users/NITROV15/Downloads/boutik_ecole_flutter/test/account/profile_edit_test.dart: annuler ne change rien
+00:24 +14: All tests passed!

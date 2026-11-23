@@ -1,0 +1,200 @@
+BEGIN
+CREATE TABLE
+CREATE TABLE
+CREATE INDEX
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+REVOKE
+GRANT
+GRANT
+DROP POLICY
+CREATE POLICY
+NOTICE:  policy "concours visibles" for relation "contests" does not exist, skipping
+DROP POLICY
+NOTICE:  policy "équipes visibles" for relation "contest_teams" does not exist, skipping
+CREATE POLICY
+NOTICE:  policy "membres visibles" for relation "contest_members" does not exist, skipping
+NOTICE:  policy "dépôts : équipe, jury, département" for relation "contest_submissions" does not exist, skipping
+NOTICE:  policy "jurés visibles du département et d'eux-mêmes" for relation "contest_jurors" does not exist, skipping
+NOTICE:  policy "notes : juré, département, équipe après résultats" for relation "contest_scores" does not exist, skipping
+DROP POLICY
+CREATE POLICY
+DROP POLICY
+CREATE POLICY
+DROP POLICY
+CREATE POLICY
+DROP POLICY
+CREATE POLICY
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+REVOKE
+GRANT
+GRANT
+CREATE TABLE
+INSERT 0 4
+GRANT
+CREATE FUNCTION
+{"sub" : "c05948bb-3ef0-491e-be5a-93e92f6a19aa", "role" : "authenticated"}
+SET
+DO
+NOTICE:  RESULT|T1 étudiant refusé (publication)|PASS|Publication réservée au département ou à l'administrateur
+RESET
+{"sub" : "612763ab-8c63-432b-a6b5-2b23ab7d5590", "role" : "authenticated"}
+SET
+DO
+NOTICE:  RESULT|T2 département publie|PASS|edfe8a1d-68c3-4aa1-8b37-5d9685127653
+NOTICE:  RESULT|T9 dotation diminuée refusée|PASS|Après publication, la dotation ne peut qu'augmenter
+NOTICE:  RESULT|T9b dates prolongées acceptées|PASS|
+DO
+DO
+RESET
+{"role":"anon"}
+SET
+DO
+NOTICE:  RESULT|T3 visiteur voit le concours publié|PASS|1
+DO
+NOTICE:  RESULT|T3b visiteur ne s'inscrit pas|PASS|permission denied for function register_contest_team
+RESET
+{"sub" : "c05948bb-3ef0-491e-be5a-93e92f6a19aa", "role" : "authenticated"}
+SET
+NOTICE:  RESULT|T4 règlement obligatoire|PASS|Acceptez le règlement du concours
+DO
+DO
+NOTICE:  RESULT|T4b équipe Alpha inscrite|PASS|e6fdf49e-7290-478b-ab39-1465c1f3448f
+NOTICE:  RESULT|T5 double inscription refusée|PASS|Vous êtes déjà inscrit à ce concours
+DO
+NOTICE:  RESULT|T7 invitation envoyée|PASS|
+DO
+RESET
+{"sub" : "37d0d172-5d38-49e3-ab4a-8175997fe8b2", "role" : "authenticated"}
+SET
+NOTICE:  RESULT|T6 client refusé (étudiants seulement)|PASS|Inscription réservée aux étudiants
+DO
+RESET
+{"sub" : "74197c6c-3b42-48b1-b1e7-fe21b9d2b651", "role" : "authenticated"}
+SET
+NOTICE:  RESULT|T7b invitation acceptée|PASS|member
+DO
+DO
+RESET
+NOTICE:  RESULT|T10 membre non capitaine ne dépose pas|PASS|Seul le capitaine dépose le projet
+{"sub" : "a7ae1021-2bc7-437b-b7af-bd7d6422c5ab", "role" : "authenticated"}
+SET
+DO
+NOTICE:  RESULT|T8 équipe Beta inscrite|PASS|
+NOTICE:  RESULT|T11 Beta dépose|PASS|
+DO
+RESET
+{"sub" : "61a250a1-0085-4c9b-8e2f-80e6f3efcf94", "role" : "authenticated"}
+SET
+NOTICE:  RESULT|T8b places épuisées|PASS|Plus de places disponibles
+DO
+RESET
+{"sub" : "c05948bb-3ef0-491e-be5a-93e92f6a19aa", "role" : "authenticated"}
+SET
+NOTICE:  RESULT|T10b brouillon puis dépôt définitif|PASS|
+DO
+DO
+RESET
+NOTICE:  RESULT|T10c dépôt verrouillé après soumission|PASS|Projet déjà soumis
+{"sub" : "a7ae1021-2bc7-437b-b7af-bd7d6422c5ab", "role" : "authenticated"}
+SET
+DO
+NOTICE:  RESULT|T20 une équipe ne lit pas le dépôt d'une autre|PASS|0
+RESET
+{"sub" : "612763ab-8c63-432b-a6b5-2b23ab7d5590", "role" : "authenticated"}
+SET
+NOTICE:  RESULT|T12 jurés désignés|PASS|
+DO
+DO
+RESET
+{"sub" : "b909924d-f255-4c28-8689-f652efe6ba6b", "role" : "authenticated"}
+SET
+NOTICE:  RESULT|T14 jury avant clôture refusé|PASS|Le jury commence après la clôture des dépôts
+DO
+NOTICE:  RESULT|T13 note avant ouverture refusée|PASS|La notation n'est pas ouverte
+RESET
+UPDATE 1
+{"sub" : "612763ab-8c63-432b-a6b5-2b23ab7d5590", "role" : "authenticated"}
+SET
+DO
+NOTICE:  RESULT|T15 délibération ouverte|PASS|judging
+RESET
+{"sub" : "b909924d-f255-4c28-8689-f652efe6ba6b", "role" : "authenticated"}
+SET
+DO
+NOTICE:  RESULT|T16 juré lit les dépôts et note|PASS|dépôts visibles=2
+DO
+NOTICE:  RESULT|T16b note > 10 refusée|PASS|new row for relation "contest_scores" violates check constraint "contest_scores_innovation_check"
+RESET
+{"sub" : "74197c6c-3b42-48b1-b1e7-fe21b9d2b651", "role" : "authenticated"}
+SET
+NOTICE:  RESULT|T16c conflit d'intérêts refusé|PASS|Conflit d'intérêts : vous êtes membre de cette équipe
+DO
+RESET
+{"sub" : "612763ab-8c63-432b-a6b5-2b23ab7d5590", "role" : "authenticated"}
+SET
+DO
+NOTICE:  RESULT|T17 résultats incomplets refusés|PASS|Résultats impossibles : 2 projet(s) ont moins de 2 notes
+RESET
+{"sub" : "61a250a1-0085-4c9b-8e2f-80e6f3efcf94", "role" : "authenticated"}
+SET
+DO
+NOTICE:  RESULT|T18 deuxième juré note|PASS|
+RESET
+{"sub" : "b909924d-f255-4c28-8689-f652efe6ba6b", "role" : "authenticated"}
+SET
+NOTICE:  RESULT|T18b notes complètes|PASS|
+DO
+RESET
+{"sub" : "a7ae1021-2bc7-437b-b7af-bd7d6422c5ab", "role" : "authenticated"}
+SET
+NOTICE:  RESULT|T19a classement caché avant publication (équipe)|PASS|0
+DO
+RESET
+{"sub" : "612763ab-8c63-432b-a6b5-2b23ab7d5590", "role" : "authenticated"}
+SET
+DO
+NOTICE:  RESULT|T18c résultats publiés|PASS|results
+RESET
+{"sub" : "a7ae1021-2bc7-437b-b7af-bd7d6422c5ab", "role" : "authenticated"}
+SET
+DO
+NOTICE:  RESULT|T19 classement réel publié|PASS|1:Équipe Alpha:31.00:2 2:Équipe Beta:25.50:2
+NOTICE:  RESULT|T19b l'équipe voit ses notes après résultats|PASS|2
+NOTICE:  RESULT|T22 motif obligatoire|PASS|Motif obligatoire (5 caractères minimum)
+DO
+RESET
+RESULT|T21 membres notifiés des résultats|PASS|3
+{"sub" : "612763ab-8c63-432b-a6b5-2b23ab7d5590", "role" : "authenticated"}
+SET
+DO
+DO
+NOTICE:  RESULT|T22b équipe écartée hors classement|PASS|1
+RESET
+{"sub" : "c05948bb-3ef0-491e-be5a-93e92f6a19aa", "role" : "authenticated"}
+SET
+DO
+RESET
+NOTICE:  RESULT|T23 écriture directe refusée (RLS/droits)|PASS|permission denied for table contests
+ROLLBACK
+RESULT|T24 réplique inchangée après ROLLBACK|PASS|

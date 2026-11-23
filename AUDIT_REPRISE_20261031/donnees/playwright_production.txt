@@ -1,0 +1,22 @@
+
+Running 13 tests using 1 worker
+
+requêtes interceptées : 17 ; envois confirm_pickup : 13 ; erreurs JavaScript non interceptées : 0
+  ok 1 retrait_en_ligne.spec.ts:93:5 › site en ligne, écran de retrait (146-2), serveur entièrement simulé : jamais de faux « Remise confirmée » (1.8m)
+  ok 2 visiteur.spec.ts:21:7 › Visiteur : explorer sans compte › le site se charge sans erreur JavaScript et dessine l'application (20.0s)
+  ok 3 visiteur.spec.ts:28:7 › Visiteur : explorer sans compte › « Commencer » ouvre l'accueil : aucune inscription ni connexion imposée (22.7s)
+  ok 4 visiteur.spec.ts:39:7 › Visiteur : explorer sans compte › « Mes rubriques » est accessible au visiteur et ne liste pas les espaces réservés (15.3s)
+  ok 5 visiteur.spec.ts:49:7 › Visiteur : explorer sans compte › un écran réservé aux vendeurs affiche une page 404 neutre au visiteur (16.2s)
+  ok 6 visiteur.spec.ts:56:7 › Visiteur : explorer sans compte › un écran inexistant est signalé proprement (17.6s)
+  ok 7 visiteur.spec.ts:65:9 › Responsive : aucun débordement horizontal › petit téléphone (375×667) (16.8s)
+  ok 8 visiteur.spec.ts:65:9 › Responsive : aucun débordement horizontal › téléphone (390×844) (16.8s)
+  ok 9 visiteur.spec.ts:65:9 › Responsive : aucun débordement horizontal › tablette (768×1024) (16.9s)
+  ok 10 visiteur.spec.ts:65:9 › Responsive : aucun débordement horizontal › portable (1280×800) (22.7s)
+  ok 11 visiteur.spec.ts:65:9 › Responsive : aucun débordement horizontal › grand écran (1440×900) (17.6s)
+  ok 12 visiteur.spec.ts:76:7 › Rechargement, retour arrière et liens directs › un lien direct vers un écran public se recharge sur le même écran (19.0s)
+  ok 13 visiteur.spec.ts:83:7 › Rechargement, retour arrière et liens directs › retour arrière du navigateur : revient à l'écran précédent (15.9s)
+
+  Slow test file: visiteur.spec.ts (3.6m)
+  Slow test file: retrait_en_ligne.spec.ts (1.8m)
+  Consider splitting slow test files to speed up parallel execution
+  13 passed (5.4m)

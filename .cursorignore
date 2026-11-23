@@ -1,0 +1,12 @@
+# Fichiers que Cursor ne doit jamais lire ni envoyer à un modèle
+tool/figma_export/.figma_token
+.figma_token
+.env
+.env.*
+**/.env*
+supabase/.temp/
+supabase/functions/**/.env*
+build/
+.dart_tool/
+FINALISATION_PROJET_1/
+AUDIT_REPRISE_20261031/

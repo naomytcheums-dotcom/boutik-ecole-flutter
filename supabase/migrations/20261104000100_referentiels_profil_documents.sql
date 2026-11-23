@@ -66,20 +66,7 @@ drop policy if exists "départements : publiés ou proposés par soi" on departm
 create policy "départements : publiés ou proposés par soi" on departments for select
   using (status = 'verified' or proposed_by = auth.uid() or is_platform_staff());
 
--- universités d'État nommées par le MINESUP (source citée) ; l'IUT de Douala est un institut rattaché à l'Université de Douala
-insert into institutions (name, short_name, kind, city, status, source) values
-  ('Université de Yaoundé I', 'UY1', 'universite_etat', 'Yaoundé', 'verified', 'MINESUP — universités d''État'),
-  ('Université de Yaoundé II', 'UY2', 'universite_etat', 'Soa', 'verified', 'MINESUP — universités d''État'),
-  ('Université de Douala', 'UDo', 'universite_etat', 'Douala', 'verified', 'MINESUP — universités d''État'),
-  ('Université de Dschang', 'UDs', 'universite_etat', 'Dschang', 'verified', 'MINESUP — universités d''État'),
-  ('Université de Buea', 'UB', 'universite_etat', 'Buea', 'verified', 'MINESUP — universités d''État'),
-  ('Université de Bamenda', 'UBa', 'universite_etat', 'Bamenda', 'verified', 'MINESUP — universités d''État'),
-  ('Université de Ngaoundéré', 'UN', 'universite_etat', 'Ngaoundéré', 'verified', 'MINESUP — universités d''État'),
-  ('Université de Maroua', 'UMa', 'universite_etat', 'Maroua', 'verified', 'MINESUP — universités d''État'),
-  ('Université de Bertoua', 'UBe', 'universite_etat', 'Bertoua', 'verified', 'MINESUP — universités d''État'),
-  ('Université d''Ebolowa', 'UEb', 'universite_etat', 'Ebolowa', 'verified', 'MINESUP — universités d''État'),
-  ('Institut universitaire de technologie de Douala', 'IUT de Douala', 'institut', 'Douala', 'verified', 'Établissement de l''Université de Douala')
-on conflict (lower(name)) do nothing;
+-- Référentiel : AUCUNE donnée n'est insérée ici. Les établissements et départements viennent uniquement de leurs propres comptes (propositions relues par l'équipe).
 
 -- ------------------------------------------------------------------ fonctions : recherche, proposition, relecture
 create or replace function institutions_search(p_query text default '', p_limit int default 40) returns jsonb

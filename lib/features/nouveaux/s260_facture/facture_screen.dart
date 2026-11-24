@@ -79,7 +79,7 @@ class FactureScreen extends ConsumerWidget {
                 decoration: BoxDecoration(color: const Color(0xFFF1EFF6), borderRadius: BorderRadius.circular(18)),
                 child: Row(
                   children: [
-                    Expanded(child: Text('Total TTC', style: AppText.h3.copyWith(fontWeight: FontWeight.w500))),
+                    Expanded(child: Text('Total', style: AppText.h3.copyWith(fontWeight: FontWeight.w500))),
                     Flexible(
                       child: FittedBox(
                         fit: BoxFit.scaleDown,

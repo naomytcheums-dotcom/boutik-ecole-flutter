@@ -89,7 +89,7 @@ void main() {
     });
 
     test('cohérence : chaque permission citée existe au catalogue, chaque écran cité existe au registre', () {
-      expect(kPermissionLabels.length, 20);
+      expect(kPermissionLabels.length, 21); // 20 permissions initiales + tech.assessments (validation humaine des évaluations, migration 20261125096000)
       final ids = {for (final s in allScreens) s.id.replaceAll('_', '-')};
       for (final e in kScreenPermissions.entries) {
         expect(ids.contains(e.key), isTrue, reason: 'écran ${e.key}');

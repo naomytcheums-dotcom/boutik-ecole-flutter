@@ -7,7 +7,7 @@ import 'auth.dart';
 import 'backend.dart';
 import 'console.dart';
 import 'entreprise.dart';
-import 'finance.dart' show financeJournalProvider;
+import 'finance.dart' show financeJournalProvider, journalRowDialog, reconciliationLabel;
 import 'kiosk_mode.dart' show KioskTerminal;
 import 'notifs.dart' show NotificationItem, notifGroup, notifsProvider, tapNotification;
 import 'store.dart';
@@ -210,7 +210,8 @@ Widget journalListing({double width = 342, double height = 600}) => MobileList(
       provider: financeJournalProvider,
       title: (r) => '${r['label']}',
       subtitle: (r) => '${r['date']} · ${(r['credit'] as num? ?? 0) > 0 ? 'crédit ${fcfa((r['credit'] as num).toInt())}' : 'débit ${fcfa(((r['debit'] as num?) ?? 0).toInt())}'}',
-      trailing: (r) => r['reconciled'] == true ? 'Rapproché' : 'À rapprocher',
+      trailing: (r) => reconciliationLabel(r),
+      onRow: journalRowDialog,
       emptyText: 'Aucune écriture pour le moment.\nLa lecture est réservée à la finance et à l’administration.',
       width: width,
       height: height,

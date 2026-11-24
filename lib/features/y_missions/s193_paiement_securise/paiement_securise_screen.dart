@@ -64,7 +64,7 @@ class _PaiementSecuriseScreenState extends ConsumerState<PaiementSecuriseScreen>
         ),
         const SizedBox(height: 14),
         const YNote(
-          'L’argent est bloqué par Boutik-École et versé aux étudiants uniquement après votre validation de chaque jalon.',
+          'Le montant de chaque jalon reste en attente de votre validation avant d’être versé aux étudiants.',
           icon: AppIcons.lock,
         ),
       ],

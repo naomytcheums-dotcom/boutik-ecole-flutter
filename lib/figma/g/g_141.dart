@@ -156,7 +156,7 @@ class G_141 extends ConsumerWidget {
       if (demoContent) gTap(374.3, 180, 134, 32, () { gOpen(context, '284'); }), // lien métier 141 -> 284
       gTap(954, 78, 110, 34, () { uiRefresh(context, ref); }), // audit 01/11 : « Actualiser » n'avait aucun effet
       gTap(1080, 78, 160, 34, () { uiCustomizeView(context); }), // audit 01/11 : « Personnaliser la vue » n'avait aucun effet
-      if (!demoContent) gP(268, 188, 660, 560, ConsoleTable(provider: financeJournalProvider, columns: [ConsoleColumn(16, 90, (r) => dateCourte(r['date'])), ConsoleColumn(114.35, 200, (r) => '${r['label']}', bold: true), ConsoleColumn(323.33, 90, (r) => (r['debit'] as num) == 0 ? '' : fcfa((r['debit'] as num).toInt())), ConsoleColumn(421.68, 90, (r) => (r['credit'] as num) == 0 ? '' : fcfa((r['credit'] as num).toInt())), ConsoleColumn(520, 90, (r) => r['reconciled'] == true ? 'Oui' : 'Non')], emptyText: 'Aucune écriture pour le moment.', width: 660, height: 560)),
+      if (!demoContent) gP(268, 188, 660, 560, ConsoleTable(provider: financeJournalProvider, columns: [ConsoleColumn(16, 90, (r) => dateCourte(r['date'])), ConsoleColumn(114.35, 200, (r) => '${r['label']}', bold: true), ConsoleColumn(323.33, 90, (r) => (r['debit'] as num) == 0 ? '' : fcfa((r['debit'] as num).toInt())), ConsoleColumn(421.68, 90, (r) => (r['credit'] as num) == 0 ? '' : fcfa((r['credit'] as num).toInt())), ConsoleColumn(520, 90, (r) => journalProof(r) != null ? 'Oui' : 'À rapprocher')], emptyText: 'Aucune écriture pour le moment.', onRow: journalRowDialog, width: 660, height: 560)),
       if (!demoContent) gP(944, 182, 300, 200, const JournalSummary(width: 280)),
     ]);
   }

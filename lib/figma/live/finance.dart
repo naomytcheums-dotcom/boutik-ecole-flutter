@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../gen.dart' show gToast;
 import 'auth.dart';
 import 'backend.dart';
 import 'console.dart';
@@ -46,6 +47,91 @@ class JournalRows extends RpcRows {
 final financeJournalProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(JournalRows.new);
 
 String paymentState(Object? s) => switch ('$s') { 'verified' => 'Vérifié', 'rejected' => 'Rejeté', _ => 'À vérifier' };
+
+/// Rapprochement d'un paiement déclaré (134) : seulement pour un paiement vérifié, « rapproché » si le serveur fournit la source de la preuve, sinon « à rapprocher ».
+String paymentReconciliationNote(Map<String, dynamic> r) {
+  if ('${r['state']}' != 'verified') return '';
+  return r['reconciled'] == true && '${r['proof_source'] ?? ''}'.isNotEmpty ? ' · rapproché (${proofSourceLabel(r['proof_source'])})' : ' · à rapprocher';
+}
+
+/// Origine d'une preuve de rapprochement, telle que le serveur la journalise.
+String proofSourceLabel(Object? s) => switch ('$s') {
+      'webhook_prestataire' => 'confirmation du prestataire',
+      'confirmation_finance' => 'paiement confirmé par la finance',
+      'versement_finance' => 'versement confirmé par la finance',
+      'releve_prestataire' => 'relevé du prestataire',
+      'recu_operateur' => 'reçu de l’opérateur',
+      'remise_caisse' => 'remise en caisse',
+      _ => '$s',
+    };
+
+/// Preuve d'une ligne du journal : une ligne n'est « rapprochée » que si le serveur fournit la preuve (référence du prestataire, source, date).
+Map<String, dynamic>? journalProof(Map<String, dynamic> r) {
+  final p = r['proof'];
+  return r['reconciled'] == true && p is Map && '${p['reference'] ?? ''}'.isNotEmpty ? Map<String, dynamic>.from(p) : null;
+}
+
+String reconciliationLabel(Map<String, dynamic> r) => journalProof(r) != null ? 'Rapproché' : 'À rapprocher';
+
+const _reconcileSources = [('releve_prestataire', 'Relevé du prestataire'), ('recu_operateur', 'Reçu de l’opérateur'), ('remise_caisse', 'Remise en caisse')];
+
+/// Ligne du journal touchée : la preuve si la ligne est rapprochée ; sinon, pour la finance, le formulaire qui enregistre la preuve sur le serveur
+/// (permission, double authentification et journal d'audit sont ceux du serveur : un refus est annoncé tel quel, rien n'est confirmé si l'écriture échoue).
+Future<void> journalRowDialog(BuildContext context, WidgetRef ref, Map<String, dynamic> row) async {
+  final proof = journalProof(row);
+  if (proof != null) {
+    final author = '${proof['author'] ?? ''}'.trim();
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('${row['label']}'),
+        content: Text('Rapproché · ${proofSourceLabel(proof['source'])}\nRéférence : ${proof['reference']}\nDate : ${dateCourte(proof['date'])}${author.isEmpty ? '' : '\nEnregistré par : $author'}'),
+        actions: [TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Fermer'))],
+      ),
+    );
+    return;
+  }
+  final kind = '${row['kind'] ?? ''}', target = '${row['ref'] ?? ''}';
+  if (!const {'order', 'payout'}.contains(kind) || target.isEmpty) return;
+  final refC = TextEditingController(), noteC = TextEditingController();
+  var source = _reconcileSources.first.$1;
+  final ok = await showDialog<bool>(
+    context: context,
+    builder: (ctx) => StatefulBuilder(
+      builder: (ctx, setS) => AlertDialog(
+        title: const Text('Enregistrer la preuve de rapprochement'),
+        content: SingleChildScrollView(
+          child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('${row['label']} : à rapprocher tant qu’aucune preuve n’est enregistrée.', style: _st(12.5, c: _grey)),
+            const SizedBox(height: 10),
+            TextField(controller: refC, decoration: const InputDecoration(labelText: 'Référence du prestataire ou de l’opérateur')),
+            const SizedBox(height: 8),
+            DropdownButtonFormField<String>(
+              initialValue: source,
+              decoration: const InputDecoration(labelText: 'Source de la preuve'),
+              items: [for (final s in _reconcileSources) DropdownMenuItem(value: s.$1, child: Text(s.$2))],
+              onChanged: (v) => setS(() => source = v ?? source),
+            ),
+            const SizedBox(height: 8),
+            TextField(controller: noteC, maxLines: 2, decoration: const InputDecoration(labelText: 'Note (facultatif)')),
+          ]),
+        ),
+        actions: [TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuler')), TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Enregistrer'))],
+      ),
+    ),
+  );
+  final providerRef = refC.text.trim(), note = noteC.text.trim();
+  if (ok != true || !context.mounted) return;
+  final res = await Backend.rpc('finance_reconcile_record', {'p_kind': kind, 'p_ref': target, 'p_provider_ref': providerRef, 'p_source': source, if (note.isNotEmpty) 'p_note': note});
+  if (!context.mounted) return;
+  if (res.error != null) {
+    gToast(context, Backend.userMessage('${res.error}'));
+    return;
+  }
+  final already = res.data is Map && (res.data as Map)['state'] == 'already';
+  gToast(context, already ? '$target était déjà rapproché avec cette référence.' : 'Preuve enregistrée : $target est rapproché.');
+  await ref.read(financeJournalProvider.notifier).refresh();
+}
 String payoutStatus(Object? s) => switch ('$s') { 'verse' => 'Versé', 'rejete' => 'Rejeté', 'demande' => 'Demandé', _ => 'Prévu' };
 
 /// Ancienneté d'un paiement déclaré : « Il y a 2 h », « Hier », ou la date.
@@ -147,6 +233,7 @@ class JournalSummary extends ConsumerWidget {
     return _gate(ref, width, () {
       final t = (ref.read(financeJournalProvider.notifier) as JournalRows).totals;
       final credit = _i(t['total_credit']), debit = _i(t['total_debit']);
+      final pending = t['to_reconcile'], total = t['total_rows'];
       Widget line(String l, String v) => Padding(padding: const EdgeInsets.only(bottom: 18), child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [Text(l, style: _st(13, c: _grey)), Text(v, style: _st(14, w: FontWeight.w700))]));
       return SizedBox(
         width: width,
@@ -154,7 +241,7 @@ class JournalSummary extends ConsumerWidget {
           line('Total crédits', fcfa(credit)),
           line('Total débits', fcfa(debit)),
           line('Solde', fcfa(credit - debit)),
-          line('Lignes à rapprocher', '${_i(t['to_reconcile'])}'),
+          line('Lignes à rapprocher', pending is num ? (total is num ? '${pending.toInt()} sur ${total.toInt()}' : '${pending.toInt()}') : '—'),
         ]),
       );
     }, error: () => ref.read(financeJournalProvider.notifier).error, data: rows);

@@ -6,7 +6,7 @@ import 'backend.dart';
 import 'console.dart';
 import 'entreprise.dart';
 import 'feedback.dart' show claimReasonLabels, claimReasons;
-import 'finance.dart' show financePaymentsProvider, paymentState;
+import 'finance.dart' show financePaymentsProvider, paymentReconciliationNote, paymentState;
 import 'money_lot.dart' show claimThreadDialog;
 import 'store.dart' show fcfa;
 
@@ -109,7 +109,7 @@ Future<void> claimStaffDialog(BuildContext context, WidgetRef ref, Map<String, d
 Widget declaredPayments({double width = 984, double height = 640}) => MobileList(
       provider: financePaymentsProvider,
       title: (r) => '${r['reference']} · ${r['order']}',
-      subtitle: (r) => '${r['method'] ?? '—'} · ${fcfa(((r['amount'] as num?) ?? 0).toInt())}',
+      subtitle: (r) => '${r['method'] ?? '—'} · ${fcfa(((r['amount'] as num?) ?? 0).toInt())}${paymentReconciliationNote(r)}',
       trailing: (r) => paymentState(r['state']),
       emptyText: 'Aucun paiement déclaré pour le moment.',
       width: width,

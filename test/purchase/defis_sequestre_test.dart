@@ -23,7 +23,7 @@ void main() {
 
   testWidgets('récompense sous séquestre et annonce publiée : bouton d\'attribution', (t) async {
     await _pump(t, {...base, 'status': 'published', 'prize_status': 'held'});
-    expect(find.textContaining('sous séquestre'), findsOneWidget);
+    expect(find.textContaining('en attente d’attribution'), findsOneWidget);
     expect(find.text('Attribuer la récompense'), findsOneWidget);
     expect(find.textContaining('Payer la récompense'), findsNothing);
     expect(find.textContaining('Rembourser'), findsNothing);

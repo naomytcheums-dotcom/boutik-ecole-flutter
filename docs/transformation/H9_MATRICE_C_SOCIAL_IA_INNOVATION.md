@@ -212,8 +212,8 @@ Constat global : **aucune fonction de traduction runtime** dans le dépôt (pas 
 
 | ID | Exigence | § | État | Preuves | Manque / tâche | Tests | Preuve requise |
 |---|---|---|---|---|---|---|---|
-| C-095 | Traduction : messagerie écrite | 11.1 | MANQ | `L/chat_server.dart` sans traduction | Edge `translate` + colonne/vue par message | À écrire | Appel réel fournisseur (EXT : choix fournisseur = DEC/recherche) |
-| C-096 | Traduction : messages vocaux | 11.1 | MANQ | Messages vocaux stockés (`kind='voice'`, webm/m4a) sans transcription | STT + traduction | À écrire | EXT |
+| C-095 | Traduction : messagerie écrite | 11.1 | PART (H10 : prête, en attente d'accès) | **H10** : Edge `translate` (`supabase/functions/translate`, connecteur HTTP générique par secrets, 503 `not_configured` sans clé), RPC `translate_request`/`translate_store` + cache `ai_translations` (migration `20261126030000`), bouton « Traduire » (`L/translate_message.dart`, `L/chat_server.dart`) avec états non configuré / en cours / erreur / traduit | Aucun fournisseur choisi ni actif (registre `ai_providers` vide) ; appel réel jamais réussi | `node --test supabase/functions/translate/logic.test.mjs` 11/11 ; `PG/h10_ai.mjs` ; `T/journey/h10_ai_test.dart` 5/5 | Appel réel fournisseur (EXT : choix fournisseur = DEC/recherche) |
+| C-096 | Traduction : messages vocaux | 11.1 | PART (H10 : file seulement) | Messages vocaux stockés (`kind='voice'`, webm/m4a) ; **H10** : file `ai_transcription_jobs` « en_attente_fournisseur » (RPC `transcription_request`, consentement exigé) ; aucune transcription produite | Adaptateur STT + traduction (fournisseur `stt` à activer) | `PG/h10_ai.mjs` (section E) | EXT |
 | C-097 | Traduction : appels audio | 11.1 | MANQ | **Aucun appel 1-à-1** : seuls les salons vocaux de communauté (`study_rooms`, WebRTC maillé P2P, STUN public seulement, pas de TURN) | Appels + pipeline temps réel | À écrire | EXT |
 | C-098 | Traduction : appels vidéo | 11.1 | MANQ | Aucun appel vidéo (hors lives) | Idem | À écrire | EXT |
 | C-099 | Traduction : lives | 11.1 | MANQ | Voir C-089 | Idem | À écrire | EXT |
@@ -233,12 +233,12 @@ Constat global : **aucune fonction de traduction runtime** dans le dépôt (pas 
 | C-113 | Synthèse vocale | 11.3 | PART | `lib/figma/gspeak_web.dart` : `speechSynthesis` du navigateur fr-FR pour lire les alertes quand « lecteur d'écran » est activé (web uniquement) | Pas de TTS multilingue ni de voix traduite ; mobile natif non géré (`if (kIsWeb)`) | Aucun test | Essai appareil |
 | C-114 | Traduction multi-intervenants | 11.3 | MANQ | Aucun | — | À écrire | EXT |
 | C-115 | Glossaires professionnels | 11.3 | MANQ | Aucun (le glossaire `skill_catalog` est un référentiel de compétences) | Table de glossaires par organisation/métier | À écrire | — |
-| C-116 | Conservation facultative des transcriptions | 11.3 | MANQ | Aucune transcription n'existe | Option par utilisateur + purge | À écrire | — |
+| C-116 | Conservation facultative des transcriptions | 11.3 | PART (H10) | **H10** : le propriétaire lit, annule et supprime ses demandes/transcriptions (`transcription_my_list/cancel/delete`) ; aucune transcription n'existe tant qu'aucun fournisseur STT n'est actif | Réglage de durée de conservation (DEC) | `PG/h10_ai.mjs` (E28-E31) | — |
 | C-117 | Choix audio original / audio traduit | 11.3 | MANQ | Aucun | Pistes audio dans LiveKit (EXT) | À écrire | — |
 | C-118 | Gestion des langues par événement | 11.3 | MANQ | `events` sans colonne de langue | Colonne + UI | À écrire | — |
 | C-119 | Vidéos externes (pistes audio officielles/import autorisé ; ne pas promettre le remplacement) | 11.4 | MANQ | Aucun import de vidéo externe traduite ; `integrations_imported_items` (import de contenus connectés, sans audio) | Aucune promesse affichée (conforme) ; fonction non démarrée | À écrire | Étude de faisabilité YouTube (EXT) |
-| C-120 | Consentement pour l'enregistrement | 11.5 | MANQ | Aucun enregistrement existe ; consentements existants = coéquipiers (`mate_consents`), documents/CGU | À concevoir avant tout enregistrement (C-039) | À écrire | Revue juridique |
-| C-121 | Consentement explicite pour imitation/clonage vocal | 11.5 | MANQ | Aucun clonage (conforme : rien d'activé) ; aucun mécanisme de consentement | Tant que non implémenté, interdire dans les CGU (DEC) | À écrire | — |
+| C-120 | Consentement pour l'enregistrement | 11.5 | PART (H10) | **H10** : `ai_consents` (rien d'accordé par défaut, audio / vidéo / transcription, révocable, historique en ajout seul), RPC `ai_consent_set/ai_consent_my` ; la révocation annule les demandes en attente ; pas encore d'écran de consentement ni d'enregistrement réel | Écran de consentement ; revue juridique | `PG/h10_ai.mjs` (E1-E20) | Revue juridique |
+| C-121 | Consentement explicite pour imitation/clonage vocal | 11.5 | PART (H10) | Aucun clonage (conforme : rien d'activé) ; **H10** : seul le consentement explicite `clonage_vocal` / `entrainement_voix` est enregistrable (défaut refusé, révocable) ; aucune fonction ne l'utilise | Interdire dans les CGU (DEC) tant que non implémenté | `PG/h10_ai.mjs` (E33) | — |
 | C-122 | Contrôle de conservation | 11.5 | PART | Suppression de compte/`process_account_deletions`, export de données (`L/data_export.dart`) ; rien pour transcriptions | À spécifier | E: `PG/etu2_g1.mjs` (suppression de compte) | — |
 | C-123 | Protection des conversations privées | 11.5 | PART | RLS des messages (participants), `user_blocks`, `message_reports` | Aucun traitement tiers existant ; à garantir lors de l'ajout de traduction (envoi au fournisseur = flux de données privées) | E: `PG/securite_client.mjs`, `supabase/tests/messaging_rest.py` | Revue de conception + DPA fournisseur |
 | C-124 | Pas d'entraînement sur voix privées sans autorisation | 11.5 | MANQ | Aucun traitement de voix ; clause contractuelle fournisseur à obtenir | Choisir un fournisseur à politique « no training » (DEC) | — | Contrat/DPA |
@@ -415,7 +415,7 @@ Constat : **un seul assistant** (`F/kela-chat`, un seul prompt système statique
 | ID | Exigence | § | État | Preuves | Manque / tâche | Tests | Preuve requise |
 |---|---|---|---|---|---|---|---|
 | C-243 | Kéla assistant intelligent transversal | 20.1 | EXT | `F/kela-chat/index.ts`, `kelaThreadProvider`, `kelaAvailableProvider`, écrans 230/231/232 (`lib/features/ai_kela`) | Clé IA (EXT : `ANTHROPIC_API_KEY`, `KELA_MODEL`) ; périmètre = « décrire un besoin » seulement | E: `T/journey/etu_s9_test.dart` (S9-20) | Appel réel avec clé ; test Deno de la fonction (À écrire) |
-| C-244 | Comprendre le contexte de l'utilisateur | 20.1 | MANQ | Le prompt ne reçoit ni rôle, ni profil, ni commandes ; seul l'historique **fourni par le client** (≤8 messages) | Contexte autorisé injecté côté serveur selon le rôle | À écrire | — |
+| C-244 | Comprendre le contexte de l'utilisateur | 20.1 | PART (H10) | **H10** : RPC `kela_context()` (nom, rôle, compteurs, capacités) limitée au compte connecté, sans paramètre utilisateur, refusée à l'anonyme ; `kela-chat` ne l'injecte pas encore dans le prompt | Injection côté fonction `kela-chat` (clé requise) | `PG/h10_ai.mjs` (F1-F5) | — |
 | C-245 | L'aider dans les tâches autorisées | 20.1 | PART | Création d'un brouillon de besoin (`BRIEF={…}` → `myNeedsDialog`, L/kela.dart:143-167) | Aucune autre tâche (commande, paiement, mission) n'est exécutable ; pas d'outils | E: aucun | Test de parcours avec clé |
 | C-246 | Agent Talent | 20.2 | MANQ | Équivalents **non-IA** : `talents_search`, `opp_suggested_students` (règles SQL) | Agent | À écrire | EXT IA |
 | C-247 | Agent Recrutement | 20.2 | MANQ | `opps_recommended`, `L/talent_search_panel.dart` (règles) | Agent | À écrire | EXT IA |
@@ -430,7 +430,7 @@ Constat : **un seul assistant** (`F/kela-chat`, un seul prompt système statique
 | C-256 | Agent Projet | 20.2 | MANQ | Aucun | — | À écrire | — |
 | C-257 | Agent Créateur | 20.2 | MANQ | Aucun (voir §9.3) | — | À écrire | — |
 | C-258 | Agent Contenu | 20.2 | MANQ | Aucun | — | À écrire | — |
-| C-259 | Agent Traduction | 20.2 | MANQ | Aucun (voir §11) | — | À écrire | EXT |
+| C-259 | Agent Traduction | 20.2 | PART (H10 : déclaré « non actif ») | Agent déclaré `non_actif` dans `ai_agents` (20 agents déclarés, tous inactifs, activation admin + 2FA + audit, refusée sans fournisseur `chat` actif) ; traduction de messages : voir C-095 | Orchestrateur et outils des agents (non écrits) | `PG/h10_ai.mjs` (G1-G26) | EXT |
 | C-260 | Agent Formation | 20.2 | MANQ | Aucun | — | À écrire | — |
 | C-261 | Agent Support | 20.2 | MANQ | Support humain : `support_ticket_create/reply/close`, `L/support_screens.dart`, `L/support_staff.dart` | Agent | E: `PG/l6_aide_notifications.mjs` (humain) | — |
 | C-262 | Agent Finance | 20.2 | MANQ | Aucun | Décisions financières = DEC | À écrire | — |

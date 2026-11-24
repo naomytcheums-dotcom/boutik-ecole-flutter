@@ -11,6 +11,7 @@ import '../../gen.dart' show gToast;
 import '../../gsound.dart' show GAnim;
 import '../auth.dart';
 import '../backend.dart';
+import '../downloads.dart' show DigitalProductInfo;
 import '../lfav.dart' show FavoriteHeart;
 import '../offer_types.dart' show offerTypeLabels;
 import '../produit_fiche.dart';
@@ -651,6 +652,7 @@ class _ProductBodyState extends ConsumerState<_ProductBody> {
             child: Container(margin: const EdgeInsets.fromLTRB(16, 18, 16, 0), padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18), border: Border.all(color: kLine)), child: Row(children: [const Icon(Icons.storefront_outlined), const SizedBox(width: 12), Expanded(child: Text('${card['shop_name']}', style: mst(14.5, w: FontWeight.w700))), Text('Voir la boutique', style: mst(12.5, w: FontWeight.w700, c: kViolet))])),
           ),
         ),
+      DigitalProductInfo(listingId: widget.id),
       if ('${d['description'] ?? ''}'.isNotEmpty) ...[mSectionTitle('Description'), Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: Text('${d['description']}', style: mst(13.5, c: const Color(0xFF4A4854)).copyWith(height: 1.55)))],
       if (specs.isNotEmpty) ...[
         mSectionTitle('Caractéristiques'),

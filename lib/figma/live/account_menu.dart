@@ -32,8 +32,12 @@ Future<void> _mentors(BuildContext context, WidgetRef ref) async => GoRouter.of(
 Future<void> _litiges(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/litiges');
 Future<void> _evaluations(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/evaluations');
 Future<void> _fournisseursEvaluation(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/admin/evaluations');
+Future<void> _validationEvaluations(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/admin/evaluations/validation');
+Future<void> _campagnesEvaluation(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/entreprise/evaluations');
 Future<void> _ficheEntreprise(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/entreprise/profil');
 Future<void> _equipeEntreprise(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/entreprise/equipe');
+Future<void> _vivierOrganisation(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/entreprise/vivier');
+Future<void> _passeportTalent(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/passeport');
 Future<void> _partenariatsOrganisation(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/entreprise/partenariats');
 Future<void> _forfaitsDeLEntreprise(BuildContext context, WidgetRef ref) => showCompanyPlans(context, ref);
 Future<void> _publierOffre(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/opportunites/publier');
@@ -56,6 +60,8 @@ Future<void> _validationsInstitutionnelles(BuildContext context, WidgetRef ref) 
 Future<void> _espaceDepartement(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/departement');
 Future<void> _rattachementsDepartement(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/departement/rattachements');
 Future<void> _mesAvis(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/mes-avis');
+Future<void> _mesTelechargements(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/marche/telechargements');
+Future<void> _statsCreateur(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/createur/statistiques');
 Future<void> _mesInformations(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/parametres/informations');
 Future<void> _devenirVendeur(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/vendeur/conditions');
 Future<void> _seConnecter(BuildContext context, WidgetRef ref) => requireLogin(context, ref, 'ouvrir votre espace personnel');
@@ -101,6 +107,7 @@ final _groups = <_Group>[
   ]),
   const _Group('Mes achats', [
     _Entry('Mes commandes', screen: '45'),
+    _Entry('Mes téléchargements', action: _mesTelechargements, connected: true),
     _Entry('Mes favoris', screen: '25'),
     _Entry('Mes collections', screen: '25b'),
     _Entry('Mes adresses', screen: '27'),
@@ -128,6 +135,7 @@ final _groups = <_Group>[
     _Entry('Lancer un duel', screen: '219', roles: {'client', 'company', 'dept', 'direction', 'admin'}),
     _Entry('Ateliers en direct', screen: '223'),
     _Entry('Reels et lives', screen: '245'),
+    _Entry('Statistiques de créateur', action: _statsCreateur, connected: true),
     _Entry('Défis et récompenses', screen: '253'),
     _Entry('Parrainer et gagner', screen: '240'),
     _Entry('J’ai un code de parrainage', action: _parrain, roles: {'client', 'student', 'company'}),
@@ -176,6 +184,9 @@ final _groups = <_Group>[
   const _Group('Espace organisation', [
     _Entry('Fiche de l’organisation et vérification', action: _ficheEntreprise, roles: {'company', 'admin'}),
     _Entry('Équipe de l’organisation', action: _equipeEntreprise, roles: {'company', 'admin'}),
+    _Entry('Campagnes d’évaluation', action: _campagnesEvaluation, roles: {'company', 'admin'}),
+    _Entry('Vivier de talents de l’organisation', action: _vivierOrganisation, roles: {'company', 'admin'}),
+    _Entry('Mon passeport Talent 360°', action: _passeportTalent, roles: {'student'}, connected: true),
     _Entry('Partenariats avec l’établissement', action: _partenariatsOrganisation, roles: {'company', 'admin'}),
     _Entry('Forfaits de l’organisation', action: _forfaitsDeLEntreprise, roles: {'company', 'admin'}),
     _Entry('Mes organisations (invitations et espaces partagés)', action: _mesEntreprises, roles: {'company', 'admin'}),
@@ -235,6 +246,7 @@ final _groups = <_Group>[
     _Entry('Rôles et périmètres', screen: '281', roles: {'admin'}),
     _Entry('Intégrations', screen: '280', roles: {'admin', 'support', 'finance'}, perms: {'tech.integrations'}),
     _Entry('Fournisseurs d’évaluation', action: _fournisseursEvaluation, roles: {'admin', 'support', 'finance'}, perms: {'tech.integrations'}),
+    _Entry('Validation des évaluations', action: _validationEvaluations, roles: {'admin', 'support', 'finance'}, perms: {'tech.assessments'}),
     _Entry('Pages éditoriales', screen: '264', roles: {'admin', 'support', 'finance'}, perms: {'tech.config'}),
     _Entry('Innovation Radar', screen: '269', roles: {'admin'}),
     _Entry('Finance', screen: '139', roles: {'finance', 'support', 'direction', 'admin'}, perms: {'finance.read'}),

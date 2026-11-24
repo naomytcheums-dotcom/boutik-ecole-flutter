@@ -300,7 +300,7 @@ Future<void> statementDialog(BuildContext context) async {
   for (final e in rows) {
     text.writeln('${e['date']} · ${e['ref']} · brut ${_i(e['gross'])} FCFA · ma part ${_i(e['mine'])} FCFA · ${_statusLabel('${e['status']}')}');
   }
-  text.writeln('Total brut ${_i(t['gross'])} FCFA · mes parts ${_i(t['mine'])} FCFA · débloqué ${_i(t['released'])} FCFA · en séquestre ${_i(t['held'])} FCFA');
+  text.writeln('Total brut ${_i(t['gross'])} FCFA · mes parts ${_i(t['mine'])} FCFA · débloqué ${_i(t['released'])} FCFA · en attente de livraison ${_i(t['held'])} FCFA');
   await gDialog<void>(
     context: context,
     builder: (ctx) => AlertDialog(
@@ -313,7 +313,7 @@ Future<void> statementDialog(BuildContext context) async {
             Text('Du ${s['from']} au ${s['to']} · règle ${s['rule']}', style: _st(12, c: _grey)),
             const SizedBox(height: 8),
             Text('${_i(t['count'])} vente${_i(t['count']) > 1 ? 's' : ''} · brut ${fcfa(_i(t['gross']))}', style: _st(13, w: FontWeight.w700)),
-            Text('Mes parts : ${fcfa(_i(t['mine']))} (débloqué ${fcfa(_i(t['released']))}, en séquestre ${fcfa(_i(t['held']))})', style: _st(12.5)),
+            Text('Mes parts : ${fcfa(_i(t['mine']))} (débloqué ${fcfa(_i(t['released']))}, en attente de livraison ${fcfa(_i(t['held']))})', style: _st(12.5)),
             const SizedBox(height: 10),
             if (rows.isEmpty) Text('Aucune vente sur la période.', style: _st(12.5, c: _grey)),
             for (final e in rows.take(60)) Padding(padding: const EdgeInsets.only(bottom: 6), child: Text('${e['date']} · ${e['ref']}\nbrut ${fcfa(_i(e['gross']))} · ma part ${fcfa(_i(e['mine']))} · ${_statusLabel('${e['status']}')}', style: _st(12))),
@@ -333,7 +333,7 @@ Future<void> statementDialog(BuildContext context) async {
   );
 }
 
-String _statusLabel(String s) => switch (s) { 'held' => 'en séquestre', 'frozen' => 'bloqué', 'released' => 'débloqué', 'refunded' => 'remboursé', 'cod_due' => 'payé à la livraison', _ => s };
+String _statusLabel(String s) => switch (s) { 'held' => 'en attente de livraison', 'frozen' => 'bloqué', 'released' => 'débloqué', 'refunded' => 'remboursé', 'cod_due' => 'payé à la livraison', _ => s };
 
 /// Raison pour laquelle un montant n'est pas encore disponible (renvoyée par seller_revenue).
 String holdReasonLabel(Map<String, dynamic> h) => switch ('${h['reason']}') {

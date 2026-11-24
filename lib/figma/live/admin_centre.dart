@@ -38,6 +38,7 @@ const kPermissionLabels = {
   'tech.integrations': 'Intégrations et clés d’API',
   'tech.logs': 'Journaux techniques',
   'tech.maintenance': 'Maintenance et diagnostic',
+  'tech.assessments': 'Évaluations de talents',
 };
 
 /// Un outil d'équipe : écran du registre, route dédiée ou action. Visible seulement si l'agent détient l'une des permissions [perms] (l'administrateur voit tout).

@@ -41,6 +41,12 @@ class FakeSupabase {
   bool failWrites = false;
   final Set<String> failRpc = {};
 
+  /// Edge Functions (`/functions/v1/<nom>`) : statut HTTP et corps JSON selon les paramètres ; absent : 404.
+  final Map<String, ({int status, Object? body}) Function(Map<String, dynamic> args)> functions = {};
+
+  /// Stockage : `true` = HTTP 500 sur les dépôts de fichiers ; sinon dépôts acceptés (rien n'est conservé), journalisés comme `FakeCall('storage', chemin)`.
+  bool failStorage = false;
+
   static const userId = '11111111-1111-4111-8111-111111111111';
 
   static Future<FakeSupabase> start() async {
@@ -98,6 +104,28 @@ class FakeSupabase {
           res.write(jsonEncode({'code': 'PGRST205', 'message': 'Could not find the table public.$table'}));
         } else {
           res.write(write ? jsonEncode(writeResult[table] ?? const []) : jsonEncode(tables[table] ?? const []));
+        }
+      } else if (path.startsWith('/storage/v1/object/')) {
+        calls.add(FakeCall('storage', path, const {}));
+        if (failStorage) {
+          res.statusCode = 500;
+          res.write(jsonEncode({'message': 'panne simulée'}));
+        } else {
+          res.write(jsonEncode({'Key': path.substring('/storage/v1/object/'.length), 'signedURL': '/object/sign/x?token=t'}));
+        }
+      } else if (path.startsWith('/functions/v1/')) {
+        final fn = path.substring('/functions/v1/'.length);
+        final decoded = body.isEmpty ? null : jsonDecode(body);
+        final args = decoded is Map ? Map<String, dynamic>.from(decoded) : <String, dynamic>{};
+        calls.add(FakeCall('function', fn, args));
+        final h = functions[fn];
+        if (h == null) {
+          res.statusCode = 404;
+          res.write('{}');
+        } else {
+          final r = h(args);
+          res.statusCode = r.status;
+          res.write(jsonEncode(r.body));
         }
       } else {
         res.statusCode = 404;

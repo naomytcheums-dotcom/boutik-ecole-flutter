@@ -4,6 +4,41 @@
 (même en lecture) n'a eu lieu pour l'écrire. Tout ce qui suit vient de la lecture des fichiers de `supabase/migrations/` ; les requêtes SQL ci-dessous ont été relues mais **pas exécutées** (pas de base
 disponible pour ce lot) : leurs résultats de référence doivent d'abord être établis sur la répétition générale (§5), puis comparés à la production.
 
+## 000. Mise à jour H11 (24 novembre 2026) : état réel de la production et liste exacte (ANNULE les mises en garde « include-all » des §00 et §0)
+
+État lu en **lecture seule** sur la production (`zxqcnmgwhtbxkdpjqtlr`, `supabase db query --linked`) : **241 migrations appliquées, dernière `20261125020000`**. Les migrations H2 et les invitations (fichiers 1 à 40 des plans précédents) **sont déjà appliquées** ; il n'y a aucune version appliquée absente du dépôt, aucune version dupliquée. Comparaison fonction par fonction (base locale reconstruite avec les 241 migrations) : 18 fonctions diffèrent, 17 par la seule mise en forme ; la seule différence réelle est `unregister_device` (production : `search_path ''`, noms qualifiés) ; `rls_auto_enable()` n'existe qu'en production ; 267 tables identiques en colonnes ; 0 table sans RLS en production.
+
+**24 migrations en attente**, toutes de version supérieure à la dernière appliquée : un `db push` ordinaire suffit (pas de `--include-all`). Toujours lancer d'abord `supabase db push --linked --dry-run` : la liste affichée doit être exactement celle-ci, dans cet ordre.
+
+1. `20261125030000_h9_offres_cloisonnement_departement` (sécurité : restaure le cloisonnement H2 sur `opp_close`/`opp_my_posted` effacé par `20261124050000`)
+2. `20261125095000_h9_eval_socle_fournisseur_agnostique`
+3. `20261125096000_h9_eval_validation_humaine_contestations`
+4. `20261125096100_h9_eval_campagnes_organisation_reutilisation`
+5. `20261125096200_h9_eval_correspondance_catalogue_familles`
+6. `20261126010000_h10_fin_rapprochement_reel`
+7. `20261126030000_h10_ai_fournisseurs_traduction`
+8. `20261126030100_h10_ai_transcription_consentement`
+9. `20261126030200_h10_ai_kela_agents`
+10. `20261126040000_h10_social_opportunites_echeance`
+11. `20261126040100_h10_social_publications_programmees`
+12. `20261126040200_h10_social_moderation_live`
+13. `20261126041000_h10_social_acces_lives`
+14. `20261126042000_h10_social_analytics_createur`
+15. `20261126043000_h10_social_enregistrements_live`
+16. `20261126050000_h10_ressources_numeriques`
+17. `20261126060000_h10_talent_graphe_competences_criteres`
+18. `20261126060100_h10_talent_passeport_360`
+19. `20261126060200_h10_talent_matching_explicable`
+20. `20261126060300_h10_talent_vivier_organisation`
+21. `20261126060400_h10_talent_recrutement_apres_preselection`
+22. `20261126070000_h10_trust_certificats_verifiables`
+23. `20261126070100_h10_trust_jeton_passeport`
+24. `20261126070200_h10_trust_registre_innovation`
+
+**Risques relus** : aucun `drop table` / `drop column`. Écritures sur données existantes, toutes additives : `060300` remplit `talent_lists.org_id = owner_id` puis le passe `NOT NULL` (échange de contrainte) ; `070000` remplit `issuer_label` et `content_hash` (la colonne historique `fingerprint` n'est pas modifiée) ; `050000` pose des déclencheurs qui ne s'exécutent que pour les futures commandes payées. Retour arrière : migration corrective « en avant » (jamais de modification d'une migration appliquée) ; chaque en-tête de fichier donne les `drop` du retour arrière.
+
+**Sauvegarde (H11)** : `pg_dump` direct est **impossible** avec le rôle temporaire de la CLI (`permission denied for table profiles`). Sauvegarde logique réalisée par `db query` (rôle de gestion) : tout le schéma `public` en JSON (267 tables, 637 lignes) + structure complète (1 076 fonctions, 212 politiques, 123 déclencheurs, RLS, droits, colonnes, historique des 241 migrations, compartiments de stockage), dans `Downloads\boutik_sauvegardes_prod\prod_donnees_public_20261124_avant_h11.json` et `prod_structure_complete_20261124_avant_h11.json` (hors dépôt). **Non couverte** : le schéma `auth` (comptes) et le contenu des fichiers de stockage, gérés par la plateforme (sauvegardes automatiques Supabase à vérifier dans le tableau de bord).
+
 ## 00. Mise à jour H9 (24 novembre 2026) : liste exacte actuelle et corrections
 
 **45 fichiers `.sql` de version > `20261119070000`** dans `supabase/migrations/` (246 au total = 201 + 45), de `20261120010000` à `20261125096200`, sans version dupliquée (contrôlé par script). Aux 38 fichiers du §0 s'ajoutent :

@@ -14,6 +14,10 @@ import 'store.dart';
 
 /// Documents téléchargeables : reçu de paiement et facture (PDF réel, avec le logo de la plateforme).
 
+/// Aucune décision de TVA ni de mentions légales d'émetteur (décision 10 du propriétaire) : ces documents sont des justificatifs d'achat sans valeur fiscale.
+String nonFiscalNote({required bool invoice}) =>
+    '${invoice ? 'Facture non fiscale' : 'Reçu non fiscal'} : aucune TVA n’est calculée ni détaillée et ce document n’a pas valeur de facture légale.';
+
 const _logo = 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png';
 const _ink = PdfColor.fromInt(0xFF111015);
 const _muted = PdfColor.fromInt(0xFF57545F);
@@ -176,6 +180,8 @@ Future<pw.Document> _build(Order o, Account who, {required bool invoice, Map<Str
       pw.Container(height: 1, color: _line),
       pw.SizedBox(height: 8),
       pw.Text('Document généré par Boutik-École. Merci de votre confiance. Conservez ce document comme justificatif d’achat.', style: st(8.5, c: _muted)),
+      pw.SizedBox(height: 3),
+      pw.Text(nonFiscalNote(invoice: invoice), style: st(8.5, b: true, c: _muted)),
     ]),
   ));
   return doc;

@@ -15,6 +15,7 @@ import '../gen.dart';
 import 'backend.dart';
 import 'messages.dart';
 import 'share.dart';
+import 'translate_message.dart';
 
 /// Conversation réelle (écrans 53 et 54) : messages texte, photos, fichiers et vocaux enregistrés sur le serveur.
 /// Les pièces jointes sont dans un stockage privé : seuls les deux participants obtiennent un lien temporaire.
@@ -376,6 +377,7 @@ class _ServerChatPanelState extends ConsumerState<ServerChatPanel> {
               child: failed ? DefaultTextStyle.merge(style: const TextStyle(color: Color(0xFF111015)), child: body) : body,
             ),
           ),
+          if (translatableMessageId(id: m.id, kind: m.kind, mine: m.mine, status: m.status) case final tid?) TranslateMessageButton(key: ValueKey('translate-${m.id}'), messageId: tid),
           const SizedBox(height: 3),
           if (failed)
             GestureDetector(onTap: m.retry, child: Text('Échec de l’envoi · Réessayer', style: _st(10.5, c: const Color(0xFFD64545), w: FontWeight.w600)))

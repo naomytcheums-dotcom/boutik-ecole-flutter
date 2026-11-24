@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../gdata.dart' show gNetImage;
 import '../i18n.dart' show Text;
 import 'backend.dart';
+import 'company_screens.dart' show companyContextProvider;
 import 'f4_api.dart';
 import 'marche/decouverte.dart' show marcheFilieres;
 import 'marche/marche_data.dart';
@@ -94,7 +95,7 @@ class _TalentSearchPanelState extends ConsumerState<TalentSearchPanel> {
 
   /// Mode « liste du vivier » : tous les membres de la liste (le serveur ne renvoie que les étudiants encore visibles), filtrés par le texte saisi.
   Future<void> _runList(int seq) async {
-    final r = await ref.read(f4RpcProvider)('talent_list_members_get', {'p_list': _list});
+    final r = await ref.read(f4RpcProvider)('pool_list_members_get', poolArgs(ref.read(companyContextProvider), {'p_list': _list}));
     if (!mounted || seq != _seq) return;
     setState(() {
       _loading = false;

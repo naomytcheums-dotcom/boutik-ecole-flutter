@@ -112,7 +112,7 @@ class _VotreBesoinScreenState extends ConsumerState<VotreBesoinScreen> {
         ),
         const SizedBox(height: 14),
         const YNote(
-          'Paiement sécurisé par Boutik-École : votre argent est gardé en séquestre et libéré à chaque étape validée.',
+          'Chaque montant reste en attente de validation et n’est libéré qu’à chaque étape validée.',
           icon: AppIcons.shieldCheck,
         ),
       ],

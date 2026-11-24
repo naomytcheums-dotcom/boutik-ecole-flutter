@@ -71,7 +71,7 @@ const kScreenPermissions = <String, Set<String>>{
   '301': {'finance.read', 'finance.payments', 'finance.payouts', 'finance.refunds', 'finance.transfers', 'finance.split'},
   '302': {'support.tickets', 'support.claims', 'support.disputes', 'support.orders', 'support.requests', 'support.refunds'},
   '303': {'security.moderation', 'security.reports', 'security.accounts', 'security.audit'},
-  '304': {'tech.config', 'tech.integrations', 'tech.logs', 'tech.maintenance'},
+  '304': {'tech.config', 'tech.integrations', 'tech.logs', 'tech.maintenance', 'tech.assessments'},
   '306': {'security.accounts'},
 };
 

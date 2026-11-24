@@ -169,7 +169,7 @@ class G217Mock extends ConsumerWidget {
       gP(36, 941, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(43.333, 946.943, 17.333, 20.173, gImg('assets/figma/v/b35e336eb0a1dc.svg')),
       gP(46.875, 952.583, 10.25, 8.833, gImg('assets/figma/v/2bdcafa88f7a43.svg')),
-      gP(76, 940, 277, 34, gText('Votre argent reste bloqué en séquestre jusqu’au lancement de la production.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
+      gP(76, 940, 277, 34, gText('Le montant reste en attente de validation jusqu’au lancement de la production.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
       gP(0, 1012, 390, 100, gBox(color: Color(0x00FFFFFF))),
       gP(24, 1028, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27]), tap: () => engageOrManage(context, ref, 'preorder', 'wish:lampe-en-bois-recycle', data: {'price': 25000}, success: 'Précommande enregistrée. Le paiement n’est demandé qu’au lancement de la production.', need: 'précommander', activeTitle: 'Précommande déjà enregistrée', activeBody: 'Vous serez prévenu(e) au lancement de la production ; aucun paiement n’a été demandé.', keepLabel: 'La garder', cancelLabel: 'Annuler la précommande', cancelled: 'Précommande annulée.')),
       if (isEngaged(ref, 'preorder|wish:lampe-en-bois-recycle')) gP(24, 1046, 342, 18, gText('Précommandé ✓ · Gérer', 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)) else gP(89.5, 1046, 211, 18, gText(gm('Précommander · 25 000 FCFA', ''), 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center)),

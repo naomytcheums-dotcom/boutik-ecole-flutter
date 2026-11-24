@@ -191,6 +191,8 @@ Future<pw.Document> buildMissionInvoicePdf(Map<String, dynamic> inv) async {
       pw.Container(height: 1, color: _line),
       pw.SizedBox(height: 8),
       pw.Text('${inv['notice'] ?? ''}', style: st(8.5, c: _muted)),
+      pw.SizedBox(height: 3),
+      pw.Text('Facture non fiscale : aucune TVA n’est calculée ni détaillée et ce document n’a pas valeur de facture légale.', style: st(8.5, b: true, c: _muted)),
     ],
   ));
   return doc;

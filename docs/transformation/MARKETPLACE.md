@@ -35,6 +35,14 @@ profil vendeur (24) → « Voir sa boutique » ; Boutique du créateur (248) →
 * `flutter test -j 1 test/purchase/marketplace_test.dart` (interface : cadre de produit, défilement 3 s, vitrine, fiche, panier par boutique, tableau de bord, modération, formulaire).
 * `supabase/tests/marketplace_pglite` : rejoue schéma + migrations sur Postgres embarqué (sans Docker) puis un scénario de 57 contrôles (RLS, stock, flash, promo, idempotence, annulation, modération).
 
+## Ressources numériques (H10, migration 20261126050000)
+
+Une annonce devient « ressource numérique » quand le vendeur lui rattache une licence (type personnelle / commerciale / éducative, libellé **saisi par le vendeur**, limite de téléchargements) et au moins un fichier déposé dans le compartiment **privé** `digital-files`.
+* Droit de téléchargement : créé par trigger quand `orders.paid` passe à vrai (circuit de paiement existant, ni montants ni séquestre modifiés), jamais pour une commande annulée ; refus du paiement à la livraison pour ces commandes.
+* `digital_download_url(ligne, fichier)` : acheteur de la ligne, commande payée, non annulée, non remboursée (remboursement total), limite non dépassée ; compte et journalise ; ticket de 60 s qui autorise la création de l'URL signée par le client Storage. Révocation automatique en cas d'annulation ou de remboursement total (le remboursement partiel laisse l'accès).
+* Écrans : `/marche/vendeur` > Produits > « Ressource numérique » (licence, fichiers, versions, envoi en validation, ventes) ; fiche produit (mention, licence, format, taille) ; `/marche/telechargements` « Mes téléchargements » (menu du compte).
+* Tests : `supabase/tests/marketplace_pglite/h10_commerce.mjs`, `test/journey/h10_commerce_test.dart`. Limites : stock = nombre de licences vendables (pas d'illimité), aucun antivirus, stock par variante absent, signature réelle Storage jamais exécutée.
+
 ## Reste à faire / limites
 
 * Variantes : choisies à l'achat mais le stock reste global par produit (pas de stock par variante).

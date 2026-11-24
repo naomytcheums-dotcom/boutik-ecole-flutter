@@ -64,7 +64,7 @@ class SectionADData {
     ('Production', 'Dès 200 précommandes', 2),
     ('Retrait au kiosque', '', 2),
   ];
-  final escrowNote = 'Votre argent reste bloqué en séquestre jusqu’au lancement de la production.';
+  final escrowNote = 'Le montant reste en attente de validation jusqu’au lancement de la production.';
 
   // 218 · Publier un vœu
   final wishSteps218 = const ['Idée', 'Prix', 'Seuil', 'Envoi'];

@@ -64,6 +64,13 @@ if (import.meta.main) {
     }
     const { data: prof } = await admin.from("profiles").select("name,suspended").eq("id", uid).maybeSingle();
     if (prof?.suspended) return jsonResponse(req, { error: "suspended", message: "Votre compte est suspendu : le direct est inaccessible." }, 403);
+    // Règle d'accès unique (migration 20261126041000) : live privé sans invitation, billet manquant, banni… ; l'hôte et l'administrateur gardent l'accès.
+    // Une erreur de lecture refuse l'accès (jamais d'ouverture par défaut).
+    if (!isHost) {
+      const { data: acc, error: accErr } = await admin.rpc("live_access_for", { p_live: liveId, p_user: uid });
+      if (accErr || !acc) return jsonResponse(req, { error: "access_check_failed", message: "Impossible de vérifier votre accès à ce live pour le moment." }, 503);
+      if (acc.allowed !== true) return jsonResponse(req, { error: String(acc.reason ?? "forbidden"), message: String(acc.message || "Vous ne pouvez pas rejoindre ce live.") }, 403);
+    }
     // Invité accepté par l'hôte (co-diffusion) : il peut publier sa caméra et son micro.
     let isCo = false;
     if (!isHost) {

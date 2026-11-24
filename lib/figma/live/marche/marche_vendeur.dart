@@ -9,6 +9,7 @@ import 'package:supabase_flutter/supabase_flutter.dart' show FunctionException, 
 import '../../gen.dart' show gAlert, gToast;
 import '../auth.dart';
 import '../backend.dart';
+import '../digital_seller.dart' show DigitalResourceScreen;
 import '../litiges_screens.dart' show openDisputeDialog;
 import '../money_lot.dart' show claimThreadDialog;
 import '../seller.dart' show serverSellerOrdersProvider, SellerOrder;
@@ -506,7 +507,11 @@ class _ProductsTab extends ConsumerWidget {
               child: Row(children: [
                 ClipRRect(borderRadius: BorderRadius.circular(12), child: SizedBox(width: 64, height: 80, child: MImage(mImageUrl((p['images'] as List?)?.isNotEmpty == true ? (p['images'] as List).first : '')))),
                 const SizedBox(width: 12),
-                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('${p['title']}', maxLines: 2, overflow: TextOverflow.ellipsis, style: mst(13.5, w: FontWeight.w700)), Text('${mFcfa(p['price'])} · stock ${mInt(p['stock'])} · ${_listingStatusLabels['${p['status']}'] ?? p['status']}', style: mst(12, c: kGrey)), Text('${(p['images'] as List?)?.length ?? 0}/8 photos · ${'${p['video_url'] ?? ''}'.isEmpty ? 'pas de vidéo' : '1 vidéo'}', style: mst(12, c: kViolet)), TextButton(style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: const Size(48, 48), alignment: Alignment.centerLeft), onPressed: () => context.push('/marche/produit/${p['id']}'), child: const Text('Voir ma fiche'))])),
+                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('${p['title']}', maxLines: 2, overflow: TextOverflow.ellipsis, style: mst(13.5, w: FontWeight.w700)), Text('${mFcfa(p['price'])} · stock ${mInt(p['stock'])} · ${_listingStatusLabels['${p['status']}'] ?? p['status']}', style: mst(12, c: kGrey)), Text('${(p['images'] as List?)?.length ?? 0}/8 photos · ${'${p['video_url'] ?? ''}'.isEmpty ? 'pas de vidéo' : '1 vidéo'}', style: mst(12, c: kViolet)), TextButton(style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: const Size(48, 48), alignment: Alignment.centerLeft), onPressed: () => context.push('/marche/produit/${p['id']}'), child: const Text('Voir ma fiche')),
+                  TextButton(style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: const Size(48, 48), alignment: Alignment.centerLeft), onPressed: () async {
+                    await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => DigitalResourceScreen(listing: p)));
+                    ref.invalidate(_myListingsProvider);
+                  }, child: const Text('Ressource numérique'))])),
                 mButton('Éditer', () async {
                   await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => ProductMediaEditor(listing: p)));
                   ref.invalidate(_myListingsProvider);

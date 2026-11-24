@@ -85,7 +85,7 @@ class G_193 extends ConsumerWidget {
       gP(36, 733.5, 32, 32, gBox(color: Color(0xFFFFFFFF), radii: [11, 11, 11, 11])),
       gP(42.625, 745.792, 18.75, 13.792, gImg('assets/figma/v/98eafa7aa487dc.svg')),
       gP(45.458, 739.417, 13.083, 12.375, gImg('assets/figma/v/cbd17bba51f32b.svg')),
-      gP(76, 724, 277, 51, gText(demoContent ? 'L’argent est bloqué par Boutik-École et versé aux étudiants uniquement après votre validation de chaque jalon.' : 'Le paiement de chaque jalon se convient directement avec l’équipe retenue, après votre validation.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
+      gP(76, 724, 277, 51, gText(demoContent ? 'Le montant de chaque jalon reste en attente de votre validation avant d’être versé aux étudiants.' : 'Le paiement de chaque jalon se convient directement avec l’équipe retenue, après votre validation.', 12, Color(0xFF4A4854), lh: 17, wrap: true)),
       gP(0, 813, 390, 100, gBox(color: Color(0x00FFFFFF))),
       gP(24, 829, 342, 54, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 4), blurRadius: 10, spreadRadius: 0)], radii: [27, 27, 27, 27])),
       gP(128, 847, 134, 18, Consumer(builder: (context, ref, _) => gText(!demoContent ? 'Comment payer ?' : (ref.watch(missionProvider).funded >= 3 ? 'Tout est financé' : 'Payer ${fcfa(ref.watch(missionProvider).amountOf(ref.watch(missionProvider).funded))}'), 14.5, Color(0xFFFFFFFF), weight: 600, align: TextAlign.center))),

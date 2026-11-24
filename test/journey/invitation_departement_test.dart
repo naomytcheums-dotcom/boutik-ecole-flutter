@@ -48,7 +48,7 @@ void main() {
         ]),
       ),
     ));
-    await settleReal(t, rounds: 4, ms: 25);
+    await settleReal(t, rounds: 8, ms: 60);
   }
 
   testWidgets('lien valide : département, fonction, bouton Accepter', (t) async {

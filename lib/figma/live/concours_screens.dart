@@ -461,7 +461,7 @@ List<Widget> prizeActions(BuildContext context, WidgetRef ref, Map<String, dynam
   if (amount <= 0 || st == 'none') return const [];
   final label = switch (st) {
     'awaiting' => 'Récompense ${mFcfa(amount)} : à payer pour pouvoir publier',
-    'held' => 'Récompense ${mFcfa(amount)} : sous séquestre',
+    'held' => 'Récompense ${mFcfa(amount)} : en attente d’attribution',
     'awarded' => 'Récompense ${mFcfa(amount)} : attribuée à ${a['prize_winner_name'] ?? 'un étudiant'}',
     'refunded' => 'Récompense ${mFcfa(amount)} : remboursée à l’organisateur',
     _ => '',
@@ -675,8 +675,8 @@ class _AnnEditState extends ConsumerState<AnnouncementEditScreen> {
         final pay = await showDialog<bool>(
           context: context,
           builder: (c) => AlertDialog(
-            title: Text('Mettre la récompense sous séquestre ?'),
-            content: Text('${mFcfa(prize)} sont payés maintenant par Mobile Money et conservés par Boutik-École jusqu’à l’attribution au gagnant. Votre annonce ne peut pas être publiée avant ce paiement.'),
+            title: Text('Payer la récompense maintenant ?'),
+            content: Text('${mFcfa(prize)} sont payés maintenant par Mobile Money. Le montant reste en attente de validation jusqu’à l’attribution au gagnant. Votre annonce ne peut pas être publiée avant ce paiement.'),
             actions: [TextButton(onPressed: () => Navigator.pop(c, false), child: Text('Plus tard')), TextButton(onPressed: () => Navigator.pop(c, true), child: Text('Payer maintenant'))],
           ),
         );
@@ -746,7 +746,7 @@ class _AnnEditState extends ConsumerState<AnnouncementEditScreen> {
         _f('reward', 'Gain ou récompense', hint: 'Bourse complète, voyage, stage…'),
         Padding(
           padding: const EdgeInsets.only(bottom: 10),
-          child: TextField(controller: _c['prize'], keyboardType: TextInputType.number, inputFormatters: [FilteringTextInputFormatter.digitsOnly], decoration: _deco('Récompense en argent (FCFA, facultatif)', hint: '100000').copyWith(helperText: 'Payée à l’avance et conservée sous séquestre jusqu’à l’attribution au gagnant.', helperMaxLines: 2)),
+          child: TextField(controller: _c['prize'], keyboardType: TextInputType.number, inputFormatters: [FilteringTextInputFormatter.digitsOnly], decoration: _deco('Récompense en argent (FCFA, facultatif)', hint: '100000').copyWith(helperText: 'Payée à l’avance ; le montant reste en attente de validation jusqu’à l’attribution au gagnant.', helperMaxLines: 2)),
         ),
         _f('level', 'Niveau (facultatif)'),
         _f('age', 'Âge (facultatif)'),

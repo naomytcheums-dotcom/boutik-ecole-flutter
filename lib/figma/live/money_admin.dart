@@ -9,7 +9,8 @@ import 'backend.dart';
 import 'marche/marche_data.dart';
 import 'marche/marche_widgets.dart';
 
-/// Séquestre de l'administration : l'argent payé est conservé jusqu'à la livraison, puis réparti selon la règle en vigueur (modifiable ici, avec historique).
+/// Montants en attente de l'administration : le montant payé reste « en attente de livraison » jusqu'à la validation, puis réparti selon la règle en vigueur (modifiable ici, avec historique).
+/// Boutik-École n'y est pas présenté comme détenant légalement des fonds.
 /// Seul l'administrateur bloque, débloque ou modifie la règle ; la finance consulte. Tout vient du serveur (migration 20261114002800).
 
 /// Règle de répartition lue en base pour les écrans d'information (facture, registre, validation de jalon) :
@@ -42,10 +43,10 @@ final moneyRuleProvider = FutureProvider.autoDispose<Map<String, dynamic>>((ref)
   return Map<String, dynamic>.from(r.data as Map);
 });
 
-const moneyStatuses = {'': 'Toutes', 'held': 'En séquestre', 'frozen': 'Bloquées', 'released': 'Débloquées', 'cod_due': 'À recouvrer', 'refunded': 'Remboursées'};
+const moneyStatuses = {'': 'Toutes', 'held': 'En attente de livraison', 'frozen': 'Bloquées', 'released': 'Débloquées', 'cod_due': 'À recouvrer', 'refunded': 'Remboursées'};
 
 String moneyStatusLabel(String s) => switch (s) {
-      'held' => 'En séquestre',
+      'held' => 'En attente de livraison',
       'frozen' => 'Bloqué',
       'released' => 'Débloqué',
       'cod_due' => 'À recouvrer',
@@ -148,14 +149,14 @@ class _MoneyState extends ConsumerState<MoneyAdminScreen> {
   Widget build(BuildContext context) {
     final admin = ref.watch(authProvider.select((a) => a.current?.staff == 'Admin global'));
     return MarchePage(
-      title: 'Séquestre',
+      title: 'Montants en attente',
       child: ListView(padding: const EdgeInsets.only(bottom: 90), children: [
         mAsync<Map<String, dynamic>>(
           ref.watch(moneyOverviewProvider),
           (o) => Padding(
             padding: const EdgeInsets.symmetric(horizontal: 11),
             child: Column(children: [
-              Row(children: [_tile('En séquestre', moneyFcfa(o['held'])), _tile('Bloqué', moneyFcfa(o['frozen']))]),
+              Row(children: [_tile('En attente de livraison', moneyFcfa(o['held'])), _tile('Bloqué', moneyFcfa(o['frozen']))]),
               Row(children: [_tile('Débloqué aux étudiants', moneyFcfa(o['released_beneficiaries'])), _tile('À recouvrer (livraison)', moneyFcfa(o['cod_due']))]),
               Row(children: [_tile('Fonds de l’institution', moneyFcfa(o['institution_fund'])), _tile('Plateforme', moneyFcfa(o['platform']))]),
             ]),

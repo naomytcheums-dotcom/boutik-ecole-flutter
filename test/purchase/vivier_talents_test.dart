@@ -9,10 +9,10 @@ import 'package:flutter_test/flutter_test.dart';
 const _alice = {'id': 'a', 'name': 'Alice Ngo', 'department': 'Génie informatique', 'skills': 'Flutter', 'avatar_url': null, 'certified': false};
 const _bob = {'id': 'b', 'name': 'Bob Eto', 'department': 'Gestion', 'skills': 'Excel', 'avatar_url': null, 'certified': false};
 
-/// Faux serveur : annuaire de deux étudiants (talents_search) et contenu des listes du vivier (talent_list_members_get).
+/// Faux serveur : annuaire de deux étudiants (talents_search) et contenu des listes du vivier (pool_list_members_get).
 Future<({Object? data, String? error})> _server(String fn, Map<String, dynamic> p) async => switch (fn) {
       'talents_search' => (data: {'total': 2, 'items': [_alice, _bob], 'locked': false, 'limit': 20, 'offset': 0}, error: null),
-      'talent_list_members_get' => (data: p['p_list'] == 'fav' ? [_alice] : <Map<String, dynamic>>[], error: null),
+      'pool_list_members_get' => (data: p['p_list'] == 'fav' ? [_alice] : <Map<String, dynamic>>[], error: null),
       _ => (data: null, error: 'Fonction $fn non prévue'),
     };
 

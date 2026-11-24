@@ -60,6 +60,7 @@ class G_259 extends ConsumerWidget {
       gP(44, 540, 302, 1, gBox(color: Color(0xFFEEECF1))),
       gP(44, 556, 120, 16, Consumer(builder: (context, ref, _) => gText(ref.watch(viewedOrderProvider).paid ? 'Total payé' : 'Total à payer', 13, Color(0xFF111015), weight: 600))),
       gP(160, 555, 186, 18, Consumer(builder: (context, ref, _) => gText(fcfa(ref.watch(viewedOrderProvider).total), 14, Color(0xFF111015), weight: 700, wrap: true, align: TextAlign.right))),
+      gP(44, 580, 302, 40, gText(nonFiscalNote(invoice: false), 10.5, Color(0xFF57545F), wrap: true), show: !demoContent),
       gP(24, 650, 342, 52, gBox(color: Color(0xFF111015), shadows: [BoxShadow(color: Color(0x38403366), offset: Offset(0, 8), blurRadius: 18, spreadRadius: 0)], radii: [26, 26, 26, 26]), tap: () => downloadDocument(context, ref, invoice: false)),
       gP(136, 668, 118, 16, gText('Télécharger le reçu', 13, Color(0xFFFFFFFF), weight: 600)),
       gP(24, 714, 342, 48, gBox(color: Color(0xBFFFFFFF), border: Color(0xFFFFFFFF), bw: 1, radii: [24, 24, 24, 24])),

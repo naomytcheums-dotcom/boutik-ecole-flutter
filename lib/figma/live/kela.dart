@@ -65,7 +65,7 @@ class KelaThreadState {
   List<String> get said => [for (final m in messages) if (m.mine && !m.failed) m.text];
 }
 
-const kelaNotConfigured = 'Kéla n’est pas encore activée sur ce serveur : la clé de l’intelligence artificielle n’est pas configurée. Aucune réponse n’est inventée. En attendant, vous pouvez déposer votre besoin vous-même (« Déposer un besoin »).';
+const kelaNotConfigured = 'Kéla n’est pas configurée pour le moment : le service d’intelligence artificielle n’est pas encore branché sur ce serveur. Aucune réponse n’est inventée. En attendant, vous pouvez déposer votre besoin vous-même (« Déposer un besoin »).';
 
 String _kelaFailure(FunctionException e) {
   final d = e.details;
@@ -78,7 +78,7 @@ String _kelaFailure(FunctionException e) {
 
 /// Kéla est-elle activée sur le serveur ? `false` : la clé de l'IA manque (le serveur répond 503) ; `true` : activée ou état inconnu
 /// (panne réseau : on laisse essayer, l'échec sera annoncé tel quel). Aucune réponse n'est jamais simulée.
-final kelaAvailableProvider = FutureProvider<bool>((ref) async {
+final kelaAvailableProvider = FutureProvider.autoDispose<bool>((ref) async {
   if (!Backend.ready) return true;
   try {
     await Supabase.instance.client.functions.invoke('kela-chat', body: {'status': true});
@@ -352,7 +352,7 @@ class _KelaThreadPanelState extends ConsumerState<KelaThreadPanel> {
           controller: _scroll,
           padding: const EdgeInsets.fromLTRB(22, 8, 22, 12),
           children: [
-            _bubble(available ? 'Décris-moi ton besoin : ce que tu veux, ton style et ton budget. Je prépare le brief.' : 'Kéla n’est pas encore disponible.', mine: false),
+            _bubble(available ? 'Décris-moi ton besoin : ce que tu veux, ton style et ton budget. Je prépare le brief.' : 'Kéla n’est pas configurée pour le moment.', mine: false),
             for (final m in t.messages) _bubble(m.text, mine: m.mine, failed: m.failed),
             if (phase == KelaPhase.listening) _bubble(heard.isEmpty ? 'Je t’écoute…' : heard, mine: true),
             if (t.busy) _bubble('Kéla réfléchit…', mine: false),
@@ -394,7 +394,7 @@ class _KelaThreadPanelState extends ConsumerState<KelaThreadPanel> {
                 onSubmitted: (_) => _send(),
                 style: _st(13),
                 cursorColor: const Color(0xFF6A4DFF),
-                decoration: InputDecoration(isCollapsed: true, border: InputBorder.none, hintText: available ? 'Écris ou parle à Kéla…' : 'Kéla n’est pas encore activée', hintStyle: _st(13, c: const Color(0xFF57545F), w: FontWeight.w400)),
+                decoration: InputDecoration(isCollapsed: true, border: InputBorder.none, hintText: available ? 'Écris ou parle à Kéla…' : 'Kéla n’est pas configurée', hintStyle: _st(13, c: const Color(0xFF57545F), w: FontWeight.w400)),
               ),
             ),
             const SizedBox(width: 6),

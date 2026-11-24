@@ -17,7 +17,7 @@ void main() {
     expect(moneyFcfa(7000), '7 000 FCFA');
     expect(moneyFcfa(1250000), '1 250 000 FCFA');
     expect(moneyFcfa(null), '—');
-    expect(moneyStatusLabel('held'), 'En séquestre');
+    expect(moneyStatusLabel('held'), 'En attente de livraison');
     expect(moneyStatusLabel('frozen'), 'Bloqué');
     expect(moneyStatusLabel('cod_due'), 'À recouvrer');
     expect(moneyStatuses.keys, ['', 'held', 'frozen', 'released', 'cod_due', 'refunded']);
@@ -34,11 +34,11 @@ void main() {
             {'id': 'e1', 'ref': '#BE-2026-0001', 'kind': 'order', 'gross': 10000, 'beneficiary': 'Awa V.', 'beneficiary_amount': 7000, 'institution_amount': 2000, 'platform_amount': 1000, 'split': '70/20/10', 'status': 'held', 'frozen_reason': null},
           ]),
     ]);
-    expect(find.text('Séquestre'), findsOneWidget);
+    expect(find.text('Montants en attente'), findsOneWidget);
     expect(find.text('20 000 FCFA'), findsOneWidget);
     expect(find.text('Règle : 70 % étudiant · 20 % institution · 10 % plateforme'), findsOneWidget);
     expect(find.text('#BE-2026-0001 · 10 000 FCFA'), findsOneWidget);
-    expect(find.text('En séquestre'), findsWidgets);
+    expect(find.text('En attente de livraison'), findsWidgets);
     expect(find.textContaining('Awa V. : 7 000 FCFA'), findsOneWidget);
   });
 }

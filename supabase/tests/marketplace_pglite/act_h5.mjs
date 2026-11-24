@@ -115,15 +115,16 @@ export async function run(db) {
     mentors_list momo_normalize normalize_msisdn notification_category offer_type_of opp_detail opp_hired_list opps_list platform_impact point_level post_comment_list post_comment_list_v2
     post_shop_target product_detail product_extras product_reviews profile_imported_items profile_in_directory profile_links_public profile_visible promo_preview provider_card public_profile
     public_project_get public_projects public_sellers recommended_offers record_view reels_feed seller_public shared_cv shop_public showcase_listings skills_list stories_active suggest_districts
-    talent_passport top_helpers trending_products user_level verify_certificate victories_list wish_get wishes_market`.split(/\s+/));
+    talent_passport top_helpers trending_products user_level verify_certificate victories_list wish_get wishes_market
+    passport_token_verify project_proof_verify qr_resolve_public verify_certificate_public`.split(/\s+/));
   const anon = await q(`select distinct p.proname, p.prosrc from pg_proc p join pg_namespace n on n.oid = p.pronamespace
     where n.nspname = 'public' and p.prokind = 'f' and has_function_privilege('anon', p.oid, 'execute') and p.prorettype <> 'trigger'::regtype
       and p.proname not like '\\_%' and p.proname not like 'pg%' and p.proname not like 'gen\\_%' and p.proname not in ('fips_mode', 'armor', 'dearmor', 'crypt', 'decrypt', 'decrypt_iv', 'digest', 'encrypt', 'encrypt_iv', 'hmac')`);
   // Une fonction publique ajoutée plus tard (hors liste) doit au moins être en lecture seule.
   const extra = anon.filter((r) => !allowed.has(r.proname) && /\b(insert\s+into|update\s+\w+\s+set|delete\s+from)\b/i.test(r.prosrc)).map((r) => r.proname);
   check('serveur : toute fonction publique de l\'anonyme hors liste attendue est en lecture seule', extra.length === 0, extra.join(', '));
-  check('serveur : les fonctions publiques écrivant pour l\'anonyme sont les seules attendues (bornes, certificats, vues)',
-    anon.filter((r) => /\b(insert\s+into|update\s+\w+\s+set|delete\s+from)\b/i.test(r.prosrc)).map((r) => r.proname).every((n) => ['ann_detail', 'record_view', 'verify_certificate', 'kiosk_heartbeat', 'kiosk_pair_issue', 'kiosk_pair_revoke'].includes(n)));
+  check('serveur : les fonctions publiques écrivant pour l\'anonyme sont les seules attendues (bornes, certificats, vues, vérification publique : compteur de débit et de vues de jeton)',
+    anon.filter((r) => /\b(insert\s+into|update\s+\w+\s+set|delete\s+from)\b/i.test(r.prosrc)).map((r) => r.proname).every((n) => ['ann_detail', 'record_view', 'verify_certificate', 'kiosk_heartbeat', 'kiosk_pair_issue', 'kiosk_pair_revoke', 'passport_token_verify', 'project_proof_verify', 'qr_resolve_public', 'verify_certificate_public'].includes(n)));
 
   console.log(`act_h5: ${ok} OK, ${ko} KO`);
 }

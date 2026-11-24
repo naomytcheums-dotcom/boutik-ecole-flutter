@@ -93,11 +93,14 @@ class ConsoleColumn {
 }
 
 class ConsoleTable extends ConsumerWidget {
-  const ConsoleTable({super.key, required this.provider, required this.columns, required this.emptyText, this.width = 940, this.height = 520});
+  const ConsoleTable({super.key, required this.provider, required this.columns, required this.emptyText, this.width = 940, this.height = 520, this.onRow});
   final NotifierProvider<RpcRows, List<Map<String, dynamic>>?> provider;
   final List<ConsoleColumn> columns;
   final String emptyText;
   final double width, height;
+
+  /// Action d'une ligne (ouvrir le détail) ; absente : la ligne n'est pas cliquable.
+  final void Function(BuildContext context, WidgetRef ref, Map<String, dynamic> row)? onRow;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -115,9 +118,12 @@ class ConsoleTable extends ConsumerWidget {
         padding: EdgeInsets.zero,
         itemCount: rows.length,
         itemExtent: 44,
-        itemBuilder: (_, i) => Stack(children: [
-          for (final c in columns) Positioned(left: c.x, width: c.w, top: 0, child: Text(c.cell(rows[i]), maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(12.5, w: c.bold ? FontWeight.w600 : FontWeight.w500, c: c.bold ? _ink : const Color(0xFF3D3B37)))),
-        ]),
+        itemBuilder: (_, i) {
+          final line = Stack(children: [
+            for (final c in columns) Positioned(left: c.x, width: c.w, top: 0, child: Text(c.cell(rows[i]), maxLines: 1, overflow: TextOverflow.ellipsis, style: _st(12.5, w: c.bold ? FontWeight.w600 : FontWeight.w500, c: c.bold ? _ink : const Color(0xFF3D3B37)))),
+          ]);
+          return onRow == null ? line : InkWell(onTap: () => onRow!(context, ref, rows[i]), child: line);
+        },
       ),
     );
   }

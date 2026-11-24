@@ -58,6 +58,11 @@ final assessmentRequestsProvider = FutureProvider.autoDispose<List<Map<String, d
   return _callList('assessment_my_list');
 }, retry: (_, _) => null);
 
+final assessmentInvitationsProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
+  ref.watch(authProvider.select((a) => a.current?.serverId));
+  return _callList('assessment_my_invitations');
+}, retry: (_, _) => null);
+
 final assessmentProvidersAdminProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
   ref.watch(authProvider.select((a) => a.current?.serverId));
   return _callList('assessment_providers_admin_list');
@@ -70,6 +75,9 @@ const assessmentModes = {
   'analyse_documents': 'Analyse de documents',
   'exercice_pratique': 'Exercice pratique',
   'simulation': 'Simulation professionnelle',
+  'analyse_fichiers': 'Analyse de fichiers',
+  'evaluation_projets': 'Évaluation de projets',
+  'analyse_images_videos': 'Analyse d’images ou de vidéos',
   'presentation_video': 'Présentation vidéo',
   'validation_humaine': 'Validation humaine ou en présentiel',
 };
@@ -125,6 +133,54 @@ Widget _card(List<Widget> children) => Container(
     );
 
 Widget _loading() => const Padding(padding: EdgeInsets.all(24), child: Center(child: CircularProgressIndicator()));
+
+/// Aides partagées avec les écrans d'organisation et de validateur (evaluations_org.dart, evaluations_validateur.dart).
+Future<Object?> evaluationCall(String fn, [Map<String, dynamic> params = const {}]) => _call(fn, params);
+String evaluationDate(Object? iso) => _date(iso);
+String evaluationItem(Object? x) => _item(x);
+Widget evaluationCard(List<Widget> children) => _card(children);
+Widget evaluationLoading() => _loading();
+Widget evaluationError(WidgetRef ref, Object e, ProviderOrFamily retry) => _error(ref, e, retry);
+
+String assessmentValidationLabel(String s) => switch (s) {
+      'automatique' => 'Résultat automatique',
+      'validation_humaine_requise' => 'Validation humaine requise',
+      'validee_humainement' => 'Validée par un évaluateur',
+      'non_verifiable_a_distance' => 'Non vérifiable à distance',
+      _ => s,
+    };
+
+String assessmentDisputeLabel(String s) => switch (s) {
+      'ouverte' => 'ouverte',
+      'en_examen' => 'en cours d’examen',
+      'close' => 'close',
+      _ => s,
+    };
+
+/// Bloc de lecture d'un résultat : compétences, critères, preuves, limites, recommandations (partagé candidat / organisation / validateur).
+List<Widget> evaluationResultBlocks(Map<String, dynamic> d) {
+  List<Widget> list(String title, Object? v) {
+    final items = v is List ? v : const [];
+    if (items.isEmpty) return const [];
+    return [
+      const SizedBox(height: 10),
+      Text(title, style: mst(13.5, w: FontWeight.w800)),
+      for (final x in items) Padding(padding: const EdgeInsets.only(top: 3), child: Text('• ${_item(x)}', style: mst(13, c: kGrey).copyWith(height: 1.4))),
+    ];
+  }
+
+  return [
+    ...list('Compétences évaluées', d['competences']),
+    ...list('Critères', d['criteria']),
+    ...list('Preuves', d['evidence']),
+    if ('${d['limits'] ?? ''}'.isNotEmpty) ...[
+      const SizedBox(height: 10),
+      Text('Limites de l’évaluation', style: mst(13.5, w: FontWeight.w800)),
+      Text('${d['limits']}', style: mst(13, c: kGrey).copyWith(height: 1.4)),
+    ],
+    ...list('Recommandations', d['recommendations']),
+  ];
+}
 
 /// Écran étudiant : quota, 33 familles de métiers, mes demandes et résultats.
 class AssessmentsScreen extends ConsumerWidget {
@@ -190,6 +246,16 @@ class AssessmentsScreen extends ConsumerWidget {
       child: ListView(padding: const EdgeInsets.only(bottom: 90), children: [
         const SizedBox(height: 8),
         _quota(context, ref),
+        ref.watch(assessmentInvitationsProvider).when(
+              loading: () => const SizedBox.shrink(),
+              error: (e, _) => mNote('Invitations indisponibles : ${e is EvaluationException ? e : Backend.userMessage('$e')}'),
+              data: (l) => l.isEmpty
+                  ? const SizedBox.shrink()
+                  : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      mSectionTitle('Invitations des organisations'),
+                      for (final i in l) _InvitationCard(i),
+                    ]),
+            ),
         mSectionTitle('Mes demandes et résultats'),
         ref.watch(assessmentRequestsProvider).when(
               loading: _loading,
@@ -341,6 +407,7 @@ class _RequestSheetState extends ConsumerState<_RequestSheet> {
 class _RequestCard extends ConsumerWidget {
   const _RequestCard(this.r);
   final Map<String, dynamic> r;
+  String get _requestId => '${r['id']}';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -353,13 +420,38 @@ class _RequestCard extends ConsumerWidget {
       Text(assessmentStatusLabel('${r['status']}'), style: mst(12.5, w: FontWeight.w700, c: kViolet)),
       if ('${r['status_note'] ?? ''}'.isNotEmpty) Text('${r['status_note']}', style: mst(12.5, c: kGrey)),
       if (humain) Text('Validation humaine requise', style: mst(12.5, w: FontWeight.w700, c: kRed)),
-      if (r['dispute_status'] != null) Text('Contestation : ${r['dispute_status']}', style: mst(12, c: kGrey)),
+      if (r['dispute_status'] != null) Text('Contestation : ${assessmentDisputeLabel('${r['dispute_status']}')}', style: mst(12, c: kGrey)),
+      if (r['campaign_id'] != null && r['status'] != 'annulee') ...[
+        const SizedBox(height: 4),
+        Text(
+          r['shared_with_org'] == true ? 'Résultat partagé avec l’organisation qui vous a invité(e).' : 'Résultat non partagé : l’organisation ne le voit pas.',
+          style: mst(12.5, w: FontWeight.w700, c: r['shared_with_org'] == true ? kGreen : kGrey),
+        ),
+        if (r['reuse_of'] != null)
+          mButton('Retirer le partage', () => _revoke(context, ref), dark: false)
+        else if (r['status'] != 'refusee' && r['status'] != 'echouee')
+          mButton(r['shared_with_org'] == true ? 'Ne plus partager' : 'Partager avec l’organisation', () => _share(context, ref, r['shared_with_org'] != true), dark: false),
+      ],
       if (resultId != null)
         Padding(
           padding: const EdgeInsets.only(top: 8),
           child: mButton('Voir le résultat', () => _showResult(context, ref, '$resultId'), dark: false),
         ),
     ]);
+  }
+
+  Future<void> _share(BuildContext context, WidgetRef ref, bool share) async {
+    final res = await marcheCall('assessment_share_set', {'p_request': _requestId, 'p_share': share});
+    if (!context.mounted) return;
+    gToast(context, res.error != null ? EvaluationException(res.error).toString() : (share ? 'Résultat partagé avec l’organisation.' : 'Partage retiré : l’organisation ne voit plus ce résultat.'));
+    if (res.error == null) ref.invalidate(assessmentRequestsProvider);
+  }
+
+  Future<void> _revoke(BuildContext context, WidgetRef ref) async {
+    final res = await marcheCall('assessment_reuse_revoke', {'p_request': _requestId});
+    if (!context.mounted) return;
+    gToast(context, res.error != null ? EvaluationException(res.error).toString() : 'Partage retiré : l’organisation ne voit plus cette évaluation.');
+    if (res.error == null) ref.invalidate(assessmentRequestsProvider);
   }
 
   Future<void> _showResult(BuildContext context, WidgetRef ref, String id) async {
@@ -429,21 +521,165 @@ class _ResultSheetState extends State<_ResultSheet> {
             return SingleChildScrollView(
               child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text('Résultat de l’évaluation', style: mst(18, w: FontWeight.w800)),
+                const SizedBox(height: 4),
+                Text('Statut : ${assessmentValidationLabel('${d['validation_status'] ?? 'automatique'}')}', style: mst(13, w: FontWeight.w700, c: kViolet)),
                 if (d['human_validation_required'] == true)
                   Padding(
                     padding: const EdgeInsets.only(top: 6),
                     child: Text('Validation humaine requise : une partie de ces compétences ne peut pas être vérifiée à distance.', style: mst(13, w: FontWeight.w700, c: kRed).copyWith(height: 1.4)),
                   ),
-                ..._list('Compétences évaluées', d['competences']),
-                ..._list('Critères', d['criteria']),
-                ..._list('Preuves', d['evidence']),
-                const SizedBox(height: 10),
-                Text('Limites de l’évaluation', style: mst(13.5, w: FontWeight.w800)),
-                Text('${d['limits'] ?? ''}', style: mst(13, c: kGrey).copyWith(height: 1.4)),
-                ..._list('Recommandations', d['recommendations']),
-                ..._list('Contestations', [for (final x in disputes) if (x is Map) '${x['status']} : ${x['reason']}${x['resolution'] == null ? '' : ' → ${x['resolution']}'}']),
+                if ('${d['review_note'] ?? ''}'.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 4), child: Text('Avis de l’évaluateur : ${d['review_note']}', style: mst(13, c: kGrey).copyWith(height: 1.4))),
+                ...evaluationResultBlocks(d),
+                ..._list('Contestations', [for (final x in disputes) if (x is Map) '${assessmentDisputeLabel('${x['status']}')} : ${x['reason']}${x['resolution'] == null ? '' : ' → ${x['resolution']}'}']),
                 const SizedBox(height: 14),
                 if (d['dispute_possible'] == true && !open) mButton('Contester ce résultat', _dispute, dark: false),
+              ]),
+            );
+          },
+        ),
+      );
+}
+
+class _InvitationCard extends ConsumerStatefulWidget {
+  const _InvitationCard(this.i);
+  final Map<String, dynamic> i;
+  @override
+  ConsumerState<_InvitationCard> createState() => _InvitationCardState();
+}
+
+class _InvitationCardState extends ConsumerState<_InvitationCard> {
+  bool _busy = false;
+
+  Future<void> _take() async {
+    final i = widget.i;
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (c) => AlertDialog(
+        title: Text('Passer cette évaluation ?'),
+        content: Text('Vos réponses seront transmises à un fournisseur d’évaluation. Le résultat n’est partagé avec « ${i['organization']} » que si vous le décidez ensuite ; vous pourrez le retirer à tout moment.'),
+        actions: [TextButton(onPressed: () => Navigator.pop(c, false), child: Text('Retour')), TextButton(onPressed: () => Navigator.pop(c, true), child: Text('J’accepte'))],
+      ),
+    );
+    if (ok != true || !mounted) return;
+    setState(() => _busy = true);
+    final r = await marcheCall('assessment_request', {'p_family': i['family_code'], 'p_mode': i['mode'], 'p_consent': true, 'p_funding': 'financee_organisation', 'p_campaign': i['campaign_id']});
+    if (!mounted) return;
+    setState(() => _busy = false);
+    final d = r.data is Map ? Map<String, dynamic>.from(r.data as Map) : const <String, dynamic>{};
+    gToast(context, r.error != null ? EvaluationException(r.error).toString() : '${d['message'] ?? (d['ok'] == true ? 'Demande enregistrée.' : 'Demande refusée.')}');
+    if (r.error == null && d['ok'] == true) {
+      ref.invalidate(assessmentInvitationsProvider);
+      ref.invalidate(assessmentRequestsProvider);
+    }
+  }
+
+  Future<void> _reuse() async {
+    final done = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(8))),
+      builder: (c) => _ReuseSheet(campaignId: '${widget.i['campaign_id']}'),
+    );
+    if (done == true) {
+      ref.invalidate(assessmentInvitationsProvider);
+      ref.invalidate(assessmentRequestsProvider);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final i = widget.i;
+    final open = i['status'] == 'ouverte';
+    final requested = i['requested'] == true;
+    return _card([
+      Text('${i['title']}', style: mst(15, w: FontWeight.w800)),
+      Text('${i['organization']} · ${i['family_label']} · ${assessmentModes[i['mode']] ?? i['mode']}', style: mst(12, c: kGrey)),
+      const SizedBox(height: 4),
+      Text(
+        switch ('${i['status']}') {
+          'ouverte' => requested ? 'Évaluation déjà demandée pour cette campagne.' : 'Campagne ouverte : vous restez libre de la passer ou non.',
+          'close' => 'Campagne close.',
+          _ => 'Campagne pas encore ouverte : le financement des campagnes n’est pas encore ouvert. Rien ne vous est demandé.',
+        },
+        style: mst(12.5, w: FontWeight.w700, c: open ? kGreen : kGrey).copyWith(height: 1.4),
+      ),
+      if (open && !requested) ...[
+        const SizedBox(height: 8),
+        mButton('Passer l’évaluation', _busy ? null : _take, busy: _busy),
+        mButton('Partager une évaluation récente', _reuse, dark: false),
+      ],
+    ]);
+  }
+}
+
+class _ReuseSheet extends StatefulWidget {
+  const _ReuseSheet({required this.campaignId});
+  final String campaignId;
+  @override
+  State<_ReuseSheet> createState() => _ReuseSheetState();
+}
+
+class _ReuseSheetState extends State<_ReuseSheet> {
+  late final Future<Map<String, dynamic>> _f = _callMap('assessment_reuse_options', {'p_campaign': widget.campaignId});
+  bool _consent = false, _busy = false;
+  String? _message;
+
+  Future<void> _grant(String resultId) async {
+    setState(() => _busy = true);
+    final r = await marcheCall('assessment_reuse_grant', {'p_result': resultId, 'p_campaign': widget.campaignId, 'p_consent': _consent});
+    if (!mounted) return;
+    final d = r.data is Map ? Map<String, dynamic>.from(r.data as Map) : const <String, dynamic>{};
+    if (r.error == null && d['ok'] == true) {
+      gToast(context, 'Évaluation partagée avec votre accord. Vous pouvez retirer ce partage à tout moment.');
+      Navigator.pop(context, true);
+      return;
+    }
+    setState(() {
+      _busy = false;
+      _message = r.error != null ? EvaluationException(r.error).toString() : '${d['message'] ?? 'Partage refusé.'}';
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: EdgeInsets.fromLTRB(20, 20, 20, 20 + MediaQuery.of(context).viewInsets.bottom),
+        child: FutureBuilder<Map<String, dynamic>>(
+          future: _f,
+          builder: (c, s) {
+            if (s.connectionState != ConnectionState.done) return _loading();
+            if (s.hasError) return mNote('${s.error is EvaluationException ? s.error : Backend.userMessage('${s.error}')}');
+            final d = s.data!;
+            final options = d['options'] is List ? [for (final x in d['options'] as List) if (x is Map) Map<String, dynamic>.from(x)] : <Map<String, dynamic>>[];
+            return SingleChildScrollView(
+              child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text('Partager une évaluation récente', style: mst(18, w: FontWeight.w800)),
+                const SizedBox(height: 6),
+                Text('${d['message'] ?? ''}', style: mst(12.5, c: kGrey).copyWith(height: 1.4)),
+                if (d['available'] == true && options.isEmpty) Padding(padding: const EdgeInsets.only(top: 8), child: Text('Aucune évaluation récente ne correspond à cette campagne.', style: mst(13, w: FontWeight.w700))),
+                if (d['available'] == true && options.isNotEmpty) ...[
+                  InkWell(
+                    onTap: () => setState(() => _consent = !_consent),
+                    child: Container(
+                      constraints: const BoxConstraints(minHeight: 44),
+                      child: Row(children: [
+                        Icon(_consent ? Icons.check_box : Icons.check_box_outline_blank, color: _consent ? kViolet : kGrey, size: 22),
+                        const SizedBox(width: 10),
+                        Expanded(child: Text('J’accepte de partager cette évaluation avec l’organisation. Je peux retirer ce partage à tout moment.', style: mst(12.5, c: kGrey).copyWith(height: 1.4))),
+                      ]),
+                    ),
+                  ),
+                  for (final o in options)
+                    _card([
+                      Text('Évaluation du ${_date(o['created_at'])}', style: mst(14, w: FontWeight.w800)),
+                      Text(assessmentValidationLabel('${o['validation_status']}'), style: mst(12.5, c: kGrey)),
+                      const SizedBox(height: 6),
+                      mButton('Partager celle-ci', _consent && !_busy ? () => _grant('${o['result_id']}') : null, busy: _busy),
+                    ]),
+                ],
+                if (_message != null) Padding(padding: const EdgeInsets.only(top: 8), child: Text(_message!, style: mst(13, w: FontWeight.w700, c: kRed).copyWith(height: 1.4))),
+                const SizedBox(height: 10),
+                mButton('Fermer', () => Navigator.pop(context, false), dark: false),
               ]),
             );
           },

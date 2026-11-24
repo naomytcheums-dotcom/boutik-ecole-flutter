@@ -37,10 +37,13 @@ import '../../figma/live/company_home.dart';
 import '../../figma/live/company_screens.dart';
 import '../../figma/live/company_team.dart';
 import '../../figma/live/company_public_page.dart' show CompanyPublicPage;
+import '../../figma/live/verify_public.dart' show VerifyKind, VerifyPublicScreen;
 import '../../figma/live/company_purchases.dart' show CompanyPurchasesScreen;
 import '../../figma/live/org_partnerships.dart' show OrgPartnershipsScreen;
 import '../../figma/live/student_profile.dart';
 import '../../figma/live/evaluations.dart';
+import '../../figma/live/evaluations_org.dart' show AssessmentCampaignsOrgScreen;
+import '../../figma/live/evaluations_validateur.dart' show AssessmentReviewScreen;
 import '../../figma/live/litiges_screens.dart';
 import '../../figma/live/money_admin.dart';
 import '../../figma/live/staff_portal.dart';
@@ -56,6 +59,10 @@ import '../../figma/live/marche/marche_livraison.dart';
 import '../../figma/live/marche/marche_promotions.dart';
 import '../../figma/live/marche/marche_screens.dart';
 import '../../figma/live/marche/marche_vendeur.dart';
+import '../../figma/live/downloads.dart' show DownloadsScreen;
+import '../../figma/live/creator_analytics.dart' show CreatorAnalyticsScreen;
+import '../../figma/live/passport_360.dart' show Passport360Screen;
+import '../../figma/live/talent_pool_org.dart' show TalentPoolOrgScreen;
 import '../../figma/live/evenements_gestion.dart';
 import '../../figma/live/accompagnement.dart';
 import '../../figma/live/client_space.dart' show MyReviewsScreen;
@@ -124,8 +131,15 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/admin/sequestre', builder: (_, _) => const RouteGuard(name: '/admin/sequestre', roles: {'admin', 'finance', 'support'}, perms: {'finance.read'}, child: MoneyAdminScreen())),
     GoRoute(path: '/etudiant/:id', builder: (_, s) => StudentProfileScreen(userId: s.pathParameters['id'] ?? '')),
     GoRoute(path: '/entreprise/equipe', builder: (_, _) => const CompanyGuard(useContext: true, child: CompanyMembersScreen())),
+    GoRoute(path: '/entreprise/vivier', builder: (_, _) => const CompanyGuard(useContext: true, child: TalentPoolOrgScreen())),
+    GoRoute(path: '/passeport', builder: (_, _) => const LoginGuard(child: Passport360Screen())),
+    GoRoute(path: '/passeport/:id', builder: (_, s) => LoginGuard(child: Passport360Screen(userId: s.pathParameters['id'] ?? ''))),
     GoRoute(path: '/mes-entreprises', builder: (_, _) => const LoginGuard(child: MyCompaniesScreen())),
     GoRoute(path: '/entreprise/espace/:owner', builder: (_, s) => CompanyGuard(owner: s.pathParameters['owner'] ?? '', child: CompanySpaceScreen(owner: s.pathParameters['owner'] ?? ''))),
+    GoRoute(path: '/verifier', builder: (_, s) => VerifyPublicScreen(code: s.uri.queryParameters['qr'] ?? s.uri.queryParameters['code'] ?? '')),
+    GoRoute(path: '/verifier/passeport/:token', builder: (_, s) => VerifyPublicScreen(kind: VerifyKind.passeport, code: s.pathParameters['token'] ?? '')),
+    GoRoute(path: '/verifier/projet/:id', builder: (_, s) => VerifyPublicScreen(kind: VerifyKind.projet, code: s.pathParameters['id'] ?? '')),
+    GoRoute(path: '/verifier/:code', builder: (_, s) => VerifyPublicScreen(code: s.pathParameters['code'] ?? '')),
     GoRoute(path: '/entreprise/fiche/:owner', builder: (_, s) => CompanyPublicPage(ownerId: s.pathParameters['owner'] ?? '')),
     GoRoute(path: '/entreprise/achats', builder: (_, _) => const CompanyGuard(useContext: true, child: CompanyPurchasesScreen())),
     GoRoute(path: '/entreprise/partenariats', builder: (_, _) => const CompanyGuard(useContext: true, child: OrgPartnershipsScreen())),
@@ -153,6 +167,8 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/accompagnement', builder: (_, _) => const RouteGuard(name: '/accompagnement', roles: {'student', 'dept', 'admin'}, child: SupportRequestsScreen())),
     GoRoute(path: '/evaluations', builder: (_, _) => const RouteGuard(name: '/evaluations', roles: {'student', 'client'}, child: AssessmentsScreen())),
     GoRoute(path: '/admin/evaluations', builder: (_, _) => const RouteGuard(name: '/admin/evaluations', roles: {'admin', 'support', 'finance'}, perms: {'tech.integrations'}, child: AssessmentProvidersAdminScreen())),
+    GoRoute(path: '/admin/evaluations/validation', builder: (_, _) => const RouteGuard(name: '/admin/evaluations/validation', roles: {'admin', 'support', 'finance'}, perms: {'tech.assessments'}, child: AssessmentReviewScreen())),
+    GoRoute(path: '/entreprise/evaluations', builder: (_, _) => const CompanyGuard(useContext: true, child: AssessmentCampaignsOrgScreen())),
     GoRoute(path: '/evenements/mes', builder: (_, _) => const LoginGuard(child: MyEventsScreen())),
     GoRoute(path: '/evenements/gerer', builder: (_, _) => const RouteGuard(name: '/evenements/gerer', roles: {'dept', 'direction', 'finance', 'admin'}, perms: {'finance.read'}, child: EventsManageScreen())),
     GoRoute(path: '/marche/appels', builder: (_, _) => const AppelsScreen()),
@@ -169,6 +185,8 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/moderation/reseau', builder: (_, _) => const RouteGuard(name: '/moderation/reseau', roles: {'admin', 'dept', 'support', 'finance'}, perms: {'security.moderation', 'security.reports'}, child: SocialModerationScreen())),
     GoRoute(path: '/paiement', builder: (_, _) => const LoginGuard(child: PaymentChatScreen())),
     GoRoute(path: '/paiements', builder: (_, _) => const LoginGuard(child: MyPaymentsScreen())),
+    GoRoute(path: '/marche/telechargements', builder: (_, _) => const LoginGuard(child: DownloadsScreen())),
+    GoRoute(path: '/createur/statistiques', builder: (_, _) => const LoginGuard(child: CreatorAnalyticsScreen())),
     GoRoute(path: '/aide/contact', builder: (_, _) => const LoginGuard(child: SupportContactScreen())),
     GoRoute(path: '/aide/demandes', builder: (_, _) => const LoginGuard(child: MyTicketsScreen())),
     GoRoute(path: '/support/boite', builder: (_, _) => const RouteGuard(name: '/support/boite', roles: {'admin', 'support', 'finance'}, perms: {'support.tickets'}, child: SupportInboxScreen())),

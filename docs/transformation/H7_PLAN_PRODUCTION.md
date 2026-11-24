@@ -4,6 +4,26 @@
 (même en lecture) n'a eu lieu pour l'écrire. Tout ce qui suit vient de la lecture des fichiers de `supabase/migrations/` ; les requêtes SQL ci-dessous ont été relues mais **pas exécutées** (pas de base
 disponible pour ce lot) : leurs résultats de référence doivent d'abord être établis sur la répétition générale (§5), puis comparés à la production.
 
+## 00. Mise à jour H9 (24 novembre 2026) : liste exacte actuelle et corrections
+
+**45 fichiers `.sql` de version > `20261119070000`** dans `supabase/migrations/` (246 au total = 201 + 45), de `20261120010000` à `20261125096200`, sans version dupliquée (contrôlé par script). Aux 38 fichiers du §0 s'ajoutent :
+
+| N° | Fichier | Rôle |
+|---|---|---|
+| 39 | 20261125010000_invitations_responsables_departement.sql | invitations privées des responsables de département (commit `ae01fc85`) |
+| 40 | 20261125020000_invitations_jeton_portable.sql | correctif du jeton (commit `e64460bb`) |
+| 41 | 20261125030000_h9_offres_cloisonnement_departement.sql | **correctif de sécurité H9** (voir ci-dessous) |
+| 42 | 20261125095000_h9_eval_socle_fournisseur_agnostique.sql | socle d'évaluation (33 familles, registre vide, quota, résultats, contestations, RLS) |
+| 43 | 20261125096000_h9_eval_validation_humaine_contestations.sql | permission `tech.assessments`, validation humaine, contestations |
+| 44 | 20261125096100_h9_eval_campagnes_organisation_reutilisation.sql | campagnes d'organisation sans paiement, partage révocable |
+| 45 | 20261125096200_h9_eval_correspondance_catalogue_familles.sql | correspondance catalogue ↔ familles (vide) |
+
+**Correction du §0 (fichier 38, `20261124050000_equipe_entreprise_offres.sql`)** : le §0 dit que les 7 fonctions recréées ont des « dernières définitions inchangées depuis `20261115180000` ». C'est inexact pour `opp_close` et `opp_my_posted` : `20261120020300` (H2) les avait modifiées sur place pour cloisonner les départements, et le fichier 38 les a recréées à partir de la définition d'origine, **effaçant ce cloisonnement** (un compte département voyait les offres en attente de tous les départements et pouvait fermer l'offre d'un autre département). Preuve : le scénario `h7_cloisonnement.mjs` (contrôle 8.w1, avec `opp_close` ajouté à la liste des écritures interdites) échoue sans le fichier 41 et passe avec (193 OK, 0 échec). Le fichier 41 réapplique la restriction H2 ; le fichier 38 n'est pas modifié. **Il doit être appliqué avec le 38** (ordre lexical respecté).
+
+**À VÉRIFIER AVANT TOUT `db push` (lecture seule sur la production, par le propriétaire)** : les messages de commit du 21 novembre indiquent que les migrations d'invitations (fichiers 39 et 40) ont déjà été **appliquées en production**, alors que les fichiers 1 à 38 ne l'étaient pas. Exécuter `supabase migration list --linked` : si 39 et 40 y figurent, le plan doit (a) utiliser `supabase db push --include-all` (sinon les versions 1 à 38, inférieures, sont refusées), (b) vérifier que les objets que les invitations utilisent en production existent (`department_accounts`, historique des rattachements, notifications : ils viennent des fichiers H2/L3 non appliqués : `dept_invite_accept` peut échouer en production tant que ceux-ci manquent), (c) ne pas rejouer 39 et 40 (une migration appliquée ne se rejoue pas). Le nombre exact de migrations à appliquer est donc celui que renvoie `migration list`, pas 45.
+
+**Preuves locales (24 novembre)** : 81 scénarios PGlite rejoués sur les 246 migrations (base vierge) : 5 316 contrôles OK, 0 échec avant renumérotation du fichier 41, puis scénarios concernés rejoués après renumérotation (h7_cloisonnement 193, act_h2 167, act_h3 124, ent_f3b 41, h9_evaluation_suite 239, invitations_departement 30, invitations_offres 11 : 0 échec). Ce n'est pas une validation sur copie restaurée de la production (§5).
+
 ## 0. Mise à jour H8 (21 novembre 2026) : liste exacte actuelle
 
 **37 migrations en attente** (versions > `20261119070000`, de `20261120010000` à `20261124040000`), au-dessus des **201** déjà appliquées ; le dossier contient 238 fichiers `.sql` (201 + 37). Aucune version dupliquée, aucune version en production absente du dépôt (recomptées par script ; l'ordre lexical des noms de fichiers est l'ordre d'application). Les fichiers 1 à 34 sont ceux de la liste figée du §1.1 (commits `ef48863c`, `853b6158`, `a5a9dff0`). Les trois derniers s'y ajoutent :

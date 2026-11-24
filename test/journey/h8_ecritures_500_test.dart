@@ -63,6 +63,13 @@ void main() {
 
   Future<void> settle(WidgetTester t) => settleReal(t, rounds: 6, ms: 40);
 
+  /// Attend (au plus ~12 s réelles) qu'un élément apparaisse : sous forte charge, l'ouverture d'une boîte de dialogue dépasse l'attente fixe de [settle].
+  Future<void> attendre(WidgetTester t, Finder f) async {
+    for (var i = 0; i < 60 && f.evaluate().isEmpty; i++) {
+      await settleReal(t, rounds: 2, ms: 100);
+    }
+  }
+
   Future<void> fin(WidgetTester t) async {
     await t.pumpWidget(const SizedBox());
     await t.pump(const Duration(seconds: 60));
@@ -72,9 +79,11 @@ void main() {
     await host(t, {'modifier': (c, r) => editProfileDialog(c, r)});
     await t.tap(find.text('modifier'));
     await settle(t);
+    await attendre(t, find.byType(TextField));
     await t.enterText(find.byType(TextField).at(0), 'Nouvelle description');
     await t.tap(find.text('Enregistrer'));
     await settle(t);
+    await attendre(t, find.text('Profil non enregistré'));
     expect(find.text('Profil non enregistré'), findsOneWidget);
     expect(find.text('Profil enregistré'), findsNothing);
     expect(container.read(authProvider).current!.bio, 'avant');
@@ -104,6 +113,7 @@ void main() {
     await t.tap(find.text('avis'));
     await settle(t);
     expect(find.text('Évaluer votre commande'), findsOneWidget);
+    await attendre(t, find.byType(TextField));
     await t.enterText(find.byType(TextField).last, 'Très bien');
     await t.tap(find.text('Publier mon avis'));
     await settle(t);
@@ -174,6 +184,7 @@ void main() {
     await t.tap(find.text('Postuler dans l’application'));
     await settle(t);
     const lettre = 'Je suis très motivée par ce stage.';
+    await attendre(t, find.byType(TextField));
     await t.enterText(find.byType(TextField).first, lettre);
     await t.tap(find.text('Envoyer'));
     await settle(t);

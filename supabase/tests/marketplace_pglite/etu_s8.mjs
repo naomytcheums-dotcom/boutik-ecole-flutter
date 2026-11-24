@@ -23,6 +23,8 @@ export async function run(db) {
   await db.exec(`update profiles set institution = 'IUT de Douala' where id = '${U(13)}'`); // texte libre, sans référentiel
   await db.exec(`update profiles set certification = 'approved' where id in ('${U(12)}', '${U(13)}')`); // étudiants vérifiés (lot S1) : seul l'établissement les distingue
   await db.exec(`insert into company_profiles (owner_id, company_name, status) values ('${U(14)}', 'Orange Cameroun', 'approved'); insert into company_subscriptions (owner_id, plan_code, status, starts_at, ends_at) values ('${U(14)}', 'partner', 'active', now(), now() + interval '30 days')`);
+  // Le référentiel n'est plus prérempli par les migrations (décision du propriétaire, commit 90f48686) : le scénario crée ses deux établissements vérifiés.
+  await db.exec(`insert into institutions (name, short_name, kind, city, status, source) values ('Institut universitaire de technologie de Douala', 'IUT Douala', 'institut', 'Douala', 'verified', 'fixture de test'), ('Université de Douala', 'UDo', 'universite_etat', 'Douala', 'verified', 'fixture de test') on conflict do nothing`);
   const iutId = (await q(`select id from institutions where name = 'Institut universitaire de technologie de Douala'`))[0].id;
   const uniId = (await q(`select id from institutions where name = 'Université de Douala'`))[0].id;
 

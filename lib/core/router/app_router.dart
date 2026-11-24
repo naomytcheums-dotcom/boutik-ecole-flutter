@@ -40,6 +40,7 @@ import '../../figma/live/company_public_page.dart' show CompanyPublicPage;
 import '../../figma/live/company_purchases.dart' show CompanyPurchasesScreen;
 import '../../figma/live/org_partnerships.dart' show OrgPartnershipsScreen;
 import '../../figma/live/student_profile.dart';
+import '../../figma/live/evaluations.dart';
 import '../../figma/live/litiges_screens.dart';
 import '../../figma/live/money_admin.dart';
 import '../../figma/live/staff_portal.dart';
@@ -150,6 +151,8 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/mentors/:id', builder: (_, state) => MentorDetailScreen(id: state.pathParameters['id'] ?? '')),
     GoRoute(path: '/communautes', builder: (_, _) => const CommunityExploreScreen()),
     GoRoute(path: '/accompagnement', builder: (_, _) => const RouteGuard(name: '/accompagnement', roles: {'student', 'dept', 'admin'}, child: SupportRequestsScreen())),
+    GoRoute(path: '/evaluations', builder: (_, _) => const RouteGuard(name: '/evaluations', roles: {'student', 'client'}, child: AssessmentsScreen())),
+    GoRoute(path: '/admin/evaluations', builder: (_, _) => const RouteGuard(name: '/admin/evaluations', roles: {'admin', 'support', 'finance'}, perms: {'tech.integrations'}, child: AssessmentProvidersAdminScreen())),
     GoRoute(path: '/evenements/mes', builder: (_, _) => const LoginGuard(child: MyEventsScreen())),
     GoRoute(path: '/evenements/gerer', builder: (_, _) => const RouteGuard(name: '/evenements/gerer', roles: {'dept', 'direction', 'finance', 'admin'}, perms: {'finance.read'}, child: EventsManageScreen())),
     GoRoute(path: '/marche/appels', builder: (_, _) => const AppelsScreen()),

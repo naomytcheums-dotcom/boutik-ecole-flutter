@@ -30,6 +30,8 @@ Future<void> _innovations(BuildContext context, WidgetRef ref) async => GoRouter
 Future<void> _concours(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/concours');
 Future<void> _mentors(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/mentors');
 Future<void> _litiges(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/litiges');
+Future<void> _evaluations(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/evaluations');
+Future<void> _fournisseursEvaluation(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/admin/evaluations');
 Future<void> _ficheEntreprise(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/entreprise/profil');
 Future<void> _equipeEntreprise(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/entreprise/equipe');
 Future<void> _partenariatsOrganisation(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/entreprise/partenariats');
@@ -129,6 +131,7 @@ final _groups = <_Group>[
     _Entry('Défis et récompenses', screen: '253'),
     _Entry('Parrainer et gagner', screen: '240'),
     _Entry('J’ai un code de parrainage', action: _parrain, roles: {'client', 'student', 'company'}),
+    _Entry('Évaluations de compétences', action: _evaluations, roles: {'student', 'client'}, connected: true),
     _Entry('Missions sur mesure', screen: '191'),
     _Entry('Impact de Boutik-École', screen: '238'),
   ]),
@@ -231,6 +234,7 @@ final _groups = <_Group>[
     _Entry('Équipes et permissions', screen: '305', roles: {'admin'}),
     _Entry('Rôles et périmètres', screen: '281', roles: {'admin'}),
     _Entry('Intégrations', screen: '280', roles: {'admin', 'support', 'finance'}, perms: {'tech.integrations'}),
+    _Entry('Fournisseurs d’évaluation', action: _fournisseursEvaluation, roles: {'admin', 'support', 'finance'}, perms: {'tech.integrations'}),
     _Entry('Pages éditoriales', screen: '264', roles: {'admin', 'support', 'finance'}, perms: {'tech.config'}),
     _Entry('Innovation Radar', screen: '269', roles: {'admin'}),
     _Entry('Finance', screen: '139', roles: {'finance', 'support', 'direction', 'admin'}, perms: {'finance.read'}),

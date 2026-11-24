@@ -44,7 +44,7 @@ export async function run(db) {
 
   // ============================================================ A. modèle : équipes, catalogue, inscription automatique
   check('A1 quatre équipes (finance, support, sécurité, technique)', (await qs(`select string_agg(code, ',' order by position) s from admin_teams`))[0].s === 'finance,support,security,tech');
-  check('A2 catalogue : 20 permissions, chacune dans son équipe', (await qs(`select count(*)::int n from admin_permissions where split_part(code, '.', 1) = case team_code when 'security' then 'security' else team_code end`))[0].n === 20);
+  check('A2 catalogue : 21 permissions (20 de H4 + tech.assessments du lot EVAL), chacune dans son équipe', (await qs(`select count(*)::int n from admin_permissions where split_part(code, '.', 1) = case team_code when 'security' then 'security' else team_code end`))[0].n === 21);
   const auto = await qs(`select user_id, team_code, permissions from admin_team_members where user_id in ('${F1}', '${S1}', '${SEC}') order by user_id`);
   check('A3 un compte finance / support créé après la migration est inscrit dans son équipe avec les droits de base', auto.length === 3 && auto.find((r) => r.user_id === F1).team_code === 'finance'
     && auto.find((r) => r.user_id === S1).team_code === 'support' && !auto.find((r) => r.user_id === S1).permissions.includes('support.refunds'), JSON.stringify(auto));

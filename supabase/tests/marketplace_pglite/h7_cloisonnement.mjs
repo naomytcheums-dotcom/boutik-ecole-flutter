@@ -322,7 +322,7 @@ export async function run(db) {
   const before = await snap();
   await as(DA);
   const writesB = [
-    ['ann_decide', `ann_decide('${R.ann}', true, true, 'ok')`], ['opp_decide', `opp_decide('${oppB}', true, true, 'ok')`], ['review_project', `review_project('${projB}', true, 'ok')`],
+    ['ann_decide', `ann_decide('${R.ann}', true, true, 'ok')`], ['opp_decide', `opp_decide('${oppB}', true, true, 'ok')`], ['opp_close', `opp_close('${oppB}')`], ['review_project', `review_project('${projB}', true, 'ok')`],
     ['review_wish', `review_wish('${R.wish}', 'approve', 'ok', null)`], ['review_campaign', `review_campaign('${R.camp}', true, 'ok')`], ['shop_decide', `shop_decide('${R.shop}', 'approve', 'ok')`],
     ['mentor_validate', `mentor_validate('${STB}', true, 'ok')`], ['set_listing_showcase', `set_listing_showcase('${R.lst}', true)`], ['revoke_certificate', `revoke_certificate('BE-CERT-BBBBBBBB', 'piraté')`],
     ['answer_claim', `answer_claim('${R.claim}', 'piraté')`], ['event_cancel', `event_cancel('${R.ev}', 'piraté')`], ['moderate_post', `moderate_post('${R.post}', true, 'piraté')`],

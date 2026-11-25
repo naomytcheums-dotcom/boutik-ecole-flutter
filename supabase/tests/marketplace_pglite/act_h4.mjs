@@ -43,8 +43,8 @@ export async function run(db) {
   await sup();
 
   // ============================================================ A. modèle : équipes, catalogue, inscription automatique
-  check('A1 quatre équipes (finance, support, sécurité, technique)', (await qs(`select string_agg(code, ',' order by position) s from admin_teams`))[0].s === 'finance,support,security,tech');
-  check('A2 catalogue : 21 permissions (20 de H4 + tech.assessments du lot EVAL), chacune dans son équipe', (await qs(`select count(*)::int n from admin_permissions where split_part(code, '.', 1) = case team_code when 'security' then 'security' else team_code end`))[0].n === 21);
+  check('A1 cinq équipes (finance, support, sécurité, technique, classement H12)', (await qs(`select string_agg(code, ',' order by position) s from admin_teams`))[0].s === 'finance,support,security,tech,ranking');
+  check('A2 catalogue : 24 permissions (20 de H4 + tech.assessments du lot EVAL + 3 ranking.* du lot H12), chacune dans son équipe', (await qs(`select count(*)::int n from admin_permissions where split_part(code, '.', 1) = case team_code when 'security' then 'security' else team_code end`))[0].n === 24);
   const auto = await qs(`select user_id, team_code, permissions from admin_team_members where user_id in ('${F1}', '${S1}', '${SEC}') order by user_id`);
   check('A3 un compte finance / support créé après la migration est inscrit dans son équipe avec les droits de base', auto.length === 3 && auto.find((r) => r.user_id === F1).team_code === 'finance'
     && auto.find((r) => r.user_id === S1).team_code === 'support' && !auto.find((r) => r.user_id === S1).permissions.includes('support.refunds'), JSON.stringify(auto));
@@ -109,7 +109,7 @@ export async function run(db) {
   await fails('B21 anonyme : has_admin_permission refusé', `select has_admin_permission('finance.read')`, /permission denied/);
   await as(A);
   const ov = (await q(`select admin_teams_overview() r`))[0].r;
-  check('B22 vue d\'ensemble : 4 équipes, permissions et droits de base', ov.length === 4 && ov[0].code === 'finance' && ov[0].permissions.length === 6 && ov[1].defaults.length === 0 && ov[0].members >= 3, JSON.stringify(ov.map((t) => [t.code, t.members])));
+  check('B22 vue d\'ensemble : 5 équipes, permissions et droits de base', ov.length === 5 && ov[0].code === 'finance' && ov[0].permissions.length === 6 && ov[1].defaults.length === 0 && ov[0].members >= 3, JSON.stringify(ov.map((t) => [t.code, t.members])));
   check('B23 liste des agents d\'une équipe (noms, rôles, permissions)', (await q(`select admin_team_members_list('support') r`))[0].r.some((m) => m.user_id === S2 && m.role === 'support' && m.permissions.includes('support.claims')));
   const cand = (await q(`select admin_team_candidates('sam') r`))[0].r;
   check('B24 recherche d\'agents recrutables : seulement finance / support', cand.length === 1 && cand[0].id === S1 && cand[0].teams.includes('support'), JSON.stringify(cand));
@@ -144,7 +144,7 @@ export async function run(db) {
   check('C7 my_admin_access : un agent ne voit que ses équipes', acc.role === 'support' && acc.is_admin === false && Object.keys(acc.teams).join() === 'support' && acc.teams.support.includes('support.claims'), JSON.stringify(acc));
   await as(A);
   const accA = (await q(`select my_admin_access() r`))[0].r;
-  check('C8 my_admin_access : l\'administrateur voit les 4 équipes et toutes les permissions', accA.is_admin === true && Object.keys(accA.teams).length === 4 && accA.teams.finance.length === 6);
+  check('C8 my_admin_access : l\'administrateur voit les 5 équipes et toutes les permissions', accA.is_admin === true && Object.keys(accA.teams).length === 5 && accA.teams.finance.length === 6);
   await as(C);
   const accC = (await q(`select my_admin_access() r`))[0].r;
   check('C9 my_admin_access : un client n\'a aucune équipe', accC.is_admin === false && Object.keys(accC.teams).length === 0);

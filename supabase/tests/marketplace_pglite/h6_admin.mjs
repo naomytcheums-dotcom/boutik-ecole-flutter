@@ -176,7 +176,7 @@ export async function run(db) {
   await works('H3 admin global : skills_radar (écran 269)', `select skills_radar()`);
   await works('H4 admin global : platform_overview (écran 127)', `select platform_overview()`);
   await works('H5 admin global : finance_payments (écran 134)', `select finance_payments(null, 50)`);
-  check('H6 catalogue des équipes et permissions lisible (écrans 181 et 281)', (await q(`select count(*)::int n from admin_permissions`))[0].n >= 20 && (await q(`select count(*)::int n from admin_teams`))[0].n === 4);
+  check('H6 catalogue des équipes et permissions lisible (écrans 181 et 281)', (await q(`select count(*)::int n from admin_permissions`))[0].n >= 20 && (await q(`select count(*)::int n from admin_teams`))[0].n === 5);
   check('H7 institutions lisibles (127, 129, 267)', (await q(`select count(*)::int n from institutions`))[0].n >= 0);
   await as(SUP);
   await works('H8 agent support (support.orders) : schedule_kiosk_event autorisée', `select schedule_kiosk_event('borne-1', 'Atelier', now() + interval '5 days', now() + interval '6 days')`);

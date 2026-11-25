@@ -47,10 +47,18 @@ Deno.serve(async (req) => {
     ...history.filter((m: any) => (m?.role === "user" || m?.role === "assistant") && typeof m?.content === "string").map((m: any) => ({ role: m.role, content: String(m.content).slice(0, 2000) })),
     { role: "user", content: message },
   ];
+  // Contexte autorisé : kela_context() ne renvoie que les chiffres et capacités du compte connecté (jamais de contenu privé). Échec = Kéla répond sans contexte.
+  let ctx = "";
+  try {
+    const { data: c } = await asUser.rpc("kela_context");
+    if (c && typeof c === "object") {
+      ctx = `\n\nContexte du compte (lecture seule, ne le récite pas) : rôle ${c.role}, ${c.unread_notifications} notification(s) non lue(s), ${c.pending_agent_actions} action(s) en attente de confirmation. Tu ne peux exécuter aucune action : tu expliques et tu orientes vers l'écran concerné.`;
+    }
+  } catch { /* sans contexte */ }
   const r = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: { "x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-    body: JSON.stringify({ model: Deno.env.get("KELA_MODEL") ?? "claude-haiku-5-5", max_tokens: 600, system: SYSTEM, messages }),
+    body: JSON.stringify({ model: Deno.env.get("KELA_MODEL") ?? "claude-haiku-5-5", max_tokens: 600, system: SYSTEM + ctx, messages }),
   });
   if (!r.ok) return json({ error: "provider_error", message: "L'assistante est momentanément indisponible." }, 502);
   const out = await r.json();

@@ -203,11 +203,11 @@ export async function run(db) {
   await grant(AF, 'finance', ['finance.read']);
   await as(A);
   const ov = (await q(`select admin_teams_overview() r`))[0].r;
-  check('D5 aperçu des équipes : quatre équipes avec catalogue de permissions', ov.length === 4 && ov.every((t) => t.permissions.length >= 4), JSON.stringify(ov.map((t) => [t.code, t.permissions.length])));
+  check('D5 aperçu des équipes : cinq équipes (dont classement H12) avec catalogue de permissions', ov.length === 5 && ov.every((t) => t.permissions.length >= 4), JSON.stringify(ov.map((t) => [t.code, t.permissions.length])));
   check('D6 agents de l\'équipe Finance listés', (await q(`select admin_team_members_list('finance') r`))[0].r.length >= 2);
   check('D7 recherche d\'agents recrutables', (await q(`select admin_team_candidates('Fred') r`))[0].r.some((x) => x.id === F1));
   const mine = (await q(`select my_admin_access() r`))[0].r;
-  check('D8 my_admin_access de l\'administrateur : toutes les permissions des quatre équipes', mine.is_admin === true && Object.keys(mine.teams).length === 4 && mine.teams.finance.length === 6);
+  check('D8 my_admin_access de l\'administrateur : toutes les permissions des cinq équipes', mine.is_admin === true && Object.keys(mine.teams).length === 5 && mine.teams.finance.length === 6);
   await as(F1);
   const mf = (await q(`select my_admin_access() r`))[0].r;
   check('D9 my_admin_access d\'un agent : seulement ses permissions', mf.is_admin === false && JSON.stringify(mf.teams) === JSON.stringify({ finance: ['finance.payments'] }), JSON.stringify(mf));
@@ -247,7 +247,7 @@ export async function run(db) {
   await sup();
   const SPONSOR = id(60);
   await db.exec(`insert into sponsors (id, name) values ('${SPONSOR}', 'Sponsor L3')`);
-  const needsObject = new Set(['sponsor_report']); // garde liée à l'objet (null refusé pour tous) : prouvée à part avec un vrai sponsor
+  const needsObject = new Set(['sponsor_report', 'replay_comments_list']); // garde liée à l'objet (null refusé pour tous) : prouvée à part avec un vrai objet (sponsor_report ci-dessous ; replay_comments_list : h12_live_replay E13b, l'administration lit les commentaires d'un replay réel)
   for (const f of fns) {
     if (needsObject.has(f.name)) continue;
     let call;

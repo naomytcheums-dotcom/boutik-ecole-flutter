@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' hide Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show ProviderOrFamily;
+import 'package:url_launcher/url_launcher.dart';
 
 import '../gen.dart' show gToast;
 import '../i18n.dart' show Text;
@@ -409,6 +410,14 @@ class _RequestCard extends ConsumerWidget {
   final Map<String, dynamic> r;
   String get _requestId => '${r['id']}';
 
+  Future<void> _openProvider(BuildContext context, String url) async {
+    var opened = false;
+    try {
+      opened = await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    } catch (_) {}
+    if (!opened && context.mounted) gToast(context, 'Impossible d’ouvrir le lien du fournisseur. Réessayez.');
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final resultId = r['result_id'];
@@ -420,6 +429,8 @@ class _RequestCard extends ConsumerWidget {
       Text(assessmentStatusLabel('${r['status']}'), style: mst(12.5, w: FontWeight.w700, c: kViolet)),
       if ('${r['status_note'] ?? ''}'.isNotEmpty) Text('${r['status_note']}', style: mst(12.5, c: kGrey)),
       if (humain) Text('Validation humaine requise', style: mst(12.5, w: FontWeight.w700, c: kRed)),
+      if ('${r['candidate_url'] ?? ''}'.startsWith('https://'))
+        mButton('Commencer l’évaluation', () => _openProvider(context, '${r['candidate_url']}'), dark: false),
       if (r['dispute_status'] != null) Text('Contestation : ${assessmentDisputeLabel('${r['dispute_status']}')}', style: mst(12, c: kGrey)),
       if (r['campaign_id'] != null && r['status'] != 'annulee') ...[
         const SizedBox(height: 4),

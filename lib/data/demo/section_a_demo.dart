@@ -3,7 +3,7 @@ import 'catalog_demo.dart';
 
 /// Article du panier.
 class CartLine {
-  const CartLine(this.title, this.department, this.price, this.image, {this.qty = 1, this.packId, this.variant});
+  const CartLine(this.title, this.department, this.price, this.image, {this.qty = 1, this.packId, this.variant, this.variantId});
 
   final String title;
   final String department;
@@ -17,16 +17,19 @@ class CartLine {
   /// Variante choisie sur la fiche (« Couleur : Rouge · Taille : M ») ; transmise à la commande.
   final String? variant;
 
-  CartLine withQty(int q) => CartLine(title, department, price, image, qty: q, packId: packId, variant: variant);
+  /// Variante à stock propre (migration 20261127200000) : identifiant envoyé au serveur, qui décrémente le stock de cette variante.
+  final String? variantId;
 
-  Map<String, dynamic> toJson() => {'title': title, 'department': department, 'price': price, 'image': image, 'qty': qty, if (packId != null) 'packId': packId, if (variant != null) 'variant': variant};
+  CartLine withQty(int q) => CartLine(title, department, price, image, qty: q, packId: packId, variant: variant, variantId: variantId);
+
+  Map<String, dynamic> toJson() => {'title': title, 'department': department, 'price': price, 'image': image, 'qty': qty, if (packId != null) 'packId': packId, if (variant != null) 'variant': variant, if (variantId != null) 'variantId': variantId};
 
   static CartLine? fromJson(Object? j) {
     if (j is! Map) return null;
     final t = j['title'], d = j['department'], p = j['price'], q = j['qty'];
     if (t is! String || p is! num || q is! num) return null;
-    final pk = j['packId'], v = j['variant'];
-    return CartLine(t, d is String ? d : '', p.toInt(), j['image'] is String ? j['image'] as String : '', qty: q.toInt().clamp(1, maxCartQty), packId: pk is String && pk.isNotEmpty ? pk : null, variant: v is String && v.isNotEmpty ? v : null);
+    final pk = j['packId'], v = j['variant'], vid = j['variantId'];
+    return CartLine(t, d is String ? d : '', p.toInt(), j['image'] is String ? j['image'] as String : '', qty: q.toInt().clamp(1, maxCartQty), packId: pk is String && pk.isNotEmpty ? pk : null, variant: v is String && v.isNotEmpty ? v : null, variantId: vid is String && vid.isNotEmpty ? vid : null);
   }
 }
 

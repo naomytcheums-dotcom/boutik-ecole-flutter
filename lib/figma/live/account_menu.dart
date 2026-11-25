@@ -21,6 +21,7 @@ import 'verification_equipe.dart';
 import 'referral.dart';
 import 'social_posts.dart' show blockedPeopleDialog;
 import 'services.dart';
+import 'top100_admin_common.dart' show kRankingPerms;
 
 Future<void> _livraisonVendeur(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/marche/livraison');
 Future<void> _livraisonPlateforme(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/marche/livraison?plateforme=1');
@@ -48,6 +49,8 @@ Future<void> _achatsEntreprise(BuildContext context, WidgetRef ref) async => GoR
 Future<void> _entreprisesAVerifier(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/admin/entreprises');
 Future<void> _forfaitsEntreprises(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/admin/forfaits');
 Future<void> _sequestre(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/admin/sequestre');
+Future<void> _decouvrirTalents(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/discovery');
+Future<void> _classementAdmin(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/admin/classement');
 Future<void> _mesEntreprises(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/mes-entreprises');
 Future<void> _comptesTest(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/comptes-test');
 Future<void> _promotions(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/marche/promotions');
@@ -62,6 +65,11 @@ Future<void> _rattachementsDepartement(BuildContext context, WidgetRef ref) asyn
 Future<void> _mesAvis(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/mes-avis');
 Future<void> _mesTelechargements(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/marche/telechargements');
 Future<void> _statsCreateur(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/createur/statistiques');
+Future<void> _replays(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/replays');
+Future<void> _atelier(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/atelier');
+Future<void> _mesReplays(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/mes-replays');
+Future<void> _top100(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/top100');
+Future<void> _monScoreTalent(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/top100/mon-score');
 Future<void> _mesInformations(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/parametres/informations');
 Future<void> _devenirVendeur(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/vendeur/conditions');
 Future<void> _seConnecter(BuildContext context, WidgetRef ref) => requireLogin(context, ref, 'ouvrir votre espace personnel');
@@ -133,9 +141,13 @@ final _groups = <_Group>[
     _Entry('Duels de talents', screen: '220'),
     _Entry('Résultats des duels', screen: '221'),
     _Entry('Lancer un duel', screen: '219', roles: {'client', 'company', 'dept', 'direction', 'admin'}),
-    _Entry('Ateliers en direct', screen: '223'),
+    _Entry('Atelier en direct', action: _atelier),
     _Entry('Reels et lives', screen: '245'),
     _Entry('Statistiques de créateur', action: _statsCreateur, connected: true),
+    _Entry('Replays des lives', action: _replays),
+    _Entry('Mes replays (hôte)', action: _mesReplays, connected: true),
+    _Entry('TOP 100 national des talents', action: _top100),
+    _Entry('Mon score de talent', action: _monScoreTalent, roles: {'student'}, connected: true),
     _Entry('Défis et récompenses', screen: '253'),
     _Entry('Parrainer et gagner', screen: '240'),
     _Entry('J’ai un code de parrainage', action: _parrain, roles: {'client', 'student', 'company'}),
@@ -199,6 +211,7 @@ final _groups = <_Group>[
     _Entry('Publier un concours ou un hackathon', action: _publierConcours, roles: {'company', 'admin'}),
     _Entry('Mes concours', action: _mesConcours, roles: {'company', 'admin'}),
     _Entry('Rechercher des talents', screen: '91', roles: {'company', 'admin'}),
+    _Entry('Découvrir des talents classés', action: _decouvrirTalents, roles: {'company', 'admin'}),
     _Entry('Défis d’innovation', screen: '96', roles: {'company', 'admin'}),
     _Entry('Espace projet', screen: '285', roles: {'company', 'admin'}),
     _Entry('Accueil B2B', screen: '262', roles: {'company', 'admin'}),
@@ -206,6 +219,7 @@ final _groups = <_Group>[
   ]),
   const _Group('Administration', [
     _Entry('Centre d’administration', screen: '300', roles: {'finance', 'support', 'admin'}),
+    _Entry('Classement et talents (administration)', action: _classementAdmin, roles: {'admin', 'finance', 'support', 'direction', 'dept'}, perms: kRankingPerms),
     _Entry('Espace du département', action: _espaceDepartement, roles: {'dept', 'direction', 'admin'}),
     _Entry('Rattachement des comptes Département', action: _rattachementsDepartement, roles: {'admin'}),
     _Entry('Console du département', screen: '108', roles: {'dept', 'admin'}),

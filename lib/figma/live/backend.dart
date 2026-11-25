@@ -1254,6 +1254,7 @@ class Backend {
   static bool isServiceMessage(String m) => m == 'Le service ne répond pas pour le moment. Réessayez dans un instant.' || m == 'Vous êtes hors ligne. Reconnectez-vous puis réessayez.';
 
   static String userMessage(String raw) {
+    raw = raw.replaceAll(RegExp(r'\s*\(variant_[a-z_]+\)'), ''); // codes internes du stock par variante : le texte du serveur suffit
     final low = raw.toLowerCase();
     const reseau = ['socketexception', 'clientexception', 'failed host lookup', 'xmlhttprequest', 'connection closed', 'connection refused', 'network', 'handshake', 'timeoutexception'];
     if (reseau.any(low.contains)) return serviceDownMessage();
@@ -1461,7 +1462,7 @@ class Backend {
   /// Lignes envoyées au serveur : une ligne « Pack » porte la clé pack (le serveur la décompose), les autres leur titre.
   static List<Map<String, dynamic>> orderItems(List<CartLine> lines) => [
         for (final l in lines)
-          (l.packId ?? packLines[l.title]) != null ? {'pack': l.packId ?? packLines[l.title], 'qty': l.qty} : {'title': l.title, 'qty': l.qty, if ((l.variant ?? '').isNotEmpty) 'variant': l.variant}
+          (l.packId ?? packLines[l.title]) != null ? {'pack': l.packId ?? packLines[l.title], 'qty': l.qty} : {'title': l.title, 'qty': l.qty, if ((l.variant ?? '').isNotEmpty) 'variant': l.variant, if ((l.variantId ?? '').isNotEmpty) 'variant_id': l.variantId}
       ];
 
   /// Création de commande côté serveur : le serveur recalcule les prix (prix figé à la commande, vente flash, code promo), décrémente le
@@ -1481,7 +1482,7 @@ class Backend {
       } catch (_) {}
     }
     final addr = home && address != null && address.isNotEmpty ? address : '';
-    final sig = '${c.auth.currentUser!.id}|${items.map((e) => '${e['pack'] ?? e['title']}x${e['qty']}').join(',')}|$home|$method|$addr|$code|${DateTime.now().millisecondsSinceEpoch ~/ 900000}';
+    final sig = '${c.auth.currentUser!.id}|${items.map((e) => '${e['pack'] ?? e['title']}x${e['qty']}${e['variant_id'] ?? ''}').join(',')}|$home|$method|$addr|$code|${DateTime.now().millisecondsSinceEpoch ~/ 900000}';
     final key = sig.hashCode.toRadixString(16).padLeft(8, '0') + sig.length.toRadixString(16).padLeft(2, '0');
     try {
       final r = await c.rpc('marketplace_checkout', params: {

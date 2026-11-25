@@ -17,6 +17,7 @@ import '../nav.dart';
 import 'auth.dart';
 import 'access.dart' show roleKey;
 import 'backend.dart';
+import 'atelier_action.dart' show LiveActionButton, liveSettingsProvider;
 import 'live_transport.dart';
 import 'modules.dart' show LiveRoom;
 import 'reels.dart' show compactCount, relativeTime;
@@ -1090,6 +1091,7 @@ class _LiveViewerState extends ConsumerState<LiveViewer> {
   Widget build(BuildContext context) {
     final live = _live;
     final host = live == null ? null : '${live['host']}';
+    final hasAction = _id != null && ref.watch(liveSettingsProvider(_id!).select((v) => v.value?['action_available'] == true));
     return ColoredBox(
       color: _bg,
       child: Stack(fit: StackFit.expand, children: [
@@ -1122,7 +1124,8 @@ class _LiveViewerState extends ConsumerState<LiveViewer> {
           ])),
           if (_conn == 'reconnecting' || _conn == 'connecting') Positioned(top: 98, left: 0, right: 0, child: Center(child: Container(padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7), color: const Color(0xCCB26A00), child: Text(_conn == 'connecting' ? 'Connexion au direct…' : 'Reconnexion en cours…', style: sty(12, w: FontWeight.w600, c: Colors.white))))),
           if (_feed != null && !_feed!.connected) Positioned(top: 98, right: 14, child: Text('Chat hors ligne', style: sty(10.5, c: const Color(0xCCFFFFFF)))),
-          Positioned(left: 14, right: 88, bottom: 76, height: 190, child: _feed == null ? const SizedBox.shrink() : _ChatList(feed: _feed!, onLongPress: _reportLive)),
+          Positioned(left: 14, right: 88, bottom: hasAction ? 128 : 76, height: hasAction ? 138 : 190, child: _feed == null ? const SizedBox.shrink() : _ChatList(feed: _feed!, onLongPress: _reportLive)),
+          if (hasAction) Positioned(left: 14, right: 88, bottom: 68, height: 48, child: LiveActionButton(liveId: _id!, hostId: '${live['host_id']}', dark: true, onGift: () => showGiftSheet(context, _id!, '${live['host_id']}'))),
           Positioned(right: 10, bottom: 70, child: Column(children: [
             for (final k in const ['heart', 'fire', 'clap']) GestureDetector(onTap: () => _react(k), child: Container(width: 46, height: 46, alignment: Alignment.center, child: Text(_emoji[k]!, style: const TextStyle(fontSize: 28)))),
             _round(Icons.card_giftcard, () => showGiftSheet(context, _id!, '${live['host_id']}'), 'Offrir un cadeau'),

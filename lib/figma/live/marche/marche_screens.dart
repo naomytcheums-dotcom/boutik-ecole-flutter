@@ -26,6 +26,7 @@ import 'marche_appels.dart' show marcheLoginRequired;
 import 'marche_catalogue.dart';
 import 'marche_data.dart';
 import 'marche_widgets.dart';
+import 'variant_stock.dart';
 
 /// Écrans acheteur de la marketplace : accueil (recherche, filtres, tris, tendances), vitrine d'une boutique, ventes flash,
 /// fiche produit riche, comparaison, boutiques suivies, panier par boutique.
@@ -524,6 +525,7 @@ class _ProductBody extends ConsumerStatefulWidget {
 
 class _ProductBodyState extends ConsumerState<_ProductBody> {
   final _chosen = <String, String>{};
+  String? _variantId;
   final _question = TextEditingController();
   bool _recorded = false;
 
@@ -617,6 +619,7 @@ class _ProductBodyState extends ConsumerState<_ProductBody> {
             ]),
           ),
       ],
+      VariantPicker(listingId: widget.id, selectedId: _variantId, onSelect: (v) => setState(() => _variantId = v.id)),
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
         child: Column(children: [
@@ -770,14 +773,24 @@ class _ProductBodyState extends ConsumerState<_ProductBody> {
   void _addToCart(Map<String, dynamic> card, int price, List<Map<String, dynamic>> variants, int stock) {
     final missing = [for (final v in variants) if (!_chosen.containsKey('${v['name']}')) '${v['name']}'];
     if (missing.isNotEmpty) return gToast(context, 'Choisissez : ${missing.join(', ')}');
+    final sv = ref.read(stockVariantsProvider(widget.id));
+    if (sv.hasError) return gToast(context, 'Les variantes de ce produit n’ont pas pu être chargées : réessayez avant de l’ajouter au panier.');
+    if (!sv.hasValue) return gToast(context, 'Chargement des variantes : réessayez dans un instant.');
+    final stockVariants = sv.value ?? const <StockVariant>[];
+    final chosenStock = stockVariants.where((x) => x.id == _variantId).firstOrNull;
+    if (stockVariants.isNotEmpty) {
+      if (chosenStock == null) return gToast(context, 'Choisissez une variante.');
+      if (chosenStock.out) return gToast(context, '« ${chosenStock.label} » est épuisée : choisissez une autre variante.');
+    }
     final title = '${card['title']}';
-    final variant = [for (final v in variants) '${v['name']} : ${_chosen['${v['name']}']}'].join(' · ');
+    final variant = [for (final v in variants) '${v['name']} : ${_chosen['${v['name']}']}', if (chosenStock != null) chosenStock.label].join(' · ');
     final inCart = ref.read(cartProvider).where((l) => l.title == title).toList();
     if (inCart.any((l) => (l.variant ?? '') != variant)) {
       return gToast(context, 'Ce produit est déjà dans votre panier avec une autre variante : retirez-le du panier pour en changer.');
     }
-    if (inCart.fold<int>(0, (a, l) => a + l.qty) >= stock) return gToast(context, 'Stock insuffisant : $stock exemplaire(s) disponible(s).');
-    ref.read(cartProvider.notifier).add(CartLine(title, 'Boutique : ${card['shop_name'] ?? 'Boutik-École'}', price, mImageUrl(card['image']), variant: variant.isEmpty ? null : variant));
+    final limit = chosenStock?.left ?? stock;
+    if (inCart.fold<int>(0, (a, l) => a + l.qty) >= limit) return gToast(context, 'Stock insuffisant : $limit exemplaire(s) disponible(s).');
+    ref.read(cartProvider.notifier).add(CartLine(title, 'Boutique : ${card['shop_name'] ?? 'Boutik-École'}', price, mImageUrl(card['image']), variant: variant.isEmpty ? null : variant, variantId: chosenStock?.id));
     gToast(context, 'Ajouté au panier');
   }
 }

@@ -10,6 +10,7 @@ import 'auth.dart';
 import 'backend.dart';
 import 'lots.dart' show confirmPickupDialog, kioskIncidentsDialog;
 import 'tp_ui.dart';
+import 'top100_admin_common.dart' show kRankingPerms;
 import 'verification_equipe.dart' show accountDeletionsDialog, documentReviewDialog, mfaResetDialog, referenceReviewDialog;
 
 /// Centre d'administration (écran 300) : point d'entrée unique de l'administration. L'administrateur global y voit les quatre équipes internes (Finance, Support,
@@ -39,6 +40,10 @@ const kPermissionLabels = {
   'tech.logs': 'Journaux techniques',
   'tech.maintenance': 'Maintenance et diagnostic',
   'tech.assessments': 'Évaluations de talents',
+  'institutions.manage': 'Établissements, filières et responsables',
+  'ranking.rules': 'Règles de score et réglages du classement',
+  'ranking.publish': 'Publier, corriger et archiver les classements',
+  'ranking.moderate': 'Fraude et contestations du classement',
 };
 
 /// Un outil d'équipe : écran du registre, route dédiée ou action. Visible seulement si l'agent détient l'une des permissions [perms] (l'administrateur voit tout).
@@ -209,7 +214,7 @@ class AdminCentreScreen extends ConsumerWidget {
             tpNote(a.isAdmin
                 ? 'Vous êtes administrateur global : vous gardez tous les droits. Chaque équipe a son tableau de bord et des permissions que vous attribuez ou retirez.'
                 : 'Vous voyez les équipes dont vous faites partie ; seules les permissions attribuées explicitement par l’administrateur global ouvrent des outils. Les outils des autres équipes ne vous sont pas proposés.'),
-            if (teams.isEmpty)
+            if (teams.isEmpty && !a.hasAny(kRankingPerms))
               const TpEmpty(
                 title: 'Aucune équipe',
                 text: 'L’administrateur global ne vous a encore attribué aucune permission. Demandez-lui de vous ajouter à l’équipe qui correspond à votre mission.',
@@ -226,6 +231,11 @@ class AdminCentreScreen extends ConsumerWidget {
                 body: kTeamBlurbs[t]!,
                 onTap: () => gOpen(context, const {'finance': '301', 'support': '302', 'security': '303', 'tech': '304'}[t]!),
               ),
+            if (a.hasAny(kRankingPerms)) ...[
+              tpSection('Classement et talents', hint: 'Équipe « ranking » : règles, publication, établissements, fraude et contestations.'),
+              _tile(icon: Icons.leaderboard_outlined, title: 'Classement et talents', body: 'Règles de score, publication des classements, établissements et filières, rattachements, fraude et contestations.', onTap: () => GoRouter.of(context).push('/admin/classement')),
+              if (!a.isAdmin) _chips([for (final p in kRankingPerms) if (a.permissions.contains(p)) p]..sort()),
+            ],
             if (!a.isAdmin && teams.isNotEmpty) ...[
               tpSection('Vos permissions'),
               for (final t in teams) ...[

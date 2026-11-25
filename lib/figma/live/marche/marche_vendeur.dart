@@ -15,6 +15,7 @@ import '../money_lot.dart' show claimThreadDialog;
 import '../seller.dart' show serverSellerOrdersProvider, SellerOrder;
 import 'marche_data.dart';
 import 'marche_widgets.dart';
+import 'variant_stock.dart' show VariantStockSection;
 
 /// Espace vendeur de la marketplace : ma boutique (création, personnalisation, statuts), tableau de bord, commandes par boutique,
 /// produits (4 photos + 1 vidéo, variantes, caractéristiques) et promotions (codes, ventes flash, campagnes, packs).
@@ -653,6 +654,7 @@ class _ProductMediaEditorState extends State<ProductMediaEditor> {
           mButton(video.isEmpty ? 'Ajouter une vidéo' : 'Remplacer la vidéo', busy ? null : _addVideo, dark: false, icon: Icons.videocam_outlined),
           const SizedBox(height: 18),
           _field(before, 'Prix normal avant promotion (FCFA, facultatif)', type: TextInputType.number),
+          VariantStockSection(listingId: id),
           _field(variants, 'Variantes (une ligne par type)', lines: 3, hint: 'Couleur: Rouge, Bleu\nTaille: S, M, L'),
           _field(specs, 'Caractéristiques (une ligne par élément)', lines: 4, hint: 'Matière: Bois recyclé\nPoids: 1,2 kg'),
           Container(

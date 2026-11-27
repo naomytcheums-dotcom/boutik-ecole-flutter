@@ -43,6 +43,7 @@ class G_31 extends ConsumerWidget {
       gP(331.5, 19.5, 28, 17, gImg('assets/figma/v/6a818f3296df50.svg')),
       gP(333.5, 21.5, 22, 13, gImg('assets/figma/v/270d9e714b8cbf.svg')),
       gP(355, 23, 8, 10, gImg('assets/figma/v/6ed615efa73f1c.svg')),
+      gP(14.903, 63.659, 40, 40, gBox(color: Color(0x99FFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 3), blurRadius: 8)], oval: true), show: !demoContent),
       gP(26.304, 75.06, 17.198, 17.198, const SizedBox.expand(), tap: () => gBack(context)),
       gP(26.887, 75.643, 11.016, 16.032, gImg('assets/figma/v/e14a47f2cbe2a2.svg')),
       gP(26.887, 80.66, 16.032, 6, gImg('assets/figma/v/e46b4e5f2cf982.svg')),

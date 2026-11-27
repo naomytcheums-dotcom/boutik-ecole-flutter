@@ -328,17 +328,7 @@ class MissingScreen extends StatelessWidget {
   final String id;
 
   @override
-  Widget build(BuildContext context) {
-    return AppScaffold(
-      header: const ScreenHeader(title: 'Écran introuvable'),
-      children: [
-        const SizedBox(height: 40),
-        Text('L’écran « $id » n’existe pas.', style: AppText.h2, textAlign: TextAlign.center),
-        const SizedBox(height: 24),
-        PrimaryButton(label: 'Retour à l’accueil', onPressed: () => context.go(screenPath(NavTargets.home))),
-      ],
-    );
-  }
+  Widget build(BuildContext context) => const NotFoundView();
 }
 
 /// Catalogue de tous les écrans codés (revue de maquette).

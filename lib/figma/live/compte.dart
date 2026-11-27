@@ -69,6 +69,14 @@ class AddressBook extends ConsumerWidget {
                     icon: const Icon(Icons.delete_outline, size: 20),
                     tooltip: 'Supprimer',
                     onPressed: () async {
+                      final yes = await showDialog<bool>(
+                        context: context,
+                        builder: (d) => AlertDialog(
+                          title: Text('Supprimer cette adresse ?'),
+                          actions: [TextButton(onPressed: () => Navigator.pop(d, false), child: Text('Annuler')), TextButton(onPressed: () => Navigator.pop(d, true), child: Text('Supprimer'))],
+                        ),
+                      );
+                      if (yes != true) return;
                       final r = await Backend.rpc('delete_address', {'p_id': '${a['id']}'});
                       if (!context.mounted) return;
                       if (r.error != null) {

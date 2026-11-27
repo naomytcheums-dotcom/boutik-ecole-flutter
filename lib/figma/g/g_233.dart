@@ -51,6 +51,7 @@ class G_233 extends ConsumerWidget {
       gP(58, 66, 32, 32, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
       gP(106, 66, 98, 19, gText('Boutik-École', 15, Color(0xFFFFFFFF), weight: 700)),
       gP(106, 87, 165, 14, gText('Compte professionnel · en ligne', 11, Color(0xBFFFFFFF))),
+      gP(330.000, 62.000, 40, 40, gBox(color: Color(0x99FFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x24403366), offset: Offset(0, 3), blurRadius: 8)], oval: true), show: !demoContent),
       gP(340, 72, 20, 20, const SizedBox.expand(), tap: () => gTab(context, '53')),
       gP(338.667, 71.493, 21.84, 21.84, gImg('assets/figma/v/7a51bb41235e6d.svg')),
       gP(150, 130, 90, 22, gBox(color: Color(0xCCFFFFFF), radii: [11, 11, 11, 11]), show: demoContent),

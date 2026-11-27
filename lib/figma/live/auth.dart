@@ -1961,7 +1961,7 @@ Future<void> editProfileDialog(BuildContext context, WidgetRef ref) async {
   final a = ref.read(authProvider).current;
   if (a == null || !context.mounted) return;
   final name = TextEditingController(text: a.name);
-  String? nameError;
+  final nameError = ValueNotifier<String?>(null);
   final bio = TextEditingController(text: a.bio);
   final skills = TextEditingController(text: a.skills);
   final city = TextEditingController(text: a.city);
@@ -2022,15 +2022,14 @@ Future<void> editProfileDialog(BuildContext context, WidgetRef ref) async {
               ),
               Text('Nom', style: st.copyWith(fontWeight: FontWeight.w600)),
               const SizedBox(height: 6),
-              StatefulBuilder(
-                builder: (_, setName) => TextField(
+              ValueListenableBuilder<String?>(
+                valueListenable: nameError,
+                builder: (_, error, _) => TextField(
                   controller: name,
                   style: st,
                   maxLength: 80,
-                  onChanged: (_) {
-                    if (nameError != null) setName(() => nameError = null);
-                  },
-                  decoration: deco('Prénom et nom').copyWith(errorText: nameError, counterText: ''),
+                  onChanged: (_) => nameError.value = null,
+                  decoration: deco('Prénom et nom').copyWith(errorText: error, errorStyle: st.copyWith(fontSize: 11.5, color: const Color(0xFFC0261B)), counterText: ''),
                 ),
               ),
               const SizedBox(height: 14),
@@ -2126,8 +2125,7 @@ Future<void> editProfileDialog(BuildContext context, WidgetRef ref) async {
           onPressed: () {
             // la fenêtre reste ouverte et la saisie est conservée tant que le nom est vide
             if (name.text.trim().length < 2) {
-              nameError = 'Indiquez votre nom (2 lettres au minimum).';
-              (ctx as Element).markNeedsBuild();
+              nameError.value = 'Indiquez votre nom (2 lettres au minimum).';
               return;
             }
             Navigator.of(ctx).pop(true);

@@ -3,7 +3,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+Future<void> openEditProfile(WidgetTester t) async {
+  const compte = Account(name: 'Nina Test', phone: '690000001', email: 'nina@example.com', password: '');
+  await t.pumpWidget(ProviderScope(
+    overrides: [initialAccountProvider.overrideWithValue(compte)],
+    child: MaterialApp(
+      home: Consumer(builder: (context, ref, _) => Scaffold(body: Center(child: TextButton(onPressed: () => editProfileDialog(context, ref), child: const Text('modifier'))))),
+    ),
+  ));
+  await t.tap(find.text('modifier'));
+  await t.pumpAndSettle();
+}
+
 void main() {
+  testWidgets('nom vide : message dans la fenêtre, saisie conservée', (t) async {
+    await openEditProfile(t);
+    await t.enterText(find.byType(TextField).at(0), '');
+    await t.tap(find.text('Enregistrer'));
+    await t.pump();
+    expect(find.text('Indiquez votre nom (2 lettres au minimum).'), findsOneWidget);
+    expect(find.text('Enregistrer'), findsOneWidget);
+  });
+
   testWidgets('modifier mon profil : description, compétences et ville enregistrées sur le compte connecté, sans toucher à la certification', (t) async {
     const compte = Account(name: 'Nina Test', phone: '690000001', email: 'nina@example.com', password: '', verified: true, certification: 'pending');
     late ProviderContainer container;

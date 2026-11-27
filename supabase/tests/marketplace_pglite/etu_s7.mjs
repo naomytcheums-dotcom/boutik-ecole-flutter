@@ -282,7 +282,7 @@ export async function run(db) {
   try {
     await db.exec(`insert into shops (id, owner_id, name, slug, status) values ('00000000-0000-0000-0000-0000000007b1', '${U(1)}', 'Boutique Awa', 'boutique-awa', 'active')`);
     await db.exec(`insert into shop_follows (user_id, shop_id) values ('${U(2)}', '00000000-0000-0000-0000-0000000007b1'), ('${U(3)}', '00000000-0000-0000-0000-0000000007b1')`);
-    await db.exec(`insert into engagements (user_id, kind, ref) values ('${U(3)}', 'follow', '${U(1)}'), ('${U(7)}', 'follow', '${U(1)}')`);
+    await db.exec(`delete from user_blocks where blocker_id = '${U(7)}' and blocked_id = '${U(1)}'; insert into engagements (user_id, kind, ref) values ('${U(3)}', 'follow', '${U(1)}'), ('${U(7)}', 'follow', '${U(1)}'); insert into user_blocks (blocker_id, blocked_id) values ('${U(7)}', '${U(1)}') on conflict do nothing`);
     await as(U(1));
     check('abonnés : profil + boutique, personnes distinctes', (await q(`select my_challenges() c`))[0].c.badge_info.followers === 3);
     await as(U(2));

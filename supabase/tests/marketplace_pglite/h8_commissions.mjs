@@ -159,7 +159,8 @@ export async function run(db) {
       and (prosrc ilike '%commission.engine_enabled%' or prosrc ilike '%_commission_engine_enabled%' or prosrc ilike '%commission_rate_for%' or prosrc ilike '%commission_preview%'
         or prosrc ilike '%commission.product%' or prosrc ilike '%commission.service%' or prosrc ilike '%commission.financing%')
     order by proname`)).map(r => r.proname);
-  const expected = ['_commission_engine_enabled', '_h7_commission_settings_check', '_h8_commission_engine_guard', 'commission_engine_get', 'commission_engine_set', 'commission_preview', 'commission_rate_for'];
+  // H13 : l'enveloppe d'audit renomme l'ecriture du commutateur en _au_commission_engine_set (meme fonction, meme logique) ; commission_engine_set devient son enveloppe, qui ne lit aucun taux.
+  const expected = ['_au_commission_engine_set', '_commission_engine_enabled', '_h7_commission_settings_check', '_h8_commission_engine_guard', 'commission_engine_get', 'commission_preview', 'commission_rate_for'];
   check('E1 seules les fonctions d\'aperçu, d\'interrupteur et la validation d\'écriture mentionnent les taux : ' + readers.join(', '), JSON.stringify(readers) === JSON.stringify(expected));
   for (const fn of ['money_split_amounts', 'money_order_paid', 'money_try_release', 'request_seller_payout', 'payout_create', 'on_subscription_paid']) {
     const n = (await qs(`select count(*)::int n from pg_proc where proname = '${fn}' and (prosrc ilike '%commission%')`))[0].n;

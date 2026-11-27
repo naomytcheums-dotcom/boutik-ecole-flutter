@@ -14,6 +14,12 @@ const b64urlDecode = (s: string): Uint8Array => {
 };
 const b64 = (b: ArrayBuffer): string => { let s = ""; for (const x of new Uint8Array(b)) s += String.fromCharCode(x); return btoa(s); };
 
+// LiveKit signe ses webhooks pour quelques minutes : au-delà d'une heure, le jeton n'est pas celui de LiveKit.
+const MAX_TOKEN_TTL_SEC = 3600;
+
+// Clé d'objet attendue du stockage : chemin relatif sobre, sans remontée (..), sans barre oblique initiale ni caractère de contrôle.
+export const safeObjectPath = (p: unknown): p is string => typeof p === "string" && /^[A-Za-z0-9][A-Za-z0-9._\/-]{3,250}$/.test(p) && !p.includes("..") && !p.includes("//");
+
 export function safeEqual(a: string, b: string): boolean {
   if (a.length !== b.length) return false;
   let d = 0;
@@ -21,7 +27,7 @@ export function safeEqual(a: string, b: string): boolean {
   return d === 0;
 }
 
-/** Vérifie le jeton du webhook LiveKit : signature HS256, émetteur, expiration et empreinte du corps. */
+/** Vérifie le jeton du webhook LiveKit : signature HS256, émetteur, expiration OBLIGATOIRE et bornée (un jeton sans expiration ou valable des jours serait rejouable indéfiniment) et empreinte du corps. */
 export async function verifyWebhook(raw: string, authHeader: string | null, apiKey: string, apiSecret: string, nowSec = Math.floor(Date.now() / 1000)): Promise<boolean> {
   try {
     const token = (authHeader ?? "").replace(/^Bearer\s+/i, "").trim();
@@ -35,7 +41,7 @@ export async function verifyWebhook(raw: string, authHeader: string | null, apiK
     if (got.length !== expected.length || !safeEqual(String.fromCharCode(...got), String.fromCharCode(...expected))) return false;
     const claims = JSON.parse(new TextDecoder().decode(b64urlDecode(parts[1])));
     if (claims.iss !== apiKey) return false;
-    if (typeof claims.exp === "number" && claims.exp < nowSec) return false;
+    if (typeof claims.exp !== "number" || claims.exp < nowSec || claims.exp > nowSec + MAX_TOKEN_TTL_SEC) return false;
     if (typeof claims.nbf === "number" && claims.nbf > nowSec + 60) return false;
     const digest = b64(await crypto.subtle.digest("SHA-256", enc.encode(raw)));
     return typeof claims.sha256 === "string" && safeEqual(claims.sha256, digest);
@@ -83,7 +89,8 @@ export async function processEgressWebhook(raw: string, authHeader: string | nul
     status = "complete";
     path = typeof file?.filename === "string" ? file.filename : null;
     duration = secondsOf(file?.duration);
-    if (st === "LIMIT_REACHED" && (!path || !duration)) { status = "failed"; error = "limite de l'enregistreur atteinte sans fichier exploitable"; }
+    if (path !== null && !safeObjectPath(path)) { status = "failed"; path = null; duration = null; error = "chemin de fichier invalide dans le retour de l'enregistreur"; }
+    else if (st === "LIMIT_REACHED" && (!path || !duration)) { status = "failed"; error = "limite de l'enregistreur atteinte sans fichier exploitable"; }
   } else if (st === "FAILED" || st === "ABORTED") {
     status = "failed";
     error = typeof info?.error === "string" && info.error.trim() ? info.error.slice(0, 300) : st === "ABORTED" ? "enregistrement interrompu" : "échec de l'enregistreur";

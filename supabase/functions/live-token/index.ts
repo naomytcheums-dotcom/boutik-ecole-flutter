@@ -6,36 +6,10 @@
 // Secrets à fournir (Supabase > Edge Functions > Secrets) : LIVEKIT_URL (wss://…), LIVEKIT_API_KEY, LIVEKIT_API_SECRET.
 // Sans ces secrets : réponse 503 « not_configured » (aucun jeton inventé).
 import { adminClient, callerOf, cors, jsonResponse } from "../_shared/core.ts";
+import { liveTokenDecision, livekitAdminToken, livekitToken } from "./logic.ts";
 
-const b64url = (data: Uint8Array | string) => {
-  const bytes = typeof data === "string" ? new TextEncoder().encode(data) : data;
-  let s = "";
-  for (const b of bytes) s += String.fromCharCode(b);
-  return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-};
-
-/** JWT HS256 au format attendu par LiveKit (iss = clé d'API, sub = identité, claim « video » = droits). */
-export async function livekitToken(apiKey: string, apiSecret: string, identity: string, name: string, room: string, canPublish: boolean, ttlSec = 7200): Promise<string> {
-  const now = Math.floor(Date.now() / 1000);
-  const header = b64url(JSON.stringify({ alg: "HS256", typ: "JWT" }));
-  const payload = b64url(JSON.stringify({
-    iss: apiKey, sub: identity, name, nbf: now - 5, iat: now, exp: now + ttlSec,
-    video: { room, roomJoin: true, canPublish, canSubscribe: true, canPublishData: canPublish },
-  }));
-  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(apiSecret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
-  const sig = new Uint8Array(await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(`${header}.${payload}`)));
-  return `${header}.${payload}.${b64url(sig)}`;
-}
-
-/** JWT d'administration de salle (appels serveur à serveur vers l'API LiveKit : retirer un participant, couper une piste). Valable 60 s. */
-export async function livekitAdminToken(apiKey: string, apiSecret: string, room: string, ttlSec = 60): Promise<string> {
-  const now = Math.floor(Date.now() / 1000);
-  const header = b64url(JSON.stringify({ alg: "HS256", typ: "JWT" }));
-  const payload = b64url(JSON.stringify({ iss: apiKey, sub: "boutik-moderation", nbf: now - 5, iat: now, exp: now + ttlSec, video: { roomAdmin: true, room } }));
-  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(apiSecret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
-  const sig = new Uint8Array(await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(`${header}.${payload}`)));
-  return `${header}.${payload}.${b64url(sig)}`;
-}
+// Réexporté : "live-moderate" et le test Deno importent ces fonctions depuis ce module.
+export { livekitAdminToken, livekitToken };
 
 if (import.meta.main) {
   Deno.serve(async (req) => {
@@ -53,31 +27,26 @@ if (import.meta.main) {
 
     const admin = adminClient();
     const { data: live } = await admin.from("lives").select("id,host_id,status,room_name").eq("id", liveId).maybeSingle();
-    if (!live || live.status === "cancelled") return jsonResponse(req, { error: "not_found", message: "Live introuvable." }, 404);
-    const isHost = live.host_id === uid;
-    if (!isHost) {
-      if (live.status !== "live") return jsonResponse(req, { error: "not_live", message: "Ce live n'est pas en direct." }, 409);
-      const { data: ban } = await admin.from("live_bans").select("user_id").eq("live_id", liveId).eq("user_id", uid).maybeSingle();
-      if (ban) return jsonResponse(req, { error: "banned", message: "Vous ne pouvez pas rejoindre ce live." }, 403);
-    } else if (live.status === "ended") {
-      return jsonResponse(req, { error: "ended", message: "Ce live est terminé." }, 409);
-    }
+    const isHost = live?.host_id === uid;
     const { data: prof } = await admin.from("profiles").select("name,suspended").eq("id", uid).maybeSingle();
-    if (prof?.suspended) return jsonResponse(req, { error: "suspended", message: "Votre compte est suspendu : le direct est inaccessible." }, 403);
-    // Règle d'accès unique (migration 20261126041000) : live privé sans invitation, billet manquant, banni… ; l'hôte et l'administrateur gardent l'accès.
-    // Une erreur de lecture refuse l'accès (jamais d'ouverture par défaut).
-    if (!isHost) {
-      const { data: acc, error: accErr } = await admin.rpc("live_access_for", { p_live: liveId, p_user: uid });
-      if (accErr || !acc) return jsonResponse(req, { error: "access_check_failed", message: "Impossible de vérifier votre accès à ce live pour le moment." }, 503);
-      if (acc.allowed !== true) return jsonResponse(req, { error: String(acc.reason ?? "forbidden"), message: String(acc.message || "Vous ne pouvez pas rejoindre ce live.") }, 403);
+    // Lectures nécessaires à la décision (ordre des contrôles : voir liveTokenDecision) ; une erreur de lecture de la règle d'accès refuse l'accès (jamais d'ouverture par défaut).
+    let banned = false, access: { allowed?: boolean; reason?: string; message?: string } | null = null, accessError = false, coApproved = false;
+    if (live && !isHost && live.status === "live") {
+      const { data: ban } = await admin.from("live_bans").select("user_id").eq("live_id", liveId).eq("user_id", uid).maybeSingle();
+      banned = !!ban;
+      if (!banned && !prof?.suspended) {
+        // Règle d'accès unique (migration 20261126041000) : live privé sans invitation, billet manquant, banni… ; l'hôte et l'administrateur gardent l'accès.
+        const { data: acc, error: accErr } = await admin.rpc("live_access_for", { p_live: liveId, p_user: uid });
+        access = acc ?? null;
+        accessError = !!accErr;
+        // Invité accepté par l'hôte (co-diffusion) : il peut publier sa caméra et son micro.
+        const { data: co } = await admin.from("live_cohosts").select("status").eq("live_id", liveId).eq("user_id", uid).maybeSingle();
+        coApproved = co?.status === "approved";
+      }
     }
-    // Invité accepté par l'hôte (co-diffusion) : il peut publier sa caméra et son micro.
-    let isCo = false;
-    if (!isHost) {
-      const { data: co } = await admin.from("live_cohosts").select("status").eq("live_id", liveId).eq("user_id", uid).maybeSingle();
-      isCo = co?.status === "approved";
-    }
-    const token = await livekitToken(key, secret, uid, String(prof?.name ?? "Membre"), live.room_name, isHost || isCo, isHost ? 7200 : 3600);
-    return jsonResponse(req, { url, token, role: isHost ? "host" : (isCo ? "cohost" : "viewer"), room: live.room_name });
+    const d = liveTokenDecision({ uid, live: live ?? null, banned, suspended: !!prof?.suspended, access, accessError, coApproved });
+    if ("status" in d) return jsonResponse(req, d.body, d.status);
+    const token = await livekitToken(key, secret, uid, String(prof?.name ?? "Membre"), live!.room_name, d.grant.canPublish, d.grant.ttlSec);
+    return jsonResponse(req, { url, token, role: d.grant.role, room: live!.room_name });
   });
 }

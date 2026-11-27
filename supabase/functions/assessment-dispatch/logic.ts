@@ -1,13 +1,19 @@
 // Logique de la fonction Edge « assessment-dispatch » (évaluations de compétences par des fournisseurs externes). Testable avec Node contre un FAUX fournisseur local.
-// Deux actions :
-//  - POST ?action=dispatch (clé de service) : réclame les demandes en attente (fournisseurs ACTIFS ET CONFIGURÉS seulement), appelle l'adaptateur, enregistre acceptation ou échec.
+// Trois actions :
+//  - POST ?action=dispatch (clé de service ou clé interne de la planification) : réclame les demandes en attente (fournisseurs ACTIFS ET CONFIGURÉS seulement), appelle l'adaptateur, enregistre acceptation ou échec.
+//  - POST ?action=health (mêmes droits) : vérifie la PRÉSENCE des trois secrets de chaque fournisseur enregistré, SANS appeler le fournisseur, et écrit le rapport (booléens, jamais de valeur) par assessment_provider_health_report.
 //  - POST ?provider=<code> (rappel du fournisseur, signature HMAC-SHA256 obligatoire) : valide strictement le résultat puis l'enregistre par assessment_dispatch_result.
-// Configuration par fournisseur (secrets de fonction, jamais dans Git) : ASSESSMENT_<CODE>_BASE_URL, ASSESSMENT_<CODE>_API_KEY, ASSESSMENT_<CODE>_WEBHOOK_SECRET (CODE en majuscules).
+// Configuration par fournisseur (secrets de fonction, jamais dans Git) : ASSESSMENT_<CODE>_BASE_URL, ASSESSMENT_<CODE>_API_KEY, ASSESSMENT_<CODE>_WEBHOOK_SECRET (CODE en majuscules) ;
+// optionnel : ASSESSMENT_<CODE>_REQUIRE_TIMESTAMP=1 impose l'en-tête x-timestamp sur les rappels.
+// Un fournisseur est « configuré » seulement avec les TROIS secrets : sans secret de rappel, un résultat ne pourrait pas être authentifié et l'envoi consommerait un crédit pour rien.
 // Sans configuration : rien n'est envoyé, rien n'est compté, aucun résultat n'est simulé (réponse « not_configured »).
 // Contrat « adaptateur générique » (premier adaptateur ; un fournisseur au format différent aura son propre adaptateur ajouté dans ADAPTERS) :
 //   envoi    : POST {BASE_URL}/assessments  Authorization: Bearer <API_KEY>  corps {reference, family, mode, callback_url}  réponse {external_ref, candidate_url?}
 //   rappel   : corps {reference, external_ref?, status: "completed"|"failed", competences[], criteria[], evidence[], details{}, limits, recommendations[], detail?}
+//              en-tête x-signature: sha256=<hex HMAC-SHA256 du corps brut> ; en-tête OPTIONNEL x-timestamp (secondes Unix) : s'il est présent il doit être à ±5 minutes
+//              ET la signature couvre alors « <x-timestamp>.<corps brut> » (sinon l'horodatage ne protégerait de rien).
 // Aucune donnée personnelle du candidat n'est envoyée : seulement la référence de la demande, la famille et le mode.
+// Contrat complet : docs/transformation/H13_CONTRAT_FOURNISSEUR_EVALUATION.md
 
 export type ProviderConfig = { code: string; baseUrl: string; apiKey: string; webhookSecret: string | null };
 export type Env = (name: string) => string | undefined;
@@ -23,6 +29,19 @@ export function loadProviderConfig(code: string, env: Env): ProviderConfig | nul
   if (!/^https?:\/\/[^\s]+$/.test(baseUrl) || !apiKey) return null;
   return { code, baseUrl, apiKey, webhookSecret: (env(k + "WEBHOOK_SECRET") ?? "").trim() || null };
 }
+
+// Présence des trois secrets (booléens seulement : une valeur n'est jamais renvoyée). L'URL de base doit être http(s) ; configured = les trois présents.
+export type ConfigPresence = { base_url: boolean; api_key: boolean; webhook_secret: boolean };
+export function configPresence(code: string, env: Env): ConfigPresence {
+  if (!CODE_RE.test(code)) return { base_url: false, api_key: false, webhook_secret: false };
+  const k = `ASSESSMENT_${code.toUpperCase()}_`;
+  return {
+    base_url: /^https?:\/\/[^\s]+$/.test((env(k + "BASE_URL") ?? "").trim()),
+    api_key: (env(k + "API_KEY") ?? "").trim().length > 0,
+    webhook_secret: (env(k + "WEBHOOK_SECRET") ?? "").trim().length > 0,
+  };
+}
+export const isFullyConfigured = (p: ConfigPresence) => p.base_url && p.api_key && p.webhook_secret;
 
 export type ClaimedRequest = { request_id: string; provider: string; family: string; mode: string; attempt: number };
 
@@ -72,7 +91,7 @@ export const ADAPTERS: Record<string, typeof genericSend> = {};
 export async function processDispatch(deps: DispatchDeps, limit = 10): Promise<Outcome> {
   const active = await deps.listActiveProviders();
   if (active.length === 0) return { status: 200, body: { ok: true, dispatched: 0, note: "no_active_provider" } };
-  const configured = active.filter((c) => loadProviderConfig(c, deps.env) !== null);
+  const configured = active.filter((c) => isFullyConfigured(configPresence(c, deps.env)));
   if (configured.length === 0) return { status: 503, body: { error: "not_configured", code: "not_configured", active_providers: active.length } };
   const claimed = await deps.claim(configured, limit);
   let accepted = 0, failed = 0;
@@ -85,6 +104,31 @@ export async function processDispatch(deps: DispatchDeps, limit = 10): Promise<O
     else { await deps.failed(r.request_id, out.http, out.detail); failed++; }
   }
   return { status: 200, body: { ok: true, claimed: claimed.length, accepted, failed } };
+}
+
+// ------------------------------------------------------------ santé : configuration seulement, aucun appel au fournisseur
+export type HealthDeps = {
+  env: Env;
+  listProviders: () => Promise<{ code: string; status: string }[]>;
+  report: (rows: { provider: string; base_url: boolean; api_key: boolean; webhook_secret: boolean }[]) => Promise<{ error: string | null }>;
+};
+
+export async function processHealth(deps: HealthDeps): Promise<Outcome> {
+  const providers = await deps.listProviders();
+  const rows = providers.map((p) => ({ provider: p.code, ...configPresence(p.code, deps.env) }));
+  if (rows.length > 0) {
+    const w = await deps.report(rows);
+    if (w.error) return { status: 500, body: { error: "report_failed", code: "report_failed" } };
+  }
+  const active = providers.filter((p) => p.status === "actif");
+  const ready = active.filter((p) => isFullyConfigured(configPresence(p.code, deps.env))).length;
+  return { status: 200, body: { ok: true, providers: providers.length, active: active.length, active_configured: ready, active_not_configured: active.length - ready } };
+}
+
+// Appelant autorisé : clé de service (en-tête Authorization) ou clé interne de la planification (en-tête x-dispatch-key, vérifiée par la base).
+export async function isAuthorizedCaller(a: { bearer: string; serviceKey: string; dispatchKey: string; checkDispatchKey: (key: string) => Promise<boolean> }): Promise<boolean> {
+  if (a.bearer && a.serviceKey && safeEqual(a.bearer, a.serviceKey)) return true;
+  return a.dispatchKey !== "" && (await a.checkDispatchKey(a.dispatchKey)) === true;
 }
 
 // ------------------------------------------------------------ rappel du fournisseur
@@ -103,6 +147,7 @@ export function safeEqual(a: string, b: string): boolean {
 
 export type CallbackDeps = {
   env: Env;
+  now?: () => number;
   providerActive: (code: string) => Promise<boolean>;
   result: (a: { request: string; provider: string; externalRef: string | null; competences: unknown[]; criteria: unknown[]; evidence: unknown[]; details: Record<string, unknown>; limits: string; recommendations: unknown[] }) => Promise<{ data: any; error: string | null }>;
   providerFailed: (request: string, provider: string, detail: string) => Promise<{ data: any; error: string | null }>;
@@ -110,11 +155,29 @@ export type CallbackDeps = {
 
 const isObj = (x: unknown): x is Record<string, unknown> => typeof x === "object" && x !== null && !Array.isArray(x);
 
-export async function processCallback(providerCode: string, raw: string, signature: string | null, deps: CallbackDeps): Promise<Outcome> {
+export const TIMESTAMP_TOLERANCE_SECONDS = 300;
+
+// Horodatage optionnel du rappel : secondes Unix (ou millisecondes) ; hors de ±5 minutes -> rejeté.
+export function parseTimestamp(raw: string): number | null {
+  if (!/^\d{10}(\d{3})?$/.test(raw.trim())) return null;
+  const n = Number(raw.trim());
+  return raw.trim().length === 13 ? Math.floor(n / 1000) : n;
+}
+
+export async function processCallback(providerCode: string, raw: string, signature: string | null, deps: CallbackDeps, timestamp: string | null = null): Promise<Outcome> {
   const cfg = loadProviderConfig(providerCode, deps.env);
   if (!cfg || !cfg.webhookSecret) return { status: 503, body: { error: "not_configured", code: "not_configured" } };
-  const expected = "sha256=" + (await hmacHex(cfg.webhookSecret, raw));
+  const ts = timestamp !== null && timestamp.trim() !== "" ? timestamp : null;
+  const requireTs = ["1", "true"].includes((deps.env(`ASSESSMENT_${providerCode.toUpperCase()}_REQUIRE_TIMESTAMP`) ?? "").trim().toLowerCase());
+  if (ts === null && requireTs) return { status: 401, body: { error: "timestamp_required", code: "timestamp_required" } };
+  // Avec horodatage, la signature couvre « <horodatage>.<corps> » : un message capturé ne peut pas être rejoué avec un horodatage neuf.
+  const expected = "sha256=" + (await hmacHex(cfg.webhookSecret, ts === null ? raw : `${ts.trim()}.${raw}`));
   if (!signature || !safeEqual(signature.trim().toLowerCase(), expected)) return { status: 401, body: { error: "bad_signature", code: "bad_signature" } };
+  if (ts !== null) {
+    const sec = parseTimestamp(ts);
+    const now = (deps.now ?? (() => Date.now()))() / 1000;
+    if (sec === null || Math.abs(now - sec) > TIMESTAMP_TOLERANCE_SECONDS) return { status: 401, body: { error: "stale_timestamp", code: "stale_timestamp" } };
+  }
   if (raw.length > 200_000) return { status: 413, body: { error: "too_large", code: "too_large" } };
   if (!(await deps.providerActive(providerCode))) return { status: 409, body: { error: "provider_not_active", code: "provider_not_active" } };
   let b: any;

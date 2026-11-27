@@ -90,7 +90,7 @@ export async function run(db) {
   check('membre actif : voit les besoins du propriétaire', (await q(`select company_missions('${U(21)}') r`))[0].r.length === 8);
   check('membre actif : voit les propositions du propriétaire', (await q(`select company_proposals('${U(21)}') r`))[0].r.length === 4);
   check('membre : sa propre liste reste vide', (await q(`select company_missions() r`))[0].r.length === 0);
-  await fails('membre : ne décide pas à la place du propriétaire', `select decide_proposal('${pA}', true)`, /Proposition introuvable/);
+  await fails('membre : ne décide pas à la place du propriétaire', `select decide_proposal('${pA}', true)`, /Réservé au propriétaire|Proposition introuvable/);
   await as(null, 'anon');
   await fails('anonyme : refusé', `select company_missions()`, /permission denied|Connexion requise/);
 

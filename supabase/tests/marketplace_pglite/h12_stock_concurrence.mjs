@@ -4,6 +4,7 @@
 //   PG_MODULE_DIR=<dossier contenant node_modules/pg> PGPORT=54329 node h12_stock_concurrence.mjs
 // Cas : 20 commandes simultanées sur 5 exemplaires (variante, puis annonce sans variante) => 5 acceptées, 15 refusées, stock 0 ;
 // paniers à deux variantes dans des ordres opposés (pas d'interblocage) ; deux annulations simultanées de la même commande (stock restitué une seule fois).
+// H13 : variante à prix propre sous 20 acheteurs ; même clé d'idempotence envoyée 10 fois en même temps ; réservation expirée traitée en parallèle (expiration + annulation) puis nouvelle vague.
 import fs from 'fs';
 import path from 'path';
 import { createRequire } from 'module';
@@ -144,6 +145,50 @@ try {
   check('annulation : au moins une annulation aboutit', settled.some((s) => s.status === 'fulfilled'), JSON.stringify(settled.map((s) => s.status)));
   check('annulation : stock restitué UNE seule fois (4, jamais 7)', (await vStock(vC)) === 4, `${await vStock(vC)}`);
   check('annulation : stock de l\'annonce cohérent (4)', (await lStock(LC)) === 4);
+  await clean();
+
+  // ---------------------------------------------------------------- 5. H13 : variante à prix propre, 20 acheteurs simultanés sur 5 exemplaires
+  const LV = await mk('Veste prix variante', 50);
+  const vV = (await sv.query(`select variant_save('${LV}', 'Premium', '{}'::jsonb, null, 5, 1) r`)).rows[0].r.id;
+  await sv.query(`select variant_details_save('${vV}', 9500)`);
+  const res5 = await rush(Array.from({ length: BUYERS }, () => [{ id: LV, qty: 1, variant_id: vV }]));
+  const won5 = res5.filter((x) => x.ok);
+  check('prix de variante : 5 commandes acceptées sur 5 exemplaires, toutes à 9500 (jamais le prix de l\'annonce 8000)', won5.length === 5 && won5.every((x) => x.r.subtotal === 9500), JSON.stringify(won5.map((x) => x.r.subtotal)));
+  check('prix de variante : les lignes enregistrées portent 9500', Number((await sup.query(`select count(*) c from order_lines where variant_id = '${vV}' and unit_price = 9500`)).rows[0].c) === 5);
+  check('prix de variante : 15 refusés pour stock, stock 0', res5.filter((x) => !x.ok).every((x) => /variant_out_of_stock/.test(x.message)) && (await vStock(vV)) === 0);
+  await clean();
+
+  // ---------------------------------------------------------------- 6. H13 : même clé d'idempotence envoyée 10 fois en même temps => une seule commande
+  const LK = await mk('Sac double clic', 50);
+  const vK = (await sv.query(`select variant_save('${LK}', 'Unique', '{}'::jsonb, null, 20, 1) r`)).rows[0].r.id;
+  const dbl = await Promise.all(Array.from({ length: 10 }, async () => {
+    const c = await as(U(10));
+    try { const r = await c.query(`select marketplace_checkout($1::jsonb, false, 'Mobile Money', null, null, 'conc-double-clic-1') r`, [JSON.stringify([{ id: LK, qty: 2, variant_id: vK }])]); return { ok: true, r: r.rows[0].r }; }
+    catch (e) { return { ok: false, message: e.message, code: e.code }; } finally { await c.end(); }
+  }));
+  check('double clic simultané : aucune erreur brute (clé en double)', dbl.every((x) => x.ok), JSON.stringify(dbl.filter((x) => !x.ok).slice(0, 2)));
+  check('double clic simultané : un seul numéro de commande pour les 10 envois', new Set(dbl.filter((x) => x.ok).map((x) => x.r.number)).size === 1);
+  check('double clic simultané : une seule commande, stock décrémenté une seule fois (18)', Number((await sup.query(`select count(*) c from orders where idem_key = 'conc-double-clic-1'`)).rows[0].c) === 1 && (await vStock(vK)) === 18, `${await vStock(vK)}`);
+  await clean();
+
+  // ---------------------------------------------------------------- 7. H13 : réservation expirée traitée en parallèle (expiration planifiée + annulation de l'acheteur) puis nouvelle vague d'acheteurs
+  const LE = await mk('Écharpe réservation', 50);
+  const vE = (await sv.query(`select variant_save('${LE}', 'Unique', '{}'::jsonb, null, 5, 1) r`)).rows[0].r.id;
+  const buyerE = await as(U(10));
+  const numE = (await buyerE.query(`select marketplace_checkout($1::jsonb, false, 'Mobile Money', null, null, 'conc-expire-key-1') r`, [JSON.stringify([{ id: LE, qty: 5, variant_id: vE }])])).rows[0].r.number;
+  check('réservation : 5 exemplaires retenus par une commande impayée => stock 0', (await vStock(vE)) === 0);
+  const blocked = await rush([[{ id: LE, qty: 1, variant_id: vE }]]);
+  check('réservation : un autre acheteur est refusé tant que la réservation court', !blocked[0].ok && /variant_out_of_stock/.test(blocked[0].message));
+  await sup.query(`update orders set created_at = now() - interval '3 hours' where number = '${numE}'`);
+  const x1 = conn(dbName), x2 = conn(dbName), cb = await as(U(10));
+  await x1.connect(); await x2.connect();
+  const exp = await Promise.allSettled([x1.query('select expire_unpaid_orders() n'), x2.query('select expire_unpaid_orders() n'), cb.query(`select cancel_order('${numE}') r`)]);
+  await Promise.all([x1.end(), x2.end(), cb.end(), buyerE.end()]);
+  check('réservation expirée : au moins un traitement aboutit', exp.some((s) => s.status === 'fulfilled'), JSON.stringify(exp.map((s) => s.status === 'rejected' ? s.reason.message : s.status)));
+  check('réservation expirée : stock restitué UNE seule fois (5, jamais 10)', (await vStock(vE)) === 5, `${await vStock(vE)}`);
+  const wave = await rush(Array.from({ length: 8 }, () => [{ id: LE, qty: 1, variant_id: vE }]));
+  check('après expiration : 5 des 8 nouveaux acheteurs servis, stock 0', wave.filter((x) => x.ok).length === 5 && (await vStock(vE)) === 0, `${wave.filter((x) => x.ok).length}`);
+  await clean();
 } catch (e) {
   ko++; console.log('ERREUR', String(e.message).slice(0, 300));
 } finally {

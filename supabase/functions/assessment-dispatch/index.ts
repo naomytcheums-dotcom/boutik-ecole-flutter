@@ -1,7 +1,7 @@
-// Edge Function « assessment-dispatch » : voir logic.ts pour le contrat. Déployée avec --no-verify-jwt : l'action « dispatch » exige la clé de service,
+// Edge Function « assessment-dispatch » : voir logic.ts pour le contrat. Déployée avec --no-verify-jwt : les actions « dispatch » et « health » exigent la clé de service (ou la clé interne de la planification),
 // le rappel des fournisseurs exige une signature HMAC. Sans configuration d'un fournisseur actif : « not_configured », rien de simulé.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { processCallback, processDispatch, safeEqual } from "./logic.ts";
+import { isAuthorizedCaller, processCallback, processDispatch, processHealth } from "./logic.ts";
 
 Deno.serve(async (req) => {
   const json = (b: unknown, status: number) => new Response(JSON.stringify(b), { status, headers: { "Content-Type": "application/json" } });
@@ -29,13 +29,37 @@ Deno.serve(async (req) => {
         const { data, error } = await admin.rpc("assessment_dispatch_provider_failed", { p_request: request, p_provider: prov, p_detail: detail });
         return { data, error: error?.message ?? null };
       },
-    });
+    }, req.headers.get("x-timestamp"));
     return json(out.body, out.status);
   }
 
-  if (url.searchParams.get("action") !== "dispatch") return json({ error: "bad_request" }, 400);
-  const bearer = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "");
-  if (!bearer || !safeEqual(bearer, serviceKey)) return json({ error: "unauthorized" }, 401);
+  const action = url.searchParams.get("action");
+  if (action !== "dispatch" && action !== "health") return json({ error: "bad_request" }, 400);
+  const authorized = await isAuthorizedCaller({
+    bearer: (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, ""),
+    serviceKey,
+    dispatchKey: req.headers.get("x-dispatch-key") ?? "",
+    checkDispatchKey: async (key) => {
+      const { data } = await admin.rpc("dispatch_key_check", { p_key: key });
+      return data === true;
+    },
+  });
+  if (!authorized) return json({ error: "unauthorized" }, 401);
+  if (action === "health") {
+    const h = await processHealth({
+      env,
+      listProviders: async () => {
+        const { data, error } = await admin.from("assessment_providers").select("code,status");
+        if (error) throw new Error(error.message);
+        return (data ?? []) as { code: string; status: string }[];
+      },
+      report: async (rows) => {
+        const { error } = await admin.rpc("assessment_provider_health_report", { p_reports: rows });
+        return { error: error?.message ?? null };
+      },
+    });
+    return json(h.body, h.status);
+  }
   const out = await processDispatch({
     env,
     fetchFn: fetch,

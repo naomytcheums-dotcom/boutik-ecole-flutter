@@ -3,7 +3,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import http from 'node:http';
-import { loadProviderConfig, processDispatch, processCallback, hmacHex } from './logic.ts';
+import { loadProviderConfig, processDispatch, processCallback, processHealth, isAuthorizedCaller, configPresence, parseTimestamp, hmacHex } from './logic.ts';
 
 const REQ = '11111111-1111-4111-8111-111111111111';
 const SECRET = 'secret-de-banc';
@@ -52,7 +52,7 @@ test('dispatch : aucun fournisseur actif -> rien ; actif mais non configuré -> 
 
 test('dispatch : envoi au faux fournisseur, aucune donnée personnelle, acceptation enregistrée', async () => {
   const p = await fakeProvider((c, res) => reply(res, 200, { external_ref: 'EXT-9', candidate_url: 'https://passer.exemple.test/e/9' }));
-  const env = envOf({ ASSESSMENT_PROV_TEST_BASE_URL: p.url, ASSESSMENT_PROV_TEST_API_KEY: 'cle-bench' });
+  const env = envOf({ ASSESSMENT_PROV_TEST_BASE_URL: p.url, ASSESSMENT_PROV_TEST_API_KEY: 'cle-bench', ASSESSMENT_PROV_TEST_WEBHOOK_SECRET: SECRET });
   const { deps, log } = depsFor(env, ['prov_test', 'autre_prov'], [CLAIM]);
   const o = await processDispatch(deps);
   assert.equal(o.status, 200); assert.deepEqual(log.claimedWith, ['prov_test']);
@@ -66,7 +66,7 @@ test('dispatch : envoi au faux fournisseur, aucune donnée personnelle, acceptat
 test('dispatch : refus HTTP 500, réponse sans external_ref et URL non https -> échec ou lien ignoré, jamais une acceptation inventée', async () => {
   let mode = 500;
   const p = await fakeProvider((c, res) => (mode === 500 ? reply(res, 500, { error: 'x' }) : mode === 'noref' ? reply(res, 200, { ok: true }) : reply(res, 200, { external_ref: 'E', candidate_url: 'http://pas-https.test/x' })));
-  const env = envOf({ ASSESSMENT_PROV_TEST_BASE_URL: p.url, ASSESSMENT_PROV_TEST_API_KEY: 'k' });
+  const env = envOf({ ASSESSMENT_PROV_TEST_BASE_URL: p.url, ASSESSMENT_PROV_TEST_API_KEY: 'k', ASSESSMENT_PROV_TEST_WEBHOOK_SECRET: SECRET });
   let { deps, log } = depsFor(env, ['prov_test'], [CLAIM]);
   await processDispatch(deps); assert.equal(log.failed[0].httpCode, 500); assert.equal(log.accepted.length, 0);
   mode = 'noref'; ({ deps, log } = depsFor(env, ['prov_test'], [CLAIM]));
@@ -77,7 +77,7 @@ test('dispatch : refus HTTP 500, réponse sans external_ref et URL non https -> 
 });
 
 test('dispatch : fournisseur injoignable -> échec lisible', async () => {
-  const env = envOf({ ASSESSMENT_PROV_TEST_BASE_URL: 'http://127.0.0.1:1', ASSESSMENT_PROV_TEST_API_KEY: 'k' });
+  const env = envOf({ ASSESSMENT_PROV_TEST_BASE_URL: 'http://127.0.0.1:1', ASSESSMENT_PROV_TEST_API_KEY: 'k', ASSESSMENT_PROV_TEST_WEBHOOK_SECRET: SECRET });
   const { deps, log } = depsFor(env, ['prov_test'], [CLAIM]);
   await processDispatch(deps); assert.equal(log.failed.length, 1); assert.equal(log.failed[0].detail, 'fournisseur injoignable');
 });
@@ -136,4 +136,84 @@ test('rappel : refus du serveur (garde-fous SQL) -> 422 ; doublon -> 200 duplica
   assert.equal((await processCallback('prov_test', raw, sig, deps)).status, 409);
   ({ deps } = cbDeps({ result: async () => ({ data: null, error: 'boom' }) }));
   assert.equal((await processCallback('prov_test', raw, sig, deps)).status, 422);
+});
+
+// ------------------------------------------------------------ H13 : trois secrets, santé, horodatage, appelant autorisé
+test('dispatch : sans secret de rappel le fournisseur n\'est PAS configuré (rien réclamé, rien envoyé)', async () => {
+  const p = await fakeProvider((c, res) => reply(res, 200, { external_ref: 'X' }));
+  const env = envOf({ ASSESSMENT_PROV_TEST_BASE_URL: p.url, ASSESSMENT_PROV_TEST_API_KEY: 'k' });
+  const { deps, log } = depsFor(env, ['prov_test'], [CLAIM]);
+  const o = await processDispatch(deps);
+  assert.equal(o.status, 503); assert.equal(o.body.code, 'not_configured'); assert.equal(log.claimedWith, null); assert.equal(p.calls.length, 0);
+  p.server.close();
+});
+
+test('configPresence : booléens seulement, URL http(s) exigée, code invalide -> tout faux', () => {
+  assert.deepEqual(configPresence('prov_test', envOf({})), { base_url: false, api_key: false, webhook_secret: false });
+  assert.deepEqual(configPresence('prov_test', envOf({ ASSESSMENT_PROV_TEST_BASE_URL: 'ftp://x', ASSESSMENT_PROV_TEST_API_KEY: ' ', ASSESSMENT_PROV_TEST_WEBHOOK_SECRET: 's' })), { base_url: false, api_key: false, webhook_secret: true });
+  assert.deepEqual(configPresence('Bad Code', ENV_CB), { base_url: false, api_key: false, webhook_secret: false });
+});
+
+test('santé : rapport par fournisseur sans appel réseau ni valeur de secret ; actifs configurés comptés', async () => {
+  let reported = null; let fetched = 0;
+  const realFetch = globalThis.fetch; globalThis.fetch = async () => { fetched++; throw new Error('aucun appel attendu'); };
+  try {
+    const env = envOf({ ASSESSMENT_PROV_TEST_BASE_URL: 'https://api.exemple.test', ASSESSMENT_PROV_TEST_API_KEY: 'cle-secrete-xyz', ASSESSMENT_PROV_TEST_WEBHOOK_SECRET: SECRET, ASSESSMENT_PROV_B_API_KEY: 'k' });
+    const o = await processHealth({ env, listProviders: async () => [{ code: 'prov_test', status: 'actif' }, { code: 'prov_b', status: 'actif' }, { code: 'prov_c', status: 'candidat' }], report: async (rows) => { reported = rows; return { error: null }; } });
+    assert.equal(o.status, 200); assert.deepEqual(o.body, { ok: true, providers: 3, active: 2, active_configured: 1, active_not_configured: 1 });
+    assert.deepEqual(reported, [
+      { provider: 'prov_test', base_url: true, api_key: true, webhook_secret: true },
+      { provider: 'prov_b', base_url: false, api_key: true, webhook_secret: false },
+      { provider: 'prov_c', base_url: false, api_key: false, webhook_secret: false },
+    ]);
+    assert.equal(fetched, 0);
+    const text = JSON.stringify(reported) + JSON.stringify(o.body);
+    assert.ok(!text.includes('cle-secrete-xyz') && !text.includes(SECRET) && !text.includes('api.exemple.test'), 'aucune valeur ne fuite');
+  } finally { globalThis.fetch = realFetch; }
+});
+
+test('santé : aucun fournisseur -> aucun rapport écrit ; échec d\'écriture -> 500', async () => {
+  let called = 0;
+  let o = await processHealth({ env: envOf({}), listProviders: async () => [], report: async () => { called++; return { error: null }; } });
+  assert.equal(o.status, 200); assert.equal(o.body.providers, 0); assert.equal(called, 0);
+  o = await processHealth({ env: envOf({}), listProviders: async () => [{ code: 'prov_test', status: 'actif' }], report: async () => ({ error: 'boom' }) });
+  assert.equal(o.status, 500); assert.equal(o.body.code, 'report_failed');
+});
+
+test('appelant : clé de service ou clé interne vérifiée par la base ; sinon refusé', async () => {
+  const base = { serviceKey: 'SERVICE', checkDispatchKey: async (k) => k === 'CRON' };
+  assert.equal(await isAuthorizedCaller({ ...base, bearer: 'SERVICE', dispatchKey: '' }), true);
+  assert.equal(await isAuthorizedCaller({ ...base, bearer: '', dispatchKey: 'CRON' }), true);
+  assert.equal(await isAuthorizedCaller({ ...base, bearer: 'AUTRE', dispatchKey: 'MAUVAISE' }), false);
+  assert.equal(await isAuthorizedCaller({ ...base, bearer: '', dispatchKey: '' }), false);
+  assert.equal(await isAuthorizedCaller({ serviceKey: '', bearer: '', dispatchKey: '', checkDispatchKey: async () => true }), false);
+});
+
+test('horodatage : absent -> contrat historique ; présent -> signé avec le corps, ±5 min, secondes ou millisecondes', () => {
+  assert.equal(parseTimestamp('1700000000'), 1700000000); assert.equal(parseTimestamp('1700000000123'), 1700000000);
+  for (const bad of ['abc', '17000', '', '1700000000.5', '-1700000000']) assert.equal(parseTimestamp(bad), null, bad);
+});
+
+test('rappel : horodatage valide et signé accepté ; périmé, futur, non signé, mal formé -> 401 sans rien enregistrer', async () => {
+  const raw = JSON.stringify(good); const NOW = 1_800_000_000;
+  const signTs = async (ts) => 'sha256=' + (await hmacHex(SECRET, `${ts}.${raw}`));
+  const call = async (ts, sig, over = {}) => { const { deps, seen } = cbDeps({ now: () => NOW * 1000, ...over }); const o = await processCallback('prov_test', raw, sig, deps, ts); return { o, seen }; };
+  let r = await call(String(NOW - 10), await signTs(NOW - 10));
+  assert.equal(r.o.status, 200); assert.equal(r.seen.result.request, REQ);
+  r = await call(String(NOW * 1000), await signTs(NOW * 1000)); assert.equal(r.o.status, 200, 'millisecondes acceptées');
+  r = await call(String(NOW - 301), await signTs(NOW - 301)); assert.equal(r.o.status, 401); assert.equal(r.o.body.code, 'stale_timestamp'); assert.equal(r.seen.result, null);
+  r = await call(String(NOW + 301), await signTs(NOW + 301)); assert.equal(r.o.status, 401); assert.equal(r.o.body.code, 'stale_timestamp');
+  r = await call('pas-un-nombre', await signTs('pas-un-nombre')); assert.equal(r.o.status, 401); assert.equal(r.seen.result, null);
+  // horodatage ajouté à un message dont la signature ne le couvre pas (rejeu avec horodatage neuf) : refusé
+  r = await call(String(NOW), await sign(raw)); assert.equal(r.o.status, 401); assert.equal(r.o.body.code, 'bad_signature'); assert.equal(r.seen.result, null);
+  // sans horodatage : contrat historique inchangé
+  r = await call(null, await sign(raw)); assert.equal(r.o.status, 200);
+});
+
+test('rappel : ASSESSMENT_<CODE>_REQUIRE_TIMESTAMP=1 impose l\'en-tête', async () => {
+  const raw = JSON.stringify(good);
+  const env = envOf({ ASSESSMENT_PROV_TEST_BASE_URL: 'https://api.exemple.test', ASSESSMENT_PROV_TEST_API_KEY: 'k', ASSESSMENT_PROV_TEST_WEBHOOK_SECRET: SECRET, ASSESSMENT_PROV_TEST_REQUIRE_TIMESTAMP: '1' });
+  const { deps, seen } = cbDeps({ env });
+  const o = await processCallback('prov_test', raw, await sign(raw), deps, null);
+  assert.equal(o.status, 401); assert.equal(o.body.code, 'timestamp_required'); assert.equal(seen.result, null);
 });

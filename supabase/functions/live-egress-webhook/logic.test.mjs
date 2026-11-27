@@ -43,6 +43,36 @@ test('verifyWebhook : jeton valide accepté (avec ou sans préfixe Bearer)', asy
   assert.equal(await verifyWebhook(raw, 'Bearer ' + sign(raw), KEY, SECRET), true);
 });
 
+test('rejeu et jetons forgés : sans expiration, expiration lointaine, début de validité futur, alg « none » : refusés', async () => {
+  const raw = ended();
+  const now = Math.floor(Date.now() / 1000);
+  const forge = (claims, alg = 'HS256', secret = SECRET) => {
+    const h = b64u(JSON.stringify({ alg, typ: 'JWT' }));
+    const p = b64u(JSON.stringify({ iss: KEY, sha256: crypto.createHash('sha256').update(raw).digest('base64'), ...claims }));
+    return `${h}.${p}.${alg === 'none' ? '' : crypto.createHmac('sha256', secret).update(`${h}.${p}`).digest('base64url')}`;
+  };
+  assert.equal(await verifyWebhook(raw, forge({ exp: now + 300 }), KEY, SECRET), true);
+  assert.equal(await verifyWebhook(raw, forge({}), KEY, SECRET), false, 'sans expiration : rejouable indéfiniment');
+  assert.equal(await verifyWebhook(raw, forge({ exp: now + 86400 * 30 }), KEY, SECRET), false, 'valable un mois');
+  assert.equal(await verifyWebhook(raw, forge({ exp: now + 300, nbf: now + 3600 }), KEY, SECRET), false);
+  assert.equal(await verifyWebhook(raw, forge({ exp: now + 300 }, 'none'), KEY, SECRET), false);
+  assert.equal(await verifyWebhook(raw, forge({ exp: now - 1 }), KEY, SECRET), false);
+  // un événement signé valide, rejoué plus tard que son expiration, est refusé
+  const tard = now + 400;
+  assert.equal(await verifyWebhook(raw, sign(raw), KEY, SECRET, tard), false);
+});
+
+test('chemin de fichier dangereux dans le retour de l\'enregistreur : échec, jamais transmis comme chemin de lecture', async () => {
+  for (const filename of ['../autre/secret.mp4', '/etc/passwd', 'a//b.mp4', 'live/rec.mp4\n', 'x'.repeat(400), 'a b.mp4']) {
+    const { deps, log } = depsFor();
+    const raw = ended({ fileResults: [{ filename, duration: '312400000000' }] });
+    const o = await processEgressWebhook(raw, sign(raw), deps);
+    assert.equal(o.status, 200);
+    assert.deepEqual(log[0].slice(1, 4), ['failed', null, null], filename);
+    assert.match(String(log[0][4]), /chemin de fichier invalide/);
+  }
+});
+
 test('egress terminé : fichier et durée (ns -> s) transmis au serveur', async () => {
   const { deps, log } = depsFor();
   const raw = ended();

@@ -295,9 +295,9 @@ export async function run(db) {
   const comp = await qs(`select count(*)::int n, max(coverage)::float c from replay_completions where user_id = '${V1}' and recording_id = '${RA.id}'`);
   check('D9 une seule complétion, couverture bornée à 100 %', comp[0].n === 1 && comp[0].c <= 1, JSON.stringify(comp));
   const bd = await qs(`select count(*)::int n from user_badges where user_id = '${V1}' and code = 'jai_suivi' and ref_id = '${RA.id}'`);
-  check('D10 badge « J\'ai suivi » attribué', bd[0].n === 1);
+  check('D10 replay avec quiz : badge « J\'ai suivi » pas encore attribué tant que le quiz n\'est pas réussi (règle H13)', bd[0].n === 0);
   check('D11 certificat de suivi NON délivré tant que le quiz facultatif n\'est pas réussi', (await qs(`select count(*)::int n from replay_certificates where user_id = '${V1}'`))[0].n === 0);
-  check('D12 une notification de badge au membre', (await qs(`select count(*)::int n from notifications where user_id = '${V1}' and title like 'Badge%'`))[0].n === 1);
+  check('D12 aucune notification de badge avant la réussite du quiz', (await qs(`select count(*)::int n from notifications where user_id = '${V1}' and title like 'Badge%'`))[0].n === 0);
   await as(V1);
   await fails('D13 quiz : toutes les questions sont obligatoires', `select replay_quiz_submit('${RA.id}', '[0]'::jsonb)`, /toutes les questions/);
   let qz = await rpc(`replay_quiz_submit('${RA.id}', '[1,2]'::jsonb)`);
@@ -306,6 +306,8 @@ export async function run(db) {
   qz = await rpc(`replay_quiz_submit('${RA.id}', '[0,0]'::jsonb)`);
   check('D15 quiz réussi : certificat délivré (complétion réelle + quiz)', qz.passed === true && (await qs(`select count(*)::int n from replay_certificates where user_id = '${V1}' and recording_id = '${RA.id}'`))[0].n === 1, JSON.stringify(qz));
   const cert = (await qs(`select code from replay_certificates where user_id = '${V1}'`))[0].code;
+  check('D15b quiz réussi : badge « J\'ai suivi » attribué avec sa notification (une seule)', (await qs(`select count(*)::int n from user_badges where user_id = '${V1}' and code = 'jai_suivi' and ref_id = '${RA.id}'`))[0].n === 1
+    && (await qs(`select count(*)::int n from notifications where user_id = '${V1}' and title like 'Badge%'`))[0].n === 1);
   await as(null);
   const vf = await rpc(`replay_certificate_verify('${cert}')`);
   check('D16 vérification publique du certificat : valide, nature « non diplômant », nom abrégé', vf.valide === true && /non diplômant/.test(vf.nature) && !/Vera Un/.test(JSON.stringify(vf)), JSON.stringify(vf));
@@ -499,7 +501,7 @@ export async function run(db) {
     check(`G2 rejeu de ${f} : sans erreur`, err === '', err);
   }
   const after = (await qs(`select (select count(*)::int from replay_completions) c, (select count(*)::int from user_badges) b, (select count(*)::int from replay_certificates) k, (select count(*)::int from live_recordings) r`))[0];
-  check('G3 après rejeu : données conservées', after.c === 2 && after.b === 2 && after.k === 1 && after.r >= 8, JSON.stringify(after));
+  check('G3 après rejeu : données conservées', after.c === 2 && after.b === 1 && after.k === 1 && after.r >= 8, JSON.stringify(after));
   await sup();
   check('G4 bucket « live-replays » privé', (await q(`select public from storage.buckets where id = 'live-replays'`))[0].public === false);
   console.log(`\n${ok}/${ok + ko}`);

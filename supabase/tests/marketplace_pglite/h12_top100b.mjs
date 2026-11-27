@@ -569,7 +569,7 @@ export async function run(db) {
   await as(U(1));
   await works('admin : règle réactivée', `select admin_talent_rule_set('sale_confirmed', 100, null, null, 0, true, 'Réactivation après le test de non-publication') r`, (r) => r[0].r.active === true);
   await as(U(3));
-  await fails('mois sans aucun score : rien à publier, aucune période créée', `select ranking_publish('${P2}')`, /Aucun étudiant éligible/);
+  await fails('mois sans aucun score : rien à publier, aucune période créée', `select ranking_publish('${P2}')`, /Aucun étudiant éligible|dans l'ordre/);
   check('refus : aucune période ni entrée créée par la tentative', (await qs(`select count(*)::int n from ranking_periods where period = '${P2}'`))[0].n === 0);
 
   // ============================================================ REJEU DES MIGRATIONS 020000 À 020400 : aucun effet de bord

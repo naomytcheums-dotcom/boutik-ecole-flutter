@@ -59,10 +59,12 @@ import '../../figma/live/marche/marche_livraison.dart';
 import '../../figma/live/marche/marche_promotions.dart';
 import '../../figma/live/marche/marche_screens.dart';
 import '../../figma/live/marche/marche_vendeur.dart';
+import '../../figma/live/marche/marche_boutiques.dart';
 import '../../figma/live/downloads.dart' show DownloadsScreen;
 import '../../figma/live/order_tracking.dart' show OrderTrackingListScreen, OrderTrackingScreen;
 import '../../figma/live/creator_analytics.dart' show CreatorAnalyticsScreen;
 import '../../figma/live/social_h13.dart' show CreatorProfileScreen;
+import '../../figma/live/social_listes.dart' show FollowListKind, FollowListScreen, SuggestedCreatorsScreen;
 import '../../figma/live/replays.dart' show MyReplaysScreen, ReplayPlayerScreen, ReplaysScreen;
 import '../../figma/live/replay_quiz_editor.dart' show ReplayQuizEditorScreen;
 import '../../figma/live/atelier.dart' show AtelierScreen;
@@ -198,7 +200,16 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/marche/comparer', builder: (_, _) => const CompareScreen()),
     GoRoute(path: '/marche/suivies', builder: (_, _) => const LoginGuard(child: FollowedShopsScreen())),
     GoRoute(path: '/marche/panier', builder: (_, _) => const CartByShopScreen()),
-    GoRoute(path: '/marche/ma-boutique', builder: (_, _) => const LoginGuard(child: SellerGate(child: RouteGuard(name: '/marche/ma-boutique', roles: {'student', 'dept', 'admin'}, child: ShopEditorScreen())))),
+    GoRoute(path: '/marche/ma-boutique', builder: (_, state) {
+      final id = state.uri.queryParameters['id'];
+      final editor = ShopEditorScreen(shopId: id, create: state.uri.queryParameters['nouvelle'] == '1');
+      // une boutique précise (propriétaire ou gestionnaire d'équipe) : les droits sont vérifiés par le serveur ; sinon, parcours vendeur habituel
+      if (id != null) return LoginGuard(child: RouteGuard(name: '/marche/ma-boutique', roles: const {'student', 'client', 'dept', 'admin'}, child: editor));
+      return LoginGuard(child: SellerGate(child: RouteGuard(name: '/marche/ma-boutique', roles: const {'student', 'dept', 'admin'}, child: editor)));
+    }),
+    GoRoute(path: '/marche/mes-boutiques', builder: (_, _) => const LoginGuard(child: MyShopsScreen())),
+    GoRoute(path: '/marche/mes-boutiques/:id/equipe', builder: (_, state) => LoginGuard(child: ShopMembersScreen(shopId: state.pathParameters['id'] ?? ''))),
+    GoRoute(path: '/marche/mes-boutiques/:id/espace', builder: (_, state) => LoginGuard(child: ShopMemberSpaceScreen(shopId: state.pathParameters['id'] ?? ''))),
     GoRoute(path: '/marche/vendeur', builder: (_, _) => const LoginGuard(child: SellerGate(child: RouteGuard(name: '/marche/vendeur', roles: {'student', 'dept', 'admin'}, child: SellerHubScreen())))),
     GoRoute(path: '/marche/moderation', builder: (_, _) => const RouteGuard(name: '/marche/moderation', roles: {'admin', 'dept', 'support', 'finance'}, perms: {'security.moderation', 'security.reports'}, child: ModerationScreen())),
     GoRoute(path: '/moderation/reseau', builder: (_, _) => const RouteGuard(name: '/moderation/reseau', roles: {'admin', 'dept', 'support', 'finance'}, perms: {'security.moderation', 'security.reports'}, child: SocialModerationScreen())),
@@ -209,6 +220,9 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
   GoRoute(path: '/commandes/suivi/:number', builder: (_, s) => LoginGuard(child: OrderTrackingScreen(number: s.pathParameters['number'] ?? ''))),
     GoRoute(path: '/createur/statistiques', builder: (_, _) => const LoginGuard(child: CreatorAnalyticsScreen())),
     GoRoute(path: '/profil-createur/:id', builder: (_, s) => CreatorProfileScreen(userId: s.pathParameters['id'] ?? '')),
+    GoRoute(path: '/abonnes/:id', builder: (_, s) => FollowListScreen(userId: s.pathParameters['id'] ?? '', kind: FollowListKind.followers)),
+    GoRoute(path: '/abonnements/:id', builder: (_, s) => FollowListScreen(userId: s.pathParameters['id'] ?? '', kind: FollowListKind.following)),
+    GoRoute(path: '/createurs-a-suivre', builder: (_, _) => const SuggestedCreatorsScreen()),
     GoRoute(path: '/replays', builder: (_, _) => const ReplaysScreen()),
     GoRoute(path: '/atelier', builder: (_, state) => AtelierScreen(initialTab: int.tryParse(state.uri.queryParameters['tab'] ?? '') ?? 0)),
     GoRoute(path: '/atelier/preparer', builder: (_, state) => LoginGuard(child: LivePrepareScreen(liveId: state.uri.queryParameters['live'], startNow: state.uri.queryParameters['mode'] == 'now'))),

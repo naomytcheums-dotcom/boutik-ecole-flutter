@@ -3,6 +3,7 @@
 // (Supabase > Edge Functions > Secrets) : TARA_API_KEY, TARA_BUSINESS_ID, TARA_WEBHOOK_SECRET. Optionnel : TARA_API_URL.
 // Le paiement n'est JAMAIS confirmé ici : seul `tara-webhook` (secret vérifié) fait passer une transaction à « confirmed ».
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { callerResult } from "../_shared/core.ts";
 
 const TARA = Deno.env.get("TARA_API_URL") ?? "https://www.dklo.co/api/tara/mobilepay";
 const ORIGINS = ["https://boutik-ecole.vercel.app", "http://localhost:8766", "http://localhost:8080"];
@@ -27,9 +28,9 @@ Deno.serve(async (req) => {
   }
 
   const url = Deno.env.get("SUPABASE_URL")!;
-  const asUser = createClient(url, Deno.env.get("SUPABASE_ANON_KEY")!, { global: { headers: { Authorization: req.headers.get("Authorization") ?? "" } } });
-  const { data: u } = await asUser.auth.getUser();
-  if (!u?.user) return json({ error: "unauthorized", message: "Connexion requise." }, 401);
+  const c = await callerResult(req);
+  if (!c.ok) return json(c.body, c.status);
+  const u = { user: { id: c.uid } };
   const admin = createClient(url, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
   let body: Record<string, unknown>;

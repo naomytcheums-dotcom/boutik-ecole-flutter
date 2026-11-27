@@ -11,6 +11,7 @@ import '../../gen.dart' show gToast;
 import '../../gsound.dart' show GAnim;
 import '../auth.dart';
 import '../backend.dart';
+import '../commerce_logic.dart' show cartQtyCap;
 import '../downloads.dart' show DigitalProductInfo;
 import '../lfav.dart' show FavoriteHeart;
 import '../offer_types.dart' show offerTypeLabels;
@@ -566,7 +567,16 @@ class _ProductBodyState extends ConsumerState<_ProductBody> {
     final flashOn = flash != null && ownPrice == null;
     final shown = ownPrice ?? flash ?? price;
     final old = ownPrice != null ? null : (flash != null ? price : before);
-    final stock = mInt(card['stock']);
+    final stock = chosenVariant != null ? (chosenVariant.out ? 0 : (chosenVariant.left ?? mInt(card['stock']))) : mInt(card['stock']);
+    final stockLow = chosenVariant != null ? chosenVariant.low : stock <= 5;
+    final stockText = chosenVariant != null && chosenVariant.low && chosenVariant.left != null
+        ? 'Derniers exemplaires : plus que ${chosenVariant.left}'
+        : (stock <= 0 ? (chosenVariant != null ? 'Variante épuisée' : 'Épuisé') : (stockLow ? 'Plus que $stock en stock' : 'En stock'));
+    if (chosenVariant?.image != null) {
+      final vi = mImageUrl(chosenVariant!.image);
+      images.remove(vi);
+      images.insert(0, vi);
+    }
     final variants = _list(d['variants']);
     final specs = Map<String, dynamic>.from((d['specs'] as Map?) ?? const {});
     final alerts = [for (final a in (d['alerts'] as List? ?? const [])) '$a'];
@@ -595,7 +605,7 @@ class _ProductBodyState extends ConsumerState<_ProductBody> {
           ]),
           if (flashOn) Padding(padding: const EdgeInsets.only(top: 6), child: Row(children: [const Icon(Icons.bolt_rounded, color: kRed, size: 18), Countdown(end: DateTime.parse('${card['flash_ends']}'), prefix: 'Vente flash : fin dans '), Text(' · ${mInt(card['flash_left'])} restant(s)', style: mst(12.5, c: kGrey))])),
           const SizedBox(height: 4),
-          Text(stock <= 0 ? 'Épuisé' : (stock <= 5 ? 'Plus que $stock en stock' : 'En stock'), style: mst(13, w: FontWeight.w700, c: stock <= 0 ? kRed : (stock <= 5 ? const Color(0xFFB45309) : kGreen))),
+          Text(stockText, style: mst(13, w: FontWeight.w700, c: stock <= 0 ? kRed : (stockLow ? const Color(0xFFB45309) : kGreen))),
           if (card['rating_avg'] != null) Text('★ ${card['rating_avg']} · ${mInt(card['rating_count'])} avis · ${mInt(card['sales'])} vendu(s)', style: mst(12.5, c: kGrey)),
           if (d['seller'] is Map)
             SellerCard(
@@ -623,7 +633,7 @@ class _ProductBodyState extends ConsumerState<_ProductBody> {
             ]),
           ),
       ],
-      VariantPicker(listingId: widget.id, selectedId: _variantId, onSelect: (v) => setState(() => _variantId = v.id)),
+      VariantPicker(listingId: widget.id, selectedId: _variantId, fallbackPrice: flash ?? price, onSelect: (v) => setState(() => _variantId = v.id)),
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
         child: Column(children: [
@@ -788,13 +798,11 @@ class _ProductBodyState extends ConsumerState<_ProductBody> {
     }
     final title = '${card['title']}';
     final variant = [for (final v in variants) '${v['name']} : ${_chosen['${v['name']}']}', if (chosenStock != null) chosenStock.label].join(' · ');
-    final inCart = ref.read(cartProvider).where((l) => l.title == title).toList();
-    if (inCart.any((l) => (l.variant ?? '') != variant)) {
-      return gToast(context, 'Ce produit est déjà dans votre panier avec une autre variante : retirez-le du panier pour en changer.');
-    }
-    final limit = chosenStock?.left ?? stock;
+    // une même annonce avec une autre variante est une ligne distincte (prix et stock propres à chaque variante)
+    final inCart = ref.read(cartProvider).where((l) => l.title == title && (l.variantId ?? '') == (chosenStock?.id ?? '')).toList();
+    final limit = stock;
     if (inCart.fold<int>(0, (a, l) => a + l.qty) >= limit) return gToast(context, 'Stock insuffisant : $limit exemplaire(s) disponible(s).');
-    ref.read(cartProvider.notifier).add(CartLine(title, 'Boutique : ${card['shop_name'] ?? 'Boutik-École'}', price, mImageUrl(card['image']), variant: variant.isEmpty ? null : variant, variantId: chosenStock?.id));
+    ref.read(cartProvider.notifier).add(CartLine(title, 'Boutique : ${card['shop_name'] ?? 'Boutik-École'}', price, mImageUrl(card['image']), variant: variant.isEmpty ? null : variant, variantId: chosenStock?.id, listingId: widget.id, maxQty: chosenStock?.left));
     gToast(context, 'Ajouté au panier');
   }
 }
@@ -878,10 +886,10 @@ class _CartByShopScreenState extends ConsumerState<CartByShopScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 3),
                         child: Row(children: [
-                          Expanded(child: Text(l.title, style: mst(13))),
+                          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(l.title, style: mst(13)), if ((l.variant ?? '').isNotEmpty) Text(l.variant!, style: mst(11.5, c: kGrey))])),
                           IconButton(constraints: const BoxConstraints(minWidth: 48, minHeight: 48), padding: EdgeInsets.zero, tooltip: 'Moins', icon: const Icon(Icons.remove_circle_outline, size: 22), onPressed: () => ref.read(cartProvider.notifier).setQty(lines.indexOf(l), l.qty - 1)),
                           Text('${l.qty}', style: mst(13, w: FontWeight.w700)),
-                          IconButton(constraints: const BoxConstraints(minWidth: 48, minHeight: 48), padding: EdgeInsets.zero, tooltip: 'Plus', icon: const Icon(Icons.add_circle_outline, size: 22), onPressed: l.qty >= maxCartQty ? null : () => ref.read(cartProvider.notifier).setQty(lines.indexOf(l), l.qty + 1)),
+                          IconButton(constraints: const BoxConstraints(minWidth: 48, minHeight: 48), padding: EdgeInsets.zero, tooltip: 'Plus', icon: const Icon(Icons.add_circle_outline, size: 22), onPressed: l.qty >= cartQtyCap(maxCartQty, variantLeft: l.maxQty) ? () => gToast(context, 'Stock disponible : ${cartQtyCap(maxCartQty, variantLeft: l.maxQty)}') : () => ref.read(cartProvider.notifier).setQty(lines.indexOf(l), l.qty + 1, max: cartQtyCap(maxCartQty, variantLeft: l.maxQty))),
                           SizedBox(width: 70, child: Text(mFcfa(l.price * l.qty), textAlign: TextAlign.right, style: mst(12.5, w: FontWeight.w600))),
                           IconButton(constraints: const BoxConstraints(minWidth: 48, minHeight: 48), padding: EdgeInsets.zero, tooltip: 'Retirer', icon: const Icon(Icons.delete_outline, size: 22), onPressed: () {
                             ref.read(cartProvider.notifier).remove(lines.indexOf(l));

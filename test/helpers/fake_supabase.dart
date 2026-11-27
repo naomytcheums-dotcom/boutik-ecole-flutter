@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:boutik_ecole/figma/live/backend.dart';
+import 'package:boutik_ecole/figma/live/session_revoked.dart' show sessionAwareHttpClient;
 import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -89,7 +90,7 @@ class FakeSupabase {
             res.write(jsonEncode(h(args)));
           } on FakeRpcError catch (e) {
             res.statusCode = e.status;
-            res.write(jsonEncode({'code': e.code, 'message': e.message}));
+            res.write(jsonEncode({'code': e.code, 'message': e.message, if (e.hint != null) 'hint': e.hint}));
           }
         }
       } else if (path.startsWith('/rest/v1/')) {
@@ -106,7 +107,7 @@ class FakeSupabase {
           res.write(write ? jsonEncode(writeResult[table] ?? const []) : jsonEncode(tables[table] ?? const []));
         }
       } else if (path.startsWith('/storage/v1/object/')) {
-        calls.add(FakeCall('storage', path, const {}));
+        calls.add(FakeCall('storage', path, {'method': req.method, if (req.method == 'DELETE') 'body': body, if (path.contains('/sign/')) 'sign': body}));
         if (failStorage) {
           res.statusCode = 500;
           res.write(jsonEncode({'message': 'panne simulée'}));
@@ -139,7 +140,7 @@ class FakeSupabase {
   }
 
   /// Initialise le vrai client sur ce faux serveur, avec une session déjà ouverte (aucun appel d'authentification).
-  Future<void> initSupabase() async {
+  Future<void> initSupabase({bool sessionAware = false}) async {
     HttpOverrides.global = null;
     SharedPreferences.setMockInitialValues({});
     final exp = DateTime.now().add(const Duration(hours: 2)).millisecondsSinceEpoch ~/ 1000;
@@ -164,6 +165,7 @@ class FakeSupabase {
     await Supabase.initialize(
       url: url,
       publishableKey: 'sb_publishable_test',
+      httpClient: sessionAware ? sessionAwareHttpClient() : null,
       authOptions: FlutterAuthClientOptions(localStorage: _SessionStorage(session), autoRefreshToken: false),
     );
     Backend.ready = true;
@@ -171,10 +173,11 @@ class FakeSupabase {
 }
 
 class FakeRpcError implements Exception {
-  const FakeRpcError(this.message, {this.status = 400, this.code = 'P0001'});
+  const FakeRpcError(this.message, {this.status = 400, this.code = 'P0001', this.hint});
   final String message;
   final int status;
   final String code;
+  final String? hint;
 }
 
 class _SessionStorage extends LocalStorage {

@@ -96,8 +96,8 @@ export async function run(db) {
   check('suspendu : une RPC d\'écriture est refusée', /Compte suspendu/.test(await hook('POST', '/rpc/shop_save', U(47))));
   check('suspendu : une écriture directe est refusée', /Compte suspendu/.test(await hook('PATCH', '/listings', U(47))));
   check('suspendu : un nom en suffixe est reconnu', /Compte suspendu/.test(await hook('POST', '/rpc/flash_save', U(47))));
-  check('suspendu : la lecture reste possible', (await hook('GET', '/listings', U(47))) === 'ok');
-  check('suspendu : une RPC de lecture reste possible', (await hook('POST', '/rpc/marketplace_search', U(47))) === 'ok');
+  check('suspendu : la lecture est refusee aussi (H13.1 : toute requete d un compte suspendu)', /Compte suspendu/.test(await hook('GET', '/listings', U(47))));
+  check('suspendu : une RPC de lecture est refusee aussi (H13.1)', /Compte suspendu/.test(await hook('POST', '/rpc/marketplace_search', U(47))));
   check('suspendu : le support reste joignable', (await hook('POST', '/rpc/support_ticket_create', U(47))) === 'ok');
   check('actif : une RPC d\'écriture passe', (await hook('POST', '/rpc/shop_save', U(41))) === 'ok');
   check('2FA : toujours appliquée aux opérations sensibles', /double authentification/.test(await (async () => { await db.exec(`insert into auth.mfa_factors (user_id, status) values ('${U(41)}', 'verified')`); return hook('POST', '/rpc/payment_start', U(41), 'aal1'); })()));

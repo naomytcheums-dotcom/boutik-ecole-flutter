@@ -370,9 +370,12 @@ final filteredProductsProvider = Provider<List<LiveProduct>>((ref) {
 // ------------------------------------------------------------------ commandes reçues
 
 class SellerOrder {
-  const SellerOrder(this.id, this.title, this.client, this.total, this.qty, {this.status = 1, this.cod = false, this.home = false, this.city = '', this.confirmed = false, this.releaseAt = ''});
+  const SellerOrder(this.id, this.title, this.client, this.total, this.qty, {this.status = 1, this.cod = false, this.home = false, this.city = '', this.confirmed = false, this.releaseAt = '', this.shopId = ''});
   final String id, title, client;
   final int total, qty;
+
+  /// Boutique de la commande (lignes de cette boutique seulement) : les actions de préparation ne touchent que ses lignes.
+  final String shopId;
 
   /// État de préparation côté serveur : 0 nouvelle · 1 acceptée · 2 en préparation · 3 prête · 4 livrée.
   final int status;
@@ -418,6 +421,7 @@ class ServerSellerOrders extends Notifier<List<SellerOrder>> {
           city: (r['delivery_city'] ?? '').toString(),
           confirmed: r['confirmed'] == true,
           releaseAt: (r['release_at'] ?? '').toString(),
+          shopId: (r['shop_id'] ?? '').toString(),
         ),
     ];
   }
@@ -451,7 +455,7 @@ class SellerStatus extends Notifier<Map<String, int>> {
       set(id, s);
       return null;
     }
-    final err = await Backend.setSellerOrderStatus(id, s);
+    final err = await Backend.setSellerOrderStatus(id, s, shopId: [for (final o in ref.read(serverSellerOrdersProvider)) if (o.id == id) o.shopId].firstOrNull);
     if (err == null) await ref.read(serverSellerOrdersProvider.notifier).refresh();
     return err;
   }

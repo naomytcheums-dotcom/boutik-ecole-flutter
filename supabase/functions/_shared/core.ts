@@ -1,6 +1,7 @@
 // Noyau commun des Edge Functions d'intégrations : CORS, authentification, chiffrement des jetons, PKCE, signatures.
 // Les jetons ne sont JAMAIS renvoyés au client ni écrits dans les journaux : chiffrés en AES-256-GCM avec INTEGRATIONS_ENC_KEY.
 import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { type CallerResult, type Denial, verifyCaller } from "./session.ts";
 
 export const ORIGINS = ["https://boutik-ecole.vercel.app", "http://localhost:8766", "http://localhost:8080"];
 export const APP_ORIGIN = ORIGINS[0];
@@ -15,18 +16,35 @@ export function cors(req: Request): Record<string, string> {
 }
 
 export function jsonResponse(req: Request, body: unknown, status = 200): Response {
+  const d = status === 401 ? denials.get(req) : undefined;
+  if (d) { body = d.body; status = d.status; }
   return new Response(JSON.stringify(body), { status, headers: { ...cors(req), "Content-Type": "application/json" } });
 }
 
 export const adminClient = (): SupabaseClient => createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
-/** Utilisateur appelant (jeton Supabase du client), ou null. */
-export async function callerOf(req: Request): Promise<string | null> {
-  const asUser = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!, {
-    global: { headers: { Authorization: req.headers.get("Authorization") ?? "" } },
+// Refus de session par requête : jsonResponse(..., 401) renvoie alors le code précis (session_revoked, account_suspended...) au lieu du message générique.
+const denials = new WeakMap<Request, Denial>();
+
+/** Appelant vérifié : identité GoTrue + session ouverte + compte non suspendu (voir _shared/session.ts). */
+export async function callerResult(req: Request): Promise<CallerResult> {
+  const header = req.headers.get("Authorization") ?? "";
+  const asUser = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!, { global: { headers: { Authorization: header } } });
+  return verifyCaller(header, {
+    getUserId: async () => (await asUser.auth.getUser()).data?.user?.id ?? null,
+    sessionStatus: async (uid, sid) => {
+      const { data, error } = await adminClient().rpc("_session_status_of", { p_user: uid, p_session: sid });
+      return error || typeof data !== "string" ? null : data;
+    },
   });
-  const { data } = await asUser.auth.getUser();
-  return data?.user?.id ?? null;
+}
+
+/** Utilisateur appelant (jeton Supabase du client, session et compte vérifiés), ou null. */
+export async function callerOf(req: Request): Promise<string | null> {
+  const r = await callerResult(req);
+  if (r.ok) return r.uid;
+  denials.set(req, r);
+  return null;
 }
 
 export const functionUrl = (name: string) => `${Deno.env.get("SUPABASE_URL")}/functions/v1/${name}`;

@@ -13,13 +13,13 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 // RPC volontairement ouvertes aux visiteurs (lecture publique, vérifications par code, annuaires). Chacune a été relue : SECURITY DEFINER avec filtrage par statut / visibilité, aucune donnée privée.
 const ANON_RPC = new Set(['active_auto_promo', 'ann_detail', 'ann_wins_list', 'anns_list', 'author_posts', 'author_shop_slug', 'campaigns_overview', 'certificate_canonical', 'certificate_content_hash', 'chat_file_allowed',
   'circle_feed', 'circle_feed_page', 'communities_list', 'community_events_list', 'community_feed', 'community_images', 'community_levels', 'community_qa', 'company_public', 'creator_pins_list', 'creator_profile_tabs',
-  'creator_tab_items', 'creators_suggested', 'current_role_name', 'delivery_quote', 'enforce_mfa_on_sensitive', 'department_detail', 'departments_list', 'dept_invite_info', 'duels_list', 'events_between', 'events_upcoming', 'flash_sales_active',
+  'creator_tab_items', 'creators_suggested', 'followers_list', 'following_list', 'current_role_name', 'delivery_quote', 'enforce_mfa_on_sensitive', 'department_detail', 'departments_list', 'dept_invite_info', 'duels_list', 'events_between', 'events_upcoming', 'flash_sales_active',
   'follow_stats', 'institutions_search', 'is_community_member', 'is_contest_staff', 'is_mission_participant', 'is_participant', 'is_platform_staff', 'iut_projects', 'kiosk_heartbeat', 'kiosk_pair_issue',
   'kiosk_pair_revoke', 'kiosk_pair_status', 'listing_rating', 'listing_variants_public', 'listings_other_institutions', 'live_can_join', 'live_get', 'live_settings_get', 'lives_agenda', 'lives_atelier_extras',
   'lives_now', 'marketplace_search', 'marketplace_shops', 'mate_categories_list', 'mentor_detail', 'mentor_stories', 'mentors_list', 'momo_normalize', 'normalize_msisdn', 'notification_category',
   'offer_type_of', 'opp_detail', 'opp_hired_list', 'opps_list', 'org_types_list', 'passport_token_verify', 'platform_impact', 'point_level', 'post_comment_list', 'post_comment_list_v2',
   'post_counters', 'post_shop_target', 'product_detail', 'product_digital_info', 'product_extras', 'product_reviews', 'profile_imported_items', 'profile_in_directory', 'profile_links_public', 'profile_verified',
-  'profile_visible', 'project_proof_verify', 'promo_preview', 'provider_card', 'public_profile', 'public_project_get', 'public_projects', 'public_sellers', 'qr_resolve_public', 'ranking_explain', 'ranking_history',
+  'post_media_signed_target', 'post_media_targets', 'profile_visible', 'project_proof_verify', 'promo_preview', 'provider_card', 'public_profile', 'public_project_get', 'public_projects', 'public_sellers', 'qr_resolve_public', 'ranking_explain', 'ranking_history',
   'ranking_institution_history', 'ranking_institutions_public', 'ranking_verify_hash', 'recommended_offers', 'record_view', 'reels_feed', 'replay_certificate_verify', 'replay_detail', 'replay_hosts_directory',
   'replay_library', 'replay_quiz_can_edit', 'replay_search', 'replay_share_info', 'seller_public', 'shared_cv', 'shop_public', 'showcase_listings', 'skills_list', 'stories_active', 'suggest_districts',
   'talent_passport', 'talent_public_profile', 'talents_most_viewed_by_companies', 'talents_new', 'talents_rising', 'top100_by_department', 'top100_by_domain', 'top100_by_institution', 'top100_by_program',
@@ -32,7 +32,9 @@ const SERVICE_ONLY = ['assessment_dispatch_accepted', 'assessment_dispatch_claim
   'live_recording_egress_failed', 'live_recording_egress_started', 'live_recording_egress_stopping', 'live_recording_start_check', 'live_recording_stop_check', 'live_access_for', 'translate_store',
   'ai_action_record_result', 'grant_credits', 'live_recording_declare_track', 'live_recording_mark_ready', 'replay_clip_mark', 'replay_transcript_store', 'transcription_job_ack', 'send_live_reminders'];
 // Exceptions documentées : exécutable par les comptes connectés (indicateur sans secret) ; garde de requête PostgREST (db_pre_request : 2FA et comptes suspendus), appelée sur chaque requête.
-const SERVICE_BUT_AUTH_OK = new Set(['live_recording_enabled', 'enforce_mfa_on_sensitive']);
+const SERVICE_BUT_AUTH_OK = new Set(['live_recording_enabled', 'enforce_mfa_on_sensitive', '_session_is_live', '_session_status', '_session_guard']);
+// Helpers de session (H13.1) : appelables par tous les roles (politiques RLS de Storage, garde PostgREST) ; ils ne lisent que la session de l appelant.
+const SESSION_HELPERS = new Set(['_session_is_live', '_session_status', '_session_guard']);
 // Actions d'administration et de finance qui DOIVENT écrire au journal d'audit (directement ou par l'enveloppe « _au_ »).
 const MUST_AUDIT = ['commission_engine_set', 'money_split_set', 'ann_prize_refund', 'momo_prepare_transfer', 'ann_decide', 'ann_win_decide', 'opp_decide', 'community_decide', 'victory_moderate', 'delete_referral_rule',
   'cms_delete', 'mate_category_delete', 'admin_mfa_reset_by_email', 'admin_process_account_deletions', 'admin_team_member_set', 'admin_team_member_remove', 'admin_set_account', 'admin_mfa_reset', 'admin_dept_assign',
@@ -136,7 +138,7 @@ export async function run(db) {
   check('A4 service_role peut executer chaque fonction de service', svcNoExec.length === 0, svcNoExec.map((r) => r.n).join(', '));
   const explicitSvc = await root(`select p.proname n, has_function_privilege('anon', p.oid, 'execute') a, has_function_privilege('authenticated', p.oid, 'execute') u from pg_proc p
     where p.pronamespace = 'public'::regnamespace and p.prokind = 'f' and p.proacl::text like '%service_role=X%' and p.prorettype not in ('trigger'::regtype, 'event_trigger'::regtype)`);
-  const explicitLeak = explicitSvc.filter((r) => (r.a && r.n !== 'enforce_mfa_on_sensitive') || (r.u && !SERVICE_BUT_AUTH_OK.has(r.n)));
+  const explicitLeak = explicitSvc.filter((r) => (r.a && r.n !== 'enforce_mfa_on_sensitive' && !SESSION_HELPERS.has(r.n)) || (r.u && !SERVICE_BUT_AUTH_OK.has(r.n)));
   check('A4 toute fonction dotee d un droit explicite service_role est fermee a anon/authenticated (sauf exception documentee)', explicitLeak.length === 0, explicitLeak.map((r) => r.n).join(', '));
   await as(X);
   await fails('A4 un client ne peut pas appeler une fonction de service', `select auth_revoke_sessions('${V}')`, /permission denied/);

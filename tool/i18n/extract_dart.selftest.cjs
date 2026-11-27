@@ -1,0 +1,20 @@
+const { extractLiterals } = require('./extract_dart.cjs');
+const assert = require('assert');
+const t = (s) => extractLiterals(s, 'x.dart');
+let r = t("Text('Ouvrir le live ${x['title']}')");
+assert.strictEqual(r.length, 2); // le litteral externe + le litteral imbrique 'title'
+assert.strictEqual(r[0].template, 'Ouvrir le live {0}');
+assert.strictEqual(r[0].key, '§Ouvrir le live {0}');
+assert.ok(r[0].nestedQuotes);
+r = t("Text('${x['a']} terminée(s) · ${p['b']}')");
+assert.strictEqual(r[0].template, '{0} terminée(s) · {1}');
+r = t("Text('Il a dit \\'oui\\' \\u00e9t\\u00E9 \\$5 $n et ${a ? \"x\" : 'y'}')");
+assert.strictEqual(r[0].template, "Il a dit 'oui' été $5 {0} et {1}");
+r = t("var a = 'Bonjour '\n  'le monde ${f(\"é\")}';");
+assert.strictEqual(r.filter((l) => l.concatenated)[0].template, 'Bonjour le monde {0}');
+r = t("var a = '''Ligne 1\nLigne $x''';");
+assert.strictEqual(r[0].template, 'Ligne 1\nLigne {0}');
+r = t("// don't\nvar a = r'a\\nb $x'; /* ' */ var b = \"it's ${m['k'] ?? '${z}'}\";");
+assert.strictEqual(r[0].template, 'a\\nb $x');
+assert.strictEqual(r.find((l) => l.source.startsWith('"')).template, "it's {0}");
+console.log('OK');

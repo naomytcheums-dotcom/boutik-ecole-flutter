@@ -17,6 +17,7 @@ import 'access.dart' show roleKey;
 import 'auth.dart';
 import 'backend.dart';
 import 'dictation_stub.dart' if (dart.library.js_interop) 'dictation_web.dart';
+import 'media_access.dart' show MediaAccess;
 import 'download_stub.dart' if (dart.library.js_interop) 'download_web.dart' show saveRemoteFile;
 import 'reels.dart';
 import 'seller.dart' show Listing;
@@ -330,8 +331,8 @@ Future<void> showReactionPicker(BuildContext context, WidgetRef ref, Reel post) 
 
 // ------------------------------------------------------------------ envoi de médias
 
-/// Dépose un fichier choisi dans le dossier de la personne (`post-media/<uid>/…`) et renvoie son chemin ; null si refusé (message affiché).
-Future<({String path, String kind, String mime})?> uploadPostMedia(BuildContext context, PlatformFile f) async {
+/// Dépose un fichier choisi dans le dossier de la personne (`post-media/<uid>/…`, ou `post-media-private/<uid>/private/…` si [private] : média non public) et renvoie son chemin ; null si refusé (message affiché).
+Future<({String path, String kind, String mime})?> uploadPostMedia(BuildContext context, PlatformFile f, {bool private = false}) async {
   final ext = f.name.split('.').last.toLowerCase();
   const mimes = {'mp4': 'video/mp4', 'mov': 'video/quicktime', 'jpg': 'image/jpeg', 'jpeg': 'image/jpeg', 'png': 'image/png', 'webp': 'image/webp', 'gif': 'image/gif'};
   final mime = mimes[ext];
@@ -346,9 +347,9 @@ Future<({String path, String kind, String mime})?> uploadPostMedia(BuildContext 
     return null;
   }
   final uid = Supabase.instance.client.auth.currentUser?.id ?? '';
-  final path = '$uid/${DateTime.now().microsecondsSinceEpoch}.$ext';
+  final path = MediaAccess.newPath(uid, ext, private: private);
   try {
-    await Supabase.instance.client.storage.from('post-media').uploadBinary(path, bytes, fileOptions: FileOptions(contentType: mime));
+    await Supabase.instance.client.storage.from(private ? MediaAccess.privateBucket : MediaAccess.publicBucket).uploadBinary(path, bytes, fileOptions: FileOptions(contentType: mime));
   } catch (_) {
     if (context.mounted) await gAlert(context, 'Envoi impossible', 'Le fichier n’a pas pu être déposé. Vérifiez votre connexion et réessayez.');
     return null;

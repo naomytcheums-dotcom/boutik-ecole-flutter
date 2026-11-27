@@ -7,6 +7,7 @@ import '../../data/repositories/repositories.dart' show cartProvider, CartNotifi
 import '../gen.dart';
 import '../nav.dart';
 import 'auth.dart' show demoContent, requireLogin;
+import 'commerce_logic.dart' show cartQtyCap;
 import 'marche/marche_widgets.dart' show MarcheLink;
 import 'store.dart';
 
@@ -87,15 +88,18 @@ class _Cart extends StatelessWidget {
   /// « + » : la quantité est plafonnée à 20 par ligne (limite du serveur) et au stock connu.
   void _more(BuildContext context, CartNotifier cart, int i, CartLine l) {
     final stock = demoContent || l.packId != null ? null : productByTitle(l.title).stock;
-    final max = stock == null ? maxCartQty : (stock < maxCartQty ? stock : maxCartQty);
-    if (l.qty >= max) {
-      gToast(context, stock != null && stock < maxCartQty ? 'Stock disponible : $stock' : 'Quantité maximale : $maxCartQty par article');
+    final cap = cartQtyCap(maxCartQty, variantLeft: l.maxQty, productStock: l.variantId == null ? stock : null);
+    if (l.qty >= cap) {
+      gToast(context, cap < maxCartQty ? 'Stock disponible : $cap' : 'Quantité maximale : $maxCartQty par article');
       return;
     }
-    cart.setQty(i, l.qty + 1, max: max);
+    cart.setQty(i, l.qty + 1, max: cap);
   }
 
   static String _stockLabel(int stock, int qty) => stock <= 0 ? 'Épuisé' : (stock == 1 ? 'Dernier en stock' : 'En stock : $stock');
+
+  /// Stock connu d'une ligne : celui de sa variante quand elle en a une (annoncé par le serveur seulement quand il en reste peu), sinon celui de l'annonce.
+  static int? _knownStock(CartLine l) => l.variantId != null ? l.maxQty : productByTitle(l.title).stock;
 
   List<Widget> _row(BuildContext context, int i, CartLine l, CartNotifier cart) {
     final y = i * _rowH; // relatif à la liste (le haut de la liste = 129)
@@ -129,8 +133,8 @@ class _Cart extends StatelessWidget {
       gP(144.4, y + 22.6, 180, 21, gText(l.title, 14.17, _ink, weight: 700, lh: 20.242, wrap: true, maxLines: 1)),
       gP(144.4, y + 49.8, 180, 14, gText((l.variant ?? '').isNotEmpty ? l.variant! : (l.department.startsWith('Département') || l.department.startsWith('Boutique') ? l.department : 'Département : ${l.department}'), 10.796, _grey, maxLines: 1)),
       gP(144.4, y + 77.3, 160, 16, gText(fcfa(l.price * l.qty), 12.82, _violet, weight: 600)),
-      if (!demoContent && l.packId == null && productByTitle(l.title).stock != null)
-        gP(144.4, y + 94, 180, 14, gText(_stockLabel(productByTitle(l.title).stock!, l.qty), 10.5, productByTitle(l.title).stock! <= 5 ? const Color(0xFFE5484D) : _grey, wrap: true, maxLines: 1)),
+      if (!demoContent && l.packId == null && _knownStock(l) != null)
+        gP(144.4, y + 94, 180, 14, gText(_stockLabel(_knownStock(l)!, l.qty), 10.5, _knownStock(l)! <= 5 ? const Color(0xFFE5484D) : _grey, wrap: true, maxLines: 1)),
       gP(144.4, y + 111, 107.284, 27.068, gBox(color: const Color(0xFFF2EFF6), radii: const [13.495, 13.495, 13.495, 13.495])),
       gP(147.093, y + 113.1, 22.941, 22.941, gBox(color: const Color(0xFFE4E8EE), oval: true), tap: () => cart.setQty(i, l.qty - 1), sound: 'tick'),
       gP(226.038, y + 113.1, 22.941, 22.941, gBox(color: const Color(0xFFE4E8EE), oval: true), tap: () => _more(context, cart, i, l), sound: 'tick'),

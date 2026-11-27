@@ -6,6 +6,7 @@ import '../gdata.dart' show gNetImage;
 import '../gen.dart' show gAlert, gToast;
 import '../nav.dart';
 import 'backend.dart';
+import 'media_access.dart' show MediaAccess;
 import 'reels.dart' show relativeTime;
 import 'social_posts.dart' show InlineVideo, kGrey, kInk, kLine, kLike, sty;
 import 'talents.dart' show askText;
@@ -115,7 +116,12 @@ Widget _btn(String label, VoidCallback onTap, {bool dark = true}) => Semantics(
     );
 
 /// Vignette d'un média : l'image s'agrandit au toucher, la vidéo se lit dans une fenêtre.
-Widget _thumb(BuildContext context, String path, String kind) {
+Widget _thumb(BuildContext context, String path, String kind) => FutureBuilder<void>(
+      future: MediaAccess.warm([path]),
+      builder: (_, _) => _thumbBody(context, path, kind),
+    );
+
+Widget _thumbBody(BuildContext context, String path, String kind) {
   final url = Backend.postMediaUrl(path);
   final video = kind == 'video';
   return GestureDetector(

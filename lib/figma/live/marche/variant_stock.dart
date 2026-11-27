@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart' hide Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -5,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../gen.dart' show gToast;
 import '../../i18n.dart' show Text;
 import '../backend.dart' show Backend;
+import '../commerce_logic.dart' show isVariantImageUpload, variantImageExtension, variantImagePath;
 import 'marche_data.dart';
 import 'marche_widgets.dart';
 
@@ -67,12 +71,20 @@ final stockVariantsProvider = FutureProvider.autoDispose.family<List<StockVarian
 
 // ------------------------------------------------------------------ acheteur : sélecteur de variante
 
-/// Sélecteur de variante de la fiche produit : une pastille par variante, état « épuisée » ou « plus que N ». N'affiche rien pour une annonce sans variante.
+/// Texte de disponibilité d'une variante (état renvoyé par le serveur ; le nombre n'est donné que lorsqu'il en reste peu).
+String variantAvailability(StockVariant v) => v.out ? 'épuisée' : (v.low && v.left != null ? 'plus que ${v.left}' : 'disponible');
+
+/// Prix affiché d'une variante : son prix propre, sinon [fallback] (prix que paiera l'acheteur pour l'annonce, vente flash comprise), sinon le prix effectif du serveur.
+int? variantShownPrice(StockVariant v, {int? fallback}) => v.price ?? fallback ?? v.effectivePrice;
+
+/// Sélecteur de variante de la fiche produit : une pastille par variante avec son prix et sa disponibilité (épuisée, « plus que N »), l'image de la variante
+/// choisie. N'affiche rien pour une annonce sans variante. [fallbackPrice] : prix des variantes sans prix propre.
 class VariantPicker extends ConsumerWidget {
-  const VariantPicker({super.key, required this.listingId, required this.selectedId, required this.onSelect});
+  const VariantPicker({super.key, required this.listingId, required this.selectedId, required this.onSelect, this.fallbackPrice});
   final String listingId;
   final String? selectedId;
   final ValueChanged<StockVariant> onSelect;
+  final int? fallbackPrice;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -96,7 +108,7 @@ class VariantPicker extends ConsumerWidget {
             Wrap(spacing: 8, children: [
               for (final x in list)
                 MChip(
-                  '${x.out ? '${x.label} · épuisée' : (x.low && x.left != null ? '${x.label} · plus que ${x.left}' : x.label)}${x.hasOwnPrice ? ' · ${mFcfa(x.price)}' : ''}',
+                  '${x.label}${variantShownPrice(x, fallback: fallbackPrice) == null ? '' : ' · ${mFcfa(variantShownPrice(x, fallback: fallbackPrice))}'}${x.out || x.low ? ' · ${variantAvailability(x)}' : ''}',
                   selected: sel?.id == x.id,
                   onTap: () => x.out ? gToast(context, '« ${x.label} » est épuisée : choisissez une autre variante.') : onSelect(x),
                 ),
@@ -110,7 +122,7 @@ class VariantPicker extends ConsumerWidget {
                   if (sel.attributes.isNotEmpty) Expanded(child: Text(sel.attributesText, style: mst(12.5, c: kGrey))),
                 ]),
               ),
-            if (sel != null && sel.low && sel.left != null) Padding(padding: const EdgeInsets.only(top: 2), child: Text('Derniers exemplaires : plus que ${sel.left} en stock.', style: mst(12.5, w: FontWeight.w700, c: const Color(0xFFB45309)))),
+            if (sel != null) Padding(padding: const EdgeInsets.only(top: 4), child: Text(sel.low && sel.left != null ? 'Derniers exemplaires : plus que ${sel.left} en stock.' : 'Variante « ${sel.label} » : ${variantAvailability(sel)}.', style: mst(12.5, w: FontWeight.w700, c: sel.low ? const Color(0xFFB45309) : kGreen))),
           ]),
         );
       },
@@ -158,7 +170,8 @@ class _VariantStockSectionState extends State<VariantStockSection> {
   }
 
   Future<void> _edit([StockVariant? v]) async {
-    final ok = await showDialog<bool>(context: context, builder: (_) => _VariantDialog(listingId: widget.listingId, variant: v));
+    final others = {for (final x in items) if (x.id != v?.id && x.image != null) x.image!};
+    final ok = await showDialog<bool>(context: context, builder: (_) => _VariantDialog(listingId: widget.listingId, variant: v, otherImages: others));
     if (ok == true) {
       if (mounted) gToast(context, v == null ? 'Variante ajoutée.' : 'Variante modifiée.');
       await _load();
@@ -231,11 +244,28 @@ class _VariantStockSectionState extends State<VariantStockSection> {
   }
 }
 
+/// Image choisie dans la galerie.
+typedef PickedVariantImage = ({Uint8List bytes, String mime});
+
+Future<PickedVariantImage?> _galleryPicker() async {
+  final x = await ImagePicker().pickImage(source: ImageSource.gallery, maxWidth: 1600, imageQuality: 85);
+  if (x == null) return null;
+  final n = x.name.toLowerCase();
+  final mime = x.mimeType ?? (n.endsWith('.png') ? 'image/png' : (n.endsWith('.webp') ? 'image/webp' : (n.endsWith('.jpg') || n.endsWith('.jpeg') ? 'image/jpeg' : 'application/octet-stream')));
+  return (bytes: await x.readAsBytes(), mime: mime);
+}
+
+/// Sélecteur d'image du formulaire de variante (remplaçable dans les tests).
+Future<PickedVariantImage?> Function() variantImagePicker = _galleryPicker;
+
 /// Ajout ou modification d'une variante : le dialogue reste ouvert et affiche le refus du serveur ; il ne se ferme que sur un enregistrement confirmé.
 class _VariantDialog extends StatefulWidget {
-  const _VariantDialog({required this.listingId, this.variant});
+  const _VariantDialog({required this.listingId, this.variant, this.otherImages = const {}});
   final String listingId;
   final StockVariant? variant;
+
+  /// Images des autres variantes de l'annonce : jamais supprimées du stockage.
+  final Set<String> otherImages;
 
   @override
   State<_VariantDialog> createState() => _VariantDialogState();
@@ -249,11 +279,16 @@ class _VariantDialogState extends State<_VariantDialog> {
   late final threshold = TextEditingController(text: '${widget.variant?.threshold ?? 3}');
   late final price = TextEditingController(text: widget.variant?.price?.toString() ?? '');
   late String? image = widget.variant?.image;
+
+  /// Fichier déposé par ce dialogue et pas encore enregistré sur la variante : supprimé s'il est remplacé, retiré ou si le dialogue est quitté sans enregistrer.
+  String? uploaded;
+  bool saved = false;
   bool busy = false;
   String? error;
 
   @override
   void dispose() {
+    if (!saved && uploaded != null) unawaited(Backend.removeFile('listing-images', uploaded!));
     label.dispose();
     attrs.dispose();
     sku.dispose();
@@ -264,26 +299,49 @@ class _VariantDialogState extends State<_VariantDialog> {
   }
 
   Future<void> _pick() async {
-    final x = await ImagePicker().pickImage(source: ImageSource.gallery, maxWidth: 1600, imageQuality: 85);
+    final uid = Backend.currentUserId;
+    if (uid == null) return setState(() => error = 'Connexion requise.');
+    final x = await variantImagePicker();
     if (x == null) return;
-    final n = x.name.toLowerCase();
-    final mime = x.mimeType ?? (n.endsWith('.png') ? 'image/png' : (n.endsWith('.webp') ? 'image/webp' : 'image/jpeg'));
-    final bytes = await x.readAsBytes();
-    if (bytes.length > 5 * 1024 * 1024) return setState(() => error = 'Image trop lourde (5 Mo maximum).');
+    final ext = variantImageExtension(x.mime);
+    if (ext == null) return setState(() => error = 'Format accepté : JPEG, PNG ou WebP.');
+    if (x.bytes.length > 5 * 1024 * 1024) return setState(() => error = 'Image trop lourde (5 Mo maximum).');
+    final mime = x.mime, bytes = x.bytes;
     setState(() {
       busy = true;
       error = null;
     });
-    final r = await Backend.uploadPublic('listing-images', 'variantes', bytes, x.name, mime);
-    if (!mounted) return;
+    final path = variantImagePath(uid, widget.listingId, ext, DateTime.now().microsecondsSinceEpoch);
+    final err = await Backend.uploadFile('listing-images', path, bytes, mime);
+    if (!mounted) {
+      if (err == null) unawaited(Backend.removeFile('listing-images', path));
+      return;
+    }
+    if (err == null && uploaded != null) unawaited(Backend.removeFile('listing-images', uploaded!));
     setState(() {
       busy = false;
-      if (r.error != null) {
-        error = r.error;
-      } else if (r.url != null && r.url!.contains('/listing-images/')) {
-        image = Uri.decodeFull(r.url!.split('/listing-images/').last);
+      if (err != null) {
+        error = err;
+      } else {
+        image = path;
+        uploaded = path;
       }
     });
+  }
+
+  void _removeImage() {
+    if (image != null && image == uploaded) {
+      unawaited(Backend.removeFile('listing-images', image!));
+      uploaded = null;
+    }
+    setState(() => image = null);
+  }
+
+  /// Après un enregistrement confirmé : l'ancienne image de la variante, déposée par ce formulaire et remplacée ou retirée, est supprimée du stockage
+  /// (jamais une photo de l'annonce, jamais une image encore utilisée par une autre variante).
+  void _cleanupReplaced() {
+    final old = widget.variant?.image;
+    if (old != null && old != image && isVariantImageUpload(old) && !widget.otherImages.contains(old)) unawaited(Backend.removeFile('listing-images', old));
   }
 
   Future<void> _save() async {
@@ -334,6 +392,8 @@ class _VariantDialogState extends State<_VariantDialog> {
         error = variantErrorText(r.error);
       });
     }
+    saved = true;
+    _cleanupReplaced();
     Navigator.of(context).pop(true);
   }
 
@@ -362,7 +422,7 @@ class _VariantDialogState extends State<_VariantDialog> {
               if (image != null) Padding(padding: const EdgeInsets.only(right: 10), child: ClipRRect(borderRadius: BorderRadius.circular(6), child: SizedBox(width: 56, height: 56, child: MImage(mImageUrl(image))))),
               Expanded(child: Wrap(spacing: 6, children: [
                 TextButton(onPressed: busy ? null : _pick, child: Text(image == null ? 'Ajouter une image' : 'Changer l’image')),
-                if (image != null) TextButton(onPressed: busy ? null : () => setState(() => image = null), child: const Text('Retirer')),
+                if (image != null) TextButton(onPressed: busy ? null : _removeImage, child: const Text('Retirer')),
               ])),
             ]),
             if (error != null) Padding(padding: const EdgeInsets.only(top: 10), child: Text(error!, style: mst(13, w: FontWeight.w600, c: kRed))),

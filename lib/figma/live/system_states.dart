@@ -10,6 +10,7 @@ import '../../core/router/paths.dart';
 import 'backend.dart';
 import 'connectivity_stub.dart' if (dart.library.js_interop) 'connectivity_web.dart';
 import 'drafts.dart' show Drafts;
+import 'session_revoked.dart' show sessionRevokedByServer;
 import 'sync.dart';
 
 /// États système affichés lorsqu'ils se produisent réellement (et non par un lien) :
@@ -104,6 +105,10 @@ class _SystemStatesState extends State<SystemStates> {
       widget.onSessionExpired!();
     } else {
       widget.router.go(screenPath('150-2'));
+    }
+    if (sessionRevokedByServer) {
+      sessionRevokedByServer = false;
+      _notice('Session expirée ou révoquée, reconnectez-vous');
     }
   }
 

@@ -85,7 +85,8 @@ class PayNotifier extends Notifier<PayState> {
 
   /// Interroge le serveur ; ouvre le reçu dès que le paiement est confirmé, et la page d'échec (avec la vraie cause) sinon.
   Future<PayPhase> check(BuildContext context, Order o, {bool quiet = false}) async {
-    final res = GAnim.enabled ? await _call({'action': 'status', 'order_number': o.id}) : {'status': 'complete'};
+    // « Réduire les animations » ne change jamais la vérité d'un paiement : seul le mode démonstration (hors serveur) simule la réponse
+    final res = Backend.ready || GAnim.enabled ? await _call({'action': 'status', 'order_number': o.id}) : {'status': 'complete'};
     final st = res?['status'] as String?;
     if (st == 'complete') {
       state = const PayState(PayPhase.paid);
@@ -94,7 +95,7 @@ class PayNotifier extends Notifier<PayState> {
       ref.read(auditProvider.notifier).log(ref.read(profileAccountProvider).name, 'Paiement Mobile Money confirmé', o.id, 'Finances');
       _poll?.cancel();
       if (context.mounted) {
-        if (GAnim.enabled) gToast(context, 'Paiement confirmé');
+        if (GAnim.enabled || Backend.ready) gToast(context, 'Paiement confirmé');
         gOpen(context, '259');
       }
       return PayPhase.paid;
@@ -190,8 +191,8 @@ Future<void> retryPayment(WidgetRef ref, BuildContext context) async {
 Future<void> startPayment(WidgetRef ref, BuildContext context) async {
   final pay = ref.read(payProvider.notifier);
   if (ref.read(payProvider).phase == PayPhase.starting) return;
-  if (!GAnim.enabled) {
-    // Tests automatisés : pas d'appel réseau.
+  if (!Backend.ready && !GAnim.enabled) {
+    // Démonstration hors connexion au serveur (tests automatisés) : pas d'appel réseau.
     ref.read(ordersProvider.notifier).place();
     gOpen(context, '257');
     return;

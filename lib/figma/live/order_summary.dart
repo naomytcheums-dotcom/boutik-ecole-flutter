@@ -90,7 +90,7 @@ Future<void> confirmOrderSummary(WidgetRef ref, BuildContext context) async {
     gToast(context, 'Cochez l’acceptation des conditions de vente pour continuer.');
     return;
   }
-  if (Backend.ready && GAnim.enabled) {
+  if (Backend.ready) {
     if (!await requireLogin(context, ref, 'confirmer votre commande') || !context.mounted) return;
     final err = await Backend.acceptTerms(kSalesTermsVersion);
     if (err != null) {

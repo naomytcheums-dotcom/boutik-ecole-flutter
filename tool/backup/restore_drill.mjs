@@ -39,10 +39,13 @@ if (fs.existsSync(storageDir)) {
 const db = new PGlite({ extensions: { pgcrypto } });
 const stub = fs.readFileSync(path.join(repo, 'tests', 'marketplace_pglite', 'replay.mjs'), 'utf8').match(/const stub = `([\s\S]*?)`;/)[1];
 await db.exec(stub);
-const files = ['schema.sql', ...fs.readdirSync(path.join(repo, 'migrations')).filter((f) => f.endsWith('.sql')).sort().map((f) => 'migrations/' + f)];
+const allFiles = fs.readdirSync(path.join(repo, 'migrations')).filter((f) => f.endsWith('.sql')).sort();
+// la reconstruction utilise EXACTEMENT les migrations appliquees au moment de la sauvegarde (liste de la structure sauvegardee) : on compare ainsi avec la production de l'epoque
+const inBackup = new Set(struct.migrations);
+const files = ['schema.sql', ...allFiles.filter((f) => inBackup.has(f.split('_')[0])).map((f) => 'migrations/' + f)];
 let applied = 0;
 for (const f of files) { try { await db.exec(fs.readFileSync(path.join(repo, f), 'utf8')); applied++; } catch (e) { console.log('ECHEC migration', f, String(e.message).split('\n')[0]); } }
-check('2 base vierge : toutes les migrations appliquees', applied === files.length, `${applied}/${files.length}`);
+check('2 base vierge : toutes les migrations de la sauvegarde appliquees', applied === files.length, `${applied}/${files.length}`);
 
 // 3. rechargement (declencheurs et cles etrangeres neutralises, comme pg_restore --disable-triggers)
 await db.exec('set session_replication_role = replica');
@@ -81,5 +84,24 @@ check('5 structure : aucune colonne de production absente de la reconstruction',
 // 6. coherence Auth
 const profilesN = Number((await db.query('select count(*)::int n from public.profiles')).rows[0].n);
 check('6 auth : autant d\'identites que de comptes, au moins autant de comptes que de profils', authMeta.identities.length === authMeta.users.length && authMeta.users.length >= profilesN, `auth=${authMeta.users.length} profils=${profilesN}`);
+// 7. objets de structure : fonctions, politiques, declencheurs et index de la sauvegarde presents dans la reconstruction (differences connues listees, jamais masquees)
+const rebuilt = {
+  functions: new Set((await db.query(`select p.proname n from pg_proc p join pg_namespace s on s.oid = p.pronamespace where s.nspname = 'public' and p.prokind in ('f','p')`)).rows.map((x) => x.n)),
+  policies: new Set((await db.query(`select tablename || '.' || policyname n from pg_policies where schemaname in ('public','storage')`)).rows.map((x) => x.n)),
+  triggers: new Set((await db.query(`select c.relname || '.' || t.tgname n from pg_trigger t join pg_class c on c.oid = t.tgrelid join pg_namespace s on s.oid = c.relnamespace where s.nspname = 'public' and not t.tgisinternal`)).rows.map((x) => x.n)),
+  indexes: new Set((await db.query(`select indexname n from pg_indexes where schemaname = 'public'`)).rows.map((x) => x.n)),
+};
+const want = {
+  functions: new Set(struct.functions.map((f) => f.name)),
+  policies: new Set(struct.policies.map((p) => `${p.tablename}.${p.policyname}`)),
+  triggers: new Set(struct.triggers.map((t) => `${t.table}.${t.name}`)),
+  indexes: new Set((struct.indexes ?? []).map((i) => i.name)),
+};
+const KNOWN = new Set(['rls_auto_enable', 'profiles_phone_verified_uk']);
+for (const kind of ['functions', 'policies', 'triggers', 'indexes']) {
+  if (kind === 'indexes' && want.indexes.size === 0) { console.log('   (index absents de cette ancienne sauvegarde : comparaison non faite)'); continue; }
+  const miss = [...want[kind]].filter((n) => !rebuilt[kind].has(n) && !KNOWN.has(n));
+  check(`7 ${kind} : tout objet de la sauvegarde existe dans la reconstruction (${want[kind].size} attendus)`, miss.length === 0, miss.slice(0, 5).join(','));
+}
 console.log(`restore_drill : ${ok} OK, ${ko} ECHEC`);
 process.exit(ko ? 1 : 0);

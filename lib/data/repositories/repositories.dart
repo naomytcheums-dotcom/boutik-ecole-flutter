@@ -107,7 +107,8 @@ class CartNotifier extends Notifier<List<CartLine>> {
   }
 
   static List<CartLine> _merge(List<CartLine> into, CartLine line) {
-    final i = into.indexWhere((l) => l.title == line.title);
+    // une même annonce avec deux variantes = deux lignes (prix et stock propres à chaque variante)
+    final i = into.indexWhere((l) => l.title == line.title && (l.variantId ?? '') == (line.variantId ?? ''));
     if (i < 0) return [...into, line];
     return [for (final (j, l) in into.indexed) j == i ? l.withQty((l.qty + line.qty).clamp(1, maxCartQty)) : l];
   }

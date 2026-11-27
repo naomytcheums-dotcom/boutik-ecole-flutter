@@ -41,7 +41,7 @@ class PostAttachment {
 }
 
 /// Feuille « Joindre » : photo, vidéo ou lien. Renvoie la pièce jointe prête à être envoyée avec la publication, ou null.
-Future<PostAttachment?> chooseAttachment(BuildContext context, WidgetRef ref) async {
+Future<PostAttachment?> chooseAttachment(BuildContext context, WidgetRef ref, {bool private = false}) async {
   if (!await requireLogin(context, ref, 'joindre un fichier') || !context.mounted) return null;
   final what = await showModalBottomSheet<String>(
     context: context,
@@ -76,7 +76,7 @@ Future<PostAttachment?> chooseAttachment(BuildContext context, WidgetRef ref) as
   }
   final p = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: what == 'video' ? const ['mp4', 'mov'] : const ['jpg', 'jpeg', 'png', 'webp', 'gif']);
   if (p.isEmpty || !context.mounted) return null;
-  final up = await uploadPostMedia(context, p.first);
+  final up = await uploadPostMedia(context, p.first, private: private);
   if (up == null) return null;
   return PostAttachment.media(kind: up.kind, path: up.path, name: p.first.name);
 }

@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'auth.dart';
+import 'session_revoked.dart' show sessionAwareHttpClient;
+import 'media_access.dart' show MediaAccess;
 import 'commerce_logic.dart' show cartIssuesMessage;
 import 'seller.dart' show Listing;
 import '../../data/demo/section_a_demo.dart' show CartLine;
@@ -25,7 +27,11 @@ class Backend {
 
   static Future<void> init() async {
     try {
-      await Supabase.initialize(url: url, publishableKey: key);
+      await Supabase.initialize(
+        url: url,
+        publishableKey: key,
+        httpClient: sessionAwareHttpClient(), // session révoquée / compte suspendu côté serveur : déconnexion locale propre
+      );
       ready = true;
       // gotrue rejoue les événements passés : le passwordRecovery émis pendant l'initialisation est bien reçu ici.
       Supabase.instance.client.auth.onAuthStateChange.listen((s) {
@@ -702,7 +708,7 @@ class Backend {
     if (c == null || uid == null) return null;
     try {
       // Filtre explicite : la RLS laisse aux rôles de gestion (admin, finance, support) la lecture de TOUTES les commandes.
-      final rows = await c.from('orders').select('number,subtotal,fee,method,reference,status,paid,cancelled,cancelled_at,created_at,discount,promo_code,home_delivery,delivery_address,cod,order_lines(title,qty,unit_price,fulfillment)').eq('buyer_id', uid).order('created_at', ascending: false);
+      final rows = await c.from('orders').select('number,subtotal,fee,method,reference,status,paid,cancelled,cancelled_at,created_at,discount,promo_code,home_delivery,delivery_address,cod,order_lines(title,qty,unit_price,fulfillment,variant)').eq('buyer_id', uid).order('created_at', ascending: false);
       return [for (final r in rows) Map<String, dynamic>.from(r as Map)];
     } catch (_) {
       return null;
@@ -710,11 +716,12 @@ class Backend {
   }
 
   /// Fait avancer la préparation d'une commande (1 acceptée · 2 en préparation · 3 prête · 4 livrée) ; l'acheteur est notifié par le serveur.
-  static Future<String?> setSellerOrderStatus(String orderNumber, int status) async {
+  /// [shopId] : ne fait avancer que les lignes de cette boutique (commande multi-boutiques d'un même vendeur) ; absent : toutes les lignes du vendeur.
+  static Future<String?> setSellerOrderStatus(String orderNumber, int status, {String? shopId}) async {
     final c = _c;
     if (c == null) return 'Connexion requise.';
     try {
-      await c.rpc('set_seller_order_status', params: {'p_order': orderNumber, 'p_status': status});
+      await c.rpc('set_seller_order_status', params: {'p_order': orderNumber, 'p_status': status, if (shopId != null && shopId.isNotEmpty) 'p_shop': shopId});
       return null;
     } catch (e) {
       return _msg(e);
@@ -1086,7 +1093,7 @@ class Backend {
 
   static Future<void> removeFile(String bucket, String path) async {
     try {
-      await _c?.storage.from(bucket).remove([path]);
+      await _c?.storage.from(bucket == MediaAccess.publicBucket ? MediaAccess.bucketOf(path) : bucket).remove([path]);
     } catch (_) {}
   }
 
@@ -1098,8 +1105,8 @@ class Backend {
     }
   }
 
-  /// URL publique d'une photo ou vidéo de publication (`post-media`, lecture publique).
-  static String postMediaUrl(String path) => publicFileUrl('post-media', path);
+  /// URL d'une photo ou vidéo de publication : publique (`post-media`) ; URL signée de 1 h au plus pour un média non public déjà préparé par [MediaAccess.warm].
+  static String postMediaUrl(String path) => MediaAccess.cached(path) ?? publicFileUrl('post-media', path);
 
   static Future<String?> signedFileUrl(String bucket, String path) async {
     try {
@@ -1463,7 +1470,7 @@ class Backend {
   /// Lignes envoyées au serveur : une ligne « Pack » porte la clé pack (le serveur la décompose), les autres leur titre.
   static List<Map<String, dynamic>> orderItems(List<CartLine> lines) => [
         for (final l in lines)
-          (l.packId ?? packLines[l.title]) != null ? {'pack': l.packId ?? packLines[l.title], 'qty': l.qty} : {'title': l.title, 'qty': l.qty, if ((l.variant ?? '').isNotEmpty) 'variant': l.variant, if ((l.variantId ?? '').isNotEmpty) 'variant_id': l.variantId}
+          (l.packId ?? packLines[l.title]) != null ? {'pack': l.packId ?? packLines[l.title], 'qty': l.qty} : {'title': l.title, 'qty': l.qty, if ((l.listingId ?? '').isNotEmpty) 'id': l.listingId, if ((l.variant ?? '').isNotEmpty) 'variant': l.variant, if ((l.variantId ?? '').isNotEmpty) 'variant_id': l.variantId}
       ];
 
   /// Création de commande côté serveur : le serveur recalcule les prix (prix figé à la commande, vente flash, code promo), décrémente le

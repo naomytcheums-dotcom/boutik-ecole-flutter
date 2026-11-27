@@ -13,6 +13,7 @@ import '../digital_seller.dart' show DigitalResourceScreen;
 import '../litiges_screens.dart' show openDisputeDialog;
 import '../money_lot.dart' show claimThreadDialog;
 import '../seller.dart' show serverSellerOrdersProvider, SellerOrder;
+import 'marche_boutiques.dart' show ActiveShopBar, refreshAfterShopChange, shopByIdProvider;
 import 'marche_data.dart';
 import 'marche_widgets.dart';
 import 'variant_stock.dart' show VariantStockSection;
@@ -72,23 +73,29 @@ Widget kelaButton(BuildContext context, {required String prompt, required TextEd
 
 // ------------------------------------------------------------------ ma boutique
 
+/// [shopId] : modifie cette boutique précise (propriétaire ou gestionnaire) ; [create] : formulaire d'une NOUVELLE boutique ; sinon la boutique active.
 class ShopEditorScreen extends ConsumerWidget {
-  const ShopEditorScreen({super.key});
+  const ShopEditorScreen({super.key, this.shopId, this.create = false});
+  final String? shopId;
+  final bool create;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => MarchePage(
-        title: 'Ma boutique',
+        title: create ? 'Nouvelle boutique' : 'Ma boutique',
         child: ref.watch(authProvider.select((a) => a.current == null)) && Backend.ready
             ? mNote('Connectez-vous pour créer votre boutique.')
-            : (Backend.ready && !ref.watch(authProvider.select((a) => a.current?.role == 1 && (a.current?.staff ?? '').isEmpty)) )
+            : (Backend.ready && shopId == null && !ref.watch(authProvider.select((a) => a.current?.role == 1 && (a.current?.staff ?? '').isEmpty)) )
                 ? mNote('La boutique est réservée aux étudiants-vendeurs.')
-                : mAsync<Map<String, dynamic>>(ref.watch(marcheMyShopProvider), (s) => _ShopForm(shop: s)),
+                : create
+                    ? const _ShopForm(shop: <String, dynamic>{}, create: true)
+                    : mAsync<Map<String, dynamic>>(shopId != null ? ref.watch(shopByIdProvider(shopId!)) : ref.watch(marcheMyShopProvider), (s) => _ShopForm(shop: s)),
       );
 }
 
 class _ShopForm extends ConsumerStatefulWidget {
-  const _ShopForm({required this.shop});
+  const _ShopForm({required this.shop, this.create = false});
   final Map<String, dynamic> shop;
+  final bool create;
 
   @override
   ConsumerState<_ShopForm> createState() => _ShopFormState();
@@ -134,7 +141,14 @@ class _ShopFormState extends ConsumerState<_ShopForm> {
     if (r.error != null) gToast(context, r.error!);
   }
 
+  /// Propriétaire de la boutique affichée (un gestionnaire d'équipe ne la soumet, ni ne la ferme).
+  bool get isOwner => widget.shop['owner_id'] == null || '${widget.shop['owner_id']}' == (ref.read(authProvider).current?.serverId ?? '');
+
+  /// Boutique ciblée : celle du formulaire (création : aucune, le serveur en crée une nouvelle).
+  Map<String, dynamic> get _target => exists ? {'p_shop': widget.shop['id']} : const {};
+
   Map<String, dynamic> get _payload => {
+        if (exists) 'id': widget.shop['id'] else if (widget.create) 'create': true,
         'name': name.text.trim(),
         if (!exists || status == 'draft') 'slug': slug.text.trim(),
         'description': desc.text,
@@ -165,26 +179,27 @@ class _ShopFormState extends ConsumerState<_ShopForm> {
     if (!quiet) gToast(context, 'Boutique enregistrée.');
     final saved = r.data;
     if (saved is Map && saved['slug'] is String && slug.text != saved['slug']) slug.text = saved['slug'] as String;
-    ref.invalidate(marcheMyShopProvider);
+    refreshAfterShopChange(ref);
+    if (widget.create && saved is Map && saved['id'] != null && mounted) context.pushReplacement('/marche/ma-boutique?id=${saved['id']}');
     return true;
   }
 
   Future<void> _submit() async {
     // une boutique fermée n'est pas enregistrable : on la soumet telle quelle pour la rouvrir
     if (!closed && !await _save(quiet: true)) return;
-    final r = await marcheCall('shop_submit', const {});
+    final r = await marcheCall('shop_submit', _target);
     if (!mounted) return;
     gToast(context, r.error != null ? Backend.userMessage('${r.error}') : (closed ? 'Boutique rouverte : elle est envoyée à la modération pour validation.' : 'Boutique envoyée à la modération pour validation.'));
-    ref.invalidate(marcheMyShopProvider);
+    refreshAfterShopChange(ref);
   }
 
   Future<void> _close() async {
     final ok = await showDialog<bool>(context: context, builder: (c) => AlertDialog(title: const Text('Fermer la boutique ?'), content: const Text('Vos produits disparaissent de la marketplace. Vous pourrez la rouvrir en la soumettant de nouveau.'), actions: [TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('Annuler')), TextButton(onPressed: () => Navigator.pop(c, true), child: const Text('Fermer la boutique'))]));
     if (ok != true) return;
-    final r = await marcheCall('shop_close', const {});
+    final r = await marcheCall('shop_close', _target);
     if (!mounted) return;
     gToast(context, r.error != null ? Backend.userMessage('${r.error}') : 'Boutique fermée.');
-    ref.invalidate(marcheMyShopProvider);
+    refreshAfterShopChange(ref);
   }
 
   @override
@@ -245,8 +260,8 @@ class _ShopFormState extends ConsumerState<_ShopForm> {
       if (status == 'active') Padding(padding: const EdgeInsets.only(bottom: 10), child: Text('Boutique active : un changement de nom, de description, de logo, de bannière ou de réseaux reste publié et est signalé à la modération, qui peut le vérifier.', style: mst(12, c: kGrey).copyWith(height: 1.4))),
       const SizedBox(height: 8),
       mButton(exists ? 'Enregistrer' : 'Créer ma boutique (brouillon)', locked || closed ? null : _save, busy: _busy),
-      if (exists && (status == 'draft' || status == 'closed')) ...[const SizedBox(height: 10), mButton('Soumettre à la validation', _busy ? null : _submit, dark: false)],
-      if (exists && status != 'closed' && status != 'suspended') ...[const SizedBox(height: 10), mButton('Fermer la boutique', _close, dark: false)],
+      if (exists && isOwner && (status == 'draft' || status == 'closed')) ...[const SizedBox(height: 10), mButton('Soumettre à la validation', _busy ? null : _submit, dark: false)],
+      if (exists && isOwner && status != 'closed' && status != 'suspended') ...[const SizedBox(height: 10), mButton('Fermer la boutique', _close, dark: false)],
     ]);
   }
 
@@ -287,6 +302,7 @@ class SellerHubScreen extends ConsumerWidget {
         child: MarchePage(
           title: 'Espace vendeur',
           child: Column(children: [
+            const ActiveShopBar(),
             const TabBar(isScrollable: true, labelColor: kInk, indicatorColor: kInk, tabAlignment: TabAlignment.start, tabs: [Tab(text: 'Tableau de bord'), Tab(text: 'Commandes'), Tab(text: 'Produits'), Tab(text: 'Promotions')]),
             Expanded(child: TabBarView(children: [const _DashboardTab(), const _OrdersTab(), const _ProductsTab(), const _PromotionsTab()])),
           ]),
@@ -461,7 +477,7 @@ class _OrderCard extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.only(top: 10),
             child: mButton('Marquer : ${_OrdersTab._labels[next]}', () async {
-              final err = await Backend.setSellerOrderStatus(o.id, next);
+              final err = await Backend.setSellerOrderStatus(o.id, next, shopId: o.shopId);
               if (!context.mounted) return;
               if (err != null) {
                 await gAlert(context, 'Statut non enregistré', err);
@@ -493,7 +509,10 @@ const _listingStatusLabels = {'approved': 'Publiée', 'pending': 'En validation'
 final _myListingsProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
   final uid = ref.watch(authProvider.select((a) => a.current?.serverId ?? ''));
   if (!Backend.ready || uid.isEmpty) return const [];
-  final r = await Backend.rows('listings', 'id,title,price,price_before,stock,status,images,video_url,variants,specs,description,category,recycled,recycled_kg', eq: {'seller_id': uid}, order: 'updated_at', limit: 300);
+  // produits de la boutique active seulement (le serveur mémorise le choix) ; si elle est inconnue, on ne mélange pas : erreur honnête
+  final shop = await ref.watch(marcheMyShopProvider.future).then<Map<String, dynamic>?>((s) => s).onError<MarcheException>((e, _) => e.code == 'missing' ? null : throw e);
+  final sid = '${shop?['id'] ?? ''}';
+  final r = await Backend.rows('listings', 'id,title,price,price_before,stock,status,images,video_url,variants,specs,description,category,recycled,recycled_kg,shop_id', eq: {'seller_id': uid, if (sid.isNotEmpty) 'shop_id': sid}, order: 'updated_at', limit: 300);
   return r.rows;
 });
 

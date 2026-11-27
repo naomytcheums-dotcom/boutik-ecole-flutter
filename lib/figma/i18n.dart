@@ -51,7 +51,7 @@ class I18n {
       final m = re.firstMatch(s);
       if (m == null) continue;
       var out = en;
-      for (var i = 0; i < 4; i++) {
+      for (var i = 0; i < 10; i++) {
         if (!out.contains('{$i}')) continue;
         String? g;
         try {

@@ -13,6 +13,7 @@ import 'package:go_router/go_router.dart';
 import '../gen.dart';
 import 'auth.dart' show authProvider, requireLogin;
 import 'backend.dart';
+import 'media_access.dart' show MediaAccess;
 import 'communities.dart';
 import 'l8_common.dart' show l8Confirm;
 import 'talents.dart' show askText;
@@ -262,7 +263,10 @@ class CommunityFeed extends Notifier<List<Map<String, dynamic>>?> {
     final r = await Backend.rpc('community_feed', {'p_community': c.id, 'p_limit': 50});
     if (!ref.mounted) return;
     error = r.error != null || r.data is! List;
-    state = error ? const [] : [for (final x in r.data as List) Map<String, dynamic>.from(x as Map)];
+    final rows = error ? const <Map<String, dynamic>>[] : [for (final x in r.data as List) Map<String, dynamic>.from(x as Map)];
+    await MediaAccess.warm([for (final x in rows) x['media_path']?.toString()]);
+    if (!ref.mounted) return;
+    state = rows;
   }
 }
 
@@ -777,7 +781,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                       ],
                       if (_attach != null) AttachmentChip(attachment: _attach!, onRemove: () => setState(() => _attach = null)),
                       Row(children: [
-                      IconButton(tooltip: 'Joindre une photo, une vidéo ou un lien', onPressed: () async { final a = await chooseAttachment(context, ref); if (a != null && mounted) setState(() { _attach = a; _style = null; }); }, icon: Icon(Icons.attach_file, color: _attach != null ? _violet : _ink)),
+                      IconButton(tooltip: 'Joindre une photo, une vidéo ou un lien', onPressed: () async { final a = await chooseAttachment(context, ref, private: c.privacy != 'public'); if (a != null && mounted) setState(() { _attach = a; _style = null; }); }, icon: Icon(Icons.attach_file, color: _attach != null ? _violet : _ink)),
                       IconButton(tooltip: 'Fond design', onPressed: () => setState(() => _compose = !_compose), icon: Icon(Icons.palette_outlined, color: _compose ? _violet : _ink)),
                       IconButton(tooltip: 'Sondage', onPressed: () => _newPoll(c), icon: const Icon(Icons.poll_outlined)),
                       Expanded(child: TextField(controller: _text, maxLength: 2000, onChanged: (_) => setState(() {}), decoration: InputDecoration(hintText: 'Écrire dans ${c.name}…', counterText: '', filled: true, fillColor: const Color(0xFFF2EFF6), border: OutlineInputBorder(borderRadius: BorderRadius.circular(22), borderSide: BorderSide.none), contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12)))),

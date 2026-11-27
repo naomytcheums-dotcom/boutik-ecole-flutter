@@ -87,7 +87,7 @@ Les valeurs sont volontairement larges (réseaux d'établissement partagés derr
 
 - Déclencheur `profiles_suspension_sessions` : à la suspension (`suspended` false → true), blocage de connexion (`auth.users.banned_until = 2999-01-01`, sans écraser un blocage définitif) et **suppression de toutes les sessions** ; à la réactivation, le blocage posé par la suspension est levé (un blocage « infini » posé pour une autre raison est conservé). Testé : mise à jour directe, `admin_set_account`, sessions d'un autre compte intactes.
 - `admin_account_sessions_revoke(compte, motif)` : permission `security.accounts`, motif ≥ 5 caractères, pas sur soi-même, un administrateur ne peut être visé que par un administrateur global ; journalisé « Sessions fermées ».
-- **Limite connue** : un jeton d'accès déjà émis reste valide jusqu'à son expiration (1 h par défaut) côté GoTrue ; côté base, un compte suspendu n'a plus aucun accès (`current_role_name()` vide, garde `enforce_mfa_on_sensitive`), testé par un appel d'une RPC protégée avec le jeton d'un compte suspendu. Raccourcir la durée de vie des jetons est un réglage du projet Supabase (décision propriétaire).
+- **Limite connue (corrigée par H13.1, voir `H131_SESSIONS_REVOCATION.md`)** : un jeton d'accès déjà émis reste valide jusqu'à son expiration (1 h par défaut) côté GoTrue ; H13 bloquait seulement certaines opérations (`current_role_name()` vide, garde `enforce_mfa_on_sensitive`). H13.1 (`20261129020000`) fait refuser par la base **toute** requête PostgREST dont la session n'existe plus ou dont le compte est suspendu ; le jeton n'est pas « révoqué » au sens GoTrue. Raccourcir la durée de vie des jetons reste un réglage du projet Supabase (décision propriétaire).
 
 ## 7. Santé des services (`20261128070300`)
 

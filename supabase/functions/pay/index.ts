@@ -1,6 +1,7 @@
 // Edge Function « pay » : paiement Mobile Money (Orange Money / MTN MoMo) via Notch Pay.
 // Secret requis (Supabase > Edge Functions > Secrets) : NOTCHPAY_KEY (clé publique pk_test_… en sandbox, pk_live_… en production).
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { callerResult } from "../_shared/core.ts";
 
 const NOTCH = Deno.env.get("NOTCHPAY_API") ?? "https://api.notchpay.co"; // surchargeable uniquement pour les tests locaux
 const ORIGINS = ["https://boutik-ecole.vercel.app", "http://localhost:8766", "http://localhost:8080"];
@@ -20,10 +21,9 @@ Deno.serve(async (req) => {
   if (!key) return json({ error: "not_configured", message: "Le paiement en ligne est momentanément indisponible. Choisissez le paiement à la livraison ou réessayez plus tard." }, 503);
 
   const url = Deno.env.get("SUPABASE_URL")!;
-  const authHeader = req.headers.get("Authorization") ?? "";
-  const asUser = createClient(url, Deno.env.get("SUPABASE_ANON_KEY")!, { global: { headers: { Authorization: authHeader } } });
-  const { data: u } = await asUser.auth.getUser();
-  if (!u?.user) return json({ error: "unauthorized", message: "Connexion requise." }, 401);
+  const c = await callerResult(req);
+  if (!c.ok) return json(c.body, c.status);
+  const u = { user: { id: c.uid } };
   const admin = createClient(url, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
   let body: Record<string, any>;

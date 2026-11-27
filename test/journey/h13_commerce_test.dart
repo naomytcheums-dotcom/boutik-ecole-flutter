@@ -172,7 +172,9 @@ void main() {
       await host(t, VariantPicker(listingId: _listing, selectedId: null, onSelect: (_) {}));
       await attendre(t, find.text('Choisissez une variante'));
       expect(find.textContaining('Premium · 9'), findsOneWidget);
-      expect(find.text('Standard'), findsOneWidget);
+      // H13.1 : une variante sans prix propre affiche le prix de l'annonce renvoyé par le serveur (effective_price) : 8 000, rien d'inventé
+      expect(find.textContaining('Standard · 8'), findsOneWidget);
+      expect(find.textContaining('Standard · 9'), findsNothing);
       await fin(t);
     });
   });

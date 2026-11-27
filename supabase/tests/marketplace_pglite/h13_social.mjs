@@ -370,7 +370,7 @@ export async function run(db) {
   await as(E);
   check('suggestions : un créateur qui m\'a bloqué n\'est pas proposé', !(await one(`select creators_suggested(10) r`)).r.some(x => x.id === A));
   await as(F);
-  check('suggestions : uniquement des données publiques', sg.every(x => Object.keys(x).sort().join() === 'avatar_url,certified,followers_count,id,name,posts_count'));
+  check('suggestions : uniquement des données publiques', sg.every(x => Object.keys(x).sort().join() === 'avatar_url,certified,followers_count,id,mutual_count,name,posts_count,reason'));
   await as(B);
   check('suggestions : un compte déjà suivi n\'est pas proposé', !(await one(`select creators_suggested(10) r`)).r.some(x => x.id === A));
   await as(null, 'anon');

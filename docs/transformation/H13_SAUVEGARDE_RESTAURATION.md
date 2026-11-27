@@ -17,7 +17,9 @@ Emplacement (hors dépôt Git) : `C:\Users\NITROV15\Downloads\boutik_sauvegardes
 - `sauvegarde_20261125_avant_h12.enc` : archive chiffrée (AES-256-GCM, clé dérivée PBKDF2-SHA256 600 000 itérations) contenant les données, la structure, Auth + métadonnées Storage et les 15 fichiers. SHA-256 : `5DF74293763FE817B0BB74E663F3EC4D49D79FE3099CDF1B70765326C253FF98`.
 - `prod_donnees_public_20261125_avant_h12.json` et `prod_structure_complete_20261125_avant_h12.json` : copies en clair (sans mot de passe, mais données personnelles : dossier à accès restreint).
 - `_cle\phrase_secrete_sauvegardes.txt` : phrase secrète de l'archive. **À copier dans un gestionnaire de mots de passe hors de cet ordinateur puis à ne pas laisser seule sur la machine** : sans elle l'archive est irrécupérable.
-- Permissions : le dossier n'est accessible qu'à l'utilisateur Windows, à SYSTEM et aux administrateurs locaux (héritage retiré). Les anciennes sauvegardes SQL en clair (du 4 au 21 novembre) sont dans le même dossier, donc protégées par les mêmes permissions ; elles ne sont pas chiffrées.
+- Permissions : le dossier n'est accessible qu'à l'utilisateur Windows, à SYSTEM et aux administrateurs locaux (héritage retiré).
+- **H13.1 (27/11)** : les 38 anciennes sauvegardes en clair (SQL du 4 au 17 novembre, JSON des 21 au 27 novembre) ont été regroupées dans `sauvegarde_historique_20261104_a_20261127.enc` (4,2 Mo, SHA-256 `5EDF730CC11DA65CEF186E2F1E4521A1D66356776DD28243AB3B24BD87ECBA72`). L'archive a été déchiffrée et les 38 fichiers comparés par SHA-256 à l'original (38/38 identiques) **avant** de supprimer les copies en clair. Deux sauvegardes de schéma vides (échecs anciens, 0 octet) ont aussi été supprimées. Il ne reste plus aucune sauvegarde de données en clair dans le dossier, hors `_cle`.
+- Une sauvegarde plus récente (`apres_h13`, produite le 27/11 par `backup_prod.ps1`) sert aux répétitions de migration ; elle est dans `C:\tmp\h131\bk_now` (temporaire, hors dépôt) et sera chiffrée avant toute publication.
 
 Les copies en clair des comptes Auth et des fichiers Storage ont été **supprimées** après vérification du déchiffrement (empreintes identiques).
 
@@ -31,6 +33,16 @@ Les copies en clair des comptes Auth et des fichiers Storage ont été **supprim
 ## 3. Écart production / dépôt découvert pendant la restauration de contrôle
 
 La comparaison des 664 index de production avec la reconstruction locale ne montre **qu'une différence** : l'index `profiles_phone_verified_uk` (migration `20261117990100`, unicité des 9 derniers chiffres d'un téléphone vérifié) **n'existe pas en production**. Cause : deux profils vérifiés de production (un étudiant et un administrateur) partagent les mêmes 9 derniers chiffres : l'index ne peut pas être créé tant que la donnée n'est pas corrigée. Aucune donnée n'a été modifiée. Action de l'administration : décider quel compte garde le numéro, corriger l'autre puis créer l'index ; en attendant, la garantie d'unicité des téléphones vérifiés n'est pas appliquée côté base (seul l'index d'unicité exacte `profiles_phone_key` l'est).
+
+### 3 bis. Comparaison de la structure (H13.1) : écart sur les politiques RLS
+
+`restore_drill.mjs` compare désormais (étape 7) fonctions, politiques, déclencheurs et index de la sauvegarde à la base reconstruite à partir des seules migrations listées dans la sauvegarde. Sur la sauvegarde H13 : 12 OK, 1 échec (politiques introuvables). Cause : 10 politiques de production portent un nom **sans accents** (ex. « profil cree a l inscription ») alors que les migrations du dépôt suppriment et recréent des politiques **accentuées**. Les `drop policy if exists "<nom accentué>"` des migrations H1, H2 et H13 n'ont donc rien supprimé en production, et les anciennes politiques (permissives, cumulées en OU) sont restées actives :
+
+- `kiosk_sessions` : deux politiques ouvertes à tout compte connecté (fermeture H13 inopérante) ;
+- `listings` : l'ancienne politique de lecture publique coexiste avec la nouvelle (isolation Département inopérante en lecture) ;
+- `profiles` : l'ancienne politique d'insertion accepte encore le rôle `other`.
+
+Correctif : migration `20261129900000_h131_alignement_politiques_production.sql` (idempotente : supprime les doublons, renomme les autres) ; répétée sur une copie restaurée de la production (0 échec, aucune ligne perdue) ; scénario `h131_alignement_politiques.mjs` : 16 OK. **Non appliquée en production tant que le lot n'est pas publié.** `rehearse_migrations.mjs` recrée maintenant toutes les politiques de production depuis la sauvegarde avant de rejouer les migrations en attente : une répétition faite uniquement avec les migrations du dépôt n'est pas fidèle.
 
 ## 4. Procédure de restauration
 

@@ -11,6 +11,7 @@ import '../gen.dart';
 import 'access.dart' show roleKey;
 import 'auth.dart';
 import 'backend.dart';
+import 'media_access.dart' show MediaAccess;
 import 'reels.dart' show relativeTime;
 import 'social_posts.dart';
 import 'talents.dart' show askText;
@@ -60,6 +61,7 @@ final storiesProvider = FutureProvider.autoDispose<List<StoryGroup>>((ref) async
   final r = await Backend.rpc('stories_active', {'p_author': null});
   if (r.error != null || r.data is! List) return const [];
   final me = ref.read(authProvider).current?.serverId ?? '';
+  await MediaAccess.warm([for (final x in r.data as List) (x as Map)['media_path']?.toString()]);
   final by = <String, List<Story>>{};
   for (final x in r.data as List) {
     final s = Story.fromRow(x as Map);
@@ -157,7 +159,7 @@ Future<void> addStory(BuildContext context, WidgetRef ref) async {
   if (o == null || !context.mounted) return;
   var ok = 0;
   for (final f in p) {
-    final up = await uploadPostMedia(context, f);
+    final up = await uploadPostMedia(context, f, private: true);
     if (up == null || !context.mounted) continue;
     final res = await Backend.rpc('create_story', {'p_path': up.path, 'p_kind': up.kind, 'p_caption': '', 'p_hours': o.hours, 'p_sticker': o.sticker});
     if (!context.mounted) return;

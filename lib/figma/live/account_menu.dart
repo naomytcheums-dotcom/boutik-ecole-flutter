@@ -56,6 +56,7 @@ Future<void> _classementAdmin(BuildContext context, WidgetRef ref) async => GoRo
 Future<void> _mesEntreprises(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/mes-entreprises');
 Future<void> _comptesTest(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/comptes-test');
 Future<void> _promotions(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/marche/promotions');
+Future<void> _mesBoutiques(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/marche/mes-boutiques');
 Future<void> _moderationReseau(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/moderation/reseau');
 Future<void> _accompagnement(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/accompagnement');
 Future<void> _mesEvenements(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/evenements/mes');
@@ -69,6 +70,9 @@ Future<void> _mesTelechargements(BuildContext context, WidgetRef ref) async => G
 Future<void> _suiviCommandes(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/commandes/suivi');
 Future<void> _statsCreateur(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/createur/statistiques');
 Future<void> _profilCreateur(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/profil-createur/moi');
+Future<void> _mesAbonnes(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/abonnes/moi');
+Future<void> _mesAbonnements(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/abonnements/moi');
+Future<void> _createursASuivre(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/createurs-a-suivre');
 Future<void> _replays(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/replays');
 Future<void> _atelier(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/atelier');
 Future<void> _mesReplays(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/mes-replays');
@@ -150,6 +154,9 @@ final _groups = <_Group>[
     _Entry('Reels et lives', screen: '245'),
     _Entry('Statistiques de créateur', action: _statsCreateur, connected: true),
     _Entry('Mon profil créateur : rubriques et épingles', action: _profilCreateur, connected: true),
+    _Entry('Mes abonnés', action: _mesAbonnes, connected: true),
+    _Entry('Mes abonnements', action: _mesAbonnements, connected: true),
+    _Entry('Créateurs à suivre', action: _createursASuivre),
     _Entry('Replays des lives', action: _replays),
     _Entry('Mes replays (hôte)', action: _mesReplays, connected: true),
     _Entry('TOP 100 national des talents', action: _top100),
@@ -168,6 +175,7 @@ final _groups = <_Group>[
   ]),
   const _Group('Espace vendeur', [
     _Entry('Devenir vendeur (conditions)', action: _devenirVendeur, roles: {'client', 'student'}, becomeSeller: true),
+    _Entry('Mes boutiques', action: _mesBoutiques, roles: {'student'}, seller: true),
     _Entry('Tableau de bord', screen: '57', roles: {'student'}, seller: true),
     _Entry('Mes annonces', screen: '58', roles: {'student'}, seller: true),
     _Entry('Commandes reçues', screen: '63', roles: {'student'}, seller: true),

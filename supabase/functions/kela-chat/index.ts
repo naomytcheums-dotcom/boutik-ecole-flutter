@@ -2,6 +2,7 @@
 // Secret requis (Supabase > Edge Functions > Secrets) : ANTHROPIC_API_KEY. Sans elle, la fonction répond « non configuré » : aucune réponse n'est inventée.
 // Modèle surchargeable par le secret KELA_MODEL. Limite : 30 messages par heure et par personne (table kela_usage).
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { callerResult } from "../_shared/core.ts";
 
 const ORIGINS = ["https://boutik-ecole.vercel.app", "http://localhost:8766", "http://localhost:8080"];
 const SYSTEM = `Tu es Kéla, l'assistante de Boutik-École, la marketplace des étudiants de l'IUT de Douala (produits, services, talents, projets, missions).
@@ -29,9 +30,9 @@ Deno.serve(async (req) => {
   if (body.status === true) return json({ enabled: true });
 
   const url = Deno.env.get("SUPABASE_URL")!;
-  const asUser = createClient(url, Deno.env.get("SUPABASE_ANON_KEY")!, { global: { headers: { Authorization: req.headers.get("Authorization") ?? "" } } });
-  const { data: u } = await asUser.auth.getUser();
-  if (!u?.user) return json({ error: "unauthorized", message: "Connexion requise." }, 401);
+  const c = await callerResult(req);
+  if (!c.ok) return json(c.body, c.status);
+  const u = { user: { id: c.uid } };
   const admin = createClient(url, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
   const message = String(body.message ?? "").trim().slice(0, 2000);

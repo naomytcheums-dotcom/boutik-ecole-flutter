@@ -84,7 +84,8 @@ export async function run(db) {
   check('A7 un chemin voisin (partnership_decide_x) n\'est pas capturé par erreur', (await guard('/rpc/partnership_decide_x', M2FA, 'aal1')) === 'ok');
   await sup(); await db.exec(`update profiles set suspended = true where id = '${SUSP}'`);
   check('A8 la garde « compte suspendu » est conservée (écriture refusée)', /suspendu/i.test(await guard('/rpc/create_post', SUSP, 'aal2')));
-  check('A9 lecture (GET) d\'un compte suspendu toujours permise', (await guard('/rpc/my_admin_access', SUSP, 'aal2', 'GET')) === 'ok');
+  // H13.1 (sessions) : un compte suspendu est refusé aussi en lecture (la garde exempte seulement support, CGU, suppression de compte, appareils).
+  check('A9 lecture (GET) d\'un compte suspendu refusée depuis H13.1 (exceptions : support, CGU, suppression de compte)', /suspendu/i.test(await guard('/rpc/my_admin_access', SUSP, 'aal2', 'GET')));
   check('A10 erreur de lecture des claims : la garde ne bloque jamais l\'API', await (async () => { await sup(); await db.exec(`select set_config('request.path', '/rpc/partnership_decide', false), set_config('request.method','POST',false), set_config('request.jwt.claims', 'pas-du-json', false)`); try { await db.exec('select enforce_mfa_on_sensitive()'); return true; } catch { return false; } })());
   await sup();
   await db.exec(mig('20261121010000_k1_mfa_operations_sensibles.sql'));

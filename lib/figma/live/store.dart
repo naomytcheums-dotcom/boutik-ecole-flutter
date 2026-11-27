@@ -279,7 +279,8 @@ class Orders extends Notifier<List<Order>> {
         () {
           final t = (l as Map)['title'] as String;
           final p = productByTitle(t);
-          return CartLine(t, (p.department.isEmpty ? '' : 'Département : ${p.department}'), (l['unit_price'] as num).toInt(), p.image, qty: (l['qty'] as num).toInt());
+          final v = '${l['variant'] ?? ''}';
+          return CartLine(t, (p.department.isEmpty ? '' : 'Département : ${p.department}'), (l['unit_price'] as num).toInt(), p.image, qty: (l['qty'] as num).toInt(), variant: v.isEmpty ? null : v);
         }(),
     ];
     final f = [for (final l in (r['order_lines'] as List? ?? const [])) ((l as Map)['fulfillment'] as num?)?.toInt() ?? 0];

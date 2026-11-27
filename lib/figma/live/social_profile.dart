@@ -299,6 +299,17 @@ class SocialProfilePanel extends ConsumerWidget {
                     label: const Text('Lives, projets, produits, reposts et clips'),
                   ),
                 ),
+                if (own)
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: TextButton.icon(
+                      key: const Key('social-suggestions'),
+                      style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+                      onPressed: () => GoRouter.of(context).push('/createurs-a-suivre'),
+                      icon: const Icon(Icons.person_add_alt_1_outlined, size: 16),
+                      label: const Text('Créateurs à suivre'),
+                    ),
+                  ),
                 if (!own)
                   Align(
                     alignment: Alignment.centerLeft,
@@ -354,8 +365,8 @@ class SocialProfilePanel extends ConsumerWidget {
                 Row(
                   children: [
                     _stat(p.postsCount, 'Publications'),
-                    _stat(p.followersCount, 'Abonnés'),
-                    _stat(p.followingCount, 'Suivis'),
+                    _stat(p.followersCount, 'Abonnés', onTap: () => GoRouter.of(context).push('/abonnes/${p.id}'), key: const Key('social-stat-followers')),
+                    _stat(p.followingCount, 'Suivis', onTap: () => GoRouter.of(context).push('/abonnements/${p.id}'), key: const Key('social-stat-following')),
                     _statText(
                       p.ratingCount == 0 ? '—' : p.rating.toStringAsFixed(1),
                       'Note',
@@ -435,16 +446,23 @@ class SocialProfilePanel extends ConsumerWidget {
     );
   }
 
-  Widget _stat(int value, String label) =>
-      _statText(compactCount(value), label);
+  Widget _stat(int value, String label, {VoidCallback? onTap, Key? key}) =>
+      _statText(compactCount(value), label, onTap: onTap, key: key);
 
-  Widget _statText(String value, String label) => Expanded(
-    child: Column(
-      children: [
-        Text(value, style: _t(16, FontWeight.w700)),
-        const SizedBox(height: 2),
-        Text(label, style: _t(9.5, FontWeight.w400, const Color(0xFF57545F))),
-      ],
+  Widget _statText(String value, String label, {VoidCallback? onTap, Key? key}) => Expanded(
+    child: InkWell(
+      key: key,
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Column(
+          children: [
+            Text(value, style: _t(16, FontWeight.w700)),
+            const SizedBox(height: 2),
+            Text(label, style: _t(9.5, FontWeight.w400, const Color(0xFF57545F))),
+          ],
+        ),
+      ),
     ),
   );
 

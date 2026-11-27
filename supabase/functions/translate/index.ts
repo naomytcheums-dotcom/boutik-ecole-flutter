@@ -3,6 +3,7 @@
 // (activation administrateur + 2FA, après un test d'intégration réussi). Sans l'un ou l'autre : HTTP 503 + code « not_configured », jamais un texte simulé.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { loadConfig, processTranslate } from "./logic.ts";
+import { callerResult } from "../_shared/core.ts";
 
 const ORIGINS = ["https://boutik-ecole.vercel.app", "http://localhost:8766", "http://localhost:8080"];
 
@@ -22,7 +23,10 @@ Deno.serve(async (req) => {
 
   const url = Deno.env.get("SUPABASE_URL")!;
   const asUser = createClient(url, Deno.env.get("SUPABASE_ANON_KEY")!, { global: { headers: { Authorization: req.headers.get("Authorization") ?? "" } } });
-  const userId = cfg ? ((await asUser.auth.getUser()).data?.user?.id ?? null) : null;
+  // Identité, session ouverte et compte non suspendu vérifiés (voir _shared/session.ts) ; sans fournisseur configuré, processTranslate répond « non configuré » avant toute lecture.
+  const caller = cfg ? await callerResult(req) : null;
+  if (caller && !caller.ok && caller.body.code !== "unauthorized") return json(caller.body, caller.status);
+  const userId = caller?.ok ? caller.uid : null;
   const admin = cfg ? createClient(url, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!) : null;
 
   const out = await processTranslate(body, {

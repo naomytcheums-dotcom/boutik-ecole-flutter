@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' hide Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../gen.dart';
 import '../i18n.dart' show Text;
@@ -116,6 +117,7 @@ class _CreatorProfileScreenState extends ConsumerState<CreatorProfileScreen> {
     final own = id == me;
     final tabs = ref.watch(creatorTabsProvider(id));
     final name = ref.watch(publicProfileProvider(id)).asData?.value.name ?? '';
+    final prof = ref.watch(publicProfileProvider(id)).asData?.value;
     return MarchePage(
       title: own ? 'Mon profil créateur' : (name.isEmpty ? 'Profil du créateur' : name),
       child: tabs.when(
@@ -131,6 +133,7 @@ class _CreatorProfileScreenState extends ConsumerState<CreatorProfileScreen> {
           });
           return ListView(padding: const EdgeInsets.fromLTRB(16, 4, 16, 100), children: [
             if (own) _visits(),
+            if (prof != null) _counters(id, prof.followersCount, prof.followingCount),
             const SizedBox(height: 8),
             SizedBox(
               height: 48,
@@ -154,6 +157,28 @@ class _CreatorProfileScreenState extends ConsumerState<CreatorProfileScreen> {
       ),
     );
   }
+
+  Widget _counters(String id, int followers, int following) => Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: Row(children: [
+          Expanded(
+            child: TextButton(
+              key: const Key('creator-followers'),
+              style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+              onPressed: () => GoRouter.of(context).push('/abonnes/$id'),
+              child: Text('$followers ${followers > 1 ? 'abonnés' : 'abonné'}', style: mst(14, w: FontWeight.w700, c: kViolet)),
+            ),
+          ),
+          Expanded(
+            child: TextButton(
+              key: const Key('creator-following'),
+              style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+              onPressed: () => GoRouter.of(context).push('/abonnements/$id'),
+              child: Text('$following ${following > 1 ? 'abonnements' : 'abonnement'}', style: mst(14, w: FontWeight.w700, c: kViolet)),
+            ),
+          ),
+        ]),
+      );
 
   Widget _visits() => Container(
         key: const Key('creator-visits'),

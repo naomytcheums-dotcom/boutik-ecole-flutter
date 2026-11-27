@@ -18,6 +18,7 @@ import 'lots.dart' show formDialog;
 import 'org_types.dart' show orgTypeByCode, orgTypes;
 import 'referral.dart' show applyPendingReferral;
 import 'drafts.dart';
+import 'session_revoked.dart' show sessionRevokedByServer;
 import 'account_reset.dart' show resetAccountScopedState;
 import 'native_push_stub.dart'
     if (dart.library.io) 'native_push.dart'
@@ -243,6 +244,7 @@ class AuthNotifier extends Notifier<AuthState> {
 
   void login(Account a) {
     Backend.sessionWasLost = false;
+    sessionRevokedByServer = false;
     gSelfAvatarUrl = a.avatarUrl;
     gSelfInstitution = a.institution;
     state = state.copy(current: a);

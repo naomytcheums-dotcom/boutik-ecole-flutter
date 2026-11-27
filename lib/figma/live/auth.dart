@@ -2029,7 +2029,7 @@ Future<void> editProfileDialog(BuildContext context, WidgetRef ref) async {
                   style: st,
                   maxLength: 80,
                   onChanged: (_) => nameError.value = null,
-                  decoration: deco('Prénom et nom').copyWith(errorText: error, errorStyle: st.copyWith(fontSize: 11.5, color: const Color(0xFFC0261B)), counterText: ''),
+                  decoration: deco('Prénom et nom').copyWith(errorText: error, errorMaxLines: 2, errorStyle: st.copyWith(fontSize: 11.5, color: const Color(0xFFC0261B)), counterText: ''),
                 ),
               ),
               const SizedBox(height: 14),

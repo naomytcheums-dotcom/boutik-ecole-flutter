@@ -175,14 +175,21 @@ class CircleFeed extends ConsumerWidget {
         itemBuilder: (_, i) {
           if (i == 0) {
             return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () => publishPost(context, ref),
-                child: Container(
-                  height: 48,
-                  alignment: Alignment.center,
-                  decoration: const BoxDecoration(color: _ink),
-                  child: Row(mainAxisSize: MainAxisSize.min, children: [const Icon(Icons.add, color: Colors.white, size: 20), const SizedBox(width: 6), Text('Nouvelle publication', style: _st(13, w: FontWeight.w600, c: Colors.white))]),
+              Semantics(
+                button: true,
+                label: 'Nouvelle publication',
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => publishPost(context, ref),
+                  child: Container(
+                    height: 48,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(24), border: Border.all(color: const Color(0xFFECE8F2))),
+                    child: Row(children: [
+                      Expanded(child: Text('Quoi de neuf ?', style: _st(13.5, c: _grey))),
+                      const Icon(Icons.add_photo_alternate_outlined, size: 22, color: _ink),
+                    ]),
+                  ),
                 ),
               ),
               const PendingPostsBanner(),

@@ -918,9 +918,25 @@ class MediaCarousel extends StatefulWidget {
 class _MediaCarouselState extends State<MediaCarousel> {
   final _page = PageController();
   int _i = 0;
+  double? _natural; // proportions réelles de la première image quand le serveur ne les fournit pas
+  ImageStream? _stream;
+  late final ImageStreamListener _listener = ImageStreamListener((info, _) {
+    final w = info.image.width, h = info.image.height;
+    if (mounted && h > 0) setState(() => _natural = w / h);
+  }, onError: (_, _) {});
+
+  @override
+  void initState() {
+    super.initState();
+    final m = widget.media;
+    if (m.isNotEmpty && !m.first.video && m.first.ratio == null && m.first.url.startsWith('http')) {
+      _stream = NetworkImage(m.first.url).resolve(ImageConfiguration.empty)..addListener(_listener);
+    }
+  }
 
   @override
   void dispose() {
+    _stream?.removeListener(_listener);
     _page.dispose();
     super.dispose();
   }
@@ -929,7 +945,8 @@ class _MediaCarouselState extends State<MediaCarousel> {
   Widget build(BuildContext context) {
     final m = widget.media;
     if (m.isEmpty) return const SizedBox.shrink();
-    final ratio = (m.first.ratio ?? (m.first.video ? 9 / 12 : 4 / 3)).clamp(0.75, 1.6);
+    // bornes d'Instagram : du portrait 4:5 au paysage 1,91:1 ; l'image reste entière (contain)
+    final ratio = (m.first.ratio ?? _natural ?? (m.first.video ? 4 / 5 : 1.0)).clamp(0.8, 1.91);
     return Stack(children: [
       AspectRatio(
         aspectRatio: ratio,
@@ -1044,6 +1061,20 @@ class PostCard extends ConsumerStatefulWidget {
 class _PostCardState extends ConsumerState<PostCard> {
   bool _more = false;
 
+  /// Légende avec les « #mots-clés » mis en couleur.
+  List<TextSpan> _hashtagSpans(String text) {
+    final base = sty(13, c: const Color(0xFF2A2833), h: 1.45);
+    final spans = <TextSpan>[];
+    var last = 0;
+    for (final m in RegExp(r'#[\p{L}\p{N}_-]{2,30}', unicode: true).allMatches(text)) {
+      if (m.start > last) spans.add(TextSpan(text: text.substring(last, m.start), style: base));
+      spans.add(TextSpan(text: m.group(0), style: sty(13, c: const Color(0xFF5A3FE0), w: FontWeight.w600, h: 1.45)));
+      last = m.end;
+    }
+    if (last < text.length || spans.isEmpty) spans.add(TextSpan(text: text.substring(last), style: base));
+    return spans;
+  }
+
   @override
   Widget build(BuildContext context) {
     final post = widget.post;
@@ -1058,7 +1089,7 @@ class _PostCardState extends ConsumerState<PostCard> {
       decoration: BoxDecoration(color: Colors.white, border: Border.all(color: kLine)),
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(14, 12, 4, 0),
+          padding: const EdgeInsets.fromLTRB(12, 10, 4, 0),
           child: Row(children: [
             GestureDetector(
               behavior: HitTestBehavior.opaque,
@@ -1079,17 +1110,6 @@ class _PostCardState extends ConsumerState<PostCard> {
             IconButton(onPressed: () => showPostMenu(context, ref, post), tooltip: 'Plus d’options', icon: const Icon(Icons.more_horiz, color: kInk)),
           ]),
         ),
-        if (post.caption.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),
-            child: GestureDetector(
-              onTap: long ? () => setState(() => _more = !_more) : null,
-              child: Text.rich(TextSpan(children: [
-                TextSpan(text: long && !_more ? '${post.caption.substring(0, 160)}… ' : post.caption, style: sty(13, c: const Color(0xFF2A2833), h: 1.45)),
-                if (long) TextSpan(text: _more ? ' Réduire' : 'Voir plus', style: sty(12, w: FontWeight.w600, c: kGrey)),
-              ])),
-            ),
-          ),
         if (post.linkUrl.isNotEmpty)
           Padding(
             padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),
@@ -1158,6 +1178,17 @@ class _PostCardState extends ConsumerState<PostCard> {
             action(Icon(post.saved ? Icons.bookmark : Icons.bookmark_border, size: 22, color: kInk), compactCount(post.saves), () => toggleSavePost(context, ref, post)),
           ]),
         ),
+        if (post.caption.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+            child: GestureDetector(
+              onTap: long ? () => setState(() => _more = !_more) : null,
+              child: Text.rich(TextSpan(children: [
+                ..._hashtagSpans(long && !_more ? '${post.caption.substring(0, 160)}… ' : post.caption),
+                if (long) TextSpan(text: _more ? ' Réduire' : 'Voir plus', style: sty(12, w: FontWeight.w600, c: kGrey)),
+              ])),
+            ),
+          ),
       ]),
     );
   }
@@ -1333,6 +1364,7 @@ class _ComposerSheetState extends ConsumerState<_ComposerSheet> {
   }
 
   Widget _form() => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            Padding(padding: const EdgeInsets.only(bottom: 6), child: Text('Les hashtags sont facultatifs : écrivez #motclé dans votre texte.', style: sty(12, c: kGrey))),
             if (!widget.page) Row(children: [
               Expanded(child: Text('Nouvelle publication', style: sty(16, w: FontWeight.w700))),
               IconButton(onPressed: _busy ? null : () => Navigator.of(context).pop(), icon: const Icon(Icons.close)),

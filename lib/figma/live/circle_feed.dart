@@ -38,7 +38,10 @@ final myPendingPostsProvider = FutureProvider.autoDispose<List<Map<String, dynam
 
 /// Bandeau « Mes publications en attente » au-dessus du fil : visible seulement s'il y en a ; ouvre le détail avec le motif d'un éventuel masquage.
 class PendingPostsBanner extends ConsumerWidget {
-  const PendingPostsBanner({super.key});
+  const PendingPostsBanner({super.key, this.compact = false});
+
+  /// Version basse (sur le profil, entre les liens et les vidéos).
+  final bool compact;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -62,7 +65,7 @@ class PendingPostsBanner extends ConsumerWidget {
             child: ListView(padding: const EdgeInsets.fromLTRB(20, 18, 20, 20), shrinkWrap: true, children: [
               Text('Mes publications en attente', style: _st(16, w: FontWeight.w700)),
               const SizedBox(height: 6),
-              Text('Une publication d’un compte non certifié est visible dans le fil après validation par le département.', style: _st(12.5, c: _grey).copyWith(height: 1.45)),
+              Text('Une publication d’un compte non certifié est visible dans le fil après validation par l’équipe.', style: _st(12.5, c: _grey).copyWith(height: 1.45)),
               const SizedBox(height: 10),
               for (final r in rows)
                 Padding(
@@ -78,8 +81,8 @@ class PendingPostsBanner extends ConsumerWidget {
         ),
       ),
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 6),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+        margin: EdgeInsets.symmetric(vertical: compact ? 0 : 6),
+        padding: EdgeInsets.symmetric(horizontal: 14, vertical: compact ? 6 : 11),
         decoration: BoxDecoration(color: const Color(0xFFFFF1D6), borderRadius: BorderRadius.circular(14)),
         child: Row(children: [
           const Icon(Icons.hourglass_top_rounded, size: 16, color: Color(0xFFB26A00)),

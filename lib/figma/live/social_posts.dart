@@ -1329,7 +1329,7 @@ class _ComposerSheetState extends ConsumerState<_ComposerSheet> {
     final nav = Navigator.of(context);
     final messenger = ScaffoldMessenger.maybeOf(context);
     widget.page ? gBack(context) : nav.pop();
-    messenger?.showSnackBar(SnackBar(content: Text(st == 'published' ? 'Publication en ligne' : 'Publication envoyée : elle sera visible après validation par le département'), behavior: SnackBarBehavior.floating));
+    messenger?.showSnackBar(SnackBar(content: Text(st == 'published' ? 'Publication en ligne' : 'Publication envoyée : elle sera visible après validation par l’équipe'), behavior: SnackBarBehavior.floating));
   }
 
   Widget _form() => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [

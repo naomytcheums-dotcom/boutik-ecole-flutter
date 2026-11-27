@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../gen.dart' show gToast;
+import '../nav.dart' show gOpen;
 import '../i18n.dart' show Text;
 import 'auth.dart';
 import 'access.dart' show NotFoundView;
@@ -28,6 +29,20 @@ String? staffConsoleFor(String staff) => switch (staff) {
       'Support' => '145',
       _ => null,
     };
+
+String _consoleShownFor = '';
+
+/// Sur ordinateur, l'équipe et les organisations arrivent sur leur tableau de bord web, une fois par ouverture ;
+/// l'accueil reste accessible ensuite. Sur téléphone, rien ne change.
+void openConsoleOnWide(BuildContext context, Account? me) {
+  if (me == null || MediaQuery.sizeOf(context).width < 900) return;
+  final id = me.staff.isEmpty ? (me.role == 2 ? '187' : null) : (me.staff == 'Finance' || me.staff == 'Support' ? '300' : staffConsoleFor(me.staff));
+  if (id == null || _consoleShownFor == me.serverId) return;
+  _consoleShownFor = me.serverId;
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    if (context.mounted) gOpen(context, id);
+  });
+}
 
 class StaffPortalScreen extends ConsumerStatefulWidget {
   const StaffPortalScreen({super.key, required this.portalKey});

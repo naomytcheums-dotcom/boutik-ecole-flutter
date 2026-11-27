@@ -1364,11 +1364,11 @@ class _ComposerSheetState extends ConsumerState<_ComposerSheet> {
   }
 
   Widget _form() => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            Padding(padding: const EdgeInsets.only(bottom: 6), child: Text('Les hashtags sont facultatifs : écrivez #motclé dans votre texte.', style: sty(12, c: kGrey))),
             if (!widget.page) Row(children: [
               Expanded(child: Text('Nouvelle publication', style: sty(16, w: FontWeight.w700))),
               IconButton(onPressed: _busy ? null : () => Navigator.of(context).pop(), icon: const Icon(Icons.close)),
             ]),
+            Padding(padding: const EdgeInsets.only(bottom: 6), child: Text('Les hashtags sont facultatifs : écrivez #motclé dans votre texte.', style: sty(12, c: kGrey))),
             TextField(
               controller: _text,
               minLines: 4,

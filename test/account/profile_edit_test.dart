@@ -20,9 +20,9 @@ void main() {
     await t.pumpAndSettle();
     expect(find.text('Modifier mon profil'), findsOneWidget);
     final fields = find.byType(TextField);
-    await t.enterText(fields.at(0), 'Étudiante en design, je crée des logos.');
-    await t.enterText(fields.at(1), 'Design, Figma ,  ,Logo');
-    await t.enterText(fields.at(2), 'Yaoundé');
+    await t.enterText(fields.at(1), 'Étudiante en design, je crée des logos.');
+    await t.enterText(fields.at(2), 'Design, Figma ,  ,Logo');
+    await t.enterText(fields.at(3), 'Yaoundé');
     await t.tap(find.text('Enregistrer'));
     await t.pumpAndSettle();
     final a = container.read(authProvider).current!;
@@ -47,7 +47,7 @@ void main() {
     ));
     await t.tap(find.text('modifier'));
     await t.pumpAndSettle();
-    await t.enterText(find.byType(TextField).at(2), '');
+    await t.enterText(find.byType(TextField).at(3), '');
     await t.tap(find.text('Enregistrer'));
     await t.pumpAndSettle();
     expect(container.read(authProvider).current!.city, '');
@@ -73,7 +73,7 @@ void main() {
     ));
     await t.tap(find.text('modifier'));
     await t.pumpAndSettle();
-    await t.enterText(find.byType(TextField).first, 'après');
+    await t.enterText(find.byType(TextField).at(1), 'après');
     await t.tap(find.text('Annuler'));
     await t.pumpAndSettle();
     expect(container.read(authProvider).current!.bio, 'avant');

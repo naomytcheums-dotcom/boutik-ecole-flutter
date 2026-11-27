@@ -49,6 +49,7 @@ Future<void> editCollection(BuildContext context, WidgetRef ref, {ProductCollect
   if (!await requireLogin(context, ref, 'créer une collection') || !context.mounted) return;
   final name = TextEditingController(text: current?.name ?? '');
   var vis = current?.visibility ?? 'private';
+  String? nameError;
   final ok = await showModalBottomSheet<bool>(
     context: context,
     isScrollControlled: true,
@@ -60,7 +61,7 @@ Future<void> editCollection(BuildContext context, WidgetRef ref, {ProductCollect
         child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(current == null ? 'Nouvelle collection' : 'Modifier la collection', style: mst(18, w: FontWeight.w800)),
           const SizedBox(height: 12),
-          TextField(controller: name, autofocus: true, maxLength: 60, decoration: InputDecoration(labelText: 'Nom', hintText: 'Cadeaux d’anniversaire', border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)))),
+          TextField(controller: name, autofocus: true, maxLength: 60, onChanged: (_) { if (nameError != null) setS(() => nameError = null); }, decoration: InputDecoration(errorText: nameError, labelText: 'Nom', hintText: 'Cadeaux d’anniversaire', border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)))),
           const SizedBox(height: 6),
           // Aucune page ne lit encore les collections d'autrui : seule « Privée » est proposée (une collection déjà partagée garde son état tant qu'on ne la modifie pas).
           MDropdown(label: 'Visibilité', value: vis, items: {'private': 'Privée', if (vis != 'private') vis: collectionVisibilities[vis] ?? vis}, onChanged: (v) => setS(() => vis = v)),
@@ -72,7 +73,11 @@ Future<void> editCollection(BuildContext context, WidgetRef ref, {ProductCollect
           Row(children: [
             Expanded(child: mButton('Annuler', () => Navigator.pop(c, false), dark: false)),
             const SizedBox(width: 10),
-            Expanded(child: mButton(current == null ? 'Créer' : 'Enregistrer', () => Navigator.pop(c, true))),
+            Expanded(child: mButton(current == null ? 'Créer' : 'Enregistrer', () {
+              // la fenêtre reste ouverte et garde la saisie tant que le nom manque
+              if (name.text.trim().isEmpty) return setS(() => nameError = 'Donnez un nom à la collection.');
+              Navigator.pop(c, true);
+            })),
           ]),
         ]),
       ),

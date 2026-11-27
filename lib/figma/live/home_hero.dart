@@ -13,6 +13,9 @@ class HomeHero {
 
   static final index = ValueNotifier<int>(0);
 
+  /// Rubrique ouverte par la flèche, selon la diapositive affichée : projets, catalogue, talents.
+  static String get destination => const ['78', '22', '70'][index.value % 3];
+
   static void next() => index.value = (index.value + 1) % slides.length;
   static void previous() => index.value = (index.value - 1 + slides.length) % slides.length;
 }

@@ -8,7 +8,7 @@ import '../gen.dart';
 /// Partage réel (feuille de partage du système, ou copie du lien si indisponible).
 Future<void> shareText(BuildContext context, String text, {String? subject}) async {
   try {
-    await SharePlus.instance.share(ShareParams(text: text, subject: subject));
+    await SharePlus.instance.share(ShareParams(text: text, subject: subject, mailToFallbackEnabled: false));
   } catch (_) {
     await Clipboard.setData(ClipboardData(text: text));
     if (context.mounted) gToast(context, 'Lien copié dans le presse-papiers');

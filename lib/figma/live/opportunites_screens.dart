@@ -330,14 +330,14 @@ class _OppsState extends ConsumerState<OpportunitiesScreen> {
         IconButton(tooltip: 'Mes candidatures et favoris', onPressed: () => context.push('/opportunites/mes'), icon: const Icon(Icons.inbox_outlined)),
       ],
       child: ListView(padding: const EdgeInsets.only(bottom: 90), children: [
-        // Assistant Opportunités : l'icône de l'application, des lignes calculées sur les vraies offres
+        // Assistant Opportunités : l'icône de Kéla, des lignes calculées sur les vraies offres
         Container(
           margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(gradient: const LinearGradient(colors: [Color(0xFF0F2E4E), Color(0xFF1E4A80)]), borderRadius: BorderRadius.circular(8)),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(children: [
-              Container(width: 44, height: 44, padding: const EdgeInsets.all(6), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)), child: Image.asset('assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
+              Container(width: 44, height: 44, padding: const EdgeInsets.all(6), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)), child: Image.asset('assets/figma/img/2b51b5d6469cca917952ac344a2ddf9cc1440830.png', fit: BoxFit.contain)),
               const SizedBox(width: 12),
               Expanded(child: Text('Assistant Opportunités', style: mst(15, w: FontWeight.w800, c: Colors.white))),
             ]),

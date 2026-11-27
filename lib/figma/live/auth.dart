@@ -13,7 +13,7 @@ import 'package:go_router/go_router.dart' show GoRouter;
 import 'geo_stub.dart' if (dart.library.js_interop) 'geo_web.dart' as geo;
 import 'audit.dart';
 import 'backend.dart';
-import 'profile_data.dart' show saveAcademic;
+import 'profile_data.dart' show saveAcademic, changeProfilePhoto;
 import 'lots.dart' show formDialog;
 import 'org_types.dart' show orgTypeByCode, orgTypes;
 import 'referral.dart' show applyPendingReferral;
@@ -1960,6 +1960,8 @@ Future<void> editProfileDialog(BuildContext context, WidgetRef ref) async {
   if (!await requireLogin(context, ref, 'modifier votre profil')) return;
   final a = ref.read(authProvider).current;
   if (a == null || !context.mounted) return;
+  final name = TextEditingController(text: a.name);
+  String? nameError;
   final bio = TextEditingController(text: a.bio);
   final skills = TextEditingController(text: a.skills);
   final city = TextEditingController(text: a.city);
@@ -2011,6 +2013,27 @@ Future<void> editProfileDialog(BuildContext context, WidgetRef ref) async {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Center(
+                child: TextButton.icon(
+                  onPressed: () => changeProfilePhoto(ctx, ref),
+                  icon: const Icon(Icons.photo_camera_outlined, size: 18, color: Color(0xFF5A3FE0)),
+                  label: Text('Changer ma photo', style: st.copyWith(fontWeight: FontWeight.w600, color: const Color(0xFF5A3FE0))),
+                ),
+              ),
+              Text('Nom', style: st.copyWith(fontWeight: FontWeight.w600)),
+              const SizedBox(height: 6),
+              StatefulBuilder(
+                builder: (_, setName) => TextField(
+                  controller: name,
+                  style: st,
+                  maxLength: 80,
+                  onChanged: (_) {
+                    if (nameError != null) setName(() => nameError = null);
+                  },
+                  decoration: deco('Prénom et nom').copyWith(errorText: nameError, counterText: ''),
+                ),
+              ),
+              const SizedBox(height: 14),
               Text(
                 'Description',
                 style: st.copyWith(fontWeight: FontWeight.w600),
@@ -2100,7 +2123,15 @@ Future<void> editProfileDialog(BuildContext context, WidgetRef ref) async {
           child: Text('Annuler', style: st),
         ),
         TextButton(
-          onPressed: () => Navigator.of(ctx).pop(true),
+          onPressed: () {
+            // la fenêtre reste ouverte et la saisie est conservée tant que le nom est vide
+            if (name.text.trim().length < 2) {
+              nameError = 'Indiquez votre nom (2 lettres au minimum).';
+              (ctx as Element).markNeedsBuild();
+              return;
+            }
+            Navigator.of(ctx).pop(true);
+          },
           child: Text(
             'Enregistrer',
             style: st.copyWith(
@@ -2114,7 +2145,10 @@ Future<void> editProfileDialog(BuildContext context, WidgetRef ref) async {
   );
   if (saved != true) return;
   final typedSkills = skills.text.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
-  final updated = a.copyWith(
+  // relu après la fenêtre : la photo a pu changer pendant qu'elle était ouverte
+  final latest = ref.read(authProvider).current ?? a;
+  final updated = latest.copyWith(
+    name: name.text.trim(),
     bio: bio.text.trim(),
     skills: mergeSkillLists(typedSkills, passportSkills).join(', '),
     city: city.text.trim(),

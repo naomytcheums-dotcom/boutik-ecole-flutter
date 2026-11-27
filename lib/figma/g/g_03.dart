@@ -31,6 +31,7 @@ import '../live/inert_actions.dart';
 import '../live/pay.dart';
 import '../live/home_hero.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
+import '../live/staff_portal.dart' show openConsoleOnWide;
 
 class G_03 extends ConsumerWidget {
   const G_03({super.key});
@@ -44,6 +45,7 @@ class G_03 extends ConsumerWidget {
     try {
       vue = GoRouterState.of(context).uri.queryParameters['vue'] ?? '';
     } catch (_) {}
+    if (!demoContent && vue != 'standard') openConsoleOnWide(context, me);
     if (!demoContent && me != null && me.role == 2 && me.staff.isEmpty && vue != 'standard') return const CompanyHomeScreen();
     // connecté : la page s'allonge pour recevoir la liste réelle des talents ; le menu reste au bas de la page
     final dr = demoContent ? 0.0 : 285.0; // bloc « Recommandé pour vous » inséré entre les produits et les talents
@@ -62,14 +64,13 @@ class G_03 extends ConsumerWidget {
       gP(338.222, 23.292, 22, 13, gImg('assets/figma/v/0a1ead9f468035.svg')),
       gP(359.722, 24.792, 8, 10, gImg('assets/figma/v/c55261ef5c9f82.svg')),
       gP(15.347, 62.292, 45.139, 39.722, gBox(image: 'assets/figma/img/2e8548b8fa2eb7935169a49b6595e1aa760c7c62.png', fit: BoxFit.contain)),
-      gP(258.646, 69.965, 20.764, 20.764, const SizedBox.expand(), tap: () => gTab(context, '19')),
-      gP(258.241, 69.561, 19.843, 19.843, gImg('assets/figma/v/24c238585949ab.svg')),
-      gP(270.094, 81.413, 9.72, 9.72, gImg('assets/figma/v/e06720259342ce.svg')),
-      gP(303.38, 68.696, 21.573, 18.977, gImg('assets/figma/v/a20eafbb9e4256.svg')),
-      gP(309.696, 85.134, 8.942, 6.87, gImg('assets/figma/v/a629a5aabb9ce8.svg')),
-      gP(318, 62, 22, 18, const NotifBadge()),
+      gP(258.646, 69.965, 20.764, 20.764, const SizedBox.expand(), tap: () => gTab(context, '19'), show: demoContent),
+      gP(258.241, 69.561, 19.843, 19.843, gImg('assets/figma/v/24c238585949ab.svg'), show: demoContent),
+      gP(270.094, 81.413, 9.72, 9.72, gImg('assets/figma/v/e06720259342ce.svg'), show: demoContent),
+      gP(303.38, 68.696, 21.573, 18.977, gImg('assets/figma/v/a20eafbb9e4256.svg'), show: demoContent),
+      gP(309.696, 85.134, 8.942, 6.87, gImg('assets/figma/v/a629a5aabb9ce8.svg'), show: demoContent),
+      gP(318, 62, 22, 18, const NotifBadge(), show: demoContent),
       if (demoContent) gP(346.667, 63.194, 34.306, 34.306, gBox(image: 'assets/figma/img/d902a4aabb7fd7d1d301a3bebd0f8ff54ecefb47.png', fit: BoxFit.cover, radii: [17.153, 17.153, 17.153, 17.153])),
-      if (!demoContent) profileAvatar(346.667, 63.194, 34.306),
       gP(18.056, 115.097, 117, 28, gText('Bienvenue', 22.569, Color(0xFF111015), weight: 800)),
       gP(18.056, 146.778, 165, 17, gText('Explorez le talent étudiant', 13.542, Color(0xFF4A4854))),
       gP(18.056, 181.458, 362.917, 41.528, gBox(color: Color(0xFFEFF1F4), radii: [20.764, 20.764, 20.764, 20.764])),
@@ -115,10 +116,10 @@ class G_03 extends ConsumerWidget {
         final applied = await GoRouter.of(context).push<bool>(screenPath('23'));
         if (applied == true && context.mounted) gOpen(context, '20');
       }), // icône filtre : écran 23 « Filtres », puis les résultats filtrés (20)
-      gTap(298, 60, 36, 38, () async {
+      if (demoContent) gTap(298, 60, 36, 38, () async {
         if (await requireLogin(context, ref, 'voir vos notifications') && context.mounted) gOpen(context, '50');
       }), // cloche
-      gTap(344, 60, 40, 40, () => gOpen(context, '10')), // avatar
+      if (demoContent) gTap(344, 60, 40, 40, () => gOpen(context, '10')), // avatar
       gTap(18.056, 238.333, 57.778, 62.0, () => gOpen(context, '04')), gTap(94.792, 238.333, 57.778, 62.0, () { if (!demoContent) ref.read(marcheFiltersProvider.notifier).set(const MarcheFilters()); gOpen(context, '22'); }), gTap(171.528, 238.333, 57.778, 62.0, () => gOpen(context, '22b')), gTap(248.264, 238.333, 57.778, 62.0, () => gOpen(context, '70')), gTap(324.097, 238.333, 57.778, 62.0, () => gOpen(context, '78')),
       gP(14.444, 322.292, 372.847, 185.069, heroSlot((s, _) => gBox(image: s.image, fit: BoxFit.cover, shadows: [BoxShadow(color: Color(0x24122640), offset: Offset(0, 6), blurRadius: 16, spreadRadius: 0)], radii: [18.056, 18.056, 18.056, 18.056]))),
       gP(37.917, 346.667, 54.167, 18.056, gBox(color: Color(0xFF111015), radii: [9.028, 9.028, 9.028, 9.028])),
@@ -131,7 +132,7 @@ class G_03 extends ConsumerWidget {
       gP(340.347, 486.597, 5.417, 5.417, heroSlot((_, i) => gBox(color: Color(i == 0 ? 0xF2FFFFFF : 0x8CFFFFFF), radii: [2.708, 2.708, 2.708, 2.708]))),
       gP(350.278, 486.597, 5.417, 5.417, heroSlot((_, i) => gBox(color: Color(i == 1 ? 0xF2FFFFFF : 0x8CFFFFFF), radii: [2.708, 2.708, 2.708, 2.708]))),
       gP(360.208, 486.597, 5.417, 5.417, heroSlot((_, i) => gBox(color: Color(i == 2 ? 0xF2FFFFFF : 0x8CFFFFFF), radii: [2.708, 2.708, 2.708, 2.708]))),
-            heroSwipe(14.444, 322.292, 372.847, 185.069), gTap(37.917, 463.125, 30.694, 30.694, HomeHero.next),      gP(17.153, 529.056, 134, 18, gText('Produits en vedette', 13.993, Color(0xFF111015), weight: 700)),
+            heroSwipe(14.444, 322.292, 372.847, 185.069), gTap(37.917, 463.125, 30.694, 30.694, () { if (demoContent) return HomeHero.next(); gOpen(context, HomeHero.destination); }),      gP(17.153, 529.056, 134, 18, gText('Produits en vedette', 13.993, Color(0xFF111015), weight: 700)),
       gP(308.986, 531.958, 44, 14, gText('Voir tout', 10.833, Color(0xFF5A3FE0), weight: 500, align: TextAlign.right)),
       gP(369.133, 535.958, 12.846, 6, gImg('assets/figma/v/92b236aeae97cb.svg')),
       gP(372.556, 532.535, 9.423, 12.846, gImg('assets/figma/v/337e7bc848e314.svg')),

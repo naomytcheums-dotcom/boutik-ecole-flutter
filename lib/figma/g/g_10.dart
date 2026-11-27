@@ -28,6 +28,7 @@ import '../live/share.dart';
 import '../live/pay.dart';
 import '../live/account_menu.dart';
 import '../live/access.dart';
+import '../live/profile_data.dart' show changeProfilePhoto;
 import 'package:go_router/go_router.dart' show GoRouter;
 import '../live/profile_links.dart' show ProfileLinkIcons;
 import '../live/talent_passport.dart' show TalentPassportPage;
@@ -87,16 +88,17 @@ class G_10 extends ConsumerWidget {
       gP(138, 273, 114, 114, gBox(gradient: LinearGradient(begin: Alignment(0, -1), end: Alignment(0, 1), colors: [Color(0xFFFF4B6E), Color(0xFFFF8A3D), Color(0xFF9B7BFF)], stops: [0, 0.5, 1]), oval: true)),
       gP(143, 278, 104, 104, gBox(color: Color(0xFFFFFFFF), shadows: [BoxShadow(color: Color(0x1A403366), offset: Offset(0, 4), blurRadius: 12, spreadRadius: 0)], oval: true)),
       if (co != null) companyAvatarLayer(co, 149, 284, 92) else profileAvatar(149, 284, 92),
+      if (!demoContent && !isView && co == null) gTap(149, 284, 92, 92, () => changeProfilePhoto(context, ref)),
       if (co != null) companyNameLayer(co, 392) else profileNameBadge(392),
       // badge bleu : voir profileNameBadge (certification approuvée uniquement)
 
       if (co != null) companyLineLayer([co.sector, co.city].where((e) => e.isNotEmpty).join(' · '), 426) else profileSubline(426),
-      if (co != null) companyLineLayer(co.tags.join(' '), 446, color: const Color(0xFF5A3FE0), h: 16) else profileSkillsOrCert(446, allowAsk: !isClient),
+      if (co != null) companyLineLayer(co.tags.join(' '), 446, color: const Color(0xFF5A3FE0), h: 16) else profileSkillsOrCert(446, allowAsk: !isClient && (demoContent || (me?.staff.isEmpty ?? true))),
       if (co != null) companyBioLayer(co, 470) else profileBio(470),
       gP(34, 512, 104, 30, gBox(color: Color(0xFFF4F3F6), radii: [15, 15, 15, 15])),
-      if (isView) companyStatLayer(34, 'Publications', viewProfile!.postsCount) else if (co != null) companyStatLayer(34, 'Offres', co.offers) else if (isClient) profileStat(34, 'Commandes', (ref) => ref.watch(ordersLoadedProvider) ? ref.watch(ordersProvider).length : null) else profileStat(34, 'Produits', (ref) => ref.watch(listingsLoadProvider) == 'ok' ? ref.watch(listingsProvider).where((l) => l.published).length : null),
+      if (isView) companyStatLayer(34, 'Publications', viewProfile!.postsCount) else if (co != null) companyStatLayer(34, 'Offres', co.offers) else if (isClient) profileStat(34, 'Commandes', (ref) { final n = ref.watch(ordersProvider).length; return ref.watch(ordersLoadedProvider) ? n : null; }) else profileStat(34, 'Produits', (ref) { final n = ref.watch(listingsProvider).where((l) => l.published).length; return ref.watch(listingsLoadProvider) == 'ok' ? n : null; }),
       gP(143, 512, 104, 30, gBox(color: Color(0xFFF4F3F6), radii: [15, 15, 15, 15])),
-      if (isView) companyStatLayer(143, 'Abonnés', viewProfile!.followersCount) else if (co != null) companyStatLayer(143, 'Concours', co.contests) else if (isClient) profileStat(143, 'Favoris', (ref) => ref.watch(favoritesLoadedProvider) == 'ok' ? ref.watch(favoritesProvider).length : null) else profileStat(143, 'Services', (ref) => ref.watch(listingsLoadProvider) == 'ok' ? ref.watch(listingsProvider).where((l) => l.published && l.category == 'Services').length : null),
+      if (isView) companyStatLayer(143, 'Abonnés', viewProfile!.followersCount) else if (co != null) companyStatLayer(143, 'Concours', co.contests) else if (isClient) profileStat(143, 'Favoris', (ref) { final n = ref.watch(favoritesProvider).length; return ref.watch(favoritesLoadedProvider) == 'ok' ? n : null; }) else profileStat(143, 'Services', (ref) { final n = ref.watch(listingsProvider).where((l) => l.published && l.category == 'Services').length; return ref.watch(listingsLoadProvider) == 'ok' ? n : null; }),
       gP(252, 512, 104, 30, gBox(color: Color(0xFFF4F3F6), radii: [15, 15, 15, 15])),
       if (isView) companyStatLayer(252, 'Suivis', viewProfile!.followingCount) else if (co != null) companyStatLayer(252, 'Besoins', co.needs) else if (isClient) profileStat(252, 'Abonnements', (ref) => ref.watch(followingIdsProvider)?.length) else profileStat(252, 'Projets', (ref) => rowsCount(ref, myProjectsProvider)),
       gP(24, 562, 29, 14, gText('Liens', 11.5, Color(0xFF57545F), weight: 500)),
@@ -111,7 +113,7 @@ class G_10 extends ConsumerWidget {
       gP(24, 624, 110, 70, gBox(image: 'assets/figma/img/768cf16e6d8103ad4296d6cc0fdf1af309f03817.png', fit: BoxFit.cover, radii: [22, 22, 22, 22]), show: demoContent),
       gP(140, 624, 110, 70, gBox(image: 'assets/figma/img/d5a96228e65dc2920e40cfac9b1205c2faee3caf.png', fit: BoxFit.cover, radii: [22, 22, 22, 22]), show: demoContent),
       gP(256, 624, 110, 70, gBox(image: 'assets/figma/img/3772da6500f3556774cbcb6de8b57dfe17455f32.png', fit: BoxFit.cover, radii: [22, 22, 22, 22]), show: demoContent),
-      Positioned.fill(child: GChoiceGroup(onChanged: (i) { if (i == 0) { isView ? onPrimary?.call() : (isCo ? goTo('/entreprise/profil') : editProfileDialog(context, ref)); } if (i == 1) { shareThis(); } }, chips: [GChip(24, 700, 200, 44, isView ? 'Écrire' : (isCo ? 'Modifier la fiche' : 'Modifier mon profil'), 12.5, 600), GChip(232, 700, 134, 44, 'Partager', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 22)),
+      Positioned.fill(child: GChoiceGroup(onChanged: (i) { if (i == 0) { isView ? onPrimary?.call() : (isCo ? goTo('/entreprise/profil') : editProfileDialog(context, ref)); } if (i == 1) { shareThis(); } }, sticky: true, chips: [GChip(24, 700, 200, 44, isView ? 'Écrire' : (isCo ? 'Modifier la fiche' : 'Modifier mon profil'), 12.5, 600), GChip(232, 700, 134, 44, 'Partager', 12.5, 500)], selected: 0, selFill: Color(0xFF111015), unselFill: Color(0x00FFFFFF), selText: Color(0xFFFFFFFF), unselText: Color(0xFF111015), radius: 22)),
       gP(232, 700, 134, 44, gBox(color: Color(0xB2FFFFFF), border: Color(0xFFFFFFFF), bw: 1, radii: [22, 22, 22, 22]), tap: shareThis),
       gP(22, 756, 346, 64, gBox(color: Color(0x6BFFFFFF), border: Color(0xFFFFFFFF), bw: 1.5, shadows: [BoxShadow(color: Color(0x29403366), offset: Offset(0, 10), blurRadius: 24, spreadRadius: 0)], backBlur: 26, radii: [32, 32, 32, 32])),
       gP(47.5, 777.5, 21, 21, const SizedBox.expand(), tap: () => gTab(context, '19')),

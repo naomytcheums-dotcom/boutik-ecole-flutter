@@ -1259,7 +1259,10 @@ class GChoiceGroup extends StatefulWidget {
     this.border,
     this.inter = false,
     this.onChanged,
+    this.sticky = false,
   });
+  /// Boutons d'action : le toucher n'en change pas l'apparence (pas de sélection).
+  final bool sticky;
   final ValueChanged<int>? onChanged;
   final List<GChip> chips;
   final int selected;
@@ -1288,14 +1291,14 @@ class _GChoiceGroupState extends State<GChoiceGroup> {
               excludeSemantics: true,
               onTap: () {
                 GSound.play('tick');
-                setState(() => sel = i);
+                if (!widget.sticky) setState(() => sel = i);
                 widget.onChanged?.call(i);
               },
               child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () {
                 GSound.play('tick');
-                setState(() => sel = i);
+                if (!widget.sticky) setState(() => sel = i);
                 widget.onChanged?.call(i);
               },
               child: Padding(padding: EdgeInsets.symmetric(vertical: _padY(widget.chips[i]), horizontal: _padX(widget.chips[i])), child: AnimatedContainer(

@@ -19,7 +19,7 @@ Emplacement (hors dépôt Git) : `C:\Users\NITROV15\Downloads\boutik_sauvegardes
 - `_cle\phrase_secrete_sauvegardes.txt` : phrase secrète de l'archive. **À copier dans un gestionnaire de mots de passe hors de cet ordinateur puis à ne pas laisser seule sur la machine** : sans elle l'archive est irrécupérable.
 - Permissions : le dossier n'est accessible qu'à l'utilisateur Windows, à SYSTEM et aux administrateurs locaux (héritage retiré).
 - **H13.1 (27/11)** : les 38 anciennes sauvegardes en clair (SQL du 4 au 17 novembre, JSON des 21 au 27 novembre) ont été regroupées dans `sauvegarde_historique_20261104_a_20261127.enc` (4,2 Mo, SHA-256 `5EDF730CC11DA65CEF186E2F1E4521A1D66356776DD28243AB3B24BD87ECBA72`). L'archive a été déchiffrée et les 38 fichiers comparés par SHA-256 à l'original (38/38 identiques) **avant** de supprimer les copies en clair. Deux sauvegardes de schéma vides (échecs anciens, 0 octet) ont aussi été supprimées. Il ne reste plus aucune sauvegarde de données en clair dans le dossier, hors `_cle`.
-- Une sauvegarde plus récente (`apres_h13`, produite le 27/11 par `backup_prod.ps1`) sert aux répétitions de migration ; elle est dans `C:\tmp\h131\bk_now` (temporaire, hors dépôt) et sera chiffrée avant toute publication.
+- `sauvegarde_20261127_avant_h131.enc` (64 Mo, SHA-256 `24349FC4332B26084B1450634F3143AF242AC0930EEE8746BA78FE90931D93C0`) : sauvegarde complète juste avant les migrations H13.1 (déchiffrement vérifié fichier par fichier ; restauration de contrôle : 12 OK, 1 écart attendu sur les noms de politiques, corrigé en production par la migration `20261129900000`).
 
 Les copies en clair des comptes Auth et des fichiers Storage ont été **supprimées** après vérification du déchiffrement (empreintes identiques).
 

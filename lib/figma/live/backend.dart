@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'auth.dart';
+import 'commerce_logic.dart' show cartIssuesMessage;
 import 'seller.dart' show Listing;
 import '../../data/demo/section_a_demo.dart' show CartLine;
 
@@ -1485,6 +1486,14 @@ class Backend {
     final sig = '${c.auth.currentUser!.id}|${items.map((e) => '${e['pack'] ?? e['title']}x${e['qty']}${e['variant_id'] ?? ''}').join(',')}|$home|$method|$addr|$code|${DateTime.now().millisecondsSinceEpoch ~/ 900000}';
     final key = sig.hashCode.toRadixString(16).padLeft(8, '0') + sig.length.toRadixString(16).padLeft(2, '0');
     try {
+      // contrôle sans écriture, ligne par ligne : tous les articles refusés sont nommés avec leur boutique (fonction absente : la commande décide seule)
+      try {
+        final check = await c.rpc('cart_check', params: {'p_items': items});
+        final msg = cartIssuesMessage(check);
+        if (msg != null) return {'error': msg, 'issues': (check as Map)['lines']};
+      } on PostgrestException catch (e) {
+        if (e.code != 'PGRST202' && e.code != '42883') return {'error': userMessage(e.message)};
+      }
       final r = await c.rpc('marketplace_checkout', params: {
         'p_items': items,
         'p_home': home,

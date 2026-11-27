@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../gen.dart' show gToast;
 import 'lots.dart' show formDialog;
+import 'org_contacts.dart' show TalentContactCard;
 import 'marche/marche_data.dart';
 import 'marche/marche_widgets.dart';
 import 'top100_data.dart';
@@ -18,6 +19,7 @@ class MyTalentScreen extends ConsumerWidget {
 
   static const _links = <(IconData, String, String, String)>[
     (Icons.fact_check_outlined, 'Comment mon score est calculé', 'Points par règle, historique, activités sans point ou non comptées.', '/top100/mon-score/points'),
+    (Icons.rule_folder_outlined, 'Cohérence de mon score', 'Écarts entre mon profil, mes preuves et mes points.', '/top100/mon-score/coherence'),
     (Icons.leaderboard_outlined, 'Mes positions', 'Mes rangs dans les classements publiés.', '/top100/mon-score/positions'),
     (Icons.visibility_outlined, 'Ma visibilité', 'Choisir si j’apparais et ce que je partage.', '/top100/mon-score/visibilite'),
     (Icons.school_outlined, 'Mon rattachement', 'Mon établissement et ma filière vérifiés.', '/top100/mon-score/rattachement'),
@@ -432,8 +434,6 @@ class _MyTalentEventsScreenState extends ConsumerState<MyTalentEventsScreen> {
       );
 }
 
-const _contactKinds = {'contact': 'Prise de contact', 'interview': 'Entretien', 'internship_offer': 'Offre de stage', 'job_offer': 'Offre d’emploi', 'mission_offer': 'Proposition de mission'};
-
 class MyTalentContactsScreen extends ConsumerWidget {
   const MyTalentContactsScreen({super.key});
 
@@ -443,12 +443,7 @@ class MyTalentContactsScreen extends ConsumerWidget {
         child: top100Async(ref.watch(myTalentContactsProvider), () => ref.invalidate(myTalentContactsProvider), (l) {
           if (l.isEmpty) return mNote('Aucune entreprise ne vous a contacté pour le moment.');
           return ListView(padding: const EdgeInsets.fromLTRB(16, 8, 16, 100), children: [
-            for (final c in l)
-              top100Card([
-                Text(tStr(c['sender']), style: mst(14.5, w: FontWeight.w800)),
-                Text('${_contactKinds[tStr(c['kind'])] ?? tStr(c['kind'])} · ${top100DateText(c['created_at'])}', style: mst(12, c: kGrey)),
-                if (tStr(c['message']).isNotEmpty) Padding(padding: const EdgeInsets.only(top: 4), child: Text(tStr(c['message']), style: mst(13))),
-              ]),
+            for (final c in l) TalentContactCard(request: c, onChanged: () => ref.invalidate(myTalentContactsProvider)),
           ]);
         }),
       );

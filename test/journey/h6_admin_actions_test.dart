@@ -325,10 +325,12 @@ void main() {
       await close(tester);
     });
 
-    testWidgets('« Exporter » produit un vrai fichier CSV des entrées affichées', (tester) async {
+    testWidgets('« Exporter » demande le CSV au serveur (permission, plafond, journal) et le copie tel quel', (tester) async {
       srv.tables['audit_log'] = [
         {'actor': 'Admin', 'action': 'Compte "suspendu"', 'target': 'Compte X', 'category': 'Comptes', 'level': 'Sensible', 'created_at': now},
       ];
+      // H13 : le fichier n'est plus reconstitué par l'application, il vient de `admin_export_csv` (testé en détail dans h13_admin_test)
+      srv.rpc['admin_export_csv'] = (_) => {'kind': 'audit', 'filename': 'journal-audit.csv', 'rows': 1, 'truncated': false, 'csv': 'Date;Acteur;Action;Cible;Catégorie;Niveau\r\n"x";"Admin";"Compte ""suspendu""";"Compte X";"Comptes";"Sensible"\r\n'};
       String? copied;
       tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.platform, (call) async {
         if (call.method == 'Clipboard.setData') copied = (call.arguments as Map)['text'] as String?;
@@ -340,7 +342,8 @@ void main() {
       // zone « Exporter » de la maquette (1009,134 → 1252,184), dans le repère de l'écran
       await tester.tapAt(tester.getTopLeft(find.byType(GScreen)) + const Offset(1130, 159));
       await settleReal(tester);
-      expect(copied, isNotNull, reason: 'le fichier CSV doit être produit');
+      expect(srv.callsOf('admin_export_csv').single.args['p_kind'], 'audit');
+      expect(copied, isNotNull, reason: 'le fichier CSV du serveur doit être livré');
       expect(copied, contains('Date;Acteur;Action;Cible;Catégorie;Niveau'));
       expect(copied, contains('"Compte ""suspendu"""'));
       await close(tester);

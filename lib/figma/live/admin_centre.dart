@@ -6,6 +6,7 @@ import '../i18n.dart' show Text;
 import '../nav.dart';
 import 'access.dart' show NotFoundView, roleKey, roleNames;
 import 'admin_access.dart';
+import 'admin_sante.dart' show ServiceHealthSection;
 import 'auth.dart';
 import 'backend.dart';
 import 'lots.dart' show confirmPickupDialog, kioskIncidentsDialog;
@@ -286,6 +287,7 @@ class AdminTeamScreen extends ConsumerWidget {
                   ? tpNote(Backend.ready ? 'Aucun indicateur : aucune permission de cette équipe ne vous est attribuée.' : 'Les indicateurs s’affichent une fois connecté au serveur.')
                   : Wrap(spacing: 12, runSpacing: 12, children: [for (final c in counters) _CounterCard(c)]),
             ),
+            if (team == 'tech' && a.hasAny(const {'tech.config', 'tech.maintenance', 'tech.logs', 'tech.integrations'})) const ServiceHealthSection(),
             if (a.isAdmin) ...[
               tpSection('Gestion'),
               _tile(icon: Icons.groups_2_outlined, title: 'Agents et permissions de l’équipe', body: 'Ajouter, modifier ou retirer des agents.', onTap: () => gOpen(context, '305')),

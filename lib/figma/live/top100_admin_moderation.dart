@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gen.dart' show gToast;
 import '../i18n.dart' show Text;
+import 'admin_exports.dart' show exportAdminCsv;
 import 'auth.dart';
 import 'tp_ui.dart';
 import 'top100_admin_common.dart';
@@ -202,6 +203,7 @@ class _DisputesState extends ConsumerState<Top100DisputesSection> {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       tpNote('L’étudiant peut contester une activité neutralisée. Vous ne pouvez pas décider de votre propre contestation ; une décision est définitive.'),
       TpChoice('Statut', {'open': 'Ouvertes', 'accepted': 'Acceptées', 'rejected': 'Rejetées', '': 'Toutes'}, _status, (v) => setState(() => _status = v)),
+      Align(alignment: Alignment.centerLeft, child: TpButton('Exporter la liste (CSV)', () => exportAdminCsv(context, 'contestations', filters: {if (_status.isNotEmpty) 'status': _status}), dark: false, compact: true, icon: Icons.download_rounded)),
       list.when(
         loading: top100Loading,
         error: (e, _) => top100Failed(top100Msg(e), () => ref.invalidate(top100DisputesProvider(_status))),

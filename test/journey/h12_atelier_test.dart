@@ -159,7 +159,7 @@ void main() {
       expect(liveActionRoute('acheter', 'listing'), LiveActionRoute.product);
       expect(liveActionRoute('reserver', 'listing'), LiveActionRoute.product);
       expect(liveActionRoute('postuler', 'opportunity'), LiveActionRoute.opportunity);
-      expect(liveActionRoute('postuler', 'mission'), isNull);
+      expect(liveActionRoute('postuler', 'mission'), LiveActionRoute.mission);
       expect(liveActionRoute('s_inscrire', 'event'), LiveActionRoute.event);
       expect(liveActionRoute('voter', 'project'), LiveActionRoute.project);
       expect(liveActionRoute('acheter', 'event'), isNull);
@@ -908,10 +908,11 @@ void main() {
       await fin(t);
     });
 
-    testWidgets('mission : aucun parcours existant -> bouton absent plutôt que décoratif', (t) async {
+    testWidgets('mission : depuis H13, « Postuler » ouvre la feuille de proposition (le bouton existe, il n’est plus absent)', (t) async {
       srv.rpc['live_settings_get'] = (_) => settings('postuler', 'mission', 'mi-1');
       await bouton(t);
-      expect(find.byKey(const Key('live-action-unique')), findsNothing);
+      expect(find.byKey(const Key('live-action-unique')), findsOneWidget);
+      expect(find.text('Postuler · Lampe artisanale'), findsOneWidget);
       await fin(t);
     });
 

@@ -8,6 +8,7 @@ import 'backend.dart';
 import 'docs_prestataire.dart' show downloadMissionInvoice, downloadSellerStatement;
 import 'lots.dart' show openNeedsDialog, missionDossierDialog, pickAndUpload, payStatusLabel;
 import 'missions.dart';
+import 'org_suivi.dart' show MissionReviewSection;
 
 /// Suivi des missions côté prestataire : écran 201 (missions retenues, règlements, propositions envoyées), écran 195 (preuve de livraison)
 /// et changement de mission des écrans 192 à 197. Toutes les données viennent des fonctions serveur my_missions, my_proposals, submit_milestone…
@@ -256,6 +257,7 @@ class _ProviderMissionsPanelState extends ConsumerState<ProviderMissionsPanel> {
               ]),
             ]),
           ),
+        if (m['status'] == 'closed') MissionReviewSection(missionId: '${m['id']}'),
         Wrap(spacing: 6, children: [
           TextButton(
             onPressed: () {

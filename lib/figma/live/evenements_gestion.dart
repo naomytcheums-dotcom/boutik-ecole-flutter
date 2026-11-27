@@ -8,6 +8,7 @@ import 'auth.dart';
 import 'backend.dart';
 import 'marche/marche_data.dart';
 import 'marche/marche_widgets.dart';
+import 'ranking_h13.dart' show EventAttendanceStudentBlock, showEventAttendanceSheet;
 
 /// Événements officiels : « Mes événements » (inscriptions et reçus de toute personne connectée) et gestion (création, modification,
 /// annulation, inscrits, remboursements) pour le responsable de département, la direction, la finance et l'administration.
@@ -100,6 +101,7 @@ class MyEventsScreen extends ConsumerWidget {
                       if (cancelled && '${x['cancel_reason'] ?? ''}'.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 4), child: Text('Motif : ${x['cancel_reason']}', style: mst(12, c: kRed))),
                       if (cancelled && paid && refund == 'to_refund') Padding(padding: const EdgeInsets.only(top: 4), child: Text('Remboursement en cours de traitement par la finance.', style: mst(12, w: FontWeight.w600, c: const Color(0xFF8F5400)))),
                       if (refund == 'refunded') Padding(padding: const EdgeInsets.only(top: 4), child: Text('Remboursé.', style: mst(12, w: FontWeight.w600, c: kGreen))),
+                      if (!cancelled) EventAttendanceStudentBlock(eventId: '${x['event']}'),
                       if (!cancelled && future && !paid) Padding(padding: const EdgeInsets.only(top: 10), child: mButton('Annuler mon inscription', () => _unregister(context, ref, x), dark: false)),
                       if (!cancelled && future && paid) Padding(padding: const EdgeInsets.only(top: 6), child: Text('Inscription payée : pour l’annuler et demander un remboursement, contactez la finance depuis la messagerie de paiement.', style: mst(12, c: kGrey))),
                     ]));
@@ -196,6 +198,7 @@ class EventsManageScreen extends ConsumerWidget {
                 const SizedBox(height: 10),
                 Wrap(spacing: 8, runSpacing: 8, children: [
                   mButton('Inscrits', () => _registrants(context, ref, e, canRefund), dark: false),
+                  if (!cancelled && canCreate && (e['mine'] == true || const {'direction', 'admin'}.contains(role))) mButton('Pointage', () => showEventAttendanceSheet(context, e), dark: false),
                   if (editable) mButton('Modifier', () => _form(context, ref, e), dark: false),
                   if (editable) mButton('Annuler', () => _cancel(context, ref, e), dark: false),
                 ]),

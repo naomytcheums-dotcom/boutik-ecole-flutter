@@ -471,6 +471,11 @@ class _OrderCard extends ConsumerWidget {
               ref.read(serverSellerOrdersProvider.notifier).refresh();
             }, dark: false),
           ),
+        TextButton(
+          style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: const Size(48, 48), alignment: Alignment.centerLeft),
+          onPressed: () => context.push('/commandes/suivi/${Uri.encodeComponent(o.id)}'),
+          child: const Text('Historique et suivi'),
+        ),
         if (o.status >= 3)
           Padding(
             padding: const EdgeInsets.only(top: 6),

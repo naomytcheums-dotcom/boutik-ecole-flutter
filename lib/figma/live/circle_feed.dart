@@ -196,7 +196,7 @@ class CircleFeed extends ConsumerWidget {
   }
 }
 
-/// « Voir plus » : relit le fil avec la limite supérieure du serveur (60 publications).
+/// « Voir plus » : page suivante du fil par curseur (date, identifiant), sans doublon.
 class _MoreButton extends ConsumerStatefulWidget {
   const _MoreButton();
   @override

@@ -10,6 +10,7 @@ import '../nav.dart' show gOpen;
 import 'auth.dart';
 import 'backend.dart';
 import 'access.dart' show roleKey;
+import 'admin_exports.dart' show exportAdminCsv;
 import 'download_stub.dart' if (dart.library.js_interop) 'download_web.dart';
 import 'encadrement.dart' show addMentorDialog, productionStatus;
 import 'evenements_gestion.dart' show EventsManageScreen;
@@ -1218,7 +1219,7 @@ class DepartmentAttachScreen extends ConsumerWidget {
     return TpPage(
       title: 'Rattachement des comptes',
       subtitle: 'Un compte Département appartient à un seul département',
-      actions: [TpRound(icon: Icons.link_rounded, label: 'Inviter un responsable', onTap: () => inviteDepartmentLeader(context, ref)), TpRound(icon: Icons.history_rounded, label: 'Historique', onTap: () => history(context))],
+      actions: [TpRound(icon: Icons.link_rounded, label: 'Inviter un responsable', onTap: () => inviteDepartmentLeader(context, ref)), TpRound(icon: Icons.download_rounded, label: 'Exporter la file (CSV)', onTap: () => exportAdminCsv(context, 'rattachements')), TpRound(icon: Icons.history_rounded, label: 'Historique', onTap: () => history(context))],
       children: [
         DeptData(const DeptCall('admin_dept_unassigned_accounts'), (u) {
           final suggestions = {for (final x in deptList(u)) '${x['id']}': x};

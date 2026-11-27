@@ -5,6 +5,7 @@ import 'package:boutik_ecole/figma/live/account_menu.dart' show accountMenuEntri
 import 'package:boutik_ecole/figma/live/admin_access.dart';
 import 'package:boutik_ecole/figma/live/admin_centre.dart';
 import 'package:boutik_ecole/figma/live/admin_equipes.dart';
+import 'package:boutik_ecole/figma/live/admin_sante.dart' show ServiceHealth, adminServiceHealthProvider;
 import 'package:boutik_ecole/figma/live/auth.dart';
 import 'package:boutik_ecole/figma/live/backend.dart';
 import 'package:boutik_ecole/figma/live/espace.dart' show rubriqueDe, rubriquesPour;
@@ -304,10 +305,13 @@ void main() {
     });
 
     testWidgets('états vide et erreur des indicateurs', (t) async {
-      await monter(t, const AdminTeamScreen(team: 'tech'), compte: _staff('Support'), overrides: [access(_agent({'tech': {'tech.logs'}})), dashboard(const [])]);
+      // la tuile « Santé des services » de la console technique a sa propre lecture et son propre « Réessayer » (h13_admin_test.dart)
+      final sante = adminServiceHealthProvider.overrideWith((ref) async => const <ServiceHealth>[]);
+      await monter(t, const AdminTeamScreen(team: 'tech'), compte: _staff('Support'), overrides: [access(_agent({'tech': {'tech.logs'}})), dashboard(const []), sante]);
       expect(find.textContaining('Aucun indicateur'), findsOneWidget);
       await monter(t, const AdminTeamScreen(team: 'tech'), compte: _staff('Support'), overrides: [
         access(_agent({'tech': {'tech.logs'}})),
+        sante,
         adminTeamDashboardProvider.overrideWith((ref, team) async => throw Exception('Réservé aux agents de cette équipe')),
       ]);
       expect(find.textContaining('Réservé aux agents'), findsOneWidget);

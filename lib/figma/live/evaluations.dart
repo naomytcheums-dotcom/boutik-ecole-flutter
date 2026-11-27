@@ -7,6 +7,7 @@ import '../gen.dart' show gToast;
 import '../i18n.dart' show Text;
 import 'auth.dart';
 import 'backend.dart';
+import 'evaluations_etat.dart';
 import 'marche/marche_data.dart';
 import 'marche/marche_widgets.dart';
 
@@ -187,7 +188,7 @@ List<Widget> evaluationResultBlocks(Map<String, dynamic> d) {
 class AssessmentsScreen extends ConsumerWidget {
   const AssessmentsScreen({super.key});
 
-  Widget _quota(BuildContext context, WidgetRef ref) => ref.watch(assessmentQuotaProvider).when(
+  Widget _quota(BuildContext context, WidgetRef ref, bool? providerReady) => ref.watch(assessmentQuotaProvider).when(
         loading: _loading,
         error: (e, _) => _error(ref, e, assessmentQuotaProvider),
         data: (q) {
@@ -215,7 +216,9 @@ class AssessmentsScreen extends ConsumerWidget {
                 ]),
                 const SizedBox(height: 6),
                 Text('Les demandes ne peuvent pas être envoyées tant qu’aucun fournisseur n’est actif. Votre évaluation gratuite reste intacte.', style: mst(12.5, c: kGrey).copyWith(height: 1.4)),
-              ]),
+              ])
+            else if (providerReady == false)
+              assessmentNotConfiguredCard(),
             _card([
               Text('Évaluations supplémentaires', style: mst(15, w: FontWeight.w800)),
               const SizedBox(height: 6),
@@ -225,13 +228,13 @@ class AssessmentsScreen extends ConsumerWidget {
         },
       );
 
-  Future<void> _ask(BuildContext context, WidgetRef ref, Map<String, dynamic> family, Map<String, dynamic>? quota) async {
+  Future<void> _ask(BuildContext context, WidgetRef ref, Map<String, dynamic> family, Map<String, dynamic>? quota, bool? providerReady) async {
     final done = await showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(8))),
-      builder: (c) => _RequestSheet(family: family, quota: quota),
+      builder: (c) => _RequestSheet(family: family, quota: quota, providerReady: providerReady),
     );
     if (done == true) {
       ref.invalidate(assessmentQuotaProvider);
@@ -242,11 +245,12 @@ class AssessmentsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final quota = ref.watch(assessmentQuotaProvider).value;
+    final ready = assessmentProviderReady(ref.watch(assessmentReadinessProvider));
     return MarchePage(
       title: 'Évaluations',
       child: ListView(padding: const EdgeInsets.only(bottom: 90), children: [
         const SizedBox(height: 8),
-        _quota(context, ref),
+        _quota(context, ref, ready),
         ref.watch(assessmentInvitationsProvider).when(
               loading: () => const SizedBox.shrink(),
               error: (e, _) => mNote('Invitations indisponibles : ${e is EvaluationException ? e : Backend.userMessage('$e')}'),
@@ -263,7 +267,7 @@ class AssessmentsScreen extends ConsumerWidget {
               error: (e, _) => _error(ref, e, assessmentRequestsProvider),
               data: (l) => l.isEmpty
                   ? mNote('Aucune évaluation pour le moment.')
-                  : Column(children: [for (final r in l) _RequestCard(r)]),
+                  : Column(children: [for (final r in l) _RequestCard(r, providerReady: ready)]),
             ),
         mSectionTitle('Familles de métiers'),
         ref.watch(assessmentFamiliesProvider).when(
@@ -277,7 +281,7 @@ class AssessmentsScreen extends ConsumerWidget {
                           button: true,
                           label: '${f['label']}',
                           child: InkWell(
-                            onTap: () => _ask(context, ref, f, quota),
+                            onTap: () => _ask(context, ref, f, quota, ready),
                             child: Container(
                               margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                               constraints: const BoxConstraints(minHeight: 48),
@@ -300,9 +304,10 @@ class AssessmentsScreen extends ConsumerWidget {
 }
 
 class _RequestSheet extends ConsumerStatefulWidget {
-  const _RequestSheet({required this.family, required this.quota});
+  const _RequestSheet({required this.family, required this.quota, this.providerReady});
   final Map<String, dynamic> family;
   final Map<String, dynamic>? quota;
+  final bool? providerReady;
   @override
   ConsumerState<_RequestSheet> createState() => _RequestSheetState();
 }
@@ -349,14 +354,20 @@ class _RequestSheetState extends ConsumerState<_RequestSheet> {
   @override
   Widget build(BuildContext context) {
     final noQuota = widget.quota == null;
+    final notConfigured = widget.providerReady == false;
     final canPay = !_free && _extra['available'] == true;
-    final blocked = noQuota || (!_free && !canPay);
+    final blocked = noQuota || notConfigured || (!_free && !canPay);
     return Padding(
       padding: EdgeInsets.fromLTRB(20, 20, 20, 20 + MediaQuery.of(context).viewInsets.bottom),
       child: SingleChildScrollView(
         child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text('${widget.family['label']}', style: mst(18, w: FontWeight.w800)),
           const SizedBox(height: 4),
+          if (notConfigured)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 6),
+              child: Text('Fournisseur non configuré : aucune demande ne peut partir pour le moment. Votre évaluation gratuite reste intacte.', style: mst(13, w: FontWeight.w700, c: kRed).copyWith(height: 1.4)),
+            ),
           Text(
             noQuota
                 ? 'Votre quota n’a pas pu être lu : réessayez avant de lancer une évaluation.'
@@ -406,8 +417,9 @@ class _RequestSheetState extends ConsumerState<_RequestSheet> {
 }
 
 class _RequestCard extends ConsumerWidget {
-  const _RequestCard(this.r);
+  const _RequestCard(this.r, {this.providerReady});
   final Map<String, dynamic> r;
+  final bool? providerReady;
   String get _requestId => '${r['id']}';
 
   Future<void> _openProvider(BuildContext context, String url) async {
@@ -422,11 +434,16 @@ class _RequestCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final resultId = r['result_id'];
     final humain = r['validation_status'] == 'validation_humaine_requise';
+    final phase = assessmentPhase(r, providerReady: providerReady);
+    final detail = assessmentPhaseDetail(r, providerReady: providerReady);
+    final provider = assessmentProviderLine(r);
     return _card([
       Text('${r['family_label']}', style: mst(15, w: FontWeight.w800)),
       Text('${assessmentModes[r['mode']] ?? r['mode']} · ${_date(r['created_at'])}', style: mst(12, c: kGrey)),
       const SizedBox(height: 4),
-      Text(assessmentStatusLabel('${r['status']}'), style: mst(12.5, w: FontWeight.w700, c: kViolet)),
+      Text(assessmentStatusLabel('${r['status']}'), style: mst(12.5, w: FontWeight.w700, c: assessmentPhaseColor(phase))),
+      if (detail != null) Text(detail, style: mst(12.5, w: phase == AssessmentPhase.notConfigured ? FontWeight.w700 : FontWeight.w500, c: phase == AssessmentPhase.notConfigured ? kRed : kGrey).copyWith(height: 1.4)),
+      if (provider != null) Text(provider, style: mst(12, c: kGrey)),
       if ('${r['status_note'] ?? ''}'.isNotEmpty) Text('${r['status_note']}', style: mst(12.5, c: kGrey)),
       if (humain) Text('Validation humaine requise', style: mst(12.5, w: FontWeight.w700, c: kRed)),
       if ('${r['candidate_url'] ?? ''}'.startsWith('https://'))
@@ -709,7 +726,7 @@ class AssessmentProvidersAdminScreen extends ConsumerWidget {
       builder: (c) => AlertDialog(
         title: Text(status == 'actif' ? 'Activer ce fournisseur ?' : 'Suspendre ce fournisseur ?'),
         content: Text(status == 'actif'
-            ? 'Les demandes des candidats seront envoyées à « ${p['name']} ». Le serveur refuse l’activation sans test d’intégration réussi.'
+            ? 'Les demandes des candidats seront envoyées à « ${p['name']} ». Le serveur refuse l’activation sans test d’intégration réussi, et exige votre double authentification si elle est activée sur votre compte.'
             : 'Plus aucune demande ne sera envoyée à « ${p['name']} ».'),
         actions: [TextButton(onPressed: () => Navigator.pop(c, false), child: Text('Retour')), TextButton(onPressed: () => Navigator.pop(c, true), child: Text('Confirmer'))],
       ),
@@ -722,10 +739,23 @@ class AssessmentProvidersAdminScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => MarchePage(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final health = {
+      for (final h in (ref.watch(assessmentReadinessProvider).value?['providers'] as List? ?? const []))
+        if (h is Map) '${h['code']}': Map<String, dynamic>.from(h),
+    };
+    return MarchePage(
         title: 'Fournisseurs d’évaluation',
         child: ListView(padding: const EdgeInsets.only(bottom: 90), children: [
           const SizedBox(height: 8),
+          const AssessmentHealthPanel(),
+          _card([
+            mButton('Enregistrer un fournisseur', () async {
+              if (await showAssessmentRegisterSheet(context)) ref.invalidate(assessmentProvidersAdminProvider);
+            }, dark: false),
+            mButton('Journal d’envoi', () => showAssessmentDispatchLog(context), dark: false),
+            mButton('Validation humaine et contestations', () => openAssessmentReview(context), dark: false),
+          ]),
           ref.watch(assessmentProvidersAdminProvider).when(
                 loading: _loading,
                 error: (e, _) => _error(ref, e, assessmentProvidersAdminProvider),
@@ -744,7 +774,14 @@ class AssessmentProvidersAdminScreen extends ConsumerWidget {
                                   : 'Aucun test d’intégration enregistré : activation impossible.',
                               style: mst(12.5, c: kGrey),
                             ),
+                            Text(assessmentHealthLine(health['${p['code']}']), style: mst(12.5, c: kGrey).copyWith(height: 1.4)),
                             const SizedBox(height: 8),
+                            mButton('Enregistrer un test d’intégration', () async {
+                              if (await showAssessmentTestDialog(context, p)) {
+                                ref.invalidate(assessmentProvidersAdminProvider);
+                                ref.invalidate(assessmentReadinessProvider);
+                              }
+                            }, dark: false),
                             if (p['status'] != 'actif') mButton('Activer', () => _setStatus(context, ref, p, 'actif'), dark: false),
                             if (p['status'] == 'actif') mButton('Suspendre', () => _setStatus(context, ref, p, 'suspendu'), dark: false),
                           ]),
@@ -752,4 +789,5 @@ class AssessmentProvidersAdminScreen extends ConsumerWidget {
               ),
         ]),
       );
+  }
 }

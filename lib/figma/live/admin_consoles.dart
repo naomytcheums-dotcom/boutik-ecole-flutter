@@ -2,14 +2,15 @@ import 'package:flutter/material.dart' hide Text;
 import '../i18n.dart' show Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../gen.dart' show gDialog, gToast;
+import '../gen.dart' show gDialog;
 import 'admin.dart';
 import 'audit.dart' show levelInk;
 import 'auth.dart';
 import 'backend.dart';
 import 'console.dart';
 import 'entreprise.dart' show TableRows, dateCourte;
-import 'download_stub.dart' if (dart.library.js_interop) 'download_web.dart';
+import 'admin_exports.dart' show exportAdminCsv;
+import 'order_tracking.dart' show adminLabelForState;
 import 'ops.dart';
 import 'review.dart';
 import 'store.dart' show IntV, StrV, fcfa, ordersProvider;
@@ -169,6 +170,8 @@ class ModerationQueue extends ConsumerWidget {
 final adminOrdersProvider = NotifierProvider<RpcRows, List<Map<String, dynamic>>?>(() => RpcRows('admin_orders', const {'p_limit': 200}));
 
 String adminOrderStatus(Map<String, dynamic> o) {
+  // matrice d'états du serveur (migration 20261128030100) : la même que celle de l'acheteur et du vendeur
+  if (o['state'] is String) return adminLabelForState(o['state'] as String);
   if (o['cancelled'] == true) return 'Annulée';
   if (o['paid'] != true) return 'En attente de paiement';
   return const ['Confirmée', 'En préparation', 'Expédiée', 'Livrée'][((o['status'] as num?)?.toInt() ?? 0).clamp(0, 3)];
@@ -357,18 +360,9 @@ class AuditTable extends ConsumerWidget {
   }
 }
 
-String _csv(String v) => '"${v.replaceAll('"', '""')}"';
-
-/// « Exporter » : enregistre un fichier CSV des entrées affichées (téléchargement dans le navigateur, copie dans le presse-papiers ailleurs).
-Future<void> exportAuditCsv(BuildContext context, WidgetRef ref) async {
-  final rows = auditServerRows(ref);
-  if (rows == null || ref.read(auditServerProvider.notifier).error) return gToast(context, 'Journal indisponible : rien à exporter.');
-  if (rows.isEmpty) return gToast(context, 'Aucune entrée à exporter pour ce filtre.');
-  final b = StringBuffer('Date;Acteur;Action;Cible;Catégorie;Niveau\r\n');
-  for (final r in rows) {
-    b.write('${[r['date'], r['actor'], r['action'], r['target'], r['cat'], r['level']].map((v) => _csv(v!)).join(';')}\r\n');
-  }
-  final downloaded = await saveTextFile('journal-audit.csv', b.toString(), 'text/csv');
-  if (!context.mounted) return;
-  gToast(context, downloaded ? '${rows.length} entrée${rows.length > 1 ? 's' : ''} exportée${rows.length > 1 ? 's' : ''} (journal-audit.csv)' : '${rows.length} entrée${rows.length > 1 ? 's' : ''} copiée${rows.length > 1 ? 's' : ''} dans le presse-papiers (CSV)');
+/// « Exporter » : le serveur construit le CSV (permission du journal, plafond de lignes, limite de débit, ligne au journal d'audit) avec l'onglet et la recherche de l'écran.
+Future<void> exportAuditCsv(BuildContext context, WidgetRef ref) {
+  final cats = _auditTabs[ref.read(globalAuditTabProvider).clamp(0, _auditTabs.length - 1)];
+  final q = ref.read(globalAuditQueryProvider).trim();
+  return exportAdminCsv(context, 'audit', filters: {if (cats != null) 'categories': cats.toList(), if (q.isNotEmpty) 'q': q});
 }

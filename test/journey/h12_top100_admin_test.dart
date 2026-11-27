@@ -584,7 +584,9 @@ void main() {
       final c = srv.callsOf('admin_talent_event_neutralize').single.args;
       expect(c['p_event'], 7);
       expect(c['p_reason'], 'Ventes croisées entre comptes liés');
-      expect(srv.callsOf('admin_talent_events_list').single.args['p_user'], _uid);
+      // la liste est relue après la neutralisation (invalidation voulue) : on vérifie que la demande vise bien l'étudiant, sans compter les relectures
+      expect(srv.callsOf('admin_talent_events_list'), isNotEmpty);
+      expect(srv.callsOf('admin_talent_events_list').every((c) => c.args['p_user'] == _uid), isTrue);
       await fin(t);
     });
 

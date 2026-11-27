@@ -148,15 +148,69 @@ final reelsLoadErrorProvider = NotifierProvider<ReelsLoadError, bool>(ReelsLoadE
 class ReelsNotifier extends Notifier<List<Reel>?> {
   static const pageSize = 30, maxLimit = 60;
   int _limit = pageSize;
+  // pagination par curseur (circle_feed_page) : active après une première page suivante lue avec succès
+  bool _cursorMode = false, _hasMore = true;
 
-  /// Vrai quand la première page est pleine et qu'une lecture plus large (60 au plus, limite du serveur) est possible.
-  bool get canLoadMore => _limit < maxLimit && (state?.length ?? 0) >= _limit;
+  /// Vrai quand la page est pleine et qu'une page plus ancienne peut exister (curseur), ou, sur un serveur sans pagination, qu'une lecture plus large (60 au plus) est possible.
+  bool get canLoadMore => _cursorMode ? _hasMore : (_limit < maxLimit && (state?.length ?? 0) >= _limit);
 
-  /// « Voir plus » : relit le fil avec la limite supérieure ; en cas d'échec, la limite précédente est rétablie.
+  /// Curseur (date, identifiant) de la plus ancienne publication non mise en avant déjà affichée : une publication mise en avant peut être ancienne et ne doit pas faire sauter des récentes.
+  ({String at, String id})? _cursor(List<Reel> l) {
+    Reel? oldest;
+    for (final r in l.where((r) => !r.boosted && r.publishedAt != null)) {
+      final o = oldest;
+      if (o == null || r.publishedAt!.isBefore(o.publishedAt!) || (r.publishedAt!.isAtSameMomentAs(o.publishedAt!) && r.id.compareTo(o.id) < 0)) oldest = r;
+    }
+    return oldest == null ? null : (at: oldest.publishedAt!.toUtc().toIso8601String(), id: oldest.id);
+  }
+
+  /// « Voir plus » : page suivante par curseur, sans doublon ni trou ; serveur sans pagination : relecture avec la limite supérieure (en cas d'échec, la limite précédente est rétablie).
   Future<void> loadMore() async {
+    final cur = state ?? const <Reel>[];
+    final c = _cursor(cur);
+    if (c != null) {
+      final r = await Backend.rpc('circle_feed_page', {'p_limit': pageSize, 'p_before_at': c.at, 'p_before_id': c.id, 'p_scope': 'all'}, timeout: const Duration(seconds: 20));
+      if (!ref.mounted) return;
+      if (r.error == null && r.data is List) {
+        final List<Reel> page;
+        try {
+          page = [for (final x in r.data as List) Reel.fromRow(x as Map, _mediaUrl)];
+        } catch (_) {
+          return;
+        }
+        final known = {for (final x in cur) x.id};
+        _cursorMode = true;
+        _hasMore = (r.data as List).length >= pageSize;
+        state = _rank([...cur, for (final x in page) if (!known.contains(x.id)) x]);
+        return;
+      }
+    }
     final before = _limit;
     _limit = maxLimit;
     if (!await refresh()) _limit = before;
+  }
+
+  static String _mediaUrl(String p) {
+    try {
+      return Supabase.instance.client.storage.from('post-media').getPublicUrl(p);
+    } catch (_) {
+      return '';
+    }
+  }
+
+  // signaux réels de la personne : créateurs suivis, centres d'intérêt et affinités déduits de ce qu'elle a aimé ou enregistré
+  List<Reel> _rank(List<Reel> reels) {
+    final following = ref.read(followingIdsProvider) ?? const <String>{};
+    final interests = <String, double>{}, affinity = <String, double>{};
+    for (final r in reels) {
+      if (!(r.liked || r.saved)) continue;
+      for (final t in r.tags) {
+        final k = t.toLowerCase();
+        interests[k] = ((interests[k] ?? 0) + 0.25).clamp(0.0, 1.0);
+      }
+      if (r.authorId.isNotEmpty) affinity[r.authorId] = ((affinity[r.authorId] ?? 0) + 0.3).clamp(0.0, 1.0);
+    }
+    return rankReels(reels, DateTime.now(), signals: FeedSignals(followed: following, interests: interests, affinity: affinity));
   }
 
   /// « Réessayer » après un échec de chargement : repasse à l'état « chargement » puis relit le fil.
@@ -197,34 +251,16 @@ class ReelsNotifier extends Notifier<List<Reel>?> {
       if (state == null) ref.read(reelsLoadErrorProvider.notifier).set(true);
       return false;
     }
-    String url(String p) {
-      try {
-        return Supabase.instance.client.storage.from('post-media').getPublicUrl(p);
-      } catch (_) {
-        return '';
-      }
-    }
-
     final List<Reel> reels;
     try {
-      reels = [for (final x in r.data as List) Reel.fromRow(x as Map, url)];
+      reels = [for (final x in r.data as List) Reel.fromRow(x as Map, _mediaUrl)];
     } catch (_) {
       if (state == null) ref.read(reelsLoadErrorProvider.notifier).set(true);
       return false;
     }
-    // signaux réels de la personne : créateurs suivis, centres d'intérêt et affinités déduits de ce qu'elle a aimé ou enregistré
-    final following = ref.read(followingIdsProvider) ?? const <String>{};
-    final interests = <String, double>{}, affinity = <String, double>{};
-    for (final r in reels) {
-      if (!(r.liked || r.saved)) continue;
-      for (final t in r.tags) {
-        final k = t.toLowerCase();
-        interests[k] = ((interests[k] ?? 0) + 0.25).clamp(0.0, 1.0);
-      }
-      if (r.authorId.isNotEmpty) affinity[r.authorId] = ((affinity[r.authorId] ?? 0) + 0.3).clamp(0.0, 1.0);
-    }
+    _cursorMode = false;
     ref.read(reelsLoadErrorProvider.notifier).set(false);
-    state = rankReels(reels, DateTime.now(), signals: FeedSignals(followed: following, interests: interests, affinity: affinity));
+    state = _rank(reels);
     ref.read(reelIndexProvider.notifier).clamp(reels.length);
     return true;
   }

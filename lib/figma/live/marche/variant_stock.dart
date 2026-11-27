@@ -1,26 +1,29 @@
 import 'package:flutter/material.dart' hide Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../gen.dart' show gToast;
 import '../../i18n.dart' show Text;
+import '../backend.dart' show Backend;
 import 'marche_data.dart';
 import 'marche_widgets.dart';
 
 /// Stock par variante (migrations 20261127200000 et 20261127200100) : taille, couleur… chacune avec son stock et son seuil d'alerte.
-/// Aucun prix par variante : toutes se vendent au prix de l'annonce. Tout vient du serveur ; un refus ou une panne est affiché tel quel,
-/// jamais une confirmation. Une annonce sans variante garde le stock global actuel.
+/// Prix propre OPTIONNEL par variante (migration 20261128030000) : sans prix, la variante se vend au prix de l'annonce ; avec un prix, la commande utilise
+/// celui de la variante (le serveur le relit, le client n'envoie jamais de prix). Image facultative par variante (compartiment public `listing-images`).
+/// Tout vient du serveur ; un refus ou une panne est affiché tel quel, jamais une confirmation. Une annonce sans variante garde le stock global actuel.
 
 /// Variante telle que la renvoie le serveur : lecture publique (état seulement, `left` quand il en reste peu) ou lecture du vendeur (stock exact).
 class StockVariant {
-  const StockVariant({required this.id, required this.label, required this.state, required this.active, this.attributes = const {}, this.sku, this.stock, this.threshold, this.left});
+  const StockVariant({required this.id, required this.label, required this.state, required this.active, this.attributes = const {}, this.sku, this.stock, this.threshold, this.left, this.price, this.effectivePrice, this.image, this.reserved});
   final String id, label;
 
   /// available | low | out
   final String state;
   final bool active;
   final Map<String, String> attributes;
-  final String? sku;
-  final int? stock, threshold, left;
+  final String? sku, image;
+  final int? stock, threshold, left, price, effectivePrice, reserved;
 
   bool get out => state == 'out';
   bool get low => state == 'low';
@@ -38,10 +41,17 @@ class StockVariant {
       stock: (j['stock'] as num?)?.toInt(),
       threshold: (j['low_threshold'] as num?)?.toInt(),
       left: (j['left'] as num?)?.toInt(),
+      price: (j['price'] as num?)?.toInt(),
+      effectivePrice: (j['effective_price'] as num?)?.toInt(),
+      image: j['image'] == null || '${j['image']}'.isEmpty ? null : '${j['image']}',
+      reserved: (j['reserved'] as num?)?.toInt(),
     );
   }
 
   String get attributesText => attributes.entries.map((e) => '${e.key} : ${e.value}').join(' · ');
+
+  /// Vrai quand la variante a son propre prix (sinon : prix de l'annonce).
+  bool get hasOwnPrice => price != null;
 }
 
 /// Message lisible d'un refus du serveur (les codes internes `variant_*` sont retirés).
@@ -86,11 +96,20 @@ class VariantPicker extends ConsumerWidget {
             Wrap(spacing: 8, children: [
               for (final x in list)
                 MChip(
-                  x.out ? '${x.label} · épuisée' : (x.low && x.left != null ? '${x.label} · plus que ${x.left}' : x.label),
+                  '${x.out ? '${x.label} · épuisée' : (x.low && x.left != null ? '${x.label} · plus que ${x.left}' : x.label)}${x.hasOwnPrice ? ' · ${mFcfa(x.price)}' : ''}',
                   selected: sel?.id == x.id,
                   onTap: () => x.out ? gToast(context, '« ${x.label} » est épuisée : choisissez une autre variante.') : onSelect(x),
                 ),
             ]),
+            if (sel != null && (sel.image != null || sel.attributes.isNotEmpty))
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Row(children: [
+                  if (sel.image != null) ClipRRect(borderRadius: BorderRadius.circular(8), child: SizedBox(width: 72, height: 72, child: MImage(mImageUrl(sel.image)))),
+                  if (sel.image != null) const SizedBox(width: 10),
+                  if (sel.attributes.isNotEmpty) Expanded(child: Text(sel.attributesText, style: mst(12.5, c: kGrey))),
+                ]),
+              ),
             if (sel != null && sel.low && sel.left != null) Padding(padding: const EdgeInsets.only(top: 2), child: Text('Derniers exemplaires : plus que ${sel.left} en stock.', style: mst(12.5, w: FontWeight.w700, c: const Color(0xFFB45309)))),
           ]),
         );
@@ -173,7 +192,7 @@ class _VariantStockSectionState extends State<VariantStockSection> {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text('Stock par variante', style: mst(15, w: FontWeight.w800)),
         const SizedBox(height: 4),
-        Text('Chaque variante (taille, couleur…) a son stock et son seuil d’alerte. Le prix reste celui de l’annonce. Dès qu’une variante est active, le stock de l’annonce est la somme des variantes.', style: mst(12, c: kGrey)),
+        Text('Chaque variante (taille, couleur…) a son stock, son seuil d’alerte, une image et un prix propre facultatifs. Sans prix propre, la variante se vend au prix de l’annonce. Dès qu’une variante est active, le stock de l’annonce est la somme des variantes.', style: mst(12, c: kGrey)),
         const SizedBox(height: 10),
         if (loading)
           const Padding(padding: EdgeInsets.all(12), child: Center(child: CircularProgressIndicator()))
@@ -190,10 +209,12 @@ class _VariantStockSectionState extends State<VariantStockSection> {
               decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), border: Border.all(color: kLine)),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Row(children: [
+                  if (v.image != null) Padding(padding: const EdgeInsets.only(right: 8), child: ClipRRect(borderRadius: BorderRadius.circular(6), child: SizedBox(width: 44, height: 44, child: MImage(mImageUrl(v.image))))),
                   Expanded(child: Text(v.label, style: mst(14, w: FontWeight.w700))),
                   Text(_badge(v), style: mst(12, w: FontWeight.w700, c: !v.active ? kGrey : (v.out ? kRed : (v.low ? const Color(0xFFB45309) : kGreen)))),
                 ]),
-                Text('Stock : ${v.stock ?? 0} · alerte à ${v.threshold ?? 0}${v.sku == null ? '' : ' · SKU ${v.sku}'}', style: mst(12, c: kGrey)),
+                Text('Stock : ${v.stock ?? 0}${(v.reserved ?? 0) > 0 ? ' (dont ${v.reserved} réservé(s) par des commandes non payées)' : ''} · alerte à ${v.threshold ?? 0}${v.sku == null ? '' : ' · SKU ${v.sku}'}', style: mst(12, c: kGrey)),
+                Text(v.hasOwnPrice ? 'Prix propre : ${mFcfa(v.price)}' : 'Prix : celui de l’annonce (${mFcfa(v.effectivePrice)})', style: mst(12, c: kGrey)),
                 if (v.attributes.isNotEmpty) Text(v.attributesText, style: mst(12, c: kGrey)),
                 Wrap(spacing: 8, crossAxisAlignment: WrapCrossAlignment.center, children: [
                   TextButton(style: TextButton.styleFrom(minimumSize: const Size(48, 48)), onPressed: () => _edit(v), child: const Text('Modifier')),
@@ -226,6 +247,8 @@ class _VariantDialogState extends State<_VariantDialog> {
   late final sku = TextEditingController(text: widget.variant?.sku ?? '');
   late final stock = TextEditingController(text: widget.variant == null ? '' : '${widget.variant!.stock ?? 0}');
   late final threshold = TextEditingController(text: '${widget.variant?.threshold ?? 3}');
+  late final price = TextEditingController(text: widget.variant?.price?.toString() ?? '');
+  late String? image = widget.variant?.image;
   bool busy = false;
   String? error;
 
@@ -236,7 +259,31 @@ class _VariantDialogState extends State<_VariantDialog> {
     sku.dispose();
     stock.dispose();
     threshold.dispose();
+    price.dispose();
     super.dispose();
+  }
+
+  Future<void> _pick() async {
+    final x = await ImagePicker().pickImage(source: ImageSource.gallery, maxWidth: 1600, imageQuality: 85);
+    if (x == null) return;
+    final n = x.name.toLowerCase();
+    final mime = x.mimeType ?? (n.endsWith('.png') ? 'image/png' : (n.endsWith('.webp') ? 'image/webp' : 'image/jpeg'));
+    final bytes = await x.readAsBytes();
+    if (bytes.length > 5 * 1024 * 1024) return setState(() => error = 'Image trop lourde (5 Mo maximum).');
+    setState(() {
+      busy = true;
+      error = null;
+    });
+    final r = await Backend.uploadPublic('listing-images', 'variantes', bytes, x.name, mime);
+    if (!mounted) return;
+    setState(() {
+      busy = false;
+      if (r.error != null) {
+        error = r.error;
+      } else if (r.url != null && r.url!.contains('/listing-images/')) {
+        image = Uri.decodeFull(r.url!.split('/listing-images/').last);
+      }
+    });
   }
 
   Future<void> _save() async {
@@ -253,11 +300,21 @@ class _VariantDialogState extends State<_VariantDialog> {
       st = int.tryParse(stock.text.trim());
       if (st == null || st < 0) return setState(() => error = 'Stock : un nombre entier, 0 ou plus.');
     }
+    int? pr;
+    if (price.text.trim().isNotEmpty) {
+      pr = int.tryParse(price.text.trim().replaceAll(RegExp(r'[\s.]'), ''));
+      if (pr == null || pr < 500 || pr > 100000000) return setState(() => error = 'Prix de la variante : de 500 à 100 000 000 FCFA (laissez vide pour garder le prix de l’annonce).');
+    }
+    final clearPrice = pr == null && widget.variant?.price != null;
+    final newImage = image != null && image != widget.variant?.image ? image : null;
+    final clearImage = image == null && widget.variant?.image != null;
+    final extra = pr != null || clearPrice || newImage != null || clearImage;
     setState(() {
       busy = true;
       error = null;
     });
-    final r = await marcheCall('variant_save', {
+    // sans prix ni image : appel historique ; sinon variant_upsert enregistre tout en une seule transaction
+    final r = await marcheCall(extra ? 'variant_upsert' : 'variant_save', {
       'p_listing': widget.listingId,
       'p_label': label.text.trim(),
       'p_attributes': a,
@@ -265,6 +322,10 @@ class _VariantDialogState extends State<_VariantDialog> {
       'p_threshold': th,
       if (widget.variant == null && st != null) 'p_stock': st,
       if (widget.variant != null) 'p_id': widget.variant!.id,
+      if (extra && pr != null) 'p_price': pr,
+      if (extra && clearPrice) 'p_clear_price': true,
+      if (extra && newImage != null) 'p_image': newImage,
+      if (extra && clearImage) 'p_clear_image': true,
     });
     if (!mounted) return;
     if (r.error != null) {
@@ -294,6 +355,16 @@ class _VariantDialogState extends State<_VariantDialog> {
             ],
             const SizedBox(height: 10),
             TextField(controller: threshold, keyboardType: TextInputType.number, decoration: _deco('Seuil d’alerte de stock bas')),
+            const SizedBox(height: 10),
+            TextField(controller: price, keyboardType: TextInputType.number, decoration: _deco('Prix propre en FCFA (facultatif)', hint: 'Vide : prix de l’annonce')),
+            const SizedBox(height: 10),
+            Row(children: [
+              if (image != null) Padding(padding: const EdgeInsets.only(right: 10), child: ClipRRect(borderRadius: BorderRadius.circular(6), child: SizedBox(width: 56, height: 56, child: MImage(mImageUrl(image))))),
+              Expanded(child: Wrap(spacing: 6, children: [
+                TextButton(onPressed: busy ? null : _pick, child: Text(image == null ? 'Ajouter une image' : 'Changer l’image')),
+                if (image != null) TextButton(onPressed: busy ? null : () => setState(() => image = null), child: const Text('Retirer')),
+              ])),
+            ]),
             if (error != null) Padding(padding: const EdgeInsets.only(top: 10), child: Text(error!, style: mst(13, w: FontWeight.w600, c: kRed))),
           ]),
         ),

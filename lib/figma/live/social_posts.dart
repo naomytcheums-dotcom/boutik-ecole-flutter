@@ -21,6 +21,7 @@ import 'download_stub.dart' if (dart.library.js_interop) 'download_web.dart' sho
 import 'reels.dart';
 import 'seller.dart' show Listing;
 import 'share.dart';
+import 'social_h13.dart' show editMyPost, editPostComment;
 import 'store.dart' show nowProvider;
 import 'talents.dart' show askText;
 
@@ -629,6 +630,8 @@ class _CommentsSheetState extends ConsumerState<_CommentsSheet> {
               ),
               if (c.mine) ...[
                 const SizedBox(width: 16),
+                GestureDetector(behavior: HitTestBehavior.opaque, onTap: () => editPostComment(context, ref, widget.postId, c), child: Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Text('Modifier', style: sty(11.5, w: FontWeight.w600, c: kGrey)))),
+                const SizedBox(width: 16),
                 GestureDetector(behavior: HitTestBehavior.opaque, onTap: () => _delete(c), child: Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Text('Supprimer', style: sty(11.5, w: FontWeight.w600, c: kGrey)))),
               ] else ...[
                 const SizedBox(width: 16),
@@ -893,6 +896,7 @@ Future<void> showPostMenu(BuildContext context, WidgetRef ref, Reel r) {
         if (r.authorId.isNotEmpty) item(ctx, Icons.person_outline, 'Voir le profil', () => gOpenProfile(context, r.authorId)),
         if (r.authorId != me) item(ctx, Icons.flag_outlined, 'Signaler', () => reportPost(context, ref, r), color: kLike),
         if (r.authorId.isNotEmpty && r.authorId != me) item(ctx, Icons.block, 'Bloquer cette personne', () => blockPostAuthor(context, ref, r), color: kLike),
+        if (r.authorId.isNotEmpty && r.authorId == me) item(ctx, Icons.edit_outlined, 'Modifier ma publication', () => editMyPost(context, ref, r)),
         if (r.authorId.isNotEmpty && r.authorId == me) item(ctx, Icons.delete_outline, 'Supprimer ma publication', () => deleteMyPost(context, ref, r), color: kLike),
         const SizedBox(height: 8),
       ])),

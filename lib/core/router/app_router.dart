@@ -60,8 +60,11 @@ import '../../figma/live/marche/marche_promotions.dart';
 import '../../figma/live/marche/marche_screens.dart';
 import '../../figma/live/marche/marche_vendeur.dart';
 import '../../figma/live/downloads.dart' show DownloadsScreen;
+import '../../figma/live/order_tracking.dart' show OrderTrackingListScreen, OrderTrackingScreen;
 import '../../figma/live/creator_analytics.dart' show CreatorAnalyticsScreen;
+import '../../figma/live/social_h13.dart' show CreatorProfileScreen;
 import '../../figma/live/replays.dart' show MyReplaysScreen, ReplayPlayerScreen, ReplaysScreen;
+import '../../figma/live/replay_quiz_editor.dart' show ReplayQuizEditorScreen;
 import '../../figma/live/atelier.dart' show AtelierScreen;
 import '../../figma/live/atelier_form.dart' show LivePrepareScreen;
 import '../../figma/live/top100_public.dart';
@@ -69,8 +72,11 @@ import '../../figma/live/top100_admin.dart' show Top100AdminScreen;
 import '../../figma/live/top100_admin_common.dart' show kRankingPerms;
 import '../../figma/live/top100_discovery.dart' show TalentDiscoveryScreen, TalentFavoritesScreen;
 import '../../figma/live/top100_student.dart';
+import '../../figma/live/ranking_h13.dart' show RankingExplainScreen, MyTalentConsistencyScreen;
 import '../../figma/live/passport_360.dart' show Passport360Screen;
 import '../../figma/live/talent_pool_org.dart' show TalentPoolOrgScreen;
+import '../../figma/live/org_contacts.dart' show OrgContactRequestsScreen;
+import '../../figma/live/org_suivi.dart' show OrgMissionsTrackingScreen;
 import '../../figma/live/evenements_gestion.dart';
 import '../../figma/live/accompagnement.dart';
 import '../../figma/live/client_space.dart' show MyReviewsScreen;
@@ -141,6 +147,8 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/etudiant/:id', builder: (_, s) => StudentProfileScreen(userId: s.pathParameters['id'] ?? '')),
     GoRoute(path: '/entreprise/equipe', builder: (_, _) => const CompanyGuard(useContext: true, child: CompanyMembersScreen())),
     GoRoute(path: '/entreprise/vivier', builder: (_, _) => const CompanyGuard(useContext: true, child: TalentPoolOrgScreen())),
+  GoRoute(path: '/entreprise/contacts', builder: (_, _) => const CompanyGuard(useContext: true, child: OrgContactRequestsScreen())),
+  GoRoute(path: '/entreprise/suivi-missions', builder: (_, _) => const CompanyGuard(useContext: true, child: OrgMissionsTrackingScreen())),
     GoRoute(path: '/discovery', builder: (_, _) => const CompanyGuard(useContext: true, child: TalentDiscoveryScreen())),
     GoRoute(path: '/discovery/favoris', builder: (_, _) => const CompanyGuard(useContext: true, child: TalentFavoritesScreen())),
     GoRoute(path: '/passeport', builder: (_, _) => const LoginGuard(child: Passport360Screen())),
@@ -197,10 +205,14 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/paiement', builder: (_, _) => const LoginGuard(child: PaymentChatScreen())),
     GoRoute(path: '/paiements', builder: (_, _) => const LoginGuard(child: MyPaymentsScreen())),
     GoRoute(path: '/marche/telechargements', builder: (_, _) => const LoginGuard(child: DownloadsScreen())),
+  GoRoute(path: '/commandes/suivi', builder: (_, _) => const LoginGuard(child: OrderTrackingListScreen())),
+  GoRoute(path: '/commandes/suivi/:number', builder: (_, s) => LoginGuard(child: OrderTrackingScreen(number: s.pathParameters['number'] ?? ''))),
     GoRoute(path: '/createur/statistiques', builder: (_, _) => const LoginGuard(child: CreatorAnalyticsScreen())),
+    GoRoute(path: '/profil-createur/:id', builder: (_, s) => CreatorProfileScreen(userId: s.pathParameters['id'] ?? '')),
     GoRoute(path: '/replays', builder: (_, _) => const ReplaysScreen()),
     GoRoute(path: '/atelier', builder: (_, state) => AtelierScreen(initialTab: int.tryParse(state.uri.queryParameters['tab'] ?? '') ?? 0)),
     GoRoute(path: '/atelier/preparer', builder: (_, state) => LoginGuard(child: LivePrepareScreen(liveId: state.uri.queryParameters['live'], startNow: state.uri.queryParameters['mode'] == 'now'))),
+    GoRoute(path: '/replay/:id/quiz', builder: (_, state) => LoginGuard(child: ReplayQuizEditorScreen(recordingId: state.pathParameters['id'] ?? ''))),
     GoRoute(path: '/replay/:id', builder: (_, state) => ReplayPlayerScreen(id: state.pathParameters['id'] ?? '', startAt: double.tryParse(state.uri.queryParameters['t'] ?? '') ?? 0)),
     GoRoute(path: '/mes-replays', builder: (_, _) => const LoginGuard(child: MyReplaysScreen())),
     GoRoute(path: '/top100', builder: (_, _) => const Top100HubScreen()),
@@ -213,10 +225,12 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/top100/plus-consultes', builder: (_, _) => const Top100MostViewedScreen()),
     GoRoute(path: '/top100/historique', builder: (_, _) => const Top100HistoryScreen()),
     GoRoute(path: '/top100/regles', builder: (_, _) => const Top100RulesScreen()),
+  GoRoute(path: '/top100/calcul', builder: (_, state) => RankingExplainScreen(period: state.uri.queryParameters['periode'] ?? '')),
     GoRoute(path: '/top100/verification', builder: (_, state) => Top100VerifyScreen(initialPeriod: state.uri.queryParameters['periode'] ?? '')),
     GoRoute(path: '/top100/talent/:id', builder: (_, state) => TalentPublicProfileScreen(userId: state.pathParameters['id'] ?? '')),
     GoRoute(path: '/top100/mon-score', builder: (_, _) => const LoginGuard(child: MyTalentScreen())),
-    GoRoute(path: '/top100/mon-score/points', builder: (_, _) => const LoginGuard(child: MyTalentExplainScreen())),
+    GoRoute(path: '/top100/mon-score/coherence', builder: (_, _) => const LoginGuard(child: MyTalentConsistencyScreen())),
+  GoRoute(path: '/top100/mon-score/points', builder: (_, _) => const LoginGuard(child: MyTalentExplainScreen())),
     GoRoute(path: '/top100/mon-score/positions', builder: (_, _) => const LoginGuard(child: MyRankingPositionsScreen())),
     GoRoute(path: '/top100/mon-score/visibilite', builder: (_, _) => const LoginGuard(child: MyTop100VisibilityScreen())),
     GoRoute(path: '/top100/mon-score/rattachement', builder: (_, _) => const LoginGuard(child: MyAffiliationScreen())),

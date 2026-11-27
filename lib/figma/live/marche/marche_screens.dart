@@ -560,8 +560,12 @@ class _ProductBodyState extends ConsumerState<_ProductBody> {
     final price = mInt(card['price']);
     final before = card['price_before'] == null ? null : mInt(card['price_before']);
     final flash = card['flash_price'] == null ? null : mInt(card['flash_price']);
-    final shown = flash ?? price;
-    final old = flash != null ? price : before;
+    // variante à prix propre : la commande utilise ce prix, sans la vente flash de l'annonce (le serveur relit le prix)
+    final chosenVariant = ref.watch(stockVariantsProvider(widget.id)).value?.where((x) => x.id == _variantId).firstOrNull;
+    final ownPrice = chosenVariant?.price;
+    final flashOn = flash != null && ownPrice == null;
+    final shown = ownPrice ?? flash ?? price;
+    final old = ownPrice != null ? null : (flash != null ? price : before);
     final stock = mInt(card['stock']);
     final variants = _list(d['variants']);
     final specs = Map<String, dynamic>.from((d['specs'] as Map?) ?? const {});
@@ -586,10 +590,10 @@ class _ProductBodyState extends ConsumerState<_ProductBody> {
           ]),
           const SizedBox(height: 6),
           Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            Text(mFcfa(shown), style: mst(22, w: FontWeight.w800, c: flash != null ? kRed : kInk)),
+            Text(mFcfa(shown), style: mst(22, w: FontWeight.w800, c: flashOn ? kRed : kInk)),
             if (old != null && old > shown) ...[const SizedBox(width: 10), Text(mFcfa(old), style: mst(14, c: kGrey).copyWith(decoration: TextDecoration.lineThrough))],
           ]),
-          if (flash != null) Padding(padding: const EdgeInsets.only(top: 6), child: Row(children: [const Icon(Icons.bolt_rounded, color: kRed, size: 18), Countdown(end: DateTime.parse('${card['flash_ends']}'), prefix: 'Vente flash : fin dans '), Text(' · ${mInt(card['flash_left'])} restant(s)', style: mst(12.5, c: kGrey))])),
+          if (flashOn) Padding(padding: const EdgeInsets.only(top: 6), child: Row(children: [const Icon(Icons.bolt_rounded, color: kRed, size: 18), Countdown(end: DateTime.parse('${card['flash_ends']}'), prefix: 'Vente flash : fin dans '), Text(' · ${mInt(card['flash_left'])} restant(s)', style: mst(12.5, c: kGrey))])),
           const SizedBox(height: 4),
           Text(stock <= 0 ? 'Épuisé' : (stock <= 5 ? 'Plus que $stock en stock' : 'En stock'), style: mst(13, w: FontWeight.w700, c: stock <= 0 ? kRed : (stock <= 5 ? const Color(0xFFB45309) : kGreen))),
           if (card['rating_avg'] != null) Text('★ ${card['rating_avg']} · ${mInt(card['rating_count'])} avis · ${mInt(card['sales'])} vendu(s)', style: mst(12.5, c: kGrey)),

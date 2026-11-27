@@ -241,7 +241,24 @@ class _MembersState extends ConsumerState<CompanyMembersScreen> {
   }
 }
 
-/// « Mes organisations » : invitations reçues et organisations dont je suis membre.
+/// Organisations de la personne (la sienne et celles où elle est membre ou invitée) avec droits et pastilles d'activité calculés par le serveur (migration 20261128063000).
+/// Fonction indisponible : repli sur la liste des appartenances, sans pastilles.
+final myOrganizationsProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
+  ref.watch(authProvider.select((a) => a.current?.serverId));
+  final r = await marcheCall('my_organizations', const {});
+  if (r.error != null) {
+    // repli : la liste des appartenances (sans pastilles) ; si elle échoue aussi, l'erreur d'origine est dite
+    try {
+      return await ref.watch(myCompaniesProvider.future);
+    } catch (_) {
+      throw MarcheException(r.error);
+    }
+  }
+  return [for (final x in (r.data as List? ?? const [])) Map<String, dynamic>.from(x as Map)];
+}, retry: (_, _) => null);
+
+/// « Mes organisations » : sélecteur d'organisation active. Chaque organisation affiche mon rôle, ses pastilles d'activité (propositions à examiner, rappels échus,
+/// demandes de contact sans réponse : absentes si mon rôle n'y donne pas accès) et des raccourcis qui ouvrent l'écran DANS cette organisation.
 class MyCompaniesScreen extends ConsumerWidget {
   const MyCompaniesScreen({super.key});
 
@@ -250,6 +267,31 @@ class MyCompaniesScreen extends ConsumerWidget {
     if (!context.mounted) return;
     gToast(context, r.error != null ? Backend.userMessage('${r.error}') : (accept ? 'Vous avez rejoint l’organisation.' : 'Invitation déclinée.'));
     ref.invalidate(myCompaniesProvider);
+    ref.invalidate(myOrganizationsProvider);
+  }
+
+  /// Ouvre [path] avec l'organisation [owner] comme organisation active ; le contexte est rendu au retour (null = ma propre organisation).
+  Future<void> _openIn(BuildContext context, WidgetRef ref, Map<String, dynamic> c, String path) async {
+    final ctx = ref.read(companyContextProvider.notifier);
+    final own = c['is_own'] == true;
+    final owner = '${c['owner_id']}';
+    ctx.set(own ? null : owner);
+    await context.push(path);
+    if (own) {
+      ctx.set(null);
+    } else {
+      ctx.clearIf(owner);
+    }
+  }
+
+  Widget _badges(Map<String, dynamic> c) {
+    final items = <String>[
+      if (mInt(c['pending_proposals']) > 0) '${mInt(c['pending_proposals'])} proposition(s) à examiner',
+      if (mInt(c['due_reminders']) > 0) '${mInt(c['due_reminders'])} rappel(s) échu(s)',
+      if (mInt(c['pending_contacts']) > 0) '${mInt(c['pending_contacts'])} demande(s) sans réponse',
+    ];
+    if (items.isEmpty) return const SizedBox.shrink();
+    return Padding(padding: const EdgeInsets.only(bottom: 6), child: Wrap(spacing: 6, runSpacing: 4, children: [for (final s in items) Chip(label: Text(s, style: mst(11.5, w: FontWeight.w700, c: kViolet)), visualDensity: VisualDensity.compact)]));
   }
 
   @override
@@ -257,7 +299,7 @@ class MyCompaniesScreen extends ConsumerWidget {
     return MarchePage(
       title: 'Mes organisations',
       child: mAsync<List<Map<String, dynamic>>>(
-        ref.watch(myCompaniesProvider),
+        ref.watch(myOrganizationsProvider),
         (l) => l.isEmpty
             ? mNote('Vous n’êtes membre d’aucune organisation.\nQuand un collègue vous invite avec votre e-mail, l’invitation apparaît ici.')
             : ListView(padding: const EdgeInsets.only(bottom: 90), children: [
@@ -271,7 +313,8 @@ class MyCompaniesScreen extends ConsumerWidget {
                         Expanded(child: Text('${c['company_name']}', style: mst(15, w: FontWeight.w800))),
                         if (c['verified'] == true) const Icon(Icons.verified, color: kGreen, size: 18),
                       ]),
-                      Text('Rôle : ${companyRoleLabels['${c['role']}'] ?? c['role']}', style: mst(12.5, c: kGrey)),
+                      Text(c['is_own'] == true ? 'Votre organisation' : 'Rôle : ${companyRoleLabels['${c['role']}'] ?? c['role']}', style: mst(12.5, c: kGrey)),
+                      if (c['status'] == 'active' && c['verified'] != true) Text('En attente de vérification : certaines fonctions (vivier, contacts) ne sont pas encore ouvertes.', style: mst(12, c: kGrey)),
                       const SizedBox(height: 8),
                       if (c['status'] == 'invited')
                         Row(children: [
@@ -279,8 +322,15 @@ class MyCompaniesScreen extends ConsumerWidget {
                           const SizedBox(width: 10),
                           Expanded(child: mButton('Rejoindre', () => _respond(context, ref, '${c['owner_id']}', true))),
                         ])
-                      else
-                        mButton('Ouvrir l’espace de l’organisation', () => context.push('/entreprise/espace/${c['owner_id']}'), icon: Icons.business_center_outlined),
+                      else ...[
+                        _badges(c),
+                        if (c['is_own'] != true) mButton('Ouvrir l’espace de l’organisation', () => context.push('/entreprise/espace/${c['owner_id']}'), icon: Icons.business_center_outlined),
+                        Wrap(spacing: 4, children: [
+                          TextButton(onPressed: () => _openIn(context, ref, c, '/entreprise/suivi-missions'), child: const Text('Missions')),
+                          if (c['can_pool_read'] == true) TextButton(onPressed: () => _openIn(context, ref, c, '/entreprise/vivier'), child: const Text('Vivier')),
+                          if (c['can_pool_read'] == true) TextButton(onPressed: () => _openIn(context, ref, c, '/entreprise/contacts'), child: const Text('Demandes aux talents')),
+                        ]),
+                      ],
                     ]),
                   ),
               ]),
@@ -288,7 +338,6 @@ class MyCompaniesScreen extends ConsumerWidget {
     );
   }
 }
-
 /// Espace partagé d'une organisation dont on est membre : même accueil, avec les droits du rôle.
 class CompanySpaceScreen extends ConsumerStatefulWidget {
   const CompanySpaceScreen({super.key, required this.owner});

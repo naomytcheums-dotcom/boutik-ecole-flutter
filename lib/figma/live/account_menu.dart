@@ -38,6 +38,8 @@ Future<void> _campagnesEvaluation(BuildContext context, WidgetRef ref) async => 
 Future<void> _ficheEntreprise(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/entreprise/profil');
 Future<void> _equipeEntreprise(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/entreprise/equipe');
 Future<void> _vivierOrganisation(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/entreprise/vivier');
+Future<void> _demandesTalents(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/entreprise/contacts');
+Future<void> _suiviMissionsOrganisation(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/entreprise/suivi-missions');
 Future<void> _passeportTalent(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/passeport');
 Future<void> _partenariatsOrganisation(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/entreprise/partenariats');
 Future<void> _forfaitsDeLEntreprise(BuildContext context, WidgetRef ref) => showCompanyPlans(context, ref);
@@ -64,7 +66,9 @@ Future<void> _espaceDepartement(BuildContext context, WidgetRef ref) async => Go
 Future<void> _rattachementsDepartement(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/departement/rattachements');
 Future<void> _mesAvis(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/mes-avis');
 Future<void> _mesTelechargements(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/marche/telechargements');
+Future<void> _suiviCommandes(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/commandes/suivi');
 Future<void> _statsCreateur(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/createur/statistiques');
+Future<void> _profilCreateur(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/profil-createur/moi');
 Future<void> _replays(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/replays');
 Future<void> _atelier(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/atelier');
 Future<void> _mesReplays(BuildContext context, WidgetRef ref) async => GoRouter.of(context).push('/mes-replays');
@@ -115,6 +119,7 @@ final _groups = <_Group>[
   ]),
   const _Group('Mes achats', [
     _Entry('Mes commandes', screen: '45'),
+    _Entry('Suivi détaillé de mes commandes', action: _suiviCommandes, connected: true),
     _Entry('Mes téléchargements', action: _mesTelechargements, connected: true),
     _Entry('Mes favoris', screen: '25'),
     _Entry('Mes collections', screen: '25b'),
@@ -144,6 +149,7 @@ final _groups = <_Group>[
     _Entry('Atelier en direct', action: _atelier),
     _Entry('Reels et lives', screen: '245'),
     _Entry('Statistiques de créateur', action: _statsCreateur, connected: true),
+    _Entry('Mon profil créateur : rubriques et épingles', action: _profilCreateur, connected: true),
     _Entry('Replays des lives', action: _replays),
     _Entry('Mes replays (hôte)', action: _mesReplays, connected: true),
     _Entry('TOP 100 national des talents', action: _top100),
@@ -198,6 +204,8 @@ final _groups = <_Group>[
     _Entry('Équipe de l’organisation', action: _equipeEntreprise, roles: {'company', 'admin'}),
     _Entry('Campagnes d’évaluation', action: _campagnesEvaluation, roles: {'company', 'admin'}),
     _Entry('Vivier de talents de l’organisation', action: _vivierOrganisation, roles: {'company', 'admin'}),
+    _Entry('Demandes aux talents et réponses', action: _demandesTalents, roles: {'company', 'admin'}),
+    _Entry('Suivi des missions de l’organisation', action: _suiviMissionsOrganisation, roles: {'company', 'admin'}),
     _Entry('Mon passeport Talent 360°', action: _passeportTalent, roles: {'student'}, connected: true),
     _Entry('Partenariats avec l’établissement', action: _partenariatsOrganisation, roles: {'company', 'admin'}),
     _Entry('Forfaits de l’organisation', action: _forfaitsDeLEntreprise, roles: {'company', 'admin'}),

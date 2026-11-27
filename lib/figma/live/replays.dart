@@ -12,7 +12,7 @@ import 'auth.dart' show requireLogin;
 import 'backend.dart';
 import 'marche/marche_data.dart';
 import 'marche/marche_widgets.dart';
-
+import 'replay_quiz_editor.dart' show replayQuizCanEditProvider;
 /// Replays des lives (migrations 20261127300000 à 20261127300200). Tout vient du serveur : bibliothèque, fiche, accès (hérité du live), progression, complétion, badge,
 /// chapitres, réactions, commentaires, notes, clips. Le lecteur ne s'ouvre qu'avec un ticket serveur (URL signée de 15 minutes) ; la complétion est calculée par le serveur
 /// à partir de segments réellement lus (lecture active, sans saut ni vitesse supérieure à 2x) : ouvrir la vidéo ou la laisser tourner en arrière-plan ne compte pas.
@@ -26,6 +26,17 @@ const kReplayShareOrigin = 'https://boutik-ecole.vercel.app';
 /// Cadence des rapports de progression (le serveur exige au moins 2 s entre deux rapports et 30 s au plus par segment).
 @visibleForTesting
 Duration replayTickInterval = const Duration(seconds: 5);
+
+/// Le ticket serveur dure 15 minutes : le lien signé est renouvelé avant son expiration, à la position courante.
+@visibleForTesting
+Duration replayUrlRefresh = const Duration(minutes: 12);
+
+/// Position de reprise : dernière position connue du serveur (replay_progress_get), sauf replay terminé ou presque fini (on repart alors du début).
+double replayResumePosition(Map<String, dynamic> progress, double duration) {
+  final pos = ((progress['position_sec'] as num?) ?? 0).toDouble();
+  if (progress['completed'] == true || pos < 5 || (duration > 0 && pos > duration - 5)) return 0;
+  return pos;
+}
 
 /// URL signée courte (le serveur a posé un ticket de 15 minutes, sans lequel le stockage refuse). Remplaçable dans les tests.
 @visibleForTesting
@@ -119,6 +130,9 @@ class ReplayProgressTracker {
 
   bool get isOpen => _open;
 
+  /// Dernière erreur de synchronisation (réseau ou serveur) ; nulle dès qu'un échange réussit. La progression déjà enregistrée par le serveur n'est jamais perdue.
+  String? lastError;
+
   Future<Map<String, dynamic>?> tick({required double position, required bool playing, required double speed}) async {
     if (_busy) return null;
     _busy = true;
@@ -133,6 +147,7 @@ class ReplayProgressTracker {
       if (d < 0.5) return null;
       final r = await _call('replay_progress_report', {'p_recording': recordingId, 'p_from': _last, 'p_to': position, 'p_client_ts': _now().millisecondsSinceEpoch});
       final m = _asMap(r.data);
+      lastError = r.error;
       if (r.error == null && m['accepted'] == true) {
         _last = position;
         return m;
@@ -147,6 +162,7 @@ class ReplayProgressTracker {
   Future<Map<String, dynamic>?> _start(double position) async {
     final r = await _call('replay_playback_start', {'p_recording': recordingId, 'p_position': position});
     final m = _asMap(r.data);
+    lastError = r.error;
     if (r.error == null && m['ok'] == true) {
       _open = true;
       _last = position;
@@ -196,7 +212,7 @@ class VideoPlayerEngine extends ReplayEngine {
   @override
   double get speed => _speed;
   @override
-  String? get error => _error;
+  String? get error => _error ?? (_c?.value.hasError == true ? 'La lecture a été interrompue (connexion perdue ou lien expiré). Réessayez : elle reprend à la même position.' : null);
 
   @override
   Future<void> open(String url, {double start = 0}) async {
@@ -430,7 +446,8 @@ class _ReplayPlayerState extends ConsumerState<ReplayPlayerScreen> with WidgetsB
   late final ReplayProgressTracker tracker = ReplayProgressTracker(widget.id);
   Timer? _timer;
   String mode = 'complete';
-  bool _opened = false, _opening = false;
+  bool _opened = false, _opening = false, _fromStart = false;
+  DateTime _openedAt = DateTime.now();
   String? _mediaError, _toast;
   Map<String, dynamic>? _live; // dernier retour de progression
   final _comment = TextEditingController();
@@ -466,17 +483,33 @@ class _ReplayPlayerState extends ConsumerState<ReplayPlayerScreen> with WidgetsB
   }
 
   void _onEngine() {
-    if (mounted) setState(() {});
+    if (!mounted) return;
+    // Coupure en cours de lecture : le message et « Réessayer » (nouveau lien signé, même position) apparaissent au lieu d'un lecteur figé.
+    setState(() {
+      if (_opened && engine.error != null) _mediaError = engine.error;
+    });
   }
 
   Future<void> _tick() async {
     if (!_opened) return;
+    final before = tracker.lastError;
     final r = await tracker.tick(position: engine.position, playing: engine.playing, speed: engine.speed);
-    if (r == null || !mounted) return;
+    if (!mounted) return;
+    if (_opened && engine.playing && !_opening && DateTime.now().difference(_openedAt) > replayUrlRefresh) unawaited(_openMedia(mode));
+    if (r == null) {
+      if (before != tracker.lastError) setState(() {});
+      return;
+    }
     setState(() => _live = r);
     if (r['newly_completed'] == true) {
       ref.invalidate(replayProgressProvider(widget.id));
-      _say('Bravo : replay terminé. Votre badge « J’ai suivi » est attribué.');
+      final p = await ref.read(replayProgressProvider(widget.id).future).catchError((_) => <String, dynamic>{});
+      if (!mounted) return;
+      if (p['quiz_defined'] == true && p['quiz_passed'] != true) {
+        _say('Bravo : replay terminé. Réussissez le quiz pour obtenir votre badge « J’ai suivi »${p['certificate_enabled'] == true ? ' et votre certificat' : ''}.');
+      } else {
+        _say('Bravo : replay terminé. Votre badge « J’ai suivi » est attribué.');
+      }
     }
   }
 
@@ -499,10 +532,25 @@ class _ReplayPlayerState extends ConsumerState<ReplayPlayerScreen> with WidgetsB
       if (mounted) setState(() { _opening = false; _mediaError = 'Le lien de lecture n’a pas pu être créé. Réessayez dans un instant.'; });
       return;
     }
-    final start = _opened ? engine.position : widget.startAt;
+    double start;
+    if (_opened) {
+      start = engine.position;
+    } else if (widget.startAt > 0) {
+      start = widget.startAt;
+    } else if (_fromStart || !_loggedIn) {
+      start = 0;
+    } else {
+      var failed = false;
+      final p = await ref.read(replayProgressProvider(widget.id).future).catchError((_) {
+        failed = true;
+        return <String, dynamic>{};
+      });
+      start = replayResumePosition(p, ((p['duration_sec'] as num?) ?? 0).toDouble());
+      if (failed) _say('Votre dernière position n’a pas pu être retrouvée (réseau) : lecture depuis le début.');
+    }
     await engine.open(url, start: start);
     if (!mounted) return;
-    setState(() { _opening = false; _opened = engine.error == null; _mediaError = engine.error; mode = kind; });
+    setState(() { _opening = false; _opened = engine.error == null; _mediaError = engine.error; mode = kind; _openedAt = DateTime.now(); });
     if (engine.error == null) await engine.play();
   }
 
@@ -662,7 +710,8 @@ class _ReplayPlayerState extends ConsumerState<ReplayPlayerScreen> with WidgetsB
     final meta = _asMap(d['meta']);
     final chapters = _asList(d['chapters']);
     final modes = _asList(d['modes']);
-    final progress = ref.watch(replayProgressProvider(widget.id)).asData?.value ?? const <String, dynamic>{};
+    final progressAsync = ref.watch(replayProgressProvider(widget.id));
+    final progress = progressAsync.asData?.value ?? const <String, dynamic>{};
     final pos = _opened ? engine.position.clamp(0, dur > 0 ? dur : double.infinity).toDouble() : widget.startAt;
     return ListView(padding: const EdgeInsets.fromLTRB(16, 4, 16, 100), children: [
       Text('${d['title']}', style: mst(19, w: FontWeight.w800)),
@@ -672,7 +721,20 @@ class _ReplayPlayerState extends ConsumerState<ReplayPlayerScreen> with WidgetsB
       if (locked) _lockedBox(d) else ...[
         _video(modes),
         _controls(dur, pos),
-        if (_mediaError != null) Padding(padding: const EdgeInsets.only(top: 8), child: Text(_mediaError!, style: mst(13, c: kRed))),
+        if (_mediaError != null) Padding(padding: const EdgeInsets.only(top: 8), child: Row(children: [
+          Expanded(child: Text(_mediaError!, style: mst(13, c: kRed))),
+          TextButton(key: const Key('replay-retry-media'), onPressed: _opening ? null : () => _openMedia(mode), child: const Text('Réessayer')),
+        ])),
+        if (_loggedIn && progressAsync.hasError)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Row(children: [
+              Expanded(child: Text('Votre progression n’a pas pu être chargée : ${progressAsync.error is ReplayException ? (progressAsync.error as ReplayException).message : _errText('${progressAsync.error}')}', key: const Key('replay-progress-error'), style: mst(12.5, c: kRed))),
+              TextButton(key: const Key('replay-progress-retry'), onPressed: () => ref.invalidate(replayProgressProvider(widget.id)), child: const Text('Réessayer')),
+            ]),
+          ),
+        _resumeHint(progress),
+        _syncBanner(),
         if ('${d['modes_message'] ?? ''}'.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 6), child: Text('${d['modes_message']}', style: mst(12, c: kGrey))),
         if (_toast != null) Padding(padding: const EdgeInsets.only(top: 8), child: Text(_toast!, style: mst(13, w: FontWeight.w700, c: kViolet))),
         _progressCard(progress, dur),
@@ -682,6 +744,7 @@ class _ReplayPlayerState extends ConsumerState<ReplayPlayerScreen> with WidgetsB
         _clips(meta),
         _comments(d, meta, mine),
         if (mine) _hostTools(meta),
+        _quizEditorCard(),
       ],
       const SizedBox(height: 12),
       Center(child: mButton('Partager le replay', _share, dark: false, icon: Icons.ios_share)),
@@ -740,6 +803,37 @@ class _ReplayPlayerState extends ConsumerState<ReplayPlayerScreen> with WidgetsB
         child: Material(type: MaterialType.transparency, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(title, style: mst(15, w: FontWeight.w800)), const SizedBox(height: 6), ...children])),
       );
 
+  /// Reprise après interruption : la dernière position enregistrée par le serveur est proposée avant la première lecture.
+  Widget _resumeHint(Map<String, dynamic> p) {
+    if (_opened || _opening || widget.startAt > 0 || !_loggedIn) return const SizedBox.shrink();
+    final at = replayResumePosition(p, ((p['duration_sec'] as num?) ?? 0).toDouble());
+    if (at <= 0) return const SizedBox.shrink();
+    return _card('Reprise', [
+      Text('Vous en étiez à ${replayClock(at)}.', key: const Key('replay-resume-hint'), style: mst(13.5, w: FontWeight.w700)),
+      const SizedBox(height: 8),
+      Wrap(spacing: 8, runSpacing: 8, children: [
+        mButton('Reprendre à ${replayClock(at)}', () => _openMedia(mode), icon: Icons.play_arrow),
+        mButton('Recommencer', () { _fromStart = true; _openMedia(mode); }, dark: false, icon: Icons.replay),
+      ]),
+    ]);
+  }
+
+  /// Erreur réseau pendant la lecture : annoncée honnêtement. Ce qui est enregistré est conservé ; le comptage reprend tout seul au retour de la connexion.
+  Widget _syncBanner() {
+    final e = tracker.lastError;
+    if (e == null || !_opened) return const SizedBox.shrink();
+    return Container(
+      key: const Key('replay-sync-error'),
+      margin: const EdgeInsets.only(top: 10),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(color: const Color(0xFFFFF4E5), borderRadius: BorderRadius.circular(12), border: Border.all(color: const Color(0xFFF0C27B))),
+      child: Row(children: [
+        Expanded(child: Text('${e == 'offline' ? 'Connexion indisponible.' : _errText(e)}\nSynchronisation de la progression interrompue : ce qui est déjà enregistré est conservé, le passage lu pendant la coupure ne sera pas compté. Nouvelle tentative automatique.', style: mst(12.5, c: kInk))),
+        TextButton(key: const Key('replay-sync-retry'), onPressed: _tick, child: const Text('Réessayer')),
+      ]),
+    );
+  }
+
   Widget _progressCard(Map<String, dynamic> p, double dur) {
     if (!_loggedIn) return _card('Ma progression', [Text('Connectez-vous pour suivre votre progression et obtenir le badge « J’ai suivi ».', style: mst(13, c: kGrey)), const SizedBox(height: 8), mButton('Se connecter', () => _login('suivre votre progression'), dark: false)]);
     if (p.isEmpty) return const SizedBox.shrink();
@@ -752,6 +846,7 @@ class _ReplayPlayerState extends ConsumerState<ReplayPlayerScreen> with WidgetsB
       Text('${replayPercent(cov)} réellement lu · seuil de complétion ${replayPercent(thr)}', style: mst(13, c: kGrey)),
       if (done) Text('✔ Replay terminé', style: mst(13.5, w: FontWeight.w800, c: kGreen)),
       if (p['badge'] == true) Text('Badge « J’ai suivi » obtenu', style: mst(13, w: FontWeight.w700)),
+      if (done && p['badge'] != true && p['quiz_defined'] == true && p['quiz_passed'] != true) Text('Badge « J’ai suivi » : réussissez le quiz pour l’obtenir.', style: mst(12.5, c: kGrey)),
       if (p['certificate'] != null) Text('Certificat de suivi ${p['certificate']} (non diplômant)', style: mst(13, w: FontWeight.w700)),
       if (p['certificate_enabled'] == true && p['certificate'] == null && p['quiz_defined'] == true && p['quiz_passed'] != true) Text('Certificat : terminez le replay puis réussissez le quiz.', style: mst(12.5, c: kGrey)),
       if (p['quiz_defined'] == true) Padding(padding: const EdgeInsets.only(top: 8), child: mButton(p['quiz_passed'] == true ? 'Refaire le quiz' : 'Passer le quiz', _quiz, dark: false)),
@@ -839,6 +934,15 @@ class _ReplayPlayerState extends ConsumerState<ReplayPlayerScreen> with WidgetsB
         ]),
       ]),
     );
+  }
+
+  Widget _quizEditorCard() {
+    if (ref.watch(replayQuizCanEditProvider(widget.id)).value != true) return const SizedBox.shrink();
+    return _card('Quiz du replay', [
+      Text('Définissez ou modifiez le quiz facultatif : questions, bonne réponse et seuil de réussite.', style: mst(13, c: kGrey)),
+      const SizedBox(height: 8),
+      mButton('Gérer le quiz', () => context.push('/replay/${widget.id}/quiz'), dark: false, icon: Icons.quiz_outlined),
+    ]);
   }
 
   Widget _hostTools(Map<String, dynamic> meta) => _card('Réglages de l’hôte', [
@@ -994,6 +1098,7 @@ class _MyReplaysState extends ConsumerState<MyReplaysList> {
         const SizedBox(height: 8),
         Wrap(spacing: 8, runSpacing: 8, children: [
           if (state == 'ready' && rep['recording_id'] != null) mButton('Ouvrir le replay', () => context.push('/replay/${rep['recording_id']}'), dark: false),
+          if (state == 'ready' && rep['recording_id'] != null) mButton('Quiz du replay', () => context.push('/replay/${rep['recording_id']}/quiz'), dark: false, icon: Icons.quiz_outlined),
           if (state == 'not_requested' && rep['configured'] == true && r['status'] != 'ended') mButton('Demander l’enregistrement', () => _request(live), busy: busy),
           if (state == 'waiting' && liveNow) mButton('Démarrer l’enregistrement', () => _record(live, 'start'), busy: busy),
           if (state == 'recording') mButton('Arrêter l’enregistrement', () => _record(live, 'stop'), busy: busy, dark: false),

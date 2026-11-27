@@ -7,6 +7,7 @@ import 'auth.dart';
 import 'backend.dart';
 import 'company_screens.dart' show companyContextProvider;
 import 'evaluations.dart';
+import 'evaluations_etat.dart' show AssessmentProgressBlock;
 import 'marche/marche_data.dart';
 import 'marche/marche_widgets.dart';
 
@@ -145,6 +146,7 @@ class _CampaignCardState extends ConsumerState<_CampaignCard> {
       const SizedBox(height: 4),
       Text('Candidats invités : ${c['invited']}', style: mst(12.5, c: kGrey)),
       if (canWrite) Text('Résultats partagés par les candidats : ${c['shared_results']}', style: mst(12.5, c: kGrey)),
+      if (canWrite) AssessmentProgressBlock(campaignId: '${c['id']}'),
       if (canWrite) ...[
         const SizedBox(height: 8),
         mButton('Résultats partagés', _results, dark: false),

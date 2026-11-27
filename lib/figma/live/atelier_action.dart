@@ -8,6 +8,7 @@ import 'backend.dart';
 import 'evenements.dart' show AppEvent, eventDetail;
 import 'marche/marche_data.dart' show kInk, kViolet, marcheCall, mst;
 import 'marche/marche_screens.dart' show ProductPageScreen;
+import 'mission_proposal_sheet.dart' show openMissionProposal;
 import 'opportunites_screens.dart' show OpportunityDetailScreen;
 import 'project_cards.dart' show ProjectDetailPage;
 import 'referral.dart' show ReferralShareKit;
@@ -47,15 +48,15 @@ const kLiveActionIcons = {
   'reserver': Icons.event_seat_outlined,
 };
 
-/// Parcours existants. `null` : aucun parcours pour cette combinaison (les missions n'ont pas de fiche ouvrable par identifiant).
-enum LiveActionRoute { product, opportunity, event, project, gift, referral }
+/// Parcours existants. `null` : aucun parcours pour cette combinaison (« Postuler » sur une mission ouvre la feuille de proposition, mission_proposal_sheet.dart).
+enum LiveActionRoute { product, opportunity, mission, event, project, gift, referral }
 
 LiveActionRoute? liveActionRoute(String? action, String? kind, {String? status, bool canGift = false}) {
   switch (action) {
     case 'acheter' || 'reserver' || 'demander_devis' || 'telecharger' || 'noter':
       return kind == 'listing' ? LiveActionRoute.product : null;
     case 'postuler':
-      return kind == 'opportunity' ? LiveActionRoute.opportunity : null;
+      return kind == 'opportunity' ? LiveActionRoute.opportunity : (kind == 'mission' ? LiveActionRoute.mission : null);
     case 's_inscrire':
       return kind == 'event' ? LiveActionRoute.event : null;
     case 'voter' || 'soutenir' || 'encourager':
@@ -104,6 +105,8 @@ Future<void> openLiveAction(BuildContext context, WidgetRef ref, Map<String, dyn
       return _sheet(context, ProductPageScreen(id: id));
     case LiveActionRoute.opportunity:
       return _sheet(context, OpportunityDetailScreen(id: id));
+    case LiveActionRoute.mission:
+      return openMissionProposal(context, ref, id, (w) => _sheet(context, w));
     case LiveActionRoute.project:
       return _sheet(context, ProjectDetailPage(projectId: id));
     case LiveActionRoute.event:

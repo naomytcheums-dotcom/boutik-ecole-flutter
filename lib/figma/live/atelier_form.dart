@@ -23,7 +23,7 @@ import 'marche/marche_widgets.dart';
 const kPrepareQualities = {'auto': 'Automatique', '480p': '480p', '720p': '720p', '1080p': '1080p'};
 const kPrepareDurations = [30, 45, 60, 90, 120, 180];
 
-/// Genre de cible attendu par action (null : l'action n'a pas de cible). « Postuler » ne propose que des opportunités : une mission n'a pas de fiche à ouvrir.
+/// Genre de cible attendu par action (null : l'action n'a pas de cible). « Postuler » propose les opportunités et les besoins ouverts (genre « mission » fixé au choix de la cible).
 const kActionKinds = {
   'acheter': 'listing',
   'reserver': 'listing',
@@ -184,10 +184,16 @@ class _LivePrepareState extends ConsumerState<LivePrepareScreen> {
 
   Future<void> _chooseAction(String? action) async {
     if (action == null) return setState(() { _action = null; _targetKind = null; _targetId = null; _targetTitle = null; });
-    final kind = kActionKinds[action];
+    var kind = kActionKinds[action];
     if (kind == null) return setState(() { _action = action; _targetKind = null; _targetId = null; _targetTitle = null; });
-    final all = await _targets(kind);
+    var all = await _targets(kind);
     if (all == null || !mounted) return;
+    // « Postuler » : opportunités publiées ET besoins ouverts de l'hôte (migration 20261128022000) ; le genre suit l'élément choisi.
+    if (action == 'postuler') {
+      final needs = await _targets('mission');
+      if (needs == null || !mounted) return;
+      all = [for (final t in all) {...t, '_kind': 'opportunity'}, for (final t in needs) {...t, '_kind': 'mission'}];
+    }
     final fit = [for (final t in all) if (kind != 'listing' || actionFits(action, t)) t];
     if (fit.isEmpty) return gAlert(context, 'Aucune cible disponible', 'Vous n’avez aucun(e) ${_kindNames[kind]} publié(e) qui convienne à « ${kLiveActionLabels[action]} ». Publiez-en un(e) d’abord.');
     final t = await showModalBottomSheet<Map<String, dynamic>>(
@@ -202,7 +208,7 @@ class _LivePrepareState extends ConsumerState<LivePrepareScreen> {
       ),
     );
     if (t == null || !mounted) return;
-    setState(() { _action = action; _targetKind = kind; _targetId = '${t['id']}'; _targetTitle = '${t['title']}'; });
+    setState(() { _action = action; _targetKind = '${t['_kind'] ?? kind}'; _targetId = '${t['id']}'; _targetTitle = '${t['title']}'; });
   }
 
   Future<void> _choosePaidEvent() async {

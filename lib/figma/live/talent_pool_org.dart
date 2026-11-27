@@ -8,6 +8,7 @@ import 'auth.dart';
 import 'company_screens.dart' show companyContextProvider;
 import 'marche/marche_data.dart';
 import 'marche/marche_widgets.dart';
+import 'org_vivier_tools.dart' show PoolListsManager;
 import 'talent_pool.dart' show poolArgs, poolErrorText, refreshTalentPool;
 
 /// Vivier de talents de l'ORGANISATION (migration 20261126060300) : tableau de bord, recherche dans le vivier (étape, étiquette, disponibilité), fiche d'un talent
@@ -167,23 +168,42 @@ class _TalentPoolOrgState extends ConsumerState<TalentPoolOrgScreen> {
                         title: Text('${r['name']} · ${r['due_on']}', style: mst(13.5, w: FontWeight.w700, c: r['due'] == true ? kRed : kInk)),
                         subtitle: Text('${r['note'] ?? ''}'.isEmpty ? 'Recontacter' : '${r['note']}', style: mst(12, c: kGrey)),
                         trailing: canWrite
-                            ? TextButton(
-                                onPressed: () async {
-                                  final res = await marcheCall('pool_reminder_done', poolArgs(ref.read(companyContextProvider), {'p_id': r['id']}));
-                                  if (!context.mounted) return;
-                                  if (res.error != null) {
-                                    await gAlert(context, 'Rappel non clos', poolErrorText(res.error));
-                                    return;
-                                  }
-                                  ref.invalidate(poolRemindersProvider);
-                                  ref.invalidate(poolOverviewProvider);
-                                },
-                                child: const Text('Fait'),
-                              )
+                            ? Row(mainAxisSize: MainAxisSize.min, children: [
+                                TextButton(
+                                  onPressed: () async {
+                                    final res = await marcheCall('pool_reminder_done', poolArgs(ref.read(companyContextProvider), {'p_id': r['id']}));
+                                    if (!context.mounted) return;
+                                    if (res.error != null) {
+                                      await gAlert(context, 'Rappel non clos', poolErrorText(res.error));
+                                      return;
+                                    }
+                                    ref.invalidate(poolRemindersProvider);
+                                    ref.invalidate(poolOverviewProvider);
+                                  },
+                                  child: const Text('Fait'),
+                                ),
+                                IconButton(
+                                  tooltip: 'Supprimer le rappel',
+                                  onPressed: () async {
+                                    final res = await marcheCall('pool_reminder_delete', poolArgs(ref.read(companyContextProvider), {'p_id': r['id']}));
+                                    if (!context.mounted) return;
+                                    if (res.error != null) {
+                                      await gAlert(context, 'Rappel non supprimé', poolErrorText(res.error));
+                                      return;
+                                    }
+                                    ref.invalidate(poolRemindersProvider);
+                                    ref.invalidate(poolOverviewProvider);
+                                  },
+                                  icon: const Icon(Icons.delete_outline_rounded, size: 20),
+                                ),
+                              ])
                             : null,
                       ),
                   ]),
           ),
+          PoolListsManager(canWrite: canWrite),
+          const SizedBox(height: 8),
+          mButton('Demandes de contact et réponses', () => context.push('/entreprise/contacts'), dark: false, icon: Icons.forum_outlined),
         ]),
       ),
     );

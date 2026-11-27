@@ -6,6 +6,7 @@ import 'home_live.dart' show liveTalentsProvider;
 import 'circle_feed.dart' show purgeReplacedPostMedia;
 import 'tp_ui.dart' show TpRound, tpPickFile, tpUpload;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../gen.dart';
 import '../nav.dart';
@@ -288,6 +289,16 @@ class SocialProfilePanel extends ConsumerWidget {
                       ),
                     ],
                   ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton.icon(
+                    key: const Key('social-rubriques'),
+                    style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+                    onPressed: () => GoRouter.of(context).push('/profil-createur/${p.id}'),
+                    icon: const Icon(Icons.grid_view_outlined, size: 16),
+                    label: const Text('Lives, projets, produits, reposts et clips'),
+                  ),
+                ),
                 if (!own)
                   Align(
                     alignment: Alignment.centerLeft,

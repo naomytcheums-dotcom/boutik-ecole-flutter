@@ -26,6 +26,7 @@ const _hubTiles = <(IconData, String, String, String)>[
   (Icons.visibility_outlined, 'Les plus consultés par les entreprises', 'Chiffres agrégés, sans jamais nommer les entreprises.', '/top100/plus-consultes'),
   (Icons.history, 'Historique des classements mensuels', 'Chaque publication mensuelle et son empreinte.', '/top100/historique'),
   (Icons.rule, 'Règles du score, en toute transparence', 'Les activités qui rapportent des points.', '/top100/regles'),
+  (Icons.calculate_outlined, 'Comment est calculé le classement', 'Formule, seuils, critères et raisons d’exclusion, sans nommer personne.', '/top100/calcul'),
   (Icons.verified_outlined, 'Vérifier une publication', 'Contrôler l’intégrité d’un classement publié.', '/top100/verification'),
 ];
 

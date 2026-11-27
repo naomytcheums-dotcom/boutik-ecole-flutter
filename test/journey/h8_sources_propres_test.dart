@@ -85,6 +85,26 @@ void main() {
     expect(expire.contains('appSessionExpired = () {') && expire.contains('resetAccountScopedState();'), isTrue, reason: 'l’expiration de session doit remettre les états à zéro');
   });
 
+  test('statique (H13 admin) : santé des services et exports d’administration ne lisent que le serveur, sans exemple ni état par défaut « en service »', () {
+    for (final f in ['admin_sante.dart', 'admin_exports.dart']) {
+      final src = File('lib/figma/live/$f').readAsStringSync();
+      expect(_seedDecl.hasMatch(src), isFalse, reason: '$f ne doit déclarer aucune source d’exemple');
+      expect(src.contains('demoContent'), isFalse, reason: '$f : aucune donnée de maquette');
+    }
+    final sante = File('lib/figma/live/admin_sante.dart').readAsStringSync();
+    expect(sante.contains("Backend.rpc('admin_service_health'"), isTrue);
+    expect(sante.contains('if (!Backend.ready) return const []'), isTrue, reason: 'hors connexion, aucun état n’est affirmé');
+    expect(RegExp(r"\?\?\s*'ok'").hasMatch(sante), isFalse, reason: 'un statut absent ne vaut jamais « ok »');
+    final exports = File('lib/figma/live/admin_exports.dart').readAsStringSync();
+    expect(exports.contains("Backend.rpc('admin_export_csv'"), isTrue);
+    expect(exports.contains('if (!Backend.ready)'), isTrue);
+    // les trois listes exportables sont branchées sur l’écran qui les affiche
+    expect(File('lib/figma/live/admin_consoles.dart').readAsStringSync().contains("exportAdminCsv(context, 'audit'"), isTrue);
+    expect(File('lib/figma/live/dept_space.dart').readAsStringSync().contains("exportAdminCsv(context, 'rattachements'"), isTrue);
+    expect(File('lib/figma/live/top100_admin_moderation.dart').readAsStringSync().contains("exportAdminCsv(context, 'contestations'"), isTrue);
+    expect(File('lib/figma/live/admin_centre.dart').readAsStringSync().contains('ServiceHealthSection'), isTrue);
+  });
+
   group('connecté : aucune donnée d’exemple dans les sources partagées', () {
     setUp(() => Backend.ready = true);
     tearDown(() => Backend.ready = false);

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/repositories/repositories.dart' show cartProvider;
 import 'backend.dart';
 import 'marche/marche_data.dart' show marcheCall;
+import 'store.dart' show fcfa;
 
 /// Code promo saisi par le client (appliqué par le serveur à la création de la commande).
 class PromoCodeNotifier extends Notifier<String> {
@@ -46,4 +47,4 @@ final promoDiscountProvider = FutureProvider.autoDispose<int>((ref) async {
 });
 
 /// « −15 % » ou « −2 000 FCFA » d'une promotion.
-String promoValueLabel(Map<String, dynamic> p) => p['kind'] == 'percent' ? '−${p['value']} %' : '−${p['value']} FCFA';
+String promoValueLabel(Map<String, dynamic> p) => p['kind'] == 'percent' ? '−${p['value']} %' : '−${fcfa((num.tryParse('${p['value']}') ?? 0))}';

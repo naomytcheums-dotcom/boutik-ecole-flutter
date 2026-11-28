@@ -155,7 +155,7 @@ class _KelaBriefState extends ConsumerState<KelaBrief> {
                     }
                     if (_busy && i == _msgs.length) return Align(alignment: Alignment.centerLeft, child: Padding(padding: const EdgeInsets.all(8), child: Text('Kéla réfléchit…', style: _st(12, c: _grey))));
                     final b = _brief!;
-                    return Container(margin: const EdgeInsets.symmetric(vertical: 8), padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: const Color(0xFFEEE9FF), borderRadius: BorderRadius.circular(18)), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('Brief proposé', style: _st(12, w: FontWeight.w800, c: const Color(0xFF5A3FE0))), const SizedBox(height: 4), Text('${b['title']}', style: _st(14, w: FontWeight.w700)), Text('${b['description']}${b['budget'] == null ? '' : '\nBudget : ${b['budget']} FCFA'}', style: _st(12.5, c: _grey)), const SizedBox(height: 10), _btn('Créer le brouillon de besoin', _createDraft)]));
+                    return Container(margin: const EdgeInsets.symmetric(vertical: 8), padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: const Color(0xFFEEE9FF), borderRadius: BorderRadius.circular(18)), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('Brief proposé', style: _st(12, w: FontWeight.w800, c: const Color(0xFF5A3FE0))), const SizedBox(height: 4), Text('${b['title']}', style: _st(14, w: FontWeight.w700)), Text('${b['description']}${b['budget'] == null || num.tryParse('${b['budget']}') == null ? '' : '\nBudget : ${fcfa(num.parse('${b['budget']}'))}'}', style: _st(12.5, c: _grey)), const SizedBox(height: 10), _btn('Créer le brouillon de besoin', _createDraft)]));
                   },
                 ),
         ),

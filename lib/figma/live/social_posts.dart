@@ -387,6 +387,7 @@ final postCommentsProvider = FutureProvider.autoDispose.family<List<PostComment>
   var r = await Backend.rpc('post_comment_list_v2', {'p_post': postId, 'p_limit': 200});
   if (r.error != null || r.data is! List) r = await Backend.rpc('post_comment_list', {'p_post': postId, 'p_limit': 200});
   if (r.error != null || r.data is! List) throw Exception('Les commentaires ne peuvent pas être chargés pour le moment.');
+  await MediaAccess.warm([for (final x in r.data as List) (x as Map)['attachment_path']?.toString()]);
   return [for (final x in r.data as List) PostComment.fromRow(x as Map)];
 }, retry: (_, _) => null);
 
@@ -491,7 +492,11 @@ class _CommentsSheetState extends ConsumerState<_CommentsSheet> {
     }
     if (!mounted) return;
     setState(() => _sending = false);
-    if (res.error != null) return gToast(context, Backend.userMessage(res.error!));
+    if (res.error != null) {
+      if (path != null) await Backend.removeFile(MediaAccess.bucketOf(path), path);
+      if (!mounted) return;
+      return gToast(context, Backend.userMessage(res.error!));
+    }
     _text.clear();
     setState(() {
       _replyTo = null;

@@ -13,7 +13,7 @@ import 'admin_exports.dart' show exportAdminCsv;
 import 'order_tracking.dart' show adminLabelForState;
 import 'ops.dart';
 import 'review.dart';
-import 'store.dart' show IntV, StrV, fcfa, ordersProvider;
+import 'store.dart' show IntV, StrV, fcfa, ordersProvider, statusLabel;
 
 /// Listes et compteurs réels de la console d'administration (écrans 128, 130, 131, 132) : remplacent, une fois connecté, les lignes d'exemple
 /// figées de la maquette. Chargement, état vide et erreur explicites ; chaque ligne ouvre l'action serveur correspondante.
@@ -174,7 +174,7 @@ String adminOrderStatus(Map<String, dynamic> o) {
   if (o['state'] is String) return adminLabelForState(o['state'] as String);
   if (o['cancelled'] == true) return 'Annulée';
   if (o['paid'] != true) return 'En attente de paiement';
-  return const ['Confirmée', 'En préparation', 'Expédiée', 'Livrée'][((o['status'] as num?)?.toInt() ?? 0).clamp(0, 3)];
+  return statusLabel(((o['status'] as num?)?.toInt() ?? 0));
 }
 
 /// Compteur de l'écran 132 : 0 du jour, 1 en préparation, 2 expédiées, 3 annulées. « — » tant que le serveur n'a pas répondu ; chiffres de la maquette hors connexion.

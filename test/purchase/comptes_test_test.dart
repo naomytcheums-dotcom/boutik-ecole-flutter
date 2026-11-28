@@ -44,7 +44,7 @@ void main() {
     expect(find.text('Étudiant-vendeur'), findsOneWidget);
     expect(find.text('test-student@boutik-ecole.test'), findsOneWidget);
     expect(find.text('Jamais ouvert'), findsOneWidget);
-    expect(find.text('Dernière ouverture : 2026-11-14'), findsOneWidget);
+    expect(find.text('Dernière ouverture : 14/11/2026'), findsOneWidget);
     expect(find.text('Ouvrir en tant que ce profil'), findsNWidgets(2));
   });
 }

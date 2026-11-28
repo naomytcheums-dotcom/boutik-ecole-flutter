@@ -66,8 +66,11 @@ export async function run(db) {
   check('projects : un client ne lit plus la table des autres', (await q(`select id from projects`)).length === 0);
   await as(U(23));
   check('projects : le porteur lit son projet', (await q(`select id from projects`)).length === 1);
-  await as(U(21));
+  await as(U(25));
   check('public_projects : le catalogue reste lisible sans contacts', (await q(`select public_projects() r`))[0].r[0].details.contact_email === undefined);
+  await as(U(21));
+  // H13.2 : U(23) a bloqué U(21) (voir plus haut) : la personne bloquée ne voit plus les projets de celui qui l'a bloquée
+  check('public_projects : le projet n\'est pas montré à la personne bloquée par son porteur', ((await q(`select public_projects() r`))[0].r ?? []).length === 0);
 
   // --- mentors et communautés éphémères
   await as(U(21));

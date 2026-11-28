@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart' show visibleForTesting;
-
 import 'backend.dart';
 
 /// Médias non publics (histoires, publications de communautés fermées) : stockés dans le compartiment PRIVÉ `post-media-private`
@@ -74,7 +72,7 @@ class MediaAccess {
   /// URL à utiliser tout de suite pour un chemin : signée si disponible, sinon publique.
   static String urlFor(String path) => cached(path) ?? Backend.publicFileUrl(publicBucket, path);
 
-  @visibleForTesting
+  /// Oublie les URL signées et les chemins privés connus : à la déconnexion, un autre compte ne réutilise rien du précédent.
   static void reset() {
     _signed.clear();
     _publicUntil.clear();

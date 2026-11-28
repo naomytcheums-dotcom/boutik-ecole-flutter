@@ -24,7 +24,7 @@ void main() {
 
   test('libellé de réduction', () {
     expect(promoValueLabel({'kind': 'percent', 'value': 15}), '−15 %');
-    expect(promoValueLabel({'kind': 'fixed', 'value': 2000}), '−2000 FCFA');
+    expect(promoValueLabel({'kind': 'fixed', 'value': 2000}), '−${fcfa(2000)}');
   });
 
   testWidgets('admin : liste des promotions avec période, réduction et état', (t) async {

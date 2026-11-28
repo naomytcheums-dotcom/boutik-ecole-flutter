@@ -443,7 +443,7 @@ class _Bars extends StatelessWidget {
 class _OrdersTab extends ConsumerWidget {
   const _OrdersTab();
 
-  static const _labels = ['Nouvelle', 'Acceptée', 'En préparation', 'Prête', 'Livrée'];
+  static const _labels = kSellerOrderSteps;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

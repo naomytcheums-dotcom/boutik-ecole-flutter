@@ -28,10 +28,10 @@ class NotificationsRows extends RpcRows {
   NotificationsRows() : super('notifications');
   @override
   Future<void> refresh() async {
-    final rows = await Backend.notifications();
+    final rows = await Backend.notificationsOrNull();
     if (!ref.mounted) return;
-    error = false;
-    state = rows;
+    error = rows == null;
+    state = rows ?? const [];
   }
 }
 

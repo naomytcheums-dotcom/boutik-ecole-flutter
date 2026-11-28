@@ -28,7 +28,7 @@ class _CertificatesPageState extends ConsumerState<CertificatesPage> {
 
   Future<void> _load() async {
     final me = Backend.currentUserId;
-    final r = await Backend.rows('certificates', 'code,subject_title,issued_at,revoked,holder_id', order: 'issued_at', limit: 100);
+    final r = await Backend.rows('certificates', 'code,subject_title,issued_at,revoked,holder_id', eq: {'holder_id': me ?? ''}, order: 'issued_at', limit: 100);
     if (!mounted) return;
     setState(() {
       _error = r.error != null;
@@ -51,7 +51,7 @@ class _CertificatesPageState extends ConsumerState<CertificatesPage> {
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text('Qu’est-ce qu’un certificat ?', style: tpSt(14.5, w: FontWeight.w800)),
             const SizedBox(height: 6),
-            Text('C’est un document officiel émis par le département de l’IUT de Douala pour attester une réalisation : un projet validé, une formation, une distinction. '
+            Text('C’est un document émis par le département de votre établissement pour attester une réalisation : un projet validé, une formation, une distinction. '
                 'Il porte un code unique, de la forme BE-CERT-1A2B3C4D5E6F7A8B. Toute personne (recruteur, organisation, école) peut saisir ce code dans « Vérifier un certificat » '
                 'pour constater qu’il est authentique et qu’il n’a pas été révoqué.', style: tpSt(13, c: tpGrey, h: 1.5)),
           ]),

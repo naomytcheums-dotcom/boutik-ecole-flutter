@@ -14,6 +14,7 @@ import 'access.dart' show canOpen, roleKey;
 import 'auth.dart';
 import '../gdata.dart' show GData;
 import 'backend.dart';
+import 'retry_note.dart';
 import 'certificates_page.dart' show CertificatesPage;
 import 'messages.dart' show selectedConversationProvider, conversationsProvider, contactOrderSeller;
 import 'missions.dart' show selectedMissionIdProvider, missionProvider;
@@ -60,9 +61,15 @@ class Notifs extends Notifier<List<NotificationItem>> {
   }
 
   Future<void> refresh() async {
-    final rows = await Backend.notifications();
+    final rows = await Backend.notificationsOrNull();
     if (!ref.mounted) return;
+    if (rows == null) {
+      // lecture échouée : la liste déjà affichée est conservée, jamais remplacée par « aucune notification »
+      ref.read(notifsStatusProvider.notifier).set(LoadStatus.failed);
+      return;
+    }
     state = [for (final r in rows) NotificationItem.fromRow(r)];
+    ref.read(notifsStatusProvider.notifier).set(LoadStatus.ok);
     ref.invalidate(unreadProvider);
   }
 
@@ -85,6 +92,25 @@ class Notifs extends Notifier<List<NotificationItem>> {
 final selectedNotificationProvider = NotifierProvider<StrV, String>(StrV.new);
 
 final notifsProvider = NotifierProvider<Notifs, List<NotificationItem>>(Notifs.new);
+
+/// Résultat de la dernière lecture des notifications : « chargement » tant qu'aucune lecture n'a abouti pour le compte connecté.
+class NotifsStatus extends Notifier<LoadStatus> {
+  @override
+  LoadStatus build() => ref.watch(authProvider.select((a) => a.current?.serverId ?? '')).isEmpty ? LoadStatus.ok : LoadStatus.loading;
+  void set(LoadStatus s) => state = s;
+}
+
+final notifsStatusProvider = NotifierProvider<NotifsStatus, LoadStatus>(NotifsStatus.new);
+
+/// Liste vide : chargement ou échec de lecture (avec « Réessayer ») selon l'état ; null quand la liste est réellement vide.
+Widget? _notifsUnavailable(WidgetRef ref, List<NotificationItem> items) {
+  if (items.isNotEmpty || !Backend.ready) return null;
+  return switch (ref.watch(notifsStatusProvider)) {
+    LoadStatus.loading => const LoadingNote('Chargement de vos notifications…'),
+    LoadStatus.failed => RetryNote(message: 'Vos notifications ne peuvent pas être chargées pour le moment. Vérifiez votre connexion.', onRetry: () => ref.read(notifsProvider.notifier).refresh()),
+    LoadStatus.ok => null,
+  };
+}
 
 /// Compteurs de non-lus (notifications, messages) lus sur le serveur.
 final unreadProvider = FutureProvider<({int notifications, int messages})>((ref) async {
@@ -554,6 +580,8 @@ Widget notificationsPanel() => gP(
         final f = ref.watch(notifFilterProvider);
         final all = ref.watch(notifsProvider);
         final items = [for (final n in all) if (_inGroup(n, f)) n];
+        final unavailable = _notifsUnavailable(ref, all);
+        if (unavailable != null) return unavailable;
         if (items.isEmpty) {
           return Padding(
             padding: const EdgeInsets.only(top: 80),
@@ -594,6 +622,8 @@ Widget notificationsFeed({double width = 342, double height = 600}) => SizedBox(
           return Center(child: Text('Connectez-vous pour voir vos notifications.', textAlign: TextAlign.center, style: _t(13, FontWeight.w500, const Color(0xFF57545F))));
         }
         final items = ref.watch(notifsProvider);
+        final unavailable = _notifsUnavailable(ref, items);
+        if (unavailable != null) return unavailable;
         if (items.isEmpty) return Center(child: Text('Aucune notification pour le moment.', textAlign: TextAlign.center, style: _t(13, FontWeight.w500, const Color(0xFF57545F))));
         return ListView.separated(
           padding: EdgeInsets.zero,
@@ -642,7 +672,9 @@ class _NotificationDetailState extends ConsumerState<_NotificationDetail> {
       if (x.id == id) n = x;
     }
     if (n == null) {
-      return id.isEmpty ? notificationsFeed(height: 620) : Center(child: Text(all.isEmpty ? 'Chargement…' : 'Cette notification n’existe plus.', style: _t(13, FontWeight.w500, const Color(0xFF57545F))));
+      if (id.isEmpty) return notificationsFeed(height: 620);
+      final unavailable = _notifsUnavailable(ref, all);
+      return unavailable ?? Center(child: Text('Cette notification n’existe plus.', style: _t(13, FontWeight.w500, const Color(0xFF57545F))));
     }
     if (_marked != n.id) {
       _marked = n.id;

@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart' show Supabase;
 import 'package:url_launcher/url_launcher.dart';
 
 import '../gen.dart' show gToast;
+import 'company_home.dart' show frDate;
 import 'backend.dart';
 import 'marche/marche_data.dart';
 import 'marche/marche_widgets.dart';
@@ -162,7 +163,7 @@ class _DownloadsScreenState extends ConsumerState<DownloadsScreen> {
           ),
         if (history.isNotEmpty) ...[
           const SizedBox(height: 10),
-          Text('Derniers téléchargements : ${history.map((h) => '${h['file_name']} (${'${h['at']}'.split('T').first})').join(', ')}', style: mst(11.5, c: kGrey)),
+          Text('Derniers téléchargements : ${history.map((h) => '${h['file_name']} (${frDate(h['at'])})').join(', ')}', style: mst(11.5, c: kGrey)),
         ],
       ]),
     );

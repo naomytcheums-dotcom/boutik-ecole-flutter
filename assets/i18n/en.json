@@ -8654,5 +8654,12 @@
 "§Client : {0}\nVendeur(s) : {1}\nMontant : {2}\nPaiement : {3} (non payé)\nÉtat : {4}\nPassée le {5}": "Customer: {0}\nSeller(s): {1}\nAmount: {2}\nPayment: {3} (unpaid)\nStatus: {4}\nPlaced on {5}",
 "§Offrir {0} × {1} {2} pour {3} crédits ?\nVotre solde passera de {4} à {5} crédits. Un cadeau envoyé n’est pas remboursable.": "Give {0} × {1} {2} for {3} credits?\nYour balance will go from {4} to {5} credits. A gift once sent cannot be refunded.",
 "§Offrir {0} × {1} {2} pour {3} crédit ?\nVotre solde passera de {4} à {5} crédits. Un cadeau envoyé n’est pas remboursable.": "Give {0} × {1} {2} for {3} credit?\nYour balance will go from {4} to {5} credits. A gift once sent cannot be refunded.",
-"§{0} · {1} · {2} % · {3} · facture {4}": "{0} · {1} · {2} % · {3} · invoice {4}"
+"§{0} · {1} · {2} % · {3} · facture {4}": "{0} · {1} · {2} % · {3} · invoice {4}",
+"Chargement de vos notifications…": "Loading your notifications…",
+"Vos notifications ne peuvent pas être chargées pour le moment. Vérifiez votre connexion.": "Your notifications cannot be loaded right now. Check your connection.",
+"Chargement de vos conversations…": "Loading your conversations…",
+"Vos conversations ne peuvent pas être chargées pour le moment. Vérifiez votre connexion.": "Your conversations cannot be loaded right now. Check your connection.",
+"Les messages ne peuvent pas être chargés pour le moment. Vérifiez votre connexion.": "Messages cannot be loaded right now. Check your connection.",
+"Connexion perdue : les derniers messages peuvent manquer. Touchez pour réessayer.": "Connection lost: the latest messages may be missing. Tap to retry.",
+"Recherche impossible : vos conversations ne peuvent pas être lues pour le moment.": "Search unavailable: your conversations cannot be read right now."
 }

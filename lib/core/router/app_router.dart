@@ -130,7 +130,6 @@ GoRouter buildRouter({String initial = '/s/01'}) => GoRouter(
     GoRoute(path: '/departement/annonces', builder: (_, _) => const RouteGuard(name: '/departement/annonces', roles: {'dept', 'admin'}, child: DepartmentListingsScreen())),
     GoRoute(path: '/departement/productions', builder: (_, _) => const RouteGuard(name: '/departement/productions', roles: {'dept', 'direction', 'admin'}, child: DepartmentProductionsScreen())),
     GoRoute(path: '/departement/mentors', builder: (_, _) => const RouteGuard(name: '/departement/mentors', roles: {'dept', 'direction', 'admin'}, child: DepartmentMentorsScreen())),
-    GoRoute(path: '/communaute', builder: (_, _) => const CommunityScreen()),
     GoRoute(path: '/communaute/:id', builder: (_, s) => CommunityScreen(id: s.pathParameters['id'] ?? '')),
     GoRoute(path: '/marche', builder: (_, _) => const MarketplaceScreen()),
     GoRoute(path: '/marche/livraison', builder: (_, state) {

@@ -765,6 +765,18 @@ class Backend {
     }
   }
 
+  /// Comme [notifications], mais null si la lecture échoue (à ne pas confondre avec « aucune notification »).
+  static Future<List<Map<String, dynamic>>?> notificationsOrNull() async {
+    final c = _c;
+    if (c == null || c.auth.currentUser == null) return null;
+    try {
+      final rows = await c.from('notifications').select().order('created_at', ascending: false).limit(100);
+      return [for (final r in rows) Map<String, dynamic>.from(r)];
+    } catch (_) {
+      return null;
+    }
+  }
+
   static Future<void> markNotificationsRead() async {
     try {
       await _c?.rpc('mark_notifications_read');
@@ -860,6 +872,30 @@ class Backend {
       return [for (final r in rows) Map<String, dynamic>.from(r as Map)];
     } catch (_) {
       return const [];
+    }
+  }
+
+  /// Comme [conversations], mais null si la lecture échoue (à ne pas confondre avec « aucune conversation »).
+  static Future<List<Map<String, dynamic>>?> conversationsOrNull() async {
+    final c = _c;
+    if (c == null || c.auth.currentUser == null) return null;
+    try {
+      final rows = await c.rpc('my_conversations') as List;
+      return [for (final r in rows) Map<String, dynamic>.from(r as Map)];
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Comme [messages], mais null si la lecture échoue : le fil déjà affiché n'est alors pas vidé.
+  static Future<List<Map<String, dynamic>>?> messagesOrNull(String conversationId, {int limit = 100}) async {
+    final c = _c;
+    if (c == null || c.auth.currentUser == null || conversationId.isEmpty) return null;
+    try {
+      final rows = await c.from('messages').select('id,sender_id,body,created_at,kind,attachment_path,attachment_name,attachment_size').eq('conversation_id', conversationId).order('id', ascending: false).limit(limit);
+      return [for (final r in rows.reversed) Map<String, dynamic>.from(r)];
+    } catch (_) {
+      return null;
     }
   }
 
@@ -1521,6 +1557,8 @@ class Backend {
   static Future<void> audit(String actor, String action, String target, String category, String level) async {
     final c = _c;
     if (c == null || c.auth.currentUser == null) return;
+    // Finances, comptes, paramètres, modération : journalisés par la fonction serveur qui exécute l'action (le serveur ignore ces catégories côté client).
+    if (category != 'Connexions' && category != 'Validations') return;
     try {
       // L'acteur est déterminé par le serveur (jamais fourni par le client).
       await c.rpc('log_audit', params: {'p_action': action, 'p_target': target, 'p_category': category, 'p_level': level});

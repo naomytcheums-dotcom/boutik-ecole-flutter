@@ -14,8 +14,8 @@ import 'promo_state.dart' show promoDiscountProvider;
 /// État partagé du parcours d'achat : fiche produit → panier → livraison → paiement → commande → suivi.
 
 String fcfa(num v) {
-  final s = v.round().toString();
-  final b = StringBuffer();
+  final s = v.round().abs().toString();
+  final b = StringBuffer(v.round() < 0 ? '-' : '');
   for (var i = 0; i < s.length; i++) {
     if (i > 0 && (s.length - i) % 3 == 0) b.write(' ');
     b.write(s[i]);

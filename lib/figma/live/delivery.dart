@@ -302,5 +302,5 @@ Future<void> homeDeliverySettingsDialog(BuildContext context, WidgetRef ref) asy
   if (!context.mounted) return;
   if (r.error != null) return gAlert(context, 'Réglage non enregistré', r.error!);
   await ref.read(deliverySettingsProvider.notifier).refresh();
-  if (context.mounted) gToast(context, on ? 'Livraison à domicile proposée · ${v[1].trim()} · $fee FCFA' : 'Livraison à domicile coupée');
+  if (context.mounted) gToast(context, on ? 'Livraison à domicile proposée · ${v[1].trim()} · ${fcfa(fee)}' : 'Livraison à domicile coupée');
 }

@@ -1,12 +1,13 @@
-// Inventaire des médias de « post-media » PAR STATUT DU CONTENU : lecture seule, AUCUNE écriture, AUCUNE suppression.
-// Sorties : compteurs (publics / en attente / restreints / non rattachés) + liste des fichiers restreints encore exposés par URL publique.
-// Deux modes, au choix :
-//   1. via la CLI Supabase déjà liée au projet (aucune clé dans ce script) :
-//        node tool/backup/media_inventory.mjs --linked
-//   2. via l'API REST avec une clé de service lue dans l'environnement (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY) : appelle media_migration_report() (lecture seule) :
-//        node tool/backup/media_inventory.mjs --rest
-// Réservé au propriétaire / à l'administrateur ; n'a pas été exécuté pendant le lot H13.1 (aucun accès production autorisé).
-import { execFileSync } from 'child_process';
+// Inventaire des médias de « post-media » : lecture seule, AUCUNE écriture, AUCUNE suppression, aucune donnée personnelle dans le rapport.
+// Une ligne par objet : référence (publication, histoire, couverture…), niveau de confidentialité (publique / en_attente_validation / restreinte / non_rattachee), motif, taille, type MIME,
+// copie privée présente, état de la bascule. Les identifiants d'objet sont des empreintes du chemin (jamais le chemin, ni l'identifiant du compte).
+//   $env:SUPABASE_URL, $env:SUPABASE_SERVICE_ROLE_KEY  (jamais écrits dans un fichier)
+//   node tool/backup/media_inventory.mjs [--out media_inventaire.json] [--orphans]      rapport complet par objet (RPC media_inventory_objects, service_role)
+//   node tool/backup/media_inventory.mjs --linked                                       compteurs seulement, via la CLI Supabase déjà liée (aucune clé dans ce script)
+// Prérequis du rapport par objet : migration 20261130060200 (media_inventory_objects). Réservé au propriétaire / à l'administrateur.
+import fs from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { buildReport, fetchInventory, makeClient } from './media_lib.mjs';
 
 const SQL = `
 with o as (
@@ -24,15 +25,19 @@ select jsonb_build_object(
       select r.reason as motif, count(*) n from o cross join lateral _media_restrict_reason(o.name, true) r where o.etat in ('restricted', 'unreferenced') group by r.reason) x)
 ) as inventaire;`;
 
-const mode = process.argv.includes('--rest') ? 'rest' : 'linked';
-if (/\b(insert|update|delete|drop|alter|truncate)\b/i.test(SQL.replace(/_media_restrict_reason|storage\.objects/g, ''))) throw new Error('requête non lecture seule');
+const arg = (n, d) => { const i = process.argv.indexOf(n); return i < 0 ? d : process.argv[i + 1]; };
 
-if (mode === 'linked') {
-  const out = execFileSync('supabase', ['db', 'query', '--linked', SQL], { encoding: 'utf8', shell: process.platform === 'win32' });
-  console.log(out);
+if (process.argv.includes('--linked')) {
+  if (/\b(insert|update|delete|drop|alter|truncate)\b/i.test(SQL.replace(/_media_restrict_reason|storage\.objects/g, ''))) throw new Error('requête non lecture seule');
+  console.log(execFileSync('supabase', ['db', 'query', '--linked', SQL], { encoding: 'utf8', shell: process.platform === 'win32' }));
 } else {
-  const url = process.env.SUPABASE_URL, key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) { console.error('SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY requis dans l\'environnement.'); process.exit(2); }
-  const r = await fetch(`${url}/rest/v1/rpc/media_migration_report`, { method: 'POST', headers: { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' }, body: '{}' });
-  console.log(r.status, await r.text());
+  let client;
+  try { client = makeClient({ url: process.env.SUPABASE_URL, key: process.env.SUPABASE_SERVICE_ROLE_KEY }); } catch (e) { console.error(e.message); process.exit(2); }
+  const objects = await fetchInventory(client);
+  const buckets = await client.rpc('media_inventory_buckets', {});
+  const report = buildReport(objects, buckets, { orphans: process.argv.includes('--orphans') });
+  const out = arg('--out', 'media_inventaire.json');
+  fs.writeFileSync(out, JSON.stringify(report, null, 1));
+  console.log(JSON.stringify(report.summary, null, 1));
+  console.log(`rapport par objet écrit : ${out} (${report.objects.length} objets, sans donnée personnelle)`);
 }

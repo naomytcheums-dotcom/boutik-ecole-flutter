@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../auth.dart';
 import '../backend.dart';
+import '../store.dart' show fcfa;
 import 'decouverte.dart';
 
 /// Données de la marketplace multi-boutiques (migration 20261107000000). Tout vient du serveur : hors connexion, ou si la fonction
@@ -199,15 +200,7 @@ final marcheCompareProvider = NotifierProvider<CompareNotifier, List<String>>(Co
 int mInt(Object? v) => ((v as num?) ?? 0).toInt();
 
 /// « 25 000 FCFA ».
-String mFcfa(Object? v) {
-  final n = mInt(v).toString();
-  final b = StringBuffer();
-  for (var i = 0; i < n.length; i++) {
-    if (i > 0 && (n.length - i) % 3 == 0) b.write(' ');
-    b.write(n[i]);
-  }
-  return '$b FCFA';
-}
+String mFcfa(Object? v) => fcfa(mInt(v));
 
 /// Photo publique d'une annonce : URL complète telle qu'enregistrée, ou chemin du compartiment `listing-images`.
 String mImageUrl(Object? raw) {
@@ -230,5 +223,8 @@ Color mHex(Object? raw, Color fallback) {
   final v = int.tryParse(s, radix: 16);
   return s.length == 6 && v != null ? Color(0xFF000000 | v) : fallback;
 }
+
+/// Étapes de préparation d'une commande côté vendeur (index = statut serveur 0..4) : une seule liste pour la boutique et l'équipe.
+const kSellerOrderSteps = ['Nouvelle', 'Acceptée', 'En préparation', 'Prête', 'Livrée'];
 
 const shopStatusLabels = {'draft': 'Brouillon', 'pending': 'En validation', 'active': 'Active', 'suspended': 'Suspendue', 'closed': 'Fermée', 'paused': 'En pause'};

@@ -1,0 +1,24 @@
+// Fixture du test de contrats : chaque appel ci-dessous est volontairement faux (ou correct) ; ne pas "corriger".
+class Fixture {
+  Future<void> run() async {
+    await Backend.rpc('known_fn', {'p_id': '1', 'p_note': 'x'});
+    await Backend.rpc('ghost_fn', {'p_id': '1'});
+    await Backend.rpc('known_fn', {'p_id': '1', 'p_typo': 'x'});
+    await Backend.rpc('known_fn', {'p_note': 'x'});
+    await Backend.rpc('known_fn', {'p_id': '1', if (flag) 'p_note': 'x'});
+    await Backend.rows('orders', 'id,status,ghost_col', eq: {'buyer_id': 'u'}, order: 'created_at');
+    await Backend.rows('ghost_table', 'id');
+    await Backend.rows('orders', 'id,items(sku,ghost_item_col),nowhere(id),events(count)');
+    final c = Supabase.instance.client;
+    await c.from('orders').update({'status': 'x', 'ghost_written': 1}).eq('id', 1);
+    await c.storage.from('ghost-bucket').uploadBinary('a', bytes);
+    await c.functions.invoke('ghost-edge');
+    await c.functions.invoke('known-edge');
+    // await Backend.rpc('commented_out_fn', {});
+  }
+}
+
+class Backend {
+  static Future<dynamic> rpc(String fn, Map<String, dynamic> params) async => c.rpc(fn, params: params);
+  static Future<dynamic> rows(String table, String select, {Map<String, Object> eq = const {}, String? order}) async => c.from(table).select(select);
+}

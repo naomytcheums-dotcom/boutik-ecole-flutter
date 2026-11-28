@@ -8,6 +8,7 @@ import '../gen.dart';
 import '../nav.dart';
 import 'auth.dart';
 import 'backend.dart';
+import 'retry_note.dart';
 import 'seller.dart' show currentSellerOrderProvider, selectedSellerOrderProvider;
 import 'store.dart';
 
@@ -43,13 +44,28 @@ class Conversations extends Notifier<List<ConversationItem>> {
   }
 
   Future<void> refresh() async {
-    final rows = await Backend.conversations();
+    final rows = await Backend.conversationsOrNull();
     if (!ref.mounted) return;
+    if (rows == null) {
+      // lecture échouée : la liste déjà affichée est conservée, jamais remplacée par « aucune conversation »
+      ref.read(conversationsStatusProvider.notifier).set(LoadStatus.failed);
+      return;
+    }
     state = [for (final r in rows) ConversationItem.fromRow(r)];
+    ref.read(conversationsStatusProvider.notifier).set(LoadStatus.ok);
   }
 }
 
 final conversationsProvider = NotifierProvider<Conversations, List<ConversationItem>>(Conversations.new);
+
+/// Résultat de la dernière lecture des conversations : « chargement » tant qu'aucune lecture n'a abouti pour le compte connecté.
+class ConversationsStatus extends Notifier<LoadStatus> {
+  @override
+  LoadStatus build() => ref.watch(authProvider.select((a) => a.current?.serverId ?? '')).isEmpty ? LoadStatus.ok : LoadStatus.loading;
+  void set(LoadStatus s) => state = s;
+}
+
+final conversationsStatusProvider = NotifierProvider<ConversationsStatus, LoadStatus>(ConversationsStatus.new);
 
 /// Conversation ouverte (identifiant serveur).
 final selectedConversationProvider = NotifierProvider<StrV, String>(StrV.new);
@@ -179,6 +195,16 @@ Widget conversationsPanel() => gP(
       24, 180, 342, 560,
       Consumer(builder: (context, ref, _) {
         final items = ref.watch(conversationsProvider);
+        if (items.isEmpty && Backend.ready) {
+          switch (ref.watch(conversationsStatusProvider)) {
+            case LoadStatus.loading:
+              return const LoadingNote('Chargement de vos conversations…');
+            case LoadStatus.failed:
+              return RetryNote(message: 'Vos conversations ne peuvent pas être chargées pour le moment. Vérifiez votre connexion.', onRetry: () => ref.read(conversationsProvider.notifier).refresh());
+            case LoadStatus.ok:
+              break;
+          }
+        }
         if (items.isEmpty) {
           return Padding(
             padding: const EdgeInsets.only(top: 80, left: 16, right: 16),

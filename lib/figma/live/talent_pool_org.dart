@@ -6,6 +6,7 @@ import '../gen.dart' show gAlert, gToast;
 import '../i18n.dart' show Text;
 import 'auth.dart';
 import 'company_screens.dart' show companyContextProvider;
+import 'company_home.dart' show frDate;
 import 'marche/marche_data.dart';
 import 'marche/marche_widgets.dart';
 import 'org_vivier_tools.dart' show PoolListsManager;
@@ -430,7 +431,7 @@ class _PoolTalentSheetState extends ConsumerState<PoolTalentSheet> {
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 title: Text('${n['body']}', style: mst(13.5)),
-                subtitle: Text('${n['author']} · ${'${n['created_at']}'.split('T').first}', style: mst(11.5, c: kGrey)),
+                subtitle: Text('${n['author']} · ${frDate(n['created_at'])}', style: mst(11.5, c: kGrey)),
                 trailing: n['can_delete'] == true && w
                     ? IconButton(tooltip: 'Supprimer la note', icon: const Icon(Icons.delete_outline_rounded), onPressed: _busy ? null : () => _write('pool_note_delete', {'p_note': n['id']}, 'Note non supprimée', 'Note supprimée.'))
                     : null,
@@ -447,7 +448,7 @@ class _PoolTalentSheetState extends ConsumerState<PoolTalentSheet> {
                 contentPadding: EdgeInsets.zero,
                 dense: true,
                 title: Text('${c['summary']}', style: mst(13)),
-                subtitle: Text('${_channelLabels['${c['channel']}'] ?? c['channel']} · ${c['source'] == 'plateforme' ? 'via la plateforme' : 'noté par l’équipe'} · ${c['author']} · ${'${c['at']}'.split('T').first}', style: mst(11.5, c: kGrey)),
+                subtitle: Text('${_channelLabels['${c['channel']}'] ?? c['channel']} · ${c['source'] == 'plateforme' ? 'via la plateforme' : 'noté par l’équipe'} · ${c['author']} · ${frDate(c['at'])}', style: mst(11.5, c: kGrey)),
               ),
           if (w) ...[
             MDropdown(label: 'Canal', value: _channel, items: _channelLabels, onChanged: (v) => setState(() => _channel = v)),

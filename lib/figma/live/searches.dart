@@ -88,8 +88,9 @@ Future<void> helpSearch(BuildContext context, String q) async {
 Future<void> conversationSearch(BuildContext context, String q) async {
   if (q.trim().length < 2) return gToast(context, 'Saisissez au moins 2 caractères.');
   if (!Backend.ready) return gToast(context, 'Recherche disponible avec un compte connecté.');
-  final rows = await Backend.conversations();
+  final rows = await Backend.conversationsOrNull();
   if (!context.mounted) return;
+  if (rows == null) return gToast(context, 'Recherche impossible : vos conversations ne peuvent pas être lues pour le moment.');
   final n = normText(q.trim());
   final hits = [for (final c in rows) if (normText('${c['other_name'] ?? ''} ${c['listing_title'] ?? ''} ${c['order_number'] ?? ''} ${c['last_body'] ?? ''}').contains(n)) c];
   await _sheet(context, 'Conversations : « ${q.trim()} »', [

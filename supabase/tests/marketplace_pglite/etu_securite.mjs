@@ -84,9 +84,9 @@ export async function run(db) {
   check('my_conversations : le nom complet de l\'interlocuteur n\'est plus exposé', (await q(`select other_name from my_conversations()`))[0].other_name === 'Prénom42 N.');
 
   // --- journal d'audit
-  await q(`select log_audit('connexion', 'x', 'auth', 'Critique')`);
+  await q(`select log_audit('connexion',   'x', 'Connexions', 'Critique')`);
   await as(U(43));
-  await q(`select log_audit('décision', 'x', 'admin', 'Critique')`);
+    await q(`select log_audit('décision', 'x', 'Validations', 'Critique')`);
   await db.exec('reset role');
   const au = await q(`select actor_id, level from audit_log order by id`);
   check('log_audit : un étudiant ne peut pas écrire un niveau critique', au[0].level === 'Normal' && au[0].actor_id === U(41));

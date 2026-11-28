@@ -75,7 +75,7 @@ export async function run(db) {
   await db.exec('reset role');
   await db.exec(`insert into user_blocks (blocker_id, blocked_id) values ('${U(1)}', '${U(7)}')`);
   await as(U(7));
-  await fails('blocage : on ne commente pas l\'auteur qui vous a bloqué', `select add_post_comment_v2('${feedpost}', 'bonjour')`, /impossible/);
+  await fails('blocage : on ne commente pas l\'auteur qui vous a bloqué', `select add_post_comment_v2('${feedpost}', 'bonjour')`, /impossible|introuvable/); // H13.2 : la publication de l'auteur qui vous a bloqué est désormais introuvable (refus inchangé)
   await db.exec('reset role');
   await db.exec(`delete from user_blocks`);
 

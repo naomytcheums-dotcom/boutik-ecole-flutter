@@ -22,6 +22,7 @@ import 'live_transport.dart';
 import 'modules.dart' show LiveRoom;
 import 'reels.dart' show compactCount, relativeTime;
 import 'social_posts.dart';
+import 'store.dart' as st show fcfa;
 
 /// Lives réels : liste, création, console de l'hôte, spectateur. Vidéo temps réel via LiveKit (jeton émis par l'Edge Function
 /// « live-token »), chat / réactions / cadeaux via Supabase Realtime. Rien n'est inventé : sans live, des états vides explicites.
@@ -1310,7 +1311,7 @@ class _WalletSheetState extends ConsumerState<_WalletSheet> {
           error: (_, _) => Text('Portefeuille indisponible pour le moment.', style: sty(13, c: kGrey)),
           data: (w) => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text('${w['balance']} crédits', style: sty(26, w: FontWeight.w800)),
-            Text('1 crédit = ${w['credit_price_fcfa']} FCFA à la recharge', style: sty(12, c: kGrey)),
+            Text('1 crédit = ${st.fcfa((w['credit_price_fcfa'] as num?) ?? 0)} à la recharge', style: sty(12, c: kGrey)),
             const SizedBox(height: 6),
             Text(rechargeUnavailable, style: sty(12, c: kGrey, h: 1.45)),
           ]),
@@ -1376,7 +1377,7 @@ class _CreatorSheet extends StatelessWidget {
               Row(children: [stat('Cadeaux reçus', '${d['gifts_received']}'), stat('Crédits reçus (total)', '${d['credits_received']}')]),
               Row(children: [stat('Vos gains (${d['creator_share_pct']} %)', '${d['creator_credits']} cr.'), stat('Commission plateforme', '${d['platform_credits']} cr.')]),
               const SizedBox(height: 8),
-              Text('Valeur estimée de vos gains : $fcfa FCFA.', style: sty(12.5, w: FontWeight.w600)),
+              Text('Valeur estimée de vos gains : ${st.fcfa(fcfa)}.', style: sty(12.5, w: FontWeight.w600)),
               const SizedBox(height: 6),
               Text('Retrait : indisponible pour le moment. Le versement de ces gains en argent suppose un prestataire de paiement agréé et un cadre juridique validé ; il n’est pas ouvert tant que ce n’est pas en place. Vos gains restent enregistrés et ne sont pas perdus.', style: sty(12, c: kGrey, h: 1.5)),
             ]),

@@ -437,7 +437,7 @@ class _MemberOrders extends ConsumerWidget {
   final String shopId;
   final bool canPrepare;
 
-  static const _labels = ['Nouvelle', 'Acceptée', 'En préparation', 'Prête', 'Livrée'];
+  static const _labels = kSellerOrderSteps;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => mAsync<List<Map<String, dynamic>>>(ref.watch(_memberOrdersProvider(shopId)), (orders) {

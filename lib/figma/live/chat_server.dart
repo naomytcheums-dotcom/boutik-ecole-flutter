@@ -14,6 +14,7 @@ import 'package:record/record.dart';
 import '../gen.dart';
 import 'backend.dart';
 import 'messages.dart';
+import 'retry_note.dart';
 import 'share.dart';
 import 'translate_message.dart';
 
@@ -60,6 +61,7 @@ class _ServerChatPanelState extends ConsumerState<ServerChatPanel> {
   Timer? _poll;
   String _cid = '';
   bool loading = true;
+  bool loadFailed = false;
   DateTime? _otherRead;
   String _otherId = '';
   bool _blocked = false;
@@ -102,7 +104,17 @@ class _ServerChatPanelState extends ConsumerState<ServerChatPanel> {
       if (mounted && loading) setState(() => loading = false);
       return;
     }
-    final rows = await Backend.messages(cid, limit: _limit);
+    final rows = await Backend.messagesOrNull(cid, limit: _limit);
+    if (rows == null) {
+      // lecture échouée : le fil déjà affiché est conservé
+      if (mounted) {
+        setState(() {
+          loading = false;
+          loadFailed = true;
+        });
+      }
+      return;
+    }
     final parts = await Backend.rows('conversation_participants', 'user_id,last_read_at', eq: {'conversation_id': cid});
     final bl = await Backend.rows('user_blocks', 'blocked_id');
     if (!mounted) return;
@@ -124,6 +136,7 @@ class _ServerChatPanelState extends ConsumerState<ServerChatPanel> {
     setState(() {
       _cid = cid;
       loading = false;
+      loadFailed = false;
       _hasMore = rows.length >= _limit;
       msgs = [
         for (final r in rows)
@@ -417,6 +430,14 @@ class _ServerChatPanelState extends ConsumerState<ServerChatPanel> {
       ),
       if (_blocked)
         Positioned(left: 24, top: 150, width: 342, child: Text('Vous avez bloqué cette personne : elle ne peut plus vous écrire et vous ne pouvez plus lui écrire.', style: _st(11.5, c: const Color(0xFFD64545), w: FontWeight.w600))),
+      if (loadFailed && all.isNotEmpty)
+        Positioned(
+          left: 24,
+          top: 160,
+          width: 342,
+          height: 30,
+          child: GestureDetector(behavior: HitTestBehavior.opaque, onTap: _load, child: Text('Connexion perdue : les derniers messages peuvent manquer. Touchez pour réessayer.', maxLines: 2, overflow: TextOverflow.ellipsis, style: _st(11.5, c: const Color(0xFFB42318), w: FontWeight.w600))),
+        ),
       Positioned(
         left: 0,
         top: 190,
@@ -424,6 +445,8 @@ class _ServerChatPanelState extends ConsumerState<ServerChatPanel> {
         height: 540,
         child: loading && all.isEmpty
             ? Center(child: Text('Chargement…', style: _st(13, w: FontWeight.w500, c: const Color(0xFF57545F))))
+            : all.isEmpty && loadFailed
+                ? RetryNote(message: 'Les messages ne peuvent pas être chargés pour le moment. Vérifiez votre connexion.', onRetry: _load)
             : all.isEmpty
                 ? Center(child: Text('Aucun message pour le moment.', style: _st(13, w: FontWeight.w500, c: const Color(0xFF57545F))))
                 : ListView.builder(controller: scroll, padding: const EdgeInsets.fromLTRB(24, 6, 24, 20), itemCount: all.length + (_hasMore ? 1 : 0), itemBuilder: (_, i) {

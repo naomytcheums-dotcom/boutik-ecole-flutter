@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gen.dart';
+import 'backend.dart' show Backend;
+import 'order_summary.dart' show orderStepLabel;
 import 'store.dart';
 
 /// 09 · Suivi de commande — frise des 4 étapes qui suit l'état réel de la commande.
@@ -37,7 +39,8 @@ List<Widget> liveTimeline(WidgetRef ref) => [
         child: Consumer(builder: (context, ref, _) {
           final o = ref.watch(viewedOrderProvider);
           final s = o.step;
-          final labels = [s >= 0 ? _labels[0] : (o.cancelled ? 'Annulée' : 'En attente'), ..._labels.sublist(1)];
+          // connecté : même libellé d'étape que sur 29, 46 et 47 (« Prête à retirer » pour un retrait, jamais « En livraison »)
+          final labels = [s >= 0 ? _labels[0] : (o.cancelled ? 'Annulée' : 'En attente'), _labels[1], Backend.ready ? orderStepLabel(o, 2) : _labels[2], _labels[3]];
           double r(int i) => i == s ? 24 : 17.5;
           return Stack(clipBehavior: Clip.none, children: [
             for (var k = 0; k < 3; k++)
@@ -51,7 +54,7 @@ List<Widget> liveTimeline(WidgetRef ref) => [
                     ColorFiltered(colorFilter: ColorFilter.mode(i <= s ? Colors.white : const Color(0xFF57545F), BlendMode.srcIn), child: gImg('$_v/${ic.$5}.svg'))),
               gP(_labelX[i], 256.643, _labelW[i], 14,
                   gText(labels[i], 11.223, i < s ? const Color(0xFF5A3FE0) : (i == s ? const Color(0xFF111015) : const Color(0xFF57545F)),
-                      weight: i == s ? 700 : 500, align: TextAlign.center, wrap: true)),
+                      weight: i == s ? 700 : 500, align: TextAlign.center, wrap: true, maxLines: i == 2 ? 2 : null)),
             ],
           ]);
         }),

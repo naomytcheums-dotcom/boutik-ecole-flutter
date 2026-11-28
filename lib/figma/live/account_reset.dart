@@ -2,6 +2,7 @@ import '../gen.dart' show gSelfAvatarUrl;
 import 'auth.dart' show gSelfInstitution;
 import 'backend.dart';
 import 'hackathons.dart' show contestTeamsReadable;
+import 'media_access.dart' show MediaAccess;
 import 'seller.dart' show Listing;
 import 'store.dart' as store;
 import 'test_accounts.dart' show clearAdminReturnToken;
@@ -16,6 +17,7 @@ void resetAccountScopedState() {
   store.extraProducts = const [];
   store.platformProducts = store.liveCatalog;
   Listing.lowStock = 30;
+  MediaAccess.reset();
   contestTeamsReadable = true;
   gSelfAvatarUrl = '';
   gSelfInstitution = '';

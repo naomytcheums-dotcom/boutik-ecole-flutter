@@ -3,11 +3,12 @@ import 'dart:typed_data';
 
 import 'package:boutik_ecole/figma/live/backend.dart';
 import 'package:boutik_ecole/figma/live/media_access.dart';
-import 'package:boutik_ecole/figma/live/social_posts.dart' show uploadPostMedia;
+import 'package:boutik_ecole/figma/live/social_posts.dart' show uploadPostMedia, postCommentsProvider;
 import 'package:boutik_ecole/figma/live/stories.dart' show Story;
 import 'package:cross_file/cross_file.dart' show XFile;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../helpers/fake_supabase.dart';
@@ -106,6 +107,18 @@ void main() {
     Map<String, dynamic> row(String id, String path) => {'id': id, 'author_id': uid, 'author': 'Awa A.', 'media_path': path, 'media_kind': 'image', 'caption': '', 'created_at': '2026-11-27T08:00:00Z', 'seen': false};
     expect(Story.fromRow(row('1', '$uid/private/s1.jpg')).mediaUrl, contains('/object/sign/'));
     expect(Story.fromRow(row('2', '$uid/s2.jpg')).mediaUrl, contains('/object/public/'));
+  });
+
+  test('commentaire : la pièce jointe privée est signée avant l\'affichage, la publique reste publique', () async {
+    Map<String, dynamic> row(String id, String? path) => {'id': id, 'parent_id': null, 'author': 'Awa A.', 'author_id': uid, 'mine': false, 'body': 'Bravo', 'created_at': '2026-11-27T08:00:00Z', 'likes': 0, 'liked': false, 'attachment_path': path, 'attachment_kind': path == null ? null : 'image'};
+    srv.rpc['post_comment_list_v2'] = (a) => [row('1', '$uid/private/c1.jpg'), row('2', '$uid/c2.jpg'), row('3', null)];
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    final list = await container.read(postCommentsProvider('p1').future);
+    expect(list[0].attachment, contains('/object/sign/'));
+    expect(list[0].attachment, isNot(contains('/object/public/')));
+    expect(list[1].attachment, contains('/object/public/post-media/'));
+    expect(list[2].attachment, isEmpty);
   });
 
   testWidgets('dépôt : privé => compartiment post-media-private sous <uid>/private/ ; public => post-media', (tester) async {

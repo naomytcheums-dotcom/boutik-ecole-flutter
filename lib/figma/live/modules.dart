@@ -13,6 +13,7 @@ import 'auth.dart';
 import 'backend.dart';
 import 'console.dart';
 import 'entreprise.dart';
+import 'store.dart' show fcfa;
 import 'impact.dart' show RpcMap;
 import 'l10_ateliers.dart' show LiveNowList;
 
@@ -516,7 +517,7 @@ Widget threadsListing({double width = 342, double height = 600}) => MobileList(
 Widget milestonesListing({double width = 342, double height = 600}) => MobileList(
       provider: milestonesProvider,
       title: (r) => 'Jalon ${r['position']} · ${r['title']}',
-      subtitle: (r) => '${(r['missions'] as Map?)?['title'] ?? ''} · ${r['amount']} FCFA',
+      subtitle: (r) => '${(r['missions'] as Map?)?['title'] ?? ''} · ${num.tryParse('${r['amount']}') == null ? '—' : fcfa(num.parse('${r['amount']}'))}',
       trailing: (r) => milestoneStatus(r['status']),
       emptyText: 'Aucun jalon pour le moment.',
       width: width,

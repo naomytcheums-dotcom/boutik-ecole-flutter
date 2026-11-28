@@ -141,7 +141,12 @@ Future<Map<String, dynamic>?> _call(Map<String, dynamic> body) async {
     return Map<String, dynamic>.from(r.data as Map);
   } on FunctionException catch (e) {
     final d = e.details;
-    if (d is Map) return {...Map<String, dynamic>.from(d), if (d['message'] is String) 'message': Backend.userMessage(d['message'] as String)};
+    if (d is Map) {
+      final m = Map<String, dynamic>.from(d);
+      // erreur HTTP sans statut ni code d'erreur dans le corps : jamais un succès (5xx : réponse du fournisseur inconnue ; 4xx : refus net)
+      if (e.status >= 400 && m['error'] == null && m['status'] == null) m['error'] = e.status >= 500 ? 'server' : 'rejected';
+      return {...m, if (d['message'] is String) 'message': Backend.userMessage(d['message'] as String)};
+    }
     return {'error': 'server', 'message': 'Le paiement est indisponible pour le moment. Réessayez dans un instant.'};
   } catch (_) {
     return {'error': 'network', 'message': 'Le service de paiement ne répond pas pour le moment. Réessayez dans un instant.'};
@@ -159,6 +164,20 @@ void _completeCheckout(WidgetRef ref, {bool keepAddress = false}) {
 /// 258 « Réessayer le paiement » : le panier de la tentative est remis, puis le paiement est relancé
 /// (une nouvelle commande est créée : l'ancienne est annulée ou en échec).
 Future<void> retryPayment(WidgetRef ref, BuildContext context) async {
+  if (_payBusy) return;
+  _payBusy = true;
+  try {
+    await _retryPayment(ref, context);
+  } finally {
+    _payBusy = false;
+  }
+}
+
+/// Vrai pendant qu'un lancement de paiement ou un nouvel essai est en cours : un second appui (double clic) ne crée jamais une seconde commande.
+/// Posé de façon synchrone, avant toute attente (la phase « starting » n'arrive qu'après la connexion et les contrôles).
+bool _payBusy = false;
+
+Future<void> _retryPayment(WidgetRef ref, BuildContext context) async {
   final pay = ref.read(payProvider.notifier);
   if (ref.read(payProvider).phase == PayPhase.pending) {
     final waiting = payableOrder(ref.read(ordersProvider));
@@ -184,11 +203,25 @@ Future<void> retryPayment(WidgetRef ref, BuildContext context) async {
     return gOpen(context, '06');
   }
   pay.set(const PayState(PayPhase.idle));
-  await startPayment(ref, context);
+  await _startPayment(ref, context);
 }
 
 /// Bouton « Payer maintenant » : crée la commande, envoie la demande de prélèvement sur le téléphone du client.
 Future<void> startPayment(WidgetRef ref, BuildContext context) async {
+  if (_payBusy) return;
+  final phase = ref.read(payProvider).phase;
+  if (Backend.ready && phase == PayPhase.pending && payableOrder(ref.read(ordersProvider)) != null) {
+    return gToast(context, 'Un paiement est déjà en cours de vérification : ne payez pas une seconde fois. Touchez « Vérifier le statut » pour le suivre.');
+  }
+  _payBusy = true;
+  try {
+    await _startPayment(ref, context);
+  } finally {
+    _payBusy = false;
+  }
+}
+
+Future<void> _startPayment(WidgetRef ref, BuildContext context) async {
   final pay = ref.read(payProvider.notifier);
   if (ref.read(payProvider).phase == PayPhase.starting) return;
   if (!Backend.ready && !GAnim.enabled) {
@@ -264,6 +297,17 @@ Future<void> _runPayment(WidgetRef ref, BuildContext context, PayNotifier pay, A
     if (again == null) return;
     order = again;
     res = await _startMobileMoney(ref, order, phone, who);
+  }
+  if (res != null && (res['error'] == 'network' || res['error'] == 'server')) {
+    // Réponse perdue (coupure, délai dépassé, erreur serveur sans détail) : la demande a peut-être atteint le fournisseur. La commande est conservée,
+    // jamais annulée ni déclarée payée : seul le serveur de paiement tranche (suivi automatique puis « Vérifier le statut »).
+    pay.set(const PayState(PayPhase.pending, 'Vérification en cours : la connexion a été interrompue pendant la demande de paiement. Si vous recevez une demande sur votre téléphone, validez-la ; ne payez pas une seconde fois.'));
+    ref.read(auditProvider.notifier).log(who.name, 'Paiement Mobile Money demandé, réponse non reçue (vérification en cours)', order.id, 'Finances');
+    _completeCheckout(ref, keepAddress: true);
+    if (!context.mounted) return;
+    pay.startPolling(context, ref.read(ordersProvider).firstWhere((x) => x.id == order.id, orElse: () => order));
+    gOpen(context, '257');
+    return;
   }
   if (res == null || res['error'] != null) {
     await Backend.cancelOrder(order.id); // le prélèvement n'a pas démarré : on libère le stock réservé

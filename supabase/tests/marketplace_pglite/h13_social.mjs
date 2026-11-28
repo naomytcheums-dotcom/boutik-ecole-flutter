@@ -69,7 +69,7 @@ export async function run(db) {
   check('compteurs publics : un abonné suspendu n\'est plus compté', (await one(`select public_profile('${A}') r`)).r.followers_count === 1);
   await sudo(`update profiles set suspended = false where id = '${C}'`);
   await sudo(`alter table engagements disable trigger trg_h13_follow_guard; insert into engagements (user_id, kind, ref) values ('${A}', 'follow', '${A}'); alter table engagements enable trigger trg_h13_follow_guard`);
-  check('compteurs publics : l\'auto-abonnement historique n\'est pas compté', (await one(`select public_profile('${A}') r`)).r.followers_count === 2, JSON.stringify((await one(`select public_profile('${A}') r`)).r));
+  check('compteurs publics : l\'auto-abonnement historique et le client non liste ne sont pas comptes (H13.2)', (await one(`select public_profile('${A}') r`)).r.followers_count === 1, JSON.stringify((await one(`select public_profile('${A}') r`)).r));
   await sudo(`update profiles set suspended = true where id = '${D}'`);
   check('isolation : un suspendu n\'a plus de profil public', (await one(`select public_profile('${D}') r`)).r === null);
 
@@ -288,10 +288,12 @@ export async function run(db) {
   const cm2 = (await sudo(`insert into post_comments (post_id, author_id, body) values ('${pm}', '${C}', 'Commentaire correct') returning id`))[0].id;
   await as(F);
   await q(`select report_comment('${cm1}', 'Insultes')`);
+  await sudo(`delete from user_blocks where blocker_id = '${A}' and blocked_id = '${E}'`);
   await as(E);
   await q(`select report_comment('${cm1}', 'Harcèlement')`);
   await q(`select report_comment('${cm2}', 'Doute')`);
   await fails('signalement : limite horaire par compte (3e refusé)', `select report_comment('${cm2}', 'encore')`, /Limite atteinte|déjà/);
+  await sudo(`insert into user_blocks (blocker_id, blocked_id) values ('${A}', '${E}')`);
   await as(B);
   await fails('modération : un utilisateur ordinaire refusé', `select comment_report_decide(gen_random_uuid(), true, 'motif')`, /Réservé/);
   await fails('modération : résumé réservé', `select social_moderation_summary()`, /Réservé/);

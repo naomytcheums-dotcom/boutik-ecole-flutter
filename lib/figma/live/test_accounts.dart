@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../gen.dart' show gToast;
+import 'company_home.dart' show frDate;
 import '../i18n.dart' show Text;
 import 'auth.dart';
 import 'backend.dart';
@@ -227,7 +228,7 @@ class TestAccountsScreen extends ConsumerWidget {
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         Text(testAccountLabel(a), style: mst(15, w: FontWeight.w800)),
                         SelectableText('${a['email']}', style: mst(12.5, w: FontWeight.w600, c: kInk)),
-                        Text(a['last_login'] == null ? 'Jamais ouvert' : 'Dernière ouverture : ${'${a['last_login']}'.substring(0, 10)}', style: mst(12, c: kGrey)),
+                        Text(a['last_login'] == null ? 'Jamais ouvert' : 'Dernière ouverture : ${frDate(a['last_login'])}', style: mst(12, c: kGrey)),
                         const SizedBox(height: 10),
                         mButton('Ouvrir en tant que ce profil', () => openTestAccount(context, ref, a), icon: Icons.login),
                       ]),

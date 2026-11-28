@@ -39,7 +39,7 @@ String documentTitle(Order o, {required bool invoice}) {
 
 /// État de paiement affiché sur les documents et l'écran 259.
 String orderPaymentStatus(Order o) {
-  if (o.paid) return 'Payé';
+  if (o.paid) return o.cancelled ? 'Payée, commande annulée' : 'Payé';
   if (o.cancelled) return 'Annulée';
   return o.cod ? 'À payer à la livraison' : 'En attente de paiement';
 }
